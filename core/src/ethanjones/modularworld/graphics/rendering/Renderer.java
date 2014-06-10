@@ -16,6 +16,7 @@ public class Renderer {
   public ModelBatch modelBatch;
   public ModelBuilder modelBuilder;
   public ModelInstance stone;
+  public ModelInstance stone2;
   
   public Renderer() {
     lights = new Environment();
@@ -44,6 +45,7 @@ public class Renderer {
     
     modelBatch.begin(camera);
     modelBatch.render(stone, lights);
+    modelBatch.render(stone2, lights);
     modelBatch.end();
   }
   

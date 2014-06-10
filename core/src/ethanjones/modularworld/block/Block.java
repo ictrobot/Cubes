@@ -1,6 +1,5 @@
 package ethanjones.modularworld.block;
 
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import ethanjones.modularworld.data.ByteData;
@@ -31,7 +30,7 @@ public class Block {
   
   public ModelInstance getModelInstance(int x, int y, int z) {
     if (model == null) {
-      model = new ModelInstance(GraphicsHelper.getModelBuilder().createBox(1f, 1f, 1f, getTexture(), Usage.Position | Usage.Normal), x, y, z);
+      model = new ModelInstance(GraphicsHelper.getModelBuilder().createBox(1f, 1f, 1f, getTexture(), GraphicsHelper.usage), x, y, z);
     }
     return model;
   }

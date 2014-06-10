@@ -21,6 +21,7 @@ public class ModularWorld implements ApplicationListener {
     BlockFactoryStone f = new BlockFactoryStone();
     f.loadTextures();
     renderer.stone = f.getBlock(new ByteData()).getModelInstance(0, 0, 0);
+    renderer.stone2 = f.getBlock(new ByteData()).getModelInstance(0, 1, 1);
   }
   
   @Override
