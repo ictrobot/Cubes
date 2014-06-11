@@ -1,8 +1,7 @@
 package ethanjones.modularworld;
 
 import com.badlogic.gdx.ApplicationListener;
-import ethanjones.modularworld.block.basic.BlockFactoryStone;
-import ethanjones.modularworld.data.ByteData;
+import ethanjones.modularworld.block.BlockFactories;
 import ethanjones.modularworld.graphics.rendering.Renderer;
 
 public class ModularWorld implements ApplicationListener {
@@ -17,11 +16,9 @@ public class ModularWorld implements ApplicationListener {
 
   @Override
   public void create() {
+    BlockFactories.init();
+    BlockFactories.loadTextures();
     renderer = new Renderer();
-    BlockFactoryStone f = new BlockFactoryStone();
-    f.loadTextures();
-    renderer.stone = f.getBlock(new ByteData()).getModelInstance(0, 0, 0);
-    renderer.stone2 = f.getBlock(new ByteData()).getModelInstance(0, 1, 1);
   }
   
   @Override
