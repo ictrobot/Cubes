@@ -17,8 +17,18 @@ public class World {
   }
   
   public Zone getZone(int x, int y, int z) {
-    int zoneX = x / Zone.TotalS;
-    int zoneZ = z / Zone.TotalS;
+    int zoneX;
+    int zoneZ;
+    if (x >= 0) {
+      zoneX = x / Zone.TotalS;
+    } else {
+      zoneX = (x - Zone.TotalS) / Zone.TotalS;
+    }
+    if (z >= 0) {
+      zoneZ = z / Zone.TotalS;
+    } else {
+      zoneZ = (z - Zone.TotalS) / Zone.TotalS;
+    }
     if (zones[WORLD_RADIUS_ZONES + zoneX][WORLD_RADIUS_ZONES + zoneZ] == null) {
       zones[WORLD_RADIUS_ZONES + zoneX][WORLD_RADIUS_ZONES + zoneZ] = new Zone(zoneX, zoneZ);;
     }
