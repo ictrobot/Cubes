@@ -3,21 +3,26 @@ package ethanjones.modularworld;
 import com.badlogic.gdx.ApplicationListener;
 import ethanjones.modularworld.block.BlockFactories;
 import ethanjones.modularworld.graphics.rendering.Renderer;
+import ethanjones.modularworld.world.BasicWorldGenerator;
+import ethanjones.modularworld.world.World;
 
 public class ModularWorld implements ApplicationListener {
   
   public static ModularWorld instance;
   
+  public World world;
   public Renderer renderer;
   
   public ModularWorld() {
     ModularWorld.instance = this;
   }
-
+  
   @Override
   public void create() {
     BlockFactories.init();
     BlockFactories.loadTextures();
+    
+    world = new World(new BasicWorldGenerator());
     renderer = new Renderer();
   }
   
@@ -33,12 +38,12 @@ public class ModularWorld implements ApplicationListener {
   
   @Override
   public void pause() {
-
+    
   }
   
   @Override
   public void resume() {
-
+    
   }
   
   @Override

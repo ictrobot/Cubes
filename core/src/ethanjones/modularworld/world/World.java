@@ -7,8 +7,9 @@ import ethanjones.modularworld.world.storage.Zone;
 public class World {
   
   public static int WORLD_RADIUS_ZONES = 1000;
+  public static int HEIGHT_LIMIT = Zone.TotalS;
   
-  public Zone[][] zones = new Zone[WORLD_RADIUS_ZONES][WORLD_RADIUS_ZONES];
+  public Zone[][] zones = new Zone[WORLD_RADIUS_ZONES * 2][WORLD_RADIUS_ZONES * 2];
   public final WorldGenerator gen;
   
   public World(WorldGenerator gen) {
@@ -18,17 +19,33 @@ public class World {
   public Zone getZone(int x, int y, int z) {
     int zoneX = x / Zone.TotalS;
     int zoneZ = z / Zone.TotalS;
-    if (zones[zoneX][zoneZ] == null) {
-      zones[zoneX][zoneZ] = new Zone(zoneX, zoneZ);;
+    if (zones[WORLD_RADIUS_ZONES + zoneX][WORLD_RADIUS_ZONES + zoneZ] == null) {
+      zones[WORLD_RADIUS_ZONES + zoneX][WORLD_RADIUS_ZONES + zoneZ] = new Zone(zoneX, zoneZ);;
     }
-    return zones[zoneX][zoneZ];
+    return zones[WORLD_RADIUS_ZONES + zoneX][WORLD_RADIUS_ZONES + zoneZ];
   }
   
   public Area getArea(int x, int y, int z) {
     Zone zone = getZone(x, y, z);
-    int areaX = x / Area.S;
-    int areaY = y / Area.S;
-    int areaZ = z / Area.S;
+    int areaX;
+    int areaY;
+    int areaZ;
+    if (x >= 0) {
+      areaX = x / Area.S;
+    } else {
+      areaX = (x - Area.S) / Area.S;
+    }
+    if (y >= 0) {
+      areaY = y / Area.S;
+    } else {
+      throw new RuntimeException("Y must be positive");
+    }
+    if (z >= 0) {
+      areaZ = z / Area.S;
+    } else {
+      areaZ = (z - Area.S) / Area.S;
+    }
+    
     if (zone.getArea(x, y, z) == null) {
       zone.setArea(new Area(areaX, areaY, areaZ), x, y, z);
     }

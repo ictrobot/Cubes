@@ -27,11 +27,10 @@ public class Area {
    * Normal coords
    */
   public Block getBlock(int x, int y, int z) {
-    return blocks[(x % S)][(y % S)][(z % S)];
+    return blocks[Math.abs(x % S)][Math.abs(y % S)][Math.abs(z % S)];
   }
   
   public void setBlock(Block block, int x, int y, int z) {
-    blocks[(x % S)][(y % S)][(z % S)] = block;
+    blocks[Math.abs(x % S)][Math.abs(y % S)][Math.abs(z % S)] = block;
   }
-  
 }

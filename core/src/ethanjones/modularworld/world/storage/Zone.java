@@ -32,13 +32,13 @@ public class Zone {
    * Normal coords
    */
   public Area getArea(int x, int y, int z) {
-    return areas[((x % TotalS) / Area.S)][((y % TotalS) / Area.S)][((z % TotalS) / Area.S)];
+    return areas[Math.abs((x % TotalS) / Area.S)][Math.abs((y % TotalS) / Area.S)][Math.abs((z % TotalS) / Area.S)];
   }
   
   /**
    * Normal coords
    */
   public void setArea(Area area, int x, int y, int z) {
-    areas[((x % TotalS) / Area.S)][((y % TotalS) / Area.S)][((z % TotalS) / Area.S)] = area;
+    areas[Math.abs((x % TotalS) / Area.S)][Math.abs((y % TotalS) / Area.S)][Math.abs((z % TotalS) / Area.S)] = area;
   }
 }
