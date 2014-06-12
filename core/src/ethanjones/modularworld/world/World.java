@@ -6,8 +6,8 @@ import ethanjones.modularworld.world.storage.Zone;
 
 public class World {
   
-  public static int WORLD_RADIUS_ZONES = 1000;
-  public static int HEIGHT_LIMIT = Zone.TotalS;
+  public final static int WORLD_RADIUS_ZONES = 1000;
+  public final static int HEIGHT_LIMIT = Zone.TotalS;
   
   public Zone[][] zones = new Zone[WORLD_RADIUS_ZONES * 2][WORLD_RADIUS_ZONES * 2];
   public final WorldGenerator gen;
