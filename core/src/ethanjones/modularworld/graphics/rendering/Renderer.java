@@ -71,7 +71,7 @@ public class Renderer {
               for (int z = 0; z < Area.S; z++) {
                 Block b = area.getBlock(x, y, z);
                 if (b != null) { // && !b.isCovered(x, y, z)
-                  GameObject i = b.getModelInstance(x, y, z);
+                  GameObject i = b.getModelInstance(x + area.minBlockX, y + area.minBlockY, z + area.minBlockZ);
                   if (isVisible(camera, i)) {
                     modelBatch.render(i, lights);
                     r++;
@@ -84,7 +84,7 @@ public class Renderer {
       }
     }
     long t = System.currentTimeMillis() - l;
-    System.out.println(t + " " + (1000 / t) + " " + r);
+    System.out.println(t + " " + (1000d / t) + " " + r);
     modelBatch.end();
   }
   
