@@ -20,10 +20,11 @@ public class ModularWorld implements ApplicationListener {
   @Override
   public void create() {
     BlockFactories.init();
-    BlockFactories.loadTextures();
+    
+    renderer = new Renderer();
+    BlockFactories.loadGraphics();
     
     world = new World(new BasicWorldGenerator());
-    renderer = new Renderer();
   }
   
   @Override

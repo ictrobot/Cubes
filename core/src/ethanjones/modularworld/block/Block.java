@@ -1,10 +1,10 @@
 package ethanjones.modularworld.block;
 
 import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.Model;
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.data.ByteData;
 import ethanjones.modularworld.graphics.GameObject;
-import ethanjones.modularworld.graphics.GraphicsHelper;
 import ethanjones.modularworld.world.World;
 
 /**
@@ -14,7 +14,7 @@ public class Block {
   
   public final BlockFactory factory;
   protected ByteData data;
-  protected GameObject model;
+  protected GameObject modelInstance;
   
   public Block(BlockFactory factory, ByteData data) {
     this(factory);
@@ -30,11 +30,15 @@ public class Block {
     return factory.getTexture(data);
   }
   
+  protected Model getModel() {
+    return factory.getModel(data);
+  }
+  
   public GameObject getModelInstance(int x, int y, int z) {
-    if (model == null) {
-      model = new GameObject(GraphicsHelper.getModelBuilder().createBox(1f, 1f, 1f, getTexture(), GraphicsHelper.usage), x, y, z);
+    if (modelInstance == null) {
+      modelInstance = new GameObject(getModel(), x, y, z);
     }
-    return model;
+    return modelInstance;
   }
   
   public boolean isCovered(int x, int y, int z) {

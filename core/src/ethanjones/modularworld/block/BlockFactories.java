@@ -36,9 +36,9 @@ public class BlockFactories {
     }
   }
   
-  public static void loadTextures() {
+  public static void loadGraphics() {
     for (BlockFactory f : factories) {
-      f.loadTextures();
+      f.loadGraphics();
     }
   }
 }
