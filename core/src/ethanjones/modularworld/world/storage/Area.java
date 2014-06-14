@@ -23,11 +23,12 @@ public class Area {
     this.z = z;
   }
   
-  /**
-   * Normal coords
-   */
   public Block getBlock(int x, int y, int z) {
     return blocks[Math.abs(x % S)][Math.abs(y % S)][Math.abs(z % S)];
+  }
+  
+  public Block[][][] getBlocks() {
+    return blocks;
   }
   
   public void setBlock(Block block, int x, int y, int z) {

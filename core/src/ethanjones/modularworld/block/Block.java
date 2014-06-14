@@ -1,9 +1,9 @@
 package ethanjones.modularworld.block;
 
 import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.data.ByteData;
+import ethanjones.modularworld.graphics.GameObject;
 import ethanjones.modularworld.graphics.GraphicsHelper;
 import ethanjones.modularworld.world.World;
 
@@ -14,7 +14,7 @@ public class Block {
   
   public final BlockFactory factory;
   protected ByteData data;
-  protected ModelInstance model;
+  protected GameObject model;
   
   public Block(BlockFactory factory, ByteData data) {
     this(factory);
@@ -30,9 +30,9 @@ public class Block {
     return factory.getTexture(data);
   }
   
-  public ModelInstance getModelInstance(int x, int y, int z) {
+  public GameObject getModelInstance(int x, int y, int z) {
     if (model == null) {
-      model = new ModelInstance(GraphicsHelper.getModelBuilder().createBox(1f, 1f, 1f, getTexture(), GraphicsHelper.usage), x, y, z);
+      model = new GameObject(GraphicsHelper.getModelBuilder().createBox(1f, 1f, 1f, getTexture(), GraphicsHelper.usage), x, y, z);
     }
     return model;
   }

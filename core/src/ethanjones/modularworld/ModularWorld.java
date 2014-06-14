@@ -3,8 +3,8 @@ package ethanjones.modularworld;
 import com.badlogic.gdx.ApplicationListener;
 import ethanjones.modularworld.block.BlockFactories;
 import ethanjones.modularworld.graphics.rendering.Renderer;
-import ethanjones.modularworld.world.BasicWorldGenerator;
 import ethanjones.modularworld.world.World;
+import ethanjones.modularworld.world.generator.BasicWorldGenerator;
 
 public class ModularWorld implements ApplicationListener {
   

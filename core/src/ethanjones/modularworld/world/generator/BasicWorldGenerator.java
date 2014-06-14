@@ -1,4 +1,4 @@
-package ethanjones.modularworld.world;
+package ethanjones.modularworld.world.generator;
 
 import ethanjones.modularworld.block.BlockFactories;
 import ethanjones.modularworld.data.ByteData;

@@ -1,6 +1,10 @@
 package ethanjones.modularworld.world;
 
 import ethanjones.modularworld.block.Block;
+import ethanjones.modularworld.world.coordinates.AreaCoordinates;
+import ethanjones.modularworld.world.coordinates.BlockCoordinates;
+import ethanjones.modularworld.world.coordinates.ZoneCoordinates;
+import ethanjones.modularworld.world.generator.WorldGenerator;
 import ethanjones.modularworld.world.storage.Area;
 import ethanjones.modularworld.world.storage.Zone;
 
@@ -17,49 +21,30 @@ public class World {
   }
   
   public Zone getZone(int x, int y, int z) {
-    int zoneX;
-    int zoneZ;
-    if (x >= 0) {
-      zoneX = x / Zone.TotalS;
-    } else {
-      zoneX = (x - Zone.TotalS) / Zone.TotalS;
+    return getZone(new BlockCoordinates(x, y, z));
+  }
+  
+  public Zone getZone(ZoneCoordinates coords) {
+    int dimX = WORLD_RADIUS_ZONES + coords.zoneX;
+    int dimZ = WORLD_RADIUS_ZONES + coords.zoneZ;
+    if (zones[dimX][dimZ] == null) {
+      zones[dimX][dimZ] = new Zone(coords.zoneX, coords.zoneZ);;
     }
-    if (z >= 0) {
-      zoneZ = z / Zone.TotalS;
-    } else {
-      zoneZ = (z - Zone.TotalS) / Zone.TotalS;
-    }
-    if (zones[WORLD_RADIUS_ZONES + zoneX][WORLD_RADIUS_ZONES + zoneZ] == null) {
-      zones[WORLD_RADIUS_ZONES + zoneX][WORLD_RADIUS_ZONES + zoneZ] = new Zone(zoneX, zoneZ);;
-    }
-    return zones[WORLD_RADIUS_ZONES + zoneX][WORLD_RADIUS_ZONES + zoneZ];
+    return zones[dimX][dimZ];
   }
   
   public Area getArea(int x, int y, int z) {
-    Zone zone = getZone(x, y, z);
-    int areaX;
-    int areaY;
-    int areaZ;
-    if (x >= 0) {
-      areaX = x / Area.S;
-    } else {
-      areaX = (x - Area.S) / Area.S;
-    }
-    if (y >= 0) {
-      areaY = y / Area.S;
-    } else {
-      throw new RuntimeException("Y must be positive");
-    }
-    if (z >= 0) {
-      areaZ = z / Area.S;
-    } else {
-      areaZ = (z - Area.S) / Area.S;
-    }
+    return getArea(new BlockCoordinates(x, y, z));
+  }
+  
+  public Area getArea(AreaCoordinates coords) {
+    Zone zone = getZone(coords);
     
-    if (zone.getArea(x, y, z) == null) {
-      zone.setArea(new Area(areaX, areaY, areaZ), x, y, z);
+    Area area = zone.getArea(coords.areaX, coords.areaY, coords.areaZ);
+    if (area == null) {
+      area = new Area(coords.areaX, coords.areaY, coords.areaZ);
+      zone.setArea(area);
     }
-    Area area = zone.getArea(x, y, z);
     if (!area.generated) {
       gen.generate(area);
       area.generated = true;

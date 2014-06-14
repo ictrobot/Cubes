@@ -18,6 +18,7 @@ public class Zone {
   /**
    * In zone coords
    */
+  
   public Zone(int x, int z) {
     this.x = x;
     this.z = z;
@@ -29,16 +30,16 @@ public class Zone {
   }
   
   /**
-   * Normal coords
+   * Area coords
    */
   public Area getArea(int x, int y, int z) {
-    return areas[Math.abs((x % TotalS) / Area.S)][Math.abs((y % TotalS) / Area.S)][Math.abs((z % TotalS) / Area.S)];
+    return areas[Math.abs(x % Zone.S)][Math.abs(y % Zone.S)][Math.abs(z % Zone.S)];
   }
   
   /**
-   * Normal coords
+   * Area coords
    */
-  public void setArea(Area area, int x, int y, int z) {
-    areas[Math.abs((x % TotalS) / Area.S)][Math.abs((y % TotalS) / Area.S)][Math.abs((z % TotalS) / Area.S)] = area;
+  public void setArea(Area area) {
+    areas[Math.abs(area.x % Zone.S)][Math.abs(area.y % Zone.S)][Math.abs(area.z % Zone.S)] = area;
   }
 }

@@ -1,4 +1,4 @@
-package ethanjones.modularworld.world;
+package ethanjones.modularworld.world.generator;
 
 import ethanjones.modularworld.world.storage.Area;
 
