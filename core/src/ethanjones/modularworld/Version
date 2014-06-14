@@ -1,4 +1,4 @@
 major=0
 minor=0
 point=1
-build=%VERSION%
+build=%BUILD_NUMBER%

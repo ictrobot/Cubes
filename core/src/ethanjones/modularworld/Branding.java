@@ -27,7 +27,7 @@ public class Branding {
     Properties prop = new Properties();
     InputStream input = null;
     try {
-      input = Gdx.files.internal("ethanjones/modularworld/Version").read();
+      input = Gdx.files.internal("ethanjones/modularworld/version").read();
       prop.load(input);
     } catch (IOException ex) {
       throw new LoadingException("Failed to load version", ex);
@@ -46,7 +46,7 @@ public class Branding {
     VERSION_BUILD = prop.getProperty("build");
     VERSION_FULL = VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_POINT + "." + VERSION_BUILD;
     
-    if (VERSION_BUILD.contentEquals("%VER" + "SION%")) {
+    if (VERSION_BUILD.contentEquals("%BUILD_" + "NUMBER%")) {
       VERSION = "Development";
       DEBUG = NAME + " " + VERSION + "[" + VERSION_FULL + "]" + " for " + PLATFORM;
     } else {
