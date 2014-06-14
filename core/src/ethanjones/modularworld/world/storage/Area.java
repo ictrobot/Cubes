@@ -10,6 +10,13 @@ public class Area {
   public final int y;
   public final int z;
   
+  public final int maxNormalX;
+  public final int maxNormalY;
+  public final int maxNormalZ;
+  public final int minNormalX;
+  public final int minNormalY;
+  public final int minNormalZ;
+  
   public boolean generated = false;
   
   private Block[][][] blocks = new Block[S][S][S];
@@ -21,6 +28,13 @@ public class Area {
     this.x = x;
     this.y = y;
     this.z = z;
+    
+    maxNormalX = ((x + 1) * S) - 1;
+    maxNormalY = ((y + 1) * S) - 1;
+    maxNormalZ = ((z + 1) * S) - 1;
+    minNormalX = x * S;
+    minNormalY = y * S;
+    minNormalZ = z * S;
   }
   
   public Block getBlock(int x, int y, int z) {
