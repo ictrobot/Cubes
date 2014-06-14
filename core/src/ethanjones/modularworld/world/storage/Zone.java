@@ -8,10 +8,10 @@ public class Zone {
   public final int x;
   public final int z;
   
-  public final int maxNormalX;
-  public final int maxNormalZ;
-  public final int minNormalX;
-  public final int minNormalZ;
+  public final int maxBlockX;
+  public final int maxBlockZ;
+  public final int minBlockX;
+  public final int minBlockZ;
   
   private Area[][][] areas = new Area[S][S][S];
   
@@ -23,10 +23,10 @@ public class Zone {
     this.x = x;
     this.z = z;
     
-    maxNormalX = ((x + 1) * S) - 1;
-    maxNormalZ = ((z + 1) * S) - 1;
-    minNormalX = x * S;
-    minNormalZ = z * S;
+    maxBlockX = ((x + 1) * S) - 1;
+    maxBlockZ = ((z + 1) * S) - 1;
+    minBlockX = x * S;
+    minBlockZ = z * S;
   }
   
   /**

@@ -10,12 +10,12 @@ public class Area {
   public final int y;
   public final int z;
   
-  public final int maxNormalX;
-  public final int maxNormalY;
-  public final int maxNormalZ;
-  public final int minNormalX;
-  public final int minNormalY;
-  public final int minNormalZ;
+  public final int maxBlockX;
+  public final int maxBlockY;
+  public final int maxBlockZ;
+  public final int minBlockX;
+  public final int minBlockY;
+  public final int minBlockZ;
   
   public boolean generated = false;
   
@@ -29,12 +29,12 @@ public class Area {
     this.y = y;
     this.z = z;
     
-    maxNormalX = ((x + 1) * S) - 1;
-    maxNormalY = ((y + 1) * S) - 1;
-    maxNormalZ = ((z + 1) * S) - 1;
-    minNormalX = x * S;
-    minNormalY = y * S;
-    minNormalZ = z * S;
+    maxBlockX = ((x + 1) * S) - 1;
+    maxBlockY = ((y + 1) * S) - 1;
+    maxBlockZ = ((z + 1) * S) - 1;
+    minBlockX = x * S;
+    minBlockY = y * S;
+    minBlockZ = z * S;
   }
   
   public Block getBlock(int x, int y, int z) {
