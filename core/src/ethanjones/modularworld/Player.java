@@ -16,8 +16,12 @@ public class Player {
   }
   
   public void updateRotation() {
-    angleX += (((double) Gdx.input.getDeltaX()) / Gdx.graphics.getWidth()) * 360;
-    angleY += (((double) Gdx.input.getDeltaY()) / Gdx.graphics.getHeight()) * 360;
+    updateRotation(Gdx.input.getDeltaX(), Gdx.input.getDeltaY());
+  }
+  
+  public void updateRotation(int deltaX, int deltaY) {
+    angleX += (((double) deltaX) / Gdx.graphics.getWidth()) * 360;
+    angleY += (((double) deltaY) / Gdx.graphics.getHeight()) * 360;
     
     angleX = angleX % 360;
     angleY = angleY % 360;
