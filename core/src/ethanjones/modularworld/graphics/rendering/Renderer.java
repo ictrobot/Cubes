@@ -45,7 +45,7 @@ public class Renderer {
     camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     camera.position.set(position);
     camera.lookAt(0, 0, 0);
-    camera.near = 0f;
+    camera.near = 1f;
     camera.far = 300f;
     camera.update();
   }
