@@ -23,6 +23,8 @@ public class ModularWorld implements ApplicationListener {
   
   @Override
   public void create() {
+    Gdx.app.log(Branding.NAME, Branding.DEBUG);
+    
     player = new Player();
     
     BlockFactories.init();
@@ -62,4 +64,5 @@ public class ModularWorld implements ApplicationListener {
   public void dispose() {
     renderer.dispose();
   }
+  
 }

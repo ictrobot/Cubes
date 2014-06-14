@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import ethanjones.modularworld.core.exception.DebugException;
 
 public class DebugHud {
   
@@ -76,15 +77,5 @@ public class DebugHud {
         
       }
     }
-  }
-  
-  public static class DebugException extends RuntimeException {
-    
-    public DebugException(String string, Exception e) {
-      super(string, e);
-    }
-    
-    private static final long serialVersionUID = 1L;
-    
   }
 }
