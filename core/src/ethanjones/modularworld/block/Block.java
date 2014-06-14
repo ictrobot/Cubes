@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.data.ByteData;
-import ethanjones.modularworld.graphics.GameObject;
+import ethanjones.modularworld.graphics.GameModel;
 import ethanjones.modularworld.world.World;
 
 /**
@@ -14,7 +14,7 @@ public class Block {
   
   public final BlockFactory factory;
   protected ByteData data;
-  protected GameObject modelInstance;
+  protected GameModel modelInstance;
   
   public Block(BlockFactory factory, ByteData data) {
     this(factory);
@@ -34,18 +34,13 @@ public class Block {
     return factory.getModel(data);
   }
   
-  public GameObject getModelInstance(int x, int y, int z) {
-    if (modelInstance == null) {
-      modelInstance = new GameObject(getModel(), x, y, z);
-    }
-    return modelInstance;
+  public GameModel getModelInstance() {
+    return factory.getModelInstance(data);
   }
   
-  public boolean isCovered(int x, int y, int z) {
-    if (y == World.HEIGHT_LIMIT - 1 || ModularWorld.instance.world.getBlock(x, y + 1, z) == null) {
-      return false;
-    }
-    if (y == 0 || ModularWorld.instance.world.getBlock(x, y - 1, z) == null) {
+  public static boolean isCovered(int x, int y, int z) {
+    
+    if (y == World.HEIGHT_LIMIT - 1 || y == 0) {
       return false;
     }
     
@@ -53,6 +48,13 @@ public class Block {
       return false;
     }
     if (ModularWorld.instance.world.getBlock(x - 1, y, z) == null) {
+      return false;
+    }
+    
+    if (ModularWorld.instance.world.getBlock(x, y + 1, z) == null) {
+      return false;
+    }
+    if (ModularWorld.instance.world.getBlock(x, y - 1, z) == null) {
       return false;
     }
     

@@ -1,7 +1,6 @@
 package ethanjones.modularworld.graphics.rendering;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
@@ -12,7 +11,7 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.block.Block;
-import ethanjones.modularworld.graphics.GameObject;
+import ethanjones.modularworld.graphics.GameModel;
 import ethanjones.modularworld.world.coordinates.AreaCoordinates;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
 import ethanjones.modularworld.world.storage.Area;
@@ -44,7 +43,6 @@ public class Renderer {
   public void setupCamera() {
     camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     camera.position.set(position);
-    camera.lookAt(0, 0, 0);
     camera.near = 1f;
     camera.far = 300f;
     camera.update();
@@ -70,9 +68,9 @@ public class Renderer {
             for (int y = 0; y < Area.S; y++) {
               for (int z = 0; z < Area.S; z++) {
                 Block b = area.getBlock(x, y, z);
-                if (b != null) { // && !b.isCovered(x, y, z)
-                  GameObject i = b.getModelInstance(x + area.minBlockX, y + area.minBlockY, z + area.minBlockZ);
-                  if (isVisible(camera, i)) {
+                if (b != null && !Block.isCovered(x, y, z)) {
+                  GameModel i = b.getModelInstance().setPos(x + area.minBlockX, y + area.minBlockY, z + area.minBlockZ);
+                  if (isVisible(i)) {
                     modelBatch.render(i, lights);
                     r++;
                   }
@@ -88,8 +86,8 @@ public class Renderer {
     modelBatch.end();
   }
   
-  protected boolean isVisible(final Camera cam, final GameObject instance) {
-    return true;// cam.frustum.boundsInFrustum(instance.bounds);
+  protected boolean isVisible(GameModel model) {
+    return true;// camera.frustum.boundsInFrustum(model.bounds);
   }
   
   public void dispose() {
