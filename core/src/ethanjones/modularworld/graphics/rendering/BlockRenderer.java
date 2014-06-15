@@ -1,6 +1,7 @@
 package ethanjones.modularworld.graphics.rendering;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
@@ -8,7 +9,8 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Vector3;
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.block.Block;
-import ethanjones.modularworld.core.util.DebugHud;
+import ethanjones.modularworld.core.debug.Debug;
+import ethanjones.modularworld.core.debug.DebugType;
 import ethanjones.modularworld.graphics.GameModel;
 import ethanjones.modularworld.world.coordinates.AreaCoordinates;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
@@ -27,8 +29,6 @@ public class BlockRenderer {
   public BlockRenderer(Renderer renderer) {
     this.renderer = renderer;
     
-    position = new Vector3(40, 10, 40);
-    
     lights = new Environment();
     lights.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
     lights.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
@@ -39,15 +39,19 @@ public class BlockRenderer {
   
   public void setupCamera() {
     camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-    camera.position.set(position);
     camera.near = 1f;
     camera.far = 300f;
-    camera.update();
   }
   
   public void render() {
+    camera.position.set(position = new Vector3(ModularWorld.instance.player.x, ModularWorld.instance.player.y, ModularWorld.instance.player.z));
+    camera.update();
+    
     ModularWorld.instance.player.updateRotation();
-    DebugHud.lineB = ModularWorld.instance.player.angleX + " " + ModularWorld.instance.player.angleY;
+      Debug.facing();
+    
+    float camAngle = -getCameraCurrentXYAngle(camera) + 180;
+    // camera.rotate(camAngle + 180);
     
     long l = System.currentTimeMillis();
     int r = 0;
@@ -78,7 +82,11 @@ public class BlockRenderer {
       }
     }
     long t = System.currentTimeMillis() - l;
-    DebugHud.lineA = t + " " + (1000d / t) + " " + r;
+      Debug.blockRenderer(t);
+  }
+  
+  public float getCameraCurrentXYAngle(Camera cam) {
+    return (float) Math.atan2(cam.up.x, cam.up.y); // * MathUtils.radiansToDegrees
   }
   
   protected boolean isVisible(GameModel model) {

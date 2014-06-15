@@ -8,8 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import ethanjones.modularworld.ModularWorld;
-import ethanjones.modularworld.core.util.DebugHud;
-import ethanjones.modularworld.core.util.DebugHud.FieldLabel;
+import ethanjones.modularworld.core.debug.Debug;
+import ethanjones.modularworld.core.debug.DebugLabel;
 
 /**
  * https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests/src/com/badlogic/gdx/tests/
@@ -32,21 +32,22 @@ public class HudRenderer {
     // table.setFillParent(true);
     // hud.addActor(table);
     
-    for (FieldLabel f : DebugHud.getLabels(skin)) {
+    for (DebugLabel f : Debug.getLabels(skin)) {
       hud.addActor(f);
     }
   }
   
   public void render() {
-    FieldLabel.updateAll();
-    
+    long l = System.currentTimeMillis();
     hud.act();
     hud.draw();
+    long t = System.currentTimeMillis() - l;
+    Debug.hudRenderer(t);
   }
   
   public void resize() {
     hud.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
-    FieldLabel.resizeAll();
+      DebugLabel.resizeAll();
   }
   
 }

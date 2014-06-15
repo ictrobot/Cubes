@@ -3,6 +3,7 @@ package ethanjones.modularworld;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import ethanjones.modularworld.block.BlockFactories;
+import ethanjones.modularworld.core.debug.Debug;
 import ethanjones.modularworld.graphics.rendering.Renderer;
 import ethanjones.modularworld.input.InputChain;
 import ethanjones.modularworld.world.World;
@@ -24,7 +25,7 @@ public class ModularWorld implements ApplicationListener {
   @Override
   public void create() {
     Gdx.app.log(Branding.NAME, Branding.DEBUG);
-    
+
     player = new Player();
     
     BlockFactories.init();

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import com.badlogic.gdx.Gdx;
+import ethanjones.modularworld.core.debug.Debug;
 import ethanjones.modularworld.core.exception.LoadingException;
 
 public class Branding {
@@ -53,5 +54,8 @@ public class Branding {
       VERSION = VERSION_FULL;
       DEBUG = NAME + " " + VERSION + " for " + PLATFORM;
     }
+
+      Debug.version(Branding.DEBUG);
+
   }
 }
