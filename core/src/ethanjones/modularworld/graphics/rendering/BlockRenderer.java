@@ -44,9 +44,7 @@ public class BlockRenderer {
 
   public void render() {
     camera.position.set(position = new Vector3(ModularWorld.instance.player.x, ModularWorld.instance.player.y, ModularWorld.instance.player.z));
-    camera.direction.add(0, ModularWorld.instance.player.deltaAngleY / 45, 0);
-    //camera.direction.nor();
-    System.out.println(camera.direction.y);
+    camera.direction.y = ((float) ModularWorld.instance.player.angleY - 180f) / 180f;
     camera.update(false);
     camera.rotate(ModularWorld.instance.player.deltaAngleX, 0, 1, 0);
     camera.update(true);
