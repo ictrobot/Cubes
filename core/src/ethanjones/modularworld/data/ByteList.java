@@ -7,22 +7,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ByteList extends ByteBase {
-  
+
   private List<ByteBase> data = new ArrayList<ByteBase>();
-  
+
   public ByteList(ByteMode mode) {
     super(mode);
   }
-  
+
   @Override
   public void writeData(DataOutput output) throws IOException {
     for (ByteBase bb : data) {
       ByteBase.write(bb, output);
     }
-    
+
     output.writeByte(new ByteEnd(new ByteMode.Normal()).getID());
   }
-  
+
   @Override
   public void readData(DataInput input) throws IOException {
     ByteBase bb;
@@ -32,7 +32,7 @@ public class ByteList extends ByteBase {
       }
     }
   }
-  
+
   public ByteList add(ByteBase bytebase) {
     ByteBase bb = bytebase;
     if (!(bb.mode instanceof ByteMode.Normal)) {
@@ -41,17 +41,17 @@ public class ByteList extends ByteBase {
     this.data.add(bb);
     return this;
   }
-  
+
   public ByteList remove(ByteBase bb) {
     this.data.remove(bb);
     return this;
   }
-  
+
   public ByteList remove(int pos) {
     this.data.remove(pos);
     return this;
   }
-  
+
   public ByteBase pos(int pos) {
     try {
       return this.data.get(pos);
@@ -59,7 +59,7 @@ public class ByteList extends ByteBase {
       return new ByteEnd(new ByteMode.Normal());
     }
   }
-  
+
   public List<ByteBase> readOnly() {
     List<ByteBase> l = new ArrayList<ByteBase>();
     for (ByteBase bb : this.data) {
@@ -67,12 +67,12 @@ public class ByteList extends ByteBase {
     }
     return l;
   }
-  
+
   @Override
   public String toString() {
     return this.data.toString();
   }
-  
+
   @Override
   protected ByteBase clone(ByteMode mode) {
     ByteList bl = new ByteList(mode);
@@ -81,7 +81,7 @@ public class ByteList extends ByteBase {
     }
     return bl;
   }
-  
+
   @Override
   public boolean equals(Object o) {
     if (super.equals(o)) {
@@ -91,12 +91,12 @@ public class ByteList extends ByteBase {
       return false;
     }
   }
-  
+
   @Override
   public byte getID() {
     return 10;
   }
-  
+
   @Override
   public int hashCode() {
     return super.hashCode() ^ this.data.hashCode();

@@ -7,16 +7,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ByteData extends ByteBase {
-  
+
   public Map<String, ByteBase> data = new HashMap<String, ByteBase>();
-  
+
   public ByteData() {
     this(new ByteMode.Normal());
   }
+
   public ByteData(ByteMode mode) {
     super(mode);
   }
-  
+
   @Override
   public void writeData(DataOutput output) throws IOException {
     for (ByteBase bb : data.values()) {
@@ -24,7 +25,7 @@ public class ByteData extends ByteBase {
     }
     output.writeByte(new ByteEnd(new ByteMode.Normal()).getID());
   }
-  
+
   @Override
   public void readData(DataInput input) throws IOException {
     ByteBase bb;
@@ -34,12 +35,12 @@ public class ByteData extends ByteBase {
       }
     }
   }
-  
+
   @Override
   public String toString() {
     return data.toString();
   }
-  
+
   @Override
   protected ByteBase clone(ByteMode mode) {
     ByteData bb = new ByteData(mode);
@@ -48,7 +49,7 @@ public class ByteData extends ByteBase {
     }
     return bb;
   }
-  
+
   @Override
   public boolean equals(Object o) {
     if (super.equals(o)) {
@@ -58,25 +59,25 @@ public class ByteData extends ByteBase {
       return false;
     }
   }
-  
+
   @Override
   public byte getID() {
     return 0;
   }
-  
+
   @Override
   public int hashCode() {
     return super.hashCode() ^ data.hashCode();
   }
-  
+
   public boolean contains(String tagName) {
     return data.containsKey(tagName);
   }
-  
+
   public boolean contains(ByteBase bb) {
     return data.containsValue(bb);
   }
-  
+
   // Get
   public ByteBase getBase(String tagName) {
     if (!contains(tagName)) {
@@ -85,7 +86,7 @@ public class ByteData extends ByteBase {
       return data.get(tagName);
     }
   }
-  
+
   public byte getByte(String tagName) {
     if (!contains(tagName) || !(data.get(tagName) instanceof ByteByte)) {
       return (byte) 0;
@@ -93,7 +94,7 @@ public class ByteData extends ByteBase {
       return ((ByteByte) data.get(tagName)).data;
     }
   }
-  
+
   public ByteData getData(String tagName) {
     if (!contains(tagName) || !(data.get(tagName) instanceof ByteData)) {
       return new ByteData(new ByteMode.Named(tagName));
@@ -101,7 +102,7 @@ public class ByteData extends ByteBase {
       return (ByteData) data.get(tagName);
     }
   }
-  
+
   public double getDouble(String tagName) {
     if (!contains(tagName) || !(data.get(tagName) instanceof ByteDouble)) {
       return 0D;
@@ -109,7 +110,7 @@ public class ByteData extends ByteBase {
       return ((ByteDouble) data.get(tagName)).data;
     }
   }
-  
+
   public float getFloat(String tagName) {
     if (!contains(tagName) || !(data.get(tagName) instanceof ByteFloat)) {
       return 0F;
@@ -117,7 +118,7 @@ public class ByteData extends ByteBase {
       return ((ByteFloat) data.get(tagName)).data;
     }
   }
-  
+
   public int getInteger(String tagName) {
     if (!contains(tagName) || !(data.get(tagName) instanceof ByteInteger)) {
       return 0;
@@ -125,7 +126,7 @@ public class ByteData extends ByteBase {
       return ((ByteInteger) data.get(tagName)).data;
     }
   }
-  
+
   public ByteList getList(String tagName) {
     if (!contains(tagName) || !(data.get(tagName) instanceof ByteList)) {
       return new ByteList(new ByteMode.Named(tagName));
@@ -133,7 +134,7 @@ public class ByteData extends ByteBase {
       return (ByteList) data.get(tagName);
     }
   }
-  
+
   public long getLong(String tagName) {
     if (!contains(tagName) || !(data.get(tagName) instanceof ByteLong)) {
       return 0L;
@@ -141,7 +142,7 @@ public class ByteData extends ByteBase {
       return ((ByteLong) data.get(tagName)).data;
     }
   }
-  
+
   public short getShort(String tagName) {
     if (!contains(tagName) || !(data.get(tagName) instanceof ByteShort)) {
       return (short) 0;
@@ -149,7 +150,7 @@ public class ByteData extends ByteBase {
       return ((ByteShort) data.get(tagName)).data;
     }
   }
-  
+
   public String getString(String tagName) {
     if (!contains(tagName) || !(data.get(tagName) instanceof ByteString)) {
       return "";
@@ -157,7 +158,7 @@ public class ByteData extends ByteBase {
       return ((ByteString) data.get(tagName)).data;
     }
   }
-  
+
   // Set
   public void setBase(String tagName, ByteBase bb) {
     if (!(bb.mode instanceof ByteMode.Named)) {
@@ -168,39 +169,39 @@ public class ByteData extends ByteBase {
     }
     data.put(tagName, bb);
   }
-  
+
   public void setByte(String tagName, byte b) {
     setBase(tagName, new ByteByte(new ByteMode.Named(tagName), b));
   }
-  
+
   public void setData(String tagName, ByteData idata) {
     setBase(tagName, idata);
   }
-  
+
   public void setDouble(String tagName, double d) {
     setBase(tagName, new ByteDouble(new ByteMode.Named(tagName), d));
   }
-  
+
   public void setFloat(String tagName, float f) {
     setBase(tagName, new ByteFloat(new ByteMode.Named(tagName), f));
   }
-  
+
   public void setInteger(String tagName, int i) {
     setBase(tagName, new ByteInteger(new ByteMode.Named(tagName), i));
   }
-  
+
   public void setList(String tagName, ByteList ilist) {
     setBase(tagName, ilist);
   }
-  
+
   public void setLong(String tagName, long l) {
     setBase(tagName, new ByteLong(new ByteMode.Named(tagName), l));
   }
-  
+
   public void setShort(String tagName, short s) {
     setBase(tagName, new ByteShort(new ByteMode.Named(tagName), s));
   }
-  
+
   public void setString(String tagName, String s) {
     setBase(tagName, new ByteString(new ByteMode.Named(tagName), s));
   }

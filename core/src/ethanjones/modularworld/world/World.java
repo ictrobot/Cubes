@@ -9,37 +9,38 @@ import ethanjones.modularworld.world.storage.Area;
 import ethanjones.modularworld.world.storage.Zone;
 
 public class World {
-  
+
   public final static int WORLD_RADIUS_ZONES = 1000;
   public final static int HEIGHT_LIMIT = Zone.TotalS;
-  
+
   public Zone[][] zones = new Zone[WORLD_RADIUS_ZONES * 2][WORLD_RADIUS_ZONES * 2];
   public final WorldGenerator gen;
-  
+
   public World(WorldGenerator gen) {
     this.gen = gen;
   }
-  
+
   public Zone getZone(int x, int y, int z) {
     return getZone(new BlockCoordinates(x, y, z));
   }
-  
+
   public Zone getZone(ZoneCoordinates coords) {
     int dimX = WORLD_RADIUS_ZONES + coords.zoneX;
     int dimZ = WORLD_RADIUS_ZONES + coords.zoneZ;
     if (zones[dimX][dimZ] == null) {
-      zones[dimX][dimZ] = new Zone(coords.zoneX, coords.zoneZ);;
+      zones[dimX][dimZ] = new Zone(coords.zoneX, coords.zoneZ);
+      ;
     }
     return zones[dimX][dimZ];
   }
-  
+
   public Area getArea(int x, int y, int z) {
     return getArea(new BlockCoordinates(x, y, z));
   }
-  
+
   public Area getArea(AreaCoordinates coords) {
     Zone zone = getZone(coords);
-    
+
     Area area = zone.getArea(coords.areaX, coords.areaY, coords.areaZ);
     if (area == null) {
       area = new Area(coords.areaX, coords.areaY, coords.areaZ);
@@ -51,9 +52,9 @@ public class World {
     }
     return area;
   }
-  
+
   public Block getBlock(int x, int y, int z) {
     return getArea(x, y, z).getBlock(x, y, z);
   }
-  
+
 }

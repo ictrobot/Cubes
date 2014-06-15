@@ -5,7 +5,7 @@ import ethanjones.modularworld.data.ByteData;
 import ethanjones.modularworld.world.storage.Area;
 
 public class BasicWorldGenerator extends WorldGenerator {
-  
+
   @Override
   public void generate(Area area) {
     if (area.y == 0) {
@@ -17,6 +17,11 @@ public class BasicWorldGenerator extends WorldGenerator {
           area.setBlock(BlockFactories.dirt.getBlock(new ByteData()), x, 3, z);
           area.setBlock(BlockFactories.grass.getBlock(new ByteData()), x, 4, z);
         }
+      }
+      if (area.x == 0 && area.z == 0) {
+        area.setBlock(BlockFactories.bedrock.getBlock(new ByteData()), 0, 4, 0);
+        area.setBlock(BlockFactories.bedrock.getBlock(new ByteData()), 0, 7, 0);
+        area.setBlock(BlockFactories.stone.getBlock(new ByteData()), 0, 5, 2);
       }
     }
   }

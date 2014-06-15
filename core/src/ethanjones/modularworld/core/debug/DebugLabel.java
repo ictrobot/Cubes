@@ -8,55 +8,55 @@ import java.util.ArrayList;
 
 public class DebugLabel extends Label {
 
-    private static ArrayList<DebugLabel> labels = new ArrayList<DebugLabel>();
-    private static int LINE_SPACING = 15;
+  private static ArrayList<DebugLabel> labels = new ArrayList<DebugLabel>();
+  private static int LINE_SPACING = 15;
 
-    private DebugType debugType;
+  private DebugType debugType;
 
-    public DebugLabel(DebugType debugType, Skin skin) {
-        super(debugType.name(), skin);
-        labels.add(this);
-        this.debugType = debugType;
-        update();
+  public DebugLabel(DebugType debugType, Skin skin) {
+    super(debugType.name(), skin);
+    labels.add(this);
+    this.debugType = debugType;
+    update();
+  }
+
+  public DebugLabel update() {
+    String s = Debug.get(debugType);
+    if (s != null) {
+      setText(s);
     }
+    return this;
+  }
 
-    public DebugLabel update() {
-        String s = Debug.get(debugType);
-        if (s!=null) {
-            setText(s);
-        }
-        return this;
+  /**
+   * public static void updateAll() {
+   * try {
+   * for (DebugLabel label : labels) {
+   * label.update();
+   * }
+   * } catch (Exception e) {
+   * <p/>
+   * }
+   * }
+   */
+  public DebugLabel resize() {
+    this.setBounds(0, Gdx.graphics.getHeight() - (int) ((debugType.ordinal() + .5) * LINE_SPACING), Gdx.graphics.getWidth(), 0);
+    return this;
+  }
+
+  public static void resizeAll() {
+    try {
+      for (DebugLabel label : labels) {
+        label.resize();
+      }
+    } catch (Exception e) {
+
     }
+  }
 
-/**
-    public static void updateAll() {
-        try {
-            for (DebugLabel label : labels) {
-                label.update();
-            }
-        } catch (Exception e) {
-
-        }
-    }
-**/
-    public DebugLabel resize() {
-        this.setBounds(0, Gdx.graphics.getHeight() - (int) ((debugType.ordinal() + .5) * LINE_SPACING), Gdx.graphics.getWidth(), 0);
-        return this;
-    }
-
-    public static void resizeAll() {
-        try {
-            for (DebugLabel label : labels) {
-                label.resize();
-            }
-        } catch (Exception e) {
-
-        }
-    }
-
-    public void validate () {
-        this.update();
-        super.validate();
-    }
+  public void validate() {
+    this.update();
+    super.validate();
+  }
 
 }

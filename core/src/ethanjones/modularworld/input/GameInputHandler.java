@@ -4,21 +4,21 @@ import com.badlogic.gdx.InputAdapter;
 import ethanjones.modularworld.ModularWorld;
 
 public class GameInputHandler extends InputAdapter {
-  
+
   @Override
   public boolean keyDown(int keycode) {
-    
+
     return false;
   }
-  
+
   @Override
   public boolean keyUp(int keycode) {
-    
+
     return false;
   }
-  
+
   int[][] touch = new int[100][2];
-  
+
   @Override
   public boolean touchDragged(int screenX, int screenY, int pointer) {
     int deltaX = screenX - touch[pointer][0];
@@ -28,11 +28,11 @@ public class GameInputHandler extends InputAdapter {
     touch[pointer][1] = screenY;
     return false;
   }
-  
+
   @Override
   public boolean mouseMoved(int screenX, int screenY) {
-    System.out.println(screenX + " " + screenY);
+    //Gdx.input.setCursorPosition(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
     return false;
   }
-  
+
 }

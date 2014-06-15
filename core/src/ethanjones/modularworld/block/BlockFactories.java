@@ -1,12 +1,13 @@
 package ethanjones.modularworld.block;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 import ethanjones.modularworld.block.basic.BlockFactoryBedrock;
 import ethanjones.modularworld.block.basic.BlockFactoryDirt;
 import ethanjones.modularworld.block.basic.BlockFactoryGrass;
 import ethanjones.modularworld.block.basic.BlockFactoryStone;
 import ethanjones.modularworld.core.util.Register;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 
 public class BlockFactories {
   @Register
@@ -17,9 +18,9 @@ public class BlockFactories {
   public static BlockFactoryDirt dirt;
   @Register
   public static BlockFactoryGrass grass;
-  
+
   private static ArrayList<BlockFactory> factories = new ArrayList<BlockFactory>();
-  
+
   public static void init() {
     for (Field f : BlockFactories.class.getFields()) {
       try {
@@ -35,7 +36,7 @@ public class BlockFactories {
       }
     }
   }
-  
+
   public static void loadGraphics() {
     for (BlockFactory f : factories) {
       f.loadGraphics();

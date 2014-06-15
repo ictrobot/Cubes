@@ -7,13 +7,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ByteMap extends ByteBase {
-  
+
   public Map<ByteBase, ByteBase> data = new HashMap<ByteBase, ByteBase>();
-  
+
   public ByteMap(ByteMode mode) {
     super(mode);
   }
-  
+
   @Override
   public void writeData(DataOutput output) throws IOException {
     for (ByteBase bb : data.keySet()) {
@@ -23,7 +23,7 @@ public class ByteMap extends ByteBase {
     output.writeByte(new ByteEnd(new ByteMode.Normal()).getID());
     output.writeByte(new ByteEnd(new ByteMode.Normal()).getID());
   }
-  
+
   @Override
   public void readData(DataInput input) throws IOException {
     ByteBase a;
@@ -34,12 +34,12 @@ public class ByteMap extends ByteBase {
       }
     }
   }
-  
+
   @Override
   public String toString() {
     return data.toString();
   }
-  
+
   @Override
   protected ByteBase clone(ByteMode mode) {
     ByteMap bm = new ByteMap(mode);
@@ -48,7 +48,7 @@ public class ByteMap extends ByteBase {
     }
     return bm;
   }
-  
+
   @Override
   public boolean equals(Object o) {
     if (super.equals(o)) {
@@ -58,25 +58,25 @@ public class ByteMap extends ByteBase {
       return false;
     }
   }
-  
+
   @Override
   public byte getID() {
     return 14;
   }
-  
+
   @Override
   public int hashCode() {
     return super.hashCode() ^ data.hashCode();
   }
-  
+
   public boolean containsKey(ByteBase bb) {
     return data.containsKey(bb);
   }
-  
+
   public boolean containsValue(ByteBase bb) {
     return data.containsValue(bb);
   }
-  
+
   public ByteBase get(ByteBase bb) {
     if (!(bb.mode instanceof ByteMode.Normal)) {
       bb = bb.clone(new ByteMode.Normal());
@@ -87,7 +87,7 @@ public class ByteMap extends ByteBase {
       return data.get(bb);
     }
   }
-  
+
   public void put(ByteBase key, ByteBase value) {
     if (!(key.mode instanceof ByteMode.Normal)) {
       key = key.clone(new ByteMode.Normal());

@@ -16,27 +16,27 @@ import ethanjones.modularworld.core.debug.DebugLabel;
  * UISimpleTest.java
  */
 public class HudRenderer {
-  
+
   Skin skin;
   Stage hud;
-  
+
   public HudRenderer() {
     hud = new Stage(new ScreenViewport());
     ModularWorld.instance.inputChain.hud = hud;
-    
+
     skin = new Skin();
     skin.add("default", new BitmapFont());
     skin.add("default", new LabelStyle(skin.getFont("default"), Color.WHITE));
-    
+
     // Table table = new Table();
     // table.setFillParent(true);
     // hud.addActor(table);
-    
+
     for (DebugLabel f : Debug.getLabels(skin)) {
       hud.addActor(f);
     }
   }
-  
+
   public void render() {
     long l = System.currentTimeMillis();
     hud.act();
@@ -44,10 +44,10 @@ public class HudRenderer {
     long t = System.currentTimeMillis() - l;
     Debug.hudRenderer(t);
   }
-  
+
   public void resize() {
     hud.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
-      DebugLabel.resizeAll();
+    DebugLabel.resizeAll();
   }
-  
+
 }
