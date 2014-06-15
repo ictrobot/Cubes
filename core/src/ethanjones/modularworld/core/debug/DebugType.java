@@ -3,7 +3,9 @@ package ethanjones.modularworld.core.debug;
 public enum DebugType {
     version,
     fps,
-    renderer,
-    rendererA,
-    direction;
+    direction,
+    blank1,
+    renderingTotal,
+    renderingBlock,
+    renderingHud
 }

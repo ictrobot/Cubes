@@ -10,7 +10,6 @@ import com.badlogic.gdx.math.Vector3;
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.block.Block;
 import ethanjones.modularworld.core.debug.Debug;
-import ethanjones.modularworld.core.debug.DebugType;
 import ethanjones.modularworld.graphics.GameModel;
 import ethanjones.modularworld.world.coordinates.AreaCoordinates;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
@@ -45,8 +44,8 @@ public class BlockRenderer {
   
   public void render() {
     camera.position.set(position = new Vector3(ModularWorld.instance.player.x, ModularWorld.instance.player.y, ModularWorld.instance.player.z));
-    camera.update();
-    
+    camera.update(true);
+
     ModularWorld.instance.player.updateRotation();
       Debug.facing();
     
@@ -62,15 +61,17 @@ public class BlockRenderer {
           if (areaY < 0) {
             continue;
           }
-          AreaCoordinates areaC = new AreaCoordinates(areaX, areaY, areaZ);
-          Area area = ModularWorld.instance.world.getArea(areaC);
+          Area area = ModularWorld.instance.world.getArea(new AreaCoordinates(areaX, areaY, areaZ));
           for (int x = 0; x < Area.S; x++) {
             for (int y = 0; y < Area.S; y++) {
               for (int z = 0; z < Area.S; z++) {
                 Block b = area.getBlock(x, y, z);
-                if (b != null && !Block.isCovered(x, y, z)) {
-                  GameModel i = b.getModelInstance().setPos(x + area.minBlockX, y + area.minBlockY, z + area.minBlockZ);
-                  if (isVisible(i)) {
+                if (b != null && !Block.isCovered(x,y,z)) {
+                    int aX = x + area.minBlockX;
+                    int aY = y + area.minBlockY;
+                    int aZ = z + area.minBlockZ;
+                  GameModel i = b.getModelInstance().setPos(aX, aY, aZ);
+                  if (isVisible(aX, aY, aZ)) {
                     renderer.modelBatch.render(i, lights);
                     r++;
                   }
@@ -82,15 +83,14 @@ public class BlockRenderer {
       }
     }
     long t = System.currentTimeMillis() - l;
-      Debug.blockRenderer(t);
+      Debug.blockRenderer(t,r);
   }
   
   public float getCameraCurrentXYAngle(Camera cam) {
-    return (float) Math.atan2(cam.up.x, cam.up.y); // * MathUtils.radiansToDegrees
+    return (float) Math.atan2(cam.up.y, cam.up.x); // * MathUtils.radiansToDegrees
   }
   
-  protected boolean isVisible(GameModel model) {
-    return true;// camera.frustum.boundsInFrustum(model.bounds);
+  protected boolean isVisible(int x, int y, int z) {
+    return camera.frustum.sphereInFrustum(x,y,z,1);
   }
-  
 }

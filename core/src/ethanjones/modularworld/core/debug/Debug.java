@@ -12,6 +12,14 @@ public class Debug {
 
     private static EnumMap<DebugType,String> debug = new EnumMap<DebugType, String>(DebugType.class);
 
+    static {
+      for (DebugType d : DebugType.values()) {
+        if (d.name().startsWith("blank")) {
+            debug.put(d, "");
+        }
+      }
+    }
+
     public static void set(DebugType debugType, String string) {
         debug.put(debugType, string);
     }
@@ -34,28 +42,21 @@ public class Debug {
 
 
     static LongAverage blockRenderer = new LongAverage();
-    public static void blockRenderer(long t) {
+    public static void blockRenderer(long t, int renderedNum) {
         blockRenderer.add(t);
-        renderer();
+        set(DebugType.renderingBlock, new StringBuilder().append("B MS:").append(t).append(" AMS:").append(blockRenderer.getAverage()).append(" N:").append(renderedNum).toString());
     }
 
     static LongAverage hudRenderer = new LongAverage();
     public static void hudRenderer(long t) {
         hudRenderer.add(t);
-        renderer();
+        set(DebugType.renderingHud, new StringBuilder().append("H MS:").append(t).append(" AMS:").append(hudRenderer.getAverage()).toString());
     }
 
     static LongAverage renderer = new LongAverage();
     public static void renderer(long t) {
         renderer.add(t);
-        renderer();
-    }
-
-    private static void renderer() {
-        StringBuilder s = new StringBuilder().append("C T:").append(renderer.getCurrent()).append(" B:").append((int) blockRenderer.getCurrent()).append(" H:").append((int) hudRenderer.getCurrent());
-        set(DebugType.renderer, s.toString());
-        s = new StringBuilder().append("A T:").append(renderer.getAverage()).append(" B:").append((int) blockRenderer.getAverage()).append(" H:").append((int) hudRenderer.getAverage());
-        set(DebugType.rendererA, s.toString());
+        set(DebugType.renderingTotal, new StringBuilder().append("T MS:").append(t).append(" AMS:").append(renderer.getAverage()).toString());
     }
 
     public static void facing() {
