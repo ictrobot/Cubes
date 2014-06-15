@@ -27,7 +27,7 @@ public class Branding {
     Properties prop = new Properties();
     InputStream input = null;
     try {
-      input = Gdx.files.classpath("ethanjones/modularworld/version").read();
+      input = Gdx.files.classpath("version").read();
       prop.load(input);
     } catch (IOException ex) {
       throw new LoadingException("Failed to load version", ex);
