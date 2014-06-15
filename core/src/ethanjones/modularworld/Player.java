@@ -26,8 +26,8 @@ public class Player {
     deltaAngleX = angleX;
     deltaAngleY = angleY;
 
-    angleX += (double) deltaX / Gdx.graphics.getWidth() * 360;
-    angleY += (double) -deltaY / Gdx.graphics.getHeight() * 360;
+    angleX += (double) -deltaX / Gdx.graphics.getWidth() * 360;
+    angleY += (double) deltaY / Gdx.graphics.getHeight() * 360;
 
     angleX = angleX % 360;
     angleY = Math.min(angleY, 360);
