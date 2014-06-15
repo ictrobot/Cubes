@@ -1,6 +1,7 @@
 .project
 .metadata
 .gradle/
+.idea/
 html/war/
 bin/
 tmp/
@@ -17,7 +18,7 @@ local.properties
 .loadpath
 mcp/
 *.launch
-
+*.iml
 .cproject
 
 .buildpath
