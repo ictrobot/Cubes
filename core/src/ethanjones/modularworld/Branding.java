@@ -48,7 +48,7 @@ public class Branding {
     
     if (VERSION_BUILD.contentEquals("%BUILD_" + "NUMBER%")) {
       VERSION = "Development";
-      DEBUG = NAME + " " + VERSION + "[" + VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_POINT + "]" + " for " + PLATFORM;
+      DEBUG = NAME + " " + VERSION + "[" + VERSION_FULL + "]" + " for " + PLATFORM;
     } else {
       VERSION = VERSION_FULL;
       DEBUG = NAME + " " + VERSION + " for " + PLATFORM;
