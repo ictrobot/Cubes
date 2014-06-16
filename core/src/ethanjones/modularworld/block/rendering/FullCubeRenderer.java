@@ -14,7 +14,7 @@ public class FullCubeRenderer implements BlockRenderer {
 
   public FullCubeRenderer(Material mainMaterial) {
     for (int i = 0; i <= 5; i++) {
-      materials[i] = GraphicsHelper.loadBlock(i + "");
+      materials[i] = mainMaterial; //i + ""
     }
   }
 
@@ -49,8 +49,8 @@ public class FullCubeRenderer implements BlockRenderer {
     mNegX = GraphicsHelper.getModelBuilder().createRect(1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, getSide(Direction.negX), GraphicsHelper.usage);
     mPosY = GraphicsHelper.getModelBuilder().createRect(1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, -1, 0, getSide(Direction.posY), GraphicsHelper.usage);
     mNegY = GraphicsHelper.getModelBuilder().createRect(0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, getSide(Direction.negY), GraphicsHelper.usage);
-    mPosZ = GraphicsHelper.getModelBuilder().createRect(0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, -1, getSide(Direction.posZ), GraphicsHelper.usage);
-    mNegZ = GraphicsHelper.getModelBuilder().createRect(1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, getSide(Direction.negZ), GraphicsHelper.usage);
+    mPosZ = GraphicsHelper.getModelBuilder().createRect(0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, -1, getSide(Direction.posZ), GraphicsHelper.usage);
+    mNegZ = GraphicsHelper.getModelBuilder().createRect(1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, getSide(Direction.negZ), GraphicsHelper.usage);
 
     posX = new GameModel(mPosX);
     negX = new GameModel(mNegX);
