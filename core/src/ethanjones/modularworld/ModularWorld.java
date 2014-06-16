@@ -47,7 +47,9 @@ public class ModularWorld implements ApplicationListener {
 
   @Override
   public void render() {
+    inputChain.beforeRender();
     renderer.render();
+    inputChain.afterRender();
   }
 
   @Override

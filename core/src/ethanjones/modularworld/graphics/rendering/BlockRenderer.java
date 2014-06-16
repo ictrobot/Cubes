@@ -1,12 +1,10 @@
 package ethanjones.modularworld.graphics.rendering;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.math.Vector3;
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.block.Block;
 import ethanjones.modularworld.core.debug.Debug;
@@ -17,7 +15,6 @@ import ethanjones.modularworld.world.storage.Area;
 
 public class BlockRenderer {
 
-  public Vector3 position;
   public static int RENDERING_DISTANCE_AREAS = 2;
 
   public Environment lights;
@@ -40,21 +37,17 @@ public class BlockRenderer {
     camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     camera.near = 0.01f;
     camera.far = 300f;
+    camera.direction.x = 1;
+    camera.direction.y = 0;
+    camera.direction.z = 0;
   }
 
   public void render() {
-    camera.position.set(position = new Vector3(ModularWorld.instance.player.x, ModularWorld.instance.player.y, ModularWorld.instance.player.z));
-    camera.direction.y = ((float) ModularWorld.instance.player.angleY - 180f) / 180f;
-    camera.update(false);
-    camera.rotate(ModularWorld.instance.player.deltaAngleX, 0, 1, 0);
-    camera.update(true);
-
-    ModularWorld.instance.player.updateRotation();
-    Debug.facing();
+    ModularWorld.instance.player.movementHandler.updateCamera(camera);
 
     long l = System.currentTimeMillis();
     int r = 0;
-    BlockCoordinates pos = new BlockCoordinates(position.x, position.y, position.z);
+    BlockCoordinates pos = new BlockCoordinates(ModularWorld.instance.player.x, ModularWorld.instance.player.y, ModularWorld.instance.player.z);
     for (int areaX = pos.areaX - RENDERING_DISTANCE_AREAS; areaX < pos.areaX + RENDERING_DISTANCE_AREAS; areaX++) {
       for (int areaY = pos.areaY - RENDERING_DISTANCE_AREAS; areaY < pos.areaY + RENDERING_DISTANCE_AREAS; areaY++) {
         for (int areaZ = pos.areaZ - RENDERING_DISTANCE_AREAS; areaZ < pos.areaZ + RENDERING_DISTANCE_AREAS; areaZ++) {
@@ -86,11 +79,7 @@ public class BlockRenderer {
     Debug.blockRenderer(t, r);
   }
 
-  public float getCameraCurrentXYAngle(Camera cam) {
-    return (float) Math.atan2(cam.up.y, cam.up.x); // * MathUtils.radiansToDegrees
-  }
-
   protected boolean isVisible(int x, int y, int z) {
-    return camera.frustum.sphereInFrustum(x, y, z, 0.75f);
+    return camera.frustum.sphereInFrustum(x, y, z, 1f);
   }
 }
