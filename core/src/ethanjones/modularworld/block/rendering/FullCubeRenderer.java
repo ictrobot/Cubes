@@ -46,11 +46,11 @@ public class FullCubeRenderer implements BlockRenderer {
   @Override
   public void load() {
     mPosX = GraphicsHelper.getModelBuilder().createRect(0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, -1, 0, 0, getSide(Direction.posX), GraphicsHelper.usage);
-    mNegX = GraphicsHelper.getModelBuilder().createRect(0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, getSide(Direction.negX), GraphicsHelper.usage);
-    mPosY = GraphicsHelper.getModelBuilder().createRect(0, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, -1, 0, getSide(Direction.posY), GraphicsHelper.usage);
+    mNegX = GraphicsHelper.getModelBuilder().createRect(1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, getSide(Direction.negX), GraphicsHelper.usage);
+    mPosY = GraphicsHelper.getModelBuilder().createRect(1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, -1, 0, getSide(Direction.posY), GraphicsHelper.usage);
     mNegY = GraphicsHelper.getModelBuilder().createRect(0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, getSide(Direction.negY), GraphicsHelper.usage);
     mPosZ = GraphicsHelper.getModelBuilder().createRect(0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, -1, getSide(Direction.posZ), GraphicsHelper.usage);
-    mNegZ = GraphicsHelper.getModelBuilder().createRect(1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, getSide(Direction.negZ), GraphicsHelper.usage);
+    mNegZ = GraphicsHelper.getModelBuilder().createRect(1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, getSide(Direction.negZ), GraphicsHelper.usage);
 
     posX = new GameModel(mPosX);
     negX = new GameModel(mNegX);
@@ -66,11 +66,11 @@ public class FullCubeRenderer implements BlockRenderer {
     int num = 0;
 
     if (world.getBlock(x + 1, y, z) == null) {
-      //modelBatch.render(posX.setPos(x, y, z), environment);
+      modelBatch.render(posX.setPos(x, y, z), environment);
       num++;
     }
     if (world.getBlock(x - 1, y, z) == null) {
-      //modelBatch.render(negX.setPos(x, y, z), environment);
+      modelBatch.render(negX.setPos(x, y, z), environment);
       num++;
     }
 
@@ -80,16 +80,16 @@ public class FullCubeRenderer implements BlockRenderer {
     }
 
     if (y != 0 && world.getBlock(x, y - 1, z) == null) {
-      //modelBatch.render(negY.setPos(x, y, z), environment);
+      modelBatch.render(negY.setPos(x, y, z), environment);
       num++;
     }
 
     if (world.getBlock(x, y, z + 1) == null) {
-      //modelBatch.render(posZ.setPos(x, y, z), environment);
+      modelBatch.render(posZ.setPos(x, y, z), environment);
       num++;
     }
     if (world.getBlock(x, y, z - 1) == null) {
-      //modelBatch.render(negZ.setPos(x, y, z), environment);
+      modelBatch.render(negZ.setPos(x, y, z), environment);
       num++;
     }
 
