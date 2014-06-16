@@ -24,9 +24,11 @@ public class GameInputHandler extends InputAdapter {
   @Override
   public boolean touchDragged(int screenX, int screenY, int pointer) {
     maxPointer = Math.max(pointer, maxPointer);
-    int deltaX = screenX - touch[pointer][0];
-    int deltaY = screenY - touch[pointer][1];
-    ModularWorld.instance.player.movementHandler.updateRotation(deltaX, deltaY);
+    if (touch[pointer][0] != 0 && touch[pointer][1] != 0) {
+      int deltaX = screenX - touch[pointer][0];
+      int deltaY = screenY - touch[pointer][1];
+      ModularWorld.instance.player.movementHandler.updateRotation(deltaX, deltaY);
+    }
     touch[pointer][0] = screenX;
     touch[pointer][1] = screenY;
     return true;
@@ -35,7 +37,8 @@ public class GameInputHandler extends InputAdapter {
   public void updateTouch() {
     for (int i = 0; i <= maxPointer; i++) {
       if (!Gdx.input.isTouched(i)) {
-        touch[i] = new int[2];
+        touch[i][0] = 0;
+        touch[i][1] = 0;
       }
     }
     maxPointer = -1;
