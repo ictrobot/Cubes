@@ -1,4 +1,4 @@
-package ethanjones.modularworld.block;
+package ethanjones.modularworld.block.factory;
 
 import ethanjones.modularworld.block.basic.BlockFactoryBedrock;
 import ethanjones.modularworld.block.basic.BlockFactoryDirt;

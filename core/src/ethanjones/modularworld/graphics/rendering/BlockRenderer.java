@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.block.Block;
 import ethanjones.modularworld.core.debug.Debug;
-import ethanjones.modularworld.graphics.GameModel;
 import ethanjones.modularworld.world.coordinates.AreaCoordinates;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
 import ethanjones.modularworld.world.storage.Area;
@@ -63,10 +62,9 @@ public class BlockRenderer {
                   int aX = x + area.minBlockX;
                   int aY = y + area.minBlockY;
                   int aZ = z + area.minBlockZ;
-                  GameModel i = b.getModelInstance().setPos(aX, aY, aZ);
+                  r += b.getRenderer().render(renderer.modelBatch, lights, aX, aY, aZ);
                   if (isVisible(aX, aY, aZ)) {
-                    renderer.modelBatch.render(i, lights);
-                    r++;
+
                   }
                 }
               }

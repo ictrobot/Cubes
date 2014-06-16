@@ -1,10 +1,9 @@
 package ethanjones.modularworld.block;
 
-import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.Model;
 import ethanjones.modularworld.ModularWorld;
+import ethanjones.modularworld.block.factory.BlockFactory;
+import ethanjones.modularworld.block.rendering.BlockRenderer;
 import ethanjones.modularworld.data.ByteData;
-import ethanjones.modularworld.graphics.GameModel;
 import ethanjones.modularworld.world.World;
 
 /**
@@ -25,16 +24,8 @@ public class Block {
     this.data = new ByteData();
   }
 
-  protected Material getTexture() {
-    return factory.getTexture(data);
-  }
-
-  protected Model getModel() {
-    return factory.getModel(data);
-  }
-
-  public GameModel getModelInstance() {
-    return factory.getModelInstance(data);
+  public BlockRenderer getRenderer() {
+    return factory.getRenderer(data);
   }
 
   public static boolean isCovered(int x, int y, int z) {
@@ -56,9 +47,6 @@ public class Block {
     if (ModularWorld.instance.world.getBlock(x, y, z + 1) == null) {
       return false;
     }
-    if (ModularWorld.instance.world.getBlock(x, y, z - 1) == null) {
-      return false;
-    }
-    return true;
+    return ModularWorld.instance.world.getBlock(x, y, z - 1) != null;
   }
 }

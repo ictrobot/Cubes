@@ -1,5 +1,7 @@
 package ethanjones.modularworld.block;
 
+import ethanjones.modularworld.block.factory.BlockFactory;
+
 import java.util.ArrayList;
 
 public class BlockManager {

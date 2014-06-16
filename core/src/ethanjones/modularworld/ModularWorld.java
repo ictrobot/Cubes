@@ -2,7 +2,7 @@ package ethanjones.modularworld;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import ethanjones.modularworld.block.BlockFactories;
+import ethanjones.modularworld.block.factory.BlockFactories;
 import ethanjones.modularworld.graphics.rendering.Renderer;
 import ethanjones.modularworld.input.InputChain;
 import ethanjones.modularworld.world.World;

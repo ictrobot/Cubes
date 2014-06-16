@@ -20,6 +20,10 @@ public class GraphicsHelper {
     return new Material(TextureAttribute.createDiffuse(texture));
   }
 
+  public static Material loadBlock(String material) {
+    return load("Blocks/" + material + ".png");
+  }
+
   private static Renderer getRenderer() {
     return ModularWorld.instance.renderer;
   }
