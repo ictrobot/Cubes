@@ -1,6 +1,7 @@
 package ethanjones.modularworld.input;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import ethanjones.modularworld.ModularWorld;
 
@@ -8,7 +9,9 @@ public class GameInputHandler extends InputAdapter {
 
   @Override
   public boolean keyDown(int keycode) {
-
+    if (keycode == Input.Keys.DPAD_UP) {
+      ModularWorld.instance.player.position.add(ModularWorld.instance.renderer.block.camera.direction);
+    }
     return false;
   }
 

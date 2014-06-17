@@ -43,23 +43,23 @@ public class Debug {
 
   static LongAverage blockRenderer = new LongAverage();
 
-  public static void blockRenderer(long t, int renderedNum) {
+  public static void blockRenderer(long t, int renderedNum, int renderedChunks, int totalChunks) {
     blockRenderer.add(t);
-    set(DebugType.renderingBlock, new StringBuilder().append("B MS:").append(t).append(" AMS:").append(blockRenderer.getAverage()).append(" N:").append(renderedNum).toString());
+    set(DebugType.renderingBlock, new StringBuilder().append("B MS:").append(String.format("%03d", t)).append(" AMS:").append(String.format("%03d", blockRenderer.getAverage())).append(" N:").append(renderedNum).append(" C:").append(renderedChunks).append("/").append(totalChunks).toString());
   }
 
   static LongAverage hudRenderer = new LongAverage();
 
   public static void hudRenderer(long t) {
     hudRenderer.add(t);
-    set(DebugType.renderingHud, new StringBuilder().append("H MS:").append(t).append(" AMS:").append(hudRenderer.getAverage()).toString());
+    set(DebugType.renderingHud, new StringBuilder().append("H MS:").append(String.format("%03d", t)).append(" AMS:").append(String.format("%03d", hudRenderer.getAverage())).toString());
   }
 
   static LongAverage renderer = new LongAverage();
 
   public static void renderer(long t) {
     renderer.add(t);
-    set(DebugType.renderingTotal, new StringBuilder().append("T MS:").append(t).append(" AMS:").append(renderer.getAverage()).toString());
+    set(DebugType.renderingTotal, new StringBuilder().append("T MS:").append(String.format("%03d", t)).append(" AMS:").append(String.format("%03d", renderer.getAverage())).toString());
   }
 
   public static void facing() {

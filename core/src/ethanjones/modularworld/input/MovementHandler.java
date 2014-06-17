@@ -44,9 +44,8 @@ public class MovementHandler {
   }
 
   public void updateCamera(Camera camera) {
-    camera.position.set(player.x, player.y, player.z);
+    camera.position.set(player.position.x, player.position.y, player.position.z);
     camera.direction.y = ((float) ModularWorld.instance.player.angleY - 180f) / 90f;
     camera.rotate(ModularWorld.instance.player.movementHandler.deltaAngleX, 0, 1, 0);
-    camera.update(true);
   }
 }

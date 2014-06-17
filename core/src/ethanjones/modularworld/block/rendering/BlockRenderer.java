@@ -1,5 +1,6 @@
 package ethanjones.modularworld.block.rendering;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 
@@ -13,6 +14,6 @@ public interface BlockRenderer {
   /**
    * @return Number of faces rendered;
    */
-  public int render(ModelBatch modelBatch, Environment environment, int x, int y, int z);
+  public int render(ModelBatch modelBatch, Environment environment, Camera camera, int x, int y, int z);
 
 }
