@@ -23,7 +23,6 @@ public class Renderer {
   }
 
   public void render() {
-
     long l = System.currentTimeMillis();
 
     Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -36,8 +35,6 @@ public class Renderer {
 
     long t = System.currentTimeMillis() - l;
     Debug.renderer(t);
-
-    Debug.fps();
   }
 
   public void dispose() {

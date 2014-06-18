@@ -2,8 +2,8 @@ package ethanjones.modularworld.block;
 
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.block.factory.BlockFactory;
-import ethanjones.modularworld.block.rendering.BlockRenderer;
-import ethanjones.modularworld.data.ByteData;
+import ethanjones.modularworld.block.rendering.BlockRenderHandler;
+import ethanjones.modularworld.core.data.ByteData;
 import ethanjones.modularworld.world.World;
 
 /**
@@ -24,7 +24,7 @@ public class Block {
     this.data = new ByteData();
   }
 
-  public BlockRenderer getRenderer() {
+  public BlockRenderHandler getRenderer() {
     return factory.getRenderer(data);
   }
 

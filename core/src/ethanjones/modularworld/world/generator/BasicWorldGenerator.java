@@ -1,7 +1,7 @@
 package ethanjones.modularworld.world.generator;
 
 import ethanjones.modularworld.block.factory.BlockFactories;
-import ethanjones.modularworld.data.ByteData;
+import ethanjones.modularworld.core.data.ByteData;
 import ethanjones.modularworld.world.storage.Area;
 
 public class BasicWorldGenerator extends WorldGenerator {

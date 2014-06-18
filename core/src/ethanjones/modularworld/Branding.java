@@ -2,7 +2,7 @@ package ethanjones.modularworld;
 
 import com.badlogic.gdx.Gdx;
 import ethanjones.modularworld.core.debug.Debug;
-import ethanjones.modularworld.core.exception.LoadingException;
+import ethanjones.modularworld.core.exception.CustomException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,7 +33,7 @@ public class Branding {
       input = Gdx.files.internal("version").read();
       prop.load(input);
     } catch (IOException ex) {
-      throw new LoadingException("Failed to load version", ex);
+      throw new CustomException("Failed to load version", ex);
     } finally {
       if (input != null) {
         try {
@@ -51,12 +51,12 @@ public class Branding {
     VERSION_MAJOR_MINOR_POINT = VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_POINT;
 
     if (VERSION_BUILD.contentEquals("%BUILD_" + "NUMBER%")) {
-      VERSION = "Development";
-      DEBUG = NAME + " " + VERSION + "[" + VERSION_MAJOR_MINOR_POINT + "]" + " for " + PLATFORM;
+      VERSION = "Development[" + VERSION_MAJOR_MINOR_POINT + "]";
     } else {
       VERSION = VERSION_FULL;
-      DEBUG = NAME + " " + VERSION + " for " + PLATFORM;
     }
+
+    DEBUG = NAME + " " + VERSION + " for " + PLATFORM;
 
     Debug.version(Branding.DEBUG);
 

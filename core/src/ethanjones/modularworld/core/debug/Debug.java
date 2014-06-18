@@ -3,8 +3,9 @@ package ethanjones.modularworld.core.debug;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import ethanjones.modularworld.ModularWorld;
-import ethanjones.modularworld.core.exception.DebugException;
+import ethanjones.modularworld.core.exception.CustomException;
 import ethanjones.modularworld.core.util.LongAverage;
+import ethanjones.modularworld.world.coordinates.Coordinates;
 
 import java.util.EnumMap;
 
@@ -30,6 +31,13 @@ public class Debug {
 
   public static void version(String string) {
     set(DebugType.version, string);
+  }
+
+  public static void position() {
+    Coordinates coordinates = new Coordinates(ModularWorld.instance.player.position);
+    set(DebugType.coordinates, new StringBuilder().append("  X:").append(String.format("%.2f", coordinates.x)).append(" Y:").append(String.format("%.2f", coordinates.y)).append(" Z:").append(String.format("%.2f", coordinates.z)).toString());
+    set(DebugType.areaCoordinates, new StringBuilder().append("A X:").append(coordinates.areaX).append(" Y:").append(coordinates.areaY).append(" Z:").append(coordinates.areaZ).toString());
+    set(DebugType.zoneCoordinates, new StringBuilder().append("Z X:").append(coordinates.zoneX).append(" Z:").append(coordinates.zoneZ).toString());
   }
 
   static LongAverage fps = new LongAverage();
@@ -60,6 +68,7 @@ public class Debug {
   public static void renderer(long t) {
     renderer.add(t);
     set(DebugType.renderingTotal, new StringBuilder().append("T MS:").append(String.format("%03d", t)).append(" AMS:").append(String.format("%03d", renderer.getAverage())).toString());
+    Debug.fps();
   }
 
   public static void facing() {
@@ -72,7 +81,7 @@ public class Debug {
       try {
         l[i] = new DebugLabel(DebugType.values()[i], skin);
       } catch (Exception e) {
-        throw new DebugException("Failed to build debug screen", e);
+        throw new CustomException("Failed to build debug screen", e);
       }
     }
     return l;

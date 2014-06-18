@@ -1,14 +1,14 @@
 package ethanjones.modularworld.block.basic;
 
 import ethanjones.modularworld.block.factory.BlockFactory;
-import ethanjones.modularworld.block.rendering.BlockRenderer;
-import ethanjones.modularworld.block.rendering.FullCubeRenderer;
-import ethanjones.modularworld.data.ByteData;
+import ethanjones.modularworld.block.rendering.BlockRenderHandler;
+import ethanjones.modularworld.block.rendering.FullCubeRenderHandler;
+import ethanjones.modularworld.core.data.ByteData;
 import ethanjones.modularworld.graphics.GraphicsHelper;
 
 public class BlockFactoryBasic extends BlockFactory {
 
-  FullCubeRenderer renderer;
+  FullCubeRenderHandler renderer;
 
   public BlockFactoryBasic(String id) {
     this(id, id);
@@ -16,7 +16,7 @@ public class BlockFactoryBasic extends BlockFactory {
 
   public BlockFactoryBasic(String id, String mainMaterial) {
     super(id);
-    renderer = new FullCubeRenderer(GraphicsHelper.loadBlock(mainMaterial));
+    renderer = new FullCubeRenderHandler(GraphicsHelper.loadBlock(mainMaterial));
   }
 
   @Override
@@ -25,7 +25,7 @@ public class BlockFactoryBasic extends BlockFactory {
   }
 
   @Override
-  public BlockRenderer getRenderer(ByteData data) {
+  public BlockRenderHandler getRenderer(ByteData data) {
     return renderer;
   }
 }

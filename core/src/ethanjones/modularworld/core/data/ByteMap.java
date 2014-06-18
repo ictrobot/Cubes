@@ -1,4 +1,4 @@
-package ethanjones.modularworld.data;
+package ethanjones.modularworld.core.data;
 
 import java.io.DataInput;
 import java.io.DataOutput;

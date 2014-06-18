@@ -1,46 +1,46 @@
-package ethanjones.modularworld.data;
+package ethanjones.modularworld.core.data;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-public class ByteString extends ByteBase {
+public class ByteByte extends ByteBase {
 
-  public String data;
+  public byte data;
 
-  public ByteString(ByteMode mode) {
+  public ByteByte(ByteMode mode) {
     super(mode);
   }
 
-  public ByteString(ByteMode mode, String s) {
+  public ByteByte(ByteMode mode, byte b) {
     super(mode);
-    this.data = s;
+    this.data = b;
   }
 
   @Override
   public void writeData(DataOutput output) throws IOException {
-    output.writeUTF(this.data);
+    output.writeByte(this.data);
   }
 
   @Override
   public void readData(DataInput input) throws IOException {
-    this.data = input.readUTF();
+    this.data = input.readByte();
   }
 
   @Override
   public String toString() {
-    return this.data;
+    return "" + this.data;
   }
 
   @Override
   protected ByteBase clone(ByteMode mode) {
-    return new ByteString(mode, this.data);
+    return new ByteByte(mode, this.data);
   }
 
   @Override
   public boolean equals(Object o) {
     if (super.equals(o)) {
-      ByteString bb = (ByteString) o;
+      ByteByte bb = (ByteByte) o;
       return this.data == bb.data;
     } else {
       return false;
@@ -49,11 +49,11 @@ public class ByteString extends ByteBase {
 
   @Override
   public byte getID() {
-    return 7;
+    return 1;
   }
 
   @Override
   public int hashCode() {
-    return super.hashCode() ^ this.data.hashCode();
+    return super.hashCode() ^ this.data;
   }
 }

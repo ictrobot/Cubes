@@ -3,6 +3,8 @@ package ethanjones.modularworld;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import ethanjones.modularworld.block.factory.BlockFactories;
+import ethanjones.modularworld.core.settings.Settings;
+import ethanjones.modularworld.event.timing.Timing;
 import ethanjones.modularworld.graphics.rendering.Renderer;
 import ethanjones.modularworld.input.InputChain;
 import ethanjones.modularworld.world.World;
@@ -16,6 +18,8 @@ public class ModularWorld implements ApplicationListener {
   public Renderer renderer;
   public InputChain inputChain;
   public Player player;
+  public Timing timing;
+  public Settings settings;
 
   public ModularWorld() {
     ModularWorld.instance = this;
@@ -23,6 +27,8 @@ public class ModularWorld implements ApplicationListener {
 
   @Override
   public void create() {
+    //TODO: Settings
+    //TODO: Event
     Gdx.app.log(Branding.NAME, Branding.DEBUG);
 
     player = new Player();
@@ -38,6 +44,10 @@ public class ModularWorld implements ApplicationListener {
 
     Gdx.input.setInputProcessor(inputChain.init());
     Gdx.input.setCursorCatched(true);
+
+    settings = new Settings();
+
+    timing = new Timing();
   }
 
   @Override
@@ -47,6 +57,7 @@ public class ModularWorld implements ApplicationListener {
 
   @Override
   public void render() {
+    timing.update();
     inputChain.beforeRender();
     renderer.render();
     inputChain.afterRender();

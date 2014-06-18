@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 
-public interface BlockRenderer {
+public interface BlockRenderHandler {
 
   /**
    * Called at factory loadGraphics();

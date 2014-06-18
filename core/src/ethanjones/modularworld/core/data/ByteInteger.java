@@ -1,30 +1,30 @@
-package ethanjones.modularworld.data;
+package ethanjones.modularworld.core.data;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-public class ByteDouble extends ByteBase {
+public class ByteInteger extends ByteBase {
 
-  public double data;
+  public int data;
 
-  public ByteDouble(ByteMode mode) {
+  public ByteInteger(ByteMode mode) {
     super(mode);
   }
 
-  public ByteDouble(ByteMode mode, double d) {
+  public ByteInteger(ByteMode mode, int i) {
     super(mode);
-    this.data = d;
+    this.data = i;
   }
 
   @Override
   public void writeData(DataOutput output) throws IOException {
-    output.writeDouble(this.data);
+    output.writeInt(this.data);
   }
 
   @Override
   public void readData(DataInput input) throws IOException {
-    this.data = input.readDouble();
+    this.data = input.readInt();
   }
 
   @Override
@@ -34,13 +34,13 @@ public class ByteDouble extends ByteBase {
 
   @Override
   protected ByteBase clone(ByteMode mode) {
-    return new ByteDouble(mode, this.data);
+    return new ByteInteger(mode, this.data);
   }
 
   @Override
   public boolean equals(Object o) {
     if (super.equals(o)) {
-      ByteDouble bb = (ByteDouble) o;
+      ByteInteger bb = (ByteInteger) o;
       return this.data == bb.data;
     } else {
       return false;
@@ -49,11 +49,11 @@ public class ByteDouble extends ByteBase {
 
   @Override
   public byte getID() {
-    return 6;
+    return 3;
   }
 
   @Override
   public int hashCode() {
-    return super.hashCode() ^ ((Double) this.data).hashCode();
+    return super.hashCode() ^ this.data;
   }
 }

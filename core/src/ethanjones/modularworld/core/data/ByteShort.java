@@ -1,30 +1,30 @@
-package ethanjones.modularworld.data;
+package ethanjones.modularworld.core.data;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-public class ByteLong extends ByteBase {
+public class ByteShort extends ByteBase {
 
-  public long data;
+  public short data;
 
-  public ByteLong(ByteMode mode) {
+  public ByteShort(ByteMode mode) {
     super(mode);
   }
 
-  public ByteLong(ByteMode mode, long l) {
+  public ByteShort(ByteMode mode, short s) {
     super(mode);
-    this.data = l;
+    this.data = s;
   }
 
   @Override
   public void writeData(DataOutput output) throws IOException {
-    output.writeLong(this.data);
+    output.writeShort(this.data);
   }
 
   @Override
   public void readData(DataInput input) throws IOException {
-    this.data = input.readLong();
+    this.data = input.readShort();
   }
 
   @Override
@@ -34,13 +34,13 @@ public class ByteLong extends ByteBase {
 
   @Override
   protected ByteBase clone(ByteMode mode) {
-    return new ByteLong(mode, this.data);
+    return new ByteShort(mode, this.data);
   }
 
   @Override
   public boolean equals(Object o) {
     if (super.equals(o)) {
-      ByteLong bb = (ByteLong) o;
+      ByteShort bb = (ByteShort) o;
       return this.data == bb.data;
     } else {
       return false;
@@ -49,11 +49,11 @@ public class ByteLong extends ByteBase {
 
   @Override
   public byte getID() {
-    return 4;
+    return 2;
   }
 
   @Override
   public int hashCode() {
-    return super.hashCode() ^ ((Long) this.data).hashCode();
+    return super.hashCode() ^ this.data;
   }
 }
