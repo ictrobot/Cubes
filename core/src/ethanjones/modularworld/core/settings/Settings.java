@@ -1,51 +1,61 @@
 package ethanjones.modularworld.core.settings;
 
-import java.util.Collection;
+import ethanjones.modularworld.ModularWorld;
+import ethanjones.modularworld.core.events.setting.AfterProcessSettingEvent;
+import ethanjones.modularworld.graphics.rendering.BlockRenderer;
 
-public class Settings {
+public enum Settings {
+  renderer_block_viewDistance(new IntegerSetting(null, null, BlockRenderer.RENDER_DISTANCE_MAX / 2, BlockRenderer.RENDER_DISTANCE_MAX, BlockRenderer.RENDER_DISTANCE_MIN, 1));
 
-  private static final String lineSeparator = System.getProperty("line.separator");
 
-  SettingGroup main;
+  private final Setting setting;
+  private String[] groupPath;
+  private String name;
 
-  public Settings() {
-    this.main = new SettingGroup("settings", null);
+  private Settings(Setting setting) {
+    this.setting = setting;
   }
 
-  public SettingGroup getSettingGroup(String name) {
-    return main.getSettingGroup(name);
-  }
-
-  public Setting getSetting(String name, Setting setting) {
-    return main.getSetting(name, setting);
-  }
-
-  public String getString() {
-    return main.getString();
-  }
-
-  protected static String getString(Collection<Setting> settings) {
-    StringBuilder s = new StringBuilder();
-    for (Setting setting : settings) {
-      s.append(getString(setting));
+  public static void processAll() {
+    for (Enum e : Settings.class.getEnumConstants()) {
+      ((Settings) e).process();
     }
-    return s.toString();
+    new AfterProcessSettingEvent().post();
   }
 
-  protected static String getString(Setting<?> setting) {
-    StringBuilder s = new StringBuilder();
-    s.append(setting.name).append("=").append(setting.getString());
-    SettingGroup group = setting.parent;
-    while (group != null) {
-      s.insert(0, ".").insert(0, group.getName());
-      group = group.getParent();
+  public Setting getSetting() {
+    SettingGroup group = ModularWorld.instance.settings.main;
+    for (String str : groupPath) {
+      group = group.getSettingGroup(str);
     }
-    s.append(lineSeparator);
-    return s.toString();
+    return group.getSetting(name, setting);
   }
 
-  protected void restore(String string) {
-
+  public BooleanSetting getBooleanSetting() {
+    return (BooleanSetting) getSetting();
   }
 
+  public EnumSetting getEnumSetting() {
+    return (EnumSetting) getSetting();
+  }
+
+  public IntegerSetting getIntegerSetting() {
+    return (IntegerSetting) getSetting();
+  }
+
+  private void process() {
+    String[] parts = this.name().split("_");
+    name = parts[parts.length - 1];
+    setting.name = name;
+    groupPath = new String[parts.length - 1];
+    int i = 0;
+    SettingGroup group = ModularWorld.instance.settings.main;
+    while (i < parts.length - 1) {
+      groupPath[i] = parts[i];
+      group = group.getSettingGroup(parts[i]);
+      i++;
+    }
+    setting.parent = group;
+    setting.addToParent();
+  }
 }

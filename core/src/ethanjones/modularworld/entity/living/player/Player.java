@@ -1,4 +1,4 @@
-package ethanjones.modularworld;
+package ethanjones.modularworld.entity.living.player;
 
 import com.badlogic.gdx.math.Vector3;
 import ethanjones.modularworld.input.MovementHandler;

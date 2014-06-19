@@ -3,19 +3,18 @@ package ethanjones.modularworld.input;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import ethanjones.modularworld.ModularWorld;
-import ethanjones.modularworld.Player;
 import ethanjones.modularworld.core.debug.Debug;
+import ethanjones.modularworld.entity.living.player.Player;
 
 public class MovementHandler {
 
   public Player player;
+  public int deltaAngleX = 0;
+  public int deltaAngleY = 0;
 
   public MovementHandler(Player player) {
     this.player = player;
   }
-
-  public int deltaAngleX = 0;
-  public int deltaAngleY = 0;
 
   public void updateRotation() {
     updateRotation(Gdx.input.getDeltaX(), Gdx.input.getDeltaY());

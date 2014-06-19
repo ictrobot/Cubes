@@ -1,6 +1,7 @@
 package ethanjones.modularworld.world;
 
 import ethanjones.modularworld.block.Block;
+import ethanjones.modularworld.core.events.world.generation.GenerationEvent;
 import ethanjones.modularworld.world.coordinates.AreaCoordinates;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
 import ethanjones.modularworld.world.coordinates.ZoneCoordinates;
@@ -11,9 +12,8 @@ import ethanjones.modularworld.world.storage.Zone;
 public class World {
 
   public final static int WORLD_RADIUS_ZONES = 1000;
-  public final static int HEIGHT_LIMIT = Zone.TotalS;
-
   public Zone[][] zones = new Zone[WORLD_RADIUS_ZONES * 2][WORLD_RADIUS_ZONES * 2];
+  public final static int HEIGHT_LIMIT = Zone.TotalS;
   public final WorldGenerator gen;
 
   public World(WorldGenerator gen) {
@@ -29,7 +29,6 @@ public class World {
     int dimZ = WORLD_RADIUS_ZONES + coords.zoneZ;
     if (zones[dimX][dimZ] == null) {
       zones[dimX][dimZ] = new Zone(coords.zoneX, coords.zoneZ);
-      ;
     }
     return zones[dimX][dimZ];
   }
@@ -48,6 +47,7 @@ public class World {
     }
     if (!area.generated) {
       gen.generate(area);
+      new GenerationEvent(area, coords).post();
       area.generated = true;
     }
     return area;

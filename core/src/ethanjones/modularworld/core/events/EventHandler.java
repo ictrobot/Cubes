@@ -1,4 +1,4 @@
-package ethanjones.modularworld.event;
+package ethanjones.modularworld.core.events;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

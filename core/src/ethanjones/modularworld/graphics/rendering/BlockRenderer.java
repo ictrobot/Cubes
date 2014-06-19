@@ -11,13 +11,15 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.block.Block;
 import ethanjones.modularworld.core.debug.Debug;
+import ethanjones.modularworld.core.settings.Settings;
 import ethanjones.modularworld.world.coordinates.AreaCoordinates;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
 import ethanjones.modularworld.world.storage.Area;
 
 public class BlockRenderer {
 
-  public static int RENDERING_DISTANCE_AREAS = 2;
+  public static int RENDER_DISTANCE_MAX = 10;
+  public static int RENDER_DISTANCE_MIN = 1;
 
   public Environment lights;
   public PerspectiveCamera camera;
@@ -48,14 +50,16 @@ public class BlockRenderer {
     ModularWorld.instance.player.movementHandler.updateCamera(camera);
     camera.update(true);
 
+    int renderDistance = Settings.renderer_block_viewDistance.getIntegerSetting().getValue();
+
     long l = System.currentTimeMillis();
     int rendered = 0;
     int renderedChunks = 0;
     int totalChunks = 0;
     BlockCoordinates pos = new BlockCoordinates(ModularWorld.instance.player.position.x, ModularWorld.instance.player.position.y, ModularWorld.instance.player.position.z);
-    for (int areaX = pos.areaX - RENDERING_DISTANCE_AREAS; areaX < pos.areaX + RENDERING_DISTANCE_AREAS; areaX++) {
-      for (int areaY = pos.areaY - RENDERING_DISTANCE_AREAS; areaY < pos.areaY + RENDERING_DISTANCE_AREAS; areaY++) {
-        for (int areaZ = pos.areaZ - RENDERING_DISTANCE_AREAS; areaZ < pos.areaZ + RENDERING_DISTANCE_AREAS; areaZ++) {
+    for (int areaX = pos.areaX - renderDistance; areaX < pos.areaX + renderDistance; areaX++) {
+      for (int areaY = pos.areaY - renderDistance; areaY < pos.areaY + renderDistance; areaY++) {
+        for (int areaZ = pos.areaZ - renderDistance; areaZ < pos.areaZ + renderDistance; areaZ++) {
           if (areaY < 0) {
             continue;
           }

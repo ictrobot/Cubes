@@ -1,68 +1,81 @@
 package ethanjones.modularworld.core.settings;
 
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 
 public class SettingGroup {
 
-  private String name;
   private final SettingGroup parent;
-  private final ArrayList<SettingGroup> childGroups;
-  private final ArrayList<Setting> childSettings;
+  private final HashMap<String, SettingGroup> childGroups;
+  private final HashMap<String, Setting> childSettings;
+  private String name;
 
 
   public SettingGroup(String name, SettingGroup parent) {
     this.name = name;
     this.parent = parent;
     if (parent != null) {
-      this.parent.getChildGroups().add(this);
+      this.parent.setSettingGroup(this);
     }
-    childGroups = new ArrayList<SettingGroup>();
-    childSettings = new ArrayList<Setting>();
+    childGroups = new HashMap<String, SettingGroup>();
+    childSettings = new HashMap<String, Setting>();
   }
 
   public SettingGroup getParent() {
     return parent;
   }
 
-  public ArrayList<SettingGroup> getChildGroups() {
-    return childGroups;
+  public Collection<SettingGroup> getChildGroups() {
+    return childGroups.values();
   }
 
   public SettingGroup getSettingGroup(String name) {
-    for (SettingGroup settingGroup : getChildGroups()) {
-      if (settingGroup.getName().toLowerCase() == name.toLowerCase()) {
-        return settingGroup;
-      }
+    SettingGroup s = childGroups.get(name);
+    if (s != null) {
+      return s;
     }
-    SettingGroup settingGroup = new SettingGroup(name, this);
-    return settingGroup;
+    return new SettingGroup(name, this);
   }
 
-  public ArrayList<Setting> getChildSettings() {
-    return childSettings;
+  public SettingGroup setSettingGroup(SettingGroup setting) {
+    childGroups.put(setting.getName(), setting);
+    return setting;
+  }
+
+  public Collection<Setting> getChildSettings() {
+    return childSettings.values();
   }
 
   public Setting getSetting(String name, Setting setting) {
-    for (Setting s : getChildSettings()) {
-      if (s.getName().toLowerCase() == name.toLowerCase()) {
-        return s;
-      }
+    Setting s = childSettings.get(name);
+    if (s != null) {
+      return s;
     }
     getChildSettings().add(setting);
     return setting;
   }
+
+  public Setting setSetting(Setting setting) {
+    childSettings.put(setting.getName(), setting);
+    return setting;
+  }
+
 
   public String getString() {
     StringBuilder stringBuilder = new StringBuilder();
     for (SettingGroup settingGroup : getChildGroups()) {
       stringBuilder.append(settingGroup.getString());
     }
-    stringBuilder.append(Settings.getString(getChildSettings()));
+    stringBuilder.append(SettingsManager.getString(getChildSettings()));
     return stringBuilder.toString();
   }
 
   public String getName() {
     return name;
+  }
+
+  public int hashCode() {
+    return name.hashCode() ^ childGroups.hashCode() ^ childSettings.hashCode();
   }
 }

@@ -3,8 +3,14 @@ package ethanjones.modularworld;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import ethanjones.modularworld.block.factory.BlockFactories;
+import ethanjones.modularworld.core.Branding;
+import ethanjones.modularworld.core.compatibility.Compatibility;
+import ethanjones.modularworld.core.events.EventBus;
+import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.core.settings.Settings;
-import ethanjones.modularworld.event.timing.Timing;
+import ethanjones.modularworld.core.settings.SettingsManager;
+import ethanjones.modularworld.core.timing.Timing;
+import ethanjones.modularworld.entity.living.player.Player;
 import ethanjones.modularworld.graphics.rendering.Renderer;
 import ethanjones.modularworld.input.InputChain;
 import ethanjones.modularworld.world.World;
@@ -14,12 +20,15 @@ public class ModularWorld implements ApplicationListener {
 
   public static ModularWorld instance;
 
-  public World world;
-  public Renderer renderer;
-  public InputChain inputChain;
   public Player player;
+  public InputChain inputChain;
+  public Renderer renderer;
+  public World world;
+
+  public EventBus eventBus;
+  public Compatibility compatibility;
+  public SettingsManager settings;
   public Timing timing;
-  public Settings settings;
 
   public ModularWorld() {
     ModularWorld.instance = this;
@@ -27,9 +36,10 @@ public class ModularWorld implements ApplicationListener {
 
   @Override
   public void create() {
-    //TODO: Settings
-    //TODO: Event
-    Gdx.app.log(Branding.NAME, Branding.DEBUG);
+    Log.info(Branding.NAME, Branding.DEBUG);
+
+    eventBus = new EventBus().register(this);
+    compatibility = Compatibility.getCompatibility();
 
     player = new Player();
 
@@ -45,8 +55,8 @@ public class ModularWorld implements ApplicationListener {
     Gdx.input.setInputProcessor(inputChain.init());
     Gdx.input.setCursorCatched(true);
 
-    settings = new Settings();
-
+    settings = new SettingsManager();
+    Settings.processAll();
     timing = new Timing();
   }
 

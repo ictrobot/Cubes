@@ -13,8 +13,14 @@ public abstract class Setting<E> {
   public Setting(SettingGroup parent, String name, E e) {
     this.name = name;
     this.parent = parent;
-    this.parent.getChildSettings().add(this);
+    addToParent();
     setValue(e);
+  }
+
+  public void addToParent() {
+    if (this.parent != null) {
+      this.parent.setSetting(this);
+    }
   }
 
   public void restoreFailed() {

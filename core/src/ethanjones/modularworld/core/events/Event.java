@@ -1,6 +1,7 @@
-package ethanjones.modularworld.event;
+package ethanjones.modularworld.core.events;
 
-import ethanjones.modularworld.core.exception.CustomException;
+import ethanjones.modularworld.ModularWorld;
+import ethanjones.modularworld.core.ModularWorldException;
 
 public class Event {
 
@@ -12,18 +13,23 @@ public class Event {
     this.canceled = false;
   }
 
-  public boolean isCancelable() {
-    return cancelable;
+  public boolean post() {
+    return ModularWorld.instance.eventBus.post(this);
   }
 
-  public void setCanceled(boolean canceled) {
-    if (!cancelable) {
-      throw new CustomException("Event is not cancelable");
-    }
-    this.canceled = canceled;
+  public boolean isCancelable() {
+    return cancelable;
   }
 
   public boolean isCanceled() {
     return canceled;
   }
+
+  public void setCanceled(boolean canceled) {
+    if (!cancelable) {
+      throw new ModularWorldException("Event is not cancelable");
+    }
+    this.canceled = canceled;
+  }
+
 }

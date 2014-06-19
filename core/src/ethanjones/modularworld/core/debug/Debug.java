@@ -3,7 +3,7 @@ package ethanjones.modularworld.core.debug;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import ethanjones.modularworld.ModularWorld;
-import ethanjones.modularworld.core.exception.CustomException;
+import ethanjones.modularworld.core.ModularWorldException;
 import ethanjones.modularworld.core.util.LongAverage;
 import ethanjones.modularworld.world.coordinates.Coordinates;
 
@@ -11,6 +11,10 @@ import java.util.EnumMap;
 
 public class Debug {
 
+  static LongAverage fps = new LongAverage();
+  static LongAverage blockRenderer = new LongAverage();
+  static LongAverage hudRenderer = new LongAverage();
+  static LongAverage renderer = new LongAverage();
   private static EnumMap<DebugType, String> debug = new EnumMap<DebugType, String>(DebugType.class);
 
   static {
@@ -40,30 +44,21 @@ public class Debug {
     set(DebugType.zoneCoordinates, new StringBuilder().append("Z X:").append(coordinates.zoneX).append(" Z:").append(coordinates.zoneZ).toString());
   }
 
-  static LongAverage fps = new LongAverage();
-
   public static void fps() {
     fps.add(Gdx.graphics.getFramesPerSecond());
     StringBuilder s = new StringBuilder().append("FPS:").append(Gdx.graphics.getFramesPerSecond()).append(" AFPS:").append(fps.getAverage());
     set(DebugType.fps, s.toString());
   }
 
-
-  static LongAverage blockRenderer = new LongAverage();
-
   public static void blockRenderer(long t, int renderedNum, int renderedChunks, int totalChunks) {
     blockRenderer.add(t);
     set(DebugType.renderingBlock, new StringBuilder().append("B MS:").append(String.format("%03d", t)).append(" AMS:").append(String.format("%03d", blockRenderer.getAverage())).append(" N:").append(renderedNum).append(" C:").append(renderedChunks).append("/").append(totalChunks).toString());
   }
 
-  static LongAverage hudRenderer = new LongAverage();
-
   public static void hudRenderer(long t) {
     hudRenderer.add(t);
     set(DebugType.renderingHud, new StringBuilder().append("H MS:").append(String.format("%03d", t)).append(" AMS:").append(String.format("%03d", hudRenderer.getAverage())).toString());
   }
-
-  static LongAverage renderer = new LongAverage();
 
   public static void renderer(long t) {
     renderer.add(t);
@@ -81,7 +76,7 @@ public class Debug {
       try {
         l[i] = new DebugLabel(DebugType.values()[i], skin);
       } catch (Exception e) {
-        throw new CustomException("Failed to build debug screen", e);
+        throw new ModularWorldException("Failed to build debug screen", e);
       }
     }
     return l;

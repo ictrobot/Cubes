@@ -1,6 +1,6 @@
 package ethanjones.modularworld.world.coordinates;
 
-import ethanjones.modularworld.core.exception.CustomException;
+import ethanjones.modularworld.core.ModularWorldException;
 import ethanjones.modularworld.world.storage.Zone;
 
 public class AreaCoordinates extends ZoneCoordinates {
@@ -12,7 +12,7 @@ public class AreaCoordinates extends ZoneCoordinates {
   public AreaCoordinates(int areaX, int areaY, int areaZ) {
     super(zone(areaX), zone(areaZ));
     if (areaY < 0) {
-      throw new CustomException("Y must be positive");
+      throw new ModularWorldException("Y must be positive");
     }
     this.areaX = areaX;
     this.areaY = areaY;

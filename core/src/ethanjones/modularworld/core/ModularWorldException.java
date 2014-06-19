@@ -1,29 +1,29 @@
-package ethanjones.modularworld.core.exception;
+package ethanjones.modularworld.core;
 
-public class CustomException extends RuntimeException {
+public class ModularWorldException extends RuntimeException {
 
   private static final long serialVersionUID = 1L;
 
-  public CustomException() {
+  public ModularWorldException() {
   }
 
-  public CustomException(String arg0) {
+  public ModularWorldException(String arg0) {
     super(getString(arg0));
   }
 
-  public CustomException(Throwable arg0) {
+  public ModularWorldException(Throwable arg0) {
     super(getString(null), arg0);
   }
 
-  public CustomException(String arg0, Throwable arg1) {
+  public ModularWorldException(String arg0, Throwable arg1) {
     super(getString(arg0), arg1);
   }
 
-  public CustomException(String arg0, Throwable arg1, boolean arg2, boolean arg3) {
+  public ModularWorldException(String arg0, Throwable arg1, boolean arg2, boolean arg3) {
     super(getString(arg0), arg1, arg2, arg3);
   }
 
-  public static String getString(String suffix) {
+  private static String getString(String suffix) {
     if (suffix == null) {
       suffix = "";
     }
@@ -33,7 +33,7 @@ public class CustomException extends RuntimeException {
     Class<?> c;
     try {
       c = Class.forName(stackTrace[3].getClassName());
-      return c.getSimpleName() + ": " + suffix;
+      return c.getSimpleName() + "Exception: " + suffix;
     } catch (ClassNotFoundException e) {
 
     }

@@ -1,4 +1,4 @@
-package ethanjones.modularworld.event.timing;
+package ethanjones.modularworld.core.timing;
 
 public interface TimeHandler {
 
