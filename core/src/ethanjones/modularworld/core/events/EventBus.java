@@ -5,11 +5,13 @@ import ethanjones.modularworld.core.ModularWorldException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class EventBus {
 
   private HashMap<Class<? extends Event>, List<EventHandlerWrapper>> data = new HashMap<Class<? extends Event>, List<EventHandlerWrapper>>();
+  private List<EventHandlerWrapper> allEventHandlerWrappers = new ArrayList<EventHandlerWrapper>();
 
   public EventBus register(Object instance) {
     try {
@@ -30,6 +32,16 @@ public class EventBus {
     return this;
   }
 
+  public void invalidate(Object object) {
+    Iterator<EventHandlerWrapper> iterator = allEventHandlerWrappers.iterator();
+    while (iterator.hasNext()) {
+      EventHandlerWrapper next = iterator.next();
+      if (next.equals(object)) {
+        next.invalidate();
+      }
+    }
+  }
+
   public EventBus register(Class<?> event, EventHandlerWrapper eventHandlerWrapper) {
     List<EventHandlerWrapper> eventHandlerWrappers = data.get(event);
     if (eventHandlerWrappers == null) {
@@ -45,9 +57,13 @@ public class EventBus {
     while (eventClass != null) {
       List<EventHandlerWrapper> eventHandlerWrappers = data.get(eventClass);
       if (eventHandlerWrappers != null && !eventHandlerWrappers.isEmpty()) {
-        for (EventHandlerWrapper eventHandlerWrapper : eventHandlerWrappers) {
+        Iterator<EventHandlerWrapper> iterator = eventHandlerWrappers.iterator();
+        while (iterator.hasNext()) {
+          EventHandlerWrapper eventHandlerWrapper = iterator.next();
           try {
-            eventHandlerWrapper.run(event);
+            if (eventHandlerWrapper.run(event)) {
+              iterator.remove();
+            }
           } catch (ReflectiveOperationException exception) {
             throw new ModularWorldException("Failed to reflect", exception);
           }
@@ -66,14 +82,27 @@ public class EventBus {
   public static class EventHandlerWrapper {
     public final Method method;
     public final Object instance;
+    private boolean valid;
 
     public EventHandlerWrapper(Method method, Object instance) {
       this.method = method;
       this.instance = instance;
+      this.valid = true;
     }
 
-    public void run(Event event) throws ReflectiveOperationException {
-      method.invoke(instance, event);
+    public boolean run(Event event) throws ReflectiveOperationException {
+      if (valid) {
+        method.invoke(instance, event);
+      }
+      return !valid;
+    }
+
+    public boolean isValid() {
+      return valid;
+    }
+
+    public void invalidate() {
+      this.valid = false;
     }
   }
 

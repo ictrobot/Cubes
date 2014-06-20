@@ -1,6 +1,7 @@
 package ethanjones.modularworld.world;
 
 import ethanjones.modularworld.block.Block;
+import ethanjones.modularworld.block.rendering.BlockLocationCache;
 import ethanjones.modularworld.core.events.world.generation.GenerationEvent;
 import ethanjones.modularworld.world.coordinates.AreaCoordinates;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
@@ -12,12 +13,15 @@ import ethanjones.modularworld.world.storage.Zone;
 public class World {
 
   public final static int WORLD_RADIUS_ZONES = 1000;
-  public Zone[][] zones = new Zone[WORLD_RADIUS_ZONES * 2][WORLD_RADIUS_ZONES * 2];
   public final static int HEIGHT_LIMIT = Zone.TotalS;
+
+  public Zone[][] zones = new Zone[WORLD_RADIUS_ZONES * 2][WORLD_RADIUS_ZONES * 2];
   public final WorldGenerator gen;
+  public final BlockLocationCache blockLocationCache;
 
   public World(WorldGenerator gen) {
     this.gen = gen;
+    blockLocationCache = new BlockLocationCache();
   }
 
   public Zone getZone(int x, int y, int z) {
@@ -55,6 +59,10 @@ public class World {
 
   public Block getBlock(int x, int y, int z) {
     return getArea(x, y, z).getBlock(x, y, z);
+  }
+
+  public void dispose() {
+    blockLocationCache.dispose();
   }
 
 }

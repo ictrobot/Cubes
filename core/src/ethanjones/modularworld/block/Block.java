@@ -28,6 +28,13 @@ public class Block {
     return factory.getRenderer(data);
   }
 
+  public boolean equals(Object o) {
+    if (o instanceof Block) {
+      return ((Block) o).data.equals(this.data) && ((Block) o).factory.equals(this.factory);
+    }
+    return false;
+  }
+
   public static boolean isCovered(int x, int y, int z) {
     if (ModularWorld.instance.world.getBlock(x + 1, y, z) == null) {
       return false;

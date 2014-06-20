@@ -86,6 +86,7 @@ public class ModularWorld implements ApplicationListener {
   @Override
   public void dispose() {
     renderer.dispose();
+    world.dispose();
   }
 
 }
