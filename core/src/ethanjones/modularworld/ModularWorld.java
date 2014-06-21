@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import ethanjones.modularworld.block.factory.BlockFactories;
 import ethanjones.modularworld.core.Branding;
 import ethanjones.modularworld.core.compatibility.Compatibility;
+import ethanjones.modularworld.core.debug.Debug;
 import ethanjones.modularworld.core.events.EventBus;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.core.settings.Settings;
@@ -67,10 +68,12 @@ public class ModularWorld implements ApplicationListener {
 
   @Override
   public void render() {
+    long currentTimeMillis = System.currentTimeMillis();
     timing.update();
     inputChain.beforeRender();
     renderer.render();
     inputChain.afterRender();
+    Debug.renderingLoop(System.currentTimeMillis() - currentTimeMillis);
   }
 
   @Override

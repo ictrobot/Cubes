@@ -2,8 +2,10 @@ package ethanjones.modularworld.input;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.math.Vector3;
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.core.debug.Debug;
+import ethanjones.modularworld.core.events.entity.living.player.PlayerMovementEvent;
 import ethanjones.modularworld.entity.living.player.Player;
 
 public class MovementHandler {
@@ -46,5 +48,12 @@ public class MovementHandler {
     camera.position.set(player.position.x, player.position.y, player.position.z);
     camera.direction.y = ((float) ModularWorld.instance.player.angleY - 180f) / 90f;
     camera.rotate(ModularWorld.instance.player.movementHandler.deltaAngleX, 0, 1, 0);
+  }
+
+  public void updatePosition(Vector3 vector3) {
+    if (new PlayerMovementEvent().post()) {
+      player.position.set(vector3);
+      ModularWorld.instance.world.playerChangedPosition();
+    }
   }
 }

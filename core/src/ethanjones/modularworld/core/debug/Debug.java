@@ -1,11 +1,13 @@
 package ethanjones.modularworld.core.debug;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.core.ModularWorldException;
 import ethanjones.modularworld.core.util.LongAverage;
-import ethanjones.modularworld.world.coordinates.Coordinates;
+import ethanjones.modularworld.world.coordinates.AreaCoordinates;
+import ethanjones.modularworld.world.coordinates.BlockCoordinates;
 
 import java.util.EnumMap;
 
@@ -15,6 +17,7 @@ public class Debug {
   static LongAverage blockRenderer = new LongAverage();
   static LongAverage hudRenderer = new LongAverage();
   static LongAverage renderer = new LongAverage();
+  static LongAverage renderingLoop = new LongAverage();
   private static EnumMap<DebugType, String> debug = new EnumMap<DebugType, String>(DebugType.class);
 
   static {
@@ -38,16 +41,27 @@ public class Debug {
   }
 
   public static void position() {
-    Coordinates coordinates = new Coordinates(ModularWorld.instance.player.position);
-    set(DebugType.coordinates, new StringBuilder().append("  X:").append(String.format("%.2f", coordinates.x)).append(" Y:").append(String.format("%.2f", coordinates.y)).append(" Z:").append(String.format("%.2f", coordinates.z)).toString());
-    set(DebugType.areaCoordinates, new StringBuilder().append("A X:").append(coordinates.areaX).append(" Y:").append(coordinates.areaY).append(" Z:").append(coordinates.areaZ).toString());
-    set(DebugType.zoneCoordinates, new StringBuilder().append("Z X:").append(coordinates.zoneX).append(" Z:").append(coordinates.zoneZ).toString());
+    Vector3 p = ModularWorld.instance.player.position;
+    set(DebugType.coordinates, new StringBuilder().append("  X:").append(String.format("%.2f", p.x)).append(" Y:").append(String.format("%.2f", p.y)).append(" Z:").append(String.format("%.2f", p.z)).toString());
+    set(DebugType.areaCoordinates, new StringBuilder().append("A X:").append(BlockCoordinates.area((int) Math.ceil(p.x))).append(" Y:").append(BlockCoordinates.area((int) Math.ceil(p.y))).append(" Z:").append(BlockCoordinates.area((int) Math.ceil(p.z))).toString());
+    set(DebugType.zoneCoordinates, new StringBuilder().append("Z X:").append(AreaCoordinates.zone((int) Math.ceil(p.x))).append(" Z:").append(AreaCoordinates.zone((int) Math.ceil(p.z))).toString());
   }
 
   public static void fps() {
     fps.add(Gdx.graphics.getFramesPerSecond());
     StringBuilder s = new StringBuilder().append("FPS:").append(Gdx.graphics.getFramesPerSecond()).append(" AFPS:").append(fps.getAverage());
     set(DebugType.fps, s.toString());
+  }
+
+  public static void renderingLoop(long t) {
+    renderingLoop.add(t);
+    set(DebugType.renderingLoop, new StringBuilder().append("T MS:").append(String.format("%03d", t)).append(" AMS:").append(String.format("%03d", renderingLoop.getAverage())).toString());
+  }
+
+  public static void renderer(long t) {
+    renderer.add(t);
+    set(DebugType.renderingAll, new StringBuilder().append("R MS:").append(String.format("%03d", t)).append(" AMS:").append(String.format("%03d", renderer.getAverage())).toString());
+    Debug.fps();
   }
 
   public static void blockRenderer(long t, int renderedNum, int renderedChunks, int totalChunks) {
@@ -60,11 +74,6 @@ public class Debug {
     set(DebugType.renderingHud, new StringBuilder().append("H MS:").append(String.format("%03d", t)).append(" AMS:").append(String.format("%03d", hudRenderer.getAverage())).toString());
   }
 
-  public static void renderer(long t) {
-    renderer.add(t);
-    set(DebugType.renderingTotal, new StringBuilder().append("T MS:").append(String.format("%03d", t)).append(" AMS:").append(String.format("%03d", renderer.getAverage())).toString());
-    Debug.fps();
-  }
 
   public static void facing() {
     set(DebugType.direction, ModularWorld.instance.player.angleX + " " + ModularWorld.instance.player.angleY);

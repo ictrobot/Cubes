@@ -1,19 +1,18 @@
 package ethanjones.modularworld.world.storage;
 
+import static ethanjones.modularworld.core.util.Maths.fastPositive;
+
 public class Zone {
 
-  public static final int S = 16;
-  public static final int TotalS = Zone.S * Area.S;
-
+  public static final int SIZE_AREAS = 16;
+  public static final int SIZE_BLOCKS = Zone.SIZE_AREAS * Area.SIZE_BLOCKS;
+  private Area[][][] areas = new Area[SIZE_AREAS][SIZE_AREAS][SIZE_AREAS];
   public final int x;
   public final int z;
-
   public final int maxBlockX;
   public final int maxBlockZ;
   public final int minBlockX;
   public final int minBlockZ;
-
-  private Area[][][] areas = new Area[S][S][S];
 
   /**
    * In zone coords
@@ -23,23 +22,23 @@ public class Zone {
     this.x = x;
     this.z = z;
 
-    maxBlockX = ((x + 1) * S) - 1;
-    maxBlockZ = ((z + 1) * S) - 1;
-    minBlockX = x * S;
-    minBlockZ = z * S;
+    maxBlockX = ((x + 1) * SIZE_AREAS) - 1;
+    maxBlockZ = ((z + 1) * SIZE_AREAS) - 1;
+    minBlockX = x * SIZE_AREAS;
+    minBlockZ = z * SIZE_AREAS;
   }
 
   /**
    * Area coords
    */
   public Area getArea(int x, int y, int z) {
-    return areas[Math.abs(x % Zone.S)][Math.abs(y % Zone.S)][Math.abs(z % Zone.S)];
+    return areas[fastPositive(x % Zone.SIZE_AREAS)][fastPositive(y % Zone.SIZE_AREAS)][fastPositive(z % Zone.SIZE_AREAS)];
   }
 
   /**
    * Area coords
    */
   public void setArea(Area area) {
-    areas[Math.abs(area.x % Zone.S)][Math.abs(area.y % Zone.S)][Math.abs(area.z % Zone.S)] = area;
+    areas[fastPositive(area.x % Zone.SIZE_AREAS)][fastPositive(area.y % Zone.SIZE_AREAS)][fastPositive(area.z % Zone.SIZE_AREAS)] = area;
   }
 }

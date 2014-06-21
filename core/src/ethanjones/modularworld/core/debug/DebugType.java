@@ -9,7 +9,8 @@ public enum DebugType {
   zoneCoordinates,
   direction,
   blank2,
-  renderingTotal,
+  renderingLoop,
+  renderingAll,
   renderingBlock,
   renderingHud
 }

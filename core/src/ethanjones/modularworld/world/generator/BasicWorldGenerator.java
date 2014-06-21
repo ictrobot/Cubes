@@ -9,8 +9,8 @@ public class BasicWorldGenerator extends WorldGenerator {
   @Override
   public void generate(Area area) {
     if (area.y == 0) {
-      for (int x = 0; x < Area.S; x++) {
-        for (int z = 0; z < Area.S; z++) {
+      for (int x = 0; x < Area.SIZE_BLOCKS; x++) {
+        for (int z = 0; z < Area.SIZE_BLOCKS; z++) {
           area.setBlock(BlockFactories.bedrock.getBlock(new ByteData()), x, 0, z);
           area.setBlock(BlockFactories.stone.getBlock(new ByteData()), x, 1, z);
           area.setBlock(BlockFactories.stone.getBlock(new ByteData()), x, 2, z);

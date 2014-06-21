@@ -19,11 +19,11 @@ public class BlockCoordinates extends AreaCoordinates {
     this.blockZ = blockZ;
   }
 
-  private static int area(int block) {
+  public static int area(int block) {
     if (block >= 0) {
-      return block / Area.S;
+      return block / Area.SIZE_BLOCKS;
     } else {
-      return (block - Area.S) / Area.S;
+      return (block - Area.SIZE_BLOCKS) / Area.SIZE_BLOCKS;
     }
   }
 
