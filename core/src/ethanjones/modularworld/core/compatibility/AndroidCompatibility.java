@@ -13,6 +13,6 @@ public class AndroidCompatibility extends Compatibility {
 
   @EventHandler
   public void compatibilitySettings(AfterProcessSettingEvent event) {
-    Settings.renderer_block_viewDistance.getIntegerSetting().setValue(1);
+    Settings.renderer_block_viewDistance.getIntegerSetting().setValue(0);
   }
 }

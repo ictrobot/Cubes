@@ -57,9 +57,9 @@ public class BlockRenderer {
     int renderedChunks = 0;
     int totalChunks = 0;
     BlockCoordinates pos = new BlockCoordinates(ModularWorld.instance.player.position.x, ModularWorld.instance.player.position.y, ModularWorld.instance.player.position.z);
-    for (int areaX = pos.areaX - renderDistance; areaX < pos.areaX + renderDistance; areaX++) {
-      for (int areaY = pos.areaY - renderDistance; areaY < pos.areaY + renderDistance; areaY++) {
-        for (int areaZ = pos.areaZ - renderDistance; areaZ < pos.areaZ + renderDistance; areaZ++) {
+    for (int areaX = pos.areaX - renderDistance; areaX <= pos.areaX + renderDistance; areaX++) {
+      for (int areaY = pos.areaY - renderDistance; areaY <= pos.areaY + renderDistance; areaY++) {
+        for (int areaZ = pos.areaZ - renderDistance; areaZ <= pos.areaZ + renderDistance; areaZ++) {
           if (areaY < 0) {
             continue;
           }

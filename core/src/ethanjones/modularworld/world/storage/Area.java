@@ -45,7 +45,10 @@ public class Area {
 
   public void setBlock(Block block, int x, int y, int z) {
     if (new SetBlockEvent(new BlockCoordinates(x, y, z), block).post()) {
-      blocks[Math.abs(x % S)][Math.abs(y % S)][Math.abs(z % S)] = block;
+      if (x < 0) x = -x;
+      if (y < 0) y = -y;
+      if (z < 0) z = -z;
+      blocks[x % S][y % S][z % S] = block;
     }
   }
 }
