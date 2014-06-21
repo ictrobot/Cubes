@@ -7,10 +7,10 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Frustum;
 import ethanjones.modularworld.ModularWorld;
-import ethanjones.modularworld.block.Block;
 import ethanjones.modularworld.core.debug.Debug;
 import ethanjones.modularworld.core.settings.Settings;
 import ethanjones.modularworld.world.AreaReference;
+import ethanjones.modularworld.world.rendering.RenderArea;
 import ethanjones.modularworld.world.storage.Area;
 
 public class BlockRenderer {
@@ -50,7 +50,6 @@ public class BlockRenderer {
     int renderDistance = Settings.renderer_block_viewDistance.getIntegerSetting().getValue();
 
     long l = System.currentTimeMillis();
-    int rendered = 0;
     int renderedChunks = 0;
     int totalChunks = 0;
     AreaReference pos = ModularWorld.instance.world.playerArea;
@@ -66,13 +65,12 @@ public class BlockRenderer {
             continue;
           }
           renderedChunks++;
-          for (int x = 0; x < Area.SIZE_BLOCKS; x++) {
-            for (int y = 0; y < Area.SIZE_BLOCKS; y++) {
-              for (int z = 0; z < Area.SIZE_BLOCKS; z++) {
-                Block b = area.getBlock(x, y, z);
-                if (b != null) {
-                  rendered += b.getRenderer().render(renderer.modelBatch, lights, camera, x + area.minBlockX, y + area.minBlockY, z + area.minBlockZ);
-                }
+          for (int x = 0; x < Area.SIZE_RENDER_AREA; x++) {
+            for (int y = 0; y < Area.SIZE_RENDER_AREA; y++) {
+              for (int z = 0; z < Area.SIZE_RENDER_AREA; z++) {
+                RenderArea renderArea = area.renderAreas[x][y][z];
+                renderArea.render(renderer.modelBatch, camera, area, area.minBlockX + (x * RenderArea.SIZE_BLOCKS), area.minBlockY + (y * RenderArea.SIZE_BLOCKS), area.minBlockZ + (z * RenderArea.SIZE_BLOCKS));
+                renderer.modelBatch.render(renderArea, lights);
               }
             }
           }
@@ -80,7 +78,7 @@ public class BlockRenderer {
       }
     }
     long t = System.currentTimeMillis() - l;
-    Debug.blockRenderer(t, rendered, renderedChunks, totalChunks);
+    Debug.blockRenderer(t, 0, renderedChunks, totalChunks);
   }
 
   public boolean areaInFrustum(Area area, Frustum frustum) {
