@@ -18,7 +18,7 @@ public class BlockRenderer {
   public static int RENDER_DISTANCE_MAX = 10;
   public static int RENDER_DISTANCE_MIN = 1;
 
-  public Environment lights;
+  public Environment environment;
   public PerspectiveCamera camera;
 
   private Renderer renderer;
@@ -26,9 +26,9 @@ public class BlockRenderer {
   public BlockRenderer(Renderer renderer) {
     this.renderer = renderer;
 
-    lights = new Environment();
-    lights.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
-    lights.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
+    environment = new Environment();
+    environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
+    environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 
     setupCamera();
 
@@ -52,6 +52,7 @@ public class BlockRenderer {
     long l = System.currentTimeMillis();
     int renderedChunks = 0;
     int totalChunks = 0;
+    RenderArea.setup(renderer.gameBatch);
     AreaReference pos = ModularWorld.instance.world.playerArea;
     for (int areaX = pos.areaX - renderDistance; areaX <= pos.areaX + renderDistance; areaX++) {
       for (int areaY = pos.areaY - renderDistance; areaY <= pos.areaY + renderDistance; areaY++) {
@@ -69,8 +70,8 @@ public class BlockRenderer {
             for (int y = 0; y < Area.SIZE_RENDER_AREA; y++) {
               for (int z = 0; z < Area.SIZE_RENDER_AREA; z++) {
                 RenderArea renderArea = area.renderAreas[x][y][z];
-                renderArea.render(renderer.modelBatch, camera, area, area.minBlockX + (x * RenderArea.SIZE_BLOCKS), area.minBlockY + (y * RenderArea.SIZE_BLOCKS), area.minBlockZ + (z * RenderArea.SIZE_BLOCKS));
-                renderer.modelBatch.render(renderArea, lights);
+                renderArea.render(camera, area, area.minBlockX + (x * RenderArea.SIZE_BLOCKS), area.minBlockY + (y * RenderArea.SIZE_BLOCKS), area.minBlockZ + (z * RenderArea.SIZE_BLOCKS));
+                renderer.gameBatch.render(renderArea, environment);
               }
             }
           }

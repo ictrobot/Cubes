@@ -3,7 +3,6 @@ package ethanjones.modularworld.block.rendering;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.core.util.Direction;
 import ethanjones.modularworld.graphics.GameModel;
@@ -60,28 +59,28 @@ public class FullCubeRenderHandler implements BlockRenderHandler {
   }
 
   @Override
-  public void render(RenderArea renderArea, ModelBatch modelBatch, Camera camera, int x, int y, int z) {
+  public void render(RenderArea renderArea, Camera camera, int x, int y, int z) {
     World world = ModularWorld.instance.world;
 
     if (world.getBlock(x + 1, y, z) == null) {
-      renderArea.add(posX, new RenderArea.RenderPosition(x, y, z));
+      renderArea.add(posX.setPos(x, y, z));
     }
     if (world.getBlock(x - 1, y, z) == null) {
-      renderArea.add(negX, new RenderArea.RenderPosition(x, y, z));
+      renderArea.add(negX.setPos(x, y, z));
     }
 
     if (y != World.HEIGHT_LIMIT && world.getBlock(x, y + 1, z) == null) {
-      renderArea.add(posY, new RenderArea.RenderPosition(x, y, z));
+      renderArea.add(posY.setPos(x, y, z));
     }
     if (y != 0 && world.getBlock(x, y - 1, z) == null) {
-      renderArea.add(negX, new RenderArea.RenderPosition(x, y, z));
+      renderArea.add(negX.setPos(x, y, z));
     }
 
     if (world.getBlock(x, y, z + 1) == null) {
-      renderArea.add(posZ, new RenderArea.RenderPosition(x, y, z));
+      renderArea.add(posZ.setPos(x, y, z));
     }
     if (world.getBlock(x, y, z - 1) == null) {
-      renderArea.add(negZ, new RenderArea.RenderPosition(x, y, z));
+      renderArea.add(negZ.setPos(x, y, z));
     }
   }
 }

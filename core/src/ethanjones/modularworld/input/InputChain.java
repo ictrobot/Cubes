@@ -21,6 +21,7 @@ public class InputChain extends InputMultiplexer {
   }
 
   public void beforeRender() {
+    ModularWorld.instance.player.movementHandler.updatePosition();
     game.updateTouch();
     Debug.position();
   }

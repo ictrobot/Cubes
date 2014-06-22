@@ -2,20 +2,20 @@ package ethanjones.modularworld.graphics.rendering;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import ethanjones.modularworld.core.debug.Debug;
+import ethanjones.modularworld.graphics.GameBatch;
 
 public class Renderer {
 
-  public ModelBatch modelBatch;
+  public GameBatch gameBatch;
   public ModelBuilder modelBuilder;
 
   public BlockRenderer block;
   public HudRenderer hud;
 
   public Renderer() {
-    modelBatch = new ModelBatch();
+    gameBatch = new GameBatch();
     modelBuilder = new ModelBuilder();
 
     block = new BlockRenderer(this);
@@ -28,9 +28,9 @@ public class Renderer {
     Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-    modelBatch.begin(block.camera);
+    gameBatch.begin(block.camera);
     block.render();
-    modelBatch.end();
+    gameBatch.end();
     hud.render();
 
     long t = System.currentTimeMillis() - l;
@@ -38,7 +38,7 @@ public class Renderer {
   }
 
   public void dispose() {
-    modelBatch.dispose();
+    gameBatch.dispose();
   }
 
   public void resize() {
