@@ -3,6 +3,7 @@ package ethanjones.modularworld.world.storage;
 import ethanjones.modularworld.block.Block;
 import ethanjones.modularworld.core.events.world.block.SetBlockEvent;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
+import ethanjones.modularworld.world.rendering.AreaRenderer;
 import ethanjones.modularworld.world.rendering.RenderArea;
 
 import static ethanjones.modularworld.core.util.Maths.fastPositive;
@@ -24,8 +25,8 @@ public class Area {
   public final int minBlockX;
   public final int minBlockY;
   public final int minBlockZ;
-  public RenderArea[][][] renderAreas;
   public boolean generated = false;
+  public AreaRenderer areaRenderer;
   private Block[][][] blocks;
 
   /**
@@ -35,17 +36,6 @@ public class Area {
     this.x = x;
     this.y = y;
     this.z = z;
-
-    blocks = new Block[SIZE_BLOCKS][SIZE_BLOCKS][SIZE_BLOCKS];
-    renderAreas = new RenderArea[SIZE_RENDER_AREA][SIZE_RENDER_AREA][SIZE_RENDER_AREA];
-    for (int rX = 0; rX < SIZE_RENDER_AREA; rX++) {
-      for (int rY = 0; rY < SIZE_RENDER_AREA; rY++) {
-        for (int rZ = 0; rZ < SIZE_RENDER_AREA; rZ++) {
-          renderAreas[rX][rY][rZ] = new RenderArea();
-        }
-      }
-    }
-
     maxBlockX = ((x + 1) * SIZE_BLOCKS) - 1;
     maxBlockY = ((y + 1) * SIZE_BLOCKS) - 1;
     maxBlockZ = ((z + 1) * SIZE_BLOCKS) - 1;
@@ -55,6 +45,9 @@ public class Area {
     cenBlockX = (float) (maxBlockX + minBlockX) / 2f;
     cenBlockY = (float) (maxBlockY + minBlockY) / 2f;
     cenBlockZ = (float) (maxBlockZ + minBlockZ) / 2f;
+
+    blocks = new Block[SIZE_BLOCKS][SIZE_BLOCKS][SIZE_BLOCKS];
+    areaRenderer = new AreaRenderer(this);
   }
 
   public Block getBlock(int x, int y, int z) {
