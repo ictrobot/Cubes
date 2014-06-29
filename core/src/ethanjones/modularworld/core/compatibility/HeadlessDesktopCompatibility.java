@@ -8,4 +8,8 @@ public class HeadlessDesktopCompatibility extends DesktopCompatibility {
     super(Application.ApplicationType.HeadlessDesktop);
   }
 
+  public boolean isHeadless() {
+    return true;
+  }
+
 }

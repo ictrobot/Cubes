@@ -27,4 +27,8 @@ public abstract class Compatibility {
     }
   }
 
+  public boolean isHeadless() {
+    return false;
+  }
+
 }

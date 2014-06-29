@@ -18,7 +18,7 @@ allprojects {
     version = System.getenv("BUILD_NUMBER")
     ext {
         appName = 'Modular World'
-        gdxVersion = '1.1.0'
+        gdxVersion = '1.2.0'
         roboVMVersion = '0.0.13'
     }
 

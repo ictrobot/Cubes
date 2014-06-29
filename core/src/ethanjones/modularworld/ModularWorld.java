@@ -46,15 +46,18 @@ public class ModularWorld implements ApplicationListener {
 
     BlockFactories.init();
 
-    inputChain = new InputChain();
-
-    renderer = new Renderer();
-    BlockFactories.loadGraphics();
+    if (!compatibility.isHeadless()) {
+      inputChain = new InputChain();
+      renderer = new Renderer();
+      BlockFactories.loadGraphics();
+    }
 
     world = new World(new BasicWorldGenerator());
 
-    Gdx.input.setInputProcessor(inputChain.init());
-    Gdx.input.setCursorCatched(true);
+    if (!compatibility.isHeadless()) {
+      Gdx.input.setInputProcessor(inputChain.init());
+      Gdx.input.setCursorCatched(true);
+    }
 
     settings = new SettingsManager();
     Settings.processAll();
@@ -63,17 +66,21 @@ public class ModularWorld implements ApplicationListener {
 
   @Override
   public void resize(int width, int height) {
-    renderer.resize();
+    if (!compatibility.isHeadless()) {
+      renderer.resize();
+    }
   }
 
   @Override
   public void render() {
     long currentTimeMillis = System.currentTimeMillis();
     timing.update();
-    inputChain.beforeRender();
-    renderer.render();
-    inputChain.afterRender();
-    Debug.renderingLoop(System.currentTimeMillis() - currentTimeMillis);
+    if (!compatibility.isHeadless()) {
+      inputChain.beforeRender();
+      renderer.render();
+      inputChain.afterRender();
+      Debug.renderingLoop(System.currentTimeMillis() - currentTimeMillis);
+    }
   }
 
   @Override
@@ -88,7 +95,9 @@ public class ModularWorld implements ApplicationListener {
 
   @Override
   public void dispose() {
-    renderer.dispose();
+    if (!compatibility.isHeadless()) {
+      renderer.dispose();
+    }
     world.dispose();
   }
 
