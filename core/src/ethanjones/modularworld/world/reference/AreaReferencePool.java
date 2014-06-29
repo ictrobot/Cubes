@@ -8,8 +8,4 @@ public class AreaReferencePool extends Pool<AreaReference> {
   protected AreaReference newObject() {
     return new AreaReference();
   }
-
-  public AreaReference obtain() {
-    return super.obtain().clear();
-  }
 }

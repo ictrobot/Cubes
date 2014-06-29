@@ -3,7 +3,9 @@ package ethanjones.modularworld.graphics.rendering;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import ethanjones.modularworld.core.debug.Debug;
+import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.graphics.GameBatch;
 
 public class Renderer {
@@ -14,7 +16,17 @@ public class Renderer {
   public BlockRenderer block;
   public HudRenderer hud;
 
+  public static boolean PROFILING = true;
+  public int calls;
+  public int drawCalls;
+  public int shaderSwitches;
+  public int textureBindings;
+
   public Renderer() {
+    if (PROFILING) {
+      GLProfiler.enable();
+    }
+
     gameBatch = new GameBatch();
     modelBuilder = new ModelBuilder();
 
@@ -35,9 +47,29 @@ public class Renderer {
 
     long t = System.currentTimeMillis() - l;
     Debug.renderer(t);
+
+    if (PROFILING) {
+      Log.debug("----------------------------------------");
+      Log.debug("Calls:             " + GLProfiler.calls);
+      Log.debug("DrawCalls:         " + GLProfiler.drawCalls);
+      Log.debug("Shader Switches:   " + GLProfiler.shaderSwitches);
+      Log.debug("Texture Bindings:  " + GLProfiler.textureBindings);
+      Log.debug("DELTA");
+      Log.debug("Calls:             " + (GLProfiler.calls - calls));
+      Log.debug("DrawCalls:         " + (GLProfiler.drawCalls - drawCalls));
+      Log.debug("Shader Switches:   " + (GLProfiler.shaderSwitches - shaderSwitches));
+      Log.debug("Texture Bindings:  " + (GLProfiler.textureBindings - textureBindings));
+      Log.debug("CURRENT");
+      Log.debug("Vertex Count:      " + GLProfiler.vertexCount.latest);
+      calls = GLProfiler.calls;
+      drawCalls = GLProfiler.drawCalls;
+      shaderSwitches = GLProfiler.shaderSwitches;
+      textureBindings = GLProfiler.textureBindings;
+    }
   }
 
   public void dispose() {
+    GLProfiler.disable();
     gameBatch.dispose();
   }
 

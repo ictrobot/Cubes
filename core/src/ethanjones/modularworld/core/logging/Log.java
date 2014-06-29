@@ -101,7 +101,7 @@ public class Log {
 
     Class<?> c;
     try {
-      c = Class.forName(stackTrace[2].getClassName());
+      c = Class.forName(stackTrace[3].getClassName());
       return c.getSimpleName();
     } catch (ClassNotFoundException e) {
 

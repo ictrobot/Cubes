@@ -1,11 +1,12 @@
 package ethanjones.modularworld.world.reference;
 
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Pool;
 import ethanjones.modularworld.world.coordinates.AreaCoordinates;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
 import ethanjones.modularworld.world.storage.Area;
 
-public class AreaReference {
+public class AreaReference implements Pool.Poolable {
 
   public int areaX;
   public int areaY;
@@ -70,4 +71,8 @@ public class AreaReference {
     return new Area(areaX, areaY, areaZ);
   }
 
+  @Override
+  public void reset() {
+    clear();
+  }
 }
