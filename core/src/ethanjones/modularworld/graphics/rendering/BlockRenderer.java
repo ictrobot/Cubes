@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Frustum;
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.core.debug.Debug;
 import ethanjones.modularworld.core.settings.Settings;
-import ethanjones.modularworld.world.AreaReference;
+import ethanjones.modularworld.world.reference.AreaReference;
 import ethanjones.modularworld.world.rendering.RenderArea;
 import ethanjones.modularworld.world.storage.Area;
 
@@ -74,7 +74,7 @@ public class BlockRenderer {
               }
             }
           }
-          renderer.gameBatch.render(area.areaRenderer, environment);
+          renderer.gameBatch.render(area.areaRenderer.setCamera(camera), environment);
         }
       }
     }

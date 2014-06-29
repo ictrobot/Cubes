@@ -3,6 +3,7 @@ package ethanjones.modularworld.world.rendering;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
+import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import ethanjones.modularworld.block.Block;
@@ -48,7 +49,6 @@ public class RenderArea {
         }
       }
     }
-    parent.rebuildArray();
   }
 
   public void add(GameModel gameModel) {
@@ -66,5 +66,9 @@ public class RenderArea {
 
   public boolean isEmpty() {
     return data.size == 0;
+  }
+
+  public boolean inFrustum(Frustum frustum) {
+    return frustum.boundsInFrustum(cenBlockX, cenBlockY, cenBlockZ, HALF_SIZE_BLOCKS, HALF_SIZE_BLOCKS, HALF_SIZE_BLOCKS);
   }
 }

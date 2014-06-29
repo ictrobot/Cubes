@@ -6,6 +6,8 @@ import ethanjones.modularworld.core.events.world.generation.GenerationEvent;
 import ethanjones.modularworld.world.coordinates.AreaCoordinates;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
 import ethanjones.modularworld.world.generator.WorldGenerator;
+import ethanjones.modularworld.world.reference.AreaReference;
+import ethanjones.modularworld.world.reference.AreaReferencePool;
 import ethanjones.modularworld.world.storage.Area;
 import ethanjones.modularworld.world.storage.BlankArea;
 import ethanjones.modularworld.world.storage.Zone;

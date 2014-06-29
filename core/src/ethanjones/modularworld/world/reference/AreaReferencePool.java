@@ -1,4 +1,4 @@
-package ethanjones.modularworld.world;
+package ethanjones.modularworld.world.reference;
 
 import com.badlogic.gdx.utils.Pool;
 
