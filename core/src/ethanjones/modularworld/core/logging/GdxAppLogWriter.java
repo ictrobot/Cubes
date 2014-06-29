@@ -30,4 +30,9 @@ public class GdxAppLogWriter implements LogWriter {
         return Application.LOG_NONE;
     }
   }
+
+  @Override
+  public void dispose() {
+
+  }
 }

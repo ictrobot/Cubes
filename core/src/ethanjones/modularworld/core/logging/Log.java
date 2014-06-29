@@ -2,21 +2,28 @@ package ethanjones.modularworld.core.logging;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import ethanjones.modularworld.ModularWorld;
+
+import java.io.File;
 
 public class Log {
 
-  private static LogWriter logWriter;
+  private static LogWriter output;
+  private static LogWriter file;
 
   static {
-    logWriter = getLogWriter();
+    output = getLogWriter();
+    file = new FileLogWriter(new File(ModularWorld.instance.baseFolder, "log.txt"));
   }
 
   public static void log(LogLevel level, String tag, String message) {
-    logWriter.log(level, tag, message);
+    output.log(level, tag, message);
+    file.log(level, tag, message);
   }
 
   public static void log(LogLevel level, String tag, String message, Throwable throwable) {
-    logWriter.log(level, tag, message, throwable);
+    output.log(level, tag, message, throwable);
+    file.log(level, tag, message, throwable);
   }
 
   //ERROR
@@ -108,5 +115,10 @@ public class Log {
     }
 
     return "";
+  }
+
+  public static void dispose() {
+    output.dispose();
+    file.dispose();
   }
 }

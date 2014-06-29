@@ -14,11 +14,11 @@ public class SysOutLogWriter implements LogWriter {
 
   @Override
   public void log(LogLevel level, String tag, String message, Throwable throwable) {
-    System.out.println(getString(level, tag, message));
+    log(level, tag, message);
     throwable.printStackTrace(System.out);
   }
 
-  private String getString(LogLevel level, String tag, String message) {
+  protected static String getString(LogLevel level, String tag, String message) {
     StringBuilder stringBuilder = new StringBuilder();
     stringBuilder.append(dateFormat.format(new Date()));
     stringBuilder.append(" [");
@@ -28,5 +28,10 @@ public class SysOutLogWriter implements LogWriter {
     stringBuilder.append("] ");
     stringBuilder.append(message);
     return stringBuilder.toString();
+  }
+
+  @Override
+  public void dispose() {
+
   }
 }

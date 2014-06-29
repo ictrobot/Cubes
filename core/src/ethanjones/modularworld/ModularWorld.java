@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import ethanjones.modularworld.block.factory.BlockFactories;
 import ethanjones.modularworld.core.Branding;
+import ethanjones.modularworld.core.ModularWorldException;
 import ethanjones.modularworld.core.compatibility.Compatibility;
 import ethanjones.modularworld.core.debug.Debug;
 import ethanjones.modularworld.core.events.EventBus;
@@ -42,12 +43,15 @@ public class ModularWorld implements ApplicationListener {
   @Override
   public void create() {
     Log.info(Branding.NAME, Branding.DEBUG);
+    Debug.printProperties();
 
     eventBus = new EventBus().register(this);
     compatibility = Compatibility.getCompatibility();
 
     baseFolder = compatibility.getBaseFolder();
     Log.info("Base Folder: " + baseFolder.getAbsolutePath());
+
+    Log.info("i", "i", new ModularWorldException());
 
     player = new Player();
 

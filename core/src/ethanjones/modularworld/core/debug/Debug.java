@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.core.ModularWorldException;
+import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.core.util.LongAverage;
 import ethanjones.modularworld.world.coordinates.AreaCoordinates;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
@@ -89,5 +90,17 @@ public class Debug {
       }
     }
     return l;
+  }
+
+  public static void printProperties() {
+    Log.info("Properties", "Java Home:        " + System.getProperty("java.home"));
+    Log.info("Properties", "Java Vendor:      " + System.getProperty("java.vendor"));
+    Log.info("Properties", "Java Vendor URL:  " + System.getProperty("java.vendor.url"));
+    Log.info("Properties", "Java Version:     " + System.getProperty("java.version"));
+    Log.info("Properties", "OS Architecture:  " + System.getProperty("os.arch"));
+    Log.info("Properties", "OS Name:          " + System.getProperty("os.name"));
+    Log.info("Properties", "OS Version:       " + System.getProperty("os.version"));
+    Log.info("Properties", "User Directory:   " + System.getProperty("user.dir"));
+    Log.info("Properties", "User Home:        " + System.getProperty("user.home"));
   }
 }
