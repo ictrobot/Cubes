@@ -16,7 +16,7 @@ public class Renderer {
   public BlockRenderer block;
   public HudRenderer hud;
 
-  public static boolean PROFILING = true;
+  public static boolean PROFILING = false;
   public int calls;
   public int drawCalls;
   public int shaderSwitches;

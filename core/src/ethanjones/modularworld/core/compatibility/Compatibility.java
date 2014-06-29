@@ -5,6 +5,8 @@ import com.badlogic.gdx.Gdx;
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.core.ModularWorldException;
 
+import java.io.File;
+
 public abstract class Compatibility {
 
   public final Application.ApplicationType applicationType;
@@ -29,6 +31,10 @@ public abstract class Compatibility {
 
   public boolean isHeadless() {
     return false;
+  }
+
+  public File getBaseFolder() {
+    return new File(System.getProperty("user.dir"));
   }
 
 }

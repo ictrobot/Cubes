@@ -8,4 +8,5 @@ public class AreaReferencePool extends Pool<AreaReference> {
   protected AreaReference newObject() {
     return new AreaReference();
   }
+
 }

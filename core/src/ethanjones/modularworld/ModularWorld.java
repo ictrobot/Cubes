@@ -17,6 +17,8 @@ import ethanjones.modularworld.input.InputChain;
 import ethanjones.modularworld.world.World;
 import ethanjones.modularworld.world.generator.BasicWorldGenerator;
 
+import java.io.File;
+
 public class ModularWorld implements ApplicationListener {
 
   public static ModularWorld instance;
@@ -31,6 +33,8 @@ public class ModularWorld implements ApplicationListener {
   public SettingsManager settings;
   public Timing timing;
 
+  public File baseFolder;
+
   public ModularWorld() {
     ModularWorld.instance = this;
   }
@@ -41,6 +45,9 @@ public class ModularWorld implements ApplicationListener {
 
     eventBus = new EventBus().register(this);
     compatibility = Compatibility.getCompatibility();
+
+    baseFolder = compatibility.getBaseFolder();
+    Log.info("Base Folder: " + baseFolder.getAbsolutePath());
 
     player = new Player();
 
