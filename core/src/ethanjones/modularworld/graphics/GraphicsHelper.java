@@ -13,6 +13,7 @@ import ethanjones.modularworld.graphics.rendering.Renderer;
 public class GraphicsHelper {
 
   public static int usage = Usage.Position | Usage.Normal | Usage.TextureCoordinates;
+  public static Material test = loadBlock("Grass");
 
   public static Material load(String name) {
     Texture texture = new Texture(Gdx.files.internal(name));

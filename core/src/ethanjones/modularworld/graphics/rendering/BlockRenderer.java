@@ -66,15 +66,7 @@ public class BlockRenderer {
             continue;
           }
           renderedChunks++;
-          for (int x = 0; x < Area.SIZE_RENDER_AREA; x++) {
-            for (int y = 0; y < Area.SIZE_RENDER_AREA; y++) {
-              for (int z = 0; z < Area.SIZE_RENDER_AREA; z++) {
-                RenderArea renderArea = area.areaRenderer.renderAreas[x][y][z];
-                renderArea.render(camera, area, area.minBlockX + (x * RenderArea.SIZE_BLOCKS), area.minBlockY + (y * RenderArea.SIZE_BLOCKS), area.minBlockZ + (z * RenderArea.SIZE_BLOCKS));
-              }
-            }
-          }
-          renderer.gameBatch.render(area.areaRenderer.setCamera(camera), environment);
+          renderer.gameBatch.render(area.areaRenderer.setCamera(camera).get(), environment);
         }
       }
     }

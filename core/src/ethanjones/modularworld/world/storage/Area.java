@@ -13,6 +13,7 @@ public class Area {
   public static final int SIZE_BLOCKS = 32;
   public static final int HALF_SIZE_BLOCKS = SIZE_BLOCKS / 2;
   public static final int SIZE_RENDER_AREA = SIZE_BLOCKS / RenderArea.SIZE_BLOCKS;
+
   public final int x;
   public final int y;
   public final int z;
@@ -25,9 +26,11 @@ public class Area {
   public final int minBlockX;
   public final int minBlockY;
   public final int minBlockZ;
+
   public boolean generated = false;
   public AreaRenderer areaRenderer;
   private Block[][][] blocks;
+  public boolean modified;
 
   /**
    * In area coords
@@ -36,6 +39,7 @@ public class Area {
     this.x = x;
     this.y = y;
     this.z = z;
+    this.modified = false;
     maxBlockX = ((x + 1) * SIZE_BLOCKS) - 1;
     maxBlockY = ((y + 1) * SIZE_BLOCKS) - 1;
     maxBlockZ = ((z + 1) * SIZE_BLOCKS) - 1;
@@ -56,6 +60,7 @@ public class Area {
 
   public void setBlock(Block block, int x, int y, int z) {
     if (new SetBlockEvent(new BlockCoordinates(x, y, z), block).post()) {
+      modified = true;
       blocks[fastPositive(x % SIZE_BLOCKS)][fastPositive(y % SIZE_BLOCKS)][fastPositive(z % SIZE_BLOCKS)] = block;
     }
   }
