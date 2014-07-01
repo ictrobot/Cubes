@@ -10,13 +10,11 @@ import ethanjones.modularworld.graphics.GameBatch;
 
 public class Renderer {
 
+  public static boolean PROFILING = false;
   public GameBatch gameBatch;
   public ModelBuilder modelBuilder;
-
   public BlockRenderer block;
   public HudRenderer hud;
-
-  public static boolean PROFILING = false;
   public int calls;
   public int drawCalls;
   public int shaderSwitches;
@@ -37,8 +35,12 @@ public class Renderer {
   public void render() {
     long l = System.currentTimeMillis();
 
-    Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+    Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+    Gdx.gl20.glEnable(GL20.GL_DEPTH_TEST);
+    Gdx.gl20.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+    Gdx.gl20.glEnable(GL20.GL_CULL_FACE);
+    Gdx.gl20.glCullFace(GL20.GL_BACK);
 
     gameBatch.begin(block.camera);
     block.render();

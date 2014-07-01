@@ -1,4 +1,4 @@
-package ethanjones.modularworld.world.rendering;
+package ethanjones.modularworld.graphics.world;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Renderable;
@@ -13,8 +13,8 @@ public class AreaRenderer implements RenderableProvider {
 
   public RenderArea[][][] renderAreas;
   private Camera camera;
-  //private Array<Renderable> array;
-  //private boolean rebuildArray;
+  private Array<Renderable> array;
+  private boolean rebuild;
 
   public AreaRenderer(Area area) {
     renderAreas = new RenderArea[SIZE_RENDER_AREA][SIZE_RENDER_AREA][SIZE_RENDER_AREA];

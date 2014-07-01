@@ -1,10 +1,10 @@
 package ethanjones.modularworld.block.basic;
 
 import ethanjones.modularworld.block.factory.BlockFactory;
-import ethanjones.modularworld.block.rendering.BlockRenderHandler;
-import ethanjones.modularworld.block.rendering.FullCubeRenderHandler;
 import ethanjones.modularworld.core.data.ByteData;
 import ethanjones.modularworld.graphics.GraphicsHelper;
+import ethanjones.modularworld.graphics.block.BlockRenderHandler;
+import ethanjones.modularworld.graphics.block.FullCubeRenderHandler;
 
 public class BlockFactoryBasic extends BlockFactory {
 

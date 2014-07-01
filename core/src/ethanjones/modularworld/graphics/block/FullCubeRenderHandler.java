@@ -1,4 +1,4 @@
-package ethanjones.modularworld.block.rendering;
+package ethanjones.modularworld.graphics.block;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Material;
@@ -7,8 +7,8 @@ import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.core.util.Direction;
 import ethanjones.modularworld.graphics.GameModel;
 import ethanjones.modularworld.graphics.GraphicsHelper;
+import ethanjones.modularworld.graphics.world.RenderArea;
 import ethanjones.modularworld.world.World;
-import ethanjones.modularworld.world.rendering.RenderArea;
 
 public class FullCubeRenderHandler implements BlockRenderHandler {
 

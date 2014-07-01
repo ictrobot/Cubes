@@ -1,7 +1,7 @@
-package ethanjones.modularworld.block.rendering;
+package ethanjones.modularworld.graphics.block;
 
 import com.badlogic.gdx.graphics.Camera;
-import ethanjones.modularworld.world.rendering.RenderArea;
+import ethanjones.modularworld.graphics.world.RenderArea;
 
 public interface BlockRenderHandler {
 

@@ -2,9 +2,9 @@ package ethanjones.modularworld.world.storage;
 
 import ethanjones.modularworld.block.Block;
 import ethanjones.modularworld.core.events.world.block.SetBlockEvent;
+import ethanjones.modularworld.graphics.world.AreaRenderer;
+import ethanjones.modularworld.graphics.world.RenderArea;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
-import ethanjones.modularworld.world.rendering.AreaRenderer;
-import ethanjones.modularworld.world.rendering.RenderArea;
 
 import static ethanjones.modularworld.core.util.Maths.fastPositive;
 

@@ -1,4 +1,4 @@
-package ethanjones.modularworld.world.rendering;
+package ethanjones.modularworld.graphics.world;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Renderable;

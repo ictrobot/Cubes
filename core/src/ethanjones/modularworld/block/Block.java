@@ -1,8 +1,8 @@
 package ethanjones.modularworld.block;
 
 import ethanjones.modularworld.block.factory.BlockFactory;
-import ethanjones.modularworld.block.rendering.BlockRenderHandler;
 import ethanjones.modularworld.core.data.ByteData;
+import ethanjones.modularworld.graphics.block.BlockRenderHandler;
 
 /**
  * Actual Block in World

@@ -4,7 +4,6 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import ethanjones.modularworld.block.factory.BlockFactories;
 import ethanjones.modularworld.core.Branding;
-import ethanjones.modularworld.core.ModularWorldException;
 import ethanjones.modularworld.core.compatibility.Compatibility;
 import ethanjones.modularworld.core.debug.Debug;
 import ethanjones.modularworld.core.events.EventBus;
@@ -15,6 +14,7 @@ import ethanjones.modularworld.core.timing.Timing;
 import ethanjones.modularworld.entity.living.player.Player;
 import ethanjones.modularworld.graphics.rendering.Renderer;
 import ethanjones.modularworld.input.InputChain;
+import ethanjones.modularworld.networking.Networking;
 import ethanjones.modularworld.world.World;
 import ethanjones.modularworld.world.generator.BasicWorldGenerator;
 
@@ -51,8 +51,6 @@ public class ModularWorld implements ApplicationListener {
     baseFolder = compatibility.getBaseFolder();
     Log.info("Base Folder: " + baseFolder.getAbsolutePath());
 
-    Log.info("i", "i", new ModularWorldException());
-
     player = new Player();
 
     BlockFactories.init();
@@ -72,6 +70,9 @@ public class ModularWorld implements ApplicationListener {
 
     settings = new SettingsManager();
     Settings.processAll();
+
+    Networking.startServerNetworking();
+
     timing = new Timing();
   }
 
