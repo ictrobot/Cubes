@@ -1,6 +1,7 @@
 package ethanjones.modularworld.core.events;
 
 import ethanjones.modularworld.core.ModularWorldException;
+import ethanjones.modularworld.core.logging.Log;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class EventBus {
           if (parameterTypes.length == 1 && Event.class.isAssignableFrom(parameterTypes[0])) {
             register(parameterTypes[0], new EventHandlerWrapper(method, instance));
           } else {
-            throw new ModularWorldException("Invalid EventHandler method parameters");
+            Log.error(new ModularWorldException("Invalid EventHandler method parameters"));
           }
         }
       }
@@ -65,7 +66,7 @@ public class EventBus {
               iterator.remove();
             }
           } catch (ReflectiveOperationException exception) {
-            throw new ModularWorldException("Failed to reflect", exception);
+            Log.error(new ModularWorldException("Failed to reflect", exception));
           }
         }
       }

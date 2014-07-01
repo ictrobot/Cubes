@@ -2,10 +2,10 @@ package ethanjones.modularworld.core.compatibility;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.core.ModularWorldException;
-
-import java.io.File;
+import ethanjones.modularworld.core.logging.Log;
 
 public abstract class Compatibility {
 
@@ -25,7 +25,8 @@ public abstract class Compatibility {
       case HeadlessDesktop:
         return new HeadlessDesktopCompatibility();
       default:
-        throw new ModularWorldException("No Compatibility module for this platform: " + Gdx.app.getType().name());
+        Log.error(new ModularWorldException("No Compatibility module for this platform: " + Gdx.app.getType().name()));
+        return null;
     }
   }
 
@@ -33,8 +34,12 @@ public abstract class Compatibility {
     return false;
   }
 
-  public File getBaseFolder() {
-    return new File(System.getProperty("user.dir"));
+  public FileHandle getBaseFolder() {
+    return Gdx.files.absolute(System.getProperty("user.dir"));
+  }
+
+  public FileHandle getWorkingFolder() {
+    return Gdx.files.absolute(System.getProperty("user.dir"));
   }
 
 }

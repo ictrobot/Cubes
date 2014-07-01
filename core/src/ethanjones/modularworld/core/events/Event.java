@@ -2,6 +2,7 @@ package ethanjones.modularworld.core.events;
 
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.core.ModularWorldException;
+import ethanjones.modularworld.core.logging.Log;
 
 public class Event {
 
@@ -27,7 +28,7 @@ public class Event {
 
   public void setCanceled(boolean canceled) {
     if (!cancelable) {
-      throw new ModularWorldException("Event is not cancelable");
+      Log.error(new ModularWorldException("Event is not cancelable"));
     }
     this.canceled = canceled;
   }

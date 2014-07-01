@@ -2,6 +2,7 @@ package ethanjones.modularworld.core;
 
 import com.badlogic.gdx.Gdx;
 import ethanjones.modularworld.core.debug.Debug;
+import ethanjones.modularworld.core.logging.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,7 +34,7 @@ public class Branding {
       input = Gdx.files.internal("version").read();
       prop.load(input);
     } catch (IOException ex) {
-      throw new ModularWorldException("Failed to load version", ex);
+      Log.error("Failed to load version", ex);
     } finally {
       if (input != null) {
         try {

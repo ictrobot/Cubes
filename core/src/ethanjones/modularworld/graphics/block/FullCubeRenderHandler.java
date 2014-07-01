@@ -7,6 +7,7 @@ import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.core.util.Direction;
 import ethanjones.modularworld.graphics.GameModel;
 import ethanjones.modularworld.graphics.GraphicsHelper;
+import ethanjones.modularworld.graphics.PackedTexture;
 import ethanjones.modularworld.graphics.world.RenderArea;
 import ethanjones.modularworld.world.World;
 
@@ -26,9 +27,9 @@ public class FullCubeRenderHandler implements BlockRenderHandler {
   GameModel posZ;
   GameModel negZ;
 
-  public FullCubeRenderHandler(Material mainMaterial) {
+  public FullCubeRenderHandler(PackedTexture mainMaterial) {
     for (int i = 0; i <= 5; i++) {
-      materials[i] = mainMaterial; //i + ""
+      //materials[i] = mainMaterial; //i + ""
     }
   }
 
@@ -36,8 +37,8 @@ public class FullCubeRenderHandler implements BlockRenderHandler {
     return materials[direction.index];
   }
 
-  public FullCubeRenderHandler setSide(Direction direction, Material material) {
-    materials[direction.index] = material;
+  public FullCubeRenderHandler setSide(Direction direction, PackedTexture material) {
+    //materials[direction.index] = material;
     return this;
   }
 

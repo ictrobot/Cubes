@@ -86,21 +86,21 @@ public class Debug {
       try {
         l[i] = new DebugLabel(DebugType.values()[i], skin);
       } catch (Exception e) {
-        throw new ModularWorldException("Failed to build debug screen", e);
+        Log.error(new ModularWorldException("Failed to build debug screen", e));
       }
     }
     return l;
   }
 
   public static void printProperties() {
-    Log.info("Properties", "Java Home:        " + System.getProperty("java.home"));
-    Log.info("Properties", "Java Vendor:      " + System.getProperty("java.vendor"));
-    Log.info("Properties", "Java Vendor URL:  " + System.getProperty("java.vendor.url"));
-    Log.info("Properties", "Java Version:     " + System.getProperty("java.version"));
-    Log.info("Properties", "OS Architecture:  " + System.getProperty("os.arch"));
-    Log.info("Properties", "OS Name:          " + System.getProperty("os.name"));
-    Log.info("Properties", "OS Version:       " + System.getProperty("os.version"));
-    Log.info("Properties", "User Directory:   " + System.getProperty("user.dir"));
-    Log.info("Properties", "User Home:        " + System.getProperty("user.home"));
+    Log.info("Properties", "Java Home:          " + System.getProperty("java.home"));
+    Log.info("Properties", "Java Vendor:        " + System.getProperty("java.vendor"));
+    Log.info("Properties", "Java Vendor URL:    " + System.getProperty("java.vendor.url"));
+    Log.info("Properties", "Java Version:       " + System.getProperty("java.version"));
+    Log.info("Properties", "OS Architecture:    " + System.getProperty("os.arch"));
+    Log.info("Properties", "OS Name:            " + System.getProperty("os.name"));
+    Log.info("Properties", "OS Version:         " + System.getProperty("os.version"));
+    Log.info("Properties", "Working Directory:  " + System.getProperty("user.dir"));
+    Log.info("Properties", "User Home:          " + System.getProperty("user.home"));
   }
 }

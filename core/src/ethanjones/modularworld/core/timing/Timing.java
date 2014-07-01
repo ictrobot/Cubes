@@ -2,6 +2,7 @@ package ethanjones.modularworld.core.timing;
 
 
 import ethanjones.modularworld.core.ModularWorldException;
+import ethanjones.modularworld.core.logging.Log;
 
 import java.util.ArrayList;
 
@@ -23,7 +24,7 @@ public class Timing {
     for (int ms : millisecondIntervals) {
       TimeHandlerWrapper timeHandlerWrapper = new TimeHandlerWrapper(timeHandler, ms);
       if (ms <= 0 || ms > 1000) {
-        throw new ModularWorldException("millisecondInterval has to between 0 and 999");
+        Log.error(new ModularWorldException("millisecondInterval has to between 0 and 999"));
       }
       int t = 0;
       while (t < 1000) {

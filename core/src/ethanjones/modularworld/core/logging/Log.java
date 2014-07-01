@@ -3,8 +3,7 @@ package ethanjones.modularworld.core.logging;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import ethanjones.modularworld.ModularWorld;
-
-import java.io.File;
+import ethanjones.modularworld.core.ModularWorldException;
 
 public class Log {
 
@@ -13,7 +12,7 @@ public class Log {
 
   static {
     output = getLogWriter();
-    file = new FileLogWriter(new File(ModularWorld.instance.baseFolder, "log.txt"));
+    file = new FileLogWriter(ModularWorld.instance.baseFolder.child("log.txt").file());
   }
 
   public static void log(LogLevel level, String tag, String message) {
@@ -24,6 +23,10 @@ public class Log {
   public static void log(LogLevel level, String tag, String message, Throwable throwable) {
     output.log(level, tag, message, throwable);
     file.log(level, tag, message, throwable);
+
+    if (level == LogLevel.error && throwable instanceof ModularWorldException) {
+      throw (ModularWorldException) throwable;
+    }
   }
 
   //ERROR
@@ -43,6 +46,10 @@ public class Log {
     log(LogLevel.error, getTagClass(), message, throwable);
   }
 
+  public static void error(Throwable throwable) {
+    log(LogLevel.error, getTagClass(), "", throwable);
+  }
+
   //WARNING
   public static void warning(String tag, String message) {
     log(LogLevel.warning, tag, message);
@@ -58,6 +65,10 @@ public class Log {
 
   public static void warning(String message, Throwable throwable) {
     log(LogLevel.warning, getTagClass(), message, throwable);
+  }
+
+  public static void warning(Throwable throwable) {
+    log(LogLevel.warning, getTagClass(), "", throwable);
   }
 
   //INFO
@@ -77,6 +88,10 @@ public class Log {
     log(LogLevel.info, getTagClass(), message, throwable);
   }
 
+  public static void info(Throwable throwable) {
+    log(LogLevel.info, getTagClass(), "", throwable);
+  }
+
   //DEBUG
   public static void debug(String tag, String message) {
     log(LogLevel.debug, tag, message);
@@ -94,6 +109,11 @@ public class Log {
     log(LogLevel.debug, getTagClass(), message, throwable);
   }
 
+  public static void debug(Throwable throwable) {
+    log(LogLevel.debug, getTagClass(), "", throwable);
+  }
+
+  //HELPER METHODS
 
   private static LogWriter getLogWriter() {
     if (Application.ApplicationType.Android == Gdx.app.getType()) {

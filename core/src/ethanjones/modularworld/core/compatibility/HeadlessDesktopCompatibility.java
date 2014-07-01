@@ -1,6 +1,7 @@
 package ethanjones.modularworld.core.compatibility;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.files.FileHandle;
 
 public class HeadlessDesktopCompatibility extends DesktopCompatibility {
 
@@ -12,4 +13,8 @@ public class HeadlessDesktopCompatibility extends DesktopCompatibility {
     return true;
   }
 
+  @Override
+  public FileHandle getBaseFolder() {
+    return getWorkingFolder();
+  }
 }

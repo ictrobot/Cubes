@@ -2,6 +2,7 @@ package ethanjones.modularworld;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import ethanjones.modularworld.block.factory.BlockFactories;
 import ethanjones.modularworld.core.Branding;
 import ethanjones.modularworld.core.compatibility.Compatibility;
@@ -12,13 +13,12 @@ import ethanjones.modularworld.core.settings.Settings;
 import ethanjones.modularworld.core.settings.SettingsManager;
 import ethanjones.modularworld.core.timing.Timing;
 import ethanjones.modularworld.entity.living.player.Player;
+import ethanjones.modularworld.graphics.GraphicsHelper;
 import ethanjones.modularworld.graphics.rendering.Renderer;
 import ethanjones.modularworld.input.InputChain;
 import ethanjones.modularworld.networking.Networking;
 import ethanjones.modularworld.world.World;
 import ethanjones.modularworld.world.generator.BasicWorldGenerator;
-
-import java.io.File;
 
 public class ModularWorld implements ApplicationListener {
 
@@ -34,7 +34,7 @@ public class ModularWorld implements ApplicationListener {
   public SettingsManager settings;
   public Timing timing;
 
-  public File baseFolder;
+  public FileHandle baseFolder;
 
   public ModularWorld() {
     ModularWorld.instance = this;
@@ -42,14 +42,19 @@ public class ModularWorld implements ApplicationListener {
 
   @Override
   public void create() {
-    Log.info(Branding.NAME, Branding.DEBUG);
-    Debug.printProperties();
-
     eventBus = new EventBus().register(this);
     compatibility = Compatibility.getCompatibility();
 
     baseFolder = compatibility.getBaseFolder();
-    Log.info("Base Folder: " + baseFolder.getAbsolutePath());
+    baseFolder.mkdirs();
+
+    Log.info(Branding.NAME, Branding.DEBUG);
+    Debug.printProperties();
+    Log.info("Base Folder: " + baseFolder.path());
+
+    if (!compatibility.isHeadless()) {
+      GraphicsHelper.init();
+    }
 
     player = new Player();
 
