@@ -3,7 +3,6 @@ package ethanjones.modularworld.world.storage;
 import ethanjones.modularworld.block.Block;
 import ethanjones.modularworld.core.events.world.block.SetBlockEvent;
 import ethanjones.modularworld.graphics.world.AreaRenderer;
-import ethanjones.modularworld.graphics.world.RenderArea;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
 
 import static ethanjones.modularworld.core.util.Maths.fastPositive;
@@ -12,7 +11,6 @@ public class Area {
 
   public static final int SIZE_BLOCKS = 32;
   public static final int HALF_SIZE_BLOCKS = SIZE_BLOCKS / 2;
-  public static final int SIZE_RENDER_AREA = SIZE_BLOCKS / RenderArea.SIZE_BLOCKS;
 
   public final int x;
   public final int y;
@@ -29,8 +27,8 @@ public class Area {
 
   public boolean generated = false;
   public AreaRenderer areaRenderer;
-  private Block[][][] blocks;
   public boolean modified;
+  private Block[][][] blocks;
 
   /**
    * In area coords

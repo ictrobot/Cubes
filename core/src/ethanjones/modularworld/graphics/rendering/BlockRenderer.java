@@ -9,7 +9,6 @@ import com.badlogic.gdx.math.Frustum;
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.core.debug.Debug;
 import ethanjones.modularworld.core.settings.Settings;
-import ethanjones.modularworld.graphics.world.RenderArea;
 import ethanjones.modularworld.world.reference.AreaReference;
 import ethanjones.modularworld.world.storage.Area;
 
@@ -52,7 +51,6 @@ public class BlockRenderer {
     long l = System.currentTimeMillis();
     int renderedChunks = 0;
     int totalChunks = 0;
-    RenderArea.setup(renderer.gameBatch);
     AreaReference pos = ModularWorld.instance.world.playerArea;
     for (int areaX = pos.areaX - renderDistance; areaX <= pos.areaX + renderDistance; areaX++) {
       for (int areaY = pos.areaY - renderDistance; areaY <= pos.areaY + renderDistance; areaY++) {

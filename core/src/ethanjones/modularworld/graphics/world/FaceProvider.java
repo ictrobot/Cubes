@@ -1,4 +1,4 @@
-package ethanjones.modularworld.graphics.block;
+package ethanjones.modularworld.graphics.world;
 
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import ethanjones.modularworld.block.Block;

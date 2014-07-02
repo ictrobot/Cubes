@@ -1,4 +1,4 @@
-package ethanjones.modularworld.graphics.block;
+package ethanjones.modularworld.graphics.world;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import ethanjones.modularworld.core.ModularWorldException;

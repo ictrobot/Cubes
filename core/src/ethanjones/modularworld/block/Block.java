@@ -2,7 +2,7 @@ package ethanjones.modularworld.block;
 
 import ethanjones.modularworld.block.factory.BlockFactory;
 import ethanjones.modularworld.core.data.ByteData;
-import ethanjones.modularworld.graphics.block.BlockTextureHandler;
+import ethanjones.modularworld.graphics.world.BlockTextureHandler;
 
 /**
  * Actual Block in World

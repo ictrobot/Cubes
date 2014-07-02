@@ -14,7 +14,6 @@ import com.badlogic.gdx.utils.Array;
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.core.util.Direction;
 import ethanjones.modularworld.graphics.GraphicsHelper;
-import ethanjones.modularworld.graphics.block.FaceProvider;
 import ethanjones.modularworld.world.World;
 import ethanjones.modularworld.world.storage.Area;
 
@@ -22,7 +21,7 @@ import static ethanjones.modularworld.world.storage.Area.SIZE_BLOCKS;
 
 public class AreaRenderer {
 
-  public static MeshBuilder meshBuilder = new MeshBuilder();
+  public MeshBuilder meshBuilder = new MeshBuilder();
   public FaceProvider faceProvider;
   public Array<Mesh> meshes;
   private Array<Model> models;
@@ -46,7 +45,7 @@ public class AreaRenderer {
     meshPart.id = "part1";
     meshPart.indexOffset = 0;
     meshPart.numVertices = mesh.getNumIndices();
-    meshPart.primitiveType = GL20.GL_TRIANGLES;
+    meshPart.primitiveType = GL20.GL_POINTS;
     meshPart.mesh = mesh;
 
     NodePart partMaterial = new NodePart();
