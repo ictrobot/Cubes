@@ -51,12 +51,12 @@ public class FullCubeRenderHandler implements BlockRenderHandler {
     mPosZ = GraphicsHelper.getModelBuilder().createRect(0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, getSide(Direction.posZ), GraphicsHelper.usage);
     mNegZ = GraphicsHelper.getModelBuilder().createRect(1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 1, getSide(Direction.negZ), GraphicsHelper.usage);
 
-    posX = new GameModel(mPosX);
-    negX = new GameModel(mNegX);
-    posY = new GameModel(mPosY);
-    negY = new GameModel(mNegY);
-    posZ = new GameModel(mPosZ);
-    negZ = new GameModel(mNegZ);
+//    posX = new GameModel(mPosX);
+//    negX = new GameModel(mNegX);
+//    posY = new GameModel(mPosY);
+//    negY = new GameModel(mNegY);
+//    posZ = new GameModel(mPosZ);
+//    negZ = new GameModel(mNegZ);
   }
 
   @Override

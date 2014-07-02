@@ -9,7 +9,7 @@ public class BlockFactoryGrass extends BlockFactoryBasic {
   }
 
   public void loadGraphics() {
-    this.renderer.setSide(Direction.posY, GraphicsHelper.loadBlock("Grass")).setSide(Direction.negY, GraphicsHelper.loadBlock("Dirt"));
+    this.textureHandler.setSide(Direction.posY, GraphicsHelper.loadBlock("Grass")).setSide(Direction.negY, GraphicsHelper.loadBlock("Dirt"));
     super.loadGraphics();
   }
 }

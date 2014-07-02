@@ -24,17 +24,16 @@ import java.util.Map;
 
 public class GraphicsHelper {
 
+  public static Material blockPackedTextures;
+  public static int usage = Usage.Position | Usage.Normal | Usage.TextureCoordinates;
   private static Array<String> textureFiles = new Array<String>();
   private static Array<String> blockTextureFiles = new Array<String>();
   private static Array<TexturePacker> texturePackers = new Array<TexturePacker>();
   private static Array<Texture> packedTextures;
   private static HashMap<String, PackedTexture> textures = new HashMap<String, PackedTexture>();
 
-  public static int usage = Usage.Position | Usage.Normal | Usage.TextureCoordinates;
-  public static Material test;
-
   public static PackedTexture load(String name) {
-    PackedTexture packedTextureWrapper = textures.get(name);
+    PackedTexture packedTextureWrapper = textures.get(stringToHashMap(name));
     if (packedTextureWrapper == null || packedTextureWrapper.packedTexture == null) {
       Log.error(new ModularWorldException("No such texture: " + name));
     }
@@ -54,18 +53,27 @@ public class GraphicsHelper {
   }
 
   public static void init() {
-    findTexture(ModularWorld.instance.compatibility.getWorkingFolder().child("Blocks").file(), null, blockTextureFiles);
+    FileHandle parent = ModularWorld.instance.baseFolder.child("PackedTextures");
+    for (String pastPackedTexture : parent.file().list()) {
+      try {
+        new File(pastPackedTexture).delete();
+      } catch (Exception e) {
+
+      }
+    }
+    File blocksFolder = ModularWorld.instance.compatibility.getWorkingFolder().child("Blocks").file();
+    File workingFolder = ModularWorld.instance.compatibility.getWorkingFolder().file();
+    findTexture(blocksFolder, null, blockTextureFiles);
     pack(blockTextureFiles);
     if (texturePackers.size < 0) {
       Log.error(new ModularWorldException("No block textures"));
     } else if (texturePackers.size > 1) {
       Log.error(new ModularWorldException("Only one sheet of block textures is allowed"));
     }
-    findTexture(ModularWorld.instance.compatibility.getWorkingFolder().file(), ModularWorld.instance.compatibility.getWorkingFolder().child("Block").file(), textureFiles);
+    findTexture(workingFolder, ModularWorld.instance.compatibility.getWorkingFolder().child("Block").file(), textureFiles);
     pack(textureFiles);
 
     packedTextures = new Array<Texture>(texturePackers.size);
-    FileHandle parent = ModularWorld.instance.baseFolder.child("PackedTextures");
     for (int i = 0; i < texturePackers.size; i++) {
       TexturePacker texturePacker = texturePackers.get(i);
 
@@ -85,15 +93,22 @@ public class GraphicsHelper {
       texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
       Material material = new Material(TextureAttribute.createDiffuse(texture));
       packedTextures.add(texture);
+      if (i == 0) {
+        blockPackedTextures = material;
+      }
 
       Map<String, Rectangle> rectangles = texturePacker.getRectangles();
       for (String str : rectangles.keySet()) {
-        Rectangle rectangle = rectangles.get(str);
+        Rectangle rectangle = rectangles.get(str); // substring to remove /
+        str = stringToHashMap(str.replace(workingFolder.getAbsolutePath(), "").substring(1));
         textures.put(str, new PackedTexture(texture, material, new TextureRegion(texture, rectangle.x, rectangle.y, rectangle.width, rectangle.height), str));
       }
     }
+    Log.error(textures.toString());
+  }
 
-    test = loadBlock("Grass").material;
+  private static String stringToHashMap(String str) {
+    return str.replace("\\", "$").replace("/", "$");
   }
 
   private static void pack(Array<String> filenames) {

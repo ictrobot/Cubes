@@ -3,7 +3,6 @@ package ethanjones.modularworld.graphics.world;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Renderable;
@@ -23,8 +22,8 @@ import static ethanjones.modularworld.world.storage.Area.SIZE_BLOCKS;
 
 public class AreaRenderer {
 
-  public FaceProvider faceProvider;
   public static MeshBuilder meshBuilder = new MeshBuilder();
+  public FaceProvider faceProvider;
   public Array<Mesh> meshes;
   private Array<Model> models;
   private Array<ModelInstance> modelInstances;
@@ -41,11 +40,34 @@ public class AreaRenderer {
     meshes = new Array<Mesh>();
   }
 
+  public static Model createFromMesh(final Mesh mesh) {
+    Model result = new Model();
+    MeshPart meshPart = new MeshPart();
+    meshPart.id = "part1";
+    meshPart.indexOffset = 0;
+    meshPart.numVertices = mesh.getNumIndices();
+    meshPart.primitiveType = GL20.GL_TRIANGLES;
+    meshPart.mesh = mesh;
+
+    NodePart partMaterial = new NodePart();
+    partMaterial.material = GraphicsHelper.blockPackedTextures;
+    partMaterial.meshPart = meshPart;
+    Node node = new Node();
+    node.id = "node1";
+    node.parts.add(partMaterial);
+
+    result.meshes.add(mesh);
+    result.materials.add(GraphicsHelper.blockPackedTextures);
+    result.nodes.add(node);
+    result.meshParts.add(meshPart);
+    result.manageDisposable(mesh);
+    return result;
+  }
+
   public AreaRenderer setCamera(Camera camera) {
     this.camera = camera;
     return this;
   }
-
 
   /**
    * public void rebuildArray() {
@@ -78,8 +100,7 @@ public class AreaRenderer {
       for (int x = 0; x < SIZE_BLOCKS; x++) {
         for (int y = 0; y < SIZE_BLOCKS; y++) {
           for (int z = 0; z < SIZE_BLOCKS; z++) {
-            faceProvider.set(x, y, z);
-            if (world.getBlock(faceProvider.x, faceProvider.y, faceProvider.z) == null) continue;
+            if (!faceProvider.set(x, y, z, world)) continue;
             if (world.getBlock(faceProvider.x + 1, faceProvider.y, faceProvider.z) == null) {
               faceProvider.addTo(meshBuilder, Direction.posX);
             }
@@ -110,35 +131,11 @@ public class AreaRenderer {
       }
       meshes.add(meshBuilder.end());
       for (Mesh mesh : meshes) {
-        Model model = createFromMesh(mesh, GraphicsHelper.test);
+        Model model = createFromMesh(mesh);
         models.add(model);
         modelInstances.add(new ModelInstance(model));
       }
     }
     return modelInstances;
-  }
-
-  public static Model createFromMesh(final Mesh mesh, final Material material) {
-    Model result = new Model();
-    MeshPart meshPart = new MeshPart();
-    meshPart.id = "part1";
-    meshPart.indexOffset = 0;
-    meshPart.numVertices = mesh.getNumIndices();
-    meshPart.primitiveType = GL20.GL_TRIANGLES;
-    meshPart.mesh = mesh;
-
-    NodePart partMaterial = new NodePart();
-    partMaterial.material = material;
-    partMaterial.meshPart = meshPart;
-    Node node = new Node();
-    node.id = "node1";
-    node.parts.add(partMaterial);
-
-    result.meshes.add(mesh);
-    result.materials.add(material);
-    result.nodes.add(node);
-    result.meshParts.add(meshPart);
-    result.manageDisposable(mesh);
-    return result;
   }
 }

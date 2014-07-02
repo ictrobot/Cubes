@@ -2,7 +2,7 @@ package ethanjones.modularworld.block.factory;
 
 import ethanjones.modularworld.block.Block;
 import ethanjones.modularworld.core.data.ByteData;
-import ethanjones.modularworld.graphics.block.BlockRenderHandler;
+import ethanjones.modularworld.graphics.block.BlockTextureHandler;
 
 /**
  * Setup for Block
@@ -18,7 +18,7 @@ public abstract class BlockFactory {
 
   public abstract void loadGraphics();
 
-  public abstract BlockRenderHandler getRenderer(ByteData data);
+  public abstract BlockTextureHandler getTextureHandler(ByteData data);
 
   public Block getBlock(ByteData data) {
     return new Block(this, data);

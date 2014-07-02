@@ -1,18 +1,20 @@
 package ethanjones.modularworld.graphics.block;
 
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
+import ethanjones.modularworld.block.Block;
 import ethanjones.modularworld.core.util.Direction;
+import ethanjones.modularworld.world.World;
 import ethanjones.modularworld.world.storage.Area;
 
 public class FaceProvider {
 
-  public int x;
-  public int y;
-  public int z;
-
   public final int minX;
   public final int minY;
   public final int minZ;
+  public int x;
+  public int y;
+  public int z;
+  public BlockTextureHandler blockTextureHandler;
 
   public int v = 0;
 
@@ -22,13 +24,18 @@ public class FaceProvider {
     this.minZ = area.minBlockZ;
   }
 
-  public void set(int x, int y, int z) {
+  public boolean set(int x, int y, int z, World world) {
+    Block b = world.getBlock(x, y, z);
+    if (b == null) return false;
     this.x = minX + x;
     this.y = minY + y;
     this.z = minZ + z;
+    this.blockTextureHandler = b.getTextureHandler();
+    return true;
   }
 
   public void addTo(MeshBuilder meshBuilder, Direction side) {
+    meshBuilder.setUVRange(blockTextureHandler.getSide(side));
     switch (side) {
       case posX:
         meshBuilder.rect(x + 1, y, z, x, y, z, x, y + 1, z, x + 1, y + 1, 0, x + 1, y, z);

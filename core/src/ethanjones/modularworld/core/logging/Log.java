@@ -5,6 +5,8 @@ import com.badlogic.gdx.Gdx;
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.core.ModularWorldException;
 
+import java.io.File;
+
 public class Log {
 
   private static LogWriter output;
@@ -12,7 +14,11 @@ public class Log {
 
   static {
     output = getLogWriter();
-    file = new FileLogWriter(ModularWorld.instance.baseFolder.child("log.txt").file());
+    try {
+      file = new FileLogWriter(ModularWorld.instance.baseFolder.child("log.txt").file());
+    } catch (Exception e) {
+      file = new FileLogWriter(new File(System.getProperty("user.dir"), "log.txt"));
+    }
   }
 
   public static void log(LogLevel level, String tag, String message) {

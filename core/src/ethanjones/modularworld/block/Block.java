@@ -2,7 +2,7 @@ package ethanjones.modularworld.block;
 
 import ethanjones.modularworld.block.factory.BlockFactory;
 import ethanjones.modularworld.core.data.ByteData;
-import ethanjones.modularworld.graphics.block.BlockRenderHandler;
+import ethanjones.modularworld.graphics.block.BlockTextureHandler;
 
 /**
  * Actual Block in World
@@ -22,8 +22,8 @@ public class Block {
     this.data = new ByteData();
   }
 
-  public BlockRenderHandler getRenderer() {
-    return factory.getRenderer(data);
+  public BlockTextureHandler getTextureHandler() {
+    return factory.getTextureHandler(data);
   }
 
   public boolean equals(Object o) {

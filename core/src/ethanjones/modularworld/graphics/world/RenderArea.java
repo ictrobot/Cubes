@@ -45,7 +45,7 @@ public class RenderArea {
         for (int z = 0; z < SIZE_BLOCKS; z++) {
           Block b = area.getBlock(minBlockX + x, minBlockY + y, minBlockZ + z);
           if (b == null) continue;
-          b.getRenderer().render(this, camera, minBlockX + x, minBlockY + y, minBlockZ + z);
+          //b.getRenderer().render(this, camera, minBlockX + x, minBlockY + y, minBlockZ + z);
         }
       }
     }

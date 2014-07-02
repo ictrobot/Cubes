@@ -97,8 +97,8 @@ public class Debug {
     Log.info("Properties", "Java Vendor:        " + System.getProperty("java.vendor"));
     Log.info("Properties", "Java Vendor URL:    " + System.getProperty("java.vendor.url"));
     Log.info("Properties", "Java Version:       " + System.getProperty("java.version"));
-    Log.info("Properties", "OS Architecture:    " + System.getProperty("os.arch"));
     Log.info("Properties", "OS Name:            " + System.getProperty("os.name"));
+    Log.info("Properties", "OS Architecture:    " + System.getProperty("os.arch"));
     Log.info("Properties", "OS Version:         " + System.getProperty("os.version"));
     Log.info("Properties", "Working Directory:  " + System.getProperty("user.dir"));
     Log.info("Properties", "User Home:          " + System.getProperty("user.home"));

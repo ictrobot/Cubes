@@ -25,7 +25,7 @@ public abstract class Compatibility {
       case HeadlessDesktop:
         return new HeadlessDesktopCompatibility();
       default:
-        Log.error(new ModularWorldException("No Compatibility module for this platform: " + Gdx.app.getType().name()));
+        Log.error(new ModularWorldException("No Compatibility module for this platform: " + Gdx.app.getType().name() + ", OS: " + System.getProperty("os.name") + ", Arch:" + System.getProperty("os.arch")));
         return null;
     }
   }
