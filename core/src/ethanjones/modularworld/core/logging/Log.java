@@ -15,9 +15,9 @@ public class Log {
   static {
     output = getLogWriter();
     try {
-      File f = ModularWorld.instance.baseFolder.child("log.txt").file().getAbsoluteFile();
-      f.createNewFile();
-      System.out.println(f.getAbsolutePath());
+      File f = ModularWorld.instance.baseFolder.child("log.txt").file();
+      output.log(LogLevel.error, "Test", f.createNewFile() + "");
+      output.log(LogLevel.error, "Test", f.getAbsolutePath());
       file = new FileLogWriter(f);
     } catch (Exception e) {
       file = new FileLogWriter(new File(System.getProperty("user.dir"), "log.txt"));
