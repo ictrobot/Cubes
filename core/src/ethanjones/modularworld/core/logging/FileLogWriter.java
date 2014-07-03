@@ -14,7 +14,7 @@ public class FileLogWriter implements LogWriter {
       fileOutputStream = new FileOutputStream(file);
       printStream = new PrintStream(fileOutputStream);
     } catch (Exception e) {
-
+      e.printStackTrace();
     }
   }
 

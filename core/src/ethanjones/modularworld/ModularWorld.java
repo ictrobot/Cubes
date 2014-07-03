@@ -48,8 +48,6 @@ public class ModularWorld implements ApplicationListener {
     baseFolder = compatibility.getBaseFolder();
     baseFolder.mkdirs();
 
-    System.out.println(baseFolder.file().getAbsolutePath());
-
     Log.info(Branding.NAME, Branding.DEBUG);
     Debug.printProperties();
     Log.info("Base Folder: " + baseFolder.path());
