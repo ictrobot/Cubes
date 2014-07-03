@@ -11,6 +11,7 @@ public class FileLogWriter implements LogWriter {
 
   public FileLogWriter(File file) {
     try {
+      file.createNewFile();
       fileOutputStream = new FileOutputStream(file);
       printStream = new PrintStream(fileOutputStream);
     } catch (Exception e) {
