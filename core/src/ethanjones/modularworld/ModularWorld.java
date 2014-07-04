@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import ethanjones.modularworld.block.factory.BlockFactories;
 import ethanjones.modularworld.core.Branding;
+import ethanjones.modularworld.core.ModularWorldException;
 import ethanjones.modularworld.core.compatibility.Compatibility;
 import ethanjones.modularworld.core.debug.Debug;
 import ethanjones.modularworld.core.events.EventBus;
@@ -37,13 +38,20 @@ public class ModularWorld implements ApplicationListener {
   public FileHandle baseFolder;
 
   public ModularWorld() {
+    this(null);
+  }
+
+  public ModularWorld(Compatibility compatibility) {
     ModularWorld.instance = this;
+    this.compatibility = compatibility;
   }
 
   @Override
   public void create() {
+    if (compatibility == null) {
+      Log.error(new ModularWorldException("No Compatibility module for this platform: " + Gdx.app.getType().name() + ", OS: " + System.getProperty("os.name") + ", Arch:" + System.getProperty("os.arch")));
+    }
     eventBus = new EventBus().register(this);
-    compatibility = Compatibility.getCompatibility();
     //TODO: Have compatibility log extra stuff about environment such as android version etc
     baseFolder = compatibility.getBaseFolder();
     baseFolder.mkdirs();

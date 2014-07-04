@@ -1,4 +1,4 @@
-package ethanjones.modularworld.desktop;
+package ethanjones.modularworld.core.platform.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
@@ -10,6 +10,6 @@ public class DesktopLauncher {
     config.vSyncEnabled = false;
     config.foregroundFPS = 0;
     config.backgroundFPS = 0;
-    new LwjglApplication(new ModularWorld(), config);
+    new LwjglApplication(new ModularWorld(new DesktopCompatibility()), config);
   }
 }

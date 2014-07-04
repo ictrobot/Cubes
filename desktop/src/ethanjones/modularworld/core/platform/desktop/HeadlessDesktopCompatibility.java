@@ -1,4 +1,4 @@
-package ethanjones.modularworld.core.compatibility;
+package ethanjones.modularworld.core.platform.desktop;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.files.FileHandle;

@@ -1,15 +1,12 @@
-package ethanjones.modularworld.core.compatibility;
+package ethanjones.modularworld.core.platform.desktop;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import ethanjones.modularworld.core.Branding;
+import ethanjones.modularworld.core.compatibility.Compatibility;
 
 public class DesktopCompatibility extends Compatibility {
-
-  public static enum OS {
-    Windows, Linux, Mac, Unknown;
-  }
 
   public final OS os;
 
@@ -42,6 +39,10 @@ public class DesktopCompatibility extends Compatibility {
       default:
         return homeDir.child("." + Branding.NAME);
     }
+  }
+
+  public static enum OS {
+    Windows, Linux, Mac, Unknown;
   }
 
 }

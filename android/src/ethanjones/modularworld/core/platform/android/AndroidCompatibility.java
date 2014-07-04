@@ -1,9 +1,10 @@
-package ethanjones.modularworld.core.compatibility;
+package ethanjones.modularworld.core.platform.android;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import ethanjones.modularworld.core.Branding;
+import ethanjones.modularworld.core.compatibility.Compatibility;
 import ethanjones.modularworld.core.events.EventHandler;
 import ethanjones.modularworld.core.events.setting.AfterProcessSettingEvent;
 import ethanjones.modularworld.core.settings.Settings;

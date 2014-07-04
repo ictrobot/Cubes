@@ -16,7 +16,7 @@
             android:label="@string/app_name"
             android:theme="@style/GdxTheme">
         <activity
-                android:name="ethanjones.modularworld.android.AndroidLauncher"
+                android:name="ethanjones.modularworld.core.platform.android.AndroidLauncher"
                 android:label="@string/app_name"
                 android:screenOrientation="landscape"
                 android:configChanges="keyboard|keyboardHidden|orientation|screenSize">
