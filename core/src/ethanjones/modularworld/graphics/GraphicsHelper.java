@@ -37,7 +37,7 @@ public class GraphicsHelper {
   public static PackedTexture load(String name) {
     PackedTexture packedTextureWrapper = textures.get(stringToHashMap(name));
     if (packedTextureWrapper == null || packedTextureWrapper.packedTexture == null) {
-      Log.error(new ModularWorldException("No such texture: " + name));
+      Log.error(new ModularWorldException("No such texture: " + name + " in map: " + Character.LINE_SEPARATOR + textures.toString()));
     }
     return packedTextureWrapper;
   }
@@ -107,7 +107,6 @@ public class GraphicsHelper {
         TexturePacker.PackRectangle rectangle = rectangles.get(str); // substring to remove /
         str = stringToHashMap(str.replace(workingFolder.file().getAbsolutePath(), ""));
         if (str.startsWith("$")) str = str.substring(1);
-        System.err.println(str);
         textures.put(str, new PackedTexture(texture, num, material, new TextureRegion(texture, rectangle.x, rectangle.y, rectangle.width, rectangle.height), str));
       }
     }
