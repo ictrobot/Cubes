@@ -107,7 +107,7 @@ public class GraphicsHelper {
         TexturePacker.PackRectangle rectangle = rectangles.get(str); // substring to remove /
         str = stringToHashMap(str.replace(workingFolder.file().getAbsolutePath(), ""));
         if (str.startsWith("$")) str = str.substring(1);
-        Log.debug(str);
+        System.err.println(str);
         textures.put(str, new PackedTexture(texture, num, material, new TextureRegion(texture, rectangle.x, rectangle.y, rectangle.width, rectangle.height), str));
       }
     }
