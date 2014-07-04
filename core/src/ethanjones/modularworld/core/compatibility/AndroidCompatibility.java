@@ -23,4 +23,9 @@ public class AndroidCompatibility extends Compatibility {
   public FileHandle getBaseFolder() {
     return Gdx.files.external(Branding.NAME);
   }
+
+  @Override
+  public FileHandle getWorkingFolder() {
+    return Gdx.files.internal(".");
+  }
 }
