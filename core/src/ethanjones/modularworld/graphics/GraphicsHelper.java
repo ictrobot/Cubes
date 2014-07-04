@@ -64,8 +64,8 @@ public class GraphicsHelper {
 
       }
     }
-    File blocksFolder = ModularWorld.instance.compatibility.getWorkingFolder().child("Blocks").file();
-    File workingFolder = ModularWorld.instance.compatibility.getWorkingFolder().file();
+    FileHandle blocksFolder = ModularWorld.instance.compatibility.getWorkingFolder().child("Blocks");
+    FileHandle workingFolder = ModularWorld.instance.compatibility.getWorkingFolder();
     findTexture(blocksFolder, null, blockTextureFiles);
     pack(blockTextureFiles);
     if (texturePackers.size < 0) {
@@ -73,7 +73,7 @@ public class GraphicsHelper {
     } else if (texturePackers.size > 1) {
       Log.error(new ModularWorldException("Only one sheet of block textures is allowed"));
     }
-    findTexture(workingFolder, ModularWorld.instance.compatibility.getWorkingFolder().child("Block").file(), textureFiles);
+    findTexture(workingFolder, ModularWorld.instance.compatibility.getWorkingFolder().child("Block"), textureFiles);
     pack(textureFiles);
 
     packedTextures = new Array<Texture>(texturePackers.size);
@@ -105,7 +105,7 @@ public class GraphicsHelper {
       for (String str : rectangles.keySet()) {
         num++;
         TexturePacker.PackRectangle rectangle = rectangles.get(str); // substring to remove /
-        str = stringToHashMap(str.replace(workingFolder.getAbsolutePath(), "").substring(1));
+        str = stringToHashMap(str.replace(workingFolder.file().getAbsolutePath(), "").substring(1));
         textures.put(str, new PackedTexture(texture, num, material, new TextureRegion(texture, rectangle.x, rectangle.y, rectangle.width, rectangle.height), str));
       }
     }
@@ -143,14 +143,14 @@ public class GraphicsHelper {
     return texturePacker.insertImage(path, new Pixmap(Gdx.files.internal(path)));
   }
 
-  private static void findTexture(File parent, File exclude, Array<String> filenames) {
-    for (String string : parent.list()) {
-      File file = new File(parent, string);
-      if (exclude != null && file != exclude) return;
-      if (file.isDirectory()) {
-        findTexture(file, exclude, filenames);
-      } else if (file.getName().endsWith(".png")) {
-        filenames.add(file.getAbsolutePath());
+  private static void findTexture(FileHandle parent, FileHandle exclude, Array<String> filenames) {
+    if (parent == exclude) return;
+    for (FileHandle fileHandle : parent.list()) {
+      if (exclude != null && fileHandle != exclude) return;
+      if (fileHandle.isDirectory()) {
+        findTexture(fileHandle, exclude, filenames);
+      } else if (fileHandle.extension().endsWith("png")) {
+        filenames.add(fileHandle.file().getAbsolutePath());
       }
     }
   }
