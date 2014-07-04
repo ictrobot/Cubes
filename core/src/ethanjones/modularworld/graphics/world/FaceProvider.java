@@ -35,7 +35,7 @@ public class FaceProvider {
   }
 
   public void addTo(MeshBuilder meshBuilder, Direction side) {
-    meshBuilder.setUVRange(blockTextureHandler.getSide(side));
+    meshBuilder.setUVRange(blockTextureHandler.getSide(side).textureRegion);
     switch (side) {
       case posX:
         meshBuilder.rect(x + 1, y, z, x, y, z, x, y + 1, z, x + 1, y + 1, 0, x + 1, y, z);

@@ -44,13 +44,12 @@ public class ModularWorld implements ApplicationListener {
   public void create() {
     eventBus = new EventBus().register(this);
     compatibility = Compatibility.getCompatibility();
-
+    //TODO: Have compatibility log extra stuff about environment such as android version etc
     baseFolder = compatibility.getBaseFolder();
     baseFolder.mkdirs();
 
     Log.info(Branding.NAME, Branding.DEBUG);
     Debug.printProperties();
-    Log.info("Base Folder: " + baseFolder.path());
 
     if (!compatibility.isHeadless()) {
       GraphicsHelper.init();

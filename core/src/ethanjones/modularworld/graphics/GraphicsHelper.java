@@ -25,6 +25,7 @@ import java.util.Map;
 public class GraphicsHelper {
 
   public static Material blockPackedTextures;
+  public static Material grass;
   public static int usage = Usage.Position | Usage.Normal | Usage.TextureCoordinates;
   private static Array<String> textureFiles = new Array<String>();
   private static Array<String> blockTextureFiles = new Array<String>();
@@ -44,7 +45,7 @@ public class GraphicsHelper {
     return load("Blocks/" + material + ".png");
   }
 
-  private static Renderer getRenderer() {
+  public static Renderer getRenderer() {
     return ModularWorld.instance.renderer;
   }
 
@@ -91,6 +92,9 @@ public class GraphicsHelper {
 
       Texture texture = new Texture(fileHandle);
       texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+      if (i == 0) {
+        texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+      }
       Material material = new Material(TextureAttribute.createDiffuse(texture));
       packedTextures.add(texture);
       if (i == 0) {
@@ -98,13 +102,18 @@ public class GraphicsHelper {
       }
 
       Map<String, Rectangle> rectangles = texturePacker.getRectangles();
+      int num = 0;
       for (String str : rectangles.keySet()) {
+        num++;
         Rectangle rectangle = rectangles.get(str); // substring to remove /
         str = stringToHashMap(str.replace(workingFolder.getAbsolutePath(), "").substring(1));
-        textures.put(str, new PackedTexture(texture, material, new TextureRegion(texture, rectangle.x, rectangle.y, rectangle.width, rectangle.height), str));
+        textures.put(str, new PackedTexture(texture, num, material, new TextureRegion(texture, rectangle.x, rectangle.y, rectangle.width, rectangle.height), str));
       }
     }
-    Log.error(textures.toString());
+
+    Texture texture = new Texture(Gdx.files.internal("Blocks/Grass.png"));
+    texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+    grass = new Material(TextureAttribute.createDiffuse(texture));
   }
 
   private static String stringToHashMap(String str) {

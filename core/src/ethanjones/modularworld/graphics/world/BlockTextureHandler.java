@@ -1,6 +1,5 @@
 package ethanjones.modularworld.graphics.world;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import ethanjones.modularworld.core.ModularWorldException;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.core.util.Direction;
@@ -9,15 +8,15 @@ import ethanjones.modularworld.graphics.PackedTexture;
 
 public class BlockTextureHandler {
 
-  TextureRegion[] textureRegions;
+  PackedTexture[] packedTextures;
 
   public BlockTextureHandler(PackedTexture mainTexture) {
-    textureRegions = new TextureRegion[6];
+    packedTextures = new PackedTexture[6];
     if (!checkPackedTexture(mainTexture)) {
       Log.error(new ModularWorldException("Block textures have to be on block packed texture"));
     }
     for (int i = 0; i <= 5; i++) {
-      textureRegions[i] = mainTexture.textureRegion; //i + ""
+      packedTextures[i] = mainTexture; //i + ""
     }
   }
 
@@ -25,15 +24,19 @@ public class BlockTextureHandler {
     return packedTexture.material == GraphicsHelper.blockPackedTextures;
   }
 
-  public TextureRegion getSide(Direction direction) {
-    return textureRegions[direction.index];
+  public PackedTexture getSide(int direction) {
+    return packedTextures[direction];
+  }
+
+  public PackedTexture getSide(Direction direction) {
+    return packedTextures[direction.index];
   }
 
   public BlockTextureHandler setSide(Direction direction, PackedTexture packedTexture) {
     if (!checkPackedTexture(packedTexture)) {
       Log.error(new ModularWorldException("Block textures have to be on block packed texture"));
     }
-    textureRegions[direction.index] = packedTexture.textureRegion;
+    packedTextures[direction.index] = packedTexture;
     return this;
   }
 
