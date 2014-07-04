@@ -105,7 +105,9 @@ public class GraphicsHelper {
       for (String str : rectangles.keySet()) {
         num++;
         TexturePacker.PackRectangle rectangle = rectangles.get(str); // substring to remove /
-        str = stringToHashMap(str.replace(workingFolder.file().getAbsolutePath(), "").substring(1));
+        str = stringToHashMap(str.replace(workingFolder.file().getAbsolutePath(), ""));
+        if (str.startsWith("$")) str = str.substring(1);
+        Log.debug(str);
         textures.put(str, new PackedTexture(texture, num, material, new TextureRegion(texture, rectangle.x, rectangle.y, rectangle.width, rectangle.height), str));
       }
     }
