@@ -2,6 +2,8 @@ package ethanjones.modularworld.graphics;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -10,13 +12,12 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.core.ModularWorldException;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.graphics.rendering.Renderer;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -55,6 +56,7 @@ public class GraphicsHelper {
 
   public static void init() {
     FileHandle parent = ModularWorld.instance.baseFolder.child("PackedTextures");
+    parent.mkdirs();
     for (String pastPackedTexture : parent.file().list()) {
       try {
         new File(pastPackedTexture).delete();
@@ -78,15 +80,12 @@ public class GraphicsHelper {
     for (int i = 0; i < texturePackers.size; i++) {
       TexturePacker texturePacker = texturePackers.get(i);
 
-      String filename = i + ".png";
+      String filename = i + ".cim";
       FileHandle fileHandle = parent.child(filename);
-      fileHandle.mkdirs();
-      File file = new File(parent.file(), filename);
 
       try {
-        file.createNewFile();
-        ImageIO.write(texturePacker.getImage(), "png", file);
-      } catch (IOException e) {
+        PixmapIO.writeCIM(fileHandle, texturePacker.getPixmap());
+      } catch (GdxRuntimeException e) {
         Log.error("Failed to write packed image", e);
       }
 
@@ -101,11 +100,11 @@ public class GraphicsHelper {
         blockPackedTextures = material;
       }
 
-      Map<String, Rectangle> rectangles = texturePacker.getRectangles();
+      Map<String, TexturePacker.PackRectangle> rectangles = texturePacker.getRectangles();
       int num = 0;
       for (String str : rectangles.keySet()) {
         num++;
-        Rectangle rectangle = rectangles.get(str); // substring to remove /
+        TexturePacker.PackRectangle rectangle = rectangles.get(str); // substring to remove /
         str = stringToHashMap(str.replace(workingFolder.getAbsolutePath(), "").substring(1));
         textures.put(str, new PackedTexture(texture, num, material, new TextureRegion(texture, rectangle.x, rectangle.y, rectangle.width, rectangle.height), str));
       }
@@ -141,7 +140,7 @@ public class GraphicsHelper {
   }
 
   private static boolean addToTexturePacker(TexturePacker texturePacker, String path) throws IOException {
-    return texturePacker.insertImage(path, ImageIO.read(Gdx.files.internal(path).file()));
+    return texturePacker.insertImage(path, new Pixmap(Gdx.files.internal(path)));
   }
 
   private static void findTexture(File parent, File exclude, Array<String> filenames) {
