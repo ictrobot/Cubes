@@ -12,6 +12,8 @@ import ethanjones.modularworld.core.settings.Settings;
 import ethanjones.modularworld.world.reference.AreaReference;
 import ethanjones.modularworld.world.storage.Area;
 
+import static ethanjones.modularworld.world.storage.Area.SIZE_BLOCKS;
+
 public class BlockRenderer {
 
   public static int RENDER_DISTANCE_MAX = 10;
@@ -64,7 +66,7 @@ public class BlockRenderer {
             continue;
           }
           renderedChunks++;
-          renderer.gameBatch.render(area.areaRenderer.setCamera(camera).get(), environment);
+          renderer.gameBatch.render(area.areaRenderer.set(camera, areaX * SIZE_BLOCKS, areaY * SIZE_BLOCKS, areaZ * SIZE_BLOCKS), environment);
         }
       }
     }

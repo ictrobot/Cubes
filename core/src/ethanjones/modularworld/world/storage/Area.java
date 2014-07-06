@@ -10,6 +10,8 @@ import static ethanjones.modularworld.core.util.Maths.fastPositive;
 public class Area {
 
   public static final int SIZE_BLOCKS = 32;
+  public static final int SIZE_BLOCKS_SQUARED = SIZE_BLOCKS * SIZE_BLOCKS;
+  public static final int SIZE_BLOCKS_CUBED = SIZE_BLOCKS_SQUARED * SIZE_BLOCKS;
   public static final int HALF_SIZE_BLOCKS = SIZE_BLOCKS / 2;
 
   public final int x;
@@ -28,7 +30,7 @@ public class Area {
   public boolean generated = false;
   public AreaRenderer areaRenderer;
   public boolean modified;
-  private Block[][][] blocks;
+  public Block[] blocks;
 
   /**
    * In area coords
@@ -48,18 +50,18 @@ public class Area {
     cenBlockY = (float) (maxBlockY + minBlockY) / 2f;
     cenBlockZ = (float) (maxBlockZ + minBlockZ) / 2f;
 
-    blocks = new Block[SIZE_BLOCKS][SIZE_BLOCKS][SIZE_BLOCKS];
+    blocks = new Block[SIZE_BLOCKS_CUBED];
     areaRenderer = new AreaRenderer(this);
   }
 
   public Block getBlock(int x, int y, int z) {
-    return blocks[fastPositive(x % SIZE_BLOCKS)][fastPositive(y % SIZE_BLOCKS)][fastPositive(z % SIZE_BLOCKS)];
+    return blocks[fastPositive(x % SIZE_BLOCKS) + fastPositive(z % SIZE_BLOCKS) * SIZE_BLOCKS + fastPositive(y % SIZE_BLOCKS) * SIZE_BLOCKS_SQUARED];
   }
 
   public void setBlock(Block block, int x, int y, int z) {
     if (new SetBlockEvent(new BlockCoordinates(x, y, z), block).post()) {
       modified = true;
-      blocks[fastPositive(x % SIZE_BLOCKS)][fastPositive(y % SIZE_BLOCKS)][fastPositive(z % SIZE_BLOCKS)] = block;
+      blocks[fastPositive(x % SIZE_BLOCKS) + fastPositive(z % SIZE_BLOCKS) * SIZE_BLOCKS + fastPositive(y % SIZE_BLOCKS) * SIZE_BLOCKS_SQUARED] = block;
     }
   }
 
