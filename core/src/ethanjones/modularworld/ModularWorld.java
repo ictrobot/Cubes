@@ -52,6 +52,7 @@ public class ModularWorld implements ApplicationListener {
       Log.error(new ModularWorldException("No Compatibility module for this platform: " + Gdx.app.getType().name() + ", OS: " + System.getProperty("os.name") + ", Arch:" + System.getProperty("os.arch")));
     }
     eventBus = new EventBus().register(this);
+    compatibility.init();
     //TODO: Have compatibility log extra stuff about environment such as android version etc
     baseFolder = compatibility.getBaseFolder();
     baseFolder.mkdirs();

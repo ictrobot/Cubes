@@ -11,6 +11,9 @@ public abstract class Compatibility {
 
   protected Compatibility(Application.ApplicationType applicationType) {
     this.applicationType = applicationType;
+  }
+
+  public void init() {
     ModularWorld.instance.eventBus.register(this);
   }
 

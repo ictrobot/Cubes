@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import ethanjones.modularworld.block.Block;
 import ethanjones.modularworld.core.util.Direction;
+import ethanjones.modularworld.graphics.Axis;
 import ethanjones.modularworld.graphics.GraphicsHelper;
 import ethanjones.modularworld.graphics.PackedTexture;
 import ethanjones.modularworld.world.storage.Area;
@@ -30,6 +31,7 @@ public class AreaRenderer {
   Vector3 v = new Vector3();
   Vector3 normal = new Vector3();
   int mul = 0;
+  Point[] p = new Point[]{new Point(), new Point(), new Point(), new Point()};
   private Array<Model> models;
   private Array<ModelInstance> modelInstances;
   private Camera camera;
@@ -405,29 +407,101 @@ public class AreaRenderer {
     normal.z = mul * ((u.x * v.y) - (u.y * v.x));
     normal.nor();
 
-    x00 += area.minBlockX;
-    x10 += area.minBlockX;
-    x11 += area.minBlockX;
-    x01 += area.minBlockX;
+    p[0].x = x00 + area.minBlockX;
+    p[1].x = x10 + area.minBlockX;
+    p[2].x = x11 + area.minBlockX;
+    p[3].x = x01 + area.minBlockX;
 
-    y00 += area.minBlockY;
-    y10 += area.minBlockY;
-    y11 += area.minBlockY;
-    y01 += area.minBlockY;
+    p[0].y = y00 + area.minBlockY;
+    p[1].y = y10 + area.minBlockY;
+    p[2].y = y11 + area.minBlockY;
+    p[3].y = y01 + area.minBlockY;
 
-    z00 += area.minBlockZ;
-    z10 += area.minBlockZ;
-    z11 += area.minBlockZ;
-    z01 += area.minBlockZ;
+    p[0].z = z00 + area.minBlockZ;
+    p[1].z = z10 + area.minBlockZ;
+    p[2].z = z11 + area.minBlockZ;
+    p[3].z = z01 + area.minBlockZ;
+
+    sort();
 
     meshBuilder.begin(GraphicsHelper.usage, GL20.GL_TRIANGLES);
     meshBuilder.setUVRange(regions[voxel.type]);
     if (backFace) {
-      meshBuilder.rect(x01, y01, z01, x11, y11, z11, x10, y10, z10, x00, y00, z00, normal.x, normal.y, normal.z);
+      meshBuilder.rect(p[3].x, p[3].y, p[3].z, p[2].x, p[2].y, p[2].z, p[1].x, p[1].y, p[1].z, p[0].x, p[0].y, p[0].z, normal.x, normal.y, normal.z);
     } else {
-      meshBuilder.rect(x00, y00, z00, x10, y10, z10, x11, y11, z11, x01, y01, z01, normal.x, normal.y, normal.z);
+      meshBuilder.rect(p[0].x, p[0].y, p[0].z, p[1].x, p[1].y, p[1].z, p[2].x, p[2].y, p[3].z, p[3].x, p[3].y, p[3].z, normal.x, normal.y, normal.z);
     }
     meshes.add(meshBuilder.end());
+  }
+
+  private void sort() {
+    Axis same = Axis.y;
+    Axis a1 = Axis.x;
+    Axis a2 = Axis.z;
+    if (p[0].x == p[1].x && p[1].x == p[2].x && p[2].x == p[3].x) {
+      same = Axis.x;
+      a1 = Axis.y;
+      a2 = Axis.z;
+    }
+    if (p[0].z == p[1].z && p[1].z == p[2].z && p[2].z == p[3].z) {
+      same = Axis.z;
+      a1 = Axis.x;
+      a2 = Axis.y;
+    }
+    sortBy(a1, a2);
+  }
+
+  private void sortBy(Axis sort1, Axis sort2) {
+    float[] s1 = new float[4];
+    s1[0] = p[0].get(sort1);
+    s1[1] = p[1].get(sort1);
+    s1[2] = p[2].get(sort1);
+    s1[3] = p[3].get(sort1);
+    float[] s2 = new float[4];
+    s2[0] = p[0].get(sort2);
+    s2[1] = p[1].get(sort2);
+    s2[2] = p[2].get(sort2);
+    s2[3] = p[3].get(sort2);
+    float min1 = Math.min(s1[0], Math.min(s1[1], Math.min(s1[2], s1[3])));
+    float min2 = Math.min(s2[0], Math.min(s2[1], Math.min(s2[2], s2[3])));
+    float max1 = Math.max(s1[0], Math.max(s1[1], Math.max(s1[2], s1[3])));
+    float max2 = Math.max(s2[0], Math.max(s2[1], Math.max(s2[2], s2[3])));
+    Point[] sorted = new Point[4];
+    for (int i = 0; i < 4; i++) {
+      if (min1 == p[i].get(sort1) && min2 == p[i].get(sort2)) sorted[0] = p[i];
+      if (max1 == p[i].get(sort1) && min2 == p[i].get(sort2)) sorted[1] = p[i];
+      if (max1 == p[i].get(sort1) && max2 == p[i].get(sort2)) sorted[2] = p[i];
+      if (min1 == p[i].get(sort1) && max2 == p[i].get(sort2)) sorted[3] = p[i];
+    }
+    p = sorted;
+  }
+
+  private static class Point {
+    float x;
+    float y;
+    float z;
+
+    public void set(float x, float y, float z) {
+      this.x = x;
+      this.y = y;
+      this.z = z;
+    }
+
+    public void setZero() {
+      set(0, 0, 0);
+    }
+
+    public float get(Axis axis) {
+      switch (axis) {
+        case x:
+          return x;
+        case y:
+          return y;
+        case z:
+          return z;
+      }
+      return 0;
+    }
   }
 
   class VoxelFace {
