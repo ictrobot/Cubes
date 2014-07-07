@@ -1,17 +1,11 @@
 package ethanjones.modularworld.graphics.world;
 
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.RenderableProvider;
-import com.badlogic.gdx.graphics.g3d.model.MeshPart;
-import com.badlogic.gdx.graphics.g3d.model.Node;
-import com.badlogic.gdx.graphics.g3d.model.NodePart;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
@@ -65,36 +59,13 @@ public class AreaRenderer implements RenderableProvider {
 
   public AreaRenderer(Area area) {
     this.area = area;
+    this.offset.set(area.minBlockX, area.minBlockY, area.minBlockZ);
     faceProvider = new FaceProvider(area);
     modelInstances = new Array<ModelInstance>();
     models = new Array<Model>();
-    mesh = new Mesh(true, SIZE_BLOCKS_CUBED * 6 * 4, SIZE_BLOCKS_CUBED * 36 / 3, VertexAttribute.Position(), VertexAttribute.Normal(), VertexAttribute.TexCoords(2));
+    mesh = new Mesh(true, SIZE_BLOCKS_CUBED * 8 * 4, SIZE_BLOCKS_CUBED * 36 / 3, VertexAttribute.Position(), VertexAttribute.Normal(), new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords"));
     mesh.setIndices(indices);
     vertices = new float[VERTEX_SIZE * 6 * SIZE_BLOCKS_CUBED];
-  }
-
-  public static Model createFromMesh(final Mesh mesh) {
-    Model result = new Model();
-    MeshPart meshPart = new MeshPart();
-    meshPart.id = "part1";
-    meshPart.indexOffset = 0;
-    meshPart.numVertices = mesh.getNumIndices();
-    meshPart.primitiveType = GL20.GL_TRIANGLES;
-    meshPart.mesh = mesh;
-
-    NodePart partMaterial = new NodePart();
-    partMaterial.material = GraphicsHelper.blockPackedTextures;
-    partMaterial.meshPart = meshPart;
-    Node node = new Node();
-    node.id = "node1";
-    node.parts.add(partMaterial);
-
-    result.meshes.add(mesh);
-    result.materials.add(GraphicsHelper.blockPackedTextures);
-    result.nodes.add(node);
-    result.meshParts.add(meshPart);
-    result.manageDisposable(mesh);
-    return result;
   }
 
   public static int createTop(Vector3 offset, TextureRegion region, int x, int y, int z, float[] vertices, int vertexOffset) {
@@ -104,6 +75,8 @@ public class AreaRenderer implements RenderableProvider {
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = 1;
     vertices[vertexOffset++] = 0;
+    vertices[vertexOffset++] = region.getU();
+    vertices[vertexOffset++] = region.getV2();
 
     vertices[vertexOffset++] = offset.x + x + 1;
     vertices[vertexOffset++] = offset.y + y + 1;
@@ -111,6 +84,8 @@ public class AreaRenderer implements RenderableProvider {
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = 1;
     vertices[vertexOffset++] = 0;
+    vertices[vertexOffset++] = region.getU2();
+    vertices[vertexOffset++] = region.getV2();
 
     vertices[vertexOffset++] = offset.x + x + 1;
     vertices[vertexOffset++] = offset.y + y + 1;
@@ -118,6 +93,8 @@ public class AreaRenderer implements RenderableProvider {
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = 1;
     vertices[vertexOffset++] = 0;
+    vertices[vertexOffset++] = region.getU2();
+    vertices[vertexOffset++] = region.getV();
 
     vertices[vertexOffset++] = offset.x + x;
     vertices[vertexOffset++] = offset.y + y + 1;
@@ -125,6 +102,8 @@ public class AreaRenderer implements RenderableProvider {
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = 1;
     vertices[vertexOffset++] = 0;
+    vertices[vertexOffset++] = region.getU();
+    vertices[vertexOffset++] = region.getV();
     return vertexOffset;
   }
 
@@ -135,6 +114,8 @@ public class AreaRenderer implements RenderableProvider {
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = -1;
     vertices[vertexOffset++] = 0;
+    vertices[vertexOffset++] = region.getU();
+    vertices[vertexOffset++] = region.getV2();
 
     vertices[vertexOffset++] = offset.x + x;
     vertices[vertexOffset++] = offset.y + y;
@@ -142,6 +123,8 @@ public class AreaRenderer implements RenderableProvider {
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = -1;
     vertices[vertexOffset++] = 0;
+    vertices[vertexOffset++] = region.getU2();
+    vertices[vertexOffset++] = region.getV2();
 
     vertices[vertexOffset++] = offset.x + x + 1;
     vertices[vertexOffset++] = offset.y + y;
@@ -149,6 +132,8 @@ public class AreaRenderer implements RenderableProvider {
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = -1;
     vertices[vertexOffset++] = 0;
+    vertices[vertexOffset++] = region.getU2();
+    vertices[vertexOffset++] = region.getV();
 
     vertices[vertexOffset++] = offset.x + x + 1;
     vertices[vertexOffset++] = offset.y + y;
@@ -156,6 +141,8 @@ public class AreaRenderer implements RenderableProvider {
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = -1;
     vertices[vertexOffset++] = 0;
+    vertices[vertexOffset++] = region.getU();
+    vertices[vertexOffset++] = region.getV();
     return vertexOffset;
   }
 
@@ -166,6 +153,8 @@ public class AreaRenderer implements RenderableProvider {
     vertices[vertexOffset++] = -1;
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = 0;
+    vertices[vertexOffset++] = region.getU();
+    vertices[vertexOffset++] = region.getV2();
 
     vertices[vertexOffset++] = offset.x + x;
     vertices[vertexOffset++] = offset.y + y + 1;
@@ -173,6 +162,8 @@ public class AreaRenderer implements RenderableProvider {
     vertices[vertexOffset++] = -1;
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = 0;
+    vertices[vertexOffset++] = region.getU2();
+    vertices[vertexOffset++] = region.getV2();
 
     vertices[vertexOffset++] = offset.x + x;
     vertices[vertexOffset++] = offset.y + y + 1;
@@ -180,6 +171,8 @@ public class AreaRenderer implements RenderableProvider {
     vertices[vertexOffset++] = -1;
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = 0;
+    vertices[vertexOffset++] = region.getU2();
+    vertices[vertexOffset++] = region.getV();
 
     vertices[vertexOffset++] = offset.x + x;
     vertices[vertexOffset++] = offset.y + y;
@@ -187,6 +180,8 @@ public class AreaRenderer implements RenderableProvider {
     vertices[vertexOffset++] = -1;
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = 0;
+    vertices[vertexOffset++] = region.getU();
+    vertices[vertexOffset++] = region.getV();
     return vertexOffset;
   }
 
@@ -197,6 +192,8 @@ public class AreaRenderer implements RenderableProvider {
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = 1;
     vertices[vertexOffset++] = 0;
+    vertices[vertexOffset++] = region.getU();
+    vertices[vertexOffset++] = region.getV2();
 
     vertices[vertexOffset++] = offset.x + x + 1;
     vertices[vertexOffset++] = offset.y + y;
@@ -204,6 +201,8 @@ public class AreaRenderer implements RenderableProvider {
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = 1;
     vertices[vertexOffset++] = 0;
+    vertices[vertexOffset++] = region.getU2();
+    vertices[vertexOffset++] = region.getV2();
 
     vertices[vertexOffset++] = offset.x + x + 1;
     vertices[vertexOffset++] = offset.y + y + 1;
@@ -211,6 +210,8 @@ public class AreaRenderer implements RenderableProvider {
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = 1;
     vertices[vertexOffset++] = 0;
+    vertices[vertexOffset++] = region.getU2();
+    vertices[vertexOffset++] = region.getV();
 
     vertices[vertexOffset++] = offset.x + x + 1;
     vertices[vertexOffset++] = offset.y + y + 1;
@@ -218,6 +219,8 @@ public class AreaRenderer implements RenderableProvider {
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = 1;
     vertices[vertexOffset++] = 0;
+    vertices[vertexOffset++] = region.getU();
+    vertices[vertexOffset++] = region.getV();
     return vertexOffset;
   }
 
@@ -228,6 +231,8 @@ public class AreaRenderer implements RenderableProvider {
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = 1;
+    vertices[vertexOffset++] = region.getU();
+    vertices[vertexOffset++] = region.getV2();
 
     vertices[vertexOffset++] = offset.x + x + 1;
     vertices[vertexOffset++] = offset.y + y;
@@ -235,6 +240,8 @@ public class AreaRenderer implements RenderableProvider {
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = 1;
+    vertices[vertexOffset++] = region.getU2();
+    vertices[vertexOffset++] = region.getV2();
 
     vertices[vertexOffset++] = offset.x + x + 1;
     vertices[vertexOffset++] = offset.y + y + 1;
@@ -242,6 +249,8 @@ public class AreaRenderer implements RenderableProvider {
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = 1;
+    vertices[vertexOffset++] = region.getU2();
+    vertices[vertexOffset++] = region.getV2();
 
     vertices[vertexOffset++] = offset.x + x;
     vertices[vertexOffset++] = offset.y + y + 1;
@@ -249,6 +258,8 @@ public class AreaRenderer implements RenderableProvider {
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = 1;
+    vertices[vertexOffset++] = region.getU();
+    vertices[vertexOffset++] = region.getV();
     return vertexOffset;
   }
 
@@ -259,6 +270,8 @@ public class AreaRenderer implements RenderableProvider {
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = -1;
+    vertices[vertexOffset++] = region.getU();
+    vertices[vertexOffset++] = region.getV2();
 
     vertices[vertexOffset++] = offset.x + x;
     vertices[vertexOffset++] = offset.y + y + 1;
@@ -266,6 +279,8 @@ public class AreaRenderer implements RenderableProvider {
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = -1;
+    vertices[vertexOffset++] = region.getU2();
+    vertices[vertexOffset++] = region.getV2();
 
     vertices[vertexOffset++] = offset.x + x + 1;
     vertices[vertexOffset++] = offset.y + y + 1;
@@ -273,6 +288,8 @@ public class AreaRenderer implements RenderableProvider {
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = -1;
+    vertices[vertexOffset++] = region.getU2();
+    vertices[vertexOffset++] = region.getV();
 
     vertices[vertexOffset++] = offset.x + x + 1;
     vertices[vertexOffset++] = offset.y + y;
@@ -280,12 +297,13 @@ public class AreaRenderer implements RenderableProvider {
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = -1;
+    vertices[vertexOffset++] = region.getU();
+    vertices[vertexOffset++] = region.getV();
     return vertexOffset;
   }
 
-  public AreaRenderer set(Camera camera, int offsetX, int offsetY, int offsetZ) {
+  public AreaRenderer set(Camera camera) {
     this.camera = camera;
-    this.offset.set(offsetX, offsetY, offsetZ);
     return this;
   }
 
@@ -330,6 +348,7 @@ public class AreaRenderer implements RenderableProvider {
    * @return the number of vertices produced
    */
   public int calculateVertices(float[] vertices) {
+    meshBuilder.begin(new VertexAttributes(VertexAttribute.Position(), VertexAttribute.Normal(), new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords")));
     int i = 0;
     int vertexOffset = 0;
     for (int y = 0; y < SIZE_BLOCKS; y++) {
@@ -338,6 +357,8 @@ public class AreaRenderer implements RenderableProvider {
           Block block = area.blocks[i];
           if (block == null) continue;
           BlockTextureHandler textureHandler = block.getTextureHandler();
+          meshBuilder.setUVRange(textureHandler.getSide(Direction.posY).textureRegion);
+          meshBuilder.rect(0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0);
           if (y < SIZE_BLOCKS - 1) {
             if (area.blocks[i + topOffset] == null)
               vertexOffset = createTop(offset, textureHandler.getSide(Direction.posY).textureRegion, x, y, z, vertices, vertexOffset);
