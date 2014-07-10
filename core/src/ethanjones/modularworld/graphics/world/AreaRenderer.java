@@ -348,7 +348,6 @@ public class AreaRenderer implements RenderableProvider {
    * @return the number of vertices produced
    */
   public int calculateVertices(float[] vertices) {
-    meshBuilder.begin(new VertexAttributes(VertexAttribute.Position(), VertexAttribute.Normal(), new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords")));
     int i = 0;
     int vertexOffset = 0;
     for (int y = 0; y < SIZE_BLOCKS; y++) {
@@ -357,8 +356,6 @@ public class AreaRenderer implements RenderableProvider {
           Block block = area.blocks[i];
           if (block == null) continue;
           BlockTextureHandler textureHandler = block.getTextureHandler();
-          meshBuilder.setUVRange(textureHandler.getSide(Direction.posY).textureRegion);
-          meshBuilder.rect(0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0);
           if (y < SIZE_BLOCKS - 1) {
             if (area.blocks[i + topOffset] == null)
               vertexOffset = createTop(offset, textureHandler.getSide(Direction.posY).textureRegion, x, y, z, vertices, vertexOffset);
