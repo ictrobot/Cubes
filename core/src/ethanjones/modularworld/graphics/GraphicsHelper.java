@@ -111,7 +111,7 @@ public class GraphicsHelper {
       }
     }
 
-    Texture texture = new Texture(Gdx.files.internal("Blocks/Grass.png"));
+    Texture texture = new Texture(Gdx.files.internal("assets/Blocks/Grass.png"));
     texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
     grass = new Material(TextureAttribute.createDiffuse(texture));
   }
