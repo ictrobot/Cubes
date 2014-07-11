@@ -67,11 +67,8 @@ public class GraphicsHelper {
     FileHandle blocksFolder = ModularWorld.instance.compatibility.getWorkingFolder().child("Blocks");
     FileHandle workingFolder = ModularWorld.instance.compatibility.getWorkingFolder();
     findTexture(blocksFolder, null, blockTextureFiles);
-    Log.error(blockTextureFiles.toString());
     pack(blockTextureFiles);
-    if (texturePackers.size < 0) {
-      Log.error(new ModularWorldException("No block textures"));
-    } else if (texturePackers.size > 1) {
+    if (texturePackers.size > 1) {
       Log.error(new ModularWorldException("Only one sheet of block textures is allowed"));
     }
     findTexture(workingFolder, ModularWorld.instance.compatibility.getWorkingFolder().child("Block"), textureFiles);
@@ -148,10 +145,11 @@ public class GraphicsHelper {
   private static void findTexture(FileHandle parent, FileHandle exclude, Array<String> filenames) {
     if (parent == exclude) return;
     for (FileHandle fileHandle : parent.list()) {
+      Log.debug(fileHandle.path());
       if (exclude != null && fileHandle != exclude) return;
       if (fileHandle.isDirectory()) {
         findTexture(fileHandle, exclude, filenames);
-      } else if (fileHandle.extension().endsWith("png")) {
+      } else if (fileHandle.name().endsWith(".png")) {
         filenames.add(fileHandle.file().getAbsolutePath());
       }
     }
