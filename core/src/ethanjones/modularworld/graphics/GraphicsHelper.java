@@ -67,6 +67,7 @@ public class GraphicsHelper {
     FileHandle blocksFolder = ModularWorld.instance.compatibility.getWorkingFolder().child("Blocks");
     FileHandle workingFolder = ModularWorld.instance.compatibility.getWorkingFolder();
     findTexture(blocksFolder, null, blockTextureFiles);
+    Log.error(blockTextureFiles.toString());
     pack(blockTextureFiles);
     if (texturePackers.size < 0) {
       Log.error(new ModularWorldException("No block textures"));
