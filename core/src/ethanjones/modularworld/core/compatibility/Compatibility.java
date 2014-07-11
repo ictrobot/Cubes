@@ -72,7 +72,9 @@ public abstract class Compatibility {
           String name = ze.getName();
           if (name.startsWith(assets)) {
             name = name.substring(ze.getName().lastIndexOf(assets) + assets.length() + 1);
-            AssetManager.AssetFolder assetFolder = getAssetFolder(name.substring(0, name.lastIndexOf(File.separator)), assetManager.assets);
+            int index = name.lastIndexOf(File.separator);
+            if (index == -1) continue;
+            AssetManager.AssetFolder assetFolder = getAssetFolder(name.substring(0, index), assetManager.assets);
             assetFolder.addFile(new AssetManager.Asset(Gdx.files.internal(name), name, assetFolder));
           }
         }
