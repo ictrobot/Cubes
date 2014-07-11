@@ -60,8 +60,7 @@ public class ModularWorld implements ApplicationListener {
     baseFolder.mkdirs();
 
     Log.info(Branding.NAME, Branding.DEBUG);
-    String version = Gdx.files.internal("version").file().getAbsolutePath();
-    Log.info(version + " " + version.endsWith("version"));
+    Log.info(Gdx.files.internal("version").file().exists() + " ");
     Debug.printProperties();
 
     if (!compatibility.isHeadless()) {
