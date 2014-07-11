@@ -1,4 +1,4 @@
-package ethanjones.modularworld.block.basic;
+package ethanjones.modularworld.block.factory.basic;
 
 import ethanjones.modularworld.core.util.Direction;
 import ethanjones.modularworld.graphics.GraphicsHelper;

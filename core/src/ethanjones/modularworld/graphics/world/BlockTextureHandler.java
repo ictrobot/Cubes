@@ -12,16 +12,16 @@ public class BlockTextureHandler {
 
   public BlockTextureHandler(PackedTexture mainTexture) {
     packedTextures = new PackedTexture[6];
-    if (checkPackedTexture(mainTexture)) {
-      Log.error(new ModularWorldException("Block textures have to be on block packed texture"));
-    }
+    checkPackedTexture(mainTexture);
     for (int i = 0; i <= 5; i++) {
       packedTextures[i] = mainTexture;
     }
   }
 
-  private static boolean checkPackedTexture(PackedTexture packedTexture) {
-    return packedTexture.material != GraphicsHelper.blockPackedTextures;
+  private static void checkPackedTexture(PackedTexture packedTexture) {
+    if (!packedTexture.material.equals(GraphicsHelper.blockPackedTextures)) {
+      Log.error(new ModularWorldException("Block textures have to be on block packed texture"));
+    }
   }
 
   public PackedTexture getSide(int direction) {
@@ -33,9 +33,7 @@ public class BlockTextureHandler {
   }
 
   public BlockTextureHandler setSide(Direction direction, PackedTexture packedTexture) {
-    if (!checkPackedTexture(packedTexture)) {
-      Log.error(new ModularWorldException("Block textures have to be on block packed texture"));
-    }
+    checkPackedTexture(packedTexture);
     packedTextures[direction.index] = packedTexture;
     return this;
   }

@@ -14,6 +14,7 @@ import ethanjones.modularworld.core.settings.Settings;
 import ethanjones.modularworld.core.settings.SettingsManager;
 import ethanjones.modularworld.core.timing.Timing;
 import ethanjones.modularworld.entity.living.player.Player;
+import ethanjones.modularworld.graphics.AssetManager;
 import ethanjones.modularworld.graphics.GraphicsHelper;
 import ethanjones.modularworld.graphics.rendering.Renderer;
 import ethanjones.modularworld.input.InputChain;
@@ -34,6 +35,8 @@ public class ModularWorld implements ApplicationListener {
   public Compatibility compatibility;
   public SettingsManager settings;
   public Timing timing;
+
+  public AssetManager assetManager;
 
   public FileHandle baseFolder;
 
@@ -60,11 +63,12 @@ public class ModularWorld implements ApplicationListener {
     baseFolder.mkdirs();
 
     Log.info(Branding.NAME, Branding.DEBUG);
-    Log.info(Gdx.files.internal("version").file().exists() + " ");
     Debug.printProperties();
 
     if (!compatibility.isHeadless()) {
-      GraphicsHelper.init();
+      assetManager = new AssetManager();
+      compatibility.getAssets(assetManager);
+      GraphicsHelper.init(assetManager);
     }
 
     player = new Player();

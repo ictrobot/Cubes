@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import ethanjones.modularworld.core.Branding;
 import ethanjones.modularworld.core.compatibility.Compatibility;
+import ethanjones.modularworld.graphics.AssetManager;
 
 public class DesktopCompatibility extends Compatibility {
 
@@ -38,6 +39,16 @@ public class DesktopCompatibility extends Compatibility {
         return homeDir.child("Library").child("Application Support").child(Branding.NAME);
       default:
         return homeDir.child("." + Branding.NAME);
+    }
+  }
+
+  @Override
+  public void getAssets(AssetManager assetManager) {
+    if (Gdx.files.internal("version").file().exists()) {
+      super.getAssets(assetManager);
+      return;
+    } else {//files are in a jar
+
     }
   }
 

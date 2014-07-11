@@ -1,9 +1,9 @@
 package ethanjones.modularworld.block.factory;
 
-import ethanjones.modularworld.block.basic.BlockFactoryBedrock;
-import ethanjones.modularworld.block.basic.BlockFactoryDirt;
-import ethanjones.modularworld.block.basic.BlockFactoryGrass;
-import ethanjones.modularworld.block.basic.BlockFactoryStone;
+import ethanjones.modularworld.block.factory.basic.BlockFactoryBedrock;
+import ethanjones.modularworld.block.factory.basic.BlockFactoryDirt;
+import ethanjones.modularworld.block.factory.basic.BlockFactoryGrass;
+import ethanjones.modularworld.block.factory.basic.BlockFactoryStone;
 import ethanjones.modularworld.core.util.Register;
 
 import java.lang.reflect.Field;

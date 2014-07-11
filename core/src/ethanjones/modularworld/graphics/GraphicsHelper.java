@@ -25,11 +25,9 @@ import java.util.Map;
 
 public class GraphicsHelper {
 
-  public static Material blockPackedTextures;
+  public static PackedTexture.PackedMaterial blockPackedTextures;
   public static Material grass;
   public static int usage = Usage.Position | Usage.Normal | Usage.TextureCoordinates;
-  private static Array<String> textureFiles = new Array<String>();
-  private static Array<String> blockTextureFiles = new Array<String>();
   private static Array<TexturePacker> texturePackers = new Array<TexturePacker>();
   private static Array<Texture> packedTextures;
   private static HashMap<String, PackedTexture> textures = new HashMap<String, PackedTexture>();
@@ -54,7 +52,7 @@ public class GraphicsHelper {
     return getRenderer().modelBuilder;
   }
 
-  public static void init() {
+  public static void init(AssetManager assetManager) {
     FileHandle parent = ModularWorld.instance.baseFolder.child("PackedTextures");
     parent.mkdirs();
     for (String pastPackedTexture : parent.file().list()) {
@@ -65,14 +63,19 @@ public class GraphicsHelper {
       }
     }
     FileHandle assetsFolder = Gdx.files.internal(".");
-    FileHandle blocksFolder = assetsFolder.child("Blocks");
-    findTexture(blocksFolder, null, blockTextureFiles);
-    pack(blockTextureFiles);
+    AssetManager.AssetFolder assetFolderManager = assetManager.assets;
+    Array<AssetManager.Asset> textureHandles = new Array<AssetManager.Asset>();
+
+    AssetManager.AssetFolder blockFolderManager = assetManager.assets.folders.get("Blocks");
+    Array<AssetManager.Asset> blockTextureHandles = new Array<AssetManager.Asset>();
+
+    findTexture(blockFolderManager, null, blockTextureHandles);
+    pack(blockTextureHandles);
     if (texturePackers.size > 1) {
       Log.error(new ModularWorldException("Only one sheet of block textures is allowed"));
     }
-    findTexture(assetsFolder, blocksFolder, textureFiles);
-    pack(textureFiles);
+    findTexture(assetFolderManager, blockFolderManager, textureHandles);
+    pack(textureHandles);
 
     packedTextures = new Array<Texture>(texturePackers.size);
     for (int i = 0; i < texturePackers.size; i++) {
@@ -92,7 +95,7 @@ public class GraphicsHelper {
       if (i == 0) {
         //texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
       }
-      Material material = new Material(TextureAttribute.createDiffuse(texture));
+      PackedTexture.PackedMaterial material = new PackedTexture.PackedMaterial(TextureAttribute.createDiffuse(texture));
       packedTextures.add(texture);
       if (i == 0) {
         blockPackedTextures = material;
@@ -102,9 +105,8 @@ public class GraphicsHelper {
       int num = 0;
       for (String str : rectangles.keySet()) {
         num++;
-        TexturePacker.PackRectangle rectangle = rectangles.get(str); // substring to remove /
-        str = stringToHashMap(str.replace(assetsFolder.file().getAbsolutePath(), ""));
-        if (str.startsWith("$")) str = str.substring(1);
+        TexturePacker.PackRectangle rectangle = rectangles.get(str);
+        str = stringToHashMap(str);
         textures.put(str, new PackedTexture(texture, num, material, new TextureRegion(texture, rectangle.x, rectangle.y, rectangle.width, rectangle.height), str));
       }
     }
@@ -115,44 +117,40 @@ public class GraphicsHelper {
   }
 
   private static String stringToHashMap(String str) {
-    return str.replace("\\", "$").replace("/", "$");
+    return str.replace("\\", "/");
   }
 
-  private static void pack(Array<String> filenames) {
+  private static void pack(Array<AssetManager.Asset> files) {
     TexturePacker texturePacker = getTexturePacker();
-    for (String str : filenames) {
+    for (AssetManager.Asset asset : files) {
       try {
-        if (!addToTexturePacker(texturePacker, str)) {
+        if (!addToTexturePacker(texturePacker, asset)) {
           texturePackers.add(texturePacker);
           texturePacker = getTexturePacker();
-          addToTexturePacker(texturePacker, str);
+          addToTexturePacker(texturePacker, asset);
         }
       } catch (IOException e) {
-        Log.error("Failed to read file: " + str, e);
+        Log.error("Failed to read file: " + asset.path, e);
       }
     }
     if (texturePacker.getRectangles().size() != 0) texturePackers.add(texturePacker);
+  }
+
+  private static boolean addToTexturePacker(TexturePacker texturePacker, AssetManager.Asset asset) throws IOException {
+    return texturePacker.insertImage(asset.path, new Pixmap(asset.bytes, 0, asset.bytes.length));
   }
 
   private static TexturePacker getTexturePacker() {
     return new TexturePacker(2048, 2048, 0);
   }
 
-  private static boolean addToTexturePacker(TexturePacker texturePacker, String path) throws IOException {
-    return texturePacker.insertImage(path, new Pixmap(Gdx.files.internal(path)));
-  }
-
-  private static void findTexture(FileHandle parent, FileHandle exclude, Array<String> filenames) {
-    Log.info(parent.path());
+  private static void findTexture(AssetManager.AssetFolder parent, AssetManager.AssetFolder exclude, Array<AssetManager.Asset> files) {
     if (parent == exclude) return;
-    for (FileHandle fileHandle : parent.list()) {
-      if (!fileHandle.isDirectory()) Log.info("  " + fileHandle.path());
-      if (exclude != null && fileHandle.equals(exclude)) continue;
-      if (fileHandle.isDirectory()) {
-        findTexture(fileHandle, exclude, filenames);
-      } else if (fileHandle.name().endsWith(".png")) {
-        filenames.add(fileHandle.file().getAbsolutePath());
-      }
+    for (AssetManager.AssetFolder folder : parent.folders.values()) {
+      findTexture(folder, exclude, files);
+    }
+    for (AssetManager.Asset file : parent.files.values()) {
+      if (file.path.endsWith(".png")) files.add(file);
     }
   }
 

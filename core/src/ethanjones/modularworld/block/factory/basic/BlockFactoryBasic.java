@@ -1,4 +1,4 @@
-package ethanjones.modularworld.block.basic;
+package ethanjones.modularworld.block.factory.basic;
 
 import ethanjones.modularworld.block.factory.BlockFactory;
 import ethanjones.modularworld.core.data.ByteData;
