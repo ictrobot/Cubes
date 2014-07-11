@@ -48,7 +48,7 @@ public class DesktopCompatibility extends Compatibility {
       super.getAssets(assetManager);
       return;
     } else {//files are in a jar
-
+      super.extractAssets(assetManager);
     }
   }
 
