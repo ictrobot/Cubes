@@ -143,8 +143,8 @@ public class GraphicsHelper {
   }
 
   private static void findTexture(FileHandle parent, FileHandle exclude, Array<String> filenames) {
-    if (parent == exclude) return;
     Log.info(parent.path());
+    if (parent == exclude) return;
     for (FileHandle fileHandle : parent.list()) {
       if (!fileHandle.isDirectory()) Log.info("  " + fileHandle.path());
       if (exclude != null && fileHandle.equals(exclude)) continue;
