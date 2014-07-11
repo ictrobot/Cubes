@@ -58,6 +58,7 @@ public abstract class Compatibility {
    * Extracts from jar
    */
   protected void extractAssets(AssetManager assetManager) {
+    String assets = "assets";
     try {
       CodeSource src = Compatibility.class.getProtectionDomain().getCodeSource();
       List<String> list = new ArrayList<String>();
@@ -68,8 +69,9 @@ public abstract class Compatibility {
         ZipEntry ze = null;
 
         while ((ze = zip.getNextEntry()) != null) {
-          if (ze.getName().startsWith("assets")) {
-            String name = ze.getName().substring(ze.getName().lastIndexOf("assets"));
+          String name = ze.getName();
+          if (name.startsWith(assets)) {
+            name = name.substring(ze.getName().lastIndexOf(assets) + assets.length() + 1);
             Log.info(name);
           }
         }
