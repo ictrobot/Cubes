@@ -64,14 +64,14 @@ public class GraphicsHelper {
 
       }
     }
-    FileHandle blocksFolder = ModularWorld.instance.compatibility.getWorkingFolder().child("Blocks");
-    FileHandle workingFolder = ModularWorld.instance.compatibility.getWorkingFolder();
+    FileHandle assetsFolder = Gdx.files.internal(".");
+    FileHandle blocksFolder = assetsFolder.child("Blocks");
     findTexture(blocksFolder, null, blockTextureFiles);
     pack(blockTextureFiles);
     if (texturePackers.size > 1) {
       Log.error(new ModularWorldException("Only one sheet of block textures is allowed"));
     }
-    findTexture(workingFolder, ModularWorld.instance.compatibility.getWorkingFolder().child("Block"), textureFiles);
+    findTexture(assetsFolder, ModularWorld.instance.compatibility.getWorkingFolder().child("Block"), textureFiles);
     pack(textureFiles);
 
     packedTextures = new Array<Texture>(texturePackers.size);
@@ -103,7 +103,7 @@ public class GraphicsHelper {
       for (String str : rectangles.keySet()) {
         num++;
         TexturePacker.PackRectangle rectangle = rectangles.get(str); // substring to remove /
-        str = stringToHashMap(str.replace(workingFolder.file().getAbsolutePath(), ""));
+        str = stringToHashMap(str.replace(assetsFolder.file().getAbsolutePath(), ""));
         if (str.startsWith("$")) str = str.substring(1);
         textures.put(str, new PackedTexture(texture, num, material, new TextureRegion(texture, rectangle.x, rectangle.y, rectangle.width, rectangle.height), str));
       }
@@ -145,7 +145,6 @@ public class GraphicsHelper {
   private static void findTexture(FileHandle parent, FileHandle exclude, Array<String> filenames) {
     if (parent == exclude) return;
     for (FileHandle fileHandle : parent.list()) {
-      Log.debug(fileHandle.path());
       if (exclude != null && fileHandle != exclude) return;
       if (fileHandle.isDirectory()) {
         findTexture(fileHandle, exclude, filenames);
