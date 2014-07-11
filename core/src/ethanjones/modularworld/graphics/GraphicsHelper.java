@@ -71,7 +71,7 @@ public class GraphicsHelper {
     if (texturePackers.size > 1) {
       Log.error(new ModularWorldException("Only one sheet of block textures is allowed"));
     }
-    findTexture(assetsFolder, ModularWorld.instance.compatibility.getWorkingFolder().child("Block"), textureFiles);
+    findTexture(assetsFolder, blocksFolder, textureFiles);
     pack(textureFiles);
 
     packedTextures = new Array<Texture>(texturePackers.size);
@@ -144,8 +144,10 @@ public class GraphicsHelper {
 
   private static void findTexture(FileHandle parent, FileHandle exclude, Array<String> filenames) {
     if (parent == exclude) return;
+    Log.info(parent.path());
     for (FileHandle fileHandle : parent.list()) {
-      if (exclude != null && fileHandle != exclude) return;
+      if (!fileHandle.isDirectory()) Log.info("  " + fileHandle.path());
+      if (exclude != null && fileHandle.equals(exclude)) continue;
       if (fileHandle.isDirectory()) {
         findTexture(fileHandle, exclude, filenames);
       } else if (fileHandle.name().endsWith(".png")) {
