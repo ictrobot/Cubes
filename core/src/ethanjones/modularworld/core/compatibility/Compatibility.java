@@ -4,9 +4,9 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import ethanjones.modularworld.ModularWorld;
-import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.graphics.AssetManager;
 
+import java.io.File;
 import java.net.URL;
 import java.security.CodeSource;
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ public abstract class Compatibility {
         parentFolder.addFolder(folder);
         findAssets(fileHandle, folder, path + fileHandle.name() + "/");
       } else if (fileHandle.name().endsWith(".png")) {
-        parentFolder.addFile(new AssetManager.Asset(fileHandle, path + fileHandle.name(), fileHandle.readBytes(), parentFolder));
+        parentFolder.addFile(new AssetManager.Asset(fileHandle, path + fileHandle.name(), parentFolder));
       }
     }
   }
@@ -72,13 +72,22 @@ public abstract class Compatibility {
           String name = ze.getName();
           if (name.startsWith(assets)) {
             name = name.substring(ze.getName().lastIndexOf(assets) + assets.length() + 1);
-            Log.info(name);
+            AssetManager.AssetFolder assetFolder = getAssetFolder(name.substring(0, name.lastIndexOf(File.separator)), assetManager.assets);
+            assetFolder.addFile(new AssetManager.Asset(Gdx.files.internal(name), name, assetFolder));
           }
         }
       }
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  private AssetManager.AssetFolder getAssetFolder(String folder, AssetManager.AssetFolder parent) {
+    if (parent == null) return null;
+    if (folder.isEmpty()) return parent;
+    String n = folder.substring(0, folder.indexOf(File.separator));
+    String f = folder.substring(folder.indexOf(File.separator) + 1);
+    return getAssetFolder(f, parent.folders.get(n));
   }
 
 }

@@ -40,6 +40,11 @@ public class AssetManager {
     public byte[] bytes;
     public AssetFolder parent;
 
+    public Asset(FileHandle fileHandle, String path, AssetFolder parent) {
+      this(fileHandle, path, fileHandle.readBytes(), parent);
+    }
+
+
     public Asset(FileHandle fileHandle, String path, byte[] bytes, AssetFolder parent) {
       this.fileHandle = fileHandle;
       this.path = path;
