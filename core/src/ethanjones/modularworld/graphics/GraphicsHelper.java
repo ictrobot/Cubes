@@ -92,7 +92,7 @@ public class GraphicsHelper {
       Texture texture = new Texture(fileHandle);
       texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
       if (i == 0) {
-        texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+        //texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
       }
       Material material = new Material(TextureAttribute.createDiffuse(texture));
       packedTextures.add(texture);

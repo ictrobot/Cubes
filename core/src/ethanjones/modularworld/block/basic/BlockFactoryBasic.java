@@ -8,6 +8,7 @@ import ethanjones.modularworld.graphics.world.BlockTextureHandler;
 public class BlockFactoryBasic extends BlockFactory {
 
   BlockTextureHandler textureHandler;
+  String mainMaterial;
 
   public BlockFactoryBasic(String id) {
     this(id, id);
@@ -15,12 +16,12 @@ public class BlockFactoryBasic extends BlockFactory {
 
   public BlockFactoryBasic(String id, String mainMaterial) {
     super(id);
-    textureHandler = new BlockTextureHandler(GraphicsHelper.loadBlock(mainMaterial));
+    this.mainMaterial = mainMaterial;
   }
 
   @Override
   public void loadGraphics() {
-
+    textureHandler = new BlockTextureHandler(GraphicsHelper.loadBlock(mainMaterial));
   }
 
   @Override

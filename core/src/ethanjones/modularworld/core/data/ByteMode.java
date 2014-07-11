@@ -7,6 +7,33 @@ import java.io.IOException;
 public abstract class ByteMode {
 
   public static final byte MODE_BASE = 16;
+  public final byte mode;
+  public final byte modeByte;
+
+  private ByteMode(byte mode) {
+    this.mode = mode;
+    modeByte = (byte) (mode * MODE_BASE);
+  }
+
+  public static ByteMode read(byte modeNotdivided, DataInput input) throws IOException {
+    byte mode = (byte) (modeNotdivided / MODE_BASE);
+    switch (mode) {
+      case 0:
+        return new Normal(input);
+      case 1:
+        return new Named(input);
+      case 2:
+        return new Numbered(input);
+    }
+    return null;
+  }
+
+  public static void write(ByteBase bb, DataOutput output) throws IOException {
+    output.writeByte(bb.mode.modeByte + bb.getID());
+    bb.mode.writeData(output);
+  }
+
+  public abstract void writeData(DataOutput output) throws IOException;
 
   public static final class Normal extends ByteMode {
     public Normal() {
@@ -42,29 +69,22 @@ public abstract class ByteMode {
 
   }
 
-  public final byte mode;
-  public final byte modeByte;
+  public static final class Numbered extends ByteMode {
+    public final int number;
 
-  private ByteMode(byte mode) {
-    this.mode = mode;
-    modeByte = (byte) (mode * MODE_BASE);
-  }
-
-  public abstract void writeData(DataOutput output) throws IOException;
-
-  public static ByteMode read(byte modeNotdivided, DataInput input) throws IOException {
-    byte mode = (byte) (modeNotdivided / MODE_BASE);
-    switch (mode) {
-      case 0:
-        return new Normal(input);
-      case 1:
-        return new Named(input);
+    public Numbered(int number) {
+      super((byte) 2);
+      this.number = number;
     }
-    return null;
-  }
 
-  public static void write(ByteBase bb, DataOutput output) throws IOException {
-    output.writeByte(bb.mode.modeByte + bb.getID());
-    bb.mode.writeData(output);
+    protected Numbered(DataInput input) throws IOException {
+      this(input.readInt());
+    }
+
+    @Override
+    public void writeData(DataOutput output) throws IOException {
+      output.writeInt(number);
+    }
+
   }
 }

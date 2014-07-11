@@ -6,6 +6,8 @@ import java.util.HashMap;
 
 public class SettingGroup {
 
+  private static final String lineSeparator = System.getProperty("line.separator");
+
   private final SettingGroup parent;
   private final HashMap<String, SettingGroup> childGroups;
   private final HashMap<String, Setting> childSettings;
@@ -20,6 +22,19 @@ public class SettingGroup {
     }
     childGroups = new HashMap<String, SettingGroup>();
     childSettings = new HashMap<String, Setting>();
+  }
+
+  protected static String getString(Setting<?> setting, boolean equals, boolean line) {
+    StringBuilder s = new StringBuilder();
+    s.append(setting.name);
+    if (equals) s.append("=").append(setting.getString());
+    SettingGroup group = setting.parent;
+    while (group != null) {
+      s.insert(0, ".").insert(0, group.getName());
+      group = group.getParent();
+    }
+    if (line) s.append(lineSeparator);
+    return s.toString();
   }
 
   public SettingGroup getParent() {
@@ -56,18 +71,23 @@ public class SettingGroup {
     return setting;
   }
 
+  public Setting getSetting(String name) {
+    return childSettings.get(name);
+  }
+
   public Setting setSetting(Setting setting) {
     childSettings.put(setting.getName(), setting);
     return setting;
   }
-
 
   public String getString() {
     StringBuilder stringBuilder = new StringBuilder();
     for (SettingGroup settingGroup : getChildGroups()) {
       stringBuilder.append(settingGroup.getString());
     }
-    stringBuilder.append(SettingsManager.getString(getChildSettings()));
+    for (Setting setting : getChildSettings()) {
+      stringBuilder.append(getString(setting, true, true));
+    }
     return stringBuilder.toString();
   }
 

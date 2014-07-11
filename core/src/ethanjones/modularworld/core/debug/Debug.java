@@ -93,14 +93,14 @@ public class Debug {
   }
 
   public static void printProperties() {
-    Log.info("Properties", "Java Home:          " + System.getProperty("java.home"));
-    Log.info("Properties", "Java Vendor:        " + System.getProperty("java.vendor"));
-    Log.info("Properties", "Java Vendor URL:    " + System.getProperty("java.vendor.url"));
-    Log.info("Properties", "Java Version:       " + System.getProperty("java.version"));
-    Log.info("Properties", "OS Name:            " + System.getProperty("os.name"));
-    Log.info("Properties", "OS Architecture:    " + System.getProperty("os.arch"));
-    Log.info("Properties", "OS Version:         " + System.getProperty("os.version"));
-    Log.info("Properties", "Working Directory:  " + System.getProperty("user.dir"));
-    Log.info("Properties", "User Home:          " + System.getProperty("user.home"));
+    Log.debug("Properties", "Java Home:          " + System.getProperty("java.home"));
+    Log.debug("Properties", "Java Vendor:        " + System.getProperty("java.vendor"));
+    Log.debug("Properties", "Java Vendor URL:    " + System.getProperty("java.vendor.url"));
+    Log.debug("Properties", "Java Version:       " + System.getProperty("java.version"));
+    Log.debug("Properties", "OS Name:            " + System.getProperty("os.name"));
+    Log.debug("Properties", "OS Architecture:    " + System.getProperty("os.arch"));
+    Log.debug("Properties", "OS Version:         " + System.getProperty("os.version"));
+    Log.debug("Properties", "Working Directory:  " + System.getProperty("user.dir"));
+    Log.debug("Properties", "User Home:          " + System.getProperty("user.home"));
   }
 }

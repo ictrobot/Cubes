@@ -37,6 +37,8 @@ public class ModularWorld implements ApplicationListener {
 
   public FileHandle baseFolder;
 
+  public Networking networking;
+
   public ModularWorld() {
     this(null);
   }
@@ -83,8 +85,8 @@ public class ModularWorld implements ApplicationListener {
 
     settings = new SettingsManager();
     Settings.processAll();
-
-    Networking.startServerNetworking();
+    settings.readFromFile();
+    settings.print();
 
     timing = new Timing();
   }
@@ -108,6 +110,10 @@ public class ModularWorld implements ApplicationListener {
     }
   }
 
+  public void write() {
+    settings.writeToFile();
+  }
+
   @Override
   public void pause() {
 
@@ -120,6 +126,7 @@ public class ModularWorld implements ApplicationListener {
 
   @Override
   public void dispose() {
+    write();
     if (!compatibility.isHeadless()) {
       renderer.dispose();
     }
