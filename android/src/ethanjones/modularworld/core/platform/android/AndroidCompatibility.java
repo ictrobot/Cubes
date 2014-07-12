@@ -8,6 +8,7 @@ import ethanjones.modularworld.core.compatibility.Compatibility;
 import ethanjones.modularworld.core.events.EventHandler;
 import ethanjones.modularworld.core.events.setting.AfterProcessSettingEvent;
 import ethanjones.modularworld.core.settings.Settings;
+import ethanjones.modularworld.graphics.AssetManager;
 
 public class AndroidCompatibility extends Compatibility {
 
@@ -28,5 +29,10 @@ public class AndroidCompatibility extends Compatibility {
   @Override
   public FileHandle getWorkingFolder() {
     return Gdx.files.internal(".");
+  }
+
+  @Override
+  public void getAssets(AssetManager assetManager) {
+    super.extractAssets(assetManager);
   }
 }
