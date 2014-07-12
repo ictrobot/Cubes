@@ -79,7 +79,7 @@ public abstract class Compatibility {
             if (index == -1) continue;
             System.out.println(name.substring(0, index));
             AssetManager.AssetFolder assetFolder = getAssetFolder(name.substring(0, index), assetManager.assets);
-            assetFolder.addFile(new AssetManager.Asset(Gdx.files.internal(name), name, assetFolder));
+            assetFolder.addFile(new AssetManager.Asset(Gdx.files.internal(ze.getName()), name, assetFolder));
           }
         }
       }
