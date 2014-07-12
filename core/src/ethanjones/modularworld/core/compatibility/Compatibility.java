@@ -71,9 +71,14 @@ public abstract class Compatibility {
         while ((ze = zip.getNextEntry()) != null) {
           String name = ze.getName();
           if (name.startsWith(assets)) {
+            System.out.println();
+            System.out.println(name);
             name = name.substring(ze.getName().lastIndexOf(assets) + assets.length() + 1);
+            System.out.println(name);
             int index = name.lastIndexOf(File.separator);
+            System.out.println(index);
             if (index == -1) continue;
+            System.out.println(name.substring(0, index));
             AssetManager.AssetFolder assetFolder = getAssetFolder(name.substring(0, index), assetManager.assets);
             assetFolder.addFile(new AssetManager.Asset(Gdx.files.internal(name), name, assetFolder));
           }
