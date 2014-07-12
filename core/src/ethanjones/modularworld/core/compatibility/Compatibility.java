@@ -91,8 +91,9 @@ public abstract class Compatibility {
   private AssetManager.AssetFolder getAssetFolder(String folder, AssetManager.AssetFolder parent) {
     if (parent == null) return null;
     if (folder.isEmpty()) return parent;
-    String n = folder.substring(0, Math.max(folder.lastIndexOf("/"), folder.lastIndexOf("\\")));
-    String f = folder.substring(Math.max(folder.lastIndexOf("/"), folder.lastIndexOf("\\")) + 1);
+    int index = Math.max(folder.lastIndexOf("/"), folder.lastIndexOf("\\"));
+    String n = folder.substring(0, index);
+    String f = folder.substring(index + 1);
     return getAssetFolder(f, parent.folders.get(n));
   }
 
