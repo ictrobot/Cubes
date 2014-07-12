@@ -66,12 +66,11 @@ public abstract class Compatibility {
         URL jar = src.getLocation();
         ZipInputStream zip = new ZipInputStream(jar.openStream());
         ZipEntry ze = null;
-
         while ((ze = zip.getNextEntry()) != null) {
           String name = ze.getName();
-          if (name.startsWith(assets)) {
-            System.out.println();
-            System.out.println(name);
+          System.out.println();
+          System.out.println(name);
+          if (name.startsWith(assets) && !ze.isDirectory()) {
             name = name.substring(ze.getName().lastIndexOf(assets) + assets.length() + 1);
             System.out.println(name);
             int index = Math.max(name.lastIndexOf("/"), name.lastIndexOf("\\"));
@@ -82,6 +81,7 @@ public abstract class Compatibility {
             assetFolder.addFile(new AssetManager.Asset(Gdx.files.internal(ze.getName()), name, assetFolder));
           }
         }
+        zip.close();
       }
     } catch (Exception e) {
       e.printStackTrace();
