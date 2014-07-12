@@ -92,6 +92,7 @@ public abstract class Compatibility {
     if (parent == null) return null;
     if (folder.isEmpty()) return parent;
     int index = Math.max(folder.lastIndexOf("/"), folder.lastIndexOf("\\"));
+    if (index == -1) return parent;
     String n = folder.substring(0, index);
     String f = folder.substring(index + 1);
     return getAssetFolder(f, parent.folders.get(n));
