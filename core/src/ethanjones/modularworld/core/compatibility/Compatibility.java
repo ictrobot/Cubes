@@ -6,7 +6,6 @@ import com.badlogic.gdx.files.FileHandle;
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.graphics.AssetManager;
 
-import java.io.File;
 import java.net.URL;
 import java.security.CodeSource;
 import java.util.ArrayList;
@@ -92,8 +91,8 @@ public abstract class Compatibility {
   private AssetManager.AssetFolder getAssetFolder(String folder, AssetManager.AssetFolder parent) {
     if (parent == null) return null;
     if (folder.isEmpty()) return parent;
-    String n = folder.substring(0, folder.indexOf(File.separator));
-    String f = folder.substring(folder.indexOf(File.separator) + 1);
+    String n = folder.substring(0, Math.max(folder.lastIndexOf("/"), folder.lastIndexOf("\\")));
+    String f = folder.substring(Math.max(folder.lastIndexOf("/"), folder.lastIndexOf("\\")) + 1);
     return getAssetFolder(f, parent.folders.get(n));
   }
 
