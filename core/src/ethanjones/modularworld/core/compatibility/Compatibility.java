@@ -75,7 +75,7 @@ public abstract class Compatibility {
             System.out.println(name);
             name = name.substring(ze.getName().lastIndexOf(assets) + assets.length() + 1);
             System.out.println(name);
-            int index = name.lastIndexOf(File.separator);
+            int index = Math.max(name.lastIndexOf("/"), name.lastIndexOf("\\"));
             System.out.println(index);
             if (index == -1) continue;
             System.out.println(name.substring(0, index));
