@@ -1,6 +1,5 @@
 package ethanjones.modularworld.graphics;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
@@ -8,7 +7,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.utils.Array;
@@ -26,7 +24,6 @@ import java.util.Map;
 public class GraphicsHelper {
 
   public static PackedTexture.PackedMaterial blockPackedTextures;
-  public static Material grass;
   public static int usage = Usage.Position | Usage.Normal | Usage.TextureCoordinates;
   private static Array<TexturePacker> texturePackers = new Array<TexturePacker>();
   private static Array<Texture> packedTextures;
@@ -62,7 +59,6 @@ public class GraphicsHelper {
 
       }
     }
-    FileHandle assetsFolder = Gdx.files.internal(".");
     AssetManager.AssetFolder assetFolderManager = assetManager.assets;
     Array<AssetManager.Asset> textureHandles = new Array<AssetManager.Asset>();
 
@@ -92,9 +88,6 @@ public class GraphicsHelper {
 
       Texture texture = new Texture(fileHandle);
       texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-      if (i == 0) {
-        //texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-      }
       PackedTexture.PackedMaterial material = new PackedTexture.PackedMaterial(TextureAttribute.createDiffuse(texture));
       packedTextures.add(texture);
       if (i == 0) {
@@ -110,10 +103,6 @@ public class GraphicsHelper {
         textures.put(str, new PackedTexture(texture, num, material, new TextureRegion(texture, rectangle.x, rectangle.y, rectangle.width, rectangle.height), str));
       }
     }
-
-    Texture texture = new Texture(Gdx.files.internal("assets/Blocks/Grass.png"));
-    texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-    grass = new Material(TextureAttribute.createDiffuse(texture));
   }
 
   private static String stringToHashMap(String str) {

@@ -54,6 +54,21 @@ public class Debug {
     set(DebugType.fps, s.toString());
   }
 
+  public static void ram() {
+    Runtime runtime = Runtime.getRuntime();
+
+    int maxMemory = (int) runtime.maxMemory() / 1048576; // divide to get in MB
+    int allocatedMemory = (int) runtime.totalMemory() / 1048576;
+    int freeMemory = (int) runtime.freeMemory() / 1048576;
+
+    StringBuilder sb = new StringBuilder();
+    sb.append("R F:").append(freeMemory);
+    sb.append(" TF:").append(freeMemory + (maxMemory - allocatedMemory));
+    sb.append(" A:").append(allocatedMemory);
+    sb.append(" M:").append(maxMemory);
+    set(DebugType.ram, sb.toString());
+  }
+
   public static void renderingLoop(long t) {
     renderingLoop.add(t);
     set(DebugType.renderingLoop, new StringBuilder().append("T MS:").append(String.format("%03d", t)).append(" AMS:").append(String.format("%03d", renderingLoop.getAverage())).toString());

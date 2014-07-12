@@ -2,11 +2,8 @@ package ethanjones.modularworld.graphics.world;
 
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.RenderableProvider;
-import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
@@ -44,14 +41,10 @@ public class AreaRenderer implements RenderableProvider {
     }
   }
 
-  private static TextureRegion[] regions = new TextureRegion[1024];
-  public MeshBuilder meshBuilder = new MeshBuilder();
   public FaceProvider faceProvider;
   public Mesh mesh;
   public boolean dirty = true;
   Vector3 offset = new Vector3();
-  private Array<Model> models;
-  private Array<ModelInstance> modelInstances;
   private float vertices[];
   private int numVertices = 0;
   private Camera camera;
@@ -61,8 +54,6 @@ public class AreaRenderer implements RenderableProvider {
     this.area = area;
     this.offset.set(area.minBlockX, area.minBlockY, area.minBlockZ);
     faceProvider = new FaceProvider(area);
-    modelInstances = new Array<ModelInstance>();
-    models = new Array<Model>();
     mesh = new Mesh(true, SIZE_BLOCKS_CUBED * 8 * 4, SIZE_BLOCKS_CUBED * 36 / 3, VertexAttribute.Position(), VertexAttribute.Normal(), new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, "a_texCoords"));
     mesh.setIndices(indices);
     vertices = new float[VERTEX_SIZE * 6 * SIZE_BLOCKS_CUBED];

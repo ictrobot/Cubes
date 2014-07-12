@@ -20,6 +20,10 @@ public abstract class BlockFactory {
 
   public abstract BlockTextureHandler getTextureHandler(ByteData data);
 
+  public Block getBlock() {
+    return getBlock(new ByteData());
+  }
+
   public Block getBlock(ByteData data) {
     return new Block(this, data);
   }

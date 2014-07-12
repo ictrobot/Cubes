@@ -9,7 +9,7 @@ import ethanjones.modularworld.graphics.world.BlockTextureHandler;
  */
 public class Block {
 
-  public final BlockFactory factory;
+  protected final BlockFactory factory;
   protected ByteData data;
 
   public Block(BlockFactory factory, ByteData data) {
@@ -31,5 +31,9 @@ public class Block {
       return ((Block) o).data.equals(this.data) && ((Block) o).factory.equals(this.factory);
     }
     return false;
+  }
+
+  public BlockFactory getFactory() {
+    return factory;
   }
 }

@@ -20,6 +20,10 @@ public class PackedTexture {
     this.filename = filename;
   }
 
+  public String toString() {
+    return material + " " + textureRegion.getU() + " " + textureRegion.getV() + " " + textureRegion.getU2() + " " + textureRegion.getV2();
+  }
+
   public static class PackedMaterial extends Material {
     public PackedMaterial(TextureAttribute... textureAttribute) {
       super(textureAttribute);
