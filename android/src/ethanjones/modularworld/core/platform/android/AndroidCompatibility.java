@@ -12,8 +12,11 @@ import ethanjones.modularworld.graphics.AssetManager;
 
 public class AndroidCompatibility extends Compatibility {
 
-  protected AndroidCompatibility() {
+  private AndroidLauncher androidLauncher;
+
+  protected AndroidCompatibility(AndroidLauncher androidLauncher) {
     super(Application.ApplicationType.Android);
+    this.androidLauncher = androidLauncher;
   }
 
   @EventHandler
@@ -33,6 +36,6 @@ public class AndroidCompatibility extends Compatibility {
 
   @Override
   public void getAssets(AssetManager assetManager) {
-    super.extractAssets(assetManager);
+    super.getAssets(assetManager);
   }
 }
