@@ -20,8 +20,8 @@ public class BasicWorldGenerator extends WorldGenerator {
       if (area.x == 0 && area.z == 0) {
         area.setBlock(BlockFactories.bedrock.getBlock(), 0, 4, 0);
         area.setBlock(BlockFactories.bedrock.getBlock(), 0, 7, 0);
-        area.setBlock(BlockFactories.stone.getBlock(), 2, 5, 0);
-        area.setBlock(BlockFactories.grass.getBlock(), 0, 5, 2);
+        area.setBlock(BlockFactories.stone.getBlock(), 5, 5, 3);
+        area.setBlock(BlockFactories.grass.getBlock(), 3, 5, 5);
       }
     }
   }
