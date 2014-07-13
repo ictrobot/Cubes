@@ -100,3 +100,4 @@ pip-log.txt
 
 .DS_Store
 android/assets/log.txt
+hs_err_pid*.log

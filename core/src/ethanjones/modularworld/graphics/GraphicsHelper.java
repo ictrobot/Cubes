@@ -5,9 +5,11 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -23,8 +25,9 @@ import java.util.Map;
 
 public class GraphicsHelper {
 
+  public static final int attributes = Usage.Position | Usage.Normal | Usage.TextureCoordinates;
+  public static final VertexAttributes vertexAttributes = MeshBuilder.createAttributes(attributes);
   public static PackedTexture.PackedMaterial blockPackedTextures;
-  public static int usage = Usage.Position | Usage.Normal | Usage.TextureCoordinates;
   private static Array<TexturePacker> texturePackers = new Array<TexturePacker>();
   private static Array<Texture> packedTextures;
   private static HashMap<String, PackedTexture> textures = new HashMap<String, PackedTexture>();
@@ -100,6 +103,7 @@ public class GraphicsHelper {
         num++;
         TexturePacker.PackRectangle rectangle = rectangles.get(str);
         str = stringToHashMap(str);
+        Log.info(str + " " + rectangle.x + " " + rectangle.y + " " + rectangle.width + " " + rectangle.height);
         textures.put(str, new PackedTexture(texture, num, material, new TextureRegion(texture, rectangle.x, rectangle.y, rectangle.width, rectangle.height), str));
       }
     }
