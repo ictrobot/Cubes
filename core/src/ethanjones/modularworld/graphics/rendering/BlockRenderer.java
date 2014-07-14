@@ -58,7 +58,7 @@ public class BlockRenderer {
           if (!areaInFrustum(area, camera.frustum)) {
             continue;
           }
-          renderer.gameBatch.render(area.areaRenderer.set(camera), environment);
+          renderer.gameBatch.render(area.areaRenderer, environment);
         }
       }
     }
