@@ -65,7 +65,7 @@ public class EventBus {
             if (eventHandlerWrapper.run(event)) {
               iterator.remove();
             }
-          } catch (ReflectiveOperationException exception) {
+          } catch (Exception exception) {
             Log.error(new ModularWorldException("Failed to reflect", exception));
           }
         }

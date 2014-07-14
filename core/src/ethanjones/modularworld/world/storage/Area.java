@@ -1,5 +1,6 @@
 package ethanjones.modularworld.world.storage;
 
+import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.block.Block;
 import ethanjones.modularworld.core.events.world.block.SetBlockEvent;
 import ethanjones.modularworld.graphics.world.AreaRenderer;
@@ -29,7 +30,6 @@ public class Area {
 
   public boolean generated = false;
   public AreaRenderer areaRenderer;
-  public boolean modified;
   public Block[] blocks;
 
   /**
@@ -39,7 +39,6 @@ public class Area {
     this.x = x;
     this.y = y;
     this.z = z;
-    this.modified = false;
     maxBlockX = ((x + 1) * SIZE_BLOCKS) - 1;
     maxBlockY = ((y + 1) * SIZE_BLOCKS) - 1;
     maxBlockZ = ((z + 1) * SIZE_BLOCKS) - 1;
@@ -51,7 +50,9 @@ public class Area {
     cenBlockZ = (float) (maxBlockZ + minBlockZ) / 2f;
 
     blocks = new Block[SIZE_BLOCKS_CUBED];
-    areaRenderer = new AreaRenderer(this);
+    if (!ModularWorld.instance.compatibility.isHeadless()) {
+      areaRenderer = new AreaRenderer(this);
+    }
   }
 
   public Block getBlock(int x, int y, int z) {
@@ -60,7 +61,7 @@ public class Area {
 
   public void setBlock(Block block, int x, int y, int z) {
     if (new SetBlockEvent(new BlockCoordinates(x, y, z), block).post()) {
-      modified = true;
+      if (areaRenderer != null) areaRenderer.dirty = true;
       blocks[fastPositive(x % SIZE_BLOCKS) + fastPositive(z % SIZE_BLOCKS) * SIZE_BLOCKS + fastPositive(y % SIZE_BLOCKS) * SIZE_BLOCKS_SQUARED] = block;
     }
   }

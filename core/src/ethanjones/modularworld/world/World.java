@@ -143,6 +143,14 @@ public class World {
     return getArea(blockCoordinates).getBlock(blockCoordinates.blockX, blockCoordinates.blockY, blockCoordinates.blockZ);
   }
 
+  public void setBlock(Block block, int x, int y, int z) {
+    getArea(BlockCoordinates.area(x), BlockCoordinates.area(y), BlockCoordinates.area(z)).setBlock(block, x, y, z);
+  }
+
+  public void setBlock(Block block, BlockCoordinates blockCoordinates) {
+    getArea(blockCoordinates).setBlock(block, blockCoordinates.blockX, blockCoordinates.blockY, blockCoordinates.blockZ);
+  }
+
   public void dispose() {
 
   }

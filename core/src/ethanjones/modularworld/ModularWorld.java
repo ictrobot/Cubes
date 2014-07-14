@@ -12,6 +12,7 @@ import ethanjones.modularworld.core.events.EventBus;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.core.settings.Settings;
 import ethanjones.modularworld.core.settings.SettingsManager;
+import ethanjones.modularworld.core.timing.TimeHandler;
 import ethanjones.modularworld.core.timing.Timing;
 import ethanjones.modularworld.entity.living.player.Player;
 import ethanjones.modularworld.graphics.AssetManager;
@@ -22,7 +23,9 @@ import ethanjones.modularworld.networking.Networking;
 import ethanjones.modularworld.world.World;
 import ethanjones.modularworld.world.generator.BasicWorldGenerator;
 
-public class ModularWorld implements ApplicationListener {
+import java.util.Random;
+
+public class ModularWorld implements ApplicationListener, TimeHandler {
 
   public static ModularWorld instance;
 
@@ -41,6 +44,7 @@ public class ModularWorld implements ApplicationListener {
   public FileHandle baseFolder;
 
   public Networking networking;
+  Random random = new Random();
 
   public ModularWorld() {
     this(null);
@@ -94,6 +98,7 @@ public class ModularWorld implements ApplicationListener {
     settings.print();
 
     timing = new Timing();
+    timing.addHandler(this, 500);
   }
 
   @Override
@@ -139,4 +144,8 @@ public class ModularWorld implements ApplicationListener {
     world.dispose();
   }
 
+  @Override
+  public void time(int interval, int time) {
+    world.setBlock(BlockFactories.dirt.getBlock(), random.nextInt(33), 8, random.nextInt(33));
+  }
 }
