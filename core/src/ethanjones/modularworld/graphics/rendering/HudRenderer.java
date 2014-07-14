@@ -38,11 +38,8 @@ public class HudRenderer {
   }
 
   public void render() {
-    long l = System.currentTimeMillis();
     hud.act();
     hud.draw();
-    long t = System.currentTimeMillis() - l;
-    Debug.hudRenderer(t);
   }
 
   public void resize() {

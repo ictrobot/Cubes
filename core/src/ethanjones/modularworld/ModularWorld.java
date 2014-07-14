@@ -117,7 +117,7 @@ public class ModularWorld implements ApplicationListener, TimeHandler {
       renderer.render();
       inputChain.afterRender();
       Debug.ram();
-      Debug.renderingLoop(System.currentTimeMillis() - currentTimeMillis);
+      Debug.loop(System.currentTimeMillis() - currentTimeMillis);
     }
   }
 

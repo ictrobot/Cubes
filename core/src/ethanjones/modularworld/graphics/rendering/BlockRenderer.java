@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Frustum;
 import ethanjones.modularworld.ModularWorld;
-import ethanjones.modularworld.core.debug.Debug;
 import ethanjones.modularworld.core.settings.Settings;
 import ethanjones.modularworld.world.reference.AreaReference;
 import ethanjones.modularworld.world.storage.Area;
@@ -48,9 +47,6 @@ public class BlockRenderer {
 
     int renderDistance = Settings.renderer_block_viewDistance.getIntegerSetting().getValue();
 
-    long l = System.currentTimeMillis();
-    int renderedChunks = 0;
-    int totalChunks = 0;
     AreaReference pos = ModularWorld.instance.world.playerArea;
     for (int areaX = pos.areaX - renderDistance; areaX <= pos.areaX + renderDistance; areaX++) {
       for (int areaY = pos.areaY - renderDistance; areaY <= pos.areaY + renderDistance; areaY++) {
@@ -58,18 +54,14 @@ public class BlockRenderer {
           if (areaY < 0) {
             continue;
           }
-          totalChunks++;
           Area area = ModularWorld.instance.world.getArea(areaX, areaY, areaZ);
           if (!areaInFrustum(area, camera.frustum)) {
             continue;
           }
-          renderedChunks++;
           renderer.gameBatch.render(area.areaRenderer.set(camera), environment);
         }
       }
     }
-    long t = System.currentTimeMillis() - l;
-    Debug.blockRenderer(t, 0, renderedChunks, totalChunks);
   }
 
   public boolean areaInFrustum(Area area, Frustum frustum) {

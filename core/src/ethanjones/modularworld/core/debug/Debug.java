@@ -10,31 +10,30 @@ import ethanjones.modularworld.core.util.LongAverage;
 import ethanjones.modularworld.world.coordinates.AreaCoordinates;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
 
-import java.util.EnumMap;
-
 public class Debug {
 
+  private static final DebugType[] types = DebugType.values();
   static LongAverage fps = new LongAverage();
-  static LongAverage blockRenderer = new LongAverage();
-  static LongAverage hudRenderer = new LongAverage();
   static LongAverage renderer = new LongAverage();
   static LongAverage renderingLoop = new LongAverage();
-  private static EnumMap<DebugType, String> debug = new EnumMap<DebugType, String>(DebugType.class);
+  private static String[] debugData = new String[types.length];
 
   static {
-    for (DebugType d : DebugType.values()) {
-      if (d.name().startsWith("blank")) {
-        debug.put(d, "");
+    for (int i = 0; i < types.length; i++) {
+      if (types[i].name().startsWith("blank")) {
+        debugData[i] = "";
       }
     }
   }
 
   public static void set(DebugType debugType, String string) {
-    debug.put(debugType, string);
+    if (debugType == null || string == null) return;
+    debugData[debugType.ordinal()] = string;
   }
 
   public static String get(DebugType debugType) {
-    return debug.get(debugType);
+    if (debugType == null) return "";
+    return debugData[debugType.ordinal()];
   }
 
   public static void version(String string) {
@@ -69,27 +68,16 @@ public class Debug {
     set(DebugType.ram, sb.toString());
   }
 
-  public static void renderingLoop(long t) {
+  public static void loop(long t) {
     renderingLoop.add(t);
-    set(DebugType.renderingLoop, new StringBuilder().append("T MS:").append(String.format("%03d", t)).append(" AMS:").append(String.format("%03d", renderingLoop.getAverage())).toString());
+    set(DebugType.loop, new StringBuilder().append("L MS:").append(String.format("%03d", t)).append(" AMS:").append(String.format("%03d", renderingLoop.getAverage())).toString());
   }
 
   public static void renderer(long t) {
     renderer.add(t);
-    set(DebugType.renderingAll, new StringBuilder().append("R MS:").append(String.format("%03d", t)).append(" AMS:").append(String.format("%03d", renderer.getAverage())).toString());
+    set(DebugType.rendering, new StringBuilder().append("R MS:").append(String.format("%03d", t)).append(" AMS:").append(String.format("%03d", renderer.getAverage())).toString());
     Debug.fps();
   }
-
-  public static void blockRenderer(long t, int renderedNum, int renderedChunks, int totalChunks) {
-    blockRenderer.add(t);
-    set(DebugType.renderingBlock, new StringBuilder().append("B MS:").append(String.format("%03d", t)).append(" AMS:").append(String.format("%03d", blockRenderer.getAverage())).append(" N:").append(renderedNum).append(" C:").append(renderedChunks).append("/").append(totalChunks).toString());
-  }
-
-  public static void hudRenderer(long t) {
-    hudRenderer.add(t);
-    set(DebugType.renderingHud, new StringBuilder().append("H MS:").append(String.format("%03d", t)).append(" AMS:").append(String.format("%03d", hudRenderer.getAverage())).toString());
-  }
-
 
   public static void facing() {
     set(DebugType.direction, ModularWorld.instance.player.angleX + " " + ModularWorld.instance.player.angleY);
