@@ -80,7 +80,6 @@ public class AreaRenderer implements RenderableProvider, Disposable {
   }
 
   public int calculateVertices(float[] vertices) {
-
     Area maxX = ModularWorld.instance.world.getArea(area.x + 1, area.y, area.z);
     Area minX = ModularWorld.instance.world.getArea(area.x - 1, area.y, area.z);
     Area maxY = ModularWorld.instance.world.getArea(area.x, area.y + 1, area.z);

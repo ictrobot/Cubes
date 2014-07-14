@@ -49,6 +49,9 @@ public class World {
   public void playerChangedPosition() {
     playerArea.setFromVector3(ModularWorld.instance.player.position);
     if (playerArea.areaX - AREA_LOAD_RADIUS != minAreaX || playerArea.areaY - AREA_LOAD_RADIUS != minAreaY || playerArea.areaZ - AREA_LOAD_RADIUS != minAreaZ) {
+      minAreaX = playerArea.areaX - AREA_LOAD_RADIUS;
+      minAreaY = playerArea.areaY - AREA_LOAD_RADIUS;
+      minAreaZ = playerArea.areaZ - AREA_LOAD_RADIUS;
       Area[] old = areasAroundPlayer;
       areasAroundPlayer = new Area[AREA_LOAD_DISTANCE_CUBED];
       for (int x = 0; x < AREA_LOAD_DISTANCE; x++) {
