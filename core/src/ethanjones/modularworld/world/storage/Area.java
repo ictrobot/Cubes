@@ -67,6 +67,7 @@ public class Area {
   }
 
   public void unload() {
-
+    areaRenderer.dispose();
+    blocks = null;
   }
 }

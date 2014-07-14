@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
 import ethanjones.modularworld.block.Block;
 import ethanjones.modularworld.core.util.Direction;
@@ -17,7 +18,7 @@ import static ethanjones.modularworld.graphics.world.FaceVertices.*;
 import static ethanjones.modularworld.world.storage.Area.SIZE_BLOCKS;
 import static ethanjones.modularworld.world.storage.Area.SIZE_BLOCKS_CUBED;
 
-public class AreaRenderer implements RenderableProvider {
+public class AreaRenderer implements RenderableProvider, Disposable {
 
   public static final int MAX_X_OFFSET = 1;
   public static final int MIN_X_OFFSET = -MAX_X_OFFSET;
@@ -57,7 +58,7 @@ public class AreaRenderer implements RenderableProvider {
   public AreaRenderer(Area area) {
     this.area = area;
     this.offset.set(area.minBlockX, area.minBlockY, area.minBlockZ);
-    mesh = new Mesh(true, SIZE_BLOCKS_CUBED * 8 * 4, SIZE_BLOCKS_CUBED * 36 / 3, GraphicsHelper.vertexAttributes);
+    mesh = new Mesh(true, vertices.length, indices.length, GraphicsHelper.vertexAttributes);
     mesh.setIndices(indices);
   }
 
@@ -133,5 +134,10 @@ public class AreaRenderer implements RenderableProvider {
       }
     }
     return vertexOffset / VERTEX_SIZE;
+  }
+
+  @Override
+  public void dispose() {
+    mesh.dispose();
   }
 }

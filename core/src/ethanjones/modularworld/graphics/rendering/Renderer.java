@@ -2,7 +2,6 @@ package ethanjones.modularworld.graphics.rendering;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import ethanjones.modularworld.core.debug.Debug;
 import ethanjones.modularworld.core.logging.Log;
@@ -11,14 +10,14 @@ import ethanjones.modularworld.graphics.GameBatch;
 public class Renderer {
 
   public static boolean PROFILING = false;
-  public GameBatch gameBatch;
-  public ModelBuilder modelBuilder;
-  public BlockRenderer block;
-  public HudRenderer hud;
   public int calls;
   public int drawCalls;
   public int shaderSwitches;
   public int textureBindings;
+
+  public GameBatch gameBatch;
+  public BlockRenderer block;
+  public HudRenderer hud;
 
   public Renderer() {
     if (PROFILING) {
@@ -26,7 +25,6 @@ public class Renderer {
     }
 
     gameBatch = new GameBatch();
-    modelBuilder = new ModelBuilder();
 
     block = new BlockRenderer(this);
     hud = new HudRenderer();

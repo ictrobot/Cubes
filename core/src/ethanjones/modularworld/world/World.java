@@ -71,6 +71,7 @@ public class World {
           }
         }
       }
+      System.gc();
     }
   }
 
