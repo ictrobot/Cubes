@@ -25,7 +25,7 @@ public class AreaRenderer implements RenderableProvider {
   public static final int rightOffset = 1;
   public static final int frontOffset = -SIZE_BLOCKS;
   public static final int backOffset = SIZE_BLOCKS;
-  public static final int VERTEX_SIZE = 6;
+  public static final int VERTEX_SIZE = 8; //3 for position, 3 for normal, 2 for texture coordinates;
 
   private static short[] indices;
   private static float vertices[];
@@ -75,7 +75,7 @@ public class AreaRenderer implements RenderableProvider {
     }
     if (numVertices == 0) return;
     Renderable renderable = pool.obtain();
-    renderable.material = GraphicsHelper.blockPackedTextures;
+    renderable.material = GraphicsHelper.getBlockTextureSheet();
     renderable.mesh = mesh;
     renderable.meshPartOffset = 0;
     renderable.meshPartSize = numVertices;

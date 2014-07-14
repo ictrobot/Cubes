@@ -1,20 +1,15 @@
 package ethanjones.modularworld.entity.living.player;
 
-import com.badlogic.gdx.math.Vector3;
+import ethanjones.modularworld.entity.living.LivingEntity;
 import ethanjones.modularworld.input.MovementHandler;
 
-public class Player {
-
-  public Vector3 position;
-
-  public int angleX = 0;
-  public int angleY = 180;
+public class Player extends LivingEntity {
 
   public MovementHandler movementHandler;
 
   public Player() {
+    super(20);
     this.movementHandler = new MovementHandler(this);
-    this.position = new Vector3(0, 6, 0);
   }
 
 }

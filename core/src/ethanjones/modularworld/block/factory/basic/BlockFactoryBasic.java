@@ -2,7 +2,6 @@ package ethanjones.modularworld.block.factory.basic;
 
 import ethanjones.modularworld.block.factory.BlockFactory;
 import ethanjones.modularworld.core.data.ByteData;
-import ethanjones.modularworld.graphics.GraphicsHelper;
 import ethanjones.modularworld.graphics.world.BlockTextureHandler;
 
 public class BlockFactoryBasic extends BlockFactory {
@@ -21,7 +20,7 @@ public class BlockFactoryBasic extends BlockFactory {
 
   @Override
   public void loadGraphics() {
-    textureHandler = new BlockTextureHandler(GraphicsHelper.loadBlock(mainMaterial));
+    textureHandler = new BlockTextureHandler(mainMaterial);
   }
 
   @Override

@@ -8,17 +8,15 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.core.ModularWorldException;
 import ethanjones.modularworld.core.logging.Log;
-import ethanjones.modularworld.graphics.rendering.Renderer;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,12 +25,14 @@ public class GraphicsHelper {
 
   public static final int attributes = Usage.Position | Usage.Normal | Usage.TextureCoordinates;
   public static final VertexAttributes vertexAttributes = MeshBuilder.createAttributes(attributes);
-  public static PackedTexture.PackedMaterial blockPackedTextures;
-  private static Array<TexturePacker> texturePackers = new Array<TexturePacker>();
-  private static Array<Texture> packedTextures;
-  private static HashMap<String, PackedTexture> textures = new HashMap<String, PackedTexture>();
 
-  public static PackedTexture load(String name) {
+  private static Array<TexturePacker> texturePackers = new Array<TexturePacker>();
+  private static Array<Material> packedMaterials;
+
+  private static HashMap<String, PackedTexture> textures = new HashMap<String, PackedTexture>();
+  private static PackedTexture.PackedMaterial blockPackedTextures;
+
+  public static PackedTexture getTexture(String name) {
     PackedTexture packedTextureWrapper = textures.get(stringToHashMap(name));
     if (packedTextureWrapper == null || packedTextureWrapper.packedTexture == null) {
       Log.error(new ModularWorldException("No such texture: " + name + " in map: " + Character.LINE_SEPARATOR + textures.toString()));
@@ -40,28 +40,22 @@ public class GraphicsHelper {
     return packedTextureWrapper;
   }
 
-  public static PackedTexture loadBlock(String material) {
-    return load("Blocks/" + material + ".png");
+  public static PackedTexture getBlockTexture(String name) {
+    PackedTexture packedTexture = getTexture("Blocks/" + name + ".png");
+    if (!packedTexture.material.equals(getBlockTextureSheet())) {
+      Log.error(new ModularWorldException("Block textures have to be on block packed texture"));
+    }
+    return packedTexture;
   }
 
-  public static Renderer getRenderer() {
-    return ModularWorld.instance.renderer;
-  }
-
-  public static ModelBuilder getModelBuilder() {
-    return getRenderer().modelBuilder;
+  public static Material getBlockTextureSheet() {
+    return blockPackedTextures;
   }
 
   public static void init(AssetManager assetManager) {
     FileHandle parent = ModularWorld.instance.baseFolder.child("PackedTextures");
+    parent.deleteDirectory();
     parent.mkdirs();
-    for (String pastPackedTexture : parent.file().list()) {
-      try {
-        new File(pastPackedTexture).delete();
-      } catch (Exception e) {
-
-      }
-    }
     AssetManager.AssetFolder assetFolderManager = assetManager.assets;
     Array<AssetManager.Asset> textureHandles = new Array<AssetManager.Asset>();
 
@@ -76,7 +70,7 @@ public class GraphicsHelper {
     findTexture(assetFolderManager, blockFolderManager, textureHandles);
     pack(textureHandles);
 
-    packedTextures = new Array<Texture>(texturePackers.size);
+    packedMaterials = new Array<Material>(texturePackers.size);
     for (int i = 0; i < texturePackers.size; i++) {
       TexturePacker texturePacker = texturePackers.get(i);
 
@@ -92,7 +86,7 @@ public class GraphicsHelper {
       Texture texture = new Texture(fileHandle);
       texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
       PackedTexture.PackedMaterial material = new PackedTexture.PackedMaterial(TextureAttribute.createDiffuse(texture));
-      packedTextures.add(texture);
+      packedMaterials.add(material);
       if (i == 0) {
         blockPackedTextures = material;
       }
@@ -145,10 +139,6 @@ public class GraphicsHelper {
     for (AssetManager.Asset file : parent.files.values()) {
       if (file.path.endsWith(".png")) files.add(file);
     }
-  }
-
-  private static void findTexture() {
-
   }
 
 }

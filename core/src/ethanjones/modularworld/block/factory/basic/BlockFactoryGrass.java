@@ -1,7 +1,6 @@
 package ethanjones.modularworld.block.factory.basic;
 
 import ethanjones.modularworld.core.util.Direction;
-import ethanjones.modularworld.graphics.GraphicsHelper;
 
 public class BlockFactoryGrass extends BlockFactoryBasic {
   public BlockFactoryGrass() {
@@ -10,6 +9,6 @@ public class BlockFactoryGrass extends BlockFactoryBasic {
 
   public void loadGraphics() {
     super.loadGraphics();
-    this.textureHandler.setSide(Direction.posY, GraphicsHelper.loadBlock("Grass")).setSide(Direction.negY, GraphicsHelper.loadBlock("Dirt"));
+    this.textureHandler.setSide(Direction.posY, "Grass").setSide(Direction.negY, "Dirt");
   }
 }

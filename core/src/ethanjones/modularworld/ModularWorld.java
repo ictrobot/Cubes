@@ -145,7 +145,7 @@ public class ModularWorld implements ApplicationListener, TimeHandler {
   }
 
   @Override
-  public void time(int interval, int time) {
+  public void time(int interval) {
     world.setBlock(BlockFactories.dirt.getBlock(), random.nextInt(33), 8 + random.nextInt(25), random.nextInt(33));
   }
 }

@@ -7,10 +7,16 @@ import ethanjones.modularworld.ModularWorld;
 
 public class GameInputHandler extends InputAdapter {
 
+  int[][] touch = new int[100][2];
+  int maxPointer = -1;
+
   @Override
   public boolean keyDown(int keycode) {
-    if (keycode == Input.Keys.DPAD_UP) {
+    if (keycode == Input.Keys.W) {
       ModularWorld.instance.player.position.add(ModularWorld.instance.renderer.block.camera.direction);
+    }
+    if (keycode == Input.Keys.S) {
+      ModularWorld.instance.player.position.sub(ModularWorld.instance.renderer.block.camera.direction);
     }
     return false;
   }
@@ -20,9 +26,6 @@ public class GameInputHandler extends InputAdapter {
 
     return false;
   }
-
-  int[][] touch = new int[100][2];
-  int maxPointer = -1;
 
   @Override
   public boolean touchDragged(int screenX, int screenY, int pointer) {

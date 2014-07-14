@@ -5,6 +5,16 @@ import com.badlogic.gdx.math.Vector3;
 
 public class FaceVertices {
 
+  /**
+   * vertices[vertexOffset++] = position x
+   * vertices[vertexOffset++] = position y
+   * vertices[vertexOffset++] = position z
+   * vertices[vertexOffset++] = normal x
+   * vertices[vertexOffset++] = normal y
+   * vertices[vertexOffset++] = normal z
+   * vertices[vertexOffset++] = texture region u
+   * vertices[vertexOffset++] = texture region v
+   */
 
   public static int createMaxY(Vector3 offset, TextureRegion region, int x, int y, int z, float[] vertices, int vertexOffset) {
     vertices[vertexOffset++] = offset.x + x;
@@ -52,8 +62,8 @@ public class FaceVertices {
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = -1;
     vertices[vertexOffset++] = 0;
-    vertices[vertexOffset++] = region.getU();
-    vertices[vertexOffset++] = region.getV2();
+    vertices[vertexOffset++] = region.getU2();
+    vertices[vertexOffset++] = region.getV();
 
     vertices[vertexOffset++] = offset.x + x + 1;
     vertices[vertexOffset++] = offset.y + y;
@@ -61,8 +71,8 @@ public class FaceVertices {
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = -1;
     vertices[vertexOffset++] = 0;
-    vertices[vertexOffset++] = region.getU2();
-    vertices[vertexOffset++] = region.getV2();
+    vertices[vertexOffset++] = region.getU();
+    vertices[vertexOffset++] = region.getV();
 
     vertices[vertexOffset++] = offset.x + x;
     vertices[vertexOffset++] = offset.y + y;
@@ -70,8 +80,8 @@ public class FaceVertices {
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = -1;
     vertices[vertexOffset++] = 0;
-    vertices[vertexOffset++] = region.getU2();
-    vertices[vertexOffset++] = region.getV();
+    vertices[vertexOffset++] = region.getU();
+    vertices[vertexOffset++] = region.getV2();
 
     vertices[vertexOffset++] = offset.x + x;
     vertices[vertexOffset++] = offset.y + y;
@@ -79,8 +89,8 @@ public class FaceVertices {
     vertices[vertexOffset++] = 0;
     vertices[vertexOffset++] = -1;
     vertices[vertexOffset++] = 0;
-    vertices[vertexOffset++] = region.getU();
-    vertices[vertexOffset++] = region.getV();
+    vertices[vertexOffset++] = region.getU2();
+    vertices[vertexOffset++] = region.getV2();
     return vertexOffset;
   }
 
