@@ -36,6 +36,11 @@ public class AreaReference implements Pool.Poolable {
     return this;
   }
 
+  public AreaReference setFromArea(Area area) {
+    setFromArea(area.x, area.y, area.z);
+    return this;
+  }
+
   public AreaReference setFromArea(int areaX, int areaY, int areaZ) {
     this.areaX = areaX;
     this.areaY = areaY;

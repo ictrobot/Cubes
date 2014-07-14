@@ -4,7 +4,6 @@ import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.block.Block;
 import ethanjones.modularworld.core.events.world.generation.GenerationEvent;
 import ethanjones.modularworld.core.logging.Log;
-import ethanjones.modularworld.core.util.Maths;
 import ethanjones.modularworld.world.coordinates.AreaCoordinates;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
 import ethanjones.modularworld.world.generator.WorldGenerator;
@@ -54,27 +53,21 @@ public class World {
       minAreaZ = playerArea.areaZ - AREA_LOAD_RADIUS;
       Area[] old = areasAroundPlayer;
       areasAroundPlayer = new Area[AREA_LOAD_DISTANCE_CUBED];
+      AreaReference areaReference = areaReferencePool.obtain();
       for (int x = 0; x < AREA_LOAD_DISTANCE; x++) {
         for (int y = 0; y < AREA_LOAD_DISTANCE; y++) {
           for (int z = 0; z < AREA_LOAD_DISTANCE; z++) {
             Area o = old[getArrayPos(x, y, z)];
             if (o != null) {
-              int nX = o.x - playerArea.areaX;
-              int nY = o.y - playerArea.areaY;
-              int nZ = o.z - playerArea.areaZ;
-              if (Maths.fastPositive(nX) > AREA_LOAD_RADIUS || Maths.fastPositive(nY) > AREA_LOAD_RADIUS || Maths.fastPositive(nZ) > AREA_LOAD_RADIUS) {
+              areaReference.setFromArea(o);
+              if (!setAreaInternal(areaReference, o)) {
                 o.unload();
-              } else {
-                nX += AREA_LOAD_RADIUS;
-                nY += AREA_LOAD_RADIUS;
-                nZ += AREA_LOAD_RADIUS;
-                areasAroundPlayer[getArrayPos(nX, nY, nZ)] = o;
               }
             }
           }
         }
       }
-      System.gc();
+      areaReferencePool.free(areaReference);
     }
   }
 
@@ -93,11 +86,13 @@ public class World {
     return BLANK_AREA;
   }
 
-  public void setAreaInternal(AreaReference areaReference, Area area) {
+  public boolean setAreaInternal(AreaReference areaReference, Area area) {
     updateArrayPositions(areaReference);
     if (isArrayPositionValid(areaReference)) {
       areasAroundPlayer[areaReference.arrayPos] = area;
+      return true;
     }
+    return false;
   }
 
   public Area getAreaPlain(AreaReference areaReference) {
