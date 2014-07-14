@@ -3,6 +3,8 @@ package ethanjones.modularworld.world;
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.block.Block;
 import ethanjones.modularworld.core.events.world.generation.GenerationEvent;
+import ethanjones.modularworld.core.logging.Log;
+import ethanjones.modularworld.core.util.Maths;
 import ethanjones.modularworld.world.coordinates.AreaCoordinates;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
 import ethanjones.modularworld.world.generator.WorldGenerator;
@@ -18,9 +20,11 @@ public class World {
   public final static int HEIGHT_LIMIT = Zone.SIZE_BLOCKS;
   public final static int AREA_LOAD_RADIUS = 10;
   public final static int AREA_LOAD_DISTANCE = (AREA_LOAD_RADIUS * 2) + 1;
-  public Area[][][] areasAroundPlayer = new Area[AREA_LOAD_DISTANCE][AREA_LOAD_DISTANCE][AREA_LOAD_DISTANCE];
+  public final static int AREA_LOAD_DISTANCE_SQUARED = AREA_LOAD_DISTANCE * AREA_LOAD_DISTANCE;
+  public final static int AREA_LOAD_DISTANCE_CUBED = AREA_LOAD_DISTANCE_SQUARED * AREA_LOAD_DISTANCE;
   public final static BlankArea BLANK_AREA = new BlankArea();
   public final WorldGenerator gen;
+  public Area[] areasAroundPlayer;
   public int minAreaX;
   public int minAreaY;
   public int minAreaZ;
@@ -33,32 +37,35 @@ public class World {
     minAreaX = playerArea.areaX - AREA_LOAD_RADIUS;
     minAreaY = playerArea.areaY - AREA_LOAD_RADIUS;
     minAreaZ = playerArea.areaZ - AREA_LOAD_RADIUS;
+    Log.info(AREA_LOAD_DISTANCE + " " + AREA_LOAD_DISTANCE_SQUARED + " " + AREA_LOAD_DISTANCE_CUBED);
+    areasAroundPlayer = new Area[AREA_LOAD_DISTANCE_CUBED];
     areaReferencePool = new AreaReferencePool();
+  }
+
+  public int getArrayPos(int arrayX, int arrayY, int arrayZ) {
+    return arrayX + arrayZ * AREA_LOAD_DISTANCE + arrayY * AREA_LOAD_DISTANCE_SQUARED;
   }
 
   public void playerChangedPosition() {
     playerArea.setFromVector3(ModularWorld.instance.player.position);
-    int newAreaX = playerArea.areaX - AREA_LOAD_RADIUS;
-    int newAreaY = playerArea.areaY - AREA_LOAD_RADIUS;
-    int newAreaZ = playerArea.areaZ - AREA_LOAD_RADIUS;
-    if (newAreaX != minAreaX || newAreaY != minAreaY || newAreaZ != minAreaZ) {
-      Area[][][] old = areasAroundPlayer;
-      areasAroundPlayer = new Area[AREA_LOAD_DISTANCE][AREA_LOAD_DISTANCE][AREA_LOAD_DISTANCE];
+    if (playerArea.areaX - AREA_LOAD_RADIUS != minAreaX || playerArea.areaY - AREA_LOAD_RADIUS != minAreaY || playerArea.areaZ - AREA_LOAD_RADIUS != minAreaZ) {
+      Area[] old = areasAroundPlayer;
+      areasAroundPlayer = new Area[AREA_LOAD_DISTANCE_CUBED];
       for (int x = 0; x < AREA_LOAD_DISTANCE; x++) {
         for (int y = 0; y < AREA_LOAD_DISTANCE; y++) {
           for (int z = 0; z < AREA_LOAD_DISTANCE; z++) {
-            Area o = old[x][y][z];
+            Area o = old[getArrayPos(x, y, z)];
             if (o != null) {
               int nX = o.x - playerArea.areaX;
               int nY = o.y - playerArea.areaY;
               int nZ = o.z - playerArea.areaZ;
-              if (Math.abs(nX) > AREA_LOAD_RADIUS || Math.abs(nY) > AREA_LOAD_RADIUS || Math.abs(nZ) > AREA_LOAD_RADIUS) {
+              if (Maths.fastPositive(nX) > AREA_LOAD_RADIUS || Maths.fastPositive(nY) > AREA_LOAD_RADIUS || Maths.fastPositive(nZ) > AREA_LOAD_RADIUS) {
                 o.unload();
               } else {
                 nX += AREA_LOAD_RADIUS;
                 nY += AREA_LOAD_RADIUS;
                 nZ += AREA_LOAD_RADIUS;
-                areasAroundPlayer[nX][nY][nZ] = o;
+                areasAroundPlayer[getArrayPos(nX, nY, nZ)] = o;
               }
             }
           }
@@ -70,7 +77,7 @@ public class World {
   private Area getAreaInternal(AreaReference areaReference, boolean request, boolean generatedCheck) {
     updateArrayPositions(areaReference);
     if (isArrayPositionValid(areaReference)) {
-      Area area = areasAroundPlayer[areaReference.arrayX][areaReference.arrayY][areaReference.arrayZ];
+      Area area = areasAroundPlayer[areaReference.arrayPos];
       if (area != null && (area.generated || !generatedCheck)) {
         return area;
       } else if (area == null && request) {
@@ -85,7 +92,7 @@ public class World {
   public void setAreaInternal(AreaReference areaReference, Area area) {
     updateArrayPositions(areaReference);
     if (isArrayPositionValid(areaReference)) {
-      areasAroundPlayer[areaReference.arrayX][areaReference.arrayY][areaReference.arrayZ] = area;
+      areasAroundPlayer[areaReference.arrayPos] = area;
     }
   }
 
@@ -115,6 +122,7 @@ public class World {
     areaReference.arrayX = areaReference.areaX - playerArea.areaX + AREA_LOAD_RADIUS;
     areaReference.arrayY = areaReference.areaY - playerArea.areaY + AREA_LOAD_RADIUS;
     areaReference.arrayY = areaReference.areaZ - playerArea.areaZ + AREA_LOAD_RADIUS;
+    areaReference.arrayPos = getArrayPos(areaReference.arrayX, areaReference.arrayY, areaReference.arrayZ);
     return areaReference;
   }
 

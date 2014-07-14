@@ -16,6 +16,8 @@ public class AreaReference implements Pool.Poolable {
   public int arrayY;
   public int arrayZ;
 
+  public int arrayPos;
+
   public AreaReference() {
 
   }
@@ -28,6 +30,9 @@ public class AreaReference implements Pool.Poolable {
     arrayX = 0;
     arrayY = 0;
     arrayZ = 0;
+
+    arrayPos = 0;
+
     return this;
   }
 
