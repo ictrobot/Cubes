@@ -4,6 +4,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.core.debug.Debug;
+import ethanjones.modularworld.input.keyboard.KeyboardHelper;
 
 public class InputChain extends InputMultiplexer {
 
@@ -15,6 +16,7 @@ public class InputChain extends InputMultiplexer {
   }
 
   public InputChain init() {
+    this.addProcessor(KeyboardHelper.inputProcessor);
     this.addProcessor(hud);
     this.addProcessor(game = new GameInputHandler());
     return this;

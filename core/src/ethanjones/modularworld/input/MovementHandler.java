@@ -1,17 +1,19 @@
 package ethanjones.modularworld.input;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.core.debug.Debug;
 import ethanjones.modularworld.core.events.entity.living.player.PlayerMovementEvent;
 import ethanjones.modularworld.entity.living.player.Player;
+import ethanjones.modularworld.input.keyboard.KeyboardHelper;
 
 public class MovementHandler {
 
-  public boolean forward = false;
-  public boolean backward = false;
+  public boolean touch = false;
+
   public Player player;
   public int deltaAngleX = 0;
   public int deltaAngleY = 0;
@@ -55,9 +57,9 @@ public class MovementHandler {
   }
 
   public void updatePosition() {
-    if (forward) {
+    if (KeyboardHelper.isKeyDown(Input.Keys.W) || touch) {
       ModularWorld.instance.player.position.add(ModularWorld.instance.renderer.block.camera.direction.cpy().nor());
-    } else if (backward) {
+    } else if (KeyboardHelper.isKeyDown(Input.Keys.S)) {
       ModularWorld.instance.player.position.sub(ModularWorld.instance.renderer.block.camera.direction.cpy().nor());
     }
     if (previousPos != player.position) {
