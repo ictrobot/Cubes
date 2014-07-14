@@ -8,7 +8,7 @@ import ethanjones.modularworld.core.compatibility.Compatibility;
 import ethanjones.modularworld.core.events.EventHandler;
 import ethanjones.modularworld.core.events.setting.AfterProcessSettingEvent;
 import ethanjones.modularworld.core.settings.Settings;
-import ethanjones.modularworld.graphics.AssetManager;
+import ethanjones.modularworld.graphics.asset.AssetManager;
 
 public class AndroidCompatibility extends Compatibility {
 

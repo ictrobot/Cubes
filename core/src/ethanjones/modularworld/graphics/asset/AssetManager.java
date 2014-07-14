@@ -1,4 +1,4 @@
-package ethanjones.modularworld.graphics;
+package ethanjones.modularworld.graphics.asset;
 
 import com.badlogic.gdx.files.FileHandle;
 

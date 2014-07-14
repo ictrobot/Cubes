@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector3;
 
 public class FaceVertices {
 
-  /**
+  /*
    * vertices[vertexOffset++] = position x
    * vertices[vertexOffset++] = position y
    * vertices[vertexOffset++] = position z

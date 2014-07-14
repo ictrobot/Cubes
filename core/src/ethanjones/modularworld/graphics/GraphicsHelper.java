@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.core.ModularWorldException;
 import ethanjones.modularworld.core.logging.Log;
+import ethanjones.modularworld.graphics.asset.AssetManager;
 
 import java.io.IOException;
 import java.util.HashMap;
