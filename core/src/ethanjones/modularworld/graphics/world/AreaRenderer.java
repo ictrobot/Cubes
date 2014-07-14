@@ -27,7 +27,8 @@ public class AreaRenderer implements RenderableProvider {
   public static final int backOffset = SIZE_BLOCKS;
   public static final int VERTEX_SIZE = 6;
 
-  public static short[] indices;
+  private static short[] indices;
+  private static float vertices[];
 
   static {
     int len = SIZE_BLOCKS_CUBED * 6 * 6 / 3;
@@ -41,13 +42,14 @@ public class AreaRenderer implements RenderableProvider {
       indices[i + 4] = (short) (j + 3);
       indices[i + 5] = (short) (j + 0);
     }
+
+    vertices = new float[VERTEX_SIZE * 6 * SIZE_BLOCKS_CUBED];
   }
 
   public FaceProvider faceProvider;
   public Mesh mesh;
   public boolean dirty = true;
   Vector3 offset = new Vector3();
-  private float vertices[];
   private int numVertices = 0;
   private Camera camera;
   private Area area;
@@ -58,7 +60,6 @@ public class AreaRenderer implements RenderableProvider {
     faceProvider = new FaceProvider(area);
     mesh = new Mesh(true, SIZE_BLOCKS_CUBED * 8 * 4, SIZE_BLOCKS_CUBED * 36 / 3, GraphicsHelper.vertexAttributes);
     mesh.setIndices(indices);
-    vertices = new float[VERTEX_SIZE * 6 * SIZE_BLOCKS_CUBED];
   }
 
   public static int createTop(Vector3 offset, TextureRegion region, int x, int y, int z, float[] vertices, int vertexOffset) {
