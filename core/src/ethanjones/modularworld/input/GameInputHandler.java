@@ -13,18 +13,23 @@ public class GameInputHandler extends InputAdapter {
   @Override
   public boolean keyDown(int keycode) {
     if (keycode == Input.Keys.W) {
-      ModularWorld.instance.player.position.add(ModularWorld.instance.renderer.block.camera.direction);
+      ModularWorld.instance.player.movementHandler.forward = true;
     }
     if (keycode == Input.Keys.S) {
-      ModularWorld.instance.player.position.sub(ModularWorld.instance.renderer.block.camera.direction);
+      ModularWorld.instance.player.movementHandler.backward = true;
     }
-    return false;
+    return true;
   }
 
   @Override
   public boolean keyUp(int keycode) {
-
-    return false;
+    if (keycode == Input.Keys.W) {
+      ModularWorld.instance.player.movementHandler.forward = false;
+    }
+    if (keycode == Input.Keys.S) {
+      ModularWorld.instance.player.movementHandler.backward = false;
+    }
+    return true;
   }
 
   @Override

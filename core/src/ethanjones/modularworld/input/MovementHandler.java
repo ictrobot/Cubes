@@ -2,6 +2,7 @@ package ethanjones.modularworld.input;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.math.Vector3;
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.core.debug.Debug;
 import ethanjones.modularworld.core.events.entity.living.player.PlayerMovementEvent;
@@ -9,12 +10,16 @@ import ethanjones.modularworld.entity.living.player.Player;
 
 public class MovementHandler {
 
+  public boolean forward = false;
+  public boolean backward = false;
   public Player player;
   public int deltaAngleX = 0;
   public int deltaAngleY = 0;
+  Vector3 previousPos;
 
   public MovementHandler(Player player) {
     this.player = player;
+    previousPos = player.position.cpy();
   }
 
   public void updateRotation() {
@@ -50,9 +55,18 @@ public class MovementHandler {
   }
 
   public void updatePosition() {
-    if (new PlayerMovementEvent().post()) {
-      //player.position.set(vector3);
-      ModularWorld.instance.world.playerChangedPosition();
+    if (forward) {
+      ModularWorld.instance.player.position.add(ModularWorld.instance.renderer.block.camera.direction.cpy().nor());
+    } else if (backward) {
+      ModularWorld.instance.player.position.sub(ModularWorld.instance.renderer.block.camera.direction.cpy().nor());
+    }
+    if (previousPos != player.position) {
+      if (new PlayerMovementEvent().post()) {
+        ModularWorld.instance.world.playerChangedPosition();
+        previousPos = player.position.cpy();
+      } else {
+        player.position.set(previousPos);
+      }
     }
   }
 }
