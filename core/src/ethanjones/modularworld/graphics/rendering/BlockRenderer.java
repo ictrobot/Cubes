@@ -55,6 +55,9 @@ public class BlockRenderer {
             continue;
           }
           Area area = ModularWorld.instance.world.getArea(areaX, areaY, areaZ);
+          if (area.areaRenderer == null) {
+            continue;
+          }
           if (!areaInFrustum(area, camera.frustum)) {
             continue;
           }

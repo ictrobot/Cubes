@@ -9,7 +9,7 @@ public class BlankArea extends Area {
   }
 
   private BlankArea(int value) {
-    super(value, value, value);
+    super(value, value, value, false);
   }
 
   @Override

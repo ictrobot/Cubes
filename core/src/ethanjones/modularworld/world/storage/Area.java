@@ -36,6 +36,10 @@ public class Area {
    * In area coords
    */
   public Area(int x, int y, int z) {
+    this(x, y, z, true);
+  }
+
+  protected Area(int x, int y, int z, boolean render) {
     this.x = x;
     this.y = y;
     this.z = z;
@@ -50,7 +54,7 @@ public class Area {
     cenBlockZ = (float) (maxBlockZ + minBlockZ) / 2f;
 
     blocks = new Block[SIZE_BLOCKS_CUBED];
-    if (!ModularWorld.instance.compatibility.isHeadless()) {
+    if (!ModularWorld.instance.compatibility.isHeadless() && render) {
       areaRenderer = new AreaRenderer(this);
     }
   }
