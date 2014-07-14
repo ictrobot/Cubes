@@ -31,6 +31,7 @@ public class GameInputHandler extends InputAdapter {
       if (!Gdx.input.isTouched(i)) {
         touch[i][0] = 0;
         touch[i][1] = 0;
+        ModularWorld.instance.player.movementHandler.touch = false;
       }
     }
     maxPointer = -1;
