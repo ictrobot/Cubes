@@ -98,7 +98,7 @@ public class ModularWorld implements ApplicationListener, TimeHandler {
     settings.print();
 
     timing = new Timing();
-    timing.addHandler(this, 500);
+    timing.addHandler(this, 10);
   }
 
   @Override
