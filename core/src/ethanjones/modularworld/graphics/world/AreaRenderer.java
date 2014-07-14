@@ -46,7 +46,6 @@ public class AreaRenderer implements RenderableProvider {
     vertices = new float[VERTEX_SIZE * 6 * SIZE_BLOCKS_CUBED];
   }
 
-  public FaceProvider faceProvider;
   public Mesh mesh;
   public boolean dirty = true;
   Vector3 offset = new Vector3();
@@ -57,7 +56,6 @@ public class AreaRenderer implements RenderableProvider {
   public AreaRenderer(Area area) {
     this.area = area;
     this.offset.set(area.minBlockX, area.minBlockY, area.minBlockZ);
-    faceProvider = new FaceProvider(area);
     mesh = new Mesh(true, SIZE_BLOCKS_CUBED * 8 * 4, SIZE_BLOCKS_CUBED * 36 / 3, GraphicsHelper.vertexAttributes);
     mesh.setIndices(indices);
   }
