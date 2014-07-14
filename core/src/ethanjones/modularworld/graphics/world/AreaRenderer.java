@@ -101,7 +101,7 @@ public class AreaRenderer implements RenderableProvider {
   }
 
   public static int createBottom(Vector3 offset, TextureRegion region, int x, int y, int z, float[] vertices, int vertexOffset) {
-    vertices[vertexOffset++] = offset.x + x;
+    vertices[vertexOffset++] = offset.x + x + 1;
     vertices[vertexOffset++] = offset.y + y;
     vertices[vertexOffset++] = offset.z + z;
     vertices[vertexOffset++] = 0;
@@ -110,7 +110,7 @@ public class AreaRenderer implements RenderableProvider {
     vertices[vertexOffset++] = region.getU();
     vertices[vertexOffset++] = region.getV2();
 
-    vertices[vertexOffset++] = offset.x + x;
+    vertices[vertexOffset++] = offset.x + x + 1;
     vertices[vertexOffset++] = offset.y + y;
     vertices[vertexOffset++] = offset.z + z + 1;
     vertices[vertexOffset++] = 0;
@@ -119,7 +119,7 @@ public class AreaRenderer implements RenderableProvider {
     vertices[vertexOffset++] = region.getU2();
     vertices[vertexOffset++] = region.getV2();
 
-    vertices[vertexOffset++] = offset.x + x + 1;
+    vertices[vertexOffset++] = offset.x + x;
     vertices[vertexOffset++] = offset.y + y;
     vertices[vertexOffset++] = offset.z + z + 1;
     vertices[vertexOffset++] = 0;
@@ -128,7 +128,7 @@ public class AreaRenderer implements RenderableProvider {
     vertices[vertexOffset++] = region.getU2();
     vertices[vertexOffset++] = region.getV();
 
-    vertices[vertexOffset++] = offset.x + x + 1;
+    vertices[vertexOffset++] = offset.x + x;
     vertices[vertexOffset++] = offset.y + y;
     vertices[vertexOffset++] = offset.z + z;
     vertices[vertexOffset++] = 0;
