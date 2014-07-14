@@ -299,23 +299,6 @@ public class AreaRenderer implements RenderableProvider {
     return this;
   }
 
-  /**
-   * public void rebuildArray() {
-   * this.rebuildArray = true;
-   * }
-   * <p/>
-   * private void rebuild() {
-   * array.clear();
-   * for (int rX = 0; rX < SIZE_RENDER_AREA; rX++) {
-   * for (int rY = 0; rY < SIZE_RENDER_AREA; rY++) {
-   * for (int rZ = 0; rZ < SIZE_RENDER_AREA; rZ++) {
-   * array.addAll(renderAreas[rX][rY][rZ].data);
-   * }
-   * }
-   * }
-   * }
-   */
-
   @Override
   public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
     if (dirty) {
@@ -334,11 +317,6 @@ public class AreaRenderer implements RenderableProvider {
     renderables.add(renderable);
   }
 
-  /**
-   * Creates a mesh out of the chunk, returning the number of indices produced
-   *
-   * @return the number of vertices produced
-   */
   public int calculateVertices(float[] vertices) {
     int i = 0;
     int vertexOffset = 0;
