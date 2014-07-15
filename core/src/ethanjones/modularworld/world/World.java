@@ -126,7 +126,7 @@ public class World {
   }
 
   private boolean isArrayPositionValid(AreaReference areaReference) {
-    return !(areaReference.arrayX < 0 || areaReference.arrayX > AREA_LOAD_DISTANCE || areaReference.arrayY < 0 || areaReference.arrayY > AREA_LOAD_DISTANCE || areaReference.arrayZ < 0 || areaReference.arrayZ > AREA_LOAD_DISTANCE || areaReference.arrayPos > areasAroundPlayer.length || areaReference.arrayPos <= 0);
+    return !(areaReference.arrayX < 0 || areaReference.arrayX > AREA_LOAD_DISTANCE || areaReference.arrayY < 0 || areaReference.arrayY > AREA_LOAD_DISTANCE || areaReference.arrayZ < 0 || areaReference.arrayZ > AREA_LOAD_DISTANCE || areaReference.arrayPos >= areasAroundPlayer.length || areaReference.arrayPos <= 0);
   }
 
   public void requestArea(AreaReference areaReference) {
