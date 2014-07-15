@@ -75,11 +75,11 @@ public class GraphicsHelper {
     for (int i = 0; i < texturePackers.size; i++) {
       TexturePacker texturePacker = texturePackers.get(i);
 
-      String filename = i + ".png";
+      String filename = i + ".cim";
       FileHandle fileHandle = parent.child(filename);
 
       try {
-        PixmapIO.writePNG(fileHandle, texturePacker.getPixmap());
+        PixmapIO.writeCIM(fileHandle, texturePacker.getPixmap());
       } catch (GdxRuntimeException e) {
         Log.error("Failed to write packed image", e);
       }
