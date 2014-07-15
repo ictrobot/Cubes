@@ -65,7 +65,7 @@ public class Area {
 
   public void setBlock(Block block, int x, int y, int z) {
     if (new SetBlockEvent(new BlockCoordinates(x, y, z), block).post()) {
-      if (areaRenderer != null) areaRenderer.dirty = true;
+      if (areaRenderer != null) areaRenderer.setDirty();
       blocks[fastPositive(x % SIZE_BLOCKS) + fastPositive(z % SIZE_BLOCKS) * SIZE_BLOCKS + fastPositive(y % SIZE_BLOCKS) * SIZE_BLOCKS_SQUARED] = block;
     }
   }

@@ -2,10 +2,10 @@ package ethanjones.modularworld.core.settings;
 
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.core.events.setting.AfterProcessSettingEvent;
-import ethanjones.modularworld.graphics.rendering.BlockRenderer;
+import ethanjones.modularworld.graphics.rendering.WorldRenderer;
 
 public enum Settings {
-  renderer_block_viewDistance(new IntegerSetting(null, null, 1, BlockRenderer.RENDER_DISTANCE_MIN, BlockRenderer.RENDER_DISTANCE_MAX, 1));
+  renderer_block_viewDistance(new IntegerSetting(null, null, 1, WorldRenderer.RENDER_DISTANCE_MIN, WorldRenderer.RENDER_DISTANCE_MAX, 1));
 
   private final Setting setting;
   private String[] groupPath;

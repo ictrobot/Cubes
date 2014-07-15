@@ -3,23 +3,24 @@ package ethanjones.modularworld.graphics.world;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.Pool;
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.block.Block;
 import ethanjones.modularworld.core.util.Direction;
 import ethanjones.modularworld.graphics.GraphicsHelper;
+import ethanjones.modularworld.graphics.world.block.BlockRenderer;
+import ethanjones.modularworld.graphics.world.block.BlockTextureHandler;
 import ethanjones.modularworld.world.storage.Area;
+
+import java.util.concurrent.Callable;
 
 import static ethanjones.modularworld.graphics.world.FaceVertices.*;
 import static ethanjones.modularworld.world.storage.Area.SIZE_BLOCKS;
 import static ethanjones.modularworld.world.storage.Area.SIZE_BLOCKS_CUBED;
 
-public class AreaRenderer implements RenderableProvider, Disposable {
-
+public class AreaRenderer implements Disposable, Callable {
   public static final int MAX_X_OFFSET = 1;
   public static final int MIN_X_OFFSET = -MAX_X_OFFSET;
   public static final int MAX_Y_OFFSET = SIZE_BLOCKS * SIZE_BLOCKS;
@@ -48,9 +49,13 @@ public class AreaRenderer implements RenderableProvider, Disposable {
     vertices = new float[VERTEX_SIZE * 6 * SIZE_BLOCKS_CUBED];
   }
 
-  public Mesh mesh;
-  public boolean dirty = true;
+  Array<Renderable> customRenderables;
+  Array<Renderable> allRenderables;
   Vector3 offset = new Vector3();
+  private Mesh mesh;
+  private Renderable meshRenderable;
+  private boolean dirty = true;
+  private boolean alwaysDirty = false;
   private int numVertices = 0;
   private Area area;
 
@@ -59,27 +64,38 @@ public class AreaRenderer implements RenderableProvider, Disposable {
     this.offset.set(area.minBlockX, area.minBlockY, area.minBlockZ);
     mesh = new Mesh(true, vertices.length, indices.length, GraphicsHelper.vertexAttributes);
     mesh.setIndices(indices);
+    meshRenderable = new Renderable();
+    meshRenderable.material = GraphicsHelper.getBlockTextureSheet();
+    meshRenderable.meshPartOffset = 0;
+    meshRenderable.primitiveType = GL20.GL_TRIANGLES;
+    customRenderables = new Array<Renderable>();
+    allRenderables = new Array<Renderable>();
+  }
+
+  public void setDirty() {
+    dirty = true;
   }
 
   @Override
-  public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
+  public Array<Renderable> call() throws Exception {
     if (dirty) {
-      int numVerts = calculateVertices(vertices);
+      allRenderables.clear();
+      int numVerts = render(vertices);
       numVertices = numVerts / 4 * 6;
       mesh.setVertices(vertices, 0, numVerts * VERTEX_SIZE);
-      dirty = false;
+      meshRenderable.mesh = mesh;
+      meshRenderable.meshPartSize = numVertices;
+      dirty = alwaysDirty;
+      if (numVertices > 0) allRenderables.add(meshRenderable);
+      allRenderables.addAll(customRenderables);
     }
-    if (numVertices == 0) return;
-    Renderable renderable = pool.obtain();
-    renderable.material = GraphicsHelper.getBlockTextureSheet();
-    renderable.mesh = mesh;
-    renderable.meshPartOffset = 0;
-    renderable.meshPartSize = numVertices;
-    renderable.primitiveType = GL20.GL_TRIANGLES;
-    renderables.add(renderable);
+    return allRenderables;
   }
 
-  public int calculateVertices(float[] vertices) {
+  public int render(float[] vertices) {
+    alwaysDirty = false;
+    customRenderables.clear();
+
     Area maxX = ModularWorld.instance.world.getArea(area.x + 1, area.y, area.z);
     Area minX = ModularWorld.instance.world.getArea(area.x - 1, area.y, area.z);
     Area maxY = ModularWorld.instance.world.getArea(area.x, area.y + 1, area.z);
@@ -94,6 +110,12 @@ public class AreaRenderer implements RenderableProvider, Disposable {
         for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
           Block block = area.blocks[i];
           if (block == null) continue;
+          BlockRenderer customRenderer = block.getCustomRenderer();
+          if (customRenderer != null) {
+            if (customRenderer.isAnimated()) alwaysDirty = true;
+            customRenderer.getRenderables(customRenderables);
+            continue;
+          }
           BlockTextureHandler textureHandler = block.getTextureHandler();
           if (x < SIZE_BLOCKS - 1) {
             if (area.blocks[i + MAX_X_OFFSET] == null)
