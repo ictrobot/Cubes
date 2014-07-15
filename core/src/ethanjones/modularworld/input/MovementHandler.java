@@ -58,9 +58,9 @@ public class MovementHandler {
 
   public void updatePosition() {
     if (KeyboardHelper.isKeyDown(Input.Keys.W) || touch) {
-      ModularWorld.instance.player.position.add(ModularWorld.instance.renderer.world.camera.direction.cpy().nor());
+      ModularWorld.instance.player.position.add(ModularWorld.instance.renderer.block.camera.direction.cpy().nor());
     } else if (KeyboardHelper.isKeyDown(Input.Keys.S)) {
-      ModularWorld.instance.player.position.sub(ModularWorld.instance.renderer.world.camera.direction.cpy().nor());
+      ModularWorld.instance.player.position.sub(ModularWorld.instance.renderer.block.camera.direction.cpy().nor());
     }
     if (previousPos != player.position) {
       if (new PlayerMovementEvent().post()) {

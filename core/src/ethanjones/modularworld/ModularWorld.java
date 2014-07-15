@@ -12,7 +12,6 @@ import ethanjones.modularworld.core.events.EventBus;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.core.settings.Settings;
 import ethanjones.modularworld.core.settings.SettingsManager;
-import ethanjones.modularworld.core.thread.Threads;
 import ethanjones.modularworld.core.timing.TimeHandler;
 import ethanjones.modularworld.core.timing.Timing;
 import ethanjones.modularworld.entity.living.player.Player;
@@ -69,8 +68,6 @@ public class ModularWorld implements ApplicationListener, TimeHandler {
 
     Log.info(Branding.NAME, Branding.DEBUG);
     Debug.printProperties();
-
-    Threads.init();
 
     if (!compatibility.isHeadless()) {
       assetManager = new AssetManager();
@@ -141,7 +138,6 @@ public class ModularWorld implements ApplicationListener, TimeHandler {
   @Override
   public void dispose() {
     write();
-    Threads.dispose();
     if (!compatibility.isHeadless()) {
       renderer.dispose();
     }

@@ -8,14 +8,10 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Frustum;
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.core.settings.Settings;
-import ethanjones.modularworld.core.thread.Threads;
-import ethanjones.modularworld.graphics.world.AreaRenderableProvider;
 import ethanjones.modularworld.world.reference.AreaReference;
 import ethanjones.modularworld.world.storage.Area;
 
-import java.util.concurrent.Future;
-
-public class WorldRenderer {
+public class BlockRenderer {
 
   public static int RENDER_DISTANCE_MAX = 10;
   public static int RENDER_DISTANCE_MIN = 1;
@@ -24,9 +20,8 @@ public class WorldRenderer {
   public PerspectiveCamera camera;
 
   private Renderer renderer;
-  private AreaRenderableProvider.AreaRenderableProviderPool areaRenderableProviderPool;
 
-  public WorldRenderer(Renderer renderer) {
+  public BlockRenderer(Renderer renderer) {
     this.renderer = renderer;
 
     environment = new Environment();
@@ -35,7 +30,6 @@ public class WorldRenderer {
 
     setupCamera();
 
-    areaRenderableProviderPool = new AreaRenderableProvider.AreaRenderableProviderPool();
   }
 
   public void setupCamera() {
@@ -50,7 +44,6 @@ public class WorldRenderer {
   public void render() {
     ModularWorld.instance.player.movementHandler.updateCamera(camera);
     camera.update(true);
-    areaRenderableProviderPool.freeAll();
 
     int renderDistance = Settings.renderer_block_viewDistance.getIntegerSetting().getValue();
 
@@ -68,8 +61,7 @@ public class WorldRenderer {
           if (!areaInFrustum(area, camera.frustum)) {
             continue;
           }
-          Future future = Threads.execute(area.areaRenderer);
-          renderer.gameBatch.render(areaRenderableProviderPool.obtain().setFuture(future), environment);
+          renderer.gameBatch.render(area.areaRenderer, environment);
         }
       }
     }
