@@ -9,7 +9,6 @@ import com.badlogic.gdx.math.Frustum;
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.core.settings.Settings;
 import ethanjones.modularworld.core.thread.Threads;
-import ethanjones.modularworld.graphics.world.AreaRenderableProvider;
 import ethanjones.modularworld.world.reference.AreaReference;
 import ethanjones.modularworld.world.storage.Area;
 
@@ -22,7 +21,6 @@ public class WorldRenderer {
   public PerspectiveCamera camera;
 
   private Renderer renderer;
-  private AreaRenderableProvider.AreaRenderableProviderPool areaRenderableProviderPool;
 
   public WorldRenderer(Renderer renderer) {
     this.renderer = renderer;
@@ -32,8 +30,6 @@ public class WorldRenderer {
     environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 
     setupCamera();
-
-    areaRenderableProviderPool = new AreaRenderableProvider.AreaRenderableProviderPool();
   }
 
   public void setupCamera() {
@@ -48,7 +44,6 @@ public class WorldRenderer {
   public void render() {
     ModularWorld.instance.player.movementHandler.updateCamera(camera);
     camera.update(true);
-    areaRenderableProviderPool.freeAll();
 
     int renderDistance = Settings.renderer_block_viewDistance.getIntegerSetting().getValue();
 
@@ -66,10 +61,10 @@ public class WorldRenderer {
           if (!areaInFrustum(area, camera.frustum)) {
             continue;
           }
-          if (area.areaRendererFuture == null || (area.areaRendererFuture.isDone() && area.areaRenderer.isDirty())) {
-            area.areaRendererFuture = Threads.execute(area.areaRenderer);
+          if (area.areaRenderableProvider.future == null || (area.areaRenderableProvider.future.isDone() && area.areaRenderer.isDirty())) {
+            area.areaRenderableProvider.future = Threads.execute(area.areaRenderer);
           }
-          renderer.gameBatch.render(areaRenderableProviderPool.obtain().setFuture(area.areaRendererFuture), environment);
+          renderer.gameBatch.render(area.areaRenderableProvider, environment);
         }
       }
     }

@@ -11,50 +11,24 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-public class AreaRenderableProvider implements RenderableProvider, Pool.Poolable {
+public class AreaRenderableProvider implements RenderableProvider {
 
-  private Future future;
+  public Future future;
+  public final AreaRenderer areaRenderer;
 
-  public AreaRenderableProvider setFuture(Future future) {
-    this.future = future;
-    return this;
+  public AreaRenderableProvider(AreaRenderer areaRenderer) {
+    this.areaRenderer = areaRenderer;
   }
 
   @Override
   public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
     try {
-      if (future != null) ((RenderableProvider) future.get(0, TimeUnit.MICROSECONDS)).getRenderables(renderables, pool);
+      if (future != null && future.isDone())
+        ((RenderableProvider) future.get(0, TimeUnit.MICROSECONDS)).getRenderables(renderables, pool);
     } catch (ExecutionException e) {
       Log.error(new ModularWorldException("Failed to get renderables", e));
     } catch (Exception e) {
 
-    }
-  }
-
-  @Override
-  public void reset() {
-    future = null;
-  }
-
-  public static class AreaRenderableProviderPool extends Pool<AreaRenderableProvider> {
-
-    private Array<AreaRenderableProvider> allocated = new Array<AreaRenderableProvider>();
-
-    @Override
-    protected AreaRenderableProvider newObject() {
-      return new AreaRenderableProvider();
-    }
-
-    @Override
-    public AreaRenderableProvider obtain() {
-      AreaRenderableProvider obtained = super.obtain();
-      allocated.add(obtained);
-      return obtained;
-    }
-
-    public void freeAll() {
-      this.freeAll(allocated);
-      allocated.clear();
     }
   }
 }
