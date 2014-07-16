@@ -137,7 +137,6 @@ public class World {
   }
 
   public void requestArea(AreaReference areaReference) {
-    Log.error("requestArea " + areaReference.toString());
     Area area = areaReference.newArea();
     setAreaInternal(areaReference, area);
     requestGeneration(areaReference);
