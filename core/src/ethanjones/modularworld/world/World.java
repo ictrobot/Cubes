@@ -71,7 +71,7 @@ public class World {
     }
   }
 
-  private Area getAreaInternal(AreaReference areaReference, boolean request, boolean generatedCheck) {
+  private synchronized Area getAreaInternal(AreaReference areaReference, boolean request, boolean generatedCheck) {
     updateArrayPositions(areaReference);
     if (isArrayPositionValid(areaReference)) {
       Area area = areasAroundPlayer[areaReference.arrayPos];
@@ -86,7 +86,7 @@ public class World {
     return BLANK_AREA;
   }
 
-  public boolean setAreaInternal(AreaReference areaReference, Area area) {
+  private synchronized boolean setAreaInternal(AreaReference areaReference, Area area) {
     updateArrayPositions(areaReference);
     if (isArrayPositionValid(areaReference)) {
       areasAroundPlayer[areaReference.arrayPos] = area;
