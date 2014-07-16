@@ -99,12 +99,22 @@ public class World {
     return getAreaInternal(areaReference, false, false);
   }
 
+  public Area getAreaPlain(int areaX, int areaY, int areaZ) {
+    AreaReference areaReference = areaReferencePool.obtain().setFromArea(areaX, areaY, areaZ);
+    Area area = getAreaPlain(areaReference);
+    areaReferencePool.free(areaReference);
+    return area;
+  }
+
   public Area getArea(AreaReference areaReference) {
     return getAreaInternal(areaReference, true, true);
   }
 
   public Area getArea(int areaX, int areaY, int areaZ) {
-    AreaReference areaReference = areaReferencePool.obtain().setFromArea(areaX, areaY, areaZ);
+    Log.info((areaReferencePool == null) + "");
+    AreaReference obtain = areaReferencePool.obtain();
+    Log.info((obtain == null) + "");
+    AreaReference areaReference = obtain.setFromArea(areaX, areaY, areaZ);
     Area area = getArea(areaReference);
     areaReferencePool.free(areaReference);
     return area;
@@ -130,6 +140,7 @@ public class World {
   }
 
   public void requestArea(AreaReference areaReference) {
+    Log.error("requestArea " + areaReference.toString());
     Area area = areaReference.newArea();
     setAreaInternal(areaReference, area);
     requestGeneration(areaReference);

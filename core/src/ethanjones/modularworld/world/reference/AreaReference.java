@@ -85,4 +85,9 @@ public class AreaReference implements Pool.Poolable {
   public void reset() {
     clear();
   }
+
+  @Override
+  public String toString() {
+    return areaX + " " + areaY + " " + areaZ;
+  }
 }

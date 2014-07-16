@@ -16,7 +16,7 @@ public class Renderer {
   public int textureBindings;
 
   public GameBatch gameBatch;
-  public BlockRenderer block;
+  public WorldRenderer world;
   public HudRenderer hud;
 
   public Renderer() {
@@ -26,7 +26,7 @@ public class Renderer {
 
     gameBatch = new GameBatch();
 
-    block = new BlockRenderer(this);
+    world = new WorldRenderer(this);
     hud = new HudRenderer();
   }
 
@@ -37,8 +37,8 @@ public class Renderer {
     Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
     Gdx.gl20.glDisable(GL20.GL_BLEND);
-    gameBatch.begin(block.camera);
-    block.render();
+    gameBatch.begin(world.camera);
+    world.render();
     gameBatch.end();
     hud.render();
 
@@ -71,7 +71,7 @@ public class Renderer {
   }
 
   public void resize() {
-    block.setupCamera();
+    world.setupCamera();
     hud.resize();
   }
 }
