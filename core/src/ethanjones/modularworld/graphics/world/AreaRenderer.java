@@ -17,6 +17,7 @@ import ethanjones.modularworld.graphics.world.block.BlockTextureHandler;
 import ethanjones.modularworld.world.storage.Area;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static ethanjones.modularworld.graphics.world.FaceVertices.*;
 import static ethanjones.modularworld.world.storage.Area.SIZE_BLOCKS;
@@ -56,7 +57,7 @@ public class AreaRenderer implements Disposable, Callable, RenderableProvider {
   Array<BlockRenderer> customRenderers;
   private Mesh mesh;
   private Renderable meshRenderable;
-  private boolean dirty = true;
+  private AtomicBoolean dirty = new AtomicBoolean(true);
   private int count = 0;
   private int numVertices = 0;
   private Area area;
@@ -67,37 +68,35 @@ public class AreaRenderer implements Disposable, Callable, RenderableProvider {
     mesh = new Mesh(true, vertices.length, indices.length, GraphicsHelper.vertexAttributes);
     mesh.setIndices(indices);
     meshRenderable = new Renderable();
-    meshRenderable.material = GraphicsHelper.getBlockTextureSheet();
+    meshRenderable.mesh = mesh;
     meshRenderable.meshPartOffset = 0;
+    meshRenderable.material = GraphicsHelper.getBlockTextureSheet();
     meshRenderable.primitiveType = GL20.GL_TRIANGLES;
     customRenderers = new Array<BlockRenderer>();
   }
 
   public void setDirty() {
-    dirty = true;
+    dirty.set(true);
   }
 
   public boolean isDirty() {
-    return dirty;
+    return dirty.get();
   }
 
   @Override
   public AreaRenderer call() throws Exception {
-    if (dirty) {
+    if (dirty.get()) {
       count = render(vertices);
       numVertices = count / 4 * 6;
+      dirty.set(false);
     }
     return this;
   }
 
   @Override
   public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
-    if (dirty) {
-      mesh.setVertices(vertices, 0, count * VERTEX_SIZE);
-      meshRenderable.mesh = mesh;
-      meshRenderable.meshPartSize = numVertices;
-      dirty = false;
-    }
+    mesh.setVertices(vertices, 0, count * VERTEX_SIZE);
+    meshRenderable.meshPartSize = numVertices;
     if (numVertices > 0) renderables.add(meshRenderable);
     for (BlockRenderer customRenderer : customRenderers) {
       customRenderer.getRenderables(renderables);

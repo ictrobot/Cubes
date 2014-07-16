@@ -111,10 +111,7 @@ public class World {
   }
 
   public Area getArea(int areaX, int areaY, int areaZ) {
-    Log.info((areaReferencePool == null) + "");
-    AreaReference obtain = areaReferencePool.obtain();
-    Log.info((obtain == null) + "");
-    AreaReference areaReference = obtain.setFromArea(areaX, areaY, areaZ);
+    AreaReference areaReference = areaReferencePool.obtain().setFromArea(areaX, areaY, areaZ);
     Area area = getArea(areaReference);
     areaReferencePool.free(areaReference);
     return area;
