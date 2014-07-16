@@ -12,18 +12,14 @@ import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.block.Block;
 import ethanjones.modularworld.core.util.Direction;
 import ethanjones.modularworld.graphics.GraphicsHelper;
-import ethanjones.modularworld.graphics.world.block.BlockRenderer;
-import ethanjones.modularworld.graphics.world.block.BlockTextureHandler;
 import ethanjones.modularworld.world.storage.Area;
-
-import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static ethanjones.modularworld.graphics.world.FaceVertices.*;
 import static ethanjones.modularworld.world.storage.Area.SIZE_BLOCKS;
 import static ethanjones.modularworld.world.storage.Area.SIZE_BLOCKS_CUBED;
 
-public class AreaRenderer implements Disposable, Callable, RenderableProvider {
+public class AreaRenderer implements RenderableProvider, Disposable {
+
   public static final int MAX_X_OFFSET = 1;
   public static final int MIN_X_OFFSET = -MAX_X_OFFSET;
   public static final int MAX_Y_OFFSET = SIZE_BLOCKS * SIZE_BLOCKS;
@@ -52,13 +48,9 @@ public class AreaRenderer implements Disposable, Callable, RenderableProvider {
     vertices = new float[VERTEX_SIZE * 6 * SIZE_BLOCKS_CUBED];
   }
 
+  public Mesh mesh;
+  public boolean dirty = true;
   Vector3 offset = new Vector3();
-
-  Array<BlockRenderer> customRenderers;
-  private Mesh mesh;
-  private Renderable meshRenderable;
-  private AtomicBoolean dirty = new AtomicBoolean(true);
-  private int count = 0;
   private int numVertices = 0;
   private Area area;
 
@@ -67,51 +59,33 @@ public class AreaRenderer implements Disposable, Callable, RenderableProvider {
     this.offset.set(area.minBlockX, area.minBlockY, area.minBlockZ);
     mesh = new Mesh(true, vertices.length, indices.length, GraphicsHelper.vertexAttributes);
     mesh.setIndices(indices);
-    meshRenderable = new Renderable();
-    meshRenderable.mesh = mesh;
-    meshRenderable.meshPartOffset = 0;
-    meshRenderable.material = GraphicsHelper.getBlockTextureSheet();
-    meshRenderable.primitiveType = GL20.GL_TRIANGLES;
-    customRenderers = new Array<BlockRenderer>();
-  }
-
-  public void setDirty() {
-    dirty.set(true);
-  }
-
-  public boolean isDirty() {
-    return dirty.get();
-  }
-
-  @Override
-  public AreaRenderer call() throws Exception {
-    if (dirty.get()) {
-      count = render(vertices);
-      numVertices = count / 4 * 6;
-      dirty.set(false);
-    }
-    return this;
   }
 
   @Override
   public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
-    mesh.setVertices(vertices, 0, count * VERTEX_SIZE);
-    meshRenderable.meshPartSize = numVertices;
-    if (numVertices > 0) renderables.add(meshRenderable);
-    for (BlockRenderer customRenderer : customRenderers) {
-      customRenderer.getRenderables(renderables);
+    if (dirty) {
+      int numVerts = calculateVertices(vertices);
+      numVertices = numVerts / 4 * 6;
+      mesh.setVertices(vertices, 0, numVerts * VERTEX_SIZE);
+      dirty = false;
     }
+    if (numVertices == 0) return;
+    Renderable renderable = pool.obtain();
+    renderable.material = GraphicsHelper.getBlockTextureSheet();
+    renderable.mesh = mesh;
+    renderable.meshPartOffset = 0;
+    renderable.meshPartSize = numVertices;
+    renderable.primitiveType = GL20.GL_TRIANGLES;
+    renderables.add(renderable);
   }
 
-  public int render(float[] vertices) {
-    customRenderers.clear();
-
-    Area maxX = ModularWorld.instance.world.getAreaPlain(area.x + 1, area.y, area.z);
-    Area minX = ModularWorld.instance.world.getAreaPlain(area.x - 1, area.y, area.z);
-    Area maxY = ModularWorld.instance.world.getAreaPlain(area.x, area.y + 1, area.z);
-    Area minY = ModularWorld.instance.world.getAreaPlain(area.x, area.y - 1, area.z);
-    Area maxZ = ModularWorld.instance.world.getAreaPlain(area.x, area.y, area.z + 1);
-    Area minZ = ModularWorld.instance.world.getAreaPlain(area.x, area.y, area.z - 1);
+  public int calculateVertices(float[] vertices) {
+    Area maxX = ModularWorld.instance.world.getArea(area.x + 1, area.y, area.z);
+    Area minX = ModularWorld.instance.world.getArea(area.x - 1, area.y, area.z);
+    Area maxY = ModularWorld.instance.world.getArea(area.x, area.y + 1, area.z);
+    Area minY = ModularWorld.instance.world.getArea(area.x, area.y - 1, area.z);
+    Area maxZ = ModularWorld.instance.world.getArea(area.x, area.y, area.z + 1);
+    Area minZ = ModularWorld.instance.world.getArea(area.x, area.y, area.z - 1);
 
     int i = 0;
     int vertexOffset = 0;
@@ -120,11 +94,6 @@ public class AreaRenderer implements Disposable, Callable, RenderableProvider {
         for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
           Block block = area.blocks[i];
           if (block == null) continue;
-          BlockRenderer customRenderer = block.getCustomRenderer();
-          if (customRenderer != null) {
-            customRenderers.add(customRenderer);
-            continue;
-          }
           BlockTextureHandler textureHandler = block.getTextureHandler();
           if (x < SIZE_BLOCKS - 1) {
             if (area.blocks[i + MAX_X_OFFSET] == null)
