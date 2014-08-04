@@ -6,6 +6,7 @@ import ethanjones.modularworld.networking.common.packet.PacketManager;
 import ethanjones.modularworld.networking.common.packet.PacketQueue;
 
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -15,7 +16,8 @@ public class SocketOutput extends SocketIO {
   private final DataOutputStream dataOutputStream;
   private final PacketQueue packetQueue;
 
-  public SocketOutput(OutputStream outputStream) {
+  public SocketOutput(SocketMonitor socketMonitor, OutputStream outputStream) {
+    super(socketMonitor);
     this.outputStream = outputStream;
     this.dataOutputStream = new DataOutputStream(outputStream);
     this.packetQueue = new PacketQueue();
@@ -23,21 +25,21 @@ public class SocketOutput extends SocketIO {
 
   @Override
   public void run() {
-    while (running.get()) {
+    while (socketMonitor.running.get()) {
       try {
         if (packetQueue.isEmpty()) {
           packetQueue.waitForPacket();
         }
         ByteBase.compress(PacketManager.getPayload(packetQueue.getPacket()), dataOutputStream, false);
       } catch (Exception e) {
-        if (running.get()) Log.error(e);
+        if (e instanceof EOFException) return;
+        if (socketMonitor.running.get()) Log.error(e);
       }
     }
   }
 
   @Override
   public void dispose() {
-    running.set(false);
     try {
       dataOutputStream.close();
     } catch (IOException e) {

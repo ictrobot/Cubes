@@ -2,15 +2,13 @@ package ethanjones.modularworld.networking.common.socket;
 
 import com.badlogic.gdx.utils.Disposable;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 public abstract class SocketIO implements Runnable, Disposable {
 
+  protected final SocketMonitor socketMonitor;
   private Thread thread;
-  public AtomicBoolean running;
 
-  public SocketIO() {
-    running = new AtomicBoolean(true);
+  public SocketIO(SocketMonitor socketMonitor) {
+    this.socketMonitor = socketMonitor;
   }
 
   public Thread start(String name) {

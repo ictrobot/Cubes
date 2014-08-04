@@ -5,22 +5,27 @@ import com.badlogic.gdx.utils.Disposable;
 import ethanjones.modularworld.networking.common.packet.Packet;
 import ethanjones.modularworld.networking.common.packet.PacketHandler;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class SocketMonitor implements Disposable {
 
+  protected final AtomicBoolean running;
   private final Socket socket;
   private final SocketInput socketInput;
   private final SocketOutput socketOutput;
 
   public SocketMonitor(Socket socket, PacketHandler packetHandler) {
     this.socket = socket;
-    socketInput = new SocketInput(socket.getInputStream(), this, packetHandler);
-    socketOutput = new SocketOutput(socket.getOutputStream());
+    running = new AtomicBoolean(true);
+    socketInput = new SocketInput(this, socket.getInputStream(), packetHandler);
+    socketOutput = new SocketOutput(this, socket.getOutputStream());
     socketInput.start("Socket Input: " + socket.getRemoteAddress());
     socketOutput.start("Socket Output: " + socket.getRemoteAddress());
   }
 
   @Override
   public void dispose() {
+    running.set(false);
     socketInput.dispose();
     socketOutput.dispose();
     socket.dispose();
