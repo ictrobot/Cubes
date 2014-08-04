@@ -80,12 +80,14 @@ public class ModularWorld implements ApplicationListener, TimeHandler {
       NetworkingManager.startServer();
     } else if (NetworkingManager.hasAddressToConnectTo()) {
       NetworkingManager.connectClient();
+
+      NetworkingManager.clientNetworking.sendToServer(new PacketTest());
     } else {
       NetworkingManager.startServer();
       NetworkingManager.connectClientToInternalServer();
-    }
 
-    NetworkingManager.clientNetworking.sendToServer(new PacketTest());
+      NetworkingManager.clientNetworking.sendToServer(new PacketTest());
+    }
 
     Threads.init();
 
