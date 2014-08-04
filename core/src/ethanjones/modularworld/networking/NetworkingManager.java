@@ -14,11 +14,11 @@ public class NetworkingManager {
   public static ServerNetworking serverNetworking;
 
   public static boolean hasAddressToConnectTo() {
-    return !NETWORK_PARAMETER.isEmpty() && NETWORK_PARAMETER.toLowerCase() != NETWORK_PARAMETER_SERVER.toLowerCase();
+    return !NETWORK_PARAMETER.isEmpty() && !NETWORK_PARAMETER.toLowerCase().equals(NETWORK_PARAMETER_SERVER.toLowerCase());
   }
 
   public static boolean isServerOnly() {
-    return NETWORK_PARAMETER.toLowerCase() == NETWORK_PARAMETER_SERVER.toLowerCase();
+    return NETWORK_PARAMETER.toLowerCase().equals(NETWORK_PARAMETER_SERVER.toLowerCase());
   }
 
 
@@ -34,6 +34,7 @@ public class NetworkingManager {
     clientNetworking = new ClientNetworking(address, port);
     clientNetworking.start();
   }
+
 
   public static void startServer() {
     startServer(port);
