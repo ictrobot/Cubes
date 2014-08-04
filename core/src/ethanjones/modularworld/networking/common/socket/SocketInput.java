@@ -29,7 +29,7 @@ public class SocketInput extends SocketIO {
       try {
         PacketManager.process(ByteBase.decompress(dataInputStream, false), socketMonitor, packetHandler);
       } catch (Exception e) {
-        if (e instanceof EOFException) return;
+        if (e instanceof EOFException) Log.error("Disconnected from " + socketMonitor.remoteAddress);
         if (socketMonitor.running.get()) Log.error(e);
       }
     }

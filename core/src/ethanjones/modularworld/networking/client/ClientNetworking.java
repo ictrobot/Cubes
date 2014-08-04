@@ -27,6 +27,7 @@ public class ClientNetworking extends Networking {
   public void stop() {
     Log.info("Stopping Client Networking");
     socketMonitor.dispose();
+    Log.info("Successfully disconnected to " + host + ":" + port);
   }
 
   public void sendToServer(Packet packet) {

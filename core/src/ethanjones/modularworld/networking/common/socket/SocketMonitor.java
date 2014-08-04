@@ -10,12 +10,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class SocketMonitor implements Disposable {
 
   protected final AtomicBoolean running;
+  protected final String remoteAddress;
   private final Socket socket;
   private final SocketInput socketInput;
   private final SocketOutput socketOutput;
 
   public SocketMonitor(Socket socket, PacketHandler packetHandler) {
     this.socket = socket;
+    remoteAddress = socket.getRemoteAddress();
     running = new AtomicBoolean(true);
     socketInput = new SocketInput(this, socket.getInputStream(), packetHandler);
     socketOutput = new SocketOutput(this, socket.getOutputStream());
