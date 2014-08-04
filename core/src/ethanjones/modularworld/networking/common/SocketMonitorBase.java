@@ -1,4 +1,4 @@
-package ethanjones.modularworld.networking;
+package ethanjones.modularworld.networking.common;
 
 import com.badlogic.gdx.utils.Disposable;
 
@@ -13,7 +13,8 @@ public abstract class SocketMonitorBase implements Runnable, Disposable {
     running = true;
   }
 
-  protected Thread start() {
+  public Thread start() {
+    if (thread != null) return thread;
     thread = new Thread(this);
     thread.setName("Socket Monitor: " + addressName);
     thread.start();

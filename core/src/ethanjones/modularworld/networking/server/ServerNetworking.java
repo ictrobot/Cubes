@@ -1,7 +1,9 @@
-package ethanjones.modularworld.networking;
+package ethanjones.modularworld.networking.server;
 
 import com.badlogic.gdx.net.Socket;
 import ethanjones.modularworld.core.logging.Log;
+import ethanjones.modularworld.networking.common.Networking;
+import ethanjones.modularworld.networking.common.SocketMonitor;
 
 import java.util.HashMap;
 

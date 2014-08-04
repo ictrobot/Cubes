@@ -1,4 +1,4 @@
-package ethanjones.modularworld.networking.packet;
+package ethanjones.modularworld.networking.common.packet;
 
 import ethanjones.modularworld.core.ModularWorldException;
 import ethanjones.modularworld.core.data.ByteBase;

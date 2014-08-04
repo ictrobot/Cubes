@@ -1,11 +1,11 @@
-package ethanjones.modularworld.networking;
+package ethanjones.modularworld.networking.common;
 
 import ethanjones.modularworld.core.ModularWorldException;
 import ethanjones.modularworld.core.data.ByteBase;
 import ethanjones.modularworld.core.data.ByteData;
 import ethanjones.modularworld.core.logging.Log;
-import ethanjones.modularworld.networking.packet.Packet;
-import ethanjones.modularworld.networking.packet.PacketFactory;
+import ethanjones.modularworld.networking.common.packet.Packet;
+import ethanjones.modularworld.networking.common.packet.PacketFactory;
 
 import java.io.IOException;
 

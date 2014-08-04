@@ -1,9 +1,9 @@
-package ethanjones.modularworld.networking.packet;
+package ethanjones.modularworld.networking.common.packet;
 
 import ethanjones.modularworld.core.data.ByteBase;
 import ethanjones.modularworld.core.data.ByteData;
 import ethanjones.modularworld.core.data.ByteMode;
-import ethanjones.modularworld.networking.SocketMonitor;
+import ethanjones.modularworld.networking.common.SocketMonitor;
 
 public abstract class Packet {
 

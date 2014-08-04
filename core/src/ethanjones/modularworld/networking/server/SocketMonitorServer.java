@@ -1,8 +1,11 @@
-package ethanjones.modularworld.networking;
+package ethanjones.modularworld.networking.server;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.net.ServerSocket;
 import ethanjones.modularworld.core.logging.Log;
+import ethanjones.modularworld.networking.NetworkUtil;
+import ethanjones.modularworld.networking.NetworkingManager;
+import ethanjones.modularworld.networking.common.SocketMonitorBase;
 
 public class SocketMonitorServer extends SocketMonitorBase {
 

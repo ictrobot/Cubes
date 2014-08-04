@@ -1,8 +1,11 @@
-package ethanjones.modularworld.networking;
+package ethanjones.modularworld.networking.client;
 
 import com.badlogic.gdx.Gdx;
 import ethanjones.modularworld.core.logging.Log;
-import ethanjones.modularworld.networking.packet.Packet;
+import ethanjones.modularworld.networking.NetworkUtil;
+import ethanjones.modularworld.networking.common.Networking;
+import ethanjones.modularworld.networking.common.SocketMonitor;
+import ethanjones.modularworld.networking.common.packet.Packet;
 
 public class ClientNetworking extends Networking {
 

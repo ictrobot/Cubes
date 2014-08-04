@@ -1,8 +1,9 @@
-package ethanjones.modularworld.networking;
+package ethanjones.modularworld.networking.common;
 
 import com.badlogic.gdx.net.Socket;
 import ethanjones.modularworld.core.data.ByteBase;
 import ethanjones.modularworld.core.logging.Log;
+import ethanjones.modularworld.networking.NetworkingManager;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,6 +1,8 @@
 package ethanjones.modularworld.networking;
 
 import ethanjones.modularworld.core.settings.Settings;
+import ethanjones.modularworld.networking.client.ClientNetworking;
+import ethanjones.modularworld.networking.server.ServerNetworking;
 
 public class NetworkingManager {
 

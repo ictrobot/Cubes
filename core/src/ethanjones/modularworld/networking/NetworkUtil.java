@@ -6,9 +6,9 @@ import com.badlogic.gdx.net.SocketHints;
 
 public class NetworkUtil {
 
-  protected final static ServerSocketHints serverSocketHints;
-  protected final static SocketHints socketHints;
-  protected final static Net.Protocol protocol = Net.Protocol.TCP;
+  public final static ServerSocketHints serverSocketHints;
+  public final static SocketHints socketHints;
+  public final static Net.Protocol protocol = Net.Protocol.TCP;
 
   static {
     serverSocketHints = new ServerSocketHints();
