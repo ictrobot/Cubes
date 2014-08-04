@@ -1,22 +1,22 @@
 package ethanjones.modularworld.networking;
 
 import com.badlogic.gdx.net.Socket;
-import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.core.data.ByteBase;
+import ethanjones.modularworld.core.logging.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class SocketMonitor implements Runnable {
+public class SocketMonitor extends SocketMonitorBase {
 
-  public boolean running;
   public Socket socket;
   InputStream inputStream;
   OutputStream outputStream;
 
   public SocketMonitor(Socket socket) {
-    running = true;
+    super(socket.getRemoteAddress());
+    this.socket = socket;
     inputStream = socket.getInputStream();
     outputStream = socket.getOutputStream();
   }
@@ -27,18 +27,32 @@ public class SocketMonitor implements Runnable {
     while (running) {
       try {
         int k = inputStream.read(b);
-        ModularWorld.instance.networking.received(ByteBase.decompress(b), this);
+        NetworkingManager.clientNetworking.received(ByteBase.decompress(b), this);
       } catch (Exception e) {
-        e.printStackTrace();
+        if (running) Log.error(e);
       }
     }
+    dispose();
   }
 
   protected synchronized void send(byte[] b) {
     try {
       outputStream.write(b);
-    } catch (IOException e) {
-      e.printStackTrace();
+    } catch (Exception e) {
+      if (running) Log.error(e);
     }
+  }
+
+  @Override
+  public void dispose() {
+    running = false;
+    try {
+      inputStream.close();
+      outputStream.close();
+    } catch (IOException e) {
+
+    }
+    socket.dispose();
+    getThread().interrupt();
   }
 }

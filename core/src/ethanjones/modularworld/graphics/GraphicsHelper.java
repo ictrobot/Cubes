@@ -98,7 +98,6 @@ public class GraphicsHelper {
         num++;
         TexturePacker.PackRectangle rectangle = rectangles.get(str);
         str = stringToHashMap(str);
-        Log.info(str + " " + rectangle.x + " " + rectangle.y + " " + rectangle.width + " " + rectangle.height);
         textures.put(str, new PackedTexture(texture, num, material, new TextureRegion(texture, rectangle.x, rectangle.y, rectangle.width, rectangle.height), str));
       }
     }

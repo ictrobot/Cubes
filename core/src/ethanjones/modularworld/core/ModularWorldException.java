@@ -12,23 +12,21 @@ public class ModularWorldException extends RuntimeException {
   }
 
   public ModularWorldException(Throwable arg0) {
-    super(getString(null), arg0);
+    super(getString(null, arg0.getStackTrace()), arg0);
   }
 
   public ModularWorldException(String arg0, Throwable arg1) {
-    super(getString(arg0), arg1);
-  }
-
-  public ModularWorldException(String arg0, Throwable arg1, boolean arg2, boolean arg3) {
-    super(getString(arg0), arg1, arg2, arg3);
+    super(getString(arg0, arg1.getStackTrace()), arg1);
   }
 
   private static String getString(String suffix) {
+    return getString(suffix, Thread.currentThread().getStackTrace());
+  }
+
+  private static String getString(String suffix, StackTraceElement[] stackTrace) {
     if (suffix == null) {
       suffix = "";
     }
-
-    StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
 
     Class<?> c;
     try {
@@ -39,6 +37,13 @@ public class ModularWorldException extends RuntimeException {
     }
 
     return suffix;
+  }
+
+  public static ModularWorldException getModularWorldException(Exception e) {
+    if (!(e instanceof ModularWorldException)) {
+      e = new ModularWorldException(e);
+    }
+    return (ModularWorldException) e;
   }
 
 }

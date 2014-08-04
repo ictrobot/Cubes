@@ -5,8 +5,8 @@ import com.badlogic.gdx.files.FileHandle;
 
 public class HeadlessDesktopCompatibility extends DesktopCompatibility {
 
-  protected HeadlessDesktopCompatibility() {
-    super(Application.ApplicationType.HeadlessDesktop);
+  protected HeadlessDesktopCompatibility(String[] arg) {
+    super(Application.ApplicationType.HeadlessDesktop, arg);
   }
 
   public boolean isHeadless() {

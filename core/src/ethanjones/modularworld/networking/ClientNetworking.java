@@ -7,17 +7,23 @@ import ethanjones.modularworld.networking.packet.Packet;
 public class ClientNetworking extends Networking {
 
   private final String host;
-  private final int port;
-  SocketMonitor socketMonitor;
+  private SocketMonitor socketMonitor;
 
   public ClientNetworking(String host, int port) {
+    super(port);
     this.host = host;
-    this.port = port;
   }
 
   public void start() {
-    Log.debug("Starting Client Networking");
-    socketMonitor = new SocketMonitor(Gdx.net.newClientSocket(protocol, host, port, socketHints));
+    Log.info("Starting Client Networking");
+    socketMonitor = new SocketMonitor(Gdx.net.newClientSocket(NetworkUtil.protocol, host, port, NetworkUtil.socketHints));
+    socketMonitor.start();
+  }
+
+  @Override
+  public void stop() {
+    Log.info("Stopping Client Networking");
+    socketMonitor.dispose();
   }
 
   public synchronized void sendToServer(Packet packet) {

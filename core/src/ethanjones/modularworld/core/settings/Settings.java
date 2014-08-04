@@ -5,7 +5,9 @@ import ethanjones.modularworld.core.events.setting.AfterProcessSettingEvent;
 import ethanjones.modularworld.graphics.rendering.BlockRenderer;
 
 public enum Settings {
-  renderer_block_viewDistance(new IntegerSetting(null, null, 1, BlockRenderer.RENDER_DISTANCE_MIN, BlockRenderer.RENDER_DISTANCE_MAX, 1));
+  renderer_block_viewDistance(new IntegerSetting(null, null, 1, BlockRenderer.RENDER_DISTANCE_MIN, BlockRenderer.RENDER_DISTANCE_MAX, 1)),
+  networking_port(new IntegerSetting(null, null, 8080)),
+  input_fieldOfView(new IntegerSetting(null, null, 67, 10, 120, 1));
 
   private final Setting setting;
   private String[] groupPath;

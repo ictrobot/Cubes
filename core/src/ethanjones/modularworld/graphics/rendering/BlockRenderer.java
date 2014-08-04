@@ -33,7 +33,7 @@ public class BlockRenderer {
   }
 
   public void setupCamera() {
-    camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    camera = new PerspectiveCamera(Settings.input_fieldOfView.getIntegerSetting().getValue(), Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     camera.direction.x = 1;
     camera.direction.y = 0;
     camera.direction.z = 0;

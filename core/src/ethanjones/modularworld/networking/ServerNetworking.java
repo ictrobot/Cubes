@@ -7,25 +7,32 @@ import java.util.HashMap;
 
 public class ServerNetworking extends Networking {
 
-  public static HashMap<Socket, SocketMonitor> sockets;
-  private static ServerSocketMonitor serverSocketMonitor;
-  private static Thread threadServerSocketMonitor;
+  private HashMap<Socket, SocketMonitor> sockets;
+  private SocketMonitorServer serverSocketMonitor;
+
+  public ServerNetworking(int port) {
+    super(port);
+  }
 
   public void start() {
-    Log.debug("Starting Server Networking");
+    Log.info("Starting Server Networking");
     sockets = new HashMap<Socket, SocketMonitor>();
-    serverSocketMonitor = new ServerSocketMonitor();
-    threadServerSocketMonitor = new Thread(serverSocketMonitor);
-    threadServerSocketMonitor.setName(ServerSocketMonitor.class.getSimpleName());
-    threadServerSocketMonitor.start();
+    serverSocketMonitor = new SocketMonitorServer(port);
+    serverSocketMonitor.start();
+  }
+
+  @Override
+  public void stop() {
+    Log.info("Stopping Server Networking");
+    serverSocketMonitor.dispose();
+    for (SocketMonitor socketMonitor : sockets.values()) {
+      socketMonitor.dispose();
+    }
   }
 
   protected synchronized void accepted(Socket socket) {
     SocketMonitor socketMonitor = new SocketMonitor(socket);
-    Thread thread = new Thread(socketMonitor);
-    thread.setName("Socket Monitor: " + socket.getRemoteAddress());
-    thread.start();
+    socketMonitor.start();
     sockets.put(socket, socketMonitor);
   }
-
 }

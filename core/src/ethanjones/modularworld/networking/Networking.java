@@ -1,8 +1,5 @@
 package ethanjones.modularworld.networking;
 
-import com.badlogic.gdx.Net;
-import com.badlogic.gdx.net.ServerSocketHints;
-import com.badlogic.gdx.net.SocketHints;
 import ethanjones.modularworld.core.ModularWorldException;
 import ethanjones.modularworld.core.data.ByteBase;
 import ethanjones.modularworld.core.data.ByteData;
@@ -14,18 +11,10 @@ import java.io.IOException;
 
 public abstract class Networking {
 
-  protected final static ServerSocketHints serverSocketHints;
-  protected final static SocketHints socketHints;
-  protected final static Net.Protocol protocol = Net.Protocol.TCP;
-  protected final static int mainPort = 8080;
+  public final int port;
 
-  static {
-    serverSocketHints = new ServerSocketHints();
-    serverSocketHints.acceptTimeout = 0;
-    socketHints = new SocketHints();
-    socketHints.keepAlive = true;
-    socketHints.connectTimeout = 30000;
-
+  public Networking(int port) {
+    this.port = port;
   }
 
   public synchronized void received(ByteBase byteBase, SocketMonitor socketMonitor) {
@@ -52,5 +41,7 @@ public abstract class Networking {
   }
 
   public abstract void start();
+
+  public abstract void stop();
 
 }

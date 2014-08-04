@@ -3,7 +3,6 @@ package ethanjones.modularworld.world;
 import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.block.Block;
 import ethanjones.modularworld.core.events.world.generation.GenerationEvent;
-import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.world.coordinates.AreaCoordinates;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
 import ethanjones.modularworld.world.generator.WorldGenerator;
@@ -36,7 +35,6 @@ public class World {
     minAreaX = playerArea.areaX - AREA_LOAD_RADIUS;
     minAreaY = playerArea.areaY - AREA_LOAD_RADIUS;
     minAreaZ = playerArea.areaZ - AREA_LOAD_RADIUS;
-    Log.info(AREA_LOAD_DISTANCE + " " + AREA_LOAD_DISTANCE_SQUARED + " " + AREA_LOAD_DISTANCE_CUBED);
     areasAroundPlayer = new Area[AREA_LOAD_DISTANCE_CUBED];
     areaReferencePool = new AreaReferencePool();
   }

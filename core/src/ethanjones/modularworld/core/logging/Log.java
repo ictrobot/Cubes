@@ -13,22 +13,46 @@ public class Log {
   private static LogWriter file;
 
   static {
-    output = getLogWriter();
+    try {
+      output = getLogWriter();
+    } catch (Exception e) {
+
+    }
     try {
       file = new FileLogWriter(new File(ModularWorld.instance.baseFolder.file(), "log.txt"));
     } catch (Exception e) {
-      file = new FileLogWriter(new File(System.getProperty("user.dir"), "log.txt"));
+      try {
+        file = new FileLogWriter(new File(System.getProperty("user.dir"), "log.txt"));
+      } catch (Exception ex) {
+
+      }
     }
   }
 
   public static void log(LogLevel level, String tag, String message) {
-    output.log(level, tag, message);
-    file.log(level, tag, message);
+    try {
+      output.log(level, tag, message);
+    } catch (Exception e) {
+
+    }
+    try {
+      file.log(level, tag, message);
+    } catch (Exception e) {
+
+    }
   }
 
   public static void log(LogLevel level, String tag, String message, Throwable throwable) {
-    output.log(level, tag, message, throwable);
-    file.log(level, tag, message, throwable);
+    try {
+      output.log(level, tag, message, throwable);
+    } catch (Exception e) {
+
+    }
+    try {
+      file.log(level, tag, message, throwable);
+    } catch (Exception e) {
+
+    }
 
     if (level == LogLevel.error && throwable instanceof ModularWorldException) {
       throw (ModularWorldException) throwable;

@@ -20,7 +20,7 @@ import ethanjones.modularworld.graphics.GraphicsHelper;
 import ethanjones.modularworld.graphics.asset.AssetManager;
 import ethanjones.modularworld.graphics.rendering.Renderer;
 import ethanjones.modularworld.input.InputChain;
-import ethanjones.modularworld.networking.Networking;
+import ethanjones.modularworld.networking.NetworkingManager;
 import ethanjones.modularworld.world.World;
 import ethanjones.modularworld.world.generator.BasicWorldGenerator;
 
@@ -44,7 +44,6 @@ public class ModularWorld implements ApplicationListener, TimeHandler {
 
   public FileHandle baseFolder;
 
-  public Networking networking;
   Random random = new Random();
 
   public ModularWorld() {
@@ -63,16 +62,32 @@ public class ModularWorld implements ApplicationListener, TimeHandler {
     }
     eventBus = new EventBus().register(this);
     compatibility.init();
-    //TODO: Have compatibility log extra stuff about environment such as android version etc
     baseFolder = compatibility.getBaseFolder();
     baseFolder.mkdirs();
 
     Log.info(Branding.NAME, Branding.DEBUG);
+    compatibility.logEnvironment();
     Debug.printProperties();
+
+    settings = new SettingsManager();
+    Settings.processAll();
+    settings.readFromFile();
+    settings.print();
+
+    NetworkingManager.readPort();
+
+    if (NetworkingManager.isServerOnly()) {
+      NetworkingManager.startServer();
+    } else if (NetworkingManager.hasAddressToConnectTo()) {
+      NetworkingManager.connectClient();
+    } else {
+      NetworkingManager.startServer();
+      NetworkingManager.connectClientToInternalServer();
+    }
 
     Threads.init();
 
-    if (!compatibility.isHeadless()) {
+    if (compatibility.graphics()) {
       assetManager = new AssetManager();
       compatibility.getAssets(assetManager);
       GraphicsHelper.init(assetManager);
@@ -82,7 +97,7 @@ public class ModularWorld implements ApplicationListener, TimeHandler {
 
     BlockFactories.init();
 
-    if (!compatibility.isHeadless()) {
+    if (compatibility.graphics()) {
       inputChain = new InputChain();
       renderer = new Renderer();
       BlockFactories.loadGraphics();
@@ -90,23 +105,19 @@ public class ModularWorld implements ApplicationListener, TimeHandler {
 
     world = new World(new BasicWorldGenerator());
 
-    if (!compatibility.isHeadless()) {
+    if (compatibility.graphics()) {
       Gdx.input.setInputProcessor(inputChain.init());
       Gdx.input.setCursorCatched(true);
     }
 
-    settings = new SettingsManager();
-    Settings.processAll();
-    settings.readFromFile();
-    settings.print();
-
     timing = new Timing();
     timing.addHandler(this, 10);
+    timing.addHandler(this, 10000);
   }
 
   @Override
   public void resize(int width, int height) {
-    if (!compatibility.isHeadless()) {
+    if (compatibility.graphics()) {
       renderer.resize();
     }
   }
@@ -115,7 +126,7 @@ public class ModularWorld implements ApplicationListener, TimeHandler {
   public void render() {
     long currentTimeMillis = System.currentTimeMillis();
     timing.update();
-    if (!compatibility.isHeadless()) {
+    if (compatibility.graphics()) {
       inputChain.beforeRender();
       renderer.render();
       inputChain.afterRender();
@@ -141,8 +152,9 @@ public class ModularWorld implements ApplicationListener, TimeHandler {
   @Override
   public void dispose() {
     write();
-    Threads.dispose();
-    if (!compatibility.isHeadless()) {
+    NetworkingManager.stop();
+    Threads.disposeExecutor();
+    if (compatibility.graphics()) {
       renderer.dispose();
     }
     world.dispose();

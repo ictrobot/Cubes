@@ -1,13 +1,14 @@
 package ethanjones.modularworld.core.platform.android;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.files.FileHandle;
 import ethanjones.modularworld.core.Branding;
 import ethanjones.modularworld.core.compatibility.Compatibility;
 import ethanjones.modularworld.core.events.EventHandler;
 import ethanjones.modularworld.core.events.setting.AfterProcessSettingEvent;
-import ethanjones.modularworld.core.settings.Settings;
 import ethanjones.modularworld.graphics.asset.AssetManager;
 
 public class AndroidCompatibility extends Compatibility {
@@ -21,7 +22,7 @@ public class AndroidCompatibility extends Compatibility {
 
   @EventHandler
   public void compatibilitySettings(AfterProcessSettingEvent event) {
-    Settings.renderer_block_viewDistance.getIntegerSetting().setValue(0);
+
   }
 
   @Override
@@ -37,5 +38,11 @@ public class AndroidCompatibility extends Compatibility {
   @Override
   public void getAssets(AssetManager assetManager) {
     super.getAssets(assetManager);
+  }
+
+  @Override
+  protected void run(ApplicationListener applicationListener) {
+    AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+    androidLauncher.initialize(applicationListener, config);
   }
 }

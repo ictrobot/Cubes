@@ -12,12 +12,11 @@ public class Threads {
     executor = new ScheduledThreadPoolExecutor(8);
   }
 
-  public static Future execute(Callable<?> task) {
+  public static synchronized Future execute(Callable<?> task) {
     return executor.submit(task);
   }
 
-  public static void dispose() {
+  public static synchronized void disposeExecutor() {
     executor.shutdownNow();
   }
-
 }
