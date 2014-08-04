@@ -35,6 +35,7 @@ public class ServerNetworking extends Networking {
 
   protected synchronized void accepted(Socket socket) {
     sockets.put(socket, new SocketMonitor(socket, this));
+    Log.info("Successfully connected to " + socket.getRemoteAddress());
   }
 
   @Override

@@ -20,6 +20,7 @@ public class ClientNetworking extends Networking {
   public void start() {
     Log.info("Starting Client Networking");
     socketMonitor = new SocketMonitor(Gdx.net.newClientSocket(NetworkUtil.protocol, host, port, NetworkUtil.socketHints), this);
+    Log.info("Successfully connected to " + host + ":" + port);
   }
 
   @Override
