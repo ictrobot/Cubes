@@ -30,7 +30,7 @@ public class SocketInput extends SocketIO {
         PacketManager.process(ByteBase.decompress(dataInputStream, false), socketMonitor, packetHandler);
       } catch (Exception e) {
         if (e instanceof EOFException) {
-          Log.error("Disconnected from " + socketMonitor.remoteAddress);
+          Log.error(socketMonitor.getClass().getSimpleName(), "Disconnected from " + socketMonitor.remoteAddress);
           socketMonitor.running.set(false);
           return;
         }
