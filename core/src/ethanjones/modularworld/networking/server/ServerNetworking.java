@@ -42,4 +42,10 @@ public class ServerNetworking extends Networking {
   public void received(Packet packet, SocketMonitor socketMonitor) {
 
   }
+
+  @Override
+  public void disconnected(SocketMonitor socketMonitor, Exception e) {
+    super.disconnected(socketMonitor, e);
+    sockets.remove(socketMonitor.getSocket());
+  }
 }

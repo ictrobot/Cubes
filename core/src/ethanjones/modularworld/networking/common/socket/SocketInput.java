@@ -1,12 +1,10 @@
 package ethanjones.modularworld.networking.common.socket;
 
 import ethanjones.modularworld.core.data.ByteBase;
-import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.networking.common.packet.PacketHandler;
 import ethanjones.modularworld.networking.common.packet.PacketManager;
 
 import java.io.DataInputStream;
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -29,12 +27,9 @@ public class SocketInput extends SocketIO {
       try {
         PacketManager.process(ByteBase.decompress(dataInputStream, false), socketMonitor, packetHandler);
       } catch (Exception e) {
-        if (e instanceof EOFException) {
-          Log.error(socketMonitor.getClass().getSimpleName(), "Disconnected from " + socketMonitor.remoteAddress);
-          socketMonitor.running.set(false);
-          return;
-        }
-        if (socketMonitor.running.get()) Log.error(e);
+        socketMonitor.running.set(false);
+        socketMonitor.networking.disconnected(socketMonitor, e);
+        return;
       }
     }
   }
