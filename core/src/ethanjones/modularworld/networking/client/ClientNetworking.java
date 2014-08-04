@@ -4,8 +4,8 @@ import com.badlogic.gdx.Gdx;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.networking.NetworkUtil;
 import ethanjones.modularworld.networking.common.Networking;
-import ethanjones.modularworld.networking.common.SocketMonitor;
 import ethanjones.modularworld.networking.common.packet.Packet;
+import ethanjones.modularworld.networking.common.socket.SocketMonitor;
 
 public class ClientNetworking extends Networking {
 
@@ -19,8 +19,7 @@ public class ClientNetworking extends Networking {
 
   public void start() {
     Log.info("Starting Client Networking");
-    socketMonitor = new SocketMonitor(Gdx.net.newClientSocket(NetworkUtil.protocol, host, port, NetworkUtil.socketHints));
-    socketMonitor.start();
+    socketMonitor = new SocketMonitor(Gdx.net.newClientSocket(NetworkUtil.protocol, host, port, NetworkUtil.socketHints), this);
   }
 
   @Override
@@ -29,8 +28,12 @@ public class ClientNetworking extends Networking {
     socketMonitor.dispose();
   }
 
-  public synchronized void sendToServer(Packet packet) {
-    send(packet.getPacketData(), socketMonitor);
+  public void sendToServer(Packet packet) {
+    socketMonitor.queue(packet);
   }
 
+  @Override
+  public void received(Packet packet, SocketMonitor socketMonitor) {
+
+  }
 }

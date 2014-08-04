@@ -2,18 +2,22 @@ package ethanjones.modularworld.networking.server;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.net.ServerSocket;
+import com.badlogic.gdx.utils.Disposable;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.networking.NetworkUtil;
 import ethanjones.modularworld.networking.NetworkingManager;
-import ethanjones.modularworld.networking.common.SocketMonitorBase;
 
-public class SocketMonitorServer extends SocketMonitorBase {
+public class SocketMonitorServer implements Runnable, Disposable {
 
-  ServerSocket serverSocket;
+  public boolean running;
+  private ServerSocket serverSocket;
+  private Thread thread;
+  private int port;
 
   public SocketMonitorServer(int port) {
-    super("localhost:" + port);
+    this.port = port;
     serverSocket = Gdx.net.newServerSocket(NetworkUtil.protocol, port, NetworkUtil.serverSocketHints);
+    running = true;
   }
 
   @Override
@@ -26,6 +30,18 @@ public class SocketMonitorServer extends SocketMonitorBase {
       }
     }
     dispose();
+  }
+
+  public Thread start() {
+    if (thread != null) return thread;
+    thread = new Thread(this);
+    thread.setName("Server Socket Monitor: " + port);
+    thread.start();
+    return thread;
+  }
+
+  protected Thread getThread() {
+    return thread;
   }
 
   @Override

@@ -1,25 +1,21 @@
 package ethanjones.modularworld.networking.common.packet;
 
 import ethanjones.modularworld.core.data.ByteBase;
-import ethanjones.modularworld.core.data.ByteData;
-import ethanjones.modularworld.core.data.ByteMode;
-import ethanjones.modularworld.networking.common.SocketMonitor;
+import ethanjones.modularworld.core.data.ByteParser;
 
-public abstract class Packet {
+public abstract class Packet implements ByteParser<ByteBase> {
 
-  public final String id;
+  private final PacketPriority priority;
 
-  public Packet(String id) {
-    this.id = id;
+  public Packet() {
+    this(PacketPriority.MEDIUM);
   }
 
-  public abstract ByteBase getData();
-
-  public final ByteData getPacketData() {
-    ByteData byteData = new ByteData(new ByteMode.Named(id));
-    byteData.setBase("data", this.getData());
-    return byteData;
+  public Packet(PacketPriority priority) {
+    this.priority = priority;
   }
 
-  public abstract void process(SocketMonitor socketMonitor);
+  public PacketPriority getPriority() {
+    return priority;
+  }
 }

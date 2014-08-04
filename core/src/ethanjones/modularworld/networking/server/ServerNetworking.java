@@ -3,7 +3,8 @@ package ethanjones.modularworld.networking.server;
 import com.badlogic.gdx.net.Socket;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.networking.common.Networking;
-import ethanjones.modularworld.networking.common.SocketMonitor;
+import ethanjones.modularworld.networking.common.packet.Packet;
+import ethanjones.modularworld.networking.common.socket.SocketMonitor;
 
 import java.util.HashMap;
 
@@ -33,8 +34,11 @@ public class ServerNetworking extends Networking {
   }
 
   protected synchronized void accepted(Socket socket) {
-    SocketMonitor socketMonitor = new SocketMonitor(socket);
-    socketMonitor.start();
-    sockets.put(socket, socketMonitor);
+    sockets.put(socket, new SocketMonitor(socket, this));
+  }
+
+  @Override
+  public void received(Packet packet, SocketMonitor socketMonitor) {
+
   }
 }

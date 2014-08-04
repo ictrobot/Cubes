@@ -96,7 +96,7 @@ public class TexturePacker {
     return rectangles;
   }
 
-  public static final class PackRectangle implements ByteParser.ByteDataParser {
+  public static final class PackRectangle implements ByteParser<ByteData> {
 
     int x;
     int y;

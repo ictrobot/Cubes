@@ -33,14 +33,19 @@ public abstract class ByteBase {
   }
 
   // Byte Array
+
   public static ByteBase decompress(byte[] bytes) throws IOException {
-    DataInputStream input = new DataInputStream(new BufferedInputStream(new ByteArrayInputStream(bytes)));
+    return decompress(new DataInputStream(new BufferedInputStream(new ByteArrayInputStream(bytes))), true);
+  }
+
+
+  public static ByteBase decompress(DataInputStream input, boolean close) throws IOException {
     ByteBase bb;
 
     try {
       bb = ByteBase.read(input);
     } finally {
-      input.close();
+      if (close) input.close();
     }
 
     return bb;
@@ -48,15 +53,16 @@ public abstract class ByteBase {
 
   public static byte[] compress(ByteBase bb) throws IOException {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    DataOutputStream output = new DataOutputStream(baos);
+    compress(bb, new DataOutputStream(baos), true);
+    return baos.toByteArray();
+  }
 
+  public static void compress(ByteBase bb, DataOutputStream output, boolean close) throws IOException {
     try {
       ByteBase.write(bb, output);
     } finally {
-      output.close();
+      if (close) output.close();
     }
-
-    return baos.toByteArray();
   }
 
   // File

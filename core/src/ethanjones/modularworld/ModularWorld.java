@@ -85,6 +85,8 @@ public class ModularWorld implements ApplicationListener, TimeHandler {
       NetworkingManager.connectClientToInternalServer();
     }
 
+    NetworkingManager.clientNetworking.sendToServer(new PacketTest());
+
     Threads.init();
 
     if (compatibility.graphics()) {
