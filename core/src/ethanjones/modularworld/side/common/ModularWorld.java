@@ -36,6 +36,7 @@ public abstract class ModularWorld implements ApplicationListener {
 
     baseFolder = compatibility.getBaseFolder();
     baseFolder.mkdirs();
+    Log.info(baseFolder.path());
 
     settings = new SettingsManager();
     Settings.processAll();
