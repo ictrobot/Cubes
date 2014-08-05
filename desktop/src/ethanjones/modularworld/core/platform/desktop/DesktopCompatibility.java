@@ -35,6 +35,7 @@ public class DesktopCompatibility extends Compatibility {
     } else {
       os = OS.Unknown;
     }
+    System.out.println(str + " " + os.toString());
   }
 
   @Override
