@@ -26,4 +26,9 @@ public class PacketRequestWorld extends Packet {
     areaY = byteData.getInteger("areaY");
     areaZ = byteData.getInteger("areaZ");
   }
+
+  @Override
+  public void handlePacket() {
+
+  }
 }

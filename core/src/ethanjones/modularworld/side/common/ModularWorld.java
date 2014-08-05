@@ -15,11 +15,11 @@ import ethanjones.modularworld.core.thread.Threads;
 import ethanjones.modularworld.core.timing.Timing;
 import ethanjones.modularworld.graphics.asset.AssetManager;
 import ethanjones.modularworld.networking.NetworkingManager;
-import ethanjones.modularworld.networking.common.packet.PacketHandler;
+import ethanjones.modularworld.side.Side;
 import ethanjones.modularworld.side.client.debug.Debug;
 import ethanjones.modularworld.world.World;
 
-public abstract class ModularWorld implements ApplicationListener, PacketHandler {
+public abstract class ModularWorld implements ApplicationListener {
 
   public static Compatibility compatibility;
   public static AssetManager assetManager;
@@ -48,7 +48,12 @@ public abstract class ModularWorld implements ApplicationListener, PacketHandler
     setup = true;
   }
 
+  private final Side side;
   public World world;
+
+  public ModularWorld(Side side) {
+    this.side = side;
+  }
 
   @Override
   public void create() {
@@ -78,6 +83,7 @@ public abstract class ModularWorld implements ApplicationListener, PacketHandler
   @Override
   public void render() {
     timing.update();
+    NetworkingManager.getNetworking(side).processPackets();
   }
 
   public void write() {
@@ -97,7 +103,7 @@ public abstract class ModularWorld implements ApplicationListener, PacketHandler
   @Override
   public void dispose() {
     write();
-    NetworkingManager.stop();
+    NetworkingManager.getNetworking(side).stop();
     Threads.disposeExecutor();
     world.dispose();
   }

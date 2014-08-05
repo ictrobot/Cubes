@@ -6,15 +6,18 @@ import ethanjones.modularworld.networking.NetworkUtil;
 import ethanjones.modularworld.networking.common.Networking;
 import ethanjones.modularworld.networking.common.packet.Packet;
 import ethanjones.modularworld.networking.common.socket.SocketMonitor;
+import ethanjones.modularworld.side.Side;
 
 public class ClientNetworking extends Networking {
 
   private final String host;
+  private final int port;
   private SocketMonitor socketMonitor;
 
   public ClientNetworking(String host, int port) {
-    super(port);
+    super(Side.Client);
     this.host = host;
+    this.port = port;
   }
 
   public void start() {
@@ -27,7 +30,6 @@ public class ClientNetworking extends Networking {
   public void stop() {
     Log.info("Stopping Client Networking");
     socketMonitor.dispose();
-    Log.info("Successfully disconnected to " + host + ":" + port);
   }
 
   public void sendToServer(Packet packet) {
@@ -35,7 +37,7 @@ public class ClientNetworking extends Networking {
   }
 
   @Override
-  public void received(Packet packet, SocketMonitor socketMonitor) {
-
+  public void disconnected(SocketMonitor socketMonitor, Exception e) {
+    Log.info("Disconnected from " + socketMonitor.getRemoteAddress());
   }
 }

@@ -4,16 +4,18 @@ import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.utils.Array;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.networking.common.Networking;
-import ethanjones.modularworld.networking.common.packet.Packet;
 import ethanjones.modularworld.networking.common.socket.SocketMonitor;
+import ethanjones.modularworld.side.Side;
 
 public class ServerNetworking extends Networking {
 
+  private final int port;
   private Array<SocketMonitor> sockets;
   private SocketMonitorServer serverSocketMonitor;
 
   public ServerNetworking(int port) {
-    super(port);
+    super(Side.Server);
+    this.port = port;
   }
 
   public void start() {
@@ -38,13 +40,8 @@ public class ServerNetworking extends Networking {
   }
 
   @Override
-  public void received(Packet packet, SocketMonitor socketMonitor) {
-
-  }
-
-  @Override
   public void disconnected(SocketMonitor socketMonitor, Exception e) {
-    super.disconnected(socketMonitor, e);
+    Log.info("Disconnected from " + socketMonitor.getRemoteAddress());
     sockets.removeValue(socketMonitor, true);
   }
 }

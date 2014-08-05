@@ -18,7 +18,8 @@ public final class PacketManager {
       Log.info(new ModularWorldException("Failed to read packet"));
       return;
     }
-    packetHandler.received(packet, socketMonitor);
+    packet.setSocketMonitor(socketMonitor);
+    packetHandler.received(packet);
   }
 
   public static Packet getPacket(ByteData byteData) {

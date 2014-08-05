@@ -159,6 +159,14 @@ public class ByteData extends ByteBase {
     }
   }
 
+  public boolean getBoolean(String tagName) {
+    if (!contains(tagName) || !(data.get(tagName) instanceof ByteBoolean)) {
+      return false;
+    } else {
+      return ((ByteBoolean) data.get(tagName)).data;
+    }
+  }
+
   // Set
   public void setBase(String tagName, ByteBase bb) {
     if (!(bb.mode instanceof ByteMode.Named)) {
@@ -204,5 +212,9 @@ public class ByteData extends ByteBase {
 
   public void setString(String tagName, String s) {
     setBase(tagName, new ByteString(new ByteMode.Named(tagName), s));
+  }
+
+  public void setBoolean(String tagName, Boolean b) {
+    setBase(tagName, new ByteBoolean(new ByteMode.Named(tagName), b));
   }
 }

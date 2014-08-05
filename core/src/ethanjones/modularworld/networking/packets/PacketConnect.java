@@ -16,4 +16,9 @@ public class PacketConnect extends Packet {
   public void read(ByteBase bytebase) {
 
   }
+
+  @Override
+  public void handlePacket() {
+
+  }
 }

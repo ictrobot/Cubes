@@ -1,7 +1,9 @@
 package ethanjones.modularworld.networking;
 
 import ethanjones.modularworld.core.settings.Settings;
+import ethanjones.modularworld.side.Side;
 import ethanjones.modularworld.networking.client.ClientNetworking;
+import ethanjones.modularworld.networking.common.Networking;
 import ethanjones.modularworld.networking.server.ServerNetworking;
 
 public class NetworkingManager {
@@ -48,8 +50,13 @@ public class NetworkingManager {
     port = Settings.networking_port.getIntegerSetting().getValue();
   }
 
-  public static void stop() {
-    if (clientNetworking != null) clientNetworking.stop();
-    if (serverNetworking != null) serverNetworking.stop();
+  public static Networking getNetworking(Side side) {
+    switch (side) {
+      case Client:
+        return clientNetworking;
+      case Server:
+        return serverNetworking;
+    }
+    return null;
   }
 }

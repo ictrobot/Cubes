@@ -8,8 +8,7 @@ import ethanjones.modularworld.graphics.asset.AssetManager;
 import ethanjones.modularworld.graphics.rendering.Renderer;
 import ethanjones.modularworld.input.InputChain;
 import ethanjones.modularworld.networking.NetworkingManager;
-import ethanjones.modularworld.networking.common.packet.Packet;
-import ethanjones.modularworld.networking.common.socket.SocketMonitor;
+import ethanjones.modularworld.side.Side;
 import ethanjones.modularworld.side.client.debug.Debug;
 import ethanjones.modularworld.side.common.ModularWorld;
 import ethanjones.modularworld.world.WorldClient;
@@ -23,6 +22,7 @@ public class ModularWorldClient extends ModularWorld {
   public Renderer renderer;
 
   public ModularWorldClient() {
+    super(Side.Client);
     ModularWorldClient.instance = this;
   }
 
@@ -49,11 +49,13 @@ public class ModularWorldClient extends ModularWorld {
 
   @Override
   public void resize(int width, int height) {
+    super.resize(width, height);
     renderer.resize();
   }
 
   @Override
   public void render() {
+    super.render();
     long currentTimeMillis = System.currentTimeMillis();
     inputChain.beforeRender();
     renderer.render();
@@ -66,10 +68,5 @@ public class ModularWorldClient extends ModularWorld {
   public void dispose() {
     renderer.dispose();
     super.dispose();
-  }
-
-  @Override
-  public void received(Packet packet, SocketMonitor socketMonitor) {
-
   }
 }

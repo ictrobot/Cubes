@@ -106,6 +106,8 @@ public abstract class ByteBase {
         return new ByteFloat(mode);
       case 6:
         return new ByteDouble(mode);
+      case 8:
+        return new ByteBoolean(mode);
       case 7:
         return new ByteString(mode);
       case 10:
