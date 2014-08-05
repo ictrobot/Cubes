@@ -8,6 +8,8 @@ import ethanjones.modularworld.graphics.asset.AssetManager;
 import ethanjones.modularworld.graphics.rendering.Renderer;
 import ethanjones.modularworld.input.InputChain;
 import ethanjones.modularworld.networking.NetworkingManager;
+import ethanjones.modularworld.networking.common.packet.Packet;
+import ethanjones.modularworld.networking.common.socket.SocketMonitor;
 import ethanjones.modularworld.side.client.debug.Debug;
 import ethanjones.modularworld.side.common.ModularWorld;
 import ethanjones.modularworld.world.WorldClient;
@@ -64,5 +66,10 @@ public class ModularWorldClient extends ModularWorld {
   public void dispose() {
     renderer.dispose();
     super.dispose();
+  }
+
+  @Override
+  public void received(Packet packet, SocketMonitor socketMonitor) {
+
   }
 }

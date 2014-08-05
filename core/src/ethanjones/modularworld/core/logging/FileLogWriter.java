@@ -17,7 +17,6 @@ public class FileLogWriter implements LogWriter {
     } catch (Exception e) {
       e.printStackTrace();
     }
-    System.out.println(file.getPath());
   }
 
   @Override

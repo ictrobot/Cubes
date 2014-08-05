@@ -15,28 +15,27 @@ import ethanjones.modularworld.core.thread.Threads;
 import ethanjones.modularworld.core.timing.Timing;
 import ethanjones.modularworld.graphics.asset.AssetManager;
 import ethanjones.modularworld.networking.NetworkingManager;
+import ethanjones.modularworld.networking.common.packet.PacketHandler;
 import ethanjones.modularworld.side.client.debug.Debug;
 import ethanjones.modularworld.world.World;
 
-public abstract class ModularWorld implements ApplicationListener {
+public abstract class ModularWorld implements ApplicationListener, PacketHandler {
 
-  public static Compatibility compatibility; //
+  public static Compatibility compatibility;
   public static AssetManager assetManager;
-  public static FileHandle baseFolder; //
-  public static EventBus eventBus; //
+  public static FileHandle baseFolder;
+  public static EventBus eventBus;
   public static SettingsManager settings;
   public static Timing timing;
   private static boolean setup;
 
   public static void setup() {
     if (setup) return;
-    ModularWorld.compatibility = compatibility;
     eventBus = new EventBus();
     compatibility.init();
 
     baseFolder = compatibility.getBaseFolder();
     baseFolder.mkdirs();
-    Log.info(baseFolder.path());
 
     settings = new SettingsManager();
     Settings.processAll();

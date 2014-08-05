@@ -54,6 +54,7 @@ public class DesktopCompatibility extends Compatibility {
   }
 
   public FileHandle getBaseFolder() {
+    if (NetworkingManager.isServerOnly()) return getWorkingFolder();
     FileHandle homeDir = Gdx.files.absolute(System.getProperty("user.home"));
     switch (os) {
       case Windows:
