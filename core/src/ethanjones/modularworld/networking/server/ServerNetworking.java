@@ -1,16 +1,15 @@
 package ethanjones.modularworld.networking.server;
 
 import com.badlogic.gdx.net.Socket;
+import com.badlogic.gdx.utils.Array;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.networking.common.Networking;
 import ethanjones.modularworld.networking.common.packet.Packet;
 import ethanjones.modularworld.networking.common.socket.SocketMonitor;
 
-import java.util.HashMap;
-
 public class ServerNetworking extends Networking {
 
-  private HashMap<Socket, SocketMonitor> sockets;
+  private Array<SocketMonitor> sockets;
   private SocketMonitorServer serverSocketMonitor;
 
   public ServerNetworking(int port) {
@@ -19,7 +18,7 @@ public class ServerNetworking extends Networking {
 
   public void start() {
     Log.info("Starting Server Networking");
-    sockets = new HashMap<Socket, SocketMonitor>();
+    sockets = new Array<SocketMonitor>();
     serverSocketMonitor = new SocketMonitorServer(port);
     serverSocketMonitor.start();
   }
@@ -28,13 +27,13 @@ public class ServerNetworking extends Networking {
   public void stop() {
     Log.info("Stopping Server Networking");
     serverSocketMonitor.dispose();
-    for (SocketMonitor socketMonitor : sockets.values()) {
+    for (SocketMonitor socketMonitor : sockets) {
       socketMonitor.dispose();
     }
   }
 
   protected synchronized void accepted(Socket socket) {
-    sockets.put(socket, new SocketMonitor(socket, this));
+    sockets.add(new SocketMonitor(socket, this));
     Log.info("Successfully connected to " + socket.getRemoteAddress());
   }
 
@@ -46,6 +45,6 @@ public class ServerNetworking extends Networking {
   @Override
   public void disconnected(SocketMonitor socketMonitor, Exception e) {
     super.disconnected(socketMonitor, e);
-    sockets.remove(socketMonitor.getSocket());
+    sockets.removeValue(socketMonitor, true);
   }
 }
