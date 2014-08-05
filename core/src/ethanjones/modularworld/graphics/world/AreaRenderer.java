@@ -8,10 +8,10 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
-import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.block.Block;
 import ethanjones.modularworld.core.util.Direction;
 import ethanjones.modularworld.graphics.GraphicsHelper;
+import ethanjones.modularworld.side.client.ModularWorldClient;
 import ethanjones.modularworld.world.storage.Area;
 
 import static ethanjones.modularworld.graphics.world.FaceVertices.*;
@@ -80,12 +80,12 @@ public class AreaRenderer implements RenderableProvider, Disposable {
   }
 
   public int calculateVertices(float[] vertices) {
-    Area maxX = ModularWorld.instance.world.getArea(area.x + 1, area.y, area.z);
-    Area minX = ModularWorld.instance.world.getArea(area.x - 1, area.y, area.z);
-    Area maxY = ModularWorld.instance.world.getArea(area.x, area.y + 1, area.z);
-    Area minY = ModularWorld.instance.world.getArea(area.x, area.y - 1, area.z);
-    Area maxZ = ModularWorld.instance.world.getArea(area.x, area.y, area.z + 1);
-    Area minZ = ModularWorld.instance.world.getArea(area.x, area.y, area.z - 1);
+    Area maxX = ModularWorldClient.instance.world.getArea(area.x + 1, area.y, area.z);
+    Area minX = ModularWorldClient.instance.world.getArea(area.x - 1, area.y, area.z);
+    Area maxY = ModularWorldClient.instance.world.getArea(area.x, area.y + 1, area.z);
+    Area minY = ModularWorldClient.instance.world.getArea(area.x, area.y - 1, area.z);
+    Area maxZ = ModularWorldClient.instance.world.getArea(area.x, area.y, area.z + 1);
+    Area minZ = ModularWorldClient.instance.world.getArea(area.x, area.y, area.z - 1);
 
     int i = 0;
     int vertexOffset = 0;

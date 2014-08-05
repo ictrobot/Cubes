@@ -6,8 +6,9 @@ import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Frustum;
-import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.core.settings.Settings;
+import ethanjones.modularworld.side.client.ModularWorldClient;
+import ethanjones.modularworld.world.WorldClient;
 import ethanjones.modularworld.world.reference.AreaReference;
 import ethanjones.modularworld.world.storage.Area;
 
@@ -42,19 +43,19 @@ public class BlockRenderer {
   }
 
   public void render() {
-    ModularWorld.instance.player.movementHandler.updateCamera(camera);
+    ModularWorldClient.instance.player.movementHandler.updateCamera(camera);
     camera.update(true);
 
     int renderDistance = Settings.renderer_block_viewDistance.getIntegerSetting().getValue();
 
-    AreaReference pos = ModularWorld.instance.world.playerArea;
+    AreaReference pos = ((WorldClient) ModularWorldClient.instance.world).playerArea;
     for (int areaX = pos.areaX - renderDistance; areaX <= pos.areaX + renderDistance; areaX++) {
       for (int areaY = pos.areaY - renderDistance; areaY <= pos.areaY + renderDistance; areaY++) {
         for (int areaZ = pos.areaZ - renderDistance; areaZ <= pos.areaZ + renderDistance; areaZ++) {
           if (areaY < 0) {
             continue;
           }
-          Area area = ModularWorld.instance.world.getArea(areaX, areaY, areaZ);
+          Area area = ModularWorldClient.instance.world.getArea(areaX, areaY, areaZ);
           if (area.areaRenderer == null) {
             continue;
           }

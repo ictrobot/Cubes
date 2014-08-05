@@ -3,7 +3,7 @@ package ethanjones.modularworld.graphics.rendering;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
-import ethanjones.modularworld.core.debug.Debug;
+import ethanjones.modularworld.side.client.debug.Debug;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.graphics.GameBatch;
 

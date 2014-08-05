@@ -13,10 +13,10 @@ import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.core.ModularWorldException;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.graphics.asset.AssetManager;
+import ethanjones.modularworld.side.common.ModularWorld;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -54,7 +54,7 @@ public class GraphicsHelper {
   }
 
   public static void init(AssetManager assetManager) {
-    FileHandle parent = ModularWorld.instance.baseFolder.child("PackedTextures");
+    FileHandle parent = ModularWorld.baseFolder.child("PackedTextures");
     parent.deleteDirectory();
     parent.mkdirs();
     AssetManager.AssetFolder assetFolderManager = assetManager.assets;

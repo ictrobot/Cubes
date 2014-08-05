@@ -1,9 +1,9 @@
 package ethanjones.modularworld.world.storage;
 
-import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.block.Block;
 import ethanjones.modularworld.core.events.world.block.SetBlockEvent;
 import ethanjones.modularworld.graphics.world.AreaRenderer;
+import ethanjones.modularworld.side.common.ModularWorld;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
 
 import static ethanjones.modularworld.core.util.Maths.fastPositive;
@@ -54,7 +54,7 @@ public class Area {
     cenBlockZ = (float) (maxBlockZ + minBlockZ) / 2f;
 
     blocks = new Block[SIZE_BLOCKS_CUBED];
-    if (!ModularWorld.instance.compatibility.isHeadless() && render) {
+    if (!ModularWorld.compatibility.isHeadless() && render) {
       areaRenderer = new AreaRenderer(this);
     }
   }

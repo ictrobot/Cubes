@@ -1,12 +1,12 @@
-package ethanjones.modularworld.core.debug;
+package ethanjones.modularworld.side.client.debug;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.core.ModularWorldException;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.core.util.LongAverage;
+import ethanjones.modularworld.side.client.ModularWorldClient;
 import ethanjones.modularworld.world.coordinates.AreaCoordinates;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
 
@@ -41,7 +41,7 @@ public class Debug {
   }
 
   public static void position() {
-    Vector3 p = ModularWorld.instance.player.position;
+    Vector3 p = ModularWorldClient.instance.player.position;
     set(DebugType.coordinates, new StringBuilder().append("  X:").append(String.format("%.2f", p.x)).append(" Y:").append(String.format("%.2f", p.y)).append(" Z:").append(String.format("%.2f", p.z)).toString());
     set(DebugType.areaCoordinates, new StringBuilder().append("A X:").append(BlockCoordinates.area((int) Math.ceil(p.x))).append(" Y:").append(BlockCoordinates.area((int) Math.ceil(p.y))).append(" Z:").append(BlockCoordinates.area((int) Math.ceil(p.z))).toString());
     set(DebugType.zoneCoordinates, new StringBuilder().append("Z X:").append(AreaCoordinates.zone((int) Math.ceil(p.x))).append(" Z:").append(AreaCoordinates.zone((int) Math.ceil(p.z))).toString());
@@ -80,7 +80,7 @@ public class Debug {
   }
 
   public static void facing() {
-    set(DebugType.direction, ModularWorld.instance.player.angleX + " " + ModularWorld.instance.player.angleY);
+    set(DebugType.direction, ModularWorldClient.instance.player.angleX + " " + ModularWorldClient.instance.player.angleY);
   }
 
   public static DebugLabel[] getLabels(Skin skin) {

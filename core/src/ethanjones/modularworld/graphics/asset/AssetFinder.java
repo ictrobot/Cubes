@@ -2,7 +2,7 @@ package ethanjones.modularworld.graphics.asset;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import ethanjones.modularworld.ModularWorld;
+import ethanjones.modularworld.side.common.ModularWorld;
 
 import java.net.URL;
 import java.security.CodeSource;

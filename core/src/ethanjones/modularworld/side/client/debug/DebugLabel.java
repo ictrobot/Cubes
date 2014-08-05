@@ -1,4 +1,4 @@
-package ethanjones.modularworld.core.debug;
+package ethanjones.modularworld.side.client.debug;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;

@@ -1,7 +1,7 @@
 package ethanjones.modularworld.core;
 
 import com.badlogic.gdx.Gdx;
-import ethanjones.modularworld.core.debug.Debug;
+import ethanjones.modularworld.side.client.debug.Debug;
 import ethanjones.modularworld.core.logging.Log;
 
 import java.io.IOException;

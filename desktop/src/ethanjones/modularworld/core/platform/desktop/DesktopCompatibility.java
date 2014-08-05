@@ -38,8 +38,7 @@ public class DesktopCompatibility extends Compatibility {
   }
 
   @Override
-  public void init() {
-    super.init();
+  public void setNetworkParameter() {
     if (arg.length > 0) {
       NetworkingManager.NETWORK_PARAMETER = arg[0];
     }

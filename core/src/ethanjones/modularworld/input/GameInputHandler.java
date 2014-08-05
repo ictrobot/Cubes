@@ -2,7 +2,7 @@ package ethanjones.modularworld.input;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
-import ethanjones.modularworld.ModularWorld;
+import ethanjones.modularworld.side.client.ModularWorldClient;
 
 public class GameInputHandler extends InputAdapter {
 
@@ -16,9 +16,9 @@ public class GameInputHandler extends InputAdapter {
       int deltaX = screenX - touch[pointer][0];
       int deltaY = screenY - touch[pointer][1];
       if (Math.abs(deltaX) <= 1 && Math.abs(deltaY) <= 1) {
-        ModularWorld.instance.player.movementHandler.touch = true;
+        ModularWorldClient.instance.player.movementHandler.touch = true;
       } else {
-        ModularWorld.instance.player.movementHandler.updateRotation(deltaX, deltaY);
+        ModularWorldClient.instance.player.movementHandler.updateRotation(deltaX, deltaY);
       }
     }
     touch[pointer][0] = screenX;
@@ -31,7 +31,7 @@ public class GameInputHandler extends InputAdapter {
       if (!Gdx.input.isTouched(i)) {
         touch[i][0] = 0;
         touch[i][1] = 0;
-        ModularWorld.instance.player.movementHandler.touch = false;
+        ModularWorldClient.instance.player.movementHandler.touch = false;
       }
     }
     maxPointer = -1;
@@ -39,7 +39,7 @@ public class GameInputHandler extends InputAdapter {
 
   @Override
   public boolean mouseMoved(int screenX, int screenY) {
-    ModularWorld.instance.player.movementHandler.updateRotation();
+    ModularWorldClient.instance.player.movementHandler.updateRotation();
     return true;
   }
 

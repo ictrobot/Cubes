@@ -4,11 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
-import ethanjones.modularworld.ModularWorld;
-import ethanjones.modularworld.core.debug.Debug;
 import ethanjones.modularworld.core.events.entity.living.player.PlayerMovementEvent;
 import ethanjones.modularworld.entity.living.player.Player;
 import ethanjones.modularworld.input.keyboard.KeyboardHelper;
+import ethanjones.modularworld.side.client.ModularWorldClient;
+import ethanjones.modularworld.side.client.debug.Debug;
+import ethanjones.modularworld.world.WorldClient;
 
 public class MovementHandler {
 
@@ -52,19 +53,19 @@ public class MovementHandler {
 
   public void updateCamera(Camera camera) {
     camera.position.set(player.position.x, player.position.y, player.position.z);
-    camera.direction.y = ((float) ModularWorld.instance.player.angleY - 180f) / 90f;
-    camera.rotate(ModularWorld.instance.player.movementHandler.deltaAngleX, 0, 1, 0);
+    camera.direction.y = ((float) player.angleY - 180f) / 90f;
+    camera.rotate(player.movementHandler.deltaAngleX, 0, 1, 0);
   }
 
   public void updatePosition() {
     if (KeyboardHelper.isKeyDown(Input.Keys.W) || touch) {
-      ModularWorld.instance.player.position.add(ModularWorld.instance.renderer.block.camera.direction.cpy().nor());
+      player.position.add(ModularWorldClient.instance.renderer.block.camera.direction.cpy().nor());
     } else if (KeyboardHelper.isKeyDown(Input.Keys.S)) {
-      ModularWorld.instance.player.position.sub(ModularWorld.instance.renderer.block.camera.direction.cpy().nor());
+      player.position.sub(ModularWorldClient.instance.renderer.block.camera.direction.cpy().nor());
     }
     if (previousPos != player.position) {
       if (new PlayerMovementEvent().post()) {
-        ModularWorld.instance.world.playerChangedPosition();
+        ((WorldClient) ModularWorldClient.instance.world).playerChangedPosition();
         previousPos = player.position.cpy();
       } else {
         player.position.set(previousPos);

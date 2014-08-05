@@ -21,13 +21,12 @@ public class NetworkingManager {
     return NETWORK_PARAMETER.toLowerCase().equals(NETWORK_PARAMETER_SERVER.toLowerCase());
   }
 
-
   public static void connectClient() {
-    connectClient(NETWORK_PARAMETER, port);
-  }
-
-  public static void connectClientToInternalServer() {
-    connectClient("127.0.0.1", port);
+    if (NETWORK_PARAMETER.isEmpty()) {
+      connectClient("127.0.0.1", port);
+    } else {
+      connectClient(NETWORK_PARAMETER, port);
+    }
   }
 
   private static void connectClient(String address, int port) {

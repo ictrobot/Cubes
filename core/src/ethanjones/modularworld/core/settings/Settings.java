@@ -1,10 +1,11 @@
 package ethanjones.modularworld.core.settings;
 
-import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.core.events.setting.AfterProcessSettingEvent;
 import ethanjones.modularworld.graphics.rendering.BlockRenderer;
+import ethanjones.modularworld.side.common.ModularWorld;
 
 public enum Settings {
+  username(new StringSetting(null, null, "User")),
   renderer_block_viewDistance(new IntegerSetting(null, null, 1, BlockRenderer.RENDER_DISTANCE_MIN, BlockRenderer.RENDER_DISTANCE_MAX, 1)),
   networking_port(new IntegerSetting(null, null, 8080)),
   input_fieldOfView(new IntegerSetting(null, null, 67, 10, 120, 1));
@@ -25,7 +26,7 @@ public enum Settings {
   }
 
   public Setting getSetting() {
-    SettingGroup group = ModularWorld.instance.settings.main;
+    SettingGroup group = ModularWorld.settings.main;
     for (String str : groupPath) {
       group = group.getSettingGroup(str);
     }
@@ -44,13 +45,17 @@ public enum Settings {
     return (IntegerSetting) getSetting();
   }
 
+  public StringSetting getStringSetting() {
+    return (StringSetting) getSetting();
+  }
+
   private void process() {
     String[] parts = this.name().split("_");
     name = parts[parts.length - 1];
     setting.name = name;
     groupPath = new String[parts.length - 1];
     int i = 0;
-    SettingGroup group = ModularWorld.instance.settings.main;
+    SettingGroup group = ModularWorld.settings.main;
     while (i < parts.length - 1) {
       groupPath[i] = parts[i];
       group = group.getSettingGroup(parts[i]);

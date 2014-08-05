@@ -1,4 +1,4 @@
-package ethanjones.modularworld.core.debug;
+package ethanjones.modularworld.side.client.debug;
 
 public enum DebugType {
   version,

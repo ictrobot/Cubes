@@ -2,8 +2,8 @@ package ethanjones.modularworld.core.logging;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import ethanjones.modularworld.ModularWorld;
 import ethanjones.modularworld.core.ModularWorldException;
+import ethanjones.modularworld.side.common.ModularWorld;
 
 import java.io.File;
 
@@ -19,7 +19,7 @@ public class Log {
 
     }
     try {
-      file = new FileLogWriter(new File(ModularWorld.instance.baseFolder.file(), "log.txt"));
+      file = new FileLogWriter(new File(ModularWorld.baseFolder.file(), "log.txt"));
     } catch (Exception e) {
       try {
         file = new FileLogWriter(new File(System.getProperty("user.dir"), "log.txt"));

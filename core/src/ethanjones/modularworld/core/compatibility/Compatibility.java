@@ -4,14 +4,14 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import ethanjones.modularworld.ModularWorld;
-import ethanjones.modularworld.core.ApplicationListenerWrapper;
 import ethanjones.modularworld.core.Branding;
 import ethanjones.modularworld.core.ModularWorldException;
+import ethanjones.modularworld.core.ModularWorldWrapper;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.graphics.asset.AssetFinder;
 import ethanjones.modularworld.graphics.asset.AssetManager;
 import ethanjones.modularworld.networking.NetworkingManager;
+import ethanjones.modularworld.side.common.ModularWorld;
 
 public abstract class Compatibility {
 
@@ -22,7 +22,11 @@ public abstract class Compatibility {
   }
 
   public void init() {
-    ModularWorld.instance.eventBus.register(this);
+    ModularWorld.eventBus.register(this);
+  }
+
+  public void setNetworkParameter() {
+
   }
 
   public boolean isHeadless() {
@@ -55,8 +59,11 @@ public abstract class Compatibility {
   protected abstract void run(ApplicationListener applicationListener);
 
   public void startModularWorld() {
+    setNetworkParameter();
+    ModularWorld.compatibility = this;
+
     try {
-      run(new ApplicationListenerWrapper(new ModularWorld(this)));
+      run(new ModularWorldWrapper());
     } catch (Exception e) {
       try {
         Log.error(Branding.NAME, "", ModularWorldException.getModularWorldException(e));
