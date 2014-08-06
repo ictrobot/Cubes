@@ -3,26 +3,25 @@ package ethanjones.modularworld.networking.packets;
 import ethanjones.modularworld.core.data.Data;
 import ethanjones.modularworld.core.data.DataGroup;
 import ethanjones.modularworld.networking.common.packet.Packet;
-import ethanjones.modularworld.side.server.ModularWorldServer;
+import ethanjones.modularworld.side.client.ModularWorldClient;
+import ethanjones.modularworld.world.reference.AreaReference;
 import ethanjones.modularworld.world.storage.Area;
-import ethanjones.modularworld.world.storage.BlankArea;
 
-public class PacketRequestWorld extends Packet {
+public class PacketArea extends Packet {
+
+  public static AreaReference areaReference = new AreaReference();
 
   public int areaX;
   public int areaY;
   public int areaZ;
+  public DataGroup area;
 
   @Override
   public void handlePacket() {
-    Area area = ModularWorldServer.instance.world.getArea(areaX, areaY, areaZ);
-    if (area instanceof BlankArea) return;
-    PacketArea packetArea = new PacketArea();
-    packetArea.areaX = areaX;
-    packetArea.areaY = areaY;
-    packetArea.areaZ = areaZ;
-    packetArea.area = area.write();
-    getSocketMonitor().queue(packetArea);
+    areaReference.setFromArea(areaX, areaY, areaZ);
+    Area a = new Area(areaX, areaY, areaZ);
+    a.read(area);
+    ModularWorldClient.instance.world.setAreaInternal(areaReference, a);
   }
 
   @Override
@@ -31,6 +30,7 @@ public class PacketRequestWorld extends Packet {
     dataGroup.setInteger("areaX", areaX);
     dataGroup.setInteger("areaY", areaY);
     dataGroup.setInteger("areaZ", areaZ);
+    dataGroup.setGroup("area", area);
     return dataGroup;
   }
 
@@ -40,5 +40,6 @@ public class PacketRequestWorld extends Packet {
     areaX = dataGroup.getInteger("areaX");
     areaY = dataGroup.getInteger("areaY");
     areaZ = dataGroup.getInteger("areaZ");
+    area = dataGroup.getGroup("area");
   }
 }

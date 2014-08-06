@@ -4,7 +4,7 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-public abstract class Data<O> {
+public abstract class Data {
 
   protected abstract void write(DataOutput output) throws IOException;
 

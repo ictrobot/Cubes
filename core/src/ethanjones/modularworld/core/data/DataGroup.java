@@ -80,6 +80,12 @@ public class DataGroup extends Data {
     return map.get(key);
   }
 
+  public DataList getDataList(String key) {
+    Data data = getValue(key);
+    if (data != null && data instanceof DataList) return (DataList) data;
+    return (DataList) setValue(key, new DataList());
+  }
+
   public DataGroup getGroup(String key) {
     Data data = getValue(key);
     if (data != null && data instanceof DataGroup) return (DataGroup) data;
@@ -142,6 +148,10 @@ public class DataGroup extends Data {
   public Data setValue(String key, Data value) {
     map.put(key, value);
     return value;
+  }
+
+  public void setList(String key, DataList value) {
+    setValue(key, value);
   }
 
   public void setGroup(String key, DataGroup value) {

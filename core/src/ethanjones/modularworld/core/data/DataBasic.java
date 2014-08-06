@@ -8,7 +8,7 @@ import java.io.IOException;
  * @param <T> type, e.g. "DataString"
  * @param <O> object, e.g. "java.lang.String"
  */
-public abstract class DataBasic<T extends DataBasic, O> extends Data<O> {
+public abstract class DataBasic<T extends DataBasic, O> extends Data {
 
   private final byte id;
   protected O obj;

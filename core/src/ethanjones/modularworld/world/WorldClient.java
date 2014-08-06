@@ -58,11 +58,11 @@ public class WorldClient extends World {
     }
   }
 
-  protected Area getAreaInternal(AreaReference areaReference, boolean request, boolean generatedCheck) {
+  protected Area getAreaInternal(AreaReference areaReference, boolean request) {
     updateArrayPositions(areaReference);
     if (isArrayPositionValid(areaReference)) {
       Area area = areasAroundPlayer[areaReference.arrayPos];
-      if (area != null && (area.generated || !generatedCheck)) {
+      if (area != null) {
         return area;
       } else if (area == null && request) {
         requestArea(areaReference);
@@ -78,21 +78,6 @@ public class WorldClient extends World {
       return true;
     }
     return false;
-  }
-
-  public Area getAreaPlain(AreaReference areaReference) {
-    return getAreaInternal(areaReference, false, false);
-  }
-
-  public Area getArea(AreaReference areaReference) {
-    return getAreaInternal(areaReference, true, true);
-  }
-
-  public Area getArea(int areaX, int areaY, int areaZ) {
-    AreaReference areaReference = areaReferencePool.obtain().setFromArea(areaX, areaY, areaZ);
-    Area area = getArea(areaReference);
-    areaReferencePool.free(areaReference);
-    return area;
   }
 
   private AreaReference updateArrayPositions(AreaReference areaReference) {
@@ -116,6 +101,7 @@ public class WorldClient extends World {
     packetRequestWorld.areaX = areaReference.areaX;
     packetRequestWorld.areaY = areaReference.areaY;
     packetRequestWorld.areaZ = areaReference.areaZ;
+    setAreaInternal(areaReference, World.BLANK_AREA);
     NetworkingManager.clientNetworking.sendToServer(packetRequestWorld);
   }
 

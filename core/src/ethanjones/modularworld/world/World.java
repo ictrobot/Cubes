@@ -21,18 +21,18 @@ public abstract class World implements Disposable {
     this.areaReferencePool = new AreaReferencePool();
   }
 
-  protected abstract Area getAreaInternal(AreaReference areaReference, boolean request, boolean generatedCheck);
+  protected abstract Area getAreaInternal(AreaReference areaReference, boolean request);
 
   public abstract boolean setAreaInternal(AreaReference areaReference, Area area);
 
   public abstract void requestArea(AreaReference areaReference);
 
   public Area getAreaPlain(AreaReference areaReference) {
-    return getAreaInternal(areaReference, false, false);
+    return getAreaInternal(areaReference, false);
   }
 
   public Area getArea(AreaReference areaReference) {
-    return getAreaInternal(areaReference, true, true);
+    return getAreaInternal(areaReference, true);
   }
 
   public Area getArea(int areaX, int areaY, int areaZ) {

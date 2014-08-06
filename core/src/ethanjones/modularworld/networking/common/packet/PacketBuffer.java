@@ -1,6 +1,7 @@
 package ethanjones.modularworld.networking.common.packet;
 
 import com.badlogic.gdx.utils.Array;
+import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.side.Side;
 
 public class PacketBuffer {

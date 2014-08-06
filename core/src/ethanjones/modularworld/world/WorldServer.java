@@ -22,7 +22,7 @@ public class WorldServer extends World {
 
     @Override
     public int hashCode() {
-      return Math.abs(x + 1) ^ Math.abs(y + 1) ^ Math.abs(z + 1);
+      return x ^ y ^ z;
     }
 
     @Override
@@ -53,10 +53,10 @@ public class WorldServer extends World {
     keyPool = new KeyPool();
   }
 
-  protected Area getAreaInternal(AreaReference areaReference, boolean request, boolean generatedCheck) {
+  protected Area getAreaInternal(AreaReference areaReference, boolean request) {
     Key key = keyPool.obtain().set(areaReference);
     Area area = areaMap.get(key);
-    if (area != null && (area.generated || !generatedCheck)) {
+    if (area != null) {
       return area;
     } else if (area == null && request) {
       requestArea(areaReference);

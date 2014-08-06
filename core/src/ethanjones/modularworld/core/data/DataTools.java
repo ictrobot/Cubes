@@ -72,10 +72,10 @@ public class DataTools {
 
   public static Data getData(byte type) {
     switch (type) {
-      //case -2:
-      //  return new DataMap();
       //case -3:
-      //  return new DataList();
+      //  return new DataMap();
+      case -2:
+        return new DataList();
       case -1:
         return new DataGroup();
       case 1:

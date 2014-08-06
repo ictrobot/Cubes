@@ -1,12 +1,17 @@
 package ethanjones.modularworld.world.storage;
 
 import ethanjones.modularworld.block.factory.BlockFactory;
+import ethanjones.modularworld.core.ModularWorldException;
+import ethanjones.modularworld.core.data.DataGroup;
+import ethanjones.modularworld.core.data.DataList;
+import ethanjones.modularworld.core.data.basic.DataInteger;
+import ethanjones.modularworld.core.data.other.DataParser;
 import ethanjones.modularworld.core.events.world.block.SetBlockEvent;
 import ethanjones.modularworld.graphics.world.AreaRenderer;
 import ethanjones.modularworld.side.common.ModularWorld;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
 
-public class Area {
+public class Area implements DataParser<DataGroup> {
 
   public static final int SIZE_BLOCKS = 32;
   public static final int SIZE_BLOCKS_SQUARED = SIZE_BLOCKS * SIZE_BLOCKS;
@@ -71,5 +76,33 @@ public class Area {
   public void unload() {
     areaRenderer.dispose();
     blockFactories = null;
+  }
+
+  @Override
+  public DataGroup write() {
+    DataGroup dataGroup = new DataGroup();
+    dataGroup.setInteger("x", x);
+    dataGroup.setInteger("y", y);
+    dataGroup.setInteger("z", z);
+    DataList<DataInteger> block = new DataList<DataInteger>();
+    for (int i = 0; i < blockFactories.length; i++) {
+      block.add(new DataInteger(blockFactories[i]));
+    }
+    dataGroup.setList("blockFactories", block);
+    return dataGroup;
+  }
+
+  @Override
+  public void read(DataGroup data) {
+    int aX = data.getInteger("x");
+    int aY = data.getInteger("y");
+    int aZ = data.getInteger("z");
+    if (aX != x || aY != y || aZ != z)
+      throw new ModularWorldException("Wrong coordinates, " + aX + " " + aY + " " + aZ + " expected " + x + " " + y + " " + z);
+    DataList<DataInteger> block = data.getDataList("blockFactories");
+    for (int i = 0; i < blockFactories.length; i++) {
+      blockFactories[i] = block.get(i).get();
+    }
+    if (areaRenderer != null) areaRenderer.dirty = true;
   }
 }
