@@ -35,6 +35,7 @@ public class SocketMonitorServer implements Runnable, Disposable {
   public Thread start() {
     if (thread != null) return thread;
     thread = new Thread(this);
+    thread.setDaemon(true);
     thread.setName("Server Socket Monitor: " + port);
     thread.start();
     return thread;

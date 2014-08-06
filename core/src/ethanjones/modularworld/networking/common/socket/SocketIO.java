@@ -14,6 +14,7 @@ public abstract class SocketIO implements Runnable, Disposable {
   public Thread start(String name) {
     if (thread != null) return thread;
     thread = new Thread(this);
+    thread.setDaemon(true);
     thread.setName(name);
     thread.start();
     return thread;
