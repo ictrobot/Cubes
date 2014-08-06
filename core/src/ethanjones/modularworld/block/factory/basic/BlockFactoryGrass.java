@@ -4,7 +4,7 @@ import ethanjones.modularworld.core.util.Direction;
 
 public class BlockFactoryGrass extends BlockFactoryBasic {
   public BlockFactoryGrass() {
-    super("Grass", "Grass - Side");
+    super("Grass - Side");
   }
 
   public void loadGraphics() {

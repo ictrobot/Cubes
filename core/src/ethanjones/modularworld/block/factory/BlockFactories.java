@@ -5,6 +5,7 @@ import ethanjones.modularworld.block.factory.basic.BlockFactoryDirt;
 import ethanjones.modularworld.block.factory.basic.BlockFactoryGrass;
 import ethanjones.modularworld.block.factory.basic.BlockFactoryStone;
 import ethanjones.modularworld.core.util.Register;
+import ethanjones.modularworld.side.common.ModularWorld;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class BlockFactories {
           if (o instanceof BlockFactory) {
             f.set(null, o);
             factories.add((BlockFactory) o);
+            ModularWorld.blockManager.register((BlockFactory) o);
           }
         }
       } catch (Exception e) {

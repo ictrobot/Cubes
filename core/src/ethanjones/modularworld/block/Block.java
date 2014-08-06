@@ -7,7 +7,7 @@ import ethanjones.modularworld.graphics.world.BlockTextureHandler;
 /**
  * Actual Block in World
  */
-public class Block {
+public final class Block {
 
   protected final BlockFactory factory;
   protected DataGroup data;

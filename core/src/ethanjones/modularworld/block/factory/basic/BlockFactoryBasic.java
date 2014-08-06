@@ -9,12 +9,7 @@ public class BlockFactoryBasic extends BlockFactory {
   BlockTextureHandler textureHandler;
   String mainMaterial;
 
-  public BlockFactoryBasic(String id) {
-    this(id, id);
-  }
-
-  public BlockFactoryBasic(String id, String mainMaterial) {
-    super(id);
+  public BlockFactoryBasic(String mainMaterial) {
     this.mainMaterial = mainMaterial;
   }
 

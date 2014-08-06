@@ -3,6 +3,7 @@ package ethanjones.modularworld.side.common;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import ethanjones.modularworld.block.BlockManager;
 import ethanjones.modularworld.block.factory.BlockFactories;
 import ethanjones.modularworld.core.Branding;
 import ethanjones.modularworld.core.ModularWorldException;
@@ -26,11 +27,18 @@ public abstract class ModularWorld implements ApplicationListener {
   public static FileHandle baseFolder;
   public static EventBus eventBus;
   public static SettingsManager settings;
+  public static BlockManager blockManager;
   public static Timing timing;
   private static boolean setup;
 
   public static void setup() {
     if (setup) return;
+    Log.info(Branding.NAME, Branding.DEBUG);
+    if (compatibility == null)
+      Log.error(new ModularWorldException("No Compatibility module for this platform: " + Gdx.app.getType().name() + ", OS: " + System.getProperty("os.name") + ", Arch:" + System.getProperty("os.arch")));
+    compatibility.logEnvironment();
+    Debug.printProperties();
+
     eventBus = new EventBus();
     compatibility.init();
 
@@ -44,8 +52,16 @@ public abstract class ModularWorld implements ApplicationListener {
 
     assetManager = new AssetManager();
 
+    blockManager = new BlockManager();
+
+    BlockFactories.init();
+
     timing = new Timing();
     setup = true;
+
+    Threads.init();
+
+    NetworkingManager.readPort();
   }
 
   private final Side side;
@@ -58,21 +74,7 @@ public abstract class ModularWorld implements ApplicationListener {
   @Override
   public void create() {
     //TODO: Rewrite settings, have two classes "Client" and "Server"
-    if (compatibility == null) {
-      Log.error(new ModularWorldException("No Compatibility module for this platform: " + Gdx.app.getType().name() + ", OS: " + System.getProperty("os.name") + ", Arch:" + System.getProperty("os.arch")));
-    }
-    setup();
     eventBus.register(this);
-
-    Log.info(Branding.NAME, Branding.DEBUG);
-    compatibility.logEnvironment();
-    Debug.printProperties();
-
-    NetworkingManager.readPort();
-
-    Threads.init();
-
-    BlockFactories.init();
   }
 
   @Override

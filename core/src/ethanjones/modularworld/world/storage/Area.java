@@ -1,12 +1,10 @@
 package ethanjones.modularworld.world.storage;
 
-import ethanjones.modularworld.block.Block;
+import ethanjones.modularworld.block.factory.BlockFactory;
 import ethanjones.modularworld.core.events.world.block.SetBlockEvent;
 import ethanjones.modularworld.graphics.world.AreaRenderer;
 import ethanjones.modularworld.side.common.ModularWorld;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
-
-import static ethanjones.modularworld.core.util.Maths.fastPositive;
 
 public class Area {
 
@@ -30,7 +28,7 @@ public class Area {
 
   public boolean generated = false;
   public AreaRenderer areaRenderer;
-  public Block[] blocks;
+  public int[] blockFactories;
 
   /**
    * In area coords
@@ -53,25 +51,25 @@ public class Area {
     cenBlockY = (float) (maxBlockY + minBlockY) / 2f;
     cenBlockZ = (float) (maxBlockZ + minBlockZ) / 2f;
 
-    blocks = new Block[SIZE_BLOCKS_CUBED];
+    blockFactories = new int[SIZE_BLOCKS_CUBED];
     if (!ModularWorld.compatibility.isHeadless() && render) {
       areaRenderer = new AreaRenderer(this);
     }
   }
 
-  public Block getBlock(int x, int y, int z) {
-    return blocks[fastPositive(x % SIZE_BLOCKS) + fastPositive(z % SIZE_BLOCKS) * SIZE_BLOCKS + fastPositive(y % SIZE_BLOCKS) * SIZE_BLOCKS_SQUARED];
+  public BlockFactory getBlockFactory(int x, int y, int z) {
+    return ModularWorld.blockManager.toFactory(blockFactories[Math.abs(x % SIZE_BLOCKS) + Math.abs(z % SIZE_BLOCKS) * SIZE_BLOCKS + Math.abs(y % SIZE_BLOCKS) * SIZE_BLOCKS_SQUARED]);
   }
 
-  public void setBlock(Block block, int x, int y, int z) {
-    if (new SetBlockEvent(new BlockCoordinates(x, y, z), block).post()) {
+  public void setBlockFactory(BlockFactory blockFactory, int x, int y, int z) {
+    if (new SetBlockEvent(new BlockCoordinates(x, y, z), blockFactory).post()) {
       if (areaRenderer != null) areaRenderer.dirty = true;
-      blocks[fastPositive(x % SIZE_BLOCKS) + fastPositive(z % SIZE_BLOCKS) * SIZE_BLOCKS + fastPositive(y % SIZE_BLOCKS) * SIZE_BLOCKS_SQUARED] = block;
+      blockFactories[Math.abs(x % SIZE_BLOCKS) + Math.abs(z % SIZE_BLOCKS) * SIZE_BLOCKS + Math.abs(y % SIZE_BLOCKS) * SIZE_BLOCKS_SQUARED] = ModularWorld.blockManager.toInt(blockFactory);
     }
   }
 
   public void unload() {
     areaRenderer.dispose();
-    blocks = null;
+    blockFactories = null;
   }
 }

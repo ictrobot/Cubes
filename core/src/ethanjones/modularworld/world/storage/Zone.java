@@ -1,7 +1,5 @@
 package ethanjones.modularworld.world.storage;
 
-import static ethanjones.modularworld.core.util.Maths.fastPositive;
-
 public class Zone {
 
   public static final int SIZE_AREAS = 16;
@@ -32,13 +30,13 @@ public class Zone {
    * Area coords
    */
   public Area getArea(int x, int y, int z) {
-    return areas[fastPositive(x % Zone.SIZE_AREAS)][fastPositive(y % Zone.SIZE_AREAS)][fastPositive(z % Zone.SIZE_AREAS)];
+    return areas[Math.abs(x % Zone.SIZE_AREAS)][Math.abs(y % Zone.SIZE_AREAS)][Math.abs(z % Zone.SIZE_AREAS)];
   }
 
   /**
    * Area coords
    */
   public void setArea(Area area) {
-    areas[fastPositive(area.x % Zone.SIZE_AREAS)][fastPositive(area.y % Zone.SIZE_AREAS)][fastPositive(area.z % Zone.SIZE_AREAS)] = area;
+    areas[Math.abs(area.x % Zone.SIZE_AREAS)][Math.abs(area.y % Zone.SIZE_AREAS)][Math.abs(area.z % Zone.SIZE_AREAS)] = area;
   }
 }

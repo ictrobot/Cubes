@@ -1,18 +1,18 @@
 package ethanjones.modularworld.core.events.world.block;
 
-import ethanjones.modularworld.block.Block;
+import ethanjones.modularworld.block.factory.BlockFactory;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
 
 public class SetBlockEvent extends BlockEvent {
 
-  private final Block newBlock;
+  private final BlockFactory newBlock;
 
-  public SetBlockEvent(BlockCoordinates blockCoordinates, Block newBlock) {
+  public SetBlockEvent(BlockCoordinates blockCoordinates, BlockFactory newBlock) {
     super(true, blockCoordinates);
     this.newBlock = newBlock;
   }
 
-  public Block getNewBlock() {
+  public BlockFactory getNewBlock() {
     return newBlock;
   }
 }

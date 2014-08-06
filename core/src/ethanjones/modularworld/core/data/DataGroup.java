@@ -8,6 +8,7 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class DataGroup extends Data {
 
@@ -55,6 +56,14 @@ public class DataGroup extends Data {
   @Override
   public int hashCode() {
     return map.hashCode();
+  }
+
+  public int size() {
+    return map.size();
+  }
+
+  public Set<Map.Entry<String, Data>> getEntrySet() {
+    return map.entrySet();
   }
 
   //Contains

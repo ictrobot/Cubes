@@ -1,6 +1,6 @@
 package ethanjones.modularworld.world.storage;
 
-import ethanjones.modularworld.block.Block;
+import ethanjones.modularworld.block.factory.BlockFactory;
 
 public class BlankArea extends Area {
 
@@ -13,12 +13,12 @@ public class BlankArea extends Area {
   }
 
   @Override
-  public Block getBlock(int x, int y, int z) {
+  public BlockFactory getBlockFactory(int x, int y, int z) {
     return null;
   }
 
   @Override
-  public void setBlock(Block block, int x, int y, int z) {
+  public void setBlockFactory(BlockFactory blockFactory, int x, int y, int z) {
 
   }
 
