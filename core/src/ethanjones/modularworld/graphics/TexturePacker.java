@@ -1,8 +1,8 @@
 package ethanjones.modularworld.graphics;
 
 import com.badlogic.gdx.graphics.Pixmap;
-import ethanjones.modularworld.core.data.ByteData;
-import ethanjones.modularworld.core.data.ByteParser;
+import ethanjones.modularworld.core.data.DataGroup;
+import ethanjones.modularworld.core.data.other.DataParser;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -96,7 +96,7 @@ public class TexturePacker {
     return rectangles;
   }
 
-  public static final class PackRectangle implements ByteParser<ByteData> {
+  public static final class PackRectangle implements DataParser<DataGroup> {
 
     int x;
     int y;
@@ -119,17 +119,17 @@ public class TexturePacker {
     }
 
     @Override
-    public ByteData write() {
-      ByteData byteData = new ByteData();
-      byteData.setInteger("x", x);
-      byteData.setInteger("y", y);
-      byteData.setInteger("width", width);
-      byteData.setInteger("height", height);
-      return byteData;
+    public DataGroup write() {
+      DataGroup dataGroup = new DataGroup();
+      dataGroup.setInteger("x", x);
+      dataGroup.setInteger("y", y);
+      dataGroup.setInteger("width", width);
+      dataGroup.setInteger("height", height);
+      return dataGroup;
     }
 
     @Override
-    public void read(ByteData bytebase) {
+    public void read(DataGroup bytebase) {
       this.x = bytebase.getInteger("x");
       this.y = bytebase.getInteger("y");
       this.width = bytebase.getInteger("width");

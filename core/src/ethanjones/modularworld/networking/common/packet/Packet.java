@@ -1,11 +1,11 @@
 package ethanjones.modularworld.networking.common.packet;
 
-import ethanjones.modularworld.core.data.ByteBase;
-import ethanjones.modularworld.core.data.ByteParser;
+import ethanjones.modularworld.core.data.Data;
+import ethanjones.modularworld.core.data.other.DataParser;
 import ethanjones.modularworld.side.Side;
 import ethanjones.modularworld.networking.common.socket.SocketMonitor;
 
-public abstract class Packet implements ByteParser<ByteBase> {
+public abstract class Packet implements DataParser<Data> {
 
   private final PacketPriority priority;
   private SocketMonitor socketMonitor;

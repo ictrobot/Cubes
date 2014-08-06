@@ -1,7 +1,7 @@
 package ethanjones.modularworld.block.factory;
 
 import ethanjones.modularworld.block.Block;
-import ethanjones.modularworld.core.data.ByteData;
+import ethanjones.modularworld.core.data.DataGroup;
 import ethanjones.modularworld.graphics.world.BlockTextureHandler;
 
 /**
@@ -18,13 +18,13 @@ public abstract class BlockFactory {
 
   public abstract void loadGraphics();
 
-  public abstract BlockTextureHandler getTextureHandler(ByteData data);
+  public abstract BlockTextureHandler getTextureHandler(DataGroup data);
 
   public Block getBlock() {
-    return getBlock(new ByteData());
+    return getBlock(new DataGroup());
   }
 
-  public Block getBlock(ByteData data) {
+  public Block getBlock(DataGroup data) {
     return new Block(this, data);
   }
 

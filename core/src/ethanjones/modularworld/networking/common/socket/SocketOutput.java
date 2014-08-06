@@ -1,6 +1,6 @@
 package ethanjones.modularworld.networking.common.socket;
 
-import ethanjones.modularworld.core.data.ByteBase;
+import ethanjones.modularworld.core.data.DataTools;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.networking.common.packet.PacketManager;
 import ethanjones.modularworld.networking.common.packet.PacketQueue;
@@ -30,7 +30,7 @@ public class SocketOutput extends SocketIO {
         if (packetQueue.isEmpty()) {
           packetQueue.waitForPacket();
         }
-        ByteBase.compress(PacketManager.getPayload(packetQueue.getPacket()), dataOutputStream, false);
+        DataTools.write(PacketManager.getPayload(packetQueue.getPacket()), dataOutputStream);
       } catch (Exception e) {
         if (e instanceof EOFException) return;
         if (socketMonitor.running.get()) Log.error(e);

@@ -1,6 +1,6 @@
 package ethanjones.modularworld.networking.common.socket;
 
-import ethanjones.modularworld.core.data.ByteBase;
+import ethanjones.modularworld.core.data.DataTools;
 import ethanjones.modularworld.networking.common.packet.PacketHandler;
 import ethanjones.modularworld.networking.common.packet.PacketManager;
 
@@ -25,7 +25,7 @@ public class SocketInput extends SocketIO {
   public void run() {
     while (socketMonitor.running.get()) {
       try {
-        PacketManager.process(ByteBase.decompress(dataInputStream, false), socketMonitor, packetHandler);
+        PacketManager.process(DataTools.read(dataInputStream), socketMonitor, packetHandler);
       } catch (Exception e) {
         socketMonitor.running.set(false);
         socketMonitor.networking.disconnected(socketMonitor, e);
