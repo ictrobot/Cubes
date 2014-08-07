@@ -1,7 +1,5 @@
 package ethanjones.modularworld.world;
 
-import ethanjones.modularworld.networking.NetworkingManager;
-import ethanjones.modularworld.networking.packets.PacketRequestWorld;
 import ethanjones.modularworld.side.client.ModularWorldClient;
 import ethanjones.modularworld.world.reference.AreaReference;
 import ethanjones.modularworld.world.storage.Area;
@@ -38,8 +36,11 @@ public class WorldClient extends World {
       minAreaX = playerArea.areaX - AREA_LOAD_RADIUS;
       minAreaY = playerArea.areaY - AREA_LOAD_RADIUS;
       minAreaZ = playerArea.areaZ - AREA_LOAD_RADIUS;
-      Area[] old = areasAroundPlayer;
-      areasAroundPlayer = new Area[AREA_LOAD_DISTANCE_CUBED];
+      Area[] old;
+      synchronized (this) {
+        old = areasAroundPlayer;
+        areasAroundPlayer = new Area[AREA_LOAD_DISTANCE_CUBED];
+      }
       AreaReference areaReference = areaReferencePool.obtain();
       for (int x = 0; x < AREA_LOAD_DISTANCE; x++) {
         for (int y = 0; y < AREA_LOAD_DISTANCE; y++) {
@@ -58,10 +59,14 @@ public class WorldClient extends World {
     }
   }
 
+
   protected Area getAreaInternal(AreaReference areaReference, boolean request) {
     updateArrayPositions(areaReference);
     if (isArrayPositionValid(areaReference)) {
-      Area area = areasAroundPlayer[areaReference.arrayPos];
+      Area area;
+      synchronized (areasAroundPlayer) {
+        area = areasAroundPlayer[areaReference.arrayPos];
+      }
       if (area != null) {
         return area;
       } else if (area == null && request) {
@@ -74,7 +79,9 @@ public class WorldClient extends World {
   public boolean setAreaInternal(AreaReference areaReference, Area area) {
     updateArrayPositions(areaReference);
     if (isArrayPositionValid(areaReference)) {
-      areasAroundPlayer[areaReference.arrayPos] = area;
+      synchronized (areasAroundPlayer) {
+        areasAroundPlayer[areaReference.arrayPos] = area;
+      }
       return true;
     }
     return false;
@@ -89,7 +96,7 @@ public class WorldClient extends World {
   }
 
   private boolean isArrayPositionValid(AreaReference areaReference) {
-    return !(areaReference.arrayX < 0 || areaReference.arrayX > AREA_LOAD_DISTANCE || areaReference.arrayY < 0 || areaReference.arrayY > AREA_LOAD_DISTANCE || areaReference.arrayZ < 0 || areaReference.arrayZ > AREA_LOAD_DISTANCE || areaReference.arrayPos >= areasAroundPlayer.length || areaReference.arrayPos <= 0);
+    return !(areaReference.arrayX < 0 || areaReference.arrayX > AREA_LOAD_DISTANCE || areaReference.arrayY < 0 || areaReference.arrayY > AREA_LOAD_DISTANCE || areaReference.arrayZ < 0 || areaReference.arrayZ > AREA_LOAD_DISTANCE || areaReference.arrayPos >= AREA_LOAD_DISTANCE_CUBED || areaReference.arrayPos <= 0);
   }
 
   public void requestArea(AreaReference areaReference) {
@@ -97,12 +104,6 @@ public class WorldClient extends World {
   }
 
   public void request(AreaReference areaReference) {
-    PacketRequestWorld packetRequestWorld = new PacketRequestWorld();
-    packetRequestWorld.areaX = areaReference.areaX;
-    packetRequestWorld.areaY = areaReference.areaY;
-    packetRequestWorld.areaZ = areaReference.areaZ;
-    setAreaInternal(areaReference, World.BLANK_AREA);
-    NetworkingManager.clientNetworking.sendToServer(packetRequestWorld);
   }
 
   @Override

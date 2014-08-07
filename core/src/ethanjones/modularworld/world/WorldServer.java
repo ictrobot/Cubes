@@ -1,10 +1,11 @@
 package ethanjones.modularworld.world;
 
 import com.badlogic.gdx.utils.Pool;
-import ethanjones.modularworld.core.events.world.generation.GenerationEvent;
+import ethanjones.modularworld.core.thread.Threads;
 import ethanjones.modularworld.world.generator.WorldGenerator;
 import ethanjones.modularworld.world.reference.AreaReference;
 import ethanjones.modularworld.world.storage.Area;
+import ethanjones.modularworld.world.thread.GenerateWorld;
 
 import java.util.HashMap;
 
@@ -37,7 +38,7 @@ public class WorldServer extends World {
 
   private static class KeyPool extends Pool<Key> {
     @Override
-    public Key newObject() {
+    public synchronized Key newObject() {
       return new Key();
     }
   }
@@ -54,33 +55,47 @@ public class WorldServer extends World {
   }
 
   protected Area getAreaInternal(AreaReference areaReference, boolean request) {
-    Key key = keyPool.obtain().set(areaReference);
-    Area area = areaMap.get(key);
+    Key key;
+    Area area;
+    synchronized (keyPool) {
+      key = keyPool.obtain().set(areaReference);
+    }
+    synchronized (this) {
+      area = areaMap.get(key);
+    }
     if (area != null) {
+      synchronized (keyPool) {
+        keyPool.free(key);
+      }
       return area;
     } else if (area == null && request) {
       requestArea(areaReference);
     }
-    keyPool.free(key);
     return BLANK_AREA;
   }
 
   public boolean setAreaInternal(AreaReference areaReference, Area area) {
-    Key key = keyPool.obtain().set(areaReference);
-    areaMap.put(key, area);
+    Key key;
+    synchronized (keyPool) {
+      key = keyPool.obtain().set(areaReference);
+    }
+    synchronized (this) {
+      areaMap.put(key, area);
+    }
     return true;
   }
 
   public void requestArea(AreaReference areaReference) {
-    Area area = areaReference.newArea();
-    worldGenerator.generate(area);
-    new GenerationEvent(area, areaReference.getAreaCoordinates()).post();
-    area.generated = true;
-    setAreaInternal(areaReference, area);
+    setAreaInternal(areaReference, World.BLANK_AREA);
+    Threads.execute(new GenerateWorld(areaReference, this));
   }
 
   @Override
   public void dispose() {
 
+  }
+
+  public WorldGenerator getWorldGenerator() {
+    return worldGenerator;
   }
 }

@@ -25,8 +25,6 @@ public abstract class World implements Disposable {
 
   public abstract boolean setAreaInternal(AreaReference areaReference, Area area);
 
-  public abstract void requestArea(AreaReference areaReference);
-
   public Area getAreaPlain(AreaReference areaReference) {
     return getAreaInternal(areaReference, false);
   }
@@ -36,9 +34,14 @@ public abstract class World implements Disposable {
   }
 
   public Area getArea(int areaX, int areaY, int areaZ) {
-    AreaReference areaReference = areaReferencePool.obtain().setFromArea(areaX, areaY, areaZ);
+    AreaReference areaReference;
+    synchronized (areaReferencePool) {
+      areaReference = areaReferencePool.obtain().setFromArea(areaX, areaY, areaZ);
+    }
     Area area = getArea(areaReference);
-    areaReferencePool.free(areaReference);
+    synchronized (areaReferencePool) {
+      areaReferencePool.free(areaReference);
+    }
     return area;
   }
 

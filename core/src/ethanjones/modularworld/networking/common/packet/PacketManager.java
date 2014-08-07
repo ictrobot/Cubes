@@ -12,7 +12,6 @@ public final class PacketManager {
     if (!(data instanceof DataGroup) || data == null) {
       return;
     }
-    Log.info(data.toString());
     Packet packet = PacketManager.getPacket((DataGroup) data);
     if (packet == null) {
       Log.info(new ModularWorldException("Failed to read packet"));
