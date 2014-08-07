@@ -16,8 +16,8 @@ public class MovementHandler {
   public boolean touch = false;
 
   public Player player;
-  public int deltaAngleX = 0;
-  public int deltaAngleY = 0;
+  public float deltaAngleX = 0;
+  public float deltaAngleY = 0;
   Vector3 previousPos;
 
   public MovementHandler(Player player) {
@@ -29,19 +29,19 @@ public class MovementHandler {
     updateRotation(Gdx.input.getDeltaX(), Gdx.input.getDeltaY());
   }
 
-  public void updateRotation(int deltaX, int deltaY) {
-    deltaAngleX = player.angleX;
-    deltaAngleY = player.angleY;
+  public void updateRotation(float deltaX, float deltaY) {
+    deltaAngleX = player.angle.x;
+    deltaAngleY = player.angle.y;
 
-    player.angleX += (double) -deltaX / Gdx.graphics.getWidth() * 360;
-    player.angleY += (double) -deltaY / Gdx.graphics.getHeight() * 360;
+    player.angle.x += (double) -deltaX / Gdx.graphics.getWidth() * 360;
+    player.angle.y += (double) -deltaY / Gdx.graphics.getHeight() * 360;
 
-    player.angleX = player.angleX % 360;
-    player.angleY = Math.min(player.angleY, 360);
-    player.angleY = Math.max(player.angleY, 0);
+    player.angle.x = player.angle.x % 360;
+    player.angle.y = Math.min(player.angle.y, 360);
+    player.angle.y = Math.max(player.angle.y, 0);
 
-    deltaAngleX = player.angleX - deltaAngleX;
-    deltaAngleY = player.angleY - deltaAngleY;
+    deltaAngleX = player.angle.x - deltaAngleX;
+    deltaAngleY = player.angle.y - deltaAngleY;
 
     Debug.facing();
   }
@@ -53,7 +53,7 @@ public class MovementHandler {
 
   public void updateCamera(Camera camera) {
     camera.position.set(player.position.x, player.position.y, player.position.z);
-    camera.direction.y = ((float) player.angleY - 180f) / 90f;
+    camera.direction.y = ((float) player.angle.y - 180f) / 90f;
     camera.rotate(player.movementHandler.deltaAngleX, 0, 1, 0);
   }
 

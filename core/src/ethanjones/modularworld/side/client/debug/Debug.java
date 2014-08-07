@@ -80,7 +80,7 @@ public class Debug {
   }
 
   public static void facing() {
-    set(DebugType.direction, ModularWorldClient.instance.player.angleX + " " + ModularWorldClient.instance.player.angleY);
+    set(DebugType.direction, ModularWorldClient.instance.player.angle.x + " " + ModularWorldClient.instance.player.angle.y);
   }
 
   public static DebugLabel[] getLabels(Skin skin) {
