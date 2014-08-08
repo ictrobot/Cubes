@@ -50,11 +50,8 @@ public class BlockRenderer {
 
     AreaReference pos = ((WorldClient) ModularWorldClient.instance.world).playerArea;
     for (int areaX = pos.areaX - renderDistance; areaX <= pos.areaX + renderDistance; areaX++) {
-      for (int areaY = pos.areaY - renderDistance; areaY <= pos.areaY + renderDistance; areaY++) {
+      for (int areaY = Math.max(pos.areaY - renderDistance, 0); areaY <= pos.areaY + renderDistance; areaY++) {
         for (int areaZ = pos.areaZ - renderDistance; areaZ <= pos.areaZ + renderDistance; areaZ++) {
-          if (areaY < 0) {
-            continue;
-          }
           Area area = ModularWorldClient.instance.world.getArea(areaX, areaY, areaZ);
           if (area.areaRenderer == null) {
             continue;
