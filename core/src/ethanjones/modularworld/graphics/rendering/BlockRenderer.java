@@ -57,8 +57,7 @@ public class BlockRenderer implements Disposable {
       for (int areaY = Math.max(pos.areaY - renderDistance, 0); areaY <= pos.areaY + renderDistance; areaY++) {
         for (int areaZ = pos.areaZ - renderDistance; areaZ <= pos.areaZ + renderDistance; areaZ++) {
           Area area = ModularWorldClient.instance.world.getArea(areaX, areaY, areaZ);
-          if (area.areaRenderer == null) continue;
-          if (!areaInFrustum(area, camera.frustum)) continue;
+          if (area.areaRenderer == null || !areaInFrustum(area, camera.frustum)) continue;
           modelBatch.render(area.areaRenderer, environment);
         }
       }

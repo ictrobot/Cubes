@@ -30,7 +30,6 @@ public class ModularWorldClient extends ModularWorld {
   @Override
   public void create() {
     super.create();
-    //TODO: Rewrite settings, have two classes "Client" and "Server"
 
     NetworkingManager.connectClient();
 

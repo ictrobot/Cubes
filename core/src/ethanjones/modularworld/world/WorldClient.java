@@ -11,10 +11,10 @@ public class WorldClient extends World {
   public final static int AREA_LOAD_DISTANCE_CUBED = AREA_LOAD_DISTANCE_SQUARED * AREA_LOAD_DISTANCE;
 
   public Area[] areasAroundPlayer;
-  public int minAreaX;
-  public int minAreaY;
-  public int minAreaZ;
-  public AreaReference playerArea;
+  public volatile int minAreaX;
+  public volatile int minAreaY;
+  public volatile int minAreaZ;
+  public volatile AreaReference playerArea;
 
   public WorldClient() {
     super();
@@ -25,51 +25,43 @@ public class WorldClient extends World {
     areasAroundPlayer = new Area[AREA_LOAD_DISTANCE_CUBED];
   }
 
-  public int getArrayPos(int arrayX, int arrayY, int arrayZ) {
-    return arrayX + arrayZ * AREA_LOAD_DISTANCE + arrayY * AREA_LOAD_DISTANCE_SQUARED;
-  }
-
 
   public void playerChangedPosition() {
-    playerArea.setFromVector3(ModularWorldClient.instance.player.position);
-    if (playerArea.areaX - AREA_LOAD_RADIUS != minAreaX || playerArea.areaY - AREA_LOAD_RADIUS != minAreaY || playerArea.areaZ - AREA_LOAD_RADIUS != minAreaZ) {
-      minAreaX = playerArea.areaX - AREA_LOAD_RADIUS;
-      minAreaY = playerArea.areaY - AREA_LOAD_RADIUS;
-      minAreaZ = playerArea.areaZ - AREA_LOAD_RADIUS;
-      Area[] old;
-      synchronized (this) {
+    synchronized (this) {
+      playerArea.setFromVector3(ModularWorldClient.instance.player.position);
+      if (playerArea.areaX - AREA_LOAD_RADIUS != minAreaX || playerArea.areaY - AREA_LOAD_RADIUS != minAreaY || playerArea.areaZ - AREA_LOAD_RADIUS != minAreaZ) {
+        minAreaX = playerArea.areaX - AREA_LOAD_RADIUS;
+        minAreaY = playerArea.areaY - AREA_LOAD_RADIUS;
+        minAreaZ = playerArea.areaZ - AREA_LOAD_RADIUS;
+        Area[] old;
         old = areasAroundPlayer;
         areasAroundPlayer = new Area[AREA_LOAD_DISTANCE_CUBED];
-      }
-      AreaReference areaReference = areaReferencePool.obtain();
-      for (int x = 0; x < AREA_LOAD_DISTANCE; x++) {
-        for (int y = 0; y < AREA_LOAD_DISTANCE; y++) {
-          for (int z = 0; z < AREA_LOAD_DISTANCE; z++) {
-            Area o = old[getArrayPos(x, y, z)];
-            if (o != null) {
-              areaReference.setFromArea(o);
-              if (!setAreaInternal(areaReference, o)) {
-                o.unload();
-              }
+        AreaReference areaReference = areaReferencePool.obtain();
+        for (int i = 0; i < AREA_LOAD_DISTANCE_CUBED; i++) {
+          Area o = old[i];
+          if (o != null) {
+            areaReference.setFromArea(o);
+            if (!setAreaInternal(areaReference, o)) {
+              o.unload();
             }
           }
         }
+        areaReferencePool.free(areaReference);
       }
-      areaReferencePool.free(areaReference);
     }
   }
 
 
   public Area getAreaInternal(AreaReference areaReference, boolean request, boolean returnBlank) {
-    updateArrayPositions(areaReference);
-    if (isArrayPositionValid(areaReference)) {
+    int arrayPos = getArrayPos(areaReference);
+    if (isArrayPositionValid(arrayPos)) {
       Area area;
-      synchronized (areasAroundPlayer) {
-        area = areasAroundPlayer[areaReference.arrayPos];
+      synchronized (this) {
+        area = areasAroundPlayer[arrayPos];
       }
       if (area != null) {
         return area;
-      } else if (area == null && request) {
+      } else if (request) {
         requestArea(areaReference);
       }
     }
@@ -77,26 +69,27 @@ public class WorldClient extends World {
   }
 
   public boolean setAreaInternal(AreaReference areaReference, Area area) {
-    updateArrayPositions(areaReference);
-    if (isArrayPositionValid(areaReference)) {
-      synchronized (areasAroundPlayer) {
-        areasAroundPlayer[areaReference.arrayPos] = area;
+    int arrayPos = getArrayPos(areaReference);
+    if (isArrayPositionValid(arrayPos)) {
+      synchronized (this) {
+        areasAroundPlayer[arrayPos] = area;
       }
       return true;
     }
     return false;
   }
 
-  private AreaReference updateArrayPositions(AreaReference areaReference) {
-    areaReference.arrayX = areaReference.areaX - playerArea.areaX + AREA_LOAD_RADIUS;
-    areaReference.arrayY = areaReference.areaY - playerArea.areaY + AREA_LOAD_RADIUS;
-    areaReference.arrayY = areaReference.areaZ - playerArea.areaZ + AREA_LOAD_RADIUS;
-    areaReference.arrayPos = getArrayPos(areaReference.arrayX, areaReference.arrayY, areaReference.arrayZ);
-    return areaReference;
+  private int getArrayPos(AreaReference areaReference) {
+    synchronized (this) {
+      int arrayX = areaReference.areaX - playerArea.areaX + AREA_LOAD_RADIUS;
+      int arrayY = areaReference.areaY - playerArea.areaY + AREA_LOAD_RADIUS;
+      int arrayZ = areaReference.areaZ - playerArea.areaZ + AREA_LOAD_RADIUS;
+      return arrayX + arrayZ * AREA_LOAD_DISTANCE + arrayY * AREA_LOAD_DISTANCE_SQUARED;
+    }
   }
 
-  private boolean isArrayPositionValid(AreaReference areaReference) {
-    return !(areaReference.arrayX < 0 || areaReference.arrayX > AREA_LOAD_DISTANCE || areaReference.arrayY < 0 || areaReference.arrayY > AREA_LOAD_DISTANCE || areaReference.arrayZ < 0 || areaReference.arrayZ > AREA_LOAD_DISTANCE || areaReference.arrayPos >= AREA_LOAD_DISTANCE_CUBED || areaReference.arrayPos <= 0);
+  private boolean isArrayPositionValid(int arrayPos) {
+    return arrayPos < AREA_LOAD_DISTANCE_CUBED && arrayPos >= 0;
   }
 
   public void requestArea(AreaReference areaReference) {
@@ -105,6 +98,6 @@ public class WorldClient extends World {
 
   @Override
   public void dispose() {
-
+    areasAroundPlayer = null;
   }
 }

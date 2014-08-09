@@ -12,12 +12,6 @@ public class AreaReference implements Pool.Poolable, Cloneable {
   public int areaY;
   public int areaZ;
 
-  public int arrayX;
-  public int arrayY;
-  public int arrayZ;
-
-  public int arrayPos;
-
   public AreaReference() {
 
   }
@@ -26,13 +20,6 @@ public class AreaReference implements Pool.Poolable, Cloneable {
     areaX = 0;
     areaY = 0;
     areaZ = 0;
-
-    arrayX = 0;
-    arrayY = 0;
-    arrayZ = 0;
-
-    arrayPos = 0;
-
     return this;
   }
 
@@ -74,13 +61,6 @@ public class AreaReference implements Pool.Poolable, Cloneable {
     return this;
   }
 
-  /**
-   * Uses areaX, areaY and areaZ to create a new Area and return it
-   */
-  public Area newArea() {
-    return new Area(areaX, areaY, areaZ);
-  }
-
   @Override
   public void reset() {
     clear();
@@ -93,5 +73,19 @@ public class AreaReference implements Pool.Poolable, Cloneable {
   @Override
   public String toString() {
     return areaX + " " + areaY + " " + areaZ;
+  }
+
+  @Override
+  public int hashCode() {
+    return (Math.abs(areaX) + 1) ^ (Math.abs(areaY) + 1) ^ (Math.abs(areaZ) + 1);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj instanceof AreaReference) {
+      AreaReference areaReference = (AreaReference) obj;
+      return areaReference.areaX == areaX && areaReference.areaY == areaY && areaReference.areaZ == areaZ;
+    }
+    return super.equals(obj);
   }
 }

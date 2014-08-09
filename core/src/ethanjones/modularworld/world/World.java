@@ -12,7 +12,7 @@ public abstract class World implements Disposable {
 
   public final static int AREA_LOAD_RADIUS = 10;
   public final static BlankArea BLANK_AREA = new BlankArea();
-  protected AreaReferencePool areaReferencePool;
+  protected final AreaReferencePool areaReferencePool;
 
   public World() {
     this.areaReferencePool = new AreaReferencePool();

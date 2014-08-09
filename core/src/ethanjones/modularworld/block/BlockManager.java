@@ -16,7 +16,7 @@ public class BlockManager implements DataParser<DataGroup> {
   HashMap<Class<? extends BlockFactory>, BlockFactory> classes;
   int unused = 1;
 
-  public BlockManager() {
+  public BlockManager() { //TODO: Sync from server to client
     ids = new HashMap<Integer, BlockFactory>();
     blockFactories = new HashMap<BlockFactory, Integer>();
     classes = new HashMap<Class<? extends BlockFactory>, BlockFactory>();

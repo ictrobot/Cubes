@@ -22,7 +22,7 @@ public class PlayerManager {
     ModularWorldServer.instance.playerManagers.add(this);
     this.packetConnect = packetConnect;
     this.socketMonitor = packetConnect.getSocketMonitor();
-    this.player = new Player(packetConnect.username); //TODO: Check if known0
+    this.player = new Player(packetConnect.username); //TODO: Check if known
 
     renderDistance = packetConnect.renderDistance;
 

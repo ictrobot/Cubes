@@ -9,7 +9,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
 import ethanjones.modularworld.block.factory.BlockFactory;
-import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.core.util.Direction;
 import ethanjones.modularworld.graphics.GraphicsHelper;
 import ethanjones.modularworld.side.client.ModularWorldClient;

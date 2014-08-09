@@ -44,8 +44,8 @@ public class WorldServer extends World {
   }
 
   private final WorldGenerator worldGenerator;
-  private HashMap<Key, Area> areaMap;
-  private KeyPool keyPool;
+  private final HashMap<Key, Area> areaMap;
+  private final KeyPool keyPool;
 
   public WorldServer(WorldGenerator worldGenerator) {
     super();
@@ -68,7 +68,7 @@ public class WorldServer extends World {
         keyPool.free(key);
       }
       return area;
-    } else if (area == null && request) {
+    } else if (request) {
       requestArea(areaReference);
     }
     return returnBlank ? BLANK_AREA : null;

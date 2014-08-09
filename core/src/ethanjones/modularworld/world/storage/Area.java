@@ -84,6 +84,7 @@ public class Area implements DataParser<DataGroup> {
     dataGroup.setInteger("x", x);
     dataGroup.setInteger("y", y);
     dataGroup.setInteger("z", z);
+    dataGroup.setBoolean("generated", generated);
     DataList<DataInteger> block = new DataList<DataInteger>();
     for (int i = 0; i < blockFactories.length; i++) {
       block.add(new DataInteger(blockFactories[i]));
@@ -99,6 +100,7 @@ public class Area implements DataParser<DataGroup> {
     int aZ = data.getInteger("z");
     if (aX != x || aY != y || aZ != z)
       throw new ModularWorldException("Wrong coordinates, " + aX + " " + aY + " " + aZ + " expected " + x + " " + y + " " + z);
+    generated = data.getBoolean("generated");
     DataList<DataInteger> block = data.getDataList("blockFactories");
     for (int i = 0; i < blockFactories.length; i++) {
       blockFactories[i] = block.get(i).get();

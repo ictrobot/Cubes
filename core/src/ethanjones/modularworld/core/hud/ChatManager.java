@@ -7,7 +7,7 @@ public class ChatManager extends InputAdapter {
 
   private static String string = "";
   private static Chat chat;
-  protected static boolean visible = true;
+  protected static boolean visible = false;
 
   @Override
   public boolean keyTyped(char character) {
