@@ -60,7 +60,7 @@ public class WorldClient extends World {
   }
 
 
-  protected Area getAreaInternal(AreaReference areaReference, boolean request) {
+  public Area getAreaInternal(AreaReference areaReference, boolean request, boolean returnBlank) {
     updateArrayPositions(areaReference);
     if (isArrayPositionValid(areaReference)) {
       Area area;
@@ -73,7 +73,7 @@ public class WorldClient extends World {
         requestArea(areaReference);
       }
     }
-    return BLANK_AREA;
+    return returnBlank ? BLANK_AREA : null;
   }
 
   public boolean setAreaInternal(AreaReference areaReference, Area area) {
@@ -100,10 +100,7 @@ public class WorldClient extends World {
   }
 
   public void requestArea(AreaReference areaReference) {
-    request(areaReference);
-  }
 
-  public void request(AreaReference areaReference) {
   }
 
   @Override

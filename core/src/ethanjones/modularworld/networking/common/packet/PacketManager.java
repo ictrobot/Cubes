@@ -29,7 +29,7 @@ public final class PacketManager {
       Log.error("Received unknown packet: " + dataGroup.getString("class"), e);
       return null;
     }
-    packet.read(dataGroup.getValue("data"));
+    packet.read(dataGroup.getGroup("data"));
     return packet;
   }
 

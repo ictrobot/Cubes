@@ -28,6 +28,7 @@ public class PacketQueue {
 
   public Packet getPacket() {
     Packet packet;
+
     if ((packet = getPacket(PacketPriority.HIGH)) != null) return packet;
     if ((packet = getPacket(PacketPriority.MEDIUM)) != null) return packet;
     if ((packet = getPacket(PacketPriority.LOW)) != null) return packet;

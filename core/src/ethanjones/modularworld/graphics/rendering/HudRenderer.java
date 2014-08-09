@@ -3,7 +3,6 @@ package ethanjones.modularworld.graphics.rendering;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -21,13 +20,12 @@ import ethanjones.modularworld.side.client.debug.DebugLabel;
  */
 public class HudRenderer implements Disposable {
 
-  SpriteBatch spriteBatch;
   Skin skin;
   Stage hud;
   Chat chat;
 
   public HudRenderer() {
-    hud = new Stage(new ScreenViewport(), spriteBatch);
+    hud = new Stage(new ScreenViewport());
     ModularWorldClient.instance.inputChain.hud = hud;
 
     skin = new Skin();
@@ -54,7 +52,6 @@ public class HudRenderer implements Disposable {
 
   @Override
   public void dispose() {
-    spriteBatch.dispose();
     hud.dispose();
   }
 }

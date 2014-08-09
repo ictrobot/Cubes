@@ -13,7 +13,7 @@ import ethanjones.modularworld.world.coordinates.BlockCoordinates;
 
 public class Area implements DataParser<DataGroup> {
 
-  public static final int SIZE_BLOCKS = 32;
+  public static final int SIZE_BLOCKS = 16;
   public static final int SIZE_BLOCKS_SQUARED = SIZE_BLOCKS * SIZE_BLOCKS;
   public static final int SIZE_BLOCKS_CUBED = SIZE_BLOCKS_SQUARED * SIZE_BLOCKS;
   public static final int HALF_SIZE_BLOCKS = SIZE_BLOCKS / 2;
@@ -42,7 +42,7 @@ public class Area implements DataParser<DataGroup> {
     this(x, y, z, true);
   }
 
-  protected Area(int x, int y, int z, boolean render) {
+  public Area(int x, int y, int z, boolean render) {
     this.x = x;
     this.y = y;
     this.z = z;

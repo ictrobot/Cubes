@@ -1,5 +1,6 @@
 package ethanjones.modularworld.side.server;
 
+import com.badlogic.gdx.utils.Array;
 import ethanjones.modularworld.block.factory.BlockFactories;
 import ethanjones.modularworld.core.timing.TimeHandler;
 import ethanjones.modularworld.graphics.GraphicsHelper;
@@ -13,10 +14,12 @@ import ethanjones.modularworld.world.generator.BasicWorldGenerator;
 public class ModularWorldServer extends ModularWorld implements TimeHandler {
 
   public static ModularWorldServer instance;
+  public Array<PlayerManager> playerManagers;
 
   public ModularWorldServer() {
     super(Side.Server);
     ModularWorldServer.instance = this;
+    playerManagers = new Array<PlayerManager>();
   }
 
   @Override

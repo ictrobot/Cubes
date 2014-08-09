@@ -1,6 +1,5 @@
 package ethanjones.modularworld.networking.packets;
 
-import ethanjones.modularworld.core.data.Data;
 import ethanjones.modularworld.core.data.DataGroup;
 import ethanjones.modularworld.networking.common.packet.Packet;
 import ethanjones.modularworld.side.client.ModularWorldClient;
@@ -25,7 +24,7 @@ public class PacketArea extends Packet {
   }
 
   @Override
-  public Data write() {
+  public DataGroup write() {
     DataGroup dataGroup = new DataGroup();
     dataGroup.setInteger("areaX", areaX);
     dataGroup.setInteger("areaY", areaY);
@@ -35,8 +34,7 @@ public class PacketArea extends Packet {
   }
 
   @Override
-  public void read(Data data) {
-    DataGroup dataGroup = (DataGroup) data;
+  public void read(DataGroup dataGroup) {
     areaX = dataGroup.getInteger("areaX");
     areaY = dataGroup.getInteger("areaY");
     areaZ = dataGroup.getInteger("areaZ");

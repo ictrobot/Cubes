@@ -1,10 +1,11 @@
 package ethanjones.modularworld.networking;
 
 import ethanjones.modularworld.core.settings.Settings;
-import ethanjones.modularworld.side.Side;
 import ethanjones.modularworld.networking.client.ClientNetworking;
 import ethanjones.modularworld.networking.common.Networking;
+import ethanjones.modularworld.networking.packets.PacketConnect;
 import ethanjones.modularworld.networking.server.ServerNetworking;
+import ethanjones.modularworld.side.Side;
 
 public class NetworkingManager {
 
@@ -29,6 +30,7 @@ public class NetworkingManager {
     } else {
       connectClient(NETWORK_PARAMETER, port);
     }
+    clientNetworking.sendToServer(new PacketConnect());
   }
 
   private static void connectClient(String address, int port) {

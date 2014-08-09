@@ -6,7 +6,7 @@ import ethanjones.modularworld.world.coordinates.AreaCoordinates;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
 import ethanjones.modularworld.world.storage.Area;
 
-public class AreaReference implements Pool.Poolable {
+public class AreaReference implements Pool.Poolable, Cloneable {
 
   public int areaX;
   public int areaY;
@@ -41,15 +41,15 @@ public class AreaReference implements Pool.Poolable {
     return this;
   }
 
+  public AreaReference setFromAreaCoordinates(AreaCoordinates areaCoordinates) {
+    setFromArea(areaCoordinates.areaX, areaCoordinates.areaY, areaCoordinates.areaZ);
+    return this;
+  }
+
   public AreaReference setFromArea(int areaX, int areaY, int areaZ) {
     this.areaX = areaX;
     this.areaY = areaY;
     this.areaZ = areaZ;
-    return this;
-  }
-
-  public AreaReference setFromAreaCoordinates(AreaCoordinates areaCoordinates) {
-    setFromArea(areaCoordinates.areaX, areaCoordinates.areaY, areaCoordinates.areaZ);
     return this;
   }
 
@@ -84,5 +84,14 @@ public class AreaReference implements Pool.Poolable {
   @Override
   public void reset() {
     clear();
+  }
+
+  public AreaReference clone() {
+    return new AreaReference().setFromArea(areaX, areaY, areaZ);
+  }
+
+  @Override
+  public String toString() {
+    return areaX + " " + areaY + " " + areaZ;
   }
 }

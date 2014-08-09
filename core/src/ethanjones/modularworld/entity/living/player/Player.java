@@ -5,10 +5,12 @@ import ethanjones.modularworld.input.MovementHandler;
 
 public class Player extends LivingEntity {
 
+  private final String username;
   public MovementHandler movementHandler;
 
-  public Player() {
+  public Player(String username) {
     super(20);
+    this.username = username;
     this.movementHandler = new MovementHandler(this);
   }
 

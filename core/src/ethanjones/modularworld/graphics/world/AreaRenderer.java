@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
 import ethanjones.modularworld.block.factory.BlockFactory;
+import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.core.util.Direction;
 import ethanjones.modularworld.graphics.GraphicsHelper;
 import ethanjones.modularworld.side.client.ModularWorldClient;
@@ -16,17 +17,19 @@ import ethanjones.modularworld.side.common.ModularWorld;
 import ethanjones.modularworld.world.storage.Area;
 
 import static ethanjones.modularworld.graphics.world.FaceVertices.*;
-import static ethanjones.modularworld.world.storage.Area.SIZE_BLOCKS;
-import static ethanjones.modularworld.world.storage.Area.SIZE_BLOCKS_CUBED;
+import static ethanjones.modularworld.world.storage.Area.*;
 
 public class AreaRenderer implements RenderableProvider, Disposable {
 
   public static final int MAX_X_OFFSET = 1;
   public static final int MIN_X_OFFSET = -MAX_X_OFFSET;
-  public static final int MAX_Y_OFFSET = SIZE_BLOCKS * SIZE_BLOCKS;
+  public static final int MAX_Y_OFFSET = SIZE_BLOCKS_SQUARED;
   public static final int MIN_Y_OFFSET = -MAX_Y_OFFSET;
   public static final int MAX_Z_OFFSET = SIZE_BLOCKS;
   public static final int MIN_Z_OFFSET = -MAX_Z_OFFSET;
+
+  public static final int MIN_AREA = 0;
+  public static final int MAX_AREA = SIZE_BLOCKS - 1;
 
   public static final int VERTEX_SIZE = 8; //3 for position, 3 for normal, 2 for texture coordinates;
 
@@ -34,7 +37,7 @@ public class AreaRenderer implements RenderableProvider, Disposable {
   private static float vertices[];
 
   static {
-    int len = SIZE_BLOCKS_CUBED * 6 * 6 / 3;
+    int len = SIZE_BLOCKS_CUBED * 6 * 2; // 6 / 3
     indices = new short[len];
     short j = 0;
     for (int i = 0; i < len; i += 6, j += 4) {
@@ -70,7 +73,7 @@ public class AreaRenderer implements RenderableProvider, Disposable {
       mesh.setVertices(vertices, 0, numVerts * VERTEX_SIZE);
       dirty = false;
     }
-    if (numVertices == 0) return;
+    if (numVertices <= 0) return;
     Renderable renderable = pool.obtain();
     renderable.material = GraphicsHelper.getBlockTextureSheet();
     renderable.mesh = mesh;
@@ -99,37 +102,37 @@ public class AreaRenderer implements RenderableProvider, Disposable {
           if (x < SIZE_BLOCKS - 1) {
             if (area.blockFactories[i + MAX_X_OFFSET] == 0)
               vertexOffset = createMaxX(offset, textureHandler.getSide(Direction.posX).textureRegion, x, y, z, vertices, vertexOffset);
-          } else if (maxX.getBlockFactory(0, y, z) == null) {
+          } else if (maxX.getBlockFactory(MIN_AREA, y, z) == null) {
             vertexOffset = createMaxX(offset, textureHandler.getSide(Direction.posX).textureRegion, x, y, z, vertices, vertexOffset);
           }
           if (x > 0) {
             if (area.blockFactories[i + MIN_X_OFFSET] == 0)
               vertexOffset = createMinX(offset, textureHandler.getSide(Direction.negX).textureRegion, x, y, z, vertices, vertexOffset);
-          } else if (minX.getBlockFactory(31, y, z) == null) {
+          } else if (minX.getBlockFactory(MAX_AREA, y, z) == null) {
             vertexOffset = createMinX(offset, textureHandler.getSide(Direction.negX).textureRegion, x, y, z, vertices, vertexOffset);
           }
           if (y < SIZE_BLOCKS - 1) {
             if (area.blockFactories[i + MAX_Y_OFFSET] == 0)
               vertexOffset = createMaxY(offset, textureHandler.getSide(Direction.posY).textureRegion, x, y, z, vertices, vertexOffset);
-          } else if (maxY.getBlockFactory(x, 0, z) == null) {
+          } else if (maxY.getBlockFactory(x, MIN_AREA, z) == null) {
             vertexOffset = createMaxY(offset, textureHandler.getSide(Direction.posY).textureRegion, x, y, z, vertices, vertexOffset);
           }
           if (y > 0) {
             if (area.blockFactories[i + MIN_Y_OFFSET] == 0)
               vertexOffset = createMinY(offset, textureHandler.getSide(Direction.negY).textureRegion, x, y, z, vertices, vertexOffset);
-          } else if (minY.getBlockFactory(x, 31, z) == null) {
+          } else if (minY.getBlockFactory(x, MAX_AREA, z) == null) {
             vertexOffset = createMinY(offset, textureHandler.getSide(Direction.negY).textureRegion, x, y, z, vertices, vertexOffset);
           }
           if (z < SIZE_BLOCKS - 1) {
             if (area.blockFactories[i + MAX_Z_OFFSET] == 0)
               vertexOffset = createMaxZ(offset, textureHandler.getSide(Direction.posZ).textureRegion, x, y, z, vertices, vertexOffset);
-          } else if (maxZ.getBlockFactory(x, y, 0) == null) {
+          } else if (maxZ.getBlockFactory(x, y, MIN_AREA) == null) {
             vertexOffset = createMaxZ(offset, textureHandler.getSide(Direction.posZ).textureRegion, x, y, z, vertices, vertexOffset);
           }
           if (z > 0) {
             if (area.blockFactories[i + MIN_Z_OFFSET] == 0)
               vertexOffset = createMinZ(offset, textureHandler.getSide(Direction.negZ).textureRegion, x, y, z, vertices, vertexOffset);
-          } else if (minZ.getBlockFactory(x, y, 31) == null) {
+          } else if (minZ.getBlockFactory(x, y, MAX_AREA) == null) {
             vertexOffset = createMinZ(offset, textureHandler.getSide(Direction.negZ).textureRegion, x, y, z, vertices, vertexOffset);
           }
         }

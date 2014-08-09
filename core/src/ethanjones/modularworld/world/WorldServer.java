@@ -54,7 +54,7 @@ public class WorldServer extends World {
     keyPool = new KeyPool();
   }
 
-  protected Area getAreaInternal(AreaReference areaReference, boolean request) {
+  public Area getAreaInternal(AreaReference areaReference, boolean request, boolean returnBlank) {
     Key key;
     Area area;
     synchronized (keyPool) {
@@ -71,7 +71,7 @@ public class WorldServer extends World {
     } else if (area == null && request) {
       requestArea(areaReference);
     }
-    return BLANK_AREA;
+    return returnBlank ? BLANK_AREA : null;
   }
 
   public boolean setAreaInternal(AreaReference areaReference, Area area) {

@@ -7,7 +7,7 @@ import ethanjones.modularworld.world.storage.Area;
 
 import java.util.concurrent.Callable;
 
-public class GenerateWorld implements Callable {
+public class GenerateWorld implements Callable<Area> {
 
   private final AreaReference areaReference;
   private final WorldServer world;
@@ -18,8 +18,8 @@ public class GenerateWorld implements Callable {
   }
 
   @Override
-  public Object call() throws Exception {
-    Area area = areaReference.newArea();
+  public Area call() throws Exception {
+    Area area = new Area(areaReference.areaX, areaReference.areaY, areaReference.areaZ, false);
     world.getWorldGenerator().generate(area);
     new GenerationEvent(area, areaReference.getAreaCoordinates()).post();
     area.generated = true;

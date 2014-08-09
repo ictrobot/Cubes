@@ -7,12 +7,9 @@ import ethanjones.modularworld.world.reference.AreaReference;
 import ethanjones.modularworld.world.reference.AreaReferencePool;
 import ethanjones.modularworld.world.storage.Area;
 import ethanjones.modularworld.world.storage.BlankArea;
-import ethanjones.modularworld.world.storage.Zone;
 
 public abstract class World implements Disposable {
 
-  public final static int WORLD_RADIUS_ZONES = 1000;
-  public final static int HEIGHT_LIMIT = Zone.SIZE_BLOCKS;
   public final static int AREA_LOAD_RADIUS = 10;
   public final static BlankArea BLANK_AREA = new BlankArea();
   protected AreaReferencePool areaReferencePool;
@@ -21,16 +18,20 @@ public abstract class World implements Disposable {
     this.areaReferencePool = new AreaReferencePool();
   }
 
-  protected abstract Area getAreaInternal(AreaReference areaReference, boolean request);
+  /**
+   * @param request     If the area should be requested
+   * @param returnBlank If BLANK_AREA should be returned if null
+   */
+  public abstract Area getAreaInternal(AreaReference areaReference, boolean request, boolean returnBlank);
 
   public abstract boolean setAreaInternal(AreaReference areaReference, Area area);
 
   public Area getAreaPlain(AreaReference areaReference) {
-    return getAreaInternal(areaReference, false);
+    return getAreaInternal(areaReference, false, true);
   }
 
   public Area getArea(AreaReference areaReference) {
-    return getAreaInternal(areaReference, true);
+    return getAreaInternal(areaReference, true, true);
   }
 
   public Area getArea(int areaX, int areaY, int areaZ) {

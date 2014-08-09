@@ -2,6 +2,7 @@ package ethanjones.modularworld.side.client;
 
 import com.badlogic.gdx.Gdx;
 import ethanjones.modularworld.block.factory.BlockFactories;
+import ethanjones.modularworld.core.settings.Settings;
 import ethanjones.modularworld.entity.living.player.Player;
 import ethanjones.modularworld.graphics.GraphicsHelper;
 import ethanjones.modularworld.graphics.asset.AssetManager;
@@ -33,7 +34,7 @@ public class ModularWorldClient extends ModularWorld {
 
     NetworkingManager.connectClient();
 
-    player = new Player();
+    player = new Player(Settings.username.getStringSetting().getString());
 
     assetManager = new AssetManager();
     compatibility.getAssets(assetManager);
