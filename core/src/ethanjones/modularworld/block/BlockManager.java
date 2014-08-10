@@ -11,10 +11,10 @@ import java.util.Map;
 
 public class BlockManager implements DataParser<DataGroup> {
 
-  HashMap<Integer, BlockFactory> ids;
-  HashMap<BlockFactory, Integer> blockFactories;
-  HashMap<Class<? extends BlockFactory>, BlockFactory> classes;
-  int unused = 1;
+  volatile HashMap<Integer, BlockFactory> ids;
+  volatile HashMap<BlockFactory, Integer> blockFactories;
+  volatile HashMap<Class<? extends BlockFactory>, BlockFactory> classes;
+  volatile int unused = 1;
 
   public BlockManager() { //TODO: Sync from server to client
     ids = new HashMap<Integer, BlockFactory>();

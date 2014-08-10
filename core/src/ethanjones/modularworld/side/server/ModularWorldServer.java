@@ -35,11 +35,11 @@ public class ModularWorldServer extends ModularWorld implements TimeHandler {
 
     world = new WorldServer(new BasicWorldGenerator());
 
-    timing.addHandler(this, 100);
+    timing.addHandler(this, 1000);
   }
 
   @Override
   public void time(int interval) {
-    world.setBlockFactory(BlockFactories.dirt, (int) (Math.random() * 33), (int) (8 + (Math.random() * 25)), (int) (Math.random() * 33));
+    world.setBlockFactory(BlockFactories.dirt, (int) (Math.random() * 16), (int) (8 + (Math.random() * 7)), (int) (Math.random() * 16));
   }
 }

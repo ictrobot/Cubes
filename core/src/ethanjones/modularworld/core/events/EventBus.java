@@ -44,40 +44,44 @@ public class EventBus {
   }
 
   public EventBus register(Class<?> event, EventHandlerWrapper eventHandlerWrapper) {
-    List<EventHandlerWrapper> eventHandlerWrappers = data.get(event);
-    if (eventHandlerWrappers == null) {
-      eventHandlerWrappers = new ArrayList<EventHandlerWrapper>();
-      data.put((Class<? extends Event>) event, eventHandlerWrappers);
+    synchronized (this) {
+      List<EventHandlerWrapper> eventHandlerWrappers = data.get(event);
+      if (eventHandlerWrappers == null) {
+        eventHandlerWrappers = new ArrayList<EventHandlerWrapper>();
+        data.put((Class<? extends Event>) event, eventHandlerWrappers);
+      }
+      eventHandlerWrappers.add(eventHandlerWrapper);
+      return this;
     }
-    eventHandlerWrappers.add(eventHandlerWrapper);
-    return this;
   }
 
   public boolean post(Event event) {
-    Class<? extends Event> eventClass = event.getClass();
-    while (eventClass != null) {
-      List<EventHandlerWrapper> eventHandlerWrappers = data.get(eventClass);
-      if (eventHandlerWrappers != null && !eventHandlerWrappers.isEmpty()) {
-        Iterator<EventHandlerWrapper> iterator = eventHandlerWrappers.iterator();
-        while (iterator.hasNext()) {
-          EventHandlerWrapper eventHandlerWrapper = iterator.next();
-          try {
-            if (eventHandlerWrapper.run(event)) {
-              iterator.remove();
+    synchronized (this) {
+      Class<? extends Event> eventClass = event.getClass();
+      while (eventClass != null) {
+        List<EventHandlerWrapper> eventHandlerWrappers = data.get(eventClass);
+        if (eventHandlerWrappers != null && !eventHandlerWrappers.isEmpty()) {
+          Iterator<EventHandlerWrapper> iterator = eventHandlerWrappers.iterator();
+          while (iterator.hasNext()) {
+            EventHandlerWrapper eventHandlerWrapper = iterator.next();
+            try {
+              if (eventHandlerWrapper.run(event)) {
+                iterator.remove();
+              }
+            } catch (Exception exception) {
+              Log.error(exception);
             }
-          } catch (Exception exception) {
-            Log.error(new ModularWorldException("Failed to reflect", exception));
           }
         }
+        Class<?> superclass = eventClass.getSuperclass();
+        if (Event.class.isAssignableFrom(superclass)) {
+          eventClass = (Class<? extends Event>) superclass;
+        } else {
+          break;
+        }
       }
-      Class<?> superclass = eventClass.getSuperclass();
-      if (Event.class.isAssignableFrom(superclass)) {
-        eventClass = (Class<? extends Event>) superclass;
-      } else {
-        break;
-      }
+      return !event.isCanceled();
     }
-    return !event.isCanceled();
   }
 
   public static class EventHandlerWrapper {

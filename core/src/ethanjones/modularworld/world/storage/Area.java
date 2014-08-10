@@ -6,8 +6,9 @@ import ethanjones.modularworld.core.data.DataGroup;
 import ethanjones.modularworld.core.data.DataList;
 import ethanjones.modularworld.core.data.basic.DataInteger;
 import ethanjones.modularworld.core.data.other.DataParser;
-import ethanjones.modularworld.core.events.world.block.SetBlockEvent;
+import ethanjones.modularworld.core.events.world.block.BlockChangedEvent;
 import ethanjones.modularworld.graphics.world.AreaRenderer;
+import ethanjones.modularworld.networking.packets.PacketBlockChanged;
 import ethanjones.modularworld.side.client.ModularWorldClient;
 import ethanjones.modularworld.side.common.ModularWorld;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
@@ -70,10 +71,15 @@ public class Area implements DataParser<DataGroup> {
   }
 
   public void setBlockFactory(BlockFactory blockFactory, int x, int y, int z) {
-    if (new SetBlockEvent(new BlockCoordinates(x, y, z), blockFactory).post()) {
-      if (areaRenderer != null) areaRenderer.dirty = true;
-      blockFactories[Math.abs(x % SIZE_BLOCKS) + Math.abs(z % SIZE_BLOCKS) * SIZE_BLOCKS + Math.abs(y % SIZE_BLOCKS) * SIZE_BLOCKS_SQUARED] = ModularWorld.blockManager.toInt(blockFactory);
-    }
+    setBlockFactory(blockFactory, x, y, z, true);
+  }
+
+  public void setBlockFactory(BlockFactory blockFactory, int x, int y, int z, boolean event) {
+    int ref = Math.abs(x % SIZE_BLOCKS) + Math.abs(z % SIZE_BLOCKS) * SIZE_BLOCKS + Math.abs(y % SIZE_BLOCKS) * SIZE_BLOCKS_SQUARED;
+    int b = blockFactories[ref];
+    if (areaRenderer != null) areaRenderer.dirty = true;
+    blockFactories[ref] = ModularWorld.blockManager.toInt(blockFactory);
+    if (event) new BlockChangedEvent(new BlockCoordinates(x, y, z), ModularWorld.blockManager.toFactory(b)).post();
   }
 
   public void unload() {
@@ -162,6 +168,12 @@ public class Area implements DataParser<DataGroup> {
         }
       }
     }
+    if (areaRenderer != null) areaRenderer.dirty = true;
+  }
+
+  public void handleChange(PacketBlockChanged packet) {
+    int ref = Math.abs(packet.x % SIZE_BLOCKS) + Math.abs(packet.z % SIZE_BLOCKS) * SIZE_BLOCKS + Math.abs(packet.y % SIZE_BLOCKS) * SIZE_BLOCKS_SQUARED;
+    blockFactories[ref] = packet.factory;
     if (areaRenderer != null) areaRenderer.dirty = true;
   }
 }

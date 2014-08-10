@@ -2,11 +2,16 @@ package ethanjones.modularworld.networking.packets;
 
 import ethanjones.modularworld.core.data.DataGroup;
 import ethanjones.modularworld.networking.common.packet.Packet;
+import ethanjones.modularworld.networking.common.packet.PacketPriority;
 import ethanjones.modularworld.side.client.ModularWorldClient;
 import ethanjones.modularworld.world.reference.AreaReference;
 import ethanjones.modularworld.world.storage.Area;
 
 public class PacketArea extends Packet {
+
+  public PacketArea() {
+    super(PacketPriority.LOW);
+  }
 
   public static AreaReference areaReference = new AreaReference();
 
