@@ -1,7 +1,7 @@
 package ethanjones.modularworld.core.platform.desktop;
 
-public class DesktopLauncher {
+public class LwjglLauncher {
   public static void main(String[] arg) {
-    new DesktopCompatibility(arg).startModularWorld();
+    new LwjglCompatibility(arg).startModularWorld();
   }
 }

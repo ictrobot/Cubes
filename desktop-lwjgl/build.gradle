@@ -3,7 +3,7 @@ apply plugin: "java"
 sourceCompatibility = 1.6
 sourceSets.main.java.srcDirs = ["src/"]
 
-project.ext.mainClassName = "ethanjones.modularworld.core.platform.desktop.HeadlessLauncher"
+project.ext.mainClassName = "ethanjones.modularworld.core.platform.desktop.DesktopLauncher"
 project.ext.assetsDir = new File("../android/assets");
 
 task run(dependsOn: classes, type: JavaExec) {
@@ -14,7 +14,7 @@ task run(dependsOn: classes, type: JavaExec) {
     ignoreExitValue = true
 }
 
-task dist(type: Jar) {
+task dist(dependsOn: classes, type: Jar) {
     from files(sourceSets.main.output.classesDir)
     from files(sourceSets.main.output.resourcesDir)
     from { configurations.compile.collect { zipTree(it) } }
@@ -25,11 +25,9 @@ task dist(type: Jar) {
     }
 }
 
-dist.dependsOn classes
-
 eclipse {
     project {
-        name = appName + "-desktop"
+        name = appName + "-desktop-lwjgl"
         linkedResource name: 'assets', type: '2', location: 'PARENT-1-PROJECT_LOC/android/assets'
     }
 }

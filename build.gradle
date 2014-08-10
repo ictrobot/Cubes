@@ -30,23 +30,38 @@ allprojects {
   }
 }
 
-project(":desktop") {
+project(":core") {
+  apply plugin: "java"
+
+  dependencies {
+    compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+  }
+}
+
+project(":desktop-common") {
   apply plugin: "java"
 
   dependencies {
     compile project(":core")
-    compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
     compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
   }
 }
 
-project(":headless") {
+project(":desktop-lwjgl") {
   apply plugin: "java"
 
   dependencies {
-    compile project(":core")
+    compile project(":desktop-common")
+    compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+  }
+}
+
+project(":desktop-headless") {
+  apply plugin: "java"
+
+  dependencies {
+    compile project(":desktop-common")
     compile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
-    compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
   }
 }
 
@@ -76,14 +91,6 @@ project(":ios") {
     compile "org.robovm:robovm-cocoatouch:${roboVMVersion}"
     compile "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"
     natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
-  }
-}
-
-project(":core") {
-  apply plugin: "java"
-
-  dependencies {
-    compile "com.badlogicgames.gdx:gdx:$gdxVersion"
   }
 }
 
