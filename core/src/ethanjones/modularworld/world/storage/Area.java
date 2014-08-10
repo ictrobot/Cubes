@@ -9,6 +9,7 @@ import ethanjones.modularworld.core.data.basic.DataInteger;
 import ethanjones.modularworld.core.data.other.DataParser;
 import ethanjones.modularworld.core.events.world.block.SetBlockEvent;
 import ethanjones.modularworld.graphics.world.AreaRenderer;
+import ethanjones.modularworld.side.client.ModularWorldClient;
 import ethanjones.modularworld.side.common.ModularWorld;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
 import ethanjones.modularworld.world.reference.BlockReference;
@@ -26,6 +27,7 @@ public class Area implements DataParser<DataGroup> {
   public final int x;
   public final int y;
   public final int z;
+  private final boolean render;
   public final int maxBlockX;
   public final int maxBlockY;
   public final int maxBlockZ;
@@ -51,6 +53,7 @@ public class Area implements DataParser<DataGroup> {
     this.x = x;
     this.y = y;
     this.z = z;
+    this.render = render;
     maxBlockX = ((x + 1) * SIZE_BLOCKS) - 1;
     maxBlockY = ((y + 1) * SIZE_BLOCKS) - 1;
     maxBlockZ = ((z + 1) * SIZE_BLOCKS) - 1;
@@ -62,9 +65,6 @@ public class Area implements DataParser<DataGroup> {
     cenBlockZ = (float) (maxBlockZ + minBlockZ) / 2f;
 
     blockFactories = new int[SIZE_BLOCKS_CUBED];
-    if (!ModularWorld.compatibility.isHeadless() && render) {
-      areaRenderer = new AreaRenderer(this);
-    }
   }
 
   public BlockFactory getBlockFactory(int x, int y, int z) {
@@ -79,7 +79,7 @@ public class Area implements DataParser<DataGroup> {
   }
 
   public void unload() {
-    areaRenderer.dispose();
+    if (areaRenderer != null) ModularWorldClient.instance.renderer.block.free(areaRenderer);
     blockFactories = null;
   }
 
@@ -91,11 +91,11 @@ public class Area implements DataParser<DataGroup> {
     dataGroup.setInteger("y", y);
     dataGroup.setInteger("z", z);
     dataGroup.setBoolean("generated", generated);
-
+    
     DataGroup world = new DataGroup();
     ArrayList<BlockReference> blocks = new ArrayList<BlockReference>();
     int i = 0;
-    if (x == 0 && y == 0 && z == 0) {
+    if (x == 0 && y == 0 && z == 0) { //TODO: Remove debug code
       dataGroup.getInteger("x");
     }
     for (int y = 0; y < SIZE_BLOCKS; y++) {

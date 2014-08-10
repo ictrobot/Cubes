@@ -18,7 +18,7 @@ import ethanjones.modularworld.world.storage.Area;
 import static ethanjones.modularworld.graphics.world.FaceVertices.*;
 import static ethanjones.modularworld.world.storage.Area.*;
 
-public class AreaRenderer implements RenderableProvider, Disposable {
+public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolable {
 
   public static final int MAX_X_OFFSET = 1;
   public static final int MIN_X_OFFSET = -MAX_X_OFFSET;
@@ -57,15 +57,14 @@ public class AreaRenderer implements RenderableProvider, Disposable {
   private int numVertices = 0;
   private Area area;
 
-  public AreaRenderer(Area area) {
-    this.area = area;
-    this.offset.set(area.minBlockX, area.minBlockY, area.minBlockZ);
+  protected AreaRenderer() {
     mesh = new Mesh(true, vertices.length, indices.length, GraphicsHelper.vertexAttributes);
     mesh.setIndices(indices);
   }
 
   @Override
   public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
+    if (area == null) return;
     if (dirty) {
       int numVerts = calculateVertices(vertices);
       numVertices = numVerts / 4 * 6;
@@ -83,6 +82,8 @@ public class AreaRenderer implements RenderableProvider, Disposable {
   }
 
   public int calculateVertices(float[] vertices) {
+    if (area == null) return 0;
+
     Area maxX = ModularWorldClient.instance.world.getArea(area.x + 1, area.y, area.z);
     Area minX = ModularWorldClient.instance.world.getArea(area.x - 1, area.y, area.z);
     Area maxY = ModularWorldClient.instance.world.getArea(area.x, area.y + 1, area.z);
@@ -143,5 +144,18 @@ public class AreaRenderer implements RenderableProvider, Disposable {
   @Override
   public void dispose() {
     mesh.dispose();
+  }
+
+  @Override
+  public void reset() {
+    area = null;
+    dirty = true;
+  }
+
+  public AreaRenderer set(Area area) {
+    this.area = area;
+    this.dirty = true;
+    this.offset.set(area.minBlockX, area.minBlockY, area.minBlockZ);
+    return this;
   }
 }

@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.utils.Disposable;
 import ethanjones.modularworld.core.settings.Settings;
+import ethanjones.modularworld.graphics.world.AreaRenderer;
+import ethanjones.modularworld.graphics.world.AreaRendererPool;
 import ethanjones.modularworld.side.client.ModularWorldClient;
 import ethanjones.modularworld.world.WorldClient;
 import ethanjones.modularworld.world.reference.AreaReference;
@@ -23,6 +25,8 @@ public class BlockRenderer implements Disposable {
   public PerspectiveCamera camera;
 
   private ModelBatch modelBatch;
+
+  private AreaRendererPool areaRendererPool = new AreaRendererPool();
 
   public BlockRenderer() {
     modelBatch = new ModelBatch();
@@ -57,8 +61,15 @@ public class BlockRenderer implements Disposable {
       for (int areaY = Math.max(pos.areaY - renderDistance, 0); areaY <= pos.areaY + renderDistance; areaY++) {
         for (int areaZ = pos.areaZ - renderDistance; areaZ <= pos.areaZ + renderDistance; areaZ++) {
           Area area = ModularWorldClient.instance.world.getArea(areaX, areaY, areaZ);
-          if (area.areaRenderer == null || !areaInFrustum(area, camera.frustum)) continue;
-          modelBatch.render(area.areaRenderer, environment);
+          if (areaInFrustum(area, camera.frustum)) {
+            if (area.areaRenderer == null) {
+              area.areaRenderer = areaRendererPool.obtain().set(area);
+            }
+            modelBatch.render(area.areaRenderer, environment);
+          } else if (area.areaRenderer != null) {
+            areaRendererPool.free(area.areaRenderer);
+            area.areaRenderer = null;
+          }
         }
       }
     }
@@ -73,5 +84,9 @@ public class BlockRenderer implements Disposable {
   @Override
   public void dispose() {
     modelBatch.dispose();
+  }
+
+  public void free(AreaRenderer areaRenderer) {
+    areaRendererPool.free(areaRenderer);
   }
 }
