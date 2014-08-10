@@ -6,13 +6,9 @@ import java.io.IOException;
 
 public abstract class Data {
 
-  public abstract void write(DataOutput output) throws IOException;
+  protected abstract void write(DataOutput output) throws IOException;
 
-  public abstract void read(DataInput input) throws IOException;
-
-  public abstract String writeNotation();
-
-  public abstract void readNotation(String str);
+  protected abstract void read(DataInput input) throws IOException;
 
   public abstract byte getId();
 

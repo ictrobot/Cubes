@@ -1,8 +1,8 @@
 package ethanjones.modularworld.core.data;
 
 import ethanjones.modularworld.core.ModularWorldException;
-import ethanjones.modularworld.core.data.core.*;
-import ethanjones.modularworld.core.data.core.DataEnd;
+import ethanjones.modularworld.core.data.basic.*;
+import ethanjones.modularworld.core.data.other.DataEnd;
 
 import java.io.*;
 

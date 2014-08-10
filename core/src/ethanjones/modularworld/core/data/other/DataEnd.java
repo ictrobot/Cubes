@@ -1,4 +1,4 @@
-package ethanjones.modularworld.core.data.core;
+package ethanjones.modularworld.core.data.other;
 
 import ethanjones.modularworld.core.data.Data;
 
@@ -8,22 +8,12 @@ import java.io.IOException;
 
 public class DataEnd extends Data {
   @Override
-  public void write(DataOutput output) throws IOException {
+  protected void write(DataOutput output) throws IOException {
 
   }
 
   @Override
-  public void read(DataInput input) throws IOException {
-
-  }
-
-  @Override
-  public String writeNotation() {
-    return "";
-  }
-
-  @Override
-  public void readNotation(String str) {
+  protected void read(DataInput input) throws IOException {
 
   }
 

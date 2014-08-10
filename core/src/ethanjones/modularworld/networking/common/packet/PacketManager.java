@@ -2,7 +2,7 @@ package ethanjones.modularworld.networking.common.packet;
 
 import ethanjones.modularworld.core.ModularWorldException;
 import ethanjones.modularworld.core.data.Data;
-import ethanjones.modularworld.core.data.core.DataGroup;
+import ethanjones.modularworld.core.data.DataGroup;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.networking.common.socket.SocketMonitor;
 

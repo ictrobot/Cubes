@@ -1,7 +1,7 @@
 package ethanjones.modularworld.block.factory.basic;
 
 import ethanjones.modularworld.block.factory.BlockFactory;
-import ethanjones.modularworld.core.data.core.DataGroup;
+import ethanjones.modularworld.core.data.DataGroup;
 import ethanjones.modularworld.graphics.world.BlockTextureHandler;
 
 public class BlockFactoryBasic extends BlockFactory {

@@ -1,4 +1,4 @@
-package ethanjones.modularworld.core.data.core;
+package ethanjones.modularworld.core.data.basic;
 
 import ethanjones.modularworld.core.data.DataBasic;
 
@@ -24,15 +24,5 @@ public class DataLong extends DataBasic<DataLong, Long> {
   @Override
   public void read(DataInput input) throws IOException {
     obj = input.readLong();
-  }
-
-  @Override
-  public String writeNotation() {
-    return obj.toString();
-  }
-
-  @Override
-  public void readNotation(String str) {
-    obj = Long.valueOf(str);
   }
 }
