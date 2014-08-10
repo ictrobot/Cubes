@@ -2,7 +2,6 @@ package ethanjones.modularworld.world.storage;
 
 import ethanjones.modularworld.block.factory.BlockFactory;
 import ethanjones.modularworld.core.ModularWorldException;
-import ethanjones.modularworld.core.data.Data;
 import ethanjones.modularworld.core.data.DataGroup;
 import ethanjones.modularworld.core.data.DataList;
 import ethanjones.modularworld.core.data.basic.DataInteger;
@@ -15,7 +14,6 @@ import ethanjones.modularworld.world.coordinates.BlockCoordinates;
 import ethanjones.modularworld.world.reference.BlockReference;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class Area implements DataParser<DataGroup> {
 
@@ -91,13 +89,10 @@ public class Area implements DataParser<DataGroup> {
     dataGroup.setInteger("y", y);
     dataGroup.setInteger("z", z);
     dataGroup.setBoolean("generated", generated);
-    
+
     DataGroup world = new DataGroup();
     ArrayList<BlockReference> blocks = new ArrayList<BlockReference>();
     int i = 0;
-    if (x == 0 && y == 0 && z == 0) { //TODO: Remove debug code
-      dataGroup.getInteger("x");
-    }
     for (int y = 0; y < SIZE_BLOCKS; y++) {
       DataList<DataInteger> factories = new DataList<DataInteger>();
       DataList<DataGroup> partial = new DataList<DataGroup>();
@@ -152,9 +147,8 @@ public class Area implements DataParser<DataGroup> {
       }
       DataGroup d = world.getGroup(y + "");
       if (d.contains("part")) {
-        DataGroup partial = d.getGroup("part");
-        for (Map.Entry<String, Data> entry : partial.getEntrySet()) {
-          DataGroup b = (DataGroup) entry.getValue();
+        DataList<DataGroup> partial = d.getList("part");
+        for (DataGroup b : partial) {
           blockFactories[b.getByte("x") + (b.getByte("y") * SIZE_BLOCKS) + (b.getByte("z") * SIZE_BLOCKS_SQUARED)] = b.getInteger("b");
         }
       } else {
