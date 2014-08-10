@@ -6,6 +6,7 @@ import ethanjones.modularworld.world.storage.Area;
 
 public class WorldClient extends World {
 
+  public final static int AREA_LOAD_RADIUS = 10;
   public final static int AREA_LOAD_DISTANCE = (AREA_LOAD_RADIUS * 2) + 1;
   public final static int AREA_LOAD_DISTANCE_SQUARED = AREA_LOAD_DISTANCE * AREA_LOAD_DISTANCE;
   public final static int AREA_LOAD_DISTANCE_CUBED = AREA_LOAD_DISTANCE_SQUARED * AREA_LOAD_DISTANCE;

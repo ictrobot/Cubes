@@ -10,7 +10,6 @@ import ethanjones.modularworld.world.storage.BlankArea;
 
 public abstract class World implements Disposable {
 
-  public final static int AREA_LOAD_RADIUS = 10;
   public final static BlankArea BLANK_AREA = new BlankArea();
   protected final AreaReferencePool areaReferencePool;
 
