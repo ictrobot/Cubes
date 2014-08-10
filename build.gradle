@@ -40,6 +40,16 @@ project(":desktop") {
   }
 }
 
+project(":headless") {
+  apply plugin: "java"
+
+  dependencies {
+    compile project(":core")
+    compile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+    compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+  }
+}
+
 project(":android") {
   apply plugin: "android"
 
