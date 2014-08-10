@@ -149,7 +149,7 @@ public class Area implements DataParser<DataGroup> {
       if (d.contains("part")) {
         DataList<DataGroup> partial = d.getList("part");
         for (DataGroup b : partial) {
-          blockFactories[b.getByte("x") + (b.getByte("y") * SIZE_BLOCKS) + (b.getByte("z") * SIZE_BLOCKS_SQUARED)] = b.getInteger("b");
+          blockFactories[b.getByte("x") + (b.getByte("y") * SIZE_BLOCKS_SQUARED) + (b.getByte("z") * SIZE_BLOCKS)] = b.getInteger("b");
         }
       } else {
         DataList<DataInteger> list = d.getList("factories");
