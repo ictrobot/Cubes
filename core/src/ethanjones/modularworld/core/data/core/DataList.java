@@ -1,6 +1,7 @@
-package ethanjones.modularworld.core.data;
+package ethanjones.modularworld.core.data.core;
 
-import ethanjones.modularworld.core.data.other.DataEnd;
+import ethanjones.modularworld.core.data.Data;
+import ethanjones.modularworld.core.data.DataTools;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -17,7 +18,7 @@ public class DataList<T extends Data> extends Data implements List<T> {
   }
 
   @Override
-  protected void write(DataOutput output) throws IOException {
+  public void write(DataOutput output) throws IOException {
     if (list.size() == 0) {
       output.writeByte(dataEnd.getId());//Code to allow blank arrays
       return;
@@ -31,17 +32,27 @@ public class DataList<T extends Data> extends Data implements List<T> {
   }
 
   @Override
-  protected void read(DataInput input) throws IOException {
+  public void read(DataInput input) throws IOException {
     list.clear();
     byte b = input.readByte();
     if (b != 0) return;//Code to allow blank arrays
     byte type = input.readByte();
     int size = input.readInt();
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < size - 1; i++) {
       Data data = DataTools.getData(type);
       data.read(input);
       list.add((T) data);
     }
+  }
+
+  @Override
+  public String writeNotation() {
+    return "";
+  }
+
+  @Override
+  public void readNotation(String str) {
+
   }
 
   @Override

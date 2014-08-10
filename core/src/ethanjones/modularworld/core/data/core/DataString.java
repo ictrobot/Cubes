@@ -1,4 +1,4 @@
-package ethanjones.modularworld.core.data.basic;
+package ethanjones.modularworld.core.data.core;
 
 import ethanjones.modularworld.core.data.DataBasic;
 
@@ -24,5 +24,15 @@ public class DataString extends DataBasic<DataString, String> {
   @Override
   public void read(DataInput input) throws IOException {
     obj = input.readUTF();
+  }
+
+  @Override
+  public String writeNotation() {
+    return "\"" + obj + "\"";
+  }
+
+  @Override
+  public void readNotation(String str) {
+    obj = str.substring(1, str.length() - 1);
   }
 }

@@ -1,7 +1,8 @@
-package ethanjones.modularworld.core.data;
+package ethanjones.modularworld.core.data.core;
 
-import ethanjones.modularworld.core.data.basic.*;
-import ethanjones.modularworld.core.data.other.DataEnd;
+import ethanjones.modularworld.core.data.Data;
+import ethanjones.modularworld.core.data.DataTools;
+import ethanjones.modularworld.core.data.notation.DataNotation;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -20,7 +21,7 @@ public class DataGroup extends Data {
   }
 
   @Override
-  protected void write(DataOutput output) throws IOException {
+  public void write(DataOutput output) throws IOException {
     for (Map.Entry<String, Data> entry : map.entrySet()) {
       DataTools.write(entry.getValue(), output);
       output.writeUTF(entry.getKey());
@@ -29,12 +30,37 @@ public class DataGroup extends Data {
   }
 
   @Override
-  protected void read(DataInput input) throws IOException {
+  public void read(DataInput input) throws IOException {
     map.clear();
     Data data;
     while (!((data = DataTools.read(input)) instanceof DataEnd)) {
       map.put(input.readUTF(), data);
     }
+  }
+
+  @Override
+  public String writeNotation() {
+    StringBuilder stringBuilder = new StringBuilder();
+    stringBuilder.append(System.lineSeparator());
+    for (Map.Entry<String, Data> entry : map.entrySet()) {
+      stringBuilder.append("  \"");
+      stringBuilder.append(entry.getKey());
+      stringBuilder.append("\" ");
+      String[] split = DataNotation.toString(entry.getValue()).split(System.lineSeparator());
+      stringBuilder.append(split[0]);
+      stringBuilder.append(System.lineSeparator());
+      for (int i = 1; i < split.length; i++) {
+        stringBuilder.append("  ");
+        stringBuilder.append(split[i]);
+        stringBuilder.append(System.lineSeparator());
+      }
+    }
+    return stringBuilder.toString();
+  }
+
+  @Override
+  public void readNotation(String str) {
+
   }
 
   @Override

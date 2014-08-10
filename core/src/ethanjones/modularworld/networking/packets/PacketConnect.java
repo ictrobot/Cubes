@@ -1,6 +1,6 @@
 package ethanjones.modularworld.networking.packets;
 
-import ethanjones.modularworld.core.data.DataGroup;
+import ethanjones.modularworld.core.data.core.DataGroup;
 import ethanjones.modularworld.core.settings.Settings;
 import ethanjones.modularworld.networking.common.packet.Packet;
 import ethanjones.modularworld.side.common.ModularWorld;

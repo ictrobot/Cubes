@@ -1,4 +1,4 @@
-package ethanjones.modularworld.core.data.basic;
+package ethanjones.modularworld.core.data.core;
 
 import ethanjones.modularworld.core.data.DataBasic;
 
@@ -24,5 +24,15 @@ public class DataBoolean extends DataBasic<DataBoolean, Boolean> {
   @Override
   public void read(DataInput input) throws IOException {
     obj = input.readBoolean();
+  }
+
+  @Override
+  public String writeNotation() {
+    return obj.toString();
+  }
+
+  @Override
+  public void readNotation(String str) {
+    obj = Boolean.valueOf(str);
   }
 }

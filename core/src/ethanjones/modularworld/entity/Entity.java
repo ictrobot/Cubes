@@ -2,9 +2,9 @@ package ethanjones.modularworld.entity;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import ethanjones.modularworld.core.data.DataGroup;
-import ethanjones.modularworld.core.data.DataList;
-import ethanjones.modularworld.core.data.basic.DataFloat;
+import ethanjones.modularworld.core.data.core.DataGroup;
+import ethanjones.modularworld.core.data.core.DataList;
+import ethanjones.modularworld.core.data.core.DataFloat;
 import ethanjones.modularworld.core.data.other.DataParser;
 
 public class Entity implements DataParser<DataGroup> {

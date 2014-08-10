@@ -1,7 +1,7 @@
 package ethanjones.modularworld.graphics;
 
 import com.badlogic.gdx.graphics.Pixmap;
-import ethanjones.modularworld.core.data.DataGroup;
+import ethanjones.modularworld.core.data.core.DataGroup;
 import ethanjones.modularworld.core.data.other.DataParser;
 
 import java.util.HashMap;

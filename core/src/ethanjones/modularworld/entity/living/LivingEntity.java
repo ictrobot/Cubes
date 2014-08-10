@@ -1,6 +1,6 @@
 package ethanjones.modularworld.entity.living;
 
-import ethanjones.modularworld.core.data.DataGroup;
+import ethanjones.modularworld.core.data.core.DataGroup;
 import ethanjones.modularworld.entity.Entity;
 
 public class LivingEntity extends Entity {

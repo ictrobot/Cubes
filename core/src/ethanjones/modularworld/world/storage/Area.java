@@ -2,9 +2,9 @@ package ethanjones.modularworld.world.storage;
 
 import ethanjones.modularworld.block.factory.BlockFactory;
 import ethanjones.modularworld.core.ModularWorldException;
-import ethanjones.modularworld.core.data.DataGroup;
-import ethanjones.modularworld.core.data.DataList;
-import ethanjones.modularworld.core.data.basic.DataInteger;
+import ethanjones.modularworld.core.data.core.DataGroup;
+import ethanjones.modularworld.core.data.core.DataList;
+import ethanjones.modularworld.core.data.core.DataInteger;
 import ethanjones.modularworld.core.data.other.DataParser;
 import ethanjones.modularworld.core.events.world.block.BlockChangedEvent;
 import ethanjones.modularworld.graphics.world.AreaRenderer;

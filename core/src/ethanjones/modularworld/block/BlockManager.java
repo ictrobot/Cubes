@@ -2,8 +2,8 @@ package ethanjones.modularworld.block;
 
 import ethanjones.modularworld.block.factory.BlockFactory;
 import ethanjones.modularworld.core.data.Data;
-import ethanjones.modularworld.core.data.DataGroup;
-import ethanjones.modularworld.core.data.basic.DataString;
+import ethanjones.modularworld.core.data.core.DataGroup;
+import ethanjones.modularworld.core.data.core.DataString;
 import ethanjones.modularworld.core.data.other.DataParser;
 
 import java.util.HashMap;

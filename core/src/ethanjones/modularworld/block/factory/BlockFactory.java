@@ -1,6 +1,6 @@
 package ethanjones.modularworld.block.factory;
 
-import ethanjones.modularworld.core.data.DataGroup;
+import ethanjones.modularworld.core.data.core.DataGroup;
 import ethanjones.modularworld.graphics.world.BlockTextureHandler;
 
 /**

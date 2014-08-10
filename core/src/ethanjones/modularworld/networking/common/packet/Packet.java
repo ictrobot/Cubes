@@ -1,6 +1,6 @@
 package ethanjones.modularworld.networking.common.packet;
 
-import ethanjones.modularworld.core.data.DataGroup;
+import ethanjones.modularworld.core.data.core.DataGroup;
 import ethanjones.modularworld.core.data.other.DataParser;
 import ethanjones.modularworld.networking.common.socket.SocketMonitor;
 import ethanjones.modularworld.side.Side;

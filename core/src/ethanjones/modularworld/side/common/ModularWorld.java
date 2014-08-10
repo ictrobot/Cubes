@@ -8,6 +8,10 @@ import ethanjones.modularworld.block.factory.BlockFactories;
 import ethanjones.modularworld.core.Branding;
 import ethanjones.modularworld.core.ModularWorldException;
 import ethanjones.modularworld.core.compatibility.Compatibility;
+import ethanjones.modularworld.core.data.core.DataByte;
+import ethanjones.modularworld.core.data.core.DataGroup;
+import ethanjones.modularworld.core.data.core.DataInteger;
+import ethanjones.modularworld.core.data.notation.DataNotation;
 import ethanjones.modularworld.core.events.EventBus;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.core.settings.Settings;
@@ -32,6 +36,23 @@ public abstract class ModularWorld implements ApplicationListener {
   private static boolean setup;
 
   public static void setup() {
+    Log.info(DataNotation.toString(new DataInteger(1234)));
+    Log.info(DataNotation.toString(new DataByte((byte) 1)));
+
+    DataGroup d = new DataGroup();
+    d.setInteger("key", 1);
+    DataGroup d1 = new DataGroup();
+    d1.setInteger("ra", 12345);
+    DataGroup d11 = new DataGroup();
+    d11.setDouble("nor", 1.25);
+    d11.setDouble("inv", 0.75);
+    DataGroup d12 = new DataGroup();
+    d12.setInteger("value", 10);
+    d12.setBoolean("setting", true);
+    d1.setGroup("Num", d11);
+    d1.setGroup("Setting", d12);
+    d.setGroup("Stuff", d1);
+    Log.info(DataNotation.toString(d));
     if (setup) return;
     Log.info(Branding.NAME, Branding.DEBUG);
     if (compatibility == null)
