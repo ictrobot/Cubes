@@ -10,7 +10,7 @@ public class WorldClient extends World {
   public final static int AREA_LOAD_DISTANCE_SQUARED = AREA_LOAD_DISTANCE * AREA_LOAD_DISTANCE;
   public final static int AREA_LOAD_DISTANCE_CUBED = AREA_LOAD_DISTANCE_SQUARED * AREA_LOAD_DISTANCE;
 
-  public Area[] areasAroundPlayer;
+  public volatile Area[] areasAroundPlayer;
   public volatile int minAreaX;
   public volatile int minAreaY;
   public volatile int minAreaZ;
