@@ -38,16 +38,19 @@ public class PlayerManager {
         check.areaY = areaY;
         for (int areaZ = coordinates.areaZ - renderDistance; areaZ <= coordinates.areaZ + renderDistance; areaZ++) {
           check.areaZ = areaZ;
-          checkAndRequestArea(check);
+          sendAndRequestArea(check);
         }
       }
     }
   }
 
 
-  private void checkAndRequestArea(AreaReference areaReference) {
-    if (ModularWorldServer.instance.world.getAreaInternal(areaReference, false, false) == null)
+  private void sendAndRequestArea(AreaReference areaReference) {
+    if (ModularWorldServer.instance.world.getAreaInternal(areaReference, false, false) == null) {
       requestArea(areaReference.clone());
+    } else {
+      Threads.execute(new SendWorldCallable(ModularWorldServer.instance.world.getAreaInternal(areaReference, false, false), socketMonitor.getSocketOutput().getPacketQueue()));
+    }
   }
 
   private void requestArea(AreaReference areaReference) {

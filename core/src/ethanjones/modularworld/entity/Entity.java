@@ -33,8 +33,8 @@ public class Entity implements DataParser<DataGroup> {
 
   @Override
   public void read(DataGroup data) {
-    this.position = vector3FromData(data.getDataList("position"));
-    this.angle = vector2FromData(data.getDataList("angle"));
+    this.position = vector3FromData(data.getList("position"));
+    this.angle = vector2FromData(data.getList("angle"));
     this.gravity = data.getBoolean("gravity");
   }
 

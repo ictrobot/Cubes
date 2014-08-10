@@ -80,7 +80,7 @@ public class DataGroup extends Data {
     return map.get(key);
   }
 
-  public DataList getDataList(String key) {
+  public DataList getList(String key) {
     Data data = getValue(key);
     if (data != null && data instanceof DataList) return (DataList) data;
     return (DataList) setValue(key, new DataList());

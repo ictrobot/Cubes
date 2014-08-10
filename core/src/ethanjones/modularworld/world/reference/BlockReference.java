@@ -12,10 +12,11 @@ public class BlockReference {
     blockZ = 0;
   }
 
-  public void set(int blockX, int blockY, int blockZ) {
+  public BlockReference set(int blockX, int blockY, int blockZ) {
     this.blockX = blockX;
     this.blockY = blockY;
     this.blockZ = blockZ;
+    return this;
   }
 
 }
