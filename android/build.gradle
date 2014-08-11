@@ -15,11 +15,10 @@ android {
     }
     signingConfigs {
         release {
-            // We can leave these in environment variables
             storeFile file("/keys/EthanJonesApps.keystore")
             keyAlias "release"
             storePassword System.getenv("KEY_STORE_PASS")
-            keyPassword ""
+            keyPassword System.getenv("KEY_STORE_PASS")
         }
     }
     buildTypes {
