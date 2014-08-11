@@ -4,6 +4,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import ethanjones.modularworld.networking.NetworkingManager;
 
 public class LwjglCompatibility extends DesktopCompatibility {
   protected LwjglCompatibility(String[] arg) {

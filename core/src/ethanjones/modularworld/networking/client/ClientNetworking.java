@@ -39,5 +39,6 @@ public class ClientNetworking extends Networking {
   @Override
   public void disconnected(SocketMonitor socketMonitor, Exception e) {
     Log.info("Disconnected from " + socketMonitor.getRemoteAddress());
+    //TODO: Go back to main menu
   }
 }
