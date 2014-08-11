@@ -13,6 +13,15 @@ android {
 
         instrumentTest.setRoot('tests')
     }
+    signingConfigs {
+        release {
+            // We can leave these in environment variables
+            storeFile file("/keys/EthanJonesApps.keystore")
+            keyAlias "release"
+            storePassword System.getenv("KEY_STORE_PASS")
+            keyPassword ""
+        }
+    }
 }
 
 // needed to add JNI shared libraries to APK when compiling on CLI
