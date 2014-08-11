@@ -15,8 +15,8 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file("/keys/EthanJonesApps.keystore")
-            keyAlias "release"
+            storeFile file(System.getenv("KEY_STORE_FILE"))
+            keyAlias System.getenv("KEY_STORE_ALIAS")
             storePassword System.getenv("KEY_STORE_PASS")
             keyPassword System.getenv("KEY_STORE_PASS")
         }
