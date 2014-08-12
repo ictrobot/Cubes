@@ -34,11 +34,8 @@ public abstract class ModularWorld implements ApplicationListener {
 
   public static void setup() {
     if (setup) return;
-    Log.info(Branding.NAME, Branding.DEBUG);
     if (compatibility == null)
       Log.error(new ModularWorldException("No Compatibility module for this platform: " + Gdx.app.getType().name() + ", OS: " + System.getProperty("os.name") + ", Arch:" + System.getProperty("os.arch")));
-    compatibility.logEnvironment();
-    Debug.printProperties();
 
     eventBus = new EventBus();
     compatibility.init();
@@ -46,19 +43,22 @@ public abstract class ModularWorld implements ApplicationListener {
     baseFolder = compatibility.getBaseFolder();
     baseFolder.mkdirs();
 
+    Log.info(Branding.NAME, Branding.DEBUG); //Can't log till base folder setup
+
+    compatibility.logEnvironment();
+    Debug.printProperties();
+
     settings = new SettingsManager();
     Settings.processAll();
     settings.readFromFile();
     settings.print();
 
     assetManager = new AssetManager();
-
     blockManager = new BlockManager();
 
     BlockFactories.init();
 
     timing = new Timing();
-    setup = true;
 
     Threads.init();
 
@@ -67,6 +67,8 @@ public abstract class ModularWorld implements ApplicationListener {
       compatibility.getAssets(assetManager);
       GraphicsHelper.init(assetManager);
     }
+    
+    setup = true;
   }
 
   private final Side side;

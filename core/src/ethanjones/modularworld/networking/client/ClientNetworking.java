@@ -2,7 +2,6 @@ package ethanjones.modularworld.networking.client;
 
 import com.badlogic.gdx.Gdx;
 import ethanjones.modularworld.core.logging.Log;
-import ethanjones.modularworld.side.client.ClientAdapter;
 import ethanjones.modularworld.networking.NetworkUtil;
 import ethanjones.modularworld.networking.common.Networking;
 import ethanjones.modularworld.networking.common.packet.Packet;
@@ -40,6 +39,6 @@ public class ClientNetworking extends Networking {
   @Override
   public void disconnected(SocketMonitor socketMonitor, Exception e) {
     Log.info("Disconnected from " + socketMonitor.getRemoteAddress());
-    ClientAdapter.instance.gotoMainMenu();
+    //TODO: Go to main menu, "ClientAdapter.instance.gotoMainMenu()" needs OpenGL context
   }
 }

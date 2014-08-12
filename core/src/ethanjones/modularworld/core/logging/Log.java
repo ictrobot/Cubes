@@ -154,21 +154,29 @@ public class Log {
   }
 
   private static String getTagClass() {
-    StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-
-    Class<?> c;
     try {
-      c = Class.forName(stackTrace[3].getClassName());
-      return c.getSimpleName();
-    } catch (ClassNotFoundException e) {
+      StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
 
+      Class<?> c;
+      try {
+        c = Class.forName(stackTrace[3].getClassName());
+        return c.getSimpleName();
+      } catch (ClassNotFoundException e) {
+
+      }
+
+      return "";
+    } catch (Exception e) {
+      return "";
     }
-
-    return "";
   }
 
   public static void dispose() {
-    output.dispose();
-    file.dispose();
+    try {
+      output.dispose();
+      file.dispose();
+    } catch (Exception e) {
+
+    }
   }
 }

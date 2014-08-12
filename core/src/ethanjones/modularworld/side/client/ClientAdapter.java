@@ -24,7 +24,7 @@ public class ClientAdapter implements ApplicationListener {
   }
 
   public void setMenu(Menu menu) {
-    Menu old = menu;
+    Menu old = this.menu;
     if (old != null) {
       old.hide();
       old.dispose();

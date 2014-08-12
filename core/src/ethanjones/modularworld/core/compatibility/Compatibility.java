@@ -5,12 +5,13 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import ethanjones.modularworld.core.ModularWorldException;
-import ethanjones.modularworld.side.client.ClientAdapter;
-import ethanjones.modularworld.side.server.ServerAdapter;
 import ethanjones.modularworld.core.logging.Log;
+import ethanjones.modularworld.core.logging.UncaughtExceptionHandler;
 import ethanjones.modularworld.graphics.asset.AssetFinder;
 import ethanjones.modularworld.graphics.asset.AssetManager;
+import ethanjones.modularworld.side.client.ClientAdapter;
 import ethanjones.modularworld.side.common.ModularWorld;
+import ethanjones.modularworld.side.server.ServerAdapter;
 
 public abstract class Compatibility {
 
@@ -52,6 +53,10 @@ public abstract class Compatibility {
 
   public void startModularWorld() {
     ModularWorld.compatibility = this;
+
+    UncaughtExceptionHandler uncaughtExceptionHandler = new UncaughtExceptionHandler();
+    Thread.setDefaultUncaughtExceptionHandler(uncaughtExceptionHandler);
+    Thread.currentThread().setUncaughtExceptionHandler(uncaughtExceptionHandler);
 
     try {
       if (isHeadless()) {

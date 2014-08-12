@@ -4,9 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import ethanjones.modularworld.core.ModularWorldException;
+import ethanjones.modularworld.core.logging.FileLogWriter;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.core.util.LongAverage;
 import ethanjones.modularworld.side.client.ModularWorldClient;
+import ethanjones.modularworld.side.common.ModularWorld;
 import ethanjones.modularworld.world.coordinates.AreaCoordinates;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
 
@@ -103,7 +105,10 @@ public class Debug {
     Log.debug("Properties", "OS Name:            " + System.getProperty("os.name"));
     Log.debug("Properties", "OS Architecture:    " + System.getProperty("os.arch"));
     Log.debug("Properties", "OS Version:         " + System.getProperty("os.version"));
-    Log.debug("Properties", "Working Directory:  " + System.getProperty("user.dir"));
     Log.debug("Properties", "User Home:          " + System.getProperty("user.home"));
+    Log.debug("Properties", "Working Directory:  " + System.getProperty("user.dir"));
+    Log.debug("Properties", "Base Directory:     " + ModularWorld.baseFolder.file().getAbsolutePath());
+    if (FileLogWriter.file != null)
+      Log.debug("Properties", "Log file:           " + FileLogWriter.file.getAbsolutePath());
   }
 }

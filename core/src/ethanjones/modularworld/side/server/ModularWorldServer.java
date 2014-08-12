@@ -2,6 +2,7 @@ package ethanjones.modularworld.side.server;
 
 import com.badlogic.gdx.utils.Array;
 import ethanjones.modularworld.block.factory.BlockFactories;
+import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.core.timing.TimeHandler;
 import ethanjones.modularworld.networking.NetworkingManager;
 import ethanjones.modularworld.networking.server.ServerNetworkingParameter;
@@ -36,5 +37,8 @@ public class ModularWorldServer extends ModularWorld implements TimeHandler {
   @Override
   public void time(int interval) {
     world.setBlockFactory(BlockFactories.dirt, (int) (Math.random() * 16), (int) (8 + (Math.random() * 7)), (int) (Math.random() * 16));
+    for (Thread thread : Thread.getAllStackTraces().keySet()) {
+      Log.info(thread.getName() + " " + thread.getThreadGroup().getName());
+    }
   }
 }

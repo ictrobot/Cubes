@@ -6,10 +6,12 @@ import java.io.PrintStream;
 
 public class FileLogWriter implements LogWriter {
 
+  public static File file;
   FileOutputStream fileOutputStream;
   PrintStream printStream;
 
   public FileLogWriter(File file) {
+    FileLogWriter.file = file;
     try {
       file.createNewFile();
       fileOutputStream = new FileOutputStream(file);

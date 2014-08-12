@@ -23,8 +23,7 @@ public class InputChain {
     return inputMultiplexer;
   }
 
-  public InputChain() {
-    super();
+  public void setup() {
     //Starts at top
     inputMultiplexer.addProcessor(chatManager = new ChatManager());
     inputMultiplexer.addProcessor(KeyboardHelper.inputProcessor);
