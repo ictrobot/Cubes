@@ -25,7 +25,7 @@ public final class Chat extends Label {
 
   protected Chat(Skin skin) {
     super("", skin);
-    chatBackground = GraphicsHelper.getTexture("HUD/ChatBackground.png");
+    chatBackground = GraphicsHelper.getTexture("hud/ChatBackground.png");
     bounds = new Bounds();
   }
 

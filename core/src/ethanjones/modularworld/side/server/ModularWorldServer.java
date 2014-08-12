@@ -3,9 +3,8 @@ package ethanjones.modularworld.side.server;
 import com.badlogic.gdx.utils.Array;
 import ethanjones.modularworld.block.factory.BlockFactories;
 import ethanjones.modularworld.core.timing.TimeHandler;
-import ethanjones.modularworld.graphics.GraphicsHelper;
-import ethanjones.modularworld.graphics.asset.AssetManager;
 import ethanjones.modularworld.networking.NetworkingManager;
+import ethanjones.modularworld.networking.server.ServerNetworkingParameter;
 import ethanjones.modularworld.side.Side;
 import ethanjones.modularworld.side.common.ModularWorld;
 import ethanjones.modularworld.world.WorldServer;
@@ -14,10 +13,12 @@ import ethanjones.modularworld.world.generator.BasicWorldGenerator;
 public class ModularWorldServer extends ModularWorld implements TimeHandler {
 
   public static ModularWorldServer instance;
+  private final ServerNetworkingParameter serverNetworkingParameter;
   public Array<PlayerManager> playerManagers;
 
-  public ModularWorldServer() {
+  public ModularWorldServer(ServerNetworkingParameter serverNetworkingParameter) {
     super(Side.Server);
+    this.serverNetworkingParameter = serverNetworkingParameter;
     ModularWorldServer.instance = this;
     playerManagers = new Array<PlayerManager>();
   }
@@ -25,13 +26,7 @@ public class ModularWorldServer extends ModularWorld implements TimeHandler {
   @Override
   public void create() {
     super.create();
-    NetworkingManager.startServer();
-
-    if (compatibility.graphics()) {
-      assetManager = new AssetManager();
-      compatibility.getAssets(assetManager);
-      GraphicsHelper.init(assetManager);
-    }
+    NetworkingManager.startServer(serverNetworkingParameter);
 
     world = new WorldServer(new BasicWorldGenerator());
 

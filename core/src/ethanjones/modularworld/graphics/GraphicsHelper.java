@@ -42,7 +42,7 @@ public class GraphicsHelper {
   }
 
   public static PackedTexture getBlockTexture(String name) {
-    PackedTexture packedTexture = getTexture("Blocks/" + name + ".png");
+    PackedTexture packedTexture = getTexture("blocks/" + name + ".png");
     if (!packedTexture.material.equals(getBlockTextureSheet())) {
       Log.error(new ModularWorldException("Block textures have to be on block packed texture"));
     }
@@ -75,11 +75,11 @@ public class GraphicsHelper {
     for (int i = 0; i < texturePackers.size; i++) {
       TexturePacker texturePacker = texturePackers.get(i);
 
-      String filename = i + ".cim";
+      String filename = i + ".png";
       FileHandle fileHandle = parent.child(filename);
 
       try {
-        PixmapIO.writeCIM(fileHandle, texturePacker.getPixmap());
+        PixmapIO.writePNG(fileHandle, texturePacker.getPixmap());
       } catch (GdxRuntimeException e) {
         Log.error("Failed to write packed image", e);
       }

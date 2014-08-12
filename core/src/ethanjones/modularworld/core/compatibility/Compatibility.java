@@ -4,14 +4,16 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import ethanjones.modularworld.core.Branding;
 import ethanjones.modularworld.core.ModularWorldException;
-import ethanjones.modularworld.core.ModularWorldWrapper;
 import ethanjones.modularworld.core.logging.Log;
+import ethanjones.modularworld.core.wrapper.AdaptiveApplicationListener;
+import ethanjones.modularworld.core.wrapper.ModularWorldServerWrapper;
 import ethanjones.modularworld.graphics.asset.AssetFinder;
 import ethanjones.modularworld.graphics.asset.AssetManager;
-import ethanjones.modularworld.networking.NetworkingManager;
+import ethanjones.modularworld.menu.MenuManager;
+import ethanjones.modularworld.networking.server.ServerNetworkingParameter;
 import ethanjones.modularworld.side.common.ModularWorld;
+import ethanjones.modularworld.side.server.ModularWorldServer;
 
 public abstract class Compatibility {
 
@@ -25,17 +27,10 @@ public abstract class Compatibility {
     ModularWorld.eventBus.register(this);
   }
 
-  public void setNetworkParameter() {
-
-  }
-
   public boolean isHeadless() {
     return false;
   }
 
-  public boolean graphics() {
-    return !isHeadless() && (NetworkingManager.hasAddressToConnectTo() || NetworkingManager.clientNetworking != null);
-  }
 
   public FileHandle getBaseFolder() {
     return Gdx.files.absolute(System.getProperty("user.dir"));
@@ -59,14 +54,19 @@ public abstract class Compatibility {
   protected abstract void run(ApplicationListener applicationListener);
 
   public void startModularWorld() {
-    setNetworkParameter();
     ModularWorld.compatibility = this;
 
     try {
-      run(new ModularWorldWrapper());
+      if (isHeadless()) {
+        run(new ModularWorldServerWrapper());
+      } else {
+        AdaptiveApplicationListener adaptiveApplicationListener = new AdaptiveApplicationListener();
+        adaptiveApplicationListener.setListener(new MenuManager(this, adaptiveApplicationListener));
+        run(adaptiveApplicationListener);
+      }
     } catch (Exception e) {
       try {
-        Log.error(Branding.NAME, "", ModularWorldException.getModularWorldException(e));
+        Log.error("Failed to start", ModularWorldException.getModularWorldException(e));
       } catch (Exception ex) {
         if (ex instanceof ModularWorldException) {
           throw (ModularWorldException) ex;

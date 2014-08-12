@@ -7,7 +7,6 @@ import ethanjones.modularworld.core.Branding;
 import ethanjones.modularworld.core.compatibility.Compatibility;
 import ethanjones.modularworld.graphics.asset.AssetFinder;
 import ethanjones.modularworld.graphics.asset.AssetManager;
-import ethanjones.modularworld.networking.NetworkingManager;
 
 public abstract class DesktopCompatibility extends Compatibility {
 
@@ -30,15 +29,8 @@ public abstract class DesktopCompatibility extends Compatibility {
     }
   }
 
-  @Override
-  public void setNetworkParameter() {
-    if (arg.length > 0) {
-      NetworkingManager.NETWORK_PARAMETER = arg[0];
-    }
-  }
-
   public FileHandle getBaseFolder() {
-    if (NetworkingManager.isServerOnly()) return getWorkingFolder();
+    if (isHeadless()) return getWorkingFolder();
     FileHandle homeDir = Gdx.files.absolute(System.getProperty("user.home"));
     switch (os) {
       case Windows:

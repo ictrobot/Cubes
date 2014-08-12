@@ -1,30 +1,32 @@
-package ethanjones.modularworld.core;
+package ethanjones.modularworld.core.wrapper;
 
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Gdx;
+import ethanjones.modularworld.core.Branding;
+import ethanjones.modularworld.core.ModularWorldException;
 import ethanjones.modularworld.core.logging.Log;
-import ethanjones.modularworld.networking.NetworkingManager;
 import ethanjones.modularworld.side.client.ModularWorldClient;
-import ethanjones.modularworld.side.common.ModularWorld;
 import ethanjones.modularworld.side.server.ModularWorldServer;
 
 public class ModularWorldWrapper implements ApplicationListener {
 
-  ModularWorldClient modularWorldClient;
   ModularWorldServer modularWorldServer;
+  ModularWorldClient modularWorldClient;
 
-  public ModularWorldWrapper() {
-    if (NetworkingManager.isServerOnly() || !NetworkingManager.hasAddressToConnectTo()) {
-      modularWorldServer = new ModularWorldServer();
-    }
-    if (!NetworkingManager.isServerOnly() || NetworkingManager.hasAddressToConnectTo()) {
-      modularWorldClient = new ModularWorldClient();
-    }
+  public ModularWorldWrapper(ModularWorldServer modularWorldServer, ModularWorldClient modularWorldClient) {
+    this.modularWorldServer = modularWorldServer;
+    this.modularWorldClient = modularWorldClient;
+
+    if (modularWorldServer != null) modularWorldServer.create();
+    if (modularWorldClient != null) modularWorldClient.create();
+    if (modularWorldServer != null) modularWorldServer.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    if (modularWorldClient != null) modularWorldClient.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
   }
 
   @Override
   public void create() {
+
     try {
-      ModularWorld.setup();
       if (modularWorldServer != null) modularWorldServer.create();
       if (modularWorldClient != null) modularWorldClient.create();
     } catch (Exception e) {
@@ -34,12 +36,7 @@ public class ModularWorldWrapper implements ApplicationListener {
 
   @Override
   public void resize(int width, int height) {
-    try {
-      if (modularWorldServer != null) modularWorldServer.resize(width, height);
-      if (modularWorldClient != null) modularWorldClient.resize(width, height);
-    } catch (Exception e) {
-      Log.error(Branding.NAME, "", ModularWorldException.getModularWorldException(e));
-    }
+
   }
 
   @Override

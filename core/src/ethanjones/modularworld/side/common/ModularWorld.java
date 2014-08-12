@@ -14,6 +14,7 @@ import ethanjones.modularworld.core.settings.Settings;
 import ethanjones.modularworld.core.settings.SettingsManager;
 import ethanjones.modularworld.core.thread.Threads;
 import ethanjones.modularworld.core.timing.Timing;
+import ethanjones.modularworld.graphics.GraphicsHelper;
 import ethanjones.modularworld.graphics.asset.AssetManager;
 import ethanjones.modularworld.networking.NetworkingManager;
 import ethanjones.modularworld.side.Side;
@@ -63,7 +64,11 @@ public abstract class ModularWorld implements ApplicationListener {
 
     Threads.init();
 
-    NetworkingManager.readPort();
+    if (!compatibility.isHeadless()) {
+      AssetManager assetManager = new AssetManager();
+      compatibility.getAssets(assetManager);
+      GraphicsHelper.init(assetManager);
+    }
   }
 
   private final Side side;
