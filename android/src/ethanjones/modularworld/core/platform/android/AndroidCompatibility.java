@@ -23,8 +23,8 @@ public class AndroidCompatibility extends Compatibility {
   @Override
   public void logEnvironment() {
     Log.debug("Properties", "Android Version:    " + Build.VERSION.RELEASE);
-    Log.debug("Properties", "Android Codename:   " + Build.VERSION.CODENAME);
     Log.debug("Properties", "Android SDK:        " + Build.VERSION.SDK_INT);
+    //TODO: Log other stuff from android.os.Build
   }
 
   @Override
