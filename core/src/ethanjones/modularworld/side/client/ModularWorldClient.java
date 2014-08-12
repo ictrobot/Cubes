@@ -41,7 +41,7 @@ public class ModularWorldClient extends ModularWorld {
     inputChain = new InputChain();
     renderer = new Renderer();
     BlockFactories.loadGraphics();
-    Gdx.input.setInputProcessor(inputChain.init());
+    Gdx.input.setInputProcessor(InputChain.getInputMultiplexer());
     Gdx.input.setCursorCatched(true);
 
     world = new WorldClient();
