@@ -1,6 +1,7 @@
 package ethanjones.modularworld.menu;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -9,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import ethanjones.modularworld.core.Branding;
 import ethanjones.modularworld.core.compatibility.Compatibility;
 import ethanjones.modularworld.core.wrapper.AdaptiveApplicationListener;
 import ethanjones.modularworld.graphics.GraphicsHelper;
@@ -29,6 +31,7 @@ public class MenuManager extends Game {
   @Override
   public void create() {
     ModularWorld.setup();
+    Gdx.graphics.setTitle(Branding.DEBUG);
 
     skin = new Skin();
     skin.add("default", new BitmapFont());
