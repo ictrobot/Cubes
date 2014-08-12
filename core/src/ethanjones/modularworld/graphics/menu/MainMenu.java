@@ -1,4 +1,4 @@
-package ethanjones.modularworld.menu;
+package ethanjones.modularworld.graphics.menu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -10,11 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import ethanjones.modularworld.core.Branding;
-import ethanjones.modularworld.core.wrapper.ModularWorldWrapper;
-import ethanjones.modularworld.networking.client.ClientNetworkingParameter;
-import ethanjones.modularworld.networking.server.ServerNetworkingParameter;
-import ethanjones.modularworld.side.client.ModularWorldClient;
-import ethanjones.modularworld.side.server.ModularWorldServer;
 
 public class MainMenu extends Menu {
 
@@ -32,20 +27,20 @@ public class MainMenu extends Menu {
       @Override
       public boolean handle(Event event) {
         if (!(event instanceof ChangeListener.ChangeEvent)) return false;
-        MenuManager.instance.adaptiveApplicationListener.setListener(new ModularWorldWrapper(
-          new ModularWorldServer(new ServerNetworkingParameter()),
-          new ModularWorldClient(new ClientNetworkingParameter("localhost"))
-        ));
+        //MenuManager.instance.adaptiveApplicationListener.setListener(new ModularWorldWrapper(
+        //  new ModularWorldServer(new ServerNetworkingParameter()),
+        //new ModularWorldClient(new ClientNetworkingParameter("localhost"))
+        //));
         return true;
       }
     });
   }
 
   @Override
-  public void render(float delta) {
+  public void render() {
     Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-    stage.act(delta);
+    stage.act();
     stage.draw();
   }
 
@@ -61,30 +56,5 @@ public class MainMenu extends Menu {
     buttons.setBounds(width / border, height / border, width / border * (border - 2), height / border * (border - 2));
 
     singlePlayer.setFillParent(true);
-  }
-
-  @Override
-  public void show() {
-
-  }
-
-  @Override
-  public void hide() {
-
-  }
-
-  @Override
-  public void pause() {
-
-  }
-
-  @Override
-  public void resume() {
-
-  }
-
-  @Override
-  public void dispose() {
-
   }
 }

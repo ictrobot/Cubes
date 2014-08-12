@@ -2,8 +2,8 @@ package ethanjones.modularworld.networking.client;
 
 import com.badlogic.gdx.Gdx;
 import ethanjones.modularworld.core.logging.Log;
-import ethanjones.modularworld.menu.MainMenu;
-import ethanjones.modularworld.menu.MenuManager;
+import ethanjones.modularworld.graphics.menu.MainMenu;
+import ethanjones.modularworld.graphics.menu.MenuManager;
 import ethanjones.modularworld.networking.NetworkUtil;
 import ethanjones.modularworld.networking.common.Networking;
 import ethanjones.modularworld.networking.common.packet.Packet;

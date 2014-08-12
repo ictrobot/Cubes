@@ -10,10 +10,8 @@ import ethanjones.modularworld.core.wrapper.AdaptiveApplicationListener;
 import ethanjones.modularworld.core.wrapper.ModularWorldServerWrapper;
 import ethanjones.modularworld.graphics.asset.AssetFinder;
 import ethanjones.modularworld.graphics.asset.AssetManager;
-import ethanjones.modularworld.menu.MenuManager;
-import ethanjones.modularworld.networking.server.ServerNetworkingParameter;
+import ethanjones.modularworld.graphics.menu.MenuManager;
 import ethanjones.modularworld.side.common.ModularWorld;
-import ethanjones.modularworld.side.server.ModularWorldServer;
 
 public abstract class Compatibility {
 

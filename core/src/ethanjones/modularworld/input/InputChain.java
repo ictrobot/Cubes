@@ -1,28 +1,35 @@
 package ethanjones.modularworld.input;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import ethanjones.modularworld.side.client.debug.Debug;
 import ethanjones.modularworld.core.hud.ChatManager;
 import ethanjones.modularworld.input.keyboard.KeyboardHelper;
 import ethanjones.modularworld.side.client.ModularWorldClient;
+import ethanjones.modularworld.side.client.debug.Debug;
 
-public class InputChain extends InputMultiplexer {
+public class InputChain {
 
   public Stage hud;
   public ChatManager chatManager;
   public GameInputHandler game;
+  private static InputMultiplexer inputMultiplexer = new InputMultiplexer();
+
+  static {
+    Gdx.input.setInputProcessor(inputMultiplexer);
+  }
+
+  public static InputMultiplexer getInputMultiplexer() {
+    return inputMultiplexer;
+  }
 
   public InputChain() {
     super();
-  }
-
-  public InputChain init() {
-    this.addProcessor(chatManager = new ChatManager());
-    this.addProcessor(KeyboardHelper.inputProcessor);
-    this.addProcessor(hud);
-    this.addProcessor(game = new GameInputHandler());
-    return this;
+    //Starts at top
+    inputMultiplexer.addProcessor(chatManager = new ChatManager());
+    inputMultiplexer.addProcessor(KeyboardHelper.inputProcessor);
+    inputMultiplexer.addProcessor(hud);
+    inputMultiplexer.addProcessor(game = new GameInputHandler());
   }
 
   public void beforeRender() {
