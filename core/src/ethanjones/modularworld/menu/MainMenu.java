@@ -22,17 +22,17 @@ public class MainMenu extends Menu {
   Table buttons;
   TextButton singlePlayer;
 
-  public MainMenu(final MenuManager menuManager) {
-    super(menuManager);
+  public MainMenu() {
+    super();
     stage.addActor(name = new Label(Branding.NAME, skin));
     stage.addActor(buttons = new Table());
 
-    buttons.addActor(singlePlayer = new TextButton("Single Player", skin));//TODO: LOCALIZATION
+    buttons.addActor(singlePlayer = new TextButton("Single Player", skin));//TODO LOCALIZATION
     singlePlayer.addListener(new EventListener() {
       @Override
       public boolean handle(Event event) {
         if (!(event instanceof ChangeListener.ChangeEvent)) return false;
-        menuManager.adaptiveApplicationListener.setListener(new ModularWorldWrapper(
+        MenuManager.instance.adaptiveApplicationListener.setListener(new ModularWorldWrapper(
           new ModularWorldServer(new ServerNetworkingParameter()),
           new ModularWorldClient(new ClientNetworkingParameter("localhost"))
         ));

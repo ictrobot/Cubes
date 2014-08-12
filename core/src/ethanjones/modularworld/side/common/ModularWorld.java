@@ -23,8 +23,6 @@ import ethanjones.modularworld.world.World;
 
 public abstract class ModularWorld implements ApplicationListener {
 
-  //TODO: Main menu
-
   public static Compatibility compatibility;
   public static AssetManager assetManager;
   public static FileHandle baseFolder;
@@ -80,7 +78,7 @@ public abstract class ModularWorld implements ApplicationListener {
 
   @Override
   public void create() {
-    //TODO: Rewrite settings, have two classes "Client" and "Server"
+    //TODO Rewrite settings, have two classes "Client" and "Server"
     eventBus.register(this);
   }
 

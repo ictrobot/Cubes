@@ -19,7 +19,7 @@ public class LivingEntity extends Entity {
 
   public void update() {
     super.update();
-    //TODO: regeneration
+    //TODO regeneration
   }
 
   @Override

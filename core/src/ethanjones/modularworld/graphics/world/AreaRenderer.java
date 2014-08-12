@@ -98,7 +98,7 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
         for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
           BlockFactory block = ModularWorld.blockManager.toFactory(area.blockFactories[i]);
           if (block == null) continue;
-          BlockTextureHandler textureHandler = block.getTextureHandler(null); //TODO: Pass block datagroup
+          BlockTextureHandler textureHandler = block.getTextureHandler(null); //TODO Pass block datagroup
           if (x < SIZE_BLOCKS - 1) {
             if (area.blockFactories[i + MAX_X_OFFSET] == 0)
               vertexOffset = createMaxX(offset, textureHandler.getSide(Direction.posX).textureRegion, x, y, z, vertices, vertexOffset);

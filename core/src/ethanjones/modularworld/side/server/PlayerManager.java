@@ -28,7 +28,7 @@ public class PlayerManager {
     ModularWorldServer.instance.playerManagers.add(this);
     this.packetConnect = packetConnect;
     this.socketMonitor = packetConnect.getSocketMonitor();
-    this.player = new Player(packetConnect.username); //TODO: Check if known
+    this.player = new Player(packetConnect.username); //TODO Check if known
     this.playerCoordinates = new Coordinates(player.position);
 
     renderDistance = packetConnect.renderDistance;
