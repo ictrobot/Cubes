@@ -1,5 +1,6 @@
 package ethanjones.modularworld.core.platform.android;
 
+import android.os.Build;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -7,8 +8,7 @@ import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.files.FileHandle;
 import ethanjones.modularworld.core.Branding;
 import ethanjones.modularworld.core.compatibility.Compatibility;
-import ethanjones.modularworld.core.events.EventHandler;
-import ethanjones.modularworld.core.events.setting.AfterProcessSettingEvent;
+import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.graphics.asset.AssetManager;
 
 public class AndroidCompatibility extends Compatibility {
@@ -20,9 +20,11 @@ public class AndroidCompatibility extends Compatibility {
     this.androidLauncher = androidLauncher;
   }
 
-  @EventHandler
-  public void compatibilitySettings(AfterProcessSettingEvent event) {
-
+  @Override
+  public void logEnvironment() {
+    Log.debug("Properties", "Android Version:    " + Build.VERSION.RELEASE);
+    Log.debug("Properties", "Android Codename:   " + Build.VERSION.CODENAME);
+    Log.debug("Properties", "Android SDK:        " + Build.VERSION.SDK_INT);
   }
 
   @Override
