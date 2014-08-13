@@ -11,8 +11,6 @@ import ethanjones.modularworld.core.compatibility.Compatibility;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.graphics.asset.AssetManager;
 
-import java.lang.reflect.Field;
-
 public class AndroidCompatibility extends Compatibility {
 
   private AndroidLauncher androidLauncher;
@@ -26,14 +24,9 @@ public class AndroidCompatibility extends Compatibility {
   public void logEnvironment() {
     Log.debug("Properties", "Android Version:    " + Build.VERSION.RELEASE);
     Log.debug("Properties", "Android SDK:        " + Build.VERSION.SDK_INT);
-    for (Field field : Build.class.getFields()) {
-      try {
-        Log.debug("Properties", "BUILD-" + field.getName() + field.get(null).toString());
-      } catch (IllegalAccessException e) {
-        
-      }
-    }
-    //TODO: Log other stuff from android.os.Build
+    Log.debug("Properties", "Brand:              " + Build.BRAND);
+    Log.debug("Properties", "Model:              " + Build.MODEL);
+    Log.debug("Properties", "Product:            " + Build.PRODUCT);
   }
 
   @Override
