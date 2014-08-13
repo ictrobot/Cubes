@@ -10,7 +10,7 @@ import ethanjones.modularworld.input.InputChain;
 import ethanjones.modularworld.networking.NetworkingManager;
 import ethanjones.modularworld.networking.client.ClientNetworkingParameter;
 import ethanjones.modularworld.side.Side;
-import ethanjones.modularworld.side.client.debug.Debug;
+import ethanjones.modularworld.side.client.debug.ClientDebug;
 import ethanjones.modularworld.side.common.ModularWorld;
 import ethanjones.modularworld.world.WorldClient;
 
@@ -34,6 +34,7 @@ public class ModularWorldClient extends ModularWorld {
   public void create() {
     super.create();
 
+    ClientDebug.setup();
     NetworkingManager.connectClient(clientNetworkingParameter);
 
     player = new Player(Settings.username.getStringSetting().getString());
@@ -58,12 +59,10 @@ public class ModularWorldClient extends ModularWorld {
   @Override
   public void render() {
     super.render();
-    long currentTimeMillis = System.currentTimeMillis();
     inputChain.beforeRender();
+    ClientDebug.update();
     renderer.render();
     inputChain.afterRender();
-    Debug.ram();
-    Debug.loop(System.currentTimeMillis() - currentTimeMillis);
   }
 
   @Override

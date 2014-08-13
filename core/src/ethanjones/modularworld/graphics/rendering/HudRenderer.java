@@ -11,7 +11,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import ethanjones.modularworld.core.hud.Chat;
 import ethanjones.modularworld.core.hud.ChatManager;
 import ethanjones.modularworld.side.client.ModularWorldClient;
-import ethanjones.modularworld.side.client.debug.Debug;
+import ethanjones.modularworld.side.client.debug.ClientDebug;
 import ethanjones.modularworld.side.client.debug.DebugLabel;
 
 /**
@@ -32,7 +32,7 @@ public class HudRenderer implements Disposable {
     skin.add("default", new BitmapFont());
     skin.add("default", new LabelStyle(skin.getFont("default"), Color.WHITE));
 
-    for (DebugLabel f : Debug.getLabels(skin)) {
+    for (DebugLabel f : ClientDebug.getLabels(skin)) {
       hud.addActor(f);
     }
 

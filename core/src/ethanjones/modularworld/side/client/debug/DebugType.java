@@ -11,5 +11,4 @@ public enum DebugType {
   direction,
   blank2,
   loop,
-  rendering,
 }

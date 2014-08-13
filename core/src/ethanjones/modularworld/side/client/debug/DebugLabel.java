@@ -21,24 +21,13 @@ public class DebugLabel extends Label {
   }
 
   public DebugLabel update() {
-    String s = Debug.get(debugType);
+    String s = ClientDebug.get(debugType);
     if (s != null) {
       setText(s);
     }
     return this;
   }
 
-  /**
-   * public static void updateAll() {
-   * try {
-   * for (DebugLabel label : labels) {
-   * label.update();
-   * }
-   * } catch (Exception e) {
-   * <p/>
-   * }
-   * }
-   */
   public DebugLabel resize() {
     this.setBounds(0, Gdx.graphics.getHeight() - (int) ((debugType.ordinal() + .5) * LINE_SPACING), Gdx.graphics.getWidth(), 0);
     return this;

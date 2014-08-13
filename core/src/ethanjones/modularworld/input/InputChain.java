@@ -6,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import ethanjones.modularworld.core.hud.ChatManager;
 import ethanjones.modularworld.input.keyboard.KeyboardHelper;
 import ethanjones.modularworld.side.client.ModularWorldClient;
-import ethanjones.modularworld.side.client.debug.Debug;
 
 public class InputChain {
 
@@ -34,7 +33,6 @@ public class InputChain {
   public void beforeRender() {
     ModularWorldClient.instance.player.movementHandler.updatePosition();
     game.updateTouch();
-    Debug.position();
   }
 
   public void afterRender() {

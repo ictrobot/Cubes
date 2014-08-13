@@ -8,7 +8,6 @@ import ethanjones.modularworld.core.events.entity.living.player.PlayerMovementEv
 import ethanjones.modularworld.entity.living.player.Player;
 import ethanjones.modularworld.input.keyboard.KeyboardHelper;
 import ethanjones.modularworld.side.client.ModularWorldClient;
-import ethanjones.modularworld.side.client.debug.Debug;
 import ethanjones.modularworld.world.WorldClient;
 
 public class MovementHandler {
@@ -42,8 +41,6 @@ public class MovementHandler {
 
     deltaAngleX = player.angle.x - deltaAngleX;
     deltaAngleY = player.angle.y - deltaAngleY;
-
-    Debug.facing();
   }
 
   public void afterRender() {

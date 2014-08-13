@@ -8,6 +8,8 @@ import ethanjones.modularworld.block.factory.BlockFactories;
 import ethanjones.modularworld.core.Branding;
 import ethanjones.modularworld.core.ModularWorldException;
 import ethanjones.modularworld.core.compatibility.Compatibility;
+import ethanjones.modularworld.core.debug.Debug;
+import ethanjones.modularworld.core.debug.Memory;
 import ethanjones.modularworld.core.events.EventBus;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.core.settings.Settings;
@@ -18,7 +20,6 @@ import ethanjones.modularworld.graphics.GraphicsHelper;
 import ethanjones.modularworld.graphics.asset.AssetManager;
 import ethanjones.modularworld.networking.NetworkingManager;
 import ethanjones.modularworld.side.Side;
-import ethanjones.modularworld.side.client.debug.Debug;
 import ethanjones.modularworld.world.World;
 
 public abstract class ModularWorld implements ApplicationListener {
@@ -67,7 +68,7 @@ public abstract class ModularWorld implements ApplicationListener {
       compatibility.getAssets(assetManager);
       GraphicsHelper.init(assetManager);
     }
-    
+
     setup = true;
   }
 
@@ -91,6 +92,7 @@ public abstract class ModularWorld implements ApplicationListener {
 
   @Override
   public void render() {
+    Memory.update();
     timing.update();
     NetworkingManager.getNetworking(side).processPackets();
   }
