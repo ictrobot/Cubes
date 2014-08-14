@@ -51,12 +51,13 @@ public class MainMenu extends Menu {
       }
     });
     //TODO Add button for Mutliplayer
+    //TODO Add button for Server only
   }
 
   @Override
   public void resize(int width, int height) {
     super.resize(width, height);
-    
+
     name.setFontScale(width / 200);
     name.setBounds(0, height - name.getPrefHeight(), width, name.getPrefHeight());
     name.setAlignment(Align.center, Align.center);

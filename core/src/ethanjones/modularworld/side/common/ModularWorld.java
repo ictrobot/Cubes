@@ -119,8 +119,11 @@ public abstract class ModularWorld implements ApplicationListener {
   public void dispose() {
     write();
     NetworkingManager.getNetworking(side).stop();
-    Threads.disposeExecutor();
     world.dispose();
+  }
+
+  protected static void staticDispose() {
+    Threads.disposeExecutor();
   }
 
   /**
@@ -134,6 +137,7 @@ public abstract class ModularWorld implements ApplicationListener {
       ModularWorldServer.instance.dispose();
     }
     if (exit || compatibility.isHeadless()) {
+      staticDispose();
       System.exit(0);
     } else {
       GraphicalAdapter.instance.setModularWorld(null, null);
