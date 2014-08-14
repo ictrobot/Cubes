@@ -9,6 +9,8 @@ import ethanjones.modularworld.core.data.other.DataParser;
 
 public class Entity implements DataParser<DataGroup> {
 
+  //FIXME
+
   public Vector3 position;
   public Vector2 angle;
   public boolean gravity = true;

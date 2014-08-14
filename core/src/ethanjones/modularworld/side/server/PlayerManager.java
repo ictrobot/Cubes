@@ -9,11 +9,11 @@ import ethanjones.modularworld.networking.common.socket.SocketMonitor;
 import ethanjones.modularworld.networking.packets.PacketBlockChanged;
 import ethanjones.modularworld.networking.packets.PacketConnect;
 import ethanjones.modularworld.side.common.ModularWorld;
-import ethanjones.modularworld.side.server.thread.SendWorldCallable;
+import ethanjones.modularworld.world.thread.SendWorldCallable;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
 import ethanjones.modularworld.world.coordinates.Coordinates;
 import ethanjones.modularworld.world.reference.AreaReference;
-import ethanjones.modularworld.world.thread.GenerateWorld;
+import ethanjones.modularworld.world.thread.GenerateWorldCallable;
 
 public class PlayerManager {
 
@@ -81,6 +81,6 @@ public class PlayerManager {
   }
 
   private void requestArea(AreaReference areaReference) {
-    Threads.execute(new SendWorldCallable(new GenerateWorld(areaReference, (ethanjones.modularworld.world.WorldServer) ModularWorldServer.instance.world), socketMonitor.getSocketOutput().getPacketQueue()));
+    Threads.execute(new SendWorldCallable(new GenerateWorldCallable(areaReference, (ethanjones.modularworld.world.WorldServer) ModularWorldServer.instance.world), socketMonitor.getSocketOutput().getPacketQueue()));
   }
 }

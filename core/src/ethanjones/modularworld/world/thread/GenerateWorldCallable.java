@@ -7,12 +7,12 @@ import ethanjones.modularworld.world.storage.Area;
 
 import java.util.concurrent.Callable;
 
-public class GenerateWorld implements Callable<Area> {
+public class GenerateWorldCallable implements Callable<Area> {
 
   private final AreaReference areaReference;
   private final WorldServer world;
 
-  public GenerateWorld(AreaReference areaReference, WorldServer world) {
+  public GenerateWorldCallable(AreaReference areaReference, WorldServer world) {
     this.areaReference = areaReference;
     this.world = world;
   }

@@ -7,6 +7,7 @@ import ethanjones.modularworld.block.BlockManager;
 import ethanjones.modularworld.block.factory.BlockFactories;
 import ethanjones.modularworld.core.Branding;
 import ethanjones.modularworld.core.ModularWorldException;
+import ethanjones.modularworld.core.adapter.GraphicalAdapter;
 import ethanjones.modularworld.core.compatibility.Compatibility;
 import ethanjones.modularworld.core.debug.Debug;
 import ethanjones.modularworld.core.debug.Memory;
@@ -18,8 +19,11 @@ import ethanjones.modularworld.core.thread.Threads;
 import ethanjones.modularworld.core.timing.Timing;
 import ethanjones.modularworld.graphics.GraphicsHelper;
 import ethanjones.modularworld.graphics.asset.AssetManager;
+import ethanjones.modularworld.graphics.menu.MainMenu;
 import ethanjones.modularworld.networking.NetworkingManager;
 import ethanjones.modularworld.side.Side;
+import ethanjones.modularworld.side.client.ModularWorldClient;
+import ethanjones.modularworld.side.server.ModularWorldServer;
 import ethanjones.modularworld.world.World;
 
 public abstract class ModularWorld implements ApplicationListener {
@@ -117,5 +121,23 @@ public abstract class ModularWorld implements ApplicationListener {
     NetworkingManager.getNetworking(side).stop();
     Threads.disposeExecutor();
     world.dispose();
+  }
+
+  /**
+   * Always exits if is headless
+   */
+  public static void quit(boolean exit) {
+    if (ModularWorldClient.instance != null) {
+      ModularWorldClient.instance.dispose();
+    }
+    if (ModularWorldServer.instance != null) {
+      ModularWorldServer.instance.dispose();
+    }
+    if (exit || compatibility.isHeadless()) {
+      System.exit(0);
+    } else {
+      GraphicalAdapter.instance.setModularWorld(null, null);
+      GraphicalAdapter.instance.setMenu(new MainMenu());
+    }
   }
 }

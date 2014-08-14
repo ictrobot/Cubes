@@ -3,11 +3,12 @@ package ethanjones.modularworld.input;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Disposable;
 import ethanjones.modularworld.core.hud.ChatManager;
 import ethanjones.modularworld.input.keyboard.KeyboardHelper;
 import ethanjones.modularworld.side.client.ModularWorldClient;
 
-public class InputChain {
+public class InputChain implements Disposable {
 
   public Stage hud;
   public ChatManager chatManager;
@@ -37,5 +38,13 @@ public class InputChain {
 
   public void afterRender() {
     ModularWorldClient.instance.player.movementHandler.afterRender();
+  }
+
+  @Override
+  public void dispose() {
+    inputMultiplexer.removeProcessor(chatManager);
+    inputMultiplexer.removeProcessor(KeyboardHelper.inputProcessor);
+    inputMultiplexer.removeProcessor(hud);
+    inputMultiplexer.removeProcessor(game);
   }
 }

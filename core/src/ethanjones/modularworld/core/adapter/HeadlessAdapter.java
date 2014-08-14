@@ -1,4 +1,4 @@
-package ethanjones.modularworld.side.server;
+package ethanjones.modularworld.core.adapter;
 
 import com.badlogic.gdx.ApplicationListener;
 import ethanjones.modularworld.core.Branding;
@@ -8,7 +8,7 @@ import ethanjones.modularworld.networking.server.ServerNetworkingParameter;
 import ethanjones.modularworld.side.common.ModularWorld;
 import ethanjones.modularworld.side.server.ModularWorldServer;
 
-public class ServerAdapter implements ApplicationListener {
+public class HeadlessAdapter implements ApplicationListener {
 
   ModularWorldServer modularWorldServer;
 

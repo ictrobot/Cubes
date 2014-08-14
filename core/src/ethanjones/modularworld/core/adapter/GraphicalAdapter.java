@@ -1,4 +1,4 @@
-package ethanjones.modularworld.side.client;
+package ethanjones.modularworld.core.adapter;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -8,19 +8,20 @@ import ethanjones.modularworld.core.ModularWorldException;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.graphics.menu.MainMenu;
 import ethanjones.modularworld.graphics.menu.Menu;
+import ethanjones.modularworld.side.client.ModularWorldClient;
 import ethanjones.modularworld.side.common.ModularWorld;
 import ethanjones.modularworld.side.server.ModularWorldServer;
 
-public class ClientAdapter implements ApplicationListener {
+public class GraphicalAdapter implements ApplicationListener {
 
-  public static ClientAdapter instance;
+  public static GraphicalAdapter instance;
 
   private Menu menu;
   private ModularWorldServer modularWorldServer;
   private ModularWorldClient modularWorldClient;
 
-  public ClientAdapter() {
-    ClientAdapter.instance = this;
+  public GraphicalAdapter() {
+    GraphicalAdapter.instance = this;
   }
 
   public void setMenu(Menu menu) {
@@ -80,6 +81,11 @@ public class ClientAdapter implements ApplicationListener {
   public void render() {
     try {
       Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+      if (menu == null) {
+        Gdx.input.setCursorCatched(true);
+      } else {
+        Gdx.input.setCursorCatched(false);
+      }
       if (modularWorldServer != null) modularWorldServer.render();
       if (modularWorldClient != null) modularWorldClient.render();
       if (menu != null) menu.render(); //Render menu over client

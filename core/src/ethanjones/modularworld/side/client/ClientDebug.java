@@ -1,7 +1,8 @@
-package ethanjones.modularworld.side.client.debug;
+package ethanjones.modularworld.side.client;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import ethanjones.modularworld.core.Branding;
 import ethanjones.modularworld.core.ModularWorldException;
@@ -11,6 +12,8 @@ import ethanjones.modularworld.core.util.LongAverage;
 import ethanjones.modularworld.side.client.ModularWorldClient;
 import ethanjones.modularworld.world.coordinates.AreaCoordinates;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
+
+import java.util.ArrayList;
 
 public class ClientDebug {
 
@@ -64,5 +67,62 @@ public class ClientDebug {
   public static String get(DebugType debugType) {
     if (debugType == null) return "";
     return debugData[debugType.ordinal()];
+  }
+
+  public static enum DebugType {
+    version,
+    fps,
+    ram,
+    blank1,
+    coordinates,
+    areaCoordinates,
+    zoneCoordinates,
+    direction,
+    blank2,
+    loop,
+  }
+
+  public static class DebugLabel extends Label {
+
+    private static ArrayList<DebugLabel> labels = new ArrayList<DebugLabel>();
+    private static int LINE_SPACING = 15;
+
+    private DebugType debugType;
+
+    public DebugLabel(DebugType debugType, Skin skin) {
+      super(debugType.name(), skin);
+      labels.add(this);
+      this.debugType = debugType;
+      update();
+    }
+
+    public DebugLabel update() {
+      String s = get(debugType);
+      if (s != null) {
+        setText(s);
+      }
+      return this;
+    }
+
+    public DebugLabel resize() {
+      this.setBounds(0, Gdx.graphics.getHeight() - (int) ((debugType.ordinal() + .5) * LINE_SPACING), Gdx.graphics.getWidth(), 0);
+      return this;
+    }
+
+    public static void resizeAll() {
+      try {
+        for (DebugLabel label : labels) {
+          label.resize();
+        }
+      } catch (Exception e) {
+
+      }
+    }
+
+    public void validate() {
+      this.update();
+      super.validate();
+    }
+
   }
 }

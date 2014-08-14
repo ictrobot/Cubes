@@ -2,7 +2,7 @@ package ethanjones.modularworld.networking.client;
 
 import com.badlogic.gdx.Gdx;
 import ethanjones.modularworld.core.logging.Log;
-import ethanjones.modularworld.networking.NetworkUtil;
+import ethanjones.modularworld.networking.NetworkingManager;
 import ethanjones.modularworld.networking.common.Networking;
 import ethanjones.modularworld.networking.common.packet.Packet;
 import ethanjones.modularworld.networking.common.socket.SocketMonitor;
@@ -22,7 +22,7 @@ public class ClientNetworking extends Networking {
 
   public void start() {
     Log.info("Starting Client Networking");
-    socketMonitor = new SocketMonitor(Gdx.net.newClientSocket(NetworkUtil.protocol, host, port, NetworkUtil.socketHints), this);
+    socketMonitor = new SocketMonitor(Gdx.net.newClientSocket(NetworkingManager.protocol, host, port, NetworkingManager.socketHints), this);
     Log.info("Successfully connected to " + host + ":" + port);
   }
 

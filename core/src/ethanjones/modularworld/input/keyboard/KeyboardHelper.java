@@ -56,12 +56,18 @@ public class KeyboardHelper {
     @Override
     public boolean keyDown(int keycode) {
       setKeyDown(keycode);
+      for (KeyTypedListener listener : keyTypedListeners) {
+        listener.keyDown(keycode);
+      }
       return false;
     }
 
     @Override
     public boolean keyUp(int keycode) {
       setKeyUp(keycode);
+      for (KeyTypedListener listener : keyTypedListeners) {
+        listener.keyUp(keycode);
+      }
       return false;
     }
 

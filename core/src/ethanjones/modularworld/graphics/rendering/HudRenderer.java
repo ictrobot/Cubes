@@ -11,8 +11,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import ethanjones.modularworld.core.hud.Chat;
 import ethanjones.modularworld.core.hud.ChatManager;
 import ethanjones.modularworld.side.client.ModularWorldClient;
-import ethanjones.modularworld.side.client.debug.ClientDebug;
-import ethanjones.modularworld.side.client.debug.DebugLabel;
+import ethanjones.modularworld.side.client.ClientDebug;
 
 /**
  * https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests/src/com/badlogic/gdx/tests/
@@ -32,7 +31,7 @@ public class HudRenderer implements Disposable {
     skin.add("default", new BitmapFont());
     skin.add("default", new LabelStyle(skin.getFont("default"), Color.WHITE));
 
-    for (DebugLabel f : ClientDebug.getLabels(skin)) {
+    for (ClientDebug.DebugLabel f : ClientDebug.getLabels(skin)) {
       hud.addActor(f);
     }
 
@@ -46,7 +45,7 @@ public class HudRenderer implements Disposable {
 
   public void resize() {
     hud.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
-    DebugLabel.resizeAll();
+    ClientDebug.DebugLabel.resizeAll();
     chat.resize();
   }
 

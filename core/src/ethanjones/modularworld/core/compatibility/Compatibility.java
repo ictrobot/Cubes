@@ -9,9 +9,9 @@ import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.core.logging.UncaughtExceptionHandler;
 import ethanjones.modularworld.graphics.asset.AssetFinder;
 import ethanjones.modularworld.graphics.asset.AssetManager;
-import ethanjones.modularworld.side.client.ClientAdapter;
+import ethanjones.modularworld.core.adapter.GraphicalAdapter;
 import ethanjones.modularworld.side.common.ModularWorld;
-import ethanjones.modularworld.side.server.ServerAdapter;
+import ethanjones.modularworld.core.adapter.HeadlessAdapter;
 
 public abstract class Compatibility {
 
@@ -60,9 +60,9 @@ public abstract class Compatibility {
 
     try {
       if (isHeadless()) {
-        run(new ServerAdapter());
+        run(new HeadlessAdapter());
       } else {
-        run(new ClientAdapter());
+        run(new GraphicalAdapter());
       }
     } catch (Exception e) {
       try {

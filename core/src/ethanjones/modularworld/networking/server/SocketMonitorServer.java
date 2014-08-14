@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.utils.Disposable;
 import ethanjones.modularworld.core.logging.Log;
-import ethanjones.modularworld.networking.NetworkUtil;
 import ethanjones.modularworld.networking.NetworkingManager;
 
 public class SocketMonitorServer implements Runnable, Disposable {
@@ -16,7 +15,7 @@ public class SocketMonitorServer implements Runnable, Disposable {
 
   public SocketMonitorServer(int port) {
     this.port = port;
-    serverSocket = Gdx.net.newServerSocket(NetworkUtil.protocol, port, NetworkUtil.serverSocketHints);
+    serverSocket = Gdx.net.newServerSocket(NetworkingManager.protocol, port, NetworkingManager.serverSocketHints);
     running = true;
   }
 
@@ -24,7 +23,7 @@ public class SocketMonitorServer implements Runnable, Disposable {
   public void run() {
     while (running) {
       try {
-        NetworkingManager.serverNetworking.accepted(serverSocket.accept(NetworkUtil.socketHints));
+        NetworkingManager.serverNetworking.accepted(serverSocket.accept(NetworkingManager.socketHints));
       } catch (Exception e) {
         if (running) Log.error(e);
       }

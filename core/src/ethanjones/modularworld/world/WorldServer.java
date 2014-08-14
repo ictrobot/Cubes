@@ -5,7 +5,7 @@ import ethanjones.modularworld.core.thread.Threads;
 import ethanjones.modularworld.world.generator.WorldGenerator;
 import ethanjones.modularworld.world.reference.AreaReference;
 import ethanjones.modularworld.world.storage.Area;
-import ethanjones.modularworld.world.thread.GenerateWorld;
+import ethanjones.modularworld.world.thread.GenerateWorldCallable;
 
 import java.util.HashMap;
 
@@ -87,7 +87,7 @@ public class WorldServer extends World {
 
   public void requestArea(AreaReference areaReference) {
     setAreaInternal(areaReference, World.BLANK_AREA);
-    Threads.execute(new GenerateWorld(areaReference, this));
+    Threads.execute(new GenerateWorldCallable(areaReference, this));
   }
 
   @Override

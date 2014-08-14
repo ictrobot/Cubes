@@ -1,16 +1,17 @@
 package ethanjones.modularworld.side.client;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import ethanjones.modularworld.block.factory.BlockFactories;
 import ethanjones.modularworld.core.ModularWorldException;
 import ethanjones.modularworld.core.settings.Settings;
 import ethanjones.modularworld.entity.living.player.Player;
 import ethanjones.modularworld.graphics.rendering.Renderer;
 import ethanjones.modularworld.input.InputChain;
+import ethanjones.modularworld.input.keyboard.KeyboardHelper;
 import ethanjones.modularworld.networking.NetworkingManager;
 import ethanjones.modularworld.networking.client.ClientNetworkingParameter;
 import ethanjones.modularworld.side.Side;
-import ethanjones.modularworld.side.client.debug.ClientDebug;
 import ethanjones.modularworld.side.common.ModularWorld;
 import ethanjones.modularworld.world.WorldClient;
 
@@ -22,6 +23,7 @@ public class ModularWorldClient extends ModularWorld {
   public Player player;
   public InputChain inputChain;
   public Renderer renderer;
+  private boolean disposed;
 
   public ModularWorldClient(ClientNetworkingParameter clientNetworkingParameter) {
     super(Side.Client);
@@ -45,7 +47,6 @@ public class ModularWorldClient extends ModularWorld {
 
     inputChain.setup();
     Gdx.input.setInputProcessor(InputChain.getInputMultiplexer());
-    Gdx.input.setCursorCatched(true);
 
     world = new WorldClient();
   }
@@ -58,6 +59,10 @@ public class ModularWorldClient extends ModularWorld {
 
   @Override
   public void render() {
+    if (KeyboardHelper.isKeyDown(Input.Keys.ESCAPE)) {
+      ModularWorld.quit(false);
+      return;
+    }
     super.render();
     inputChain.beforeRender();
     ClientDebug.update();
@@ -67,7 +72,10 @@ public class ModularWorldClient extends ModularWorld {
 
   @Override
   public void dispose() {
-    renderer.dispose();
+    if (disposed) return;
     super.dispose();
+    renderer.dispose();
+    inputChain.dispose();
+    disposed = true;
   }
 }
