@@ -32,9 +32,13 @@ public class GraphicalAdapter implements ApplicationListener {
     }
     this.menu = menu;
     if (menu != null) {
+      Log.debug("Menu set to " + menu.getClass().getSimpleName());
       menu.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
       menu.show();
+    } else {
+      Log.debug("Menu set to null");
     }
+
   }
 
   public Menu getMenu() {
@@ -46,12 +50,18 @@ public class GraphicalAdapter implements ApplicationListener {
     this.modularWorldClient = modularWorldClient;
 
     if (modularWorldServer != null) {
+      Log.debug("ModularWorldServer set");
       modularWorldServer.create();
       modularWorldServer.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    } else {
+      Log.debug("ModularWorldServer set to null");
     }
     if (modularWorldClient != null) {
+      Log.debug("ModularWorldClient set");
       modularWorldClient.create();
       modularWorldClient.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    } else {
+      Log.debug("ModularWorldClient set to null");
     }
   }
 

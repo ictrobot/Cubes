@@ -1,5 +1,6 @@
 package ethanjones.modularworld.input.keyboard;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
@@ -37,11 +38,11 @@ public class KeyboardHelper {
   }
 
   public static boolean isKeyDown(int keyCode) {
-    return keys[keyCode];
+    return Gdx.input.isKeyPressed(keyCode);
   }
 
   public static boolean isKeyUp(int keyCode) {
-    return !keys[keyCode];
+    return !isKeyDown(keyCode);
   }
 
   public static boolean[] getKeyStates() {
