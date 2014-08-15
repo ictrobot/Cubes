@@ -8,6 +8,7 @@ import ethanjones.modularworld.entity.living.player.Player;
 import ethanjones.modularworld.networking.common.socket.SocketMonitor;
 import ethanjones.modularworld.networking.packets.PacketBlockChanged;
 import ethanjones.modularworld.networking.packets.PacketConnect;
+import ethanjones.modularworld.networking.packets.PacketConnected;
 import ethanjones.modularworld.side.common.ModularWorld;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
 import ethanjones.modularworld.world.coordinates.Coordinates;
@@ -36,6 +37,8 @@ public class PlayerManager {
     renderDistance = packetConnect.renderDistance;
 
     ModularWorld.eventBus.register(this);
+
+    socketMonitor.queue(new PacketConnected());
 
     initialLoadAreas();
   }
