@@ -1,3 +1,8 @@
 en_US
-menu.main_menu.single_player=Single Player
-menu.main_menu.quit=Quit
+menu.main.single_player=Single Player
+menu.main.quit=Quit
+menu.main.multiplayer=Multiplayer
+menu.multiplayer_connect.title=Multiplayer
+menu.multiplayer_connect.address=Address
+menu.multiplayer_connect.port=Port (8080)
+menu.multiplayer_connect.connect=Connect

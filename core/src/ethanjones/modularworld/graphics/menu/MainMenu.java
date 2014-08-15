@@ -5,7 +5,6 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import ethanjones.modularworld.core.Branding;
@@ -22,18 +21,17 @@ public class MainMenu extends Menu {
 
   Label name;
   Table buttons;
-  TextField textField;
-  TextButton singlePlayer;
+  TextButton singleplayer;
+  TextButton multiplayer;
   TextButton quit;
 
   public MainMenu() {
     super();
     stage.addActor(name = new Label(Branding.NAME, skin));
     stage.addActor(buttons = new Table());
-    stage.addActor(textField = new TextField("Hi", skin));
 
-    buttons.addActor(singlePlayer = new TextButton(Localization.get("menu.main_menu.single_player"), skin));
-    singlePlayer.addListener(new EventListener() {
+    buttons.addActor(singleplayer = new TextButton(Localization.get("menu.main.single_player"), skin));
+    singleplayer.addListener(new EventListener() {
       @Override
       public boolean handle(Event event) {
         if (!(event instanceof ChangeListener.ChangeEvent)) return false;
@@ -45,13 +43,22 @@ public class MainMenu extends Menu {
         return true;
       }
     });
-    buttons.addActor(quit = new TextButton(Localization.get("menu.main_menu.quit"), skin));
+    buttons.addActor(quit = new TextButton(Localization.get("menu.main.quit"), skin));
     quit.addListener(new EventListener() {
       @Override
       public boolean handle(Event event) {
         if (!(event instanceof ChangeListener.ChangeEvent)) return false;
         Log.debug("MainMenu", "Quit pressed");
         ModularWorld.quit(true);
+        return true;
+      }
+    });
+    buttons.addActor(multiplayer = new TextButton(Localization.get("menu.main.multiplayer"), skin));
+    multiplayer.addListener(new EventListener() {
+      @Override
+      public boolean handle(Event event) {
+        if (!(event instanceof ChangeListener.ChangeEvent)) return false;
+        GraphicalAdapter.instance.setMenu(new MultiplayerConnectMenu());
         return true;
       }
     });
@@ -70,13 +77,17 @@ public class MainMenu extends Menu {
     int border = 6;
     buttons.setBounds(width / border, height / border, 2 * (width / border), 2 * (height / border));
 
-    singlePlayer.setWidth(buttons.getWidth());
-    singlePlayer.setHeight(buttons.getHeight() / 2);
-    singlePlayer.setX(buttons.getX());
-    singlePlayer.setY(buttons.getY() + (buttons.getHeight() / 2));
+    singleplayer.setWidth(buttons.getWidth());
+    singleplayer.setHeight(buttons.getHeight() / 3);
+    singleplayer.setX(buttons.getX());
+    singleplayer.setY(buttons.getTop() - singleplayer.getHeight());
+    multiplayer.setWidth(buttons.getWidth());
+    multiplayer.setHeight(buttons.getHeight() / 3);
+    multiplayer.setX(buttons.getX());
+    multiplayer.setY(singleplayer.getY() - multiplayer.getHeight());
     quit.setWidth(buttons.getWidth());
-    quit.setHeight(buttons.getHeight() / 2);
+    quit.setHeight(buttons.getHeight() / 3);
     quit.setX(buttons.getX());
-    quit.setY(buttons.getY());
+    quit.setY(multiplayer.getY() - quit.getHeight());
   }
 }
