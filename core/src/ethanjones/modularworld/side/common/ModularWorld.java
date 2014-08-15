@@ -12,6 +12,7 @@ import ethanjones.modularworld.core.compatibility.Compatibility;
 import ethanjones.modularworld.core.debug.Debug;
 import ethanjones.modularworld.core.debug.Memory;
 import ethanjones.modularworld.core.events.EventBus;
+import ethanjones.modularworld.core.localization.Localization;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.core.settings.Settings;
 import ethanjones.modularworld.core.settings.SettingsManager;
@@ -67,11 +68,14 @@ public abstract class ModularWorld implements ApplicationListener {
 
     Threads.init();
 
+    AssetManager assetManager = new AssetManager();
+    compatibility.getAssets(assetManager);
+
     if (!compatibility.isHeadless()) {
-      AssetManager assetManager = new AssetManager();
-      compatibility.getAssets(assetManager);
       GraphicsHelper.init(assetManager);
     }
+
+    Localization.load(assetManager.assets);
 
     setup = true;
   }

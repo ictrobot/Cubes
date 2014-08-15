@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import ethanjones.modularworld.core.Branding;
 import ethanjones.modularworld.core.adapter.GraphicalAdapter;
+import ethanjones.modularworld.core.localization.Localization;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.networking.client.ClientNetworkingParameter;
 import ethanjones.modularworld.networking.server.ServerNetworkingParameter;
@@ -28,8 +29,7 @@ public class MainMenu extends Menu {
     stage.addActor(name = new Label(Branding.NAME, skin));
     stage.addActor(buttons = new Table());
 
-    //TODO LOCALIZATION
-    buttons.addActor(singlePlayer = new TextButton("Single Player", skin));
+    buttons.addActor(singlePlayer = new TextButton(Localization.get("menu.main_menu.single_player"), skin));
     singlePlayer.addListener(new EventListener() {
       @Override
       public boolean handle(Event event) {
@@ -42,7 +42,7 @@ public class MainMenu extends Menu {
         return true;
       }
     });
-    buttons.addActor(quit = new TextButton("Quit", skin));
+    buttons.addActor(quit = new TextButton(Localization.get("menu.main_menu.quit"), skin));
     quit.addListener(new EventListener() {
       @Override
       public boolean handle(Event event) {

@@ -41,13 +41,9 @@ public class AssetFinder {
         ZipEntry ze;
         while ((ze = zip.getNextEntry()) != null) {
           String name = ze.getName();
-          System.out.println();
-          System.out.println(name);
           if (name.startsWith(assets) && !ze.isDirectory()) {
             name = name.substring(ze.getName().lastIndexOf(assets) + assets.length() + 1);
-            System.out.println(name);
             int index = Math.max(name.lastIndexOf("/"), name.lastIndexOf("\\"));
-            System.out.println(index);
             if (index == -1) continue;
             System.out.println(name.substring(0, index));
             AssetManager.AssetFolder assetFolder = getAssetFolder(name.substring(0, index), assetManager.assets);
