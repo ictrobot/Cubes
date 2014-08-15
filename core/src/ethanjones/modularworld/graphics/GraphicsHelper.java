@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
@@ -32,6 +33,7 @@ public class GraphicsHelper {
 
   private static HashMap<String, PackedTexture> textures = new HashMap<String, PackedTexture>();
   private static PackedTexture.PackedMaterial blockPackedTextures;
+  private static AssetManager assetManager;
 
   public static PackedTexture getTexture(String name) {
     PackedTexture packedTextureWrapper = textures.get(stringToHashMap(name));
@@ -39,6 +41,10 @@ public class GraphicsHelper {
       Log.error(new ModularWorldException("No such texture: " + name + " in map: " + Character.LINE_SEPARATOR + textures.toString()));
     }
     return packedTextureWrapper;
+  }
+
+  public static BitmapFont getFont() {
+    return new BitmapFont(assetManager.assets.folders.get("font").files.get("font.fnt").fileHandle);
   }
 
   public static PackedTexture getBlockTexture(String name) {
@@ -54,21 +60,25 @@ public class GraphicsHelper {
   }
 
   public static void init(AssetManager assetManager) {
+    GraphicsHelper.assetManager = assetManager;
     FileHandle parent = ModularWorld.baseFolder.child("PackedTextures");
     parent.deleteDirectory();
     parent.mkdirs();
-    AssetManager.AssetFolder assetFolderManager = assetManager.assets;
+    AssetManager.AssetFolder assetFolder = assetManager.assets;
     Array<AssetManager.Asset> textureHandles = new Array<AssetManager.Asset>();
 
-    AssetManager.AssetFolder blockFolderManager = assetManager.assets.folders.get("Blocks");
+    AssetManager.AssetFolder blockFolder = assetManager.assets.folders.get("blocks");
     Array<AssetManager.Asset> blockTextureHandles = new Array<AssetManager.Asset>();
 
-    findTexture(blockFolderManager, null, blockTextureHandles);
+    findTexture(blockFolder, new Array<AssetManager.AssetFolder>(), blockTextureHandles);
     pack(blockTextureHandles);
     if (texturePackers.size > 1) {
       Log.error(new ModularWorldException("Only one sheet of block textures is allowed"));
     }
-    findTexture(assetFolderManager, blockFolderManager, textureHandles);
+    Array<AssetManager.AssetFolder> ignore = new Array<AssetManager.AssetFolder>();
+    ignore.add(blockFolder);
+    ignore.add(assetFolder.folders.get("font"));
+    findTexture(assetFolder, ignore, textureHandles);
     pack(textureHandles);
 
     packedMaterials = new Array<Material>(texturePackers.size);
@@ -131,8 +141,8 @@ public class GraphicsHelper {
     return new TexturePacker(2048, 2048, 0);
   }
 
-  private static void findTexture(AssetManager.AssetFolder parent, AssetManager.AssetFolder exclude, Array<AssetManager.Asset> files) {
-    if (parent == exclude) return;
+  private static void findTexture(AssetManager.AssetFolder parent, Array<AssetManager.AssetFolder> exclude, Array<AssetManager.Asset> files) {
+    if (exclude.contains(parent, false)) return;
     for (AssetManager.AssetFolder folder : parent.folders.values()) {
       findTexture(folder, exclude, files);
     }

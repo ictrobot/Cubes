@@ -1,9 +1,6 @@
 package ethanjones.modularworld.graphics.menu;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -19,12 +16,12 @@ import ethanjones.modularworld.input.InputChain;
 
 public abstract class Menu {
 
-  protected static Skin skin;
+  public static final Skin skin;
   private static SpriteBatch spriteBatch;
 
   static {
     skin = new Skin();
-    skin.add("default", new BitmapFont());
+    skin.add("default", GraphicsHelper.getFont());
     skin.add("default", new Label.LabelStyle(skin.getFont("default"), Color.WHITE));
 
     NinePatch buttonDown = new NinePatch(GraphicsHelper.getTexture("hud/ButtonDown.png").textureRegion, 8, 8, 8, 8);
@@ -33,7 +30,7 @@ public abstract class Menu {
 
     NinePatch textBackground = new NinePatch(GraphicsHelper.getTexture("hud/TextBox.png").textureRegion, 8, 8, 8, 8);
     skin.add("default", new TextField.TextFieldStyle(
-        skin.getFont("default"),
+        skin.getFont("default"), //GraphicsHelper.getFont() Own copy of font because of ResizableTextField
         Color.BLACK,
         new TextureRegionDrawable(GraphicsHelper.getTexture("hud/TextCursor.png").textureRegion),
         new TextureRegionDrawable(GraphicsHelper.getTexture("hud/TextSelection.png").textureRegion),
@@ -48,9 +45,10 @@ public abstract class Menu {
   }
 
   protected final Stage stage;
+  private final ScreenViewport viewport;
 
   public Menu() {
-    stage = new Stage(new ScreenViewport(), spriteBatch);
+    stage = new Stage(viewport = new ScreenViewport(), spriteBatch);
   }
 
   public void render() {
@@ -59,7 +57,7 @@ public abstract class Menu {
   }
 
   public void resize(int width, int height) {
-    ((OrthographicCamera) stage.getViewport().getCamera()).setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    viewport.update(width, height, true);
   }
 
   public void hide() {

@@ -5,6 +5,7 @@ import ethanjones.modularworld.core.events.EventHandler;
 import ethanjones.modularworld.core.events.world.block.BlockEvent;
 import ethanjones.modularworld.core.thread.Threads;
 import ethanjones.modularworld.entity.living.player.Player;
+import ethanjones.modularworld.networking.common.packet.Packet;
 import ethanjones.modularworld.networking.common.socket.SocketMonitor;
 import ethanjones.modularworld.networking.packets.PacketBlockChanged;
 import ethanjones.modularworld.networking.packets.PacketConnect;
@@ -88,5 +89,9 @@ public class PlayerManager {
 
   private void requestArea(AreaReference areaReference) {
     Threads.execute(new SendWorldCallable(new GenerateWorldCallable(areaReference, (ethanjones.modularworld.world.WorldServer) ModularWorldServer.instance.world), socketMonitor.getSocketOutput().getPacketQueue()));
+  }
+
+  public void sendPacket(Packet packet) {
+    socketMonitor.queue(packet);
   }
 }
