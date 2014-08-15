@@ -29,8 +29,8 @@ public class Localization {
         }
         int index = line.indexOf("=");
         if (index == -1) continue;
-        String str = line.substring(0, index);
-        String localization = line.substring(index + 1);
+        String str = line.substring(0, index).toLowerCase();
+        String localization = line.substring(index + 1).toLowerCase();
         data.put(str, localization);
       }
       scanner.close();

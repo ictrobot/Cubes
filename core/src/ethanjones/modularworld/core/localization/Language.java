@@ -13,7 +13,7 @@ public class Language {
   }
 
   public String get(String str) {
-    return localization.get(str);
+    return localization.get(str.toLowerCase());
   }
 
   public String getCode() {
