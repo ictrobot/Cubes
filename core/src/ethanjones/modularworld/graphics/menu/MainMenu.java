@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import ethanjones.modularworld.core.Branding;
@@ -21,6 +22,7 @@ public class MainMenu extends Menu {
 
   Label name;
   Table buttons;
+  TextField textField;
   TextButton singlePlayer;
   TextButton quit;
 
@@ -28,6 +30,7 @@ public class MainMenu extends Menu {
     super();
     stage.addActor(name = new Label(Branding.NAME, skin));
     stage.addActor(buttons = new Table());
+    stage.addActor(textField = new TextField("Hi", skin));
 
     buttons.addActor(singlePlayer = new TextButton(Localization.get("menu.main_menu.single_player"), skin));
     singlePlayer.addListener(new EventListener() {
