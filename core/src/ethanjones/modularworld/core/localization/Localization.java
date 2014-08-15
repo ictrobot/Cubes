@@ -30,7 +30,7 @@ public class Localization {
         int index = line.indexOf("=");
         if (index == -1) continue;
         String str = line.substring(0, index).toLowerCase();
-        String localization = line.substring(index + 1).toLowerCase();
+        String localization = line.substring(index + 1);
         data.put(str, localization);
       }
       scanner.close();
