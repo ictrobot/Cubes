@@ -157,7 +157,7 @@ public class MenuTools {
     label.getStyle().font.setScale(1);
     BitmapFont.TextBounds bounds = label.getStyle().font.getBounds(label.getText());
     label.getStyle().font.setScale(prevX, prevY);
-    return Math.min(label.getWidth() / bounds.width, label.getHeight() / bounds.height);
+    return Math.min((label.getWidth() - 16) / bounds.width, (label.getHeight() - 16) / bounds.height);
   }
 
   public static float getTextFitScale(TextButton textButton) {
@@ -166,7 +166,7 @@ public class MenuTools {
     textButton.getLabel().getStyle().font.setScale(1);
     BitmapFont.TextBounds bounds = textButton.getLabel().getStyle().font.getBounds(textButton.getText());
     textButton.getLabel().getStyle().font.setScale(prevX, prevY);
-    return Math.min(textButton.getWidth() / bounds.width, textButton.getHeight() / bounds.height);
+    return Math.min((textButton.getWidth() - 16) / bounds.width, (textButton.getHeight() - 16) / bounds.height);
   }
 
   /**
@@ -178,6 +178,6 @@ public class MenuTools {
     resizableTextField.getStyle().font.setScale(1);
     BitmapFont.TextBounds bounds = resizableTextField.getStyle().font.getBounds(resizableTextField.getMessageText());
     resizableTextField.getStyle().font.setScale(prevX, prevY);
-    return Math.min(resizableTextField.getWidth() / bounds.width, resizableTextField.getHeight() / bounds.height);
+    return Math.min((resizableTextField.getWidth() - 16) / bounds.width, (resizableTextField.getHeight() - 16) / bounds.height);
   }
 }
