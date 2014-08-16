@@ -170,7 +170,7 @@ public class MenuTools {
     label.getStyle().font.setScale(1);
     BitmapFont.TextBounds bounds = label.getStyle().font.getBounds(label.getText());
     label.getStyle().font.setScale(prevX, prevY);
-    return Math.min((label.getWidth() - 16) / bounds.width, (label.getHeight() - 16) / bounds.height);
+    return Math.min(label.getWidth() / bounds.width, label.getHeight() / bounds.height);
   }
 
   public static float getTextFitScale(TextButton textButton) {
