@@ -26,8 +26,8 @@ public class MainMenu extends Menu {
 
   public MainMenu() {
     super();
-    stage.addActor(name = new Label(Branding.NAME, skin));
-    stage.addActor(buttons = new Table());
+    name = new Label(Branding.NAME, skin);
+    buttons = new Table();
     buttons.addActor(singleplayer = new TextButton(Localization.get("menu.main.single_player"), skin));
     singleplayer.addListener(new EventListener() {
       @Override
@@ -61,6 +61,12 @@ public class MainMenu extends Menu {
       }
     });
     //TODO Add button for Server only
+  }
+
+  @Override
+  public void addActors() {
+    stage.addActor(name);
+    stage.addActor(buttons);
   }
 
   @Override

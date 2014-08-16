@@ -28,7 +28,6 @@ public class GraphicalAdapter implements ApplicationListener {
     Menu old = this.menu;
     if (old != null) {
       old.hide();
-      old.dispose();
     }
     this.menu = menu;
     if (menu != null) {
@@ -129,11 +128,8 @@ public class GraphicalAdapter implements ApplicationListener {
     try {
       if (menu != null) {
         menu.hide();
-        menu.dispose();
       }
-      Menu.disposeSpriteBatch();
-      if (modularWorldServer != null) modularWorldServer.dispose();
-      if (modularWorldClient != null) modularWorldClient.dispose();
+      ModularWorld.quit(true);
     } catch (Exception e) {
       Log.error(Branding.NAME, "", ModularWorldException.getModularWorldException(e));
     }

@@ -20,12 +20,12 @@ public class MultiplayerConnectMenu extends Menu {
 
   public MultiplayerConnectMenu() {
     super();
-    stage.addActor(title = new Label(Localization.get("menu.multiplayer_connect.title"), skin));
-    stage.addActor(address = new ResizableTextField("", skin));
+    title = new Label(Localization.get("menu.multiplayer_connect.title"), skin);
+    address = new ResizableTextField("", skin);
     address.setMessageText(Localization.get("menu.multiplayer_connect.address"));
-    stage.addActor(port = new ResizableTextField("", skin));
+    port = new ResizableTextField("", skin);
     port.setMessageText(Localization.get("menu.multiplayer_connect.port"));
-    stage.addActor(connect = new TextButton(Localization.get("menu.multiplayer_connect.connect"), skin));
+    connect = new TextButton(Localization.get("menu.multiplayer_connect.connect"), skin);
 
     connect.addListener(new EventListener() {
       @Override
@@ -40,6 +40,14 @@ public class MultiplayerConnectMenu extends Menu {
         return true;
       }
     });
+  }
+
+  @Override
+  public void addActors() {
+    stage.addActor(title);
+    stage.addActor(address);
+    stage.addActor(port);
+    stage.addActor(connect);
   }
 
   @Override

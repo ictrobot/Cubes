@@ -21,6 +21,7 @@ import ethanjones.modularworld.core.timing.Timing;
 import ethanjones.modularworld.graphics.GraphicsHelper;
 import ethanjones.modularworld.graphics.asset.AssetManager;
 import ethanjones.modularworld.graphics.menu.MainMenu;
+import ethanjones.modularworld.graphics.menu.Menu;
 import ethanjones.modularworld.networking.NetworkingManager;
 import ethanjones.modularworld.side.Side;
 import ethanjones.modularworld.side.client.ModularWorldClient;
@@ -128,6 +129,7 @@ public abstract class ModularWorld implements ApplicationListener {
 
   protected static void staticDispose() {
     Threads.disposeExecutor();
+    Menu.staticDispose();
   }
 
   /**

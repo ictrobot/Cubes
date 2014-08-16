@@ -3,6 +3,7 @@ package ethanjones.modularworld.graphics.menu;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import ethanjones.modularworld.graphics.GraphicsHelper;
 import ethanjones.modularworld.input.InputChain;
@@ -17,7 +19,10 @@ import ethanjones.modularworld.input.InputChain;
 public abstract class Menu {
 
   public static final Skin skin;
+
   private static SpriteBatch spriteBatch;
+  private static ScreenViewport viewport;
+  protected static Stage stage;
 
   static {
     skin = new Skin();
@@ -38,17 +43,28 @@ public abstract class Menu {
     );
 
     spriteBatch = new SpriteBatch();
+    viewport = new ScreenViewport();
+    stage = new Stage(viewport, spriteBatch);
   }
 
-  public static void disposeSpriteBatch() {
+  public static void staticDispose() {
     spriteBatch.dispose();
+    stage.dispose();
   }
 
-  protected final Stage stage;
-  private final ScreenViewport viewport;
+  public Array<Actor> actors;
 
   public Menu() {
-    stage = new Stage(viewport = new ScreenViewport(), spriteBatch);
+    actors = new Array<Actor>();
+  }
+
+  /**
+   * Have to add actors to the stage here
+   */
+  public abstract void addActors();
+
+  public void resize(int width, int height) {
+    viewport.update(width, height, true);
   }
 
   public void render() {
@@ -56,19 +72,13 @@ public abstract class Menu {
     stage.draw();
   }
 
-  public void resize(int width, int height) {
-    viewport.update(width, height, true);
-  }
-
-  public void hide() {
+  public final void hide() {
     InputChain.getInputMultiplexer().removeProcessor(stage);
+    stage.clear();
   }
 
-  public void show() {
+  public final void show() {
     InputChain.getInputMultiplexer().addProcessor(0, stage);
-  }
-
-  public void dispose() {
-    stage.dispose();
+    addActors();
   }
 }
