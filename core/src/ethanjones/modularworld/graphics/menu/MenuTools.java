@@ -55,6 +55,9 @@ public class MenuTools {
         width = width / actors.length;
         break;
     }
+    if (direction == Direction.Below) {
+      y -= height;
+    }
     setSize(width, height, actors);
     Actor prev = actors[0];
     setPos(x, y, prev);
@@ -186,7 +189,11 @@ public class MenuTools {
     float prevX = resizableTextField.getStyle().font.getScaleX();
     float prevY = resizableTextField.getStyle().font.getScaleY();
     resizableTextField.getStyle().font.setScale(1);
-    BitmapFont.TextBounds bounds = resizableTextField.getStyle().font.getBounds(resizableTextField.getMessageText());
+    String check = resizableTextField.getMessageText();
+    if (check == null || check.isEmpty()) {
+      check = "ABCXYZ123";
+    }
+    BitmapFont.TextBounds bounds = resizableTextField.getStyle().font.getBounds(check);
     resizableTextField.getStyle().font.setScale(prevX, prevY);
     return Math.min((resizableTextField.getWidth() - 16) / bounds.width, (resizableTextField.getHeight() - 16) / bounds.height);
   }
