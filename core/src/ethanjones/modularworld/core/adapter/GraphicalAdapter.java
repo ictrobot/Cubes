@@ -6,8 +6,9 @@ import com.badlogic.gdx.graphics.GL20;
 import ethanjones.modularworld.core.Branding;
 import ethanjones.modularworld.core.ModularWorldException;
 import ethanjones.modularworld.core.logging.Log;
-import ethanjones.modularworld.graphics.menu.MainMenu;
 import ethanjones.modularworld.graphics.menu.Menu;
+import ethanjones.modularworld.graphics.menu.MenuManager;
+import ethanjones.modularworld.graphics.menu.menus.MainMenu;
 import ethanjones.modularworld.side.client.ModularWorldClient;
 import ethanjones.modularworld.side.common.ModularWorld;
 import ethanjones.modularworld.side.server.ModularWorldServer;
@@ -32,6 +33,7 @@ public class GraphicalAdapter implements ApplicationListener {
     this.menu = menu;
     if (menu != null) {
       Log.debug("Menu set to " + menu.getClass().getSimpleName());
+      MenuManager.setMenu(menu);
       menu.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
       menu.show();
     } else {

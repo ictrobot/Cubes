@@ -1,4 +1,4 @@
-package ethanjones.modularworld.graphics.menu;
+package ethanjones.modularworld.graphics.menu.menus;
 
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
@@ -10,6 +10,8 @@ import ethanjones.modularworld.core.Branding;
 import ethanjones.modularworld.core.adapter.GraphicalAdapter;
 import ethanjones.modularworld.core.localization.Localization;
 import ethanjones.modularworld.core.logging.Log;
+import ethanjones.modularworld.graphics.menu.Menu;
+import ethanjones.modularworld.graphics.menu.MenuTools;
 import ethanjones.modularworld.networking.client.ClientNetworkingParameter;
 import ethanjones.modularworld.networking.server.ServerNetworkingParameter;
 import ethanjones.modularworld.side.client.ModularWorldClient;

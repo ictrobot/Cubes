@@ -3,9 +3,14 @@ package ethanjones.modularworld.graphics.menu;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import ethanjones.modularworld.core.adapter.GraphicalAdapter;
+import ethanjones.modularworld.core.localization.Localization;
 import ethanjones.modularworld.graphics.menu.actor.ResizableTextField;
 
 public class MenuTools {
@@ -83,7 +88,7 @@ public class MenuTools {
   }
 
   public static void copyPos(Actor main, Actor... others) {
-    setSize(main.getX(), main.getY(), others);
+    setPos(main.getX(), main.getY(), others);
   }
 
   public static void setPos(float x, float y, Actor... actors) {
@@ -91,6 +96,11 @@ public class MenuTools {
       o.setX(x);
       o.setY(y);
     }
+  }
+
+  public static void copyPosAndSize(Actor main, Actor... others) {
+    setPos(main.getX(), main.getY(), others);
+    setSize(main.getWidth(), main.getHeight(), others);
   }
 
   public static void fitText(Object... objects) {
@@ -179,5 +189,20 @@ public class MenuTools {
     BitmapFont.TextBounds bounds = resizableTextField.getStyle().font.getBounds(resizableTextField.getMessageText());
     resizableTextField.getStyle().font.setScale(prevX, prevY);
     return Math.min((resizableTextField.getWidth() - 16) / bounds.width, (resizableTextField.getHeight() - 16) / bounds.height);
+  }
+
+  public static TextButton getBackButton(final Menu menu) {
+    TextButton textButton = new TextButton(Localization.get("menu.main.back"), Menu.skin);
+    textButton.addListener(new EventListener() {
+      @Override
+      public boolean handle(Event event) {
+        if (!(event instanceof ChangeListener.ChangeEvent)) return false;
+        Menu prev = MenuManager.getPrevious(menu);
+        if (prev == null) return false;
+        GraphicalAdapter.instance.setMenu(prev);
+        return true;
+      }
+    });
+    return textButton;
   }
 }

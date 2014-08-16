@@ -20,7 +20,7 @@ import ethanjones.modularworld.core.thread.Threads;
 import ethanjones.modularworld.core.timing.Timing;
 import ethanjones.modularworld.graphics.GraphicsHelper;
 import ethanjones.modularworld.graphics.asset.AssetManager;
-import ethanjones.modularworld.graphics.menu.MainMenu;
+import ethanjones.modularworld.graphics.menu.menus.MainMenu;
 import ethanjones.modularworld.graphics.menu.Menu;
 import ethanjones.modularworld.networking.NetworkingManager;
 import ethanjones.modularworld.side.Side;

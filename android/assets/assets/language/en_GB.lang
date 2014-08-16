@@ -2,6 +2,7 @@ en_GB
 menu.main.single_player=Singleplayer
 menu.main.quit=Quit
 menu.main.multiplayer=Multiplayer
+menu.main.back=Back
 menu.multiplayer_connect.title=Multiplayer
 menu.multiplayer_connect.address=Address
 menu.multiplayer_connect.port=Port (8080)
