@@ -91,6 +91,7 @@ public class GraphicalAdapter implements ApplicationListener {
   @Override
   public void render() {
     try {
+      Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
       Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
       if (menu == null) {
         Gdx.input.setCursorCatched(true);

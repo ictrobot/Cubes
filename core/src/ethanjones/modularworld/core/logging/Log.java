@@ -29,7 +29,7 @@ public class Log {
     }
   }
 
-  public static void log(LogLevel level, String tag, String message) {
+  public static synchronized void log(LogLevel level, String tag, String message) {
     try {
       output.log(level, tag, message);
     } catch (Exception e) {
@@ -42,7 +42,7 @@ public class Log {
     }
   }
 
-  public static void log(LogLevel level, String tag, String message, Throwable throwable) {
+  public static synchronized void log(LogLevel level, String tag, String message, Throwable throwable) {
     try {
       output.log(level, tag, message, throwable);
     } catch (Exception e) {

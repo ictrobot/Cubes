@@ -19,4 +19,8 @@ public class BlockReference {
     return this;
   }
 
+  public String toString() {
+    return blockX + "," + blockY + "," + blockZ;
+  }
+
 }

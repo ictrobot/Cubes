@@ -13,6 +13,8 @@ import ethanjones.modularworld.side.Side;
 
 public class NetworkingManager {
 
+  //TODO Make networking more built prove, e.g. survive packet read throwing exception
+
   public final static ServerSocketHints serverSocketHints;
   public final static SocketHints socketHints;
   public final static Net.Protocol protocol = Net.Protocol.TCP;

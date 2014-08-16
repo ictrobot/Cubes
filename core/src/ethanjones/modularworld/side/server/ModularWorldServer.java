@@ -1,27 +1,29 @@
 package ethanjones.modularworld.side.server;
 
-import com.badlogic.gdx.utils.Array;
 import ethanjones.modularworld.block.factory.BlockFactories;
 import ethanjones.modularworld.core.timing.TimeHandler;
 import ethanjones.modularworld.networking.NetworkingManager;
+import ethanjones.modularworld.networking.common.socket.SocketMonitor;
 import ethanjones.modularworld.networking.server.ServerNetworkingParameter;
 import ethanjones.modularworld.side.Side;
 import ethanjones.modularworld.side.common.ModularWorld;
 import ethanjones.modularworld.world.WorldServer;
 import ethanjones.modularworld.world.generator.BasicWorldGenerator;
 
+import java.util.HashMap;
+
 public class ModularWorldServer extends ModularWorld implements TimeHandler {
 
   public static ModularWorldServer instance;
   private final ServerNetworkingParameter serverNetworkingParameter;
-  public Array<PlayerManager> playerManagers;
+  public HashMap<SocketMonitor, PlayerManager> playerManagers;
   private boolean disposed = false;
 
   public ModularWorldServer(ServerNetworkingParameter serverNetworkingParameter) {
     super(Side.Server);
     this.serverNetworkingParameter = serverNetworkingParameter;
     ModularWorldServer.instance = this;
-    playerManagers = new Array<PlayerManager>();
+    playerManagers = new HashMap<SocketMonitor, PlayerManager>();
   }
 
   @Override

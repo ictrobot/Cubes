@@ -60,7 +60,7 @@ public class MovementHandler {
     } else if (KeyboardHelper.isKeyDown(Input.Keys.S)) {
       player.position.sub(ModularWorldClient.instance.renderer.block.camera.direction.cpy().nor());
     }
-    if (previousPos != player.position) {
+    if (!previousPos.equals(player.position)) {
       if (new PlayerMovementEvent().post()) {
         ((WorldClient) ModularWorldClient.instance.world).playerChangedPosition();
         previousPos = player.position.cpy();

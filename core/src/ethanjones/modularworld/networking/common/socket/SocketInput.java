@@ -30,7 +30,6 @@ public class SocketInput extends SocketIO {
         //Log.info(Thread.currentThread().getName(), read.toString());
         PacketManager.process(read, socketMonitor, packetHandler);
       } catch (Exception e) {
-        socketMonitor.running.set(false);
         socketMonitor.networking.disconnected(socketMonitor, e);
         return;
       }

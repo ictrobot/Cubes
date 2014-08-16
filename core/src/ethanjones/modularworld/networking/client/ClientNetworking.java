@@ -6,7 +6,9 @@ import ethanjones.modularworld.networking.NetworkingManager;
 import ethanjones.modularworld.networking.common.Networking;
 import ethanjones.modularworld.networking.common.packet.Packet;
 import ethanjones.modularworld.networking.common.socket.SocketMonitor;
+import ethanjones.modularworld.networking.packets.PacketPlayerInfo;
 import ethanjones.modularworld.side.Side;
+import ethanjones.modularworld.side.client.ModularWorldClient;
 
 public class ClientNetworking extends Networking {
 
@@ -27,6 +29,14 @@ public class ClientNetworking extends Networking {
   }
 
   @Override
+  public void update() {
+    PacketPlayerInfo packetPlayerInfo = new PacketPlayerInfo();
+    packetPlayerInfo.angle = ModularWorldClient.instance.player.angle;
+    packetPlayerInfo.position = ModularWorldClient.instance.player.position;
+    sendToServer(packetPlayerInfo);
+  }
+
+  @Override
   public void stop() {
     Log.info("Stopping Client Networking");
     socketMonitor.dispose();
@@ -38,7 +48,8 @@ public class ClientNetworking extends Networking {
 
   @Override
   public void disconnected(SocketMonitor socketMonitor, Exception e) {
-    Log.info("Disconnected from " + socketMonitor.getRemoteAddress());
+    Log.info("Disconnected from " + socketMonitor.getRemoteAddress(), e);
+    socketMonitor.dispose();
     //TODO: Go to main menu, "ClientAdapter.instance.gotoMainMenu()" needs OpenGL context
   }
 }

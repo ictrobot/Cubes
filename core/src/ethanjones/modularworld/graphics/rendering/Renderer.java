@@ -26,9 +26,6 @@ public class Renderer {
   }
 
   public void render() {
-    Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-    Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-
     Gdx.gl20.glDisable(GL20.GL_BLEND);
 
     block.render();

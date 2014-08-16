@@ -2,12 +2,10 @@ package ethanjones.modularworld.networking.common.socket;
 
 import ethanjones.modularworld.core.data.DataGroup;
 import ethanjones.modularworld.core.data.DataTools;
-import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.networking.common.packet.PacketManager;
 import ethanjones.modularworld.networking.common.packet.PacketQueue;
 
 import java.io.DataOutputStream;
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -35,8 +33,8 @@ public class SocketOutput extends SocketIO {
         //Log.info(Thread.currentThread().getName(), payload.toString());
         DataTools.write(payload, dataOutputStream);
       } catch (Exception e) {
-        if (e instanceof EOFException) return;
-        if (socketMonitor.running.get()) Log.error(e);
+        socketMonitor.networking.disconnected(socketMonitor, e);
+        return;
       }
     }
   }

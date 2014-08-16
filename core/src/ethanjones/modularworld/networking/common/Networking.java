@@ -1,11 +1,10 @@
 package ethanjones.modularworld.networking.common;
 
-import ethanjones.modularworld.core.logging.Log;
-import ethanjones.modularworld.side.Side;
 import ethanjones.modularworld.networking.common.packet.Packet;
 import ethanjones.modularworld.networking.common.packet.PacketBuffer;
 import ethanjones.modularworld.networking.common.packet.PacketHandler;
 import ethanjones.modularworld.networking.common.socket.SocketMonitor;
+import ethanjones.modularworld.side.Side;
 
 public abstract class Networking implements PacketHandler {
 
@@ -18,6 +17,8 @@ public abstract class Networking implements PacketHandler {
   }
 
   public abstract void start();
+
+  public abstract void update();
 
   public abstract void stop();
 

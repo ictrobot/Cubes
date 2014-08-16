@@ -45,7 +45,6 @@ public class AssetFinder {
             name = name.substring(ze.getName().lastIndexOf(assets) + assets.length() + 1);
             int index = Math.max(name.lastIndexOf("/"), name.lastIndexOf("\\"));
             if (index == -1) continue;
-            System.out.println(name.substring(0, index));
             AssetManager.AssetFolder assetFolder = getAssetFolder(name.substring(0, index), assetManager.assets);
             assetFolder.addFile(new AssetManager.Asset(Gdx.files.internal(ze.getName()), name, assetFolder));
           }

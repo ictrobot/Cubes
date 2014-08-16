@@ -10,6 +10,7 @@ import ethanjones.modularworld.networking.common.socket.SocketMonitor;
 import ethanjones.modularworld.networking.packets.PacketBlockChanged;
 import ethanjones.modularworld.networking.packets.PacketConnect;
 import ethanjones.modularworld.networking.packets.PacketConnected;
+import ethanjones.modularworld.networking.packets.PacketPlayerInfo;
 import ethanjones.modularworld.side.common.ModularWorld;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
 import ethanjones.modularworld.world.coordinates.Coordinates;
@@ -29,7 +30,7 @@ public class PlayerManager {
   private int renderDistance;
 
   public PlayerManager(PacketConnect packetConnect) {
-    ModularWorldServer.instance.playerManagers.add(this);
+    ModularWorldServer.instance.playerManagers.put(packetConnect.getSocketMonitor(), this);
     this.packetConnect = packetConnect;
     this.socketMonitor = packetConnect.getSocketMonitor();
     this.player = new Player(packetConnect.username); //TODO Check if known
@@ -47,6 +48,35 @@ public class PlayerManager {
   public void playerChangedPosition() {
     playerCoordinates = new Coordinates(player.position);
   }
+
+  public void handleInfo(PacketPlayerInfo packetPlayerInfo) {
+    AreaReference n = new AreaReference().setFromVector3(packetPlayerInfo.position);
+    AreaReference o = new AreaReference().setFromVector3(player.position);
+    if (!n.equals(o)) {
+      AreaReference check = new AreaReference();
+      for (int areaX = n.areaX - renderDistance; areaX <= n.areaX + renderDistance; areaX++) {
+        check.areaX = areaX;
+        for (int areaY = Math.max(n.areaY - renderDistance, 0); areaY <= n.areaY + renderDistance; areaY++) {
+          check.areaY = areaY;
+          for (int areaZ = n.areaZ - renderDistance; areaZ <= n.areaZ + renderDistance; areaZ++) {
+            check.areaZ = areaZ;
+            if (
+              Math.abs(areaX - o.areaX) > renderDistance ||
+                Math.abs(areaY - o.areaY) > renderDistance ||
+                Math.abs(areaZ - o.areaZ) > renderDistance
+              )
+              sendAndRequestArea(check);
+          }
+        }
+      }
+    }
+    if (!player.position.equals(packetPlayerInfo.position)) {
+      player.position = packetPlayerInfo.position;
+      playerChangedPosition();
+    }
+    player.angle = packetPlayerInfo.angle;
+  }
+
 
   private void initialLoadAreas() {
     AreaReference check = new AreaReference();

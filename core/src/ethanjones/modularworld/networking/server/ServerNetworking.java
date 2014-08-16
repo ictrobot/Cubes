@@ -26,6 +26,11 @@ public class ServerNetworking extends Networking {
   }
 
   @Override
+  public void update() {
+
+  }
+
+  @Override
   public void stop() {
     Log.info("Stopping Server Networking");
     serverSocketMonitor.dispose();
@@ -41,7 +46,8 @@ public class ServerNetworking extends Networking {
 
   @Override
   public void disconnected(SocketMonitor socketMonitor, Exception e) {
-    Log.info("Disconnected from " + socketMonitor.getRemoteAddress());
+    Log.info("Disconnected from " + socketMonitor.getRemoteAddress(), e);
+    socketMonitor.dispose();
     sockets.removeValue(socketMonitor, true);
   }
 }

@@ -68,6 +68,11 @@ public class ModularWorldClient extends ModularWorld {
     ClientDebug.update();
     renderer.render();
     inputChain.afterRender();
+    //BlockReference b = RayTracing.getBlock();
+    //if (b != null) {
+    //  Log.info("Looking @ " + b.toString());
+    //}
+    NetworkingManager.clientNetworking.update();
   }
 
   @Override

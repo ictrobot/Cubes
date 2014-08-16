@@ -72,7 +72,7 @@ public class AreaReference implements Pool.Poolable, Cloneable {
 
   @Override
   public String toString() {
-    return areaX + " " + areaY + " " + areaZ;
+    return areaX + "," + areaY + "," + areaZ;
   }
 
   @Override
