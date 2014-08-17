@@ -21,7 +21,6 @@ import ethanjones.modularworld.core.timing.Timing;
 import ethanjones.modularworld.graphics.GraphicsHelper;
 import ethanjones.modularworld.graphics.asset.AssetManager;
 import ethanjones.modularworld.graphics.menu.Menu;
-import ethanjones.modularworld.graphics.menu.menus.MainMenu;
 import ethanjones.modularworld.networking.NetworkingManager;
 import ethanjones.modularworld.side.Side;
 import ethanjones.modularworld.side.client.ModularWorldClient;
@@ -146,8 +145,7 @@ public abstract class ModularWorld implements ApplicationListener {
       staticDispose();
       System.exit(0);
     } else {
-      GraphicalAdapter.instance.setModularWorld(null, null);
-      GraphicalAdapter.instance.setMenu(new MainMenu());
+      GraphicalAdapter.instance.gotoMainMenu();
     }
   }
 }

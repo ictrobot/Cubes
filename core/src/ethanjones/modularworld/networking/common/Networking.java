@@ -10,10 +10,19 @@ public abstract class Networking implements PacketHandler {
 
   private PacketBuffer packetBuffer;
   private final Side side;
+  private NetworkingState networkingState;
 
   public Networking(Side side) {
     this.side = side;
     this.packetBuffer = new PacketBuffer();
+  }
+
+  protected void setNetworkingState(NetworkingState networkingState) {
+    this.networkingState = networkingState;
+  }
+
+  public NetworkingState getNetworkingState() {
+    return networkingState;
   }
 
   public abstract void start();

@@ -4,6 +4,7 @@ import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.utils.Array;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.networking.common.Networking;
+import ethanjones.modularworld.networking.common.NetworkingState;
 import ethanjones.modularworld.networking.common.socket.SocketMonitor;
 import ethanjones.modularworld.side.Side;
 
@@ -15,14 +16,16 @@ public class ServerNetworking extends Networking {
 
   public ServerNetworking(int port) {
     super(Side.Server);
+    sockets = new Array<SocketMonitor>();
     this.port = port;
+    serverSocketMonitor = new SocketMonitorServer(port);
   }
 
   public void start() {
+    setNetworkingState(NetworkingState.Starting);
     Log.info("Starting Server Networking");
-    sockets = new Array<SocketMonitor>();
-    serverSocketMonitor = new SocketMonitorServer(port);
     serverSocketMonitor.start();
+    setNetworkingState(NetworkingState.Running);
   }
 
   @Override
@@ -34,8 +37,8 @@ public class ServerNetworking extends Networking {
   public void stop() {
     Log.info("Stopping Server Networking");
     serverSocketMonitor.dispose();
-    for (SocketMonitor socketMonitor : sockets) {
-      socketMonitor.dispose();
+    for (int i = 0; i < sockets.size; i++) {
+      sockets.pop().dispose();
     }
   }
 
@@ -46,8 +49,9 @@ public class ServerNetworking extends Networking {
 
   @Override
   public void disconnected(SocketMonitor socketMonitor, Exception e) {
-    Log.info("Disconnected from " + socketMonitor.getRemoteAddress(), e);
-    socketMonitor.dispose();
-    sockets.removeValue(socketMonitor, true);
+    if (getNetworkingState() != NetworkingState.Stopping && getNetworkingState() != NetworkingState.Stopped) {
+      Log.info("Disconnected from " + socketMonitor.getRemoteAddress(), e);
+      stop();
+    }
   }
 }

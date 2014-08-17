@@ -1,9 +1,11 @@
 package ethanjones.modularworld.networking.client;
 
 import com.badlogic.gdx.Gdx;
+import ethanjones.modularworld.core.adapter.GraphicalAdapter;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.networking.NetworkingManager;
 import ethanjones.modularworld.networking.common.Networking;
+import ethanjones.modularworld.networking.common.NetworkingState;
 import ethanjones.modularworld.networking.common.packet.Packet;
 import ethanjones.modularworld.networking.common.socket.SocketMonitor;
 import ethanjones.modularworld.networking.packets.PacketPlayerInfo;
@@ -23,13 +25,16 @@ public class ClientNetworking extends Networking {
   }
 
   public void start() {
+    setNetworkingState(NetworkingState.Starting);
     Log.info("Starting Client Networking");
     socketMonitor = new SocketMonitor(Gdx.net.newClientSocket(NetworkingManager.protocol, host, port, NetworkingManager.socketHints), this);
+    setNetworkingState(NetworkingState.Running);
     Log.info("Successfully connected to " + host + ":" + port);
   }
 
   @Override
   public void update() {
+    if (getNetworkingState() != NetworkingState.Running) GraphicalAdapter.instance.gotoMainMenu();
     PacketPlayerInfo packetPlayerInfo = new PacketPlayerInfo();
     packetPlayerInfo.angle = ModularWorldClient.instance.player.angle;
     packetPlayerInfo.position = ModularWorldClient.instance.player.position;
@@ -38,8 +43,10 @@ public class ClientNetworking extends Networking {
 
   @Override
   public void stop() {
+    setNetworkingState(NetworkingState.Stopping);
     Log.info("Stopping Client Networking");
     socketMonitor.dispose();
+    setNetworkingState(NetworkingState.Stopped);
   }
 
   public void sendToServer(Packet packet) {
@@ -47,9 +54,10 @@ public class ClientNetworking extends Networking {
   }
 
   @Override
-  public void disconnected(SocketMonitor socketMonitor, Exception e) {
-    Log.info("Disconnected from " + socketMonitor.getRemoteAddress(), e);
-    socketMonitor.dispose();
-    //TODO: Go to main menu, "ClientAdapter.instance.gotoMainMenu()" needs OpenGL context
+  public synchronized void disconnected(SocketMonitor socketMonitor, Exception e) {
+    if (getNetworkingState() != NetworkingState.Stopping && getNetworkingState() != NetworkingState.Stopped) {
+      Log.info("Disconnected from " + socketMonitor.getRemoteAddress(), e);
+      stop();
+    }
   }
 }
