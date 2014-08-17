@@ -32,6 +32,10 @@ public class AssetManager {
     public void addFile(Asset asset) {
       files.put(asset.fileHandle.name(), asset);
     }
+
+    public String toString() {
+      return "Folders:" + folders.toString() + " Files:" + files.toString();
+    }
   }
 
   public static class Asset {
@@ -44,12 +48,15 @@ public class AssetManager {
       this(fileHandle, path, fileHandle.readBytes(), parent);
     }
 
-
     public Asset(FileHandle fileHandle, String path, byte[] bytes, AssetFolder parent) {
       this.fileHandle = fileHandle;
       this.path = path;
       this.bytes = bytes;
       this.parent = parent;
+    }
+
+    public String toString() {
+      return path;
     }
   }
 }

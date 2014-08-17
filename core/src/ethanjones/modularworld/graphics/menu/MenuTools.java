@@ -181,10 +181,7 @@ public class MenuTools {
     textButton.getLabel().getStyle().font.setScale(prevX, prevY);
     return Math.min((textButton.getWidth() - 16) / bounds.width, (textButton.getHeight() - 16) / bounds.height);
   }
-
-  /**
-   * @param resizableTextField must have message set
-   */
+  
   public static float getTextFitScale(ResizableTextField resizableTextField) {
     float prevX = resizableTextField.getStyle().font.getScaleX();
     float prevY = resizableTextField.getStyle().font.getScaleY();
