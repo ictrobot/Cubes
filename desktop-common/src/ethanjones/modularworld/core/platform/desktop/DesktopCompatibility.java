@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import ethanjones.modularworld.core.Branding;
 import ethanjones.modularworld.core.compatibility.Compatibility;
-import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.graphics.asset.AssetFinder;
 import ethanjones.modularworld.graphics.asset.AssetManager;
 
@@ -49,7 +48,6 @@ public abstract class DesktopCompatibility extends Compatibility {
       super.getAssets(assetManager);
     } else {//files are in a jar
       AssetFinder.extractAssets(assetManager);
-      Log.info(assetManager.assets.toString());
     }
   }
 

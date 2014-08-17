@@ -40,10 +40,10 @@ public class AssetFinder {
         ZipInputStream zip = new ZipInputStream(jar.openStream());
         ZipEntry ze;
         while ((ze = zip.getNextEntry()) != null) {
-          String name = ze.getName();
+          String name = ze.getName().replace("\\", "/");
           if (name.startsWith(assets) && !ze.isDirectory()) {
             name = name.substring(ze.getName().lastIndexOf(assets) + assets.length() + 1);
-            int index = Math.max(name.lastIndexOf("/"), name.lastIndexOf("\\"));
+            int index = name.lastIndexOf("/");
             if (index == -1) continue;
             AssetManager.AssetFolder assetFolder = getAssetFolder(name.substring(0, index), assetManager.assets);
             assetFolder.addFile(new AssetManager.Asset(Gdx.files.internal(ze.getName()), name, assetFolder));
@@ -59,11 +59,17 @@ public class AssetFinder {
   private static AssetManager.AssetFolder getAssetFolder(String folder, AssetManager.AssetFolder parent) {
     if (parent == null) return null;
     if (folder.isEmpty()) return parent;
-    int index = Math.max(folder.lastIndexOf("/"), folder.lastIndexOf("\\"));
-    if (index == -1) return parent;
-    String n = folder.substring(0, index);
-    String f = folder.substring(index + 1);
-    return getAssetFolder(f, parent.folders.get(n));
+    int index = folder.lastIndexOf("/");
+    if (index == -1) return getFolder(parent, folder);
+    return getAssetFolder(folder.substring(index + 1), getFolder(parent, folder.substring(0, index)));
+  }
+
+  private static AssetManager.AssetFolder getFolder(AssetManager.AssetFolder parent, String name) {
+    AssetManager.AssetFolder assetFolder = parent.folders.get(name);
+    if (assetFolder != null) return assetFolder;
+    assetFolder = new AssetManager.AssetFolder(name, parent);
+    parent.addFolder(assetFolder);
+    return assetFolder;
   }
 
 }
