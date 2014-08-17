@@ -23,6 +23,14 @@ public abstract class Packet implements DataParser<DataGroup> {
     return priority;
   }
 
+  /**
+   * Called right before writing packet into outputstream
+   * @return if packet should be send
+   */
+  public boolean shouldSend() {
+    return true;
+  }
+
   public abstract void handlePacket();
 
   protected void setSocketMonitor(SocketMonitor socketMonitor) {

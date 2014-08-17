@@ -5,6 +5,7 @@ import ethanjones.modularworld.networking.common.packet.Packet;
 import ethanjones.modularworld.networking.common.packet.PacketPriority;
 import ethanjones.modularworld.side.Side;
 import ethanjones.modularworld.side.client.ModularWorldClient;
+import ethanjones.modularworld.side.server.PlayerManager;
 import ethanjones.modularworld.world.reference.AreaReference;
 import ethanjones.modularworld.world.storage.Area;
 
@@ -20,6 +21,7 @@ public class PacketArea extends Packet {
   public int areaY;
   public int areaZ;
   public DataGroup area;
+  public PlayerManager playerManager;
 
   @Override
   public void handlePacket() {
@@ -46,5 +48,11 @@ public class PacketArea extends Packet {
     areaY = dataGroup.getInteger("areaY");
     areaZ = dataGroup.getInteger("areaZ");
     area = dataGroup.getGroup("area");
+  }
+
+  @Override
+  public boolean shouldSend() {
+    if (playerManager == null) return true;
+    return playerManager.shouldSendArea(areaX, areaY, areaZ);
   }
 }

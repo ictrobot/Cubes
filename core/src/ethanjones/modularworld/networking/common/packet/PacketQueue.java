@@ -38,9 +38,12 @@ public class PacketQueue {
   private Packet getPacket(PacketPriority priority) {
     Array<Packet> array = getArray(priority);
     if (array.size <= 0) return null;
+    Packet packet;
     synchronized (array) {
-      return array.removeIndex(0);
+      packet = array.removeIndex(0);
     }
+    if (packet.shouldSend()) return packet;
+    return getPacket(priority);
   }
 
   public void waitForPacket() {

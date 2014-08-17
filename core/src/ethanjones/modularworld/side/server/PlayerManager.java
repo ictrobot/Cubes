@@ -25,7 +25,7 @@ public class PlayerManager {
   private PacketConnect packetConnect;
   private SocketMonitor socketMonitor;
   private Player player;
-  private Coordinates playerCoordinates;
+  private volatile Coordinates playerCoordinates; //any methods that access should be 'synchronized'
 
   private int renderDistance;
 
@@ -60,12 +60,9 @@ public class PlayerManager {
           check.areaY = areaY;
           for (int areaZ = n.areaZ - renderDistance; areaZ <= n.areaZ + renderDistance; areaZ++) {
             check.areaZ = areaZ;
-            if (
-              Math.abs(areaX - o.areaX) > renderDistance ||
-                Math.abs(areaY - o.areaY) > renderDistance ||
-                Math.abs(areaZ - o.areaZ) > renderDistance
-              )
+            if (Math.abs(areaX - o.areaX) > renderDistance || Math.abs(areaY - o.areaY) > renderDistance || Math.abs(areaZ - o.areaZ) > renderDistance) {
               sendAndRequestArea(check);
+            }
           }
         }
       }
@@ -78,7 +75,7 @@ public class PlayerManager {
   }
 
 
-  private void initialLoadAreas() {
+  private synchronized void initialLoadAreas() {
     AreaReference check = new AreaReference();
     for (int areaX = playerCoordinates.areaX - renderDistance; areaX <= playerCoordinates.areaX + renderDistance; areaX++) {
       check.areaX = areaX;
@@ -93,7 +90,7 @@ public class PlayerManager {
   }
 
   @EventHandler
-  public void blockChanged(BlockEvent blockEvent) {
+  public synchronized void blockChanged(BlockEvent blockEvent) {
     BlockCoordinates coordinates = blockEvent.getBlockCoordinates();
     if (Math.abs(coordinates.areaX - playerCoordinates.areaX) > renderDistance) return;
     if (Math.abs(coordinates.areaY - playerCoordinates.areaY) > renderDistance) return;
@@ -113,15 +110,22 @@ public class PlayerManager {
     if (area == null || area instanceof BlankArea) {
       requestArea(areaReference.clone());
     } else {
-      Threads.execute(new SendWorldCallable(ModularWorldServer.instance.world.getAreaInternal(areaReference, false, false), socketMonitor.getSocketOutput().getPacketQueue()));
+      Threads.execute(new SendWorldCallable(ModularWorldServer.instance.world.getAreaInternal(areaReference, false, false), socketMonitor.getSocketOutput().getPacketQueue(), this));
     }
   }
 
   private void requestArea(AreaReference areaReference) {
-    Threads.execute(new SendWorldCallable(new GenerateWorldCallable(areaReference, (ethanjones.modularworld.world.WorldServer) ModularWorldServer.instance.world), socketMonitor.getSocketOutput().getPacketQueue()));
+    Threads.execute(new SendWorldCallable(new GenerateWorldCallable(areaReference, (ethanjones.modularworld.world.WorldServer) ModularWorldServer.instance.world), socketMonitor.getSocketOutput().getPacketQueue(), this));
   }
 
   public void sendPacket(Packet packet) {
     socketMonitor.queue(packet);
+  }
+
+  public synchronized boolean shouldSendArea(int areaX, int areaY, int areaZ) {
+    if (Math.abs(areaX - playerCoordinates.areaX) <= renderDistance && Math.abs(areaY - playerCoordinates.areaY) <= renderDistance && Math.abs(areaZ - playerCoordinates.areaZ) <= renderDistance) {
+      return true;
+    }
+    return false;
   }
 }
