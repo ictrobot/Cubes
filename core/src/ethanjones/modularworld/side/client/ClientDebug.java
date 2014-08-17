@@ -21,6 +21,7 @@ public class ClientDebug {
   private static final DebugType[] types = DebugType.values();
   static LongAverage fps = new LongAverage();
   static LongAverage loop = new LongAverage();
+  static long lastTime = System.currentTimeMillis();
   private static String[] debugData = new String[types.length];
 
   static {
@@ -44,7 +45,8 @@ public class ClientDebug {
     set(DebugType.areaCoordinates, "A X:" + BlockCoordinates.area((int) Math.ceil(p.x)) + BlockCoordinates.area((int) Math.ceil(p.y)) + " Z:" + BlockCoordinates.area((int) Math.ceil(p.z)));
     set(DebugType.zoneCoordinates, "Z X:" + AreaCoordinates.zone((int) Math.ceil(p.x)) + " Z:" + AreaCoordinates.zone((int) Math.ceil(p.z)));
     set(DebugType.direction, "D X:" + ModularWorldClient.instance.player.angle.x + " Y:" + ModularWorldClient.instance.player.angle.y);
-    loop.add((long) Gdx.graphics.getDeltaTime());
+    loop.add(System.currentTimeMillis() - lastTime);
+    lastTime = System.currentTimeMillis();
     set(DebugType.loop, "L MS:" + String.format("%03d", loop.getCurrent()) + " AMS:" + String.format("%03d", loop.getAverage()));
   }
 
