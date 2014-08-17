@@ -47,6 +47,9 @@ public class GraphicalAdapter implements ApplicationListener {
   }
 
   public void setModularWorld(ModularWorldServer modularWorldServer, ModularWorldClient modularWorldClient) {
+    if (this.modularWorldServer != null) this.modularWorldServer.dispose();
+    if (this.modularWorldClient != null) this.modularWorldClient.dispose();
+
     this.modularWorldServer = modularWorldServer;
     this.modularWorldClient = modularWorldClient;
 

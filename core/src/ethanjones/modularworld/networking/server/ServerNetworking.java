@@ -3,6 +3,7 @@ package ethanjones.modularworld.networking.server;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.utils.Array;
 import ethanjones.modularworld.core.logging.Log;
+import ethanjones.modularworld.networking.NetworkingManager;
 import ethanjones.modularworld.networking.common.Networking;
 import ethanjones.modularworld.networking.common.NetworkingState;
 import ethanjones.modularworld.networking.common.socket.SocketMonitor;
@@ -49,9 +50,11 @@ public class ServerNetworking extends Networking {
 
   @Override
   public synchronized void disconnected(SocketMonitor socketMonitor, Exception e) {
-    if (getNetworkingState() != NetworkingState.Stopping && getNetworkingState() != NetworkingState.Stopped) {
-      Log.info("Disconnected from " + socketMonitor.getRemoteAddress(), e);
-      stop();
-    }
+    if (getNetworkingState() == NetworkingState.Stopping || getNetworkingState() == NetworkingState.Stopped)
+      return;
+    if (NetworkingManager.clientNetworking != null && (NetworkingManager.clientNetworking.getNetworkingState() == NetworkingState.Stopping || NetworkingManager.clientNetworking.getNetworkingState() == NetworkingState.Stopped))
+      return;
+    Log.info("Disconnected from " + socketMonitor.getRemoteAddress(), e);
+    stop();
   }
 }

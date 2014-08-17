@@ -55,9 +55,11 @@ public class ClientNetworking extends Networking {
 
   @Override
   public synchronized void disconnected(SocketMonitor socketMonitor, Exception e) {
-    if (getNetworkingState() != NetworkingState.Stopping && getNetworkingState() != NetworkingState.Stopped) {
-      Log.info("Disconnected from " + socketMonitor.getRemoteAddress(), e);
-      stop();
-    }
+    if (getNetworkingState() == NetworkingState.Stopping || getNetworkingState() == NetworkingState.Stopped)
+      return;
+    if (NetworkingManager.serverNetworking != null && (NetworkingManager.serverNetworking.getNetworkingState() == NetworkingState.Stopping || NetworkingManager.serverNetworking.getNetworkingState() == NetworkingState.Stopped))
+      return;
+    Log.info("Disconnected from " + socketMonitor.getRemoteAddress(), e);
+    stop();
   }
 }

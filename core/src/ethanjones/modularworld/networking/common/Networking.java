@@ -10,7 +10,7 @@ public abstract class Networking implements PacketHandler {
 
   private PacketBuffer packetBuffer;
   private final Side side;
-  private NetworkingState networkingState;
+  private volatile NetworkingState networkingState;
 
   public Networking(Side side) {
     this.side = side;
