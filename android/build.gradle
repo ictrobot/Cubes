@@ -59,7 +59,7 @@ task copyAndroidNatives() {
 
 task run(type: Exec) {
     def adb = "$System.env.ANDROID_HOME/platform-tools/adb"
-    commandLine "$adb", 'shell', 'am', 'start', '-n', 'ethanjones.modularworld.android/ethanjones.modularworld.core.platform.android.AndroidLauncher'
+    commandLine "$adb", 'shell', 'am', 'start', '-n', 'ethanjones.modularworld.core.platform.android/ethanjones.modularworld.core.platform.android.AndroidLauncher'
 }
 
 // sets up the Android Eclipse project, using the old Ant based build.
