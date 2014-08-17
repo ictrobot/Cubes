@@ -2,10 +2,8 @@ package ethanjones.modularworld.side.client;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.utils.Array;
 import ethanjones.modularworld.core.Branding;
 import ethanjones.modularworld.core.ModularWorldException;
 import ethanjones.modularworld.core.debug.Memory;
@@ -86,14 +84,12 @@ public class ClientDebug {
 
   public static class DebugLabel extends Label {
 
-    private static Array<DebugLabel> labels = new Array<DebugLabel>();
-    private static int LINE_SPACING = 15;
-
+    private static DebugLabel[] labels = new DebugLabel[DebugType.values().length];
     private DebugType debugType;
 
     public DebugLabel(DebugType debugType, Skin skin) {
       super(debugType.name(), skin);
-      labels.add(this);
+      labels[debugType.ordinal()] = this;
       this.debugType = debugType;
       update();
     }
@@ -108,8 +104,8 @@ public class ClientDebug {
 
     public static void resizeAll() {
       try {
-        MenuTools.arrange(0, Gdx.graphics.getHeight(), Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 2, MenuTools.Direction.Below, labels.toArray());
-        MenuTools.fitText(labels.toArray());
+        MenuTools.arrange(0, Gdx.graphics.getHeight(), Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 2, MenuTools.Direction.Below, labels);
+        MenuTools.fitText(labels);
       } catch (Exception e) {
 
       }
