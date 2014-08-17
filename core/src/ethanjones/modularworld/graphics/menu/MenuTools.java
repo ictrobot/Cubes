@@ -181,16 +181,12 @@ public class MenuTools {
     textButton.getLabel().getStyle().font.setScale(prevX, prevY);
     return Math.min((textButton.getWidth() - 16) / bounds.width, (textButton.getHeight() - 16) / bounds.height);
   }
-  
+
   public static float getTextFitScale(ResizableTextField resizableTextField) {
     float prevX = resizableTextField.getStyle().font.getScaleX();
     float prevY = resizableTextField.getStyle().font.getScaleY();
     resizableTextField.getStyle().font.setScale(1);
-    String check = resizableTextField.getMessageText();
-    if (check == null || check.isEmpty()) {
-      check = "ABCXYZ123";
-    }
-    BitmapFont.TextBounds bounds = resizableTextField.getStyle().font.getBounds(check);
+    BitmapFont.TextBounds bounds = resizableTextField.getStyle().font.getBounds("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
     resizableTextField.getStyle().font.setScale(prevX, prevY);
     return Math.min((resizableTextField.getWidth() - 16) / bounds.width, (resizableTextField.getHeight() - 16) / bounds.height);
   }
