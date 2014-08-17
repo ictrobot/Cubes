@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.Array;
 import ethanjones.modularworld.core.Branding;
 import ethanjones.modularworld.core.ModularWorldException;
 import ethanjones.modularworld.core.debug.Memory;
@@ -13,8 +14,6 @@ import ethanjones.modularworld.core.util.LongAverage;
 import ethanjones.modularworld.graphics.menu.MenuTools;
 import ethanjones.modularworld.world.coordinates.AreaCoordinates;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
-
-import java.util.ArrayList;
 
 public class ClientDebug {
 
@@ -87,7 +86,7 @@ public class ClientDebug {
 
   public static class DebugLabel extends Label {
 
-    private static ArrayList<DebugLabel> labels = new ArrayList<DebugLabel>();
+    private static Array<DebugLabel> labels = new Array<DebugLabel>();
     private static int LINE_SPACING = 15;
 
     private DebugType debugType;
@@ -109,8 +108,8 @@ public class ClientDebug {
 
     public static void resizeAll() {
       try {
-        MenuTools.arrange(0, Gdx.graphics.getHeight(), Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 2, MenuTools.Direction.Below, labels.toArray(new Actor[labels.size()]));
-        MenuTools.fitText(labels.toArray(new Actor[labels.size()]));
+        MenuTools.arrange(0, Gdx.graphics.getHeight(), Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 2, MenuTools.Direction.Below, labels.toArray());
+        MenuTools.fitText(labels.toArray());
       } catch (Exception e) {
 
       }
