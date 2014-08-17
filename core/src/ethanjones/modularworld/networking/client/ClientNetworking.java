@@ -24,7 +24,7 @@ public class ClientNetworking extends Networking {
     this.port = port;
   }
 
-  public void start() {
+  public synchronized void start() {
     setNetworkingState(NetworkingState.Starting);
     Log.info("Starting Client Networking");
     socketMonitor = new SocketMonitor(Gdx.net.newClientSocket(NetworkingManager.protocol, host, port, NetworkingManager.socketHints), this);
@@ -33,7 +33,7 @@ public class ClientNetworking extends Networking {
   }
 
   @Override
-  public void update() {
+  public synchronized void update() {
     if (getNetworkingState() != NetworkingState.Running) GraphicalAdapter.instance.gotoMainMenu();
     PacketPlayerInfo packetPlayerInfo = new PacketPlayerInfo();
     packetPlayerInfo.angle = ModularWorldClient.instance.player.angle;
@@ -42,14 +42,14 @@ public class ClientNetworking extends Networking {
   }
 
   @Override
-  public void stop() {
+  public synchronized void stop() {
     setNetworkingState(NetworkingState.Stopping);
     Log.info("Stopping Client Networking");
     socketMonitor.dispose();
     setNetworkingState(NetworkingState.Stopped);
   }
 
-  public void sendToServer(Packet packet) {
+  public synchronized void sendToServer(Packet packet) {
     socketMonitor.queue(packet);
   }
 

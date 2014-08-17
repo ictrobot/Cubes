@@ -21,7 +21,7 @@ public class ServerNetworking extends Networking {
     serverSocketMonitor = new SocketMonitorServer(port);
   }
 
-  public void start() {
+  public synchronized void start() {
     setNetworkingState(NetworkingState.Starting);
     Log.info("Starting Server Networking");
     serverSocketMonitor.start();
@@ -29,12 +29,12 @@ public class ServerNetworking extends Networking {
   }
 
   @Override
-  public void update() {
+  public synchronized void update() {
 
   }
 
   @Override
-  public void stop() {
+  public synchronized void stop() {
     Log.info("Stopping Server Networking");
     serverSocketMonitor.dispose();
     for (int i = 0; i < sockets.size; i++) {
@@ -48,7 +48,7 @@ public class ServerNetworking extends Networking {
   }
 
   @Override
-  public void disconnected(SocketMonitor socketMonitor, Exception e) {
+  public synchronized void disconnected(SocketMonitor socketMonitor, Exception e) {
     if (getNetworkingState() != NetworkingState.Stopping && getNetworkingState() != NetworkingState.Stopped) {
       Log.info("Disconnected from " + socketMonitor.getRemoteAddress(), e);
       stop();
