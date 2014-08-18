@@ -33,7 +33,7 @@ public class GraphicsHelper {
 
   private static HashMap<String, PackedTexture> textures = new HashMap<String, PackedTexture>();
   private static PackedTexture.PackedMaterial blockPackedTextures;
-  private static AssetManager assetManager;
+  public static AssetManager assetManager;
 
   public static PackedTexture getTexture(String name) {
     PackedTexture packedTextureWrapper = textures.get(stringToHashMap(name));
