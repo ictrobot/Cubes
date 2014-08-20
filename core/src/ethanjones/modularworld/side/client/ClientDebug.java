@@ -3,13 +3,10 @@ package ethanjones.modularworld.side.client;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import ethanjones.modularworld.core.Branding;
-import ethanjones.modularworld.core.ModularWorldException;
 import ethanjones.modularworld.core.debug.Memory;
-import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.core.util.LongAverage;
-import ethanjones.modularworld.graphics.menu.MenuTools;
+import ethanjones.modularworld.graphics.menu.Fonts;
 import ethanjones.modularworld.world.coordinates.AreaCoordinates;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
 
@@ -47,18 +44,6 @@ public class ClientDebug {
     set(DebugType.loop, "L MS:" + String.format("%03d", loop.getCurrent()) + " AMS:" + String.format("%03d", loop.getAverage()));
   }
 
-  public static DebugLabel[] getLabels(Skin skin) {
-    DebugLabel[] l = new DebugLabel[DebugType.values().length];
-    for (int i = 0; i < DebugType.values().length; i++) {
-      try {
-        l[i] = new DebugLabel(DebugType.values()[i], skin);
-      } catch (Exception e) {
-        Log.error(new ModularWorldException("Failed to build debug screen", e));
-      }
-    }
-    return l;
-  }
-
   public static void set(DebugType debugType, String string) {
     if (debugType == null || string == null) return;
     debugData[debugType.ordinal()] = string;
@@ -84,31 +69,28 @@ public class ClientDebug {
 
   public static class DebugLabel extends Label {
 
-    private static DebugLabel[] labels = new DebugLabel[DebugType.values().length];
-    private DebugType debugType;
+    static final LabelStyle style = new LabelStyle();
 
-    public DebugLabel(DebugType debugType, Skin skin) {
-      super(debugType.name(), skin);
-      labels[debugType.ordinal()] = this;
-      this.debugType = debugType;
+    static {
+      style.font = Fonts.Size2;
+    }
+
+    public DebugLabel() {
+      super("", style);
       update();
     }
 
     public DebugLabel update() {
-      String s = get(debugType);
-      if (s != null) {
-        setText(s);
+      StringBuilder s = new StringBuilder();
+      for (DebugType debugType : DebugType.values()) {
+        String str = get(debugType);
+        if (str != null) {
+          s.append(str).append(System.lineSeparator());
+        }
       }
+      setText(s.toString());
+      setBounds(0, Gdx.graphics.getHeight() - getPrefHeight(), getPrefWidth(), getPrefHeight());
       return this;
-    }
-
-    public static void resizeAll() {
-      try {
-        MenuTools.arrange(0, Gdx.graphics.getHeight(), Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 2, MenuTools.Direction.Below, labels);
-        MenuTools.fitText(labels);
-      } catch (Exception e) {
-
-      }
     }
 
     public void validate() {

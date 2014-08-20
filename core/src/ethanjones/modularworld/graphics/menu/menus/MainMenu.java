@@ -28,7 +28,7 @@ public class MainMenu extends Menu {
 
   public MainMenu() {
     super();
-    name = new Label(Branding.NAME, skin);
+    name = new Label(Branding.NAME, skin.get("title", Label.LabelStyle.class));
     buttons = new Table();
     buttons.addActor(singleplayer = new TextButton(Localization.get("menu.main.single_player"), skin));
     singleplayer.addListener(new EventListener() {

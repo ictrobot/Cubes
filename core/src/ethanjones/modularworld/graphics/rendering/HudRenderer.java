@@ -7,7 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import ethanjones.modularworld.graphics.GraphicsHelper;
-import ethanjones.modularworld.graphics.menu.MenuTools;
 import ethanjones.modularworld.graphics.menu.actor.ResizableTextField;
 import ethanjones.modularworld.networking.NetworkingManager;
 import ethanjones.modularworld.networking.packets.PacketChat;
@@ -18,23 +17,22 @@ import static ethanjones.modularworld.graphics.menu.Menu.skin;
 
 public class HudRenderer implements Disposable {
 
-  Stage hud;
+  Stage stage;
   ResizableTextField chat;
+  ClientDebug.DebugLabel debugLabel;
 
   public HudRenderer() {
-    hud = new Stage(new ScreenViewport());
-    ModularWorldClient.instance.inputChain.hud = hud;
+    stage = new Stage(new ScreenViewport());
+    ModularWorldClient.instance.inputChain.hud = stage;
 
-    for (ClientDebug.DebugLabel f : ClientDebug.getLabels(skin)) {
-      hud.addActor(f);
-    }
+    stage.addActor(debugLabel = new ClientDebug.DebugLabel());
 
     TextField.TextFieldStyle defaultStyle = skin.get("default", TextField.TextFieldStyle.class);
     TextField.TextFieldStyle chatStyle = new TextField.TextFieldStyle(defaultStyle);
     chatStyle.background = new TextureRegionDrawable(GraphicsHelper.getTexture("hud/ChatBackground.png").textureRegion);
 
-    hud.addActor(chat = new ResizableTextField("", chatStyle));
-    hud.setKeyboardFocus(chat);
+    stage.addActor(chat = new ResizableTextField("", chatStyle));
+    stage.setKeyboardFocus(chat);
     chat.setTextFieldListener(new TextField.TextFieldListener() {
       @Override
       public void keyTyped(TextField textField, char c) {
@@ -49,19 +47,17 @@ public class HudRenderer implements Disposable {
   }
 
   public void render() {
-    hud.act();
-    hud.draw();
+    stage.act();
+    stage.draw();
   }
 
   public void resize() {
-    hud.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
-    ClientDebug.DebugLabel.resizeAll();
-    chat.setBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 8);
-    MenuTools.fitText(chat);
+    stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+    chat.setBounds(0, 0, Gdx.graphics.getWidth(), chat.getStyle().font.getBounds("ABC123").height * 1.5f);
   }
 
   @Override
   public void dispose() {
-    hud.dispose();
+    stage.dispose();
   }
 }

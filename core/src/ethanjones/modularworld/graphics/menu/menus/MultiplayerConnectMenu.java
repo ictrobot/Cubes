@@ -23,7 +23,7 @@ public class MultiplayerConnectMenu extends Menu {
 
   public MultiplayerConnectMenu() {
     super();
-    title = new Label(Localization.get("menu.multiplayer_connect.title"), skin);
+    title = new Label(Localization.get("menu.multiplayer_connect.title"), skin.get("title", Label.LabelStyle.class));
     address = new ResizableTextField("", skin);
     address.setMessageText(Localization.get("menu.multiplayer_connect.address"));
     port = new ResizableTextField("", skin);

@@ -25,8 +25,9 @@ public abstract class Menu {
 
   static {
     skin = new Skin();
-    skin.add("default", Fonts.Size2, BitmapFont.class);
-    skin.add("default", new Label.LabelStyle(Fonts.Size7, Color.WHITE));
+    skin.add("default", Fonts.Size3, BitmapFont.class);
+    skin.add("default", new Label.LabelStyle(skin.getFont("default"), Color.WHITE));
+    skin.add("title", new Label.LabelStyle(Fonts.Size7, Color.WHITE));
 
     NinePatch buttonDown = new NinePatch(GraphicsHelper.getTexture("hud/ButtonDown.png").textureRegion, 8, 8, 8, 8);
     NinePatch buttonUp = new NinePatch(GraphicsHelper.getTexture("hud/ButtonUp.png").textureRegion, 8, 8, 8, 8);
