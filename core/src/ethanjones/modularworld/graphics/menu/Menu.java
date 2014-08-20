@@ -25,8 +25,8 @@ public abstract class Menu {
 
   static {
     skin = new Skin();
-    skin.add("default", FontHelper.Scale1, BitmapFont.class);
-    skin.add("default", new Label.LabelStyle(FontHelper.Scale5, Color.WHITE));
+    skin.add("default", Fonts.Size2, BitmapFont.class);
+    skin.add("default", new Label.LabelStyle(Fonts.Size7, Color.WHITE));
 
     NinePatch buttonDown = new NinePatch(GraphicsHelper.getTexture("hud/ButtonDown.png").textureRegion, 8, 8, 8, 8);
     NinePatch buttonUp = new NinePatch(GraphicsHelper.getTexture("hud/ButtonUp.png").textureRegion, 8, 8, 8, 8);
@@ -34,7 +34,7 @@ public abstract class Menu {
 
     NinePatch textBackground = new NinePatch(GraphicsHelper.getTexture("hud/TextBox.png").textureRegion, 8, 8, 8, 8);
     skin.add("default", new TextField.TextFieldStyle(
-        skin.getFont("default"), //GraphicsHelper.getFont() Own copy of font because of ResizableTextField
+        skin.getFont("default"),
         Color.BLACK,
         new TextureRegionDrawable(GraphicsHelper.getTexture("hud/TextCursor.png").textureRegion),
         new TextureRegionDrawable(GraphicsHelper.getTexture("hud/TextSelection.png").textureRegion),
@@ -62,7 +62,7 @@ public abstract class Menu {
 
   public void resize(int width, int height) {
     viewport.update(width, height, true);
-    FontHelper.update();
+    Fonts.update();
   }
 
   public void render() {
