@@ -10,7 +10,6 @@ import ethanjones.modularworld.side.client.ModularWorldClient;
 public class InputChain implements Disposable {
 
   public Stage hud;
-  public GameInputHandler game;
   private static InputMultiplexer inputMultiplexer = new InputMultiplexer();
 
   static {
@@ -25,12 +24,10 @@ public class InputChain implements Disposable {
     //Starts at top
     inputMultiplexer.addProcessor(hud);
     inputMultiplexer.addProcessor(KeyboardHelper.inputProcessor);
-    inputMultiplexer.addProcessor(game = new GameInputHandler());
   }
 
   public void beforeRender() {
-    ModularWorldClient.instance.player.movementHandler.updatePosition();
-    game.updateTouch();
+    ModularWorldClient.instance.player.movementHandler.update();
   }
 
   public void afterRender() {
@@ -41,6 +38,5 @@ public class InputChain implements Disposable {
   public void dispose() {
     inputMultiplexer.removeProcessor(hud);
     inputMultiplexer.removeProcessor(KeyboardHelper.inputProcessor);
-    inputMultiplexer.removeProcessor(game);
   }
 }

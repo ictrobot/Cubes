@@ -8,12 +8,16 @@ import ethanjones.modularworld.world.reference.BlockReference;
 public class RayTracing {
 
   public static BlockReference getBlock() {
-    Vector3 block = getBlock(ModularWorldClient.instance.player.position, ModularWorldClient.instance.renderer.block.camera.direction, ModularWorldClient.instance.world, 8);
+    return getBlock(ModularWorldClient.instance.player.position, ModularWorldClient.instance.renderer.block.camera.direction, ModularWorldClient.instance.world, 8);
+  }
+
+  public static BlockReference getBlock(Vector3 starting, Vector3 direction, World world, int maxDistance) {
+    Vector3 block = getVector(ModularWorldClient.instance.player.position, ModularWorldClient.instance.renderer.block.camera.direction, ModularWorldClient.instance.world, 8);
     if (block == null) return null;
     return new BlockReference().set((int) Math.floor(block.x), (int) Math.floor(block.y), (int) Math.floor(block.z));
   }
 
-  public static Vector3 getBlock(Vector3 starting, Vector3 direction, World world, int maxDistance) {
+  public static Vector3 getVector(Vector3 starting, Vector3 direction, World world, int maxDistance) {
     Vector3 v = direction.cpy().nor();
     Vector3 pos = starting.cpy();
     for (int i = 0; i < maxDistance; i++) {

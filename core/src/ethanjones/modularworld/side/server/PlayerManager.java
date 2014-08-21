@@ -1,20 +1,18 @@
 package ethanjones.modularworld.side.server;
 
-import ethanjones.modularworld.block.factory.BlockFactory;
 import ethanjones.modularworld.core.events.EventHandler;
 import ethanjones.modularworld.core.events.world.block.BlockEvent;
 import ethanjones.modularworld.core.thread.Threads;
 import ethanjones.modularworld.entity.living.player.Player;
+import ethanjones.modularworld.graphics.world.RayTracing;
 import ethanjones.modularworld.networking.common.packet.Packet;
 import ethanjones.modularworld.networking.common.socket.SocketMonitor;
-import ethanjones.modularworld.networking.packets.PacketBlockChanged;
-import ethanjones.modularworld.networking.packets.PacketConnect;
-import ethanjones.modularworld.networking.packets.PacketConnected;
-import ethanjones.modularworld.networking.packets.PacketPlayerInfo;
+import ethanjones.modularworld.networking.packets.*;
 import ethanjones.modularworld.side.common.ModularWorld;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
 import ethanjones.modularworld.world.coordinates.Coordinates;
 import ethanjones.modularworld.world.reference.AreaReference;
+import ethanjones.modularworld.world.reference.BlockReference;
 import ethanjones.modularworld.world.storage.Area;
 import ethanjones.modularworld.world.storage.BlankArea;
 import ethanjones.modularworld.world.thread.GenerateWorldCallable;
@@ -99,9 +97,7 @@ public class PlayerManager {
     packet.x = coordinates.blockX;
     packet.y = coordinates.blockY;
     packet.z = coordinates.blockZ;
-    BlockFactory factory = ModularWorldServer.instance.world.getBlockFactory(packet.x, packet.y, packet.z);
-    if (factory == null) return;
-    packet.factory = ModularWorld.blockManager.toInt(factory);
+    packet.factory = ModularWorld.blockManager.toInt(ModularWorldServer.instance.world.getBlockFactory(packet.x, packet.y, packet.z));
     socketMonitor.getSocketOutput().getPacketQueue().addPacket(packet);
   }
 
@@ -127,5 +123,13 @@ public class PlayerManager {
       return true;
     }
     return false;
+  }
+
+  public void click(PacketClick.Click type) {
+    if (type == PacketClick.Click.left) {
+      BlockReference blockReference = RayTracing.getBlock(player.position, player.angle, ModularWorldServer.instance.world, 8);
+      if (blockReference == null) return;
+      ModularWorldServer.instance.world.setBlockFactory(null, blockReference.blockX, blockReference.blockY, blockReference.blockZ);
+    }
   }
 }

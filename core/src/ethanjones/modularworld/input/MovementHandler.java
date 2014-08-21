@@ -7,6 +7,8 @@ import com.badlogic.gdx.math.Vector3;
 import ethanjones.modularworld.core.events.entity.living.player.PlayerMovementEvent;
 import ethanjones.modularworld.entity.living.player.Player;
 import ethanjones.modularworld.input.keyboard.KeyboardHelper;
+import ethanjones.modularworld.networking.NetworkingManager;
+import ethanjones.modularworld.networking.packets.PacketClick;
 import ethanjones.modularworld.side.client.ModularWorldClient;
 import ethanjones.modularworld.world.WorldClient;
 
@@ -24,8 +26,10 @@ public class MovementHandler {
     previousPos = player.position.cpy();
   }
 
-  public void updateRotation() {
+  public void update() {
+    updateClick();
     updateRotation(Gdx.input.getDeltaX(), Gdx.input.getDeltaY());
+    updatePosition();
   }
 
   public void updateRotation(float deltaX, float deltaY) {
@@ -67,6 +71,22 @@ public class MovementHandler {
       } else {
         player.position.set(previousPos);
       }
+    }
+  }
+
+  public void updateClick() {
+    PacketClick packet = new PacketClick();
+    if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+      packet.type = PacketClick.Click.get(Input.Buttons.LEFT);
+    }
+    if (Gdx.input.isButtonPressed(Input.Buttons.MIDDLE)) {
+      packet.type = PacketClick.Click.get(Input.Buttons.MIDDLE);
+    }
+    if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
+      packet.type = PacketClick.Click.get(Input.Buttons.RIGHT);
+    }
+    if (packet.type != null) {
+      NetworkingManager.clientNetworking.sendToServer(packet);
     }
   }
 }

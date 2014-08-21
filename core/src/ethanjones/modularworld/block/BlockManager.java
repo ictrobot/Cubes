@@ -23,12 +23,14 @@ public class BlockManager implements DataParser<DataGroup> {
   }
 
   public int toInt(BlockFactory blockFactory) {
+    if (blockFactory == null) return 0;
     synchronized (this) {
       return blockFactories.get(blockFactory);
     }
   }
 
   public BlockFactory toFactory(int i) {
+    if (i == 0) return null;
     synchronized (this) {
       return ids.get(i);
     }
