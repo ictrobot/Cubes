@@ -63,7 +63,6 @@ public abstract class Menu {
 
   public void resize(int width, int height) {
     viewport.update(width, height, true);
-    Fonts.update();
   }
 
   public void render() {

@@ -192,7 +192,7 @@ public class MenuTools {
   }
 
   public static TextButton getBackButton(final Menu menu) {
-    TextButton textButton = new TextButton(Localization.get("menu.main.back"), Menu.skin);
+    TextButton textButton = new TextButton(Localization.get("menu.general.back"), Menu.skin);
     textButton.addListener(new EventListener() {
       @Override
       public boolean handle(Event event) {

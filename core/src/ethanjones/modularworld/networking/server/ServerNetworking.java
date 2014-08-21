@@ -8,6 +8,7 @@ import ethanjones.modularworld.networking.common.Networking;
 import ethanjones.modularworld.networking.common.NetworkingState;
 import ethanjones.modularworld.networking.common.socket.SocketMonitor;
 import ethanjones.modularworld.side.Side;
+import ethanjones.modularworld.side.server.ModularWorldServer;
 
 public class ServerNetworking extends Networking {
 
@@ -36,11 +37,14 @@ public class ServerNetworking extends Networking {
 
   @Override
   public synchronized void stop() {
+    if (getNetworkingState() != NetworkingState.Running) return;
+    setNetworkingState(NetworkingState.Stopping);
     Log.info("Stopping Server Networking");
     serverSocketMonitor.dispose();
     for (int i = 0; i < sockets.size; i++) {
       sockets.pop().dispose();
     }
+    setNetworkingState(NetworkingState.Stopped);
   }
 
   protected synchronized void accepted(Socket socket) {
@@ -55,6 +59,6 @@ public class ServerNetworking extends Networking {
     if (NetworkingManager.clientNetworking != null && (NetworkingManager.clientNetworking.getNetworkingState() == NetworkingState.Stopping || NetworkingManager.clientNetworking.getNetworkingState() == NetworkingState.Stopped))
       return;
     Log.info("Disconnected from " + socketMonitor.getRemoteAddress(), e);
-    stop();
+    ModularWorldServer.instance.playerManagers.remove(socketMonitor);
   }
 }

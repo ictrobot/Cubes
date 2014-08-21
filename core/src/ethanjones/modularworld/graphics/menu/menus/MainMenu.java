@@ -20,6 +20,22 @@ import ethanjones.modularworld.side.server.ModularWorldServer;
 
 public class MainMenu extends Menu {
 
+  public static class SingleplayerLoading extends InfoMenu {
+    public SingleplayerLoading() {
+      super(Localization.get("menu.general.loading"), false);
+    }
+
+    public void render() {
+      super.render();
+      GraphicalAdapter.instance.setModularWorld(
+        new ModularWorldServer(new ServerNetworkingParameter()),
+        new ModularWorldClient(new ClientNetworkingParameter("localhost"))
+      );
+      GraphicalAdapter.instance.setMenu(null);
+    }
+  }
+
+
   Label name;
   Table buttons;
   TextButton singleplayer;
@@ -30,16 +46,12 @@ public class MainMenu extends Menu {
     super();
     name = new Label(Branding.NAME, skin.get("title", Label.LabelStyle.class));
     buttons = new Table();
-    buttons.addActor(singleplayer = new TextButton(Localization.get("menu.main.single_player"), skin));
+    buttons.addActor(singleplayer = new TextButton(Localization.get("menu.main.singleplayer"), skin));
     singleplayer.addListener(new EventListener() {
       @Override
       public boolean handle(Event event) {
         if (!(event instanceof ChangeListener.ChangeEvent)) return false;
-        GraphicalAdapter.instance.setModularWorld(
-          new ModularWorldServer(new ServerNetworkingParameter()),
-          new ModularWorldClient(new ClientNetworkingParameter("localhost"))
-        );
-        GraphicalAdapter.instance.setMenu(null);
+        GraphicalAdapter.instance.setMenu(new SingleplayerLoading());
         return true;
       }
     });

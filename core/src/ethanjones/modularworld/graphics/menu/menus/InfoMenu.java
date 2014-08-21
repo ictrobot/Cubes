@@ -1,9 +1,8 @@
 package ethanjones.modularworld.graphics.menu.menus;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import ethanjones.modularworld.graphics.menu.Menu;
 import ethanjones.modularworld.graphics.menu.MenuTools;
 
@@ -18,23 +17,29 @@ public class InfoMenu extends Menu {
     button = new TextButton(buttonText, skin);
   }
 
-  public InfoMenu(String labelText) {
+  public InfoMenu(String labelText, boolean back) {
     super();
     text = new Label(labelText, skin);
-    text.setAlignment(Align.center, Align.bottom);
-    button = MenuTools.getBackButton(this);
+    if (back) button = MenuTools.getBackButton(this);
   }
 
   @Override
   public void resize(int width, int height) {
     super.resize(width, height);
-    text.setBounds(0, Gdx.graphics.getHeight() / 2f, Gdx.graphics.getWidth(), text.getPrefHeight());
-    button.setBounds(Gdx.graphics.getWidth() / 2 - button.getPrefWidth() / 2, Gdx.graphics.getHeight() / 4, button.getPrefWidth(), button.getPrefHeight());
+    text.setBounds(width / 2 - text.getPrefWidth() / 2, height / 2, text.getPrefWidth(), text.getPrefHeight());
+    if (button != null) {
+      button.setBounds(width / 2 - button.getPrefWidth() / 2, height / 4, button.getPrefWidth(), button.getPrefHeight());
+    }
   }
 
   @Override
   public void addActors() {
     stage.addActor(text);
-    stage.addActor(button);
+    if (button != null) stage.addActor(button);
+  }
+
+  public boolean addButtonListener(EventListener listener) {
+    if (button == null) return false;
+    return button.addListener(listener);
   }
 }

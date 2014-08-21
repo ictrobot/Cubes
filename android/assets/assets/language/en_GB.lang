@@ -1,9 +1,14 @@
 en_GB
-menu.main.single_player=Singleplayer
-menu.main.quit=Quit
+menu.main.singleplayer=Singleplayer
 menu.main.multiplayer=Multiplayer
-menu.main.back=Back
+menu.main.quit=Quit
+menu.general.back=Back
+menu.general.loading=Loading
+menu.general.return_main_menu=Return to main menu
 menu.multiplayer_connect.title=Multiplayer
 menu.multiplayer_connect.address=Address
 menu.multiplayer_connect.port=Port (8080)
 menu.multiplayer_connect.connect=Connect
+menu.multiplayer_connect.connecting=Connecting
+menu.multiplayer_connect.failed=Failed to connect
+menu.multiplayer_connect.failed_exception=Failed to connect:

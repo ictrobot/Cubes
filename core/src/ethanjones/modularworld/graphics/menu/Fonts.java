@@ -39,7 +39,7 @@ public class Fonts {
   public static final StaticBitmapFont Size7 = new StaticBitmapFont(7);
   public static final StaticBitmapFont Size8 = new StaticBitmapFont(8);
 
-  protected static void update() {
+  public static void resize() {
     Size1.updateScale();
     Size2.updateScale();
     Size3.updateScale();

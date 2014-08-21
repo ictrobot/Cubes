@@ -43,6 +43,7 @@ public class ClientNetworking extends Networking {
 
   @Override
   public synchronized void stop() {
+    if (getNetworkingState() != NetworkingState.Running) return;
     setNetworkingState(NetworkingState.Stopping);
     Log.info("Stopping Client Networking");
     socketMonitor.dispose();

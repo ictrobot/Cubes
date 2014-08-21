@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import ethanjones.modularworld.core.Branding;
 import ethanjones.modularworld.core.ModularWorldException;
 import ethanjones.modularworld.core.logging.Log;
+import ethanjones.modularworld.graphics.menu.Fonts;
 import ethanjones.modularworld.graphics.menu.Menu;
 import ethanjones.modularworld.graphics.menu.MenuManager;
 import ethanjones.modularworld.graphics.menu.menus.MainMenu;
@@ -50,9 +51,6 @@ public class GraphicalAdapter implements ApplicationListener {
     if (this.modularWorldServer != null) this.modularWorldServer.dispose();
     if (this.modularWorldClient != null) this.modularWorldClient.dispose();
 
-    this.modularWorldServer = modularWorldServer;
-    this.modularWorldClient = modularWorldClient;
-
     if (modularWorldServer != null) {
       Log.debug("ModularWorldServer set");
       modularWorldServer.create();
@@ -67,6 +65,10 @@ public class GraphicalAdapter implements ApplicationListener {
     } else {
       Log.debug("ModularWorldClient set to null");
     }
+
+
+    this.modularWorldServer = modularWorldServer;
+    this.modularWorldClient = modularWorldClient;
   }
 
   @Override
@@ -83,6 +85,7 @@ public class GraphicalAdapter implements ApplicationListener {
   @Override
   public void resize(int width, int height) {
     try {
+      Fonts.resize();
       if (menu != null) menu.resize(width, height);
       if (modularWorldServer != null) modularWorldServer.resize(width, height);
       if (modularWorldClient != null) modularWorldClient.resize(width, height);
