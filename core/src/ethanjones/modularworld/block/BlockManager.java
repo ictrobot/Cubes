@@ -1,6 +1,5 @@
 package ethanjones.modularworld.block;
 
-import ethanjones.modularworld.block.factory.BlockFactory;
 import ethanjones.modularworld.core.data.Data;
 import ethanjones.modularworld.core.data.DataGroup;
 import ethanjones.modularworld.core.data.basic.DataString;
@@ -11,25 +10,25 @@ import java.util.Map;
 
 public class BlockManager implements DataParser<DataGroup> {
 
-  volatile HashMap<Integer, BlockFactory> ids;
-  volatile HashMap<BlockFactory, Integer> blockFactories;
-  volatile HashMap<Class<? extends BlockFactory>, BlockFactory> classes;
+  volatile HashMap<Integer, Block> ids;
+  volatile HashMap<Block, Integer> blocks;
+  volatile HashMap<Class<? extends Block>, Block> classes;
   volatile int unused = 1;
 
   public BlockManager() {
-    ids = new HashMap<Integer, BlockFactory>();
-    blockFactories = new HashMap<BlockFactory, Integer>();
-    classes = new HashMap<Class<? extends BlockFactory>, BlockFactory>();
+    ids = new HashMap<Integer, Block>();
+    blocks = new HashMap<Block, Integer>();
+    classes = new HashMap<Class<? extends Block>, Block>();
   }
 
-  public int toInt(BlockFactory blockFactory) {
-    if (blockFactory == null) return 0;
+  public int toInt(Block block) {
+    if (block == null) return 0;
     synchronized (this) {
-      return blockFactories.get(blockFactory);
+      return blocks.get(block);
     }
   }
 
-  public BlockFactory toFactory(int i) {
+  public Block toFactory(int i) {
     if (i == 0) return null;
     synchronized (this) {
       return ids.get(i);
@@ -40,7 +39,7 @@ public class BlockManager implements DataParser<DataGroup> {
   public DataGroup write() {
     synchronized (this) {
       DataGroup dataGroup = new DataGroup();
-      for (Map.Entry<BlockFactory, Integer> entry : blockFactories.entrySet()) {
+      for (Map.Entry<Block, Integer> entry : blocks.entrySet()) {
         dataGroup.setString(entry.getValue().toString(), entry.getKey().getClass().getName());
       }
       return dataGroup;
@@ -51,29 +50,29 @@ public class BlockManager implements DataParser<DataGroup> {
   public void read(DataGroup data) {
     synchronized (this) {
       ids.clear();
-      blockFactories.clear();
+      blocks.clear();
       for (Map.Entry<String, Data> entry : data.getEntrySet()) {
         int i = Integer.parseInt(entry.getKey());
-        Class<? extends BlockFactory> c;
+        Class<? extends Block> c;
         try {
-          c = Class.forName(((DataString) entry.getValue()).get()).asSubclass(BlockFactory.class);
+          c = Class.forName(((DataString) entry.getValue()).get()).asSubclass(Block.class);
         } catch (ClassNotFoundException e) {
           continue;
         }
         if (c == null) continue;
-        BlockFactory blockFactory = classes.get(c);
-        ids.put(i, blockFactory);
-        blockFactories.put(blockFactory, i);
+        Block block = classes.get(c);
+        ids.put(i, block);
+        blocks.put(block, i);
       }
     }
   }
 
-  public void register(BlockFactory blockFactory) {
+  public void register(Block block) {
     synchronized (this) {
       int i = findFree();
-      ids.put(i, blockFactory);
-      blockFactories.put(blockFactory, i);
-      classes.put(blockFactory.getClass(), blockFactory);
+      ids.put(i, block);
+      blocks.put(block, i);
+      classes.put(block.getClass(), block);
     }
   }
 

@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
-import ethanjones.modularworld.block.factory.BlockFactory;
+import ethanjones.modularworld.block.Block;
 import ethanjones.modularworld.core.util.Direction;
 import ethanjones.modularworld.graphics.GraphicsHelper;
 import ethanjones.modularworld.side.client.ModularWorldClient;
@@ -96,7 +96,7 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
     for (int y = 0; y < SIZE_BLOCKS; y++) {
       for (int z = 0; z < SIZE_BLOCKS; z++) {
         for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
-          BlockFactory block = ModularWorld.blockManager.toFactory(area.blockFactories[i]);
+          Block block = ModularWorld.blockManager.toFactory(area.blockFactories[i]);
           if (block == null) continue;
           BlockTextureHandler textureHandler = block.getTextureHandler(null); //TODO Pass block datagroup
           if (x < SIZE_BLOCKS - 1) {

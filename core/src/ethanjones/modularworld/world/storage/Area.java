@@ -1,6 +1,6 @@
 package ethanjones.modularworld.world.storage;
 
-import ethanjones.modularworld.block.factory.BlockFactory;
+import ethanjones.modularworld.block.Block;
 import ethanjones.modularworld.core.ModularWorldException;
 import ethanjones.modularworld.core.data.DataGroup;
 import ethanjones.modularworld.core.data.DataList;
@@ -66,19 +66,19 @@ public class Area implements DataParser<DataGroup> {
     blockFactories = new int[SIZE_BLOCKS_CUBED];
   }
 
-  public BlockFactory getBlockFactory(int x, int y, int z) {
+  public Block getBlockFactory(int x, int y, int z) {
     return ModularWorld.blockManager.toFactory(blockFactories[Math.abs(x % SIZE_BLOCKS) + Math.abs(z % SIZE_BLOCKS) * SIZE_BLOCKS + Math.abs(y % SIZE_BLOCKS) * SIZE_BLOCKS_SQUARED]);
   }
 
-  public void setBlockFactory(BlockFactory blockFactory, int x, int y, int z) {
-    setBlockFactory(blockFactory, x, y, z, true);
+  public void setBlockFactory(Block block, int x, int y, int z) {
+    setBlockFactory(block, x, y, z, true);
   }
 
-  public void setBlockFactory(BlockFactory blockFactory, int x, int y, int z, boolean event) {
+  public void setBlockFactory(Block block, int x, int y, int z, boolean event) {
     int ref = Math.abs(x % SIZE_BLOCKS) + Math.abs(z % SIZE_BLOCKS) * SIZE_BLOCKS + Math.abs(y % SIZE_BLOCKS) * SIZE_BLOCKS_SQUARED;
     int b = blockFactories[ref];
     if (areaRenderer != null) areaRenderer.dirty = true;
-    blockFactories[ref] = ModularWorld.blockManager.toInt(blockFactory);
+    blockFactories[ref] = ModularWorld.blockManager.toInt(block);
     if (event) new BlockChangedEvent(new BlockCoordinates(x, y, z), ModularWorld.blockManager.toFactory(b)).post();
   }
 

@@ -1,39 +1,22 @@
 package ethanjones.modularworld.block;
 
-import ethanjones.modularworld.block.factory.BlockFactory;
 import ethanjones.modularworld.core.data.DataGroup;
 import ethanjones.modularworld.graphics.world.BlockTextureHandler;
 
-/**
- * Actual Block in World
- */
-public final class Block {
+public abstract class Block {
+  protected BlockTextureHandler textureHandler;
+  String mainMaterial;
 
-  protected final BlockFactory factory;
-  protected DataGroup data;
-
-  public Block(BlockFactory factory, DataGroup data) {
-    this(factory);
-    this.data = data;
+  public Block(String mainMaterial) {
+    this.mainMaterial = mainMaterial;
   }
 
-  public Block(BlockFactory factory) {
-    this.factory = factory;
-    this.data = new DataGroup();
+  public void loadGraphics() {
+    textureHandler = new BlockTextureHandler(mainMaterial);
   }
 
-  public BlockTextureHandler getTextureHandler() {
-    return factory.getTextureHandler(data);
+  public BlockTextureHandler getTextureHandler(DataGroup data) {
+    return textureHandler;
   }
 
-  public boolean equals(Object o) {
-    if (o instanceof Block) {
-      return ((Block) o).data.equals(this.data) && ((Block) o).factory.equals(this.factory);
-    }
-    return false;
-  }
-
-  public BlockFactory getFactory() {
-    return factory;
-  }
 }

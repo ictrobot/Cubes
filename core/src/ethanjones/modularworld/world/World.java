@@ -1,7 +1,7 @@
 package ethanjones.modularworld.world;
 
 import com.badlogic.gdx.utils.Disposable;
-import ethanjones.modularworld.block.factory.BlockFactory;
+import ethanjones.modularworld.block.Block;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
 import ethanjones.modularworld.world.reference.AreaReference;
 import ethanjones.modularworld.world.reference.AreaReferencePool;
@@ -45,12 +45,12 @@ public abstract class World implements Disposable {
     return area;
   }
 
-  public BlockFactory getBlockFactory(int x, int y, int z) {
+  public Block getBlockFactory(int x, int y, int z) {
     return getArea(BlockCoordinates.area(x), BlockCoordinates.area(y), BlockCoordinates.area(z)).getBlockFactory(x, y, z);
   }
 
-  public void setBlockFactory(BlockFactory blockFactory, int x, int y, int z) {
-    getArea(BlockCoordinates.area(x), BlockCoordinates.area(y), BlockCoordinates.area(z)).setBlockFactory(blockFactory, x, y, z);
+  public void setBlockFactory(Block block, int x, int y, int z) {
+    getArea(BlockCoordinates.area(x), BlockCoordinates.area(y), BlockCoordinates.area(z)).setBlockFactory(block, x, y, z);
   }
 
 }

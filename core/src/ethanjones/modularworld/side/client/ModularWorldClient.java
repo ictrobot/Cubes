@@ -2,7 +2,7 @@ package ethanjones.modularworld.side.client;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import ethanjones.modularworld.block.factory.BlockFactories;
+import ethanjones.modularworld.block.Blocks;
 import ethanjones.modularworld.core.ModularWorldException;
 import ethanjones.modularworld.core.settings.Settings;
 import ethanjones.modularworld.entity.living.player.Player;
@@ -43,7 +43,7 @@ public class ModularWorldClient extends ModularWorld {
 
     inputChain = new InputChain();
     renderer = new Renderer();
-    BlockFactories.loadGraphics();
+    Blocks.loadGraphics();
 
     inputChain.setup();
     Gdx.input.setInputProcessor(InputChain.getInputMultiplexer());

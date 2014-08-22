@@ -1,9 +1,10 @@
-package ethanjones.modularworld.block.factory.basic;
+package ethanjones.modularworld.block.basic;
 
+import ethanjones.modularworld.block.Block;
 import ethanjones.modularworld.core.util.Direction;
 
-public class BlockFactoryGrass extends BlockFactoryBasic {
-  public BlockFactoryGrass() {
+public class BlockGrass extends Block {
+  public BlockGrass() {
     super("Grass - Side");
   }
 

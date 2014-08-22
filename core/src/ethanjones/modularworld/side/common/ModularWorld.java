@@ -4,7 +4,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import ethanjones.modularworld.block.BlockManager;
-import ethanjones.modularworld.block.factory.BlockFactories;
+import ethanjones.modularworld.block.Blocks;
 import ethanjones.modularworld.core.Branding;
 import ethanjones.modularworld.core.ModularWorldException;
 import ethanjones.modularworld.core.adapter.GraphicalAdapter;
@@ -62,7 +62,7 @@ public abstract class ModularWorld implements ApplicationListener {
     assetManager = new AssetManager();
     blockManager = new BlockManager();
 
-    BlockFactories.init();
+    Blocks.init();
 
     timing = new Timing();
 

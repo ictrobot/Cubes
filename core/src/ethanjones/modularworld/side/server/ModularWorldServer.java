@@ -1,6 +1,6 @@
 package ethanjones.modularworld.side.server;
 
-import ethanjones.modularworld.block.factory.BlockFactories;
+import ethanjones.modularworld.block.Blocks;
 import ethanjones.modularworld.core.timing.TimeHandler;
 import ethanjones.modularworld.networking.NetworkingManager;
 import ethanjones.modularworld.networking.common.socket.SocketMonitor;
@@ -45,6 +45,6 @@ public class ModularWorldServer extends ModularWorld implements TimeHandler {
 
   @Override
   public void time(int interval) {
-    world.setBlockFactory(BlockFactories.dirt, (int) (Math.random() * 16), (int) (8 + (Math.random() * 7)), (int) (Math.random() * 16));
+    world.setBlockFactory(Blocks.dirt, (int) (Math.random() * 16), (int) (8 + (Math.random() * 7)), (int) (Math.random() * 16));
   }
 }
