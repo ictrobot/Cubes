@@ -10,6 +10,7 @@ public class MultiplayerLoadingMenu extends InfoMenu {
 
   private final String address;
   private final int port;
+  private int frameNum = 0;
 
   public MultiplayerLoadingMenu(String address, int port) {
     super(Localization.get("menu.multiplayer_connect.connecting"), false);
@@ -18,7 +19,9 @@ public class MultiplayerLoadingMenu extends InfoMenu {
   }
 
   public void render() {
-    super.render(); //TODO fix not showing connecting
+    super.render();
+    frameNum++;
+    if (frameNum != 2) return;
     try {
       ModularWorldClient modularWorldClient = new ModularWorldClient(new ClientNetworkingParameter(address, port));
       GraphicalAdapter.instance.setModularWorld(
