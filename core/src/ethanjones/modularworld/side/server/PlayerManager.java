@@ -66,10 +66,10 @@ public class PlayerManager {
       }
     }
     if (!player.position.equals(packetPlayerInfo.position)) {
-      player.position = packetPlayerInfo.position;
+      player.position.set(packetPlayerInfo.position);
       playerChangedPosition();
     }
-    player.angle = packetPlayerInfo.angle;
+    player.angle.set(packetPlayerInfo.angle);
   }
 
 

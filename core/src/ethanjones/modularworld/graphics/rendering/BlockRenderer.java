@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.Disposable;
 import ethanjones.modularworld.core.settings.Settings;
 import ethanjones.modularworld.graphics.world.AreaRenderer;
 import ethanjones.modularworld.graphics.world.AreaRendererPool;
+import ethanjones.modularworld.input.CameraController;
 import ethanjones.modularworld.side.client.ModularWorldClient;
 import ethanjones.modularworld.world.WorldClient;
 import ethanjones.modularworld.world.reference.AreaReference;
@@ -35,24 +36,20 @@ public class BlockRenderer implements Disposable {
     environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
     environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 
-    setupCamera();
+    camera = new PerspectiveCamera(Settings.input_fieldOfView.getIntegerSetting().getValue(), Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) {
+      @Override
+      public void update(boolean b) {
+        viewportWidth = Gdx.graphics.getWidth();
+        viewportHeight = Gdx.graphics.getHeight();
+        super.update(b);
+      }
+    };
 
-  }
-
-  public void setupCamera() {
-    camera = new PerspectiveCamera(Settings.input_fieldOfView.getIntegerSetting().getValue(), Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-    camera.direction.x = 1;
-    camera.direction.y = 0;
-    camera.direction.z = 0;
-    camera.near = 0.1f;
-    camera.far = 300f;
+    ModularWorldClient.instance.inputChain.cameraController = new CameraController(camera);
   }
 
   public void render() {
     modelBatch.begin(camera);
-
-    ModularWorldClient.instance.player.movementHandler.updateCamera(camera);
-    camera.update(true);
 
     int renderDistance = Settings.renderer_block_viewDistance.getIntegerSetting().getValue();
 

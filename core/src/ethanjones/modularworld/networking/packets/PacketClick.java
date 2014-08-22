@@ -2,6 +2,7 @@ package ethanjones.modularworld.networking.packets;
 
 import ethanjones.modularworld.core.data.DataGroup;
 import ethanjones.modularworld.networking.common.packet.Packet;
+import ethanjones.modularworld.networking.common.packet.PacketPriority;
 import ethanjones.modularworld.side.server.ModularWorldServer;
 
 public class PacketClick extends Packet {
@@ -20,6 +21,10 @@ public class PacketClick extends Packet {
       }
       return null;
     }
+  }
+
+  public PacketClick() {
+    super(PacketPriority.HIGH);
   }
 
   public Click type;

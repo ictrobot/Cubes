@@ -18,8 +18,8 @@ public class PacketPlayerInfo extends Packet {
     if (getSide() == Side.Server) {
       ModularWorldServer.instance.playerManagers.get(getSocketMonitor()).handleInfo(this);
     } else {
-      ModularWorldClient.instance.player.angle = angle;
-      ModularWorldClient.instance.player.position = position;
+      ModularWorldClient.instance.player.angle.set(angle);
+      ModularWorldClient.instance.player.position.set(position);
     }
   }
 

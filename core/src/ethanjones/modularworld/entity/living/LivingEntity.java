@@ -1,5 +1,6 @@
 package ethanjones.modularworld.entity.living;
 
+import com.badlogic.gdx.math.Vector3;
 import ethanjones.modularworld.core.data.DataGroup;
 import ethanjones.modularworld.entity.Entity;
 
@@ -11,7 +12,13 @@ public class LivingEntity extends Entity {
 
   public LivingEntity(int maxHealth) {
     super();
-    this.gravity = true;
+    this.health = maxHealth;
+    this.maxHealth = maxHealth;
+    this.regenerationSpeed = 0;
+  }
+
+  public LivingEntity(Vector3 position, Vector3 angle, int maxHealth) {
+    super(position, angle);
     this.health = maxHealth;
     this.maxHealth = maxHealth;
     this.regenerationSpeed = 0;

@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import ethanjones.modularworld.block.Blocks;
 import ethanjones.modularworld.core.ModularWorldException;
-import ethanjones.modularworld.core.settings.Settings;
 import ethanjones.modularworld.entity.living.player.Player;
 import ethanjones.modularworld.graphics.rendering.Renderer;
 import ethanjones.modularworld.input.InputChain;
@@ -39,10 +38,9 @@ public class ModularWorldClient extends ModularWorld {
     ClientDebug.setup();
     NetworkingManager.connectClient(clientNetworkingParameter);
 
-    player = new Player(Settings.username.getStringSetting().getString());
-
     inputChain = new InputChain();
     renderer = new Renderer();
+    player = new Player(renderer.block.camera);
     Blocks.loadGraphics();
 
     inputChain.setup();
@@ -68,10 +66,7 @@ public class ModularWorldClient extends ModularWorld {
     ClientDebug.update();
     renderer.render();
     inputChain.afterRender();
-    //BlockReference b = RayTracing.getBlock();
-    //if (b != null) {
-    //  Log.info("Looking @ " + b.toString());
-    //}
+    player.update();
     NetworkingManager.clientNetworking.update();
   }
 

@@ -9,13 +9,16 @@ public class Entity implements DataParser<DataGroup> {
 
   //FIXME
 
-  public Vector3 position;
-  public Vector3 angle;
-  public boolean gravity = true;
+  public final Vector3 position;
+  public final Vector3 angle;
 
   public Entity() {
-    this.position = new Vector3(0, 6, 0);
-    this.angle = new Vector3(0, 0.5f, 0);
+    this(new Vector3(), new Vector3(0, 0.5f, 0));
+  }
+
+  public Entity(Vector3 position, Vector3 angle) {
+    this.position = position;
+    this.angle = angle;
   }
 
   public void update() {
@@ -27,14 +30,12 @@ public class Entity implements DataParser<DataGroup> {
     DataGroup dataGroup = new DataGroup();
     dataGroup.setList("position", VectorUtil.dataFromVector3(position));
     dataGroup.setList("angle", VectorUtil.dataFromVector3(angle));
-    dataGroup.setBoolean("gravity", gravity);
     return dataGroup;
   }
 
   @Override
   public void read(DataGroup data) {
-    this.position = VectorUtil.vector3FromData(data.getList("position"));
-    this.angle = VectorUtil.vector3FromData(data.getList("angle"));
-    this.gravity = data.getBoolean("gravity");
+    this.position.set(VectorUtil.vector3FromData(data.getList("position")));
+    this.angle.set(VectorUtil.vector3FromData(data.getList("angle")));
   }
 }

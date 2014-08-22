@@ -17,22 +17,24 @@ import static ethanjones.modularworld.graphics.menu.Menu.skin;
 
 public class HudRenderer implements Disposable {
 
+  boolean chatEnabled = false; //TODO: Keyboard shortcuts and on screen buttons
+  boolean debugEnabled = false;
+
   Stage stage;
   ResizableTextField chat;
-  ClientDebug.DebugLabel debugLabel;
+  ClientDebug.DebugLabel debug;
 
   public HudRenderer() {
     stage = new Stage(new ScreenViewport());
     ModularWorldClient.instance.inputChain.hud = stage;
 
-    stage.addActor(debugLabel = new ClientDebug.DebugLabel());
+    debug = new ClientDebug.DebugLabel();
 
     TextField.TextFieldStyle defaultStyle = skin.get("default", TextField.TextFieldStyle.class);
     TextField.TextFieldStyle chatStyle = new TextField.TextFieldStyle(defaultStyle);
     chatStyle.background = new TextureRegionDrawable(GraphicsHelper.getTexture("hud/ChatBackground.png").textureRegion);
 
-    stage.addActor(chat = new ResizableTextField("", chatStyle));
-    stage.setKeyboardFocus(chat);
+    chat = new ResizableTextField("", chatStyle);
     chat.setTextFieldListener(new TextField.TextFieldListener() {
       @Override
       public void keyTyped(TextField textField, char c) {
@@ -41,12 +43,19 @@ public class HudRenderer implements Disposable {
           packetChat.msg = chat.getText();
           NetworkingManager.clientNetworking.sendToServer(packetChat);
           chat.setText("");
+          chatEnabled = false;
         }
       }
     });
   }
 
   public void render() {
+    stage.clear();
+    if (debugEnabled) stage.addActor(debug);
+    if (chatEnabled) {
+      stage.addActor(chat);
+      stage.setKeyboardFocus(chat);
+    }
     stage.act();
     stage.draw();
   }

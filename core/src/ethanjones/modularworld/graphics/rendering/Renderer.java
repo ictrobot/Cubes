@@ -58,7 +58,6 @@ public class Renderer {
   }
 
   public void resize() {
-    block.setupCamera();
     hud.resize();
   }
 }

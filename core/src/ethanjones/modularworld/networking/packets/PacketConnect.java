@@ -3,9 +3,14 @@ package ethanjones.modularworld.networking.packets;
 import ethanjones.modularworld.core.data.DataGroup;
 import ethanjones.modularworld.core.settings.Settings;
 import ethanjones.modularworld.networking.common.packet.Packet;
+import ethanjones.modularworld.networking.common.packet.PacketPriority;
 import ethanjones.modularworld.side.server.PlayerManager;
 
 public class PacketConnect extends Packet {
+
+  public PacketConnect() {
+    super(PacketPriority.HIGH);
+  }
 
   public int renderDistance;
   public String username;
