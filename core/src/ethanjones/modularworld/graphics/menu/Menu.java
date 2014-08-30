@@ -19,6 +19,8 @@ public abstract class Menu {
 
   public static final Skin skin;
   protected static Stage stage;
+  private static SpriteBatch spriteBatch;
+  private static ScreenViewport viewport;
 
   static {
     skin = new Skin();
@@ -41,11 +43,9 @@ public abstract class Menu {
 
     spriteBatch = new SpriteBatch();
     viewport = new ScreenViewport();
+
     stage = new Stage(viewport, spriteBatch);
   }
-
-  private static SpriteBatch spriteBatch;
-  private static ScreenViewport viewport;
 
   public Menu() {
 
