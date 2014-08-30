@@ -1,11 +1,12 @@
 package ethanjones.modularworld.networking.common.packet;
 
-import ethanjones.modularworld.core.data.DataGroup;
-import ethanjones.modularworld.core.data.other.DataParser;
 import ethanjones.modularworld.networking.common.socket.SocketMonitor;
 import ethanjones.modularworld.side.Side;
 
-public abstract class Packet implements DataParser<DataGroup> {
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+
+public abstract class Packet {
 
   private final PacketPriority priority;
   private SocketMonitor socketMonitor;
@@ -23,6 +24,10 @@ public abstract class Packet implements DataParser<DataGroup> {
     return priority;
   }
 
+  public abstract void write(DataOutputStream dataOutputStream) throws Exception;
+
+  public abstract void read(DataInputStream dataInputStream) throws Exception;
+
   /**
    * Called right before writing packet into output stream
    *
@@ -38,7 +43,7 @@ public abstract class Packet implements DataParser<DataGroup> {
     return socketMonitor;
   }
 
-  protected void setSocketMonitor(SocketMonitor socketMonitor) {
+  public void setSocketMonitor(SocketMonitor socketMonitor) {
     this.socketMonitor = socketMonitor;
   }
 

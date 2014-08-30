@@ -1,26 +1,20 @@
 package ethanjones.modularworld.networking.common.socket;
 
-import ethanjones.modularworld.core.data.DataGroup;
-import ethanjones.modularworld.core.data.DataTools;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.networking.common.packet.Packet;
-import ethanjones.modularworld.networking.common.packet.PacketManager;
 import ethanjones.modularworld.networking.common.packet.PacketQueue;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 
 public class SocketOutput extends SocketIO {
 
-  private final OutputStream outputStream;
   private final DataOutputStream dataOutputStream;
   private final PacketQueue packetQueue;
 
-  public SocketOutput(SocketMonitor socketMonitor, OutputStream outputStream) {
+  public SocketOutput(SocketMonitor socketMonitor) {
     super(socketMonitor);
-    this.outputStream = outputStream;
-    this.dataOutputStream = new DataOutputStream(outputStream);
+    this.dataOutputStream = new DataOutputStream(socketMonitor.getSocket().getOutputStream());
     this.packetQueue = new PacketQueue();
   }
 
@@ -34,12 +28,13 @@ public class SocketOutput extends SocketIO {
         Log.info(socketMonitor.getRemoteAddress(), "Packets to send: " + packetQueue.size());
         Packet packet = packetQueue.getPacket();
         if (packet == null) continue;
-        DataGroup payload = PacketManager.getPayload(packet);
-        //Log.info(Thread.currentThread().getName(), payload.toString());
-        DataTools.write(payload, dataOutputStream);
-      } catch (Exception e) {
+        dataOutputStream.writeUTF(packet.getClass().getName());
+        packet.write(dataOutputStream);
+      } catch (IOException e) {
         socketMonitor.networking.disconnected(socketMonitor, e);
         return;
+      } catch (Exception e) {
+        Log.info("Failed to write packet", e);
       }
     }
   }

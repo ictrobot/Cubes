@@ -1,13 +1,10 @@
 package ethanjones.modularworld.networking.packets;
 
 import ethanjones.modularworld.core.data.DataGroup;
-import ethanjones.modularworld.networking.common.packet.Packet;
+import ethanjones.modularworld.networking.common.packet.DataPacket;
 import ethanjones.modularworld.side.common.ModularWorld;
 
-public class PacketConnected extends Packet {
-
-  public int renderDistance;
-  public String username;
+public class PacketConnected extends DataPacket {
 
   @Override
   public DataGroup write() {

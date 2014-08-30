@@ -1,37 +1,33 @@
 package ethanjones.modularworld.networking.common.socket;
 
-import ethanjones.modularworld.core.data.Data;
-import ethanjones.modularworld.core.data.DataTools;
-import ethanjones.modularworld.networking.common.packet.PacketHandler;
-import ethanjones.modularworld.networking.common.packet.PacketManager;
+import ethanjones.modularworld.core.logging.Log;
+import ethanjones.modularworld.networking.common.packet.Packet;
 
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 public class SocketInput extends SocketIO {
 
-  private final InputStream inputStream;
   private final DataInputStream dataInputStream;
-  private final PacketHandler packetHandler;
 
-  public SocketInput(SocketMonitor socketMonitor, InputStream inputStream, PacketHandler packetHandler) {
+  public SocketInput(SocketMonitor socketMonitor) {
     super(socketMonitor);
-    this.inputStream = inputStream;
-    this.dataInputStream = new DataInputStream(inputStream);
-    this.packetHandler = packetHandler;
+    this.dataInputStream = new DataInputStream(socketMonitor.getSocket().getInputStream());
   }
 
   @Override
   public void run() {
     while (socketMonitor.running.get()) {
       try {
-        Data read = DataTools.read(dataInputStream);
-        //Log.info(Thread.currentThread().getName(), read.toString());
-        PacketManager.process(read, socketMonitor, packetHandler);
-      } catch (Exception e) {
+        Packet packet = packet = Class.forName(dataInputStream.readUTF()).asSubclass(Packet.class).newInstance();
+        packet.read(dataInputStream);
+        packet.setSocketMonitor(socketMonitor);
+        socketMonitor.networking.received(packet);
+      } catch (IOException e) {
         socketMonitor.networking.disconnected(socketMonitor, e);
         return;
+      } catch (Exception e) {
+        Log.info("Failed to read packet", e);
       }
     }
   }

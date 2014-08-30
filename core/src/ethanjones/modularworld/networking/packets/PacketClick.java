@@ -1,9 +1,11 @@
 package ethanjones.modularworld.networking.packets;
 
-import ethanjones.modularworld.core.data.DataGroup;
 import ethanjones.modularworld.networking.common.packet.Packet;
 import ethanjones.modularworld.networking.common.packet.PacketPriority;
 import ethanjones.modularworld.side.server.ModularWorldServer;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 
 public class PacketClick extends Packet {
 
@@ -14,20 +16,18 @@ public class PacketClick extends Packet {
   }
 
   @Override
+  public void write(DataOutputStream dataOutputStream) throws Exception {
+    dataOutputStream.writeInt(type.ordinal());
+  }
+
+  @Override
+  public void read(DataInputStream dataInputStream) throws Exception {
+    type = Click.values()[dataInputStream.readInt()];
+  }
+
+  @Override
   public void handlePacket() {
     ModularWorldServer.instance.playerManagers.get(this.getSocketMonitor()).click(type);
-  }
-
-  @Override
-  public DataGroup write() {
-    DataGroup dataGroup = new DataGroup();
-    dataGroup.setInteger("type", type.ordinal());
-    return dataGroup;
-  }
-
-  @Override
-  public void read(DataGroup data) {
-    type = Click.values()[data.getInteger("type")];
   }
 
   public static enum Click {

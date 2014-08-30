@@ -20,9 +20,9 @@ public class PacketQueue {
     Array<Packet> array = getArray(packet.getPriority());
     synchronized (array) {
       array.add(packet);
-    }
-    synchronized (sync) {
-      sync.notifyAll();
+      synchronized (sync) {
+        if (packet.shouldSend()) sync.notifyAll();
+      }
     }
   }
 

@@ -2,11 +2,10 @@ package ethanjones.modularworld.networking.common;
 
 import ethanjones.modularworld.networking.common.packet.Packet;
 import ethanjones.modularworld.networking.common.packet.PacketBuffer;
-import ethanjones.modularworld.networking.common.packet.PacketHandler;
 import ethanjones.modularworld.networking.common.socket.SocketMonitor;
 import ethanjones.modularworld.side.Side;
 
-public abstract class Networking implements PacketHandler {
+public abstract class Networking {
 
   private final Side side;
   private PacketBuffer packetBuffer;
@@ -36,7 +35,6 @@ public abstract class Networking implements PacketHandler {
    */
   public abstract void disconnected(SocketMonitor socketMonitor, Exception e);
 
-  @Override
   public final void received(Packet packet) {
     packetBuffer.addPacket(packet, side);
   }

@@ -1,9 +1,12 @@
 package ethanjones.modularworld.core.util;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import ethanjones.modularworld.core.data.DataList;
 import ethanjones.modularworld.core.data.basic.DataFloat;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 
 public class VectorUtil {
 
@@ -19,15 +22,14 @@ public class VectorUtil {
     return new Vector3(dataList.get(0).get(), dataList.get(1).get(), dataList.get(2).get());
   }
 
-  public static DataList<DataFloat> dataFromVector2(Vector2 vector2) {
-    DataList<DataFloat> dataList = new DataList<DataFloat>();
-    dataList.add(new DataFloat(vector2.x));
-    dataList.add(new DataFloat(vector2.y));
-    return dataList;
+  public static void writeVector3(Vector3 vector3, DataOutputStream dataOutputStream) throws IOException {
+    dataOutputStream.writeFloat(vector3.x);
+    dataOutputStream.writeFloat(vector3.y);
+    dataOutputStream.writeFloat(vector3.z);
   }
 
-  public static Vector2 vector2FromData(DataList<DataFloat> dataList) {
-    return new Vector2(dataList.get(0).get(), dataList.get(1).get());
+  public static Vector3 readVector3(DataInputStream dataInputStream) throws IOException {
+    return new Vector3(dataInputStream.readFloat(), dataInputStream.readFloat(), dataInputStream.readFloat());
   }
 
 }

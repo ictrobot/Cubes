@@ -1,6 +1,7 @@
 package ethanjones.modularworld.networking.packets;
 
 import ethanjones.modularworld.core.data.DataGroup;
+import ethanjones.modularworld.networking.common.packet.DataPacket;
 import ethanjones.modularworld.networking.common.packet.Packet;
 import ethanjones.modularworld.networking.common.packet.PacketPriority;
 import ethanjones.modularworld.side.Side;
@@ -9,7 +10,7 @@ import ethanjones.modularworld.side.server.PlayerManager;
 import ethanjones.modularworld.world.reference.AreaReference;
 import ethanjones.modularworld.world.storage.Area;
 
-public class PacketArea extends Packet {
+public class PacketArea extends DataPacket {
 
   public static AreaReference areaReference = new AreaReference();
   public int areaX;

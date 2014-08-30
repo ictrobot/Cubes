@@ -21,8 +21,8 @@ public class SocketMonitor implements Disposable {
     this.networking = networking;
     remoteAddress = socket.getRemoteAddress();
     running = new AtomicBoolean(true);
-    socketInput = new SocketInput(this, socket.getInputStream(), networking);
-    socketOutput = new SocketOutput(this, socket.getOutputStream());
+    socketInput = new SocketInput(this);
+    socketOutput = new SocketOutput(this);
     socketInput.start("Socket Input: " + socket.getRemoteAddress());
     socketOutput.start("Socket Output: " + socket.getRemoteAddress());
   }
