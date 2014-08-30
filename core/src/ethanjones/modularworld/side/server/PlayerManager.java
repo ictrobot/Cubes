@@ -1,5 +1,7 @@
 package ethanjones.modularworld.side.server;
 
+import com.badlogic.gdx.math.collision.Ray;
+import ethanjones.modularworld.block.Blocks;
 import ethanjones.modularworld.core.events.EventHandler;
 import ethanjones.modularworld.core.events.world.block.BlockEvent;
 import ethanjones.modularworld.core.thread.Threads;
@@ -127,9 +129,9 @@ public class PlayerManager {
 
   public void click(PacketClick.Click type) {
     if (type == PacketClick.Click.left) {
-      BlockReference blockReference = RayTracing.getBlock(player.position, player.angle, ModularWorldServer.instance.world, 8);
+      BlockReference blockReference = RayTracing.getIntersection(new Ray(player.position, player.angle), ModularWorldServer.instance.world, 8);
       if (blockReference == null) return;
-      ModularWorldServer.instance.world.setBlockFactory(null, blockReference.blockX, blockReference.blockY, blockReference.blockZ);
+      ModularWorldServer.instance.world.setBlockFactory(Blocks.stone, blockReference.blockX, blockReference.blockY, blockReference.blockZ);
     }
   }
 }

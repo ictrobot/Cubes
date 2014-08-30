@@ -2,6 +2,7 @@ package ethanjones.modularworld.networking.common.socket;
 
 import ethanjones.modularworld.core.data.DataGroup;
 import ethanjones.modularworld.core.data.DataTools;
+import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.networking.common.packet.Packet;
 import ethanjones.modularworld.networking.common.packet.PacketManager;
 import ethanjones.modularworld.networking.common.packet.PacketQueue;
@@ -30,6 +31,7 @@ public class SocketOutput extends SocketIO {
         if (packetQueue.isEmpty()) {
           packetQueue.waitForPacket();
         }
+        Log.info(socketMonitor.getRemoteAddress(), "Packets to send: " + packetQueue.size());
         Packet packet = packetQueue.getPacket();
         if (packet == null) continue;
         DataGroup payload = PacketManager.getPayload(packet);

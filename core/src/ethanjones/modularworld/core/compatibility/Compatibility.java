@@ -5,13 +5,13 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import ethanjones.modularworld.core.ModularWorldException;
+import ethanjones.modularworld.core.adapter.GraphicalAdapter;
+import ethanjones.modularworld.core.adapter.HeadlessAdapter;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.core.logging.UncaughtExceptionHandler;
 import ethanjones.modularworld.graphics.asset.AssetFinder;
 import ethanjones.modularworld.graphics.asset.AssetManager;
-import ethanjones.modularworld.core.adapter.GraphicalAdapter;
 import ethanjones.modularworld.side.common.ModularWorld;
-import ethanjones.modularworld.core.adapter.HeadlessAdapter;
 
 public abstract class Compatibility {
 

@@ -11,13 +11,14 @@ import ethanjones.modularworld.networking.packets.PacketClick;
 
 public class InputChain implements Disposable {
 
-  public Stage hud;
-  public CameraController cameraController;
   private static InputMultiplexer inputMultiplexer = new InputMultiplexer();
 
   static {
     Gdx.input.setInputProcessor(inputMultiplexer);
   }
+
+  public Stage hud;
+  public CameraController cameraController;
 
   public static InputMultiplexer getInputMultiplexer() {
     return inputMultiplexer;
@@ -31,6 +32,7 @@ public class InputChain implements Disposable {
   }
 
   public void beforeRender() {
+    cameraController.update();
     PacketClick packet = new PacketClick();
     if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
       packet.type = PacketClick.Click.get(Input.Buttons.LEFT);
@@ -44,7 +46,6 @@ public class InputChain implements Disposable {
     if (packet.type != null) {
       NetworkingManager.clientNetworking.sendToServer(packet);
     }
-    cameraController.update();
   }
 
   public void afterRender() {

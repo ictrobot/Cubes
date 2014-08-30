@@ -4,13 +4,13 @@ public class Zone {
 
   public static final int SIZE_AREAS = 16;
   public static final int SIZE_BLOCKS = Zone.SIZE_AREAS * Area.SIZE_BLOCKS;
-  private Area[][][] areas = new Area[SIZE_AREAS][SIZE_AREAS][SIZE_AREAS];
   public final int x;
   public final int z;
   public final int maxBlockX;
   public final int maxBlockZ;
   public final int minBlockX;
   public final int minBlockZ;
+  private Area[][][] areas = new Area[SIZE_AREAS][SIZE_AREAS][SIZE_AREAS];
 
   /**
    * In zone coords

@@ -7,27 +7,11 @@ import ethanjones.modularworld.side.server.ModularWorldServer;
 
 public class PacketClick extends Packet {
 
-  public static enum Click {
-    left, middle, right;
-
-    public static Click get(int button) {
-      switch (button) {
-        case 0:
-          return left;
-        case 1:
-          return right;
-        case 2:
-          return middle;
-      }
-      return null;
-    }
-  }
+  public Click type;
 
   public PacketClick() {
     super(PacketPriority.HIGH);
   }
-
-  public Click type;
 
   @Override
   public void handlePacket() {
@@ -44,5 +28,21 @@ public class PacketClick extends Packet {
   @Override
   public void read(DataGroup data) {
     type = Click.values()[data.getInteger("type")];
+  }
+
+  public static enum Click {
+    left, middle, right;
+
+    public static Click get(int button) {
+      switch (button) {
+        case 0:
+          return left;
+        case 1:
+          return right;
+        case 2:
+          return middle;
+      }
+      return null;
+    }
   }
 }

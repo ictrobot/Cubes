@@ -18,9 +18,6 @@ import ethanjones.modularworld.input.InputChain;
 public abstract class Menu {
 
   public static final Skin skin;
-
-  private static SpriteBatch spriteBatch;
-  private static ScreenViewport viewport;
   protected static Stage stage;
 
   static {
@@ -47,13 +44,16 @@ public abstract class Menu {
     stage = new Stage(viewport, spriteBatch);
   }
 
-  public static void staticDispose() {
-    spriteBatch.dispose();
-    stage.dispose();
-  }
+  private static SpriteBatch spriteBatch;
+  private static ScreenViewport viewport;
 
   public Menu() {
 
+  }
+
+  public static void staticDispose() {
+    spriteBatch.dispose();
+    stage.dispose();
   }
 
   /**

@@ -15,10 +15,6 @@ import ethanjones.modularworld.graphics.menu.actor.ResizableTextField;
 
 public class MenuTools {
 
-  public static enum Direction {
-    Above, Below, Left, Right;
-  }
-
   public static void move(Actor move, Direction direction, Actor other) {
     move(move, direction, other, 0);
   }
@@ -204,5 +200,9 @@ public class MenuTools {
       }
     });
     return textButton;
+  }
+
+  public static enum Direction {
+    Above, Below, Left, Right;
   }
 }

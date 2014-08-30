@@ -24,7 +24,8 @@ public abstract class Packet implements DataParser<DataGroup> {
   }
 
   /**
-   * Called right before writing packet into outputstream
+   * Called right before writing packet into output stream
+   *
    * @return if packet should be send
    */
   public boolean shouldSend() {
@@ -33,19 +34,19 @@ public abstract class Packet implements DataParser<DataGroup> {
 
   public abstract void handlePacket();
 
-  protected void setSocketMonitor(SocketMonitor socketMonitor) {
-    this.socketMonitor = socketMonitor;
-  }
-
   public SocketMonitor getSocketMonitor() {
     return socketMonitor;
   }
 
-  protected void setSide(Side side) {
-    this.side = side;
+  protected void setSocketMonitor(SocketMonitor socketMonitor) {
+    this.socketMonitor = socketMonitor;
   }
 
   public Side getSide() {
     return side;
+  }
+
+  protected void setSide(Side side) {
+    this.side = side;
   }
 }

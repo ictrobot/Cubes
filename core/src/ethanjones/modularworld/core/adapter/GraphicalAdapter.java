@@ -26,6 +26,10 @@ public class GraphicalAdapter implements ApplicationListener {
     GraphicalAdapter.instance = this;
   }
 
+  public Menu getMenu() {
+    return menu;
+  }
+
   public void setMenu(Menu menu) {
     Menu old = this.menu;
     if (old != null) {
@@ -41,10 +45,6 @@ public class GraphicalAdapter implements ApplicationListener {
       Log.debug("Menu set to null");
     }
 
-  }
-
-  public Menu getMenu() {
-    return menu;
   }
 
   public void setModularWorld(ModularWorldServer modularWorldServer, ModularWorldClient modularWorldClient) {

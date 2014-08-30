@@ -8,8 +8,8 @@ import ethanjones.modularworld.side.Side;
 
 public abstract class Networking implements PacketHandler {
 
-  private PacketBuffer packetBuffer;
   private final Side side;
+  private PacketBuffer packetBuffer;
   private volatile NetworkingState networkingState;
 
   public Networking(Side side) {
@@ -17,12 +17,12 @@ public abstract class Networking implements PacketHandler {
     this.packetBuffer = new PacketBuffer();
   }
 
-  protected void setNetworkingState(NetworkingState networkingState) {
-    this.networkingState = networkingState;
-  }
-
   public NetworkingState getNetworkingState() {
     return networkingState;
+  }
+
+  protected void setNetworkingState(NetworkingState networkingState) {
+    this.networkingState = networkingState;
   }
 
   public abstract void start();

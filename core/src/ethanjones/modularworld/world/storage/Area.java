@@ -26,7 +26,6 @@ public class Area implements DataParser<DataGroup> {
   public final int x;
   public final int y;
   public final int z;
-  private final boolean render;
   public final int maxBlockX;
   public final int maxBlockY;
   public final int maxBlockZ;
@@ -36,7 +35,7 @@ public class Area implements DataParser<DataGroup> {
   public final int minBlockX;
   public final int minBlockY;
   public final int minBlockZ;
-
+  private final boolean render;
   public boolean generated = false;
   public AreaRenderer areaRenderer;
   public int[] blockFactories;

@@ -11,38 +11,6 @@ import java.util.HashMap;
 
 public class WorldServer extends World {
 
-  private static class Key {
-    int x, y, z;
-
-    public Key set(AreaReference areaReference) {
-      this.x = areaReference.areaX;
-      this.y = areaReference.areaY;
-      this.z = areaReference.areaZ;
-      return this;
-    }
-
-    @Override
-    public int hashCode() {
-      return x ^ y ^ z;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-      if (obj instanceof Key) {
-        Key key = (Key) obj;
-        return key.x == x && key.y == y && key.z == z;
-      }
-      return false;
-    }
-  }
-
-  private static class KeyPool extends Pool<Key> {
-    @Override
-    public synchronized Key newObject() {
-      return new Key();
-    }
-  }
-
   private final WorldGenerator worldGenerator;
   private final HashMap<Key, Area> areaMap;
   private final KeyPool keyPool;
@@ -97,5 +65,37 @@ public class WorldServer extends World {
 
   public WorldGenerator getWorldGenerator() {
     return worldGenerator;
+  }
+
+  private static class Key {
+    int x, y, z;
+
+    public Key set(AreaReference areaReference) {
+      this.x = areaReference.areaX;
+      this.y = areaReference.areaY;
+      this.z = areaReference.areaZ;
+      return this;
+    }
+
+    @Override
+    public int hashCode() {
+      return x ^ y ^ z;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (obj instanceof Key) {
+        Key key = (Key) obj;
+        return key.x == x && key.y == y && key.z == z;
+      }
+      return false;
+    }
+  }
+
+  private static class KeyPool extends Pool<Key> {
+    @Override
+    public synchronized Key newObject() {
+      return new Key();
+    }
   }
 }

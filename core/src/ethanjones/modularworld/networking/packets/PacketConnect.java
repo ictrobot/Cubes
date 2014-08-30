@@ -8,12 +8,12 @@ import ethanjones.modularworld.side.server.PlayerManager;
 
 public class PacketConnect extends Packet {
 
+  public int renderDistance;
+  public String username;
+
   public PacketConnect() {
     super(PacketPriority.HIGH);
   }
-
-  public int renderDistance;
-  public String username;
 
   @Override
   public DataGroup write() {

@@ -11,17 +11,16 @@ import ethanjones.modularworld.world.storage.Area;
 
 public class PacketArea extends Packet {
 
-  public PacketArea() {
-    super(PacketPriority.LOW);
-  }
-
   public static AreaReference areaReference = new AreaReference();
-
   public int areaX;
   public int areaY;
   public int areaZ;
   public DataGroup area;
   public PlayerManager playerManager;
+
+  public PacketArea() {
+    super(PacketPriority.LOW);
+  }
 
   @Override
   public void handlePacket() {

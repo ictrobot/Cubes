@@ -142,9 +142,6 @@ public class DataGroup extends Data {
 
   //Set
 
-  /**
-   * @return value
-   */
   public Data setValue(String key, Data value) {
     map.put(key, value);
     return value;

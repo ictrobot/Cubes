@@ -27,13 +27,11 @@ public class GraphicsHelper {
 
   public static final int attributes = Usage.Position | Usage.Normal | Usage.TextureCoordinates;
   public static final VertexAttributes vertexAttributes = MeshBuilder.createAttributes(attributes);
-
+  public static AssetManager assetManager;
   private static Array<TexturePacker> texturePackers = new Array<TexturePacker>();
   private static Array<Material> packedMaterials;
-
   private static HashMap<String, PackedTexture> textures = new HashMap<String, PackedTexture>();
   private static PackedTexture.PackedMaterial blockPackedTextures;
-  public static AssetManager assetManager;
 
   public static PackedTexture getTexture(String name) {
     PackedTexture packedTextureWrapper = textures.get(stringToHashMap(name));

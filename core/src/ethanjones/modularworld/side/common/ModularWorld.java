@@ -37,6 +37,12 @@ public abstract class ModularWorld implements ApplicationListener {
   public static BlockManager blockManager;
   public static Timing timing;
   private static boolean setup;
+  private final Side side;
+  public World world;
+
+  public ModularWorld(Side side) {
+    this.side = side;
+  }
 
   public static void setup() {
     if (setup) return;
@@ -80,11 +86,27 @@ public abstract class ModularWorld implements ApplicationListener {
     setup = true;
   }
 
-  private final Side side;
-  public World world;
+  protected static void staticDispose() {
+    Threads.disposeExecutor();
+    Menu.staticDispose();
+  }
 
-  public ModularWorld(Side side) {
-    this.side = side;
+  /**
+   * Always exits if is headless
+   */
+  public static final void quit(boolean exit) {
+    if (ModularWorldClient.instance != null) {
+      ModularWorldClient.instance.dispose();
+    }
+    if (ModularWorldServer.instance != null) {
+      ModularWorldServer.instance.dispose();
+    }
+    if (exit || compatibility.isHeadless()) {
+      staticDispose();
+      System.exit(0);
+    } else {
+      GraphicalAdapter.instance.gotoMainMenu();
+    }
   }
 
   @Override
@@ -124,28 +146,5 @@ public abstract class ModularWorld implements ApplicationListener {
     write();
     NetworkingManager.getNetworking(side).stop();
     world.dispose();
-  }
-
-  protected static void staticDispose() {
-    Threads.disposeExecutor();
-    Menu.staticDispose();
-  }
-
-  /**
-   * Always exits if is headless
-   */
-  public static final void quit(boolean exit) {
-    if (ModularWorldClient.instance != null) {
-      ModularWorldClient.instance.dispose();
-    }
-    if (ModularWorldServer.instance != null) {
-      ModularWorldServer.instance.dispose();
-    }
-    if (exit || compatibility.isHeadless()) {
-      staticDispose();
-      System.exit(0);
-    } else {
-      GraphicalAdapter.instance.gotoMainMenu();
-    }
   }
 }

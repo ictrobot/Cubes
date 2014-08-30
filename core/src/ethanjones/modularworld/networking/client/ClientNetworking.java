@@ -14,6 +14,7 @@ import ethanjones.modularworld.side.client.ModularWorldClient;
 
 public class ClientNetworking extends Networking {
 
+  public static int currentID = -1;
   private final String host;
   private final int port;
   private SocketMonitor socketMonitor;

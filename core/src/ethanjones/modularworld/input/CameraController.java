@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.IntIntMap;
 public class CameraController extends InputAdapter {
   private final Camera camera;
   private final IntIntMap keys = new IntIntMap();
+  private final Vector3 tmp = new Vector3();
   private int STRAFE_LEFT = Input.Keys.A;
   private int STRAFE_RIGHT = Input.Keys.D;
   private int FORWARD = Input.Keys.W;
@@ -18,7 +19,6 @@ public class CameraController extends InputAdapter {
   private float jumpCount = 0;
   private float speed = 5;
   private float degreesPerPixel = 0.5f;
-  private final Vector3 tmp = new Vector3();
 
   public CameraController(Camera camera) {
     this.camera = camera;

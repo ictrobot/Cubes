@@ -1,8 +1,9 @@
 package ethanjones.modularworld.block;
 
-import ethanjones.modularworld.block.basic.*;
 import ethanjones.modularworld.block.basic.BlockBedrock;
+import ethanjones.modularworld.block.basic.BlockDirt;
 import ethanjones.modularworld.block.basic.BlockGrass;
+import ethanjones.modularworld.block.basic.BlockStone;
 import ethanjones.modularworld.core.util.Register;
 import ethanjones.modularworld.side.common.ModularWorld;
 
