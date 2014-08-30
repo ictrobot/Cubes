@@ -26,7 +26,7 @@ public abstract class Networking {
 
   public abstract void start();
 
-  public abstract void update();
+  public abstract void tick();
 
   public abstract void stop();
 

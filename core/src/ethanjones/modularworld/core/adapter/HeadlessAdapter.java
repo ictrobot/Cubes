@@ -35,6 +35,7 @@ public class HeadlessAdapter implements ApplicationListener {
   @Override
   public void render() {
     try {
+      ModularWorld.staticRender();
       if (modularWorldServer != null) modularWorldServer.render();
     } catch (Exception e) {
       Log.error(Branding.NAME, "", ModularWorldException.getModularWorldException(e));

@@ -104,6 +104,7 @@ public class GraphicalAdapter implements ApplicationListener {
       } else {
         Gdx.input.setCursorCatched(false);
       }
+      ModularWorld.staticRender();
       if (modularWorldServer != null) modularWorldServer.render();
       if (modularWorldClient != null) modularWorldClient.render();
       if (menu != null) menu.render(); //Render menu over client

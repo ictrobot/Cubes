@@ -31,7 +31,7 @@ public class ServerNetworking extends Networking {
   }
 
   @Override
-  public synchronized void update() {
+  public synchronized void tick() {
 
   }
 

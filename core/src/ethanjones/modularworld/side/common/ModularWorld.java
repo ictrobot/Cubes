@@ -17,6 +17,7 @@ import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.core.settings.Settings;
 import ethanjones.modularworld.core.settings.SettingsManager;
 import ethanjones.modularworld.core.thread.Threads;
+import ethanjones.modularworld.core.timing.TimeHandler;
 import ethanjones.modularworld.core.timing.Timing;
 import ethanjones.modularworld.graphics.GraphicsHelper;
 import ethanjones.modularworld.graphics.asset.AssetManager;
@@ -27,8 +28,9 @@ import ethanjones.modularworld.side.client.ModularWorldClient;
 import ethanjones.modularworld.side.server.ModularWorldServer;
 import ethanjones.modularworld.world.World;
 
-public abstract class ModularWorld implements ApplicationListener {
+public abstract class ModularWorld implements ApplicationListener, TimeHandler {
 
+  private static final int tickMS = 16;
   public static Compatibility compatibility;
   public static AssetManager assetManager;
   public static FileHandle baseFolder;
@@ -86,6 +88,11 @@ public abstract class ModularWorld implements ApplicationListener {
     setup = true;
   }
 
+  public static void staticRender() {
+    Memory.update();
+    timing.update();
+  }
+
   protected static void staticDispose() {
     Threads.disposeExecutor();
     Menu.staticDispose();
@@ -113,6 +120,7 @@ public abstract class ModularWorld implements ApplicationListener {
   public void create() {
     //TODO Rewrite settings, have two classes "Client" and "Server"
     eventBus.register(this);
+    timing.addHandler(this, tickMS);
   }
 
   @Override
@@ -122,9 +130,11 @@ public abstract class ModularWorld implements ApplicationListener {
 
   @Override
   public void render() {
-    Memory.update();
-    timing.update();
     NetworkingManager.getNetworking(side).processPackets();
+  }
+
+  public void tick() {
+    NetworkingManager.getNetworking(side).tick();
   }
 
   public void write() {
@@ -146,5 +156,9 @@ public abstract class ModularWorld implements ApplicationListener {
     write();
     NetworkingManager.getNetworking(side).stop();
     world.dispose();
+  }
+
+  public void time(int interval) {
+    if (interval == tickMS) tick();
   }
 }

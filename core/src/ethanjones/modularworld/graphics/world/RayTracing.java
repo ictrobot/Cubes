@@ -15,7 +15,7 @@ public class RayTracing {
     return getIntersection(new Ray(ModularWorldClient.instance.renderer.block.camera.position, ModularWorldClient.instance.renderer.block.camera.direction), ModularWorldClient.instance.world, 8);
   }
 
-  public static BlockReference getIntersection(Ray ray, World world, int maxLength) {
+  public static BlockReference getIntersection(Ray ray, World world, int maxLength) { //TODO Fix
     Vector3 tmp1 = ray.origin.cpy();
     Vector3 tmp2 = ray.getEndPoint(new Vector3(), maxLength);
     int x1 = (int) Math.floor(tmp1.x);

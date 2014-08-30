@@ -34,7 +34,7 @@ public class ClientNetworking extends Networking {
   }
 
   @Override
-  public synchronized void update() {
+  public synchronized void tick() {
     if (getNetworkingState() != NetworkingState.Running) GraphicalAdapter.instance.gotoMainMenu();
     PacketPlayerInfo packetPlayerInfo = new PacketPlayerInfo();
     packetPlayerInfo.angle = ModularWorldClient.instance.player.angle;

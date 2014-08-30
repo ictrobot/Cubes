@@ -67,7 +67,11 @@ public class ModularWorldClient extends ModularWorld {
     renderer.render();
     inputChain.afterRender();
     player.update();
-    NetworkingManager.clientNetworking.update();
+  }
+
+  @Override
+  public void tick() {
+    super.tick();
   }
 
   @Override
