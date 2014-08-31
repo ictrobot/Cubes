@@ -4,6 +4,6 @@ ModularWorld
 Summer project started in 2014 by Ethan Jones.
 
 
-[***License***](/License)
+[***License***](/LICENSE)
 
-[***Credits***](/Credits.md)
+[***Credits***](/CREDITS.md)
