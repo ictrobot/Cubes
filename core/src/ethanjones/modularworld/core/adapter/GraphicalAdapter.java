@@ -74,11 +74,12 @@ public class GraphicalAdapter implements ApplicationListener {
   @Override
   public void create() {
     try {
+      Thread.currentThread().setName("MAIN");
       ModularWorld.setup();
       Gdx.graphics.setTitle(Branding.DEBUG);
       setMenu(new MainMenu());
     } catch (Exception e) {
-      Log.error(Branding.NAME, "", ModularWorldException.getModularWorldException(e));
+      Log.error(ModularWorldException.getModularWorldException(e));
     }
   }
 
@@ -90,7 +91,7 @@ public class GraphicalAdapter implements ApplicationListener {
       if (modularWorldServer != null) modularWorldServer.resize(width, height);
       if (modularWorldClient != null) modularWorldClient.resize(width, height);
     } catch (Exception e) {
-      Log.error(Branding.NAME, "", ModularWorldException.getModularWorldException(e));
+      Log.error(ModularWorldException.getModularWorldException(e));
     }
   }
 
@@ -109,7 +110,7 @@ public class GraphicalAdapter implements ApplicationListener {
       if (modularWorldClient != null) modularWorldClient.render();
       if (menu != null) menu.render(); //Render menu over client
     } catch (Exception e) {
-      Log.error(Branding.NAME, "", ModularWorldException.getModularWorldException(e));
+      Log.error(ModularWorldException.getModularWorldException(e));
     }
   }
 
@@ -119,7 +120,7 @@ public class GraphicalAdapter implements ApplicationListener {
       if (modularWorldServer != null) modularWorldServer.pause();
       if (modularWorldClient != null) modularWorldClient.pause();
     } catch (Exception e) {
-      Log.error(Branding.NAME, "", ModularWorldException.getModularWorldException(e));
+      Log.error(ModularWorldException.getModularWorldException(e));
     }
   }
 
@@ -129,7 +130,7 @@ public class GraphicalAdapter implements ApplicationListener {
       if (modularWorldServer != null) modularWorldServer.resume();
       if (modularWorldClient != null) modularWorldClient.resume();
     } catch (Exception e) {
-      Log.error(Branding.NAME, "", ModularWorldException.getModularWorldException(e));
+      Log.error(ModularWorldException.getModularWorldException(e));
     }
   }
 
@@ -141,7 +142,7 @@ public class GraphicalAdapter implements ApplicationListener {
       }
       ModularWorld.quit(true);
     } catch (Exception e) {
-      Log.error(Branding.NAME, "", ModularWorldException.getModularWorldException(e));
+      Log.error(ModularWorldException.getModularWorldException(e));
     }
   }
 

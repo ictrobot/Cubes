@@ -1,19 +1,26 @@
-package ethanjones.modularworld.core.logging;
+package ethanjones.modularworld.core.logging.loggers;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import ethanjones.modularworld.core.logging.LogLevel;
+import ethanjones.modularworld.core.logging.LogWriter;
 
 public class GdxAppLogWriter implements LogWriter {
   @Override
-  public void log(LogLevel level, String tag, String message) {
+  public void log(LogLevel level, String message) {
     Gdx.app.setLogLevel(getLevel(level));
-    Gdx.app.log(tag, message);
+    Gdx.app.log(Thread.currentThread().getName(), message);
   }
 
   @Override
-  public void log(LogLevel level, String tag, String message, Throwable throwable) {
+  public void log(LogLevel level, String message, Throwable throwable) {
     Gdx.app.setLogLevel(getLevel(level));
-    Gdx.app.log(tag, message, throwable);
+    Gdx.app.log(Thread.currentThread().getName(), message, throwable);
+  }
+
+  @Override
+  public void log(LogLevel level, Throwable throwable) {
+    log(level, "", throwable);
   }
 
   public int getLevel(LogLevel level) {

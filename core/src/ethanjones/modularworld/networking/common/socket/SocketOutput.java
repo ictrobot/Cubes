@@ -25,7 +25,7 @@ public class SocketOutput extends SocketIO {
         if (packetQueue.isEmpty()) {
           packetQueue.waitForPacket();
         }
-        Log.info(socketMonitor.getRemoteAddress(), "Packets to send: " + packetQueue.size());
+        //Log.info("Packets to send: " + packetQueue.size());
         Packet packet = packetQueue.getPacket();
         if (packet == null) continue;
         dataOutputStream.writeUTF(packet.getClass().getName());

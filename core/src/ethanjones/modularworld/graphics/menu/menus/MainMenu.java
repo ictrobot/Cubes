@@ -41,7 +41,7 @@ public class MainMenu extends Menu {
       @Override
       public boolean handle(Event event) {
         if (!(event instanceof ChangeListener.ChangeEvent)) return false;
-        Log.debug("MainMenu", "Quit pressed");
+        Log.debug("Quit pressed");
         ModularWorld.quit(true);
         return true;
       }

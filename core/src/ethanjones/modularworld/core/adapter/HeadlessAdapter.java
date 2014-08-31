@@ -1,7 +1,6 @@
 package ethanjones.modularworld.core.adapter;
 
 import com.badlogic.gdx.ApplicationListener;
-import ethanjones.modularworld.core.Branding;
 import ethanjones.modularworld.core.ModularWorldException;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.networking.server.ServerNetworkingParameter;
@@ -15,11 +14,12 @@ public class HeadlessAdapter implements ApplicationListener {
   @Override
   public void create() {
     try {
+      Thread.currentThread().setName("MAIN");
       ModularWorld.setup();
       modularWorldServer = new ModularWorldServer(new ServerNetworkingParameter());
       modularWorldServer.create();
     } catch (Exception e) {
-      Log.error(Branding.NAME, "", ModularWorldException.getModularWorldException(e));
+      Log.error(ModularWorldException.getModularWorldException(e));
     }
   }
 
@@ -28,7 +28,7 @@ public class HeadlessAdapter implements ApplicationListener {
     try {
       if (modularWorldServer != null) modularWorldServer.resize(width, height);
     } catch (Exception e) {
-      Log.error(Branding.NAME, "", ModularWorldException.getModularWorldException(e));
+      Log.error(ModularWorldException.getModularWorldException(e));
     }
   }
 
@@ -38,7 +38,7 @@ public class HeadlessAdapter implements ApplicationListener {
       ModularWorld.staticRender();
       if (modularWorldServer != null) modularWorldServer.render();
     } catch (Exception e) {
-      Log.error(Branding.NAME, "", ModularWorldException.getModularWorldException(e));
+      Log.error(ModularWorldException.getModularWorldException(e));
     }
   }
 
@@ -47,7 +47,7 @@ public class HeadlessAdapter implements ApplicationListener {
     try {
       if (modularWorldServer != null) modularWorldServer.pause();
     } catch (Exception e) {
-      Log.error(Branding.NAME, "", ModularWorldException.getModularWorldException(e));
+      Log.error(ModularWorldException.getModularWorldException(e));
     }
   }
 
@@ -56,7 +56,7 @@ public class HeadlessAdapter implements ApplicationListener {
     try {
       if (modularWorldServer != null) modularWorldServer.resume();
     } catch (Exception e) {
-      Log.error(Branding.NAME, "", ModularWorldException.getModularWorldException(e));
+      Log.error(ModularWorldException.getModularWorldException(e));
     }
   }
 
@@ -65,7 +65,7 @@ public class HeadlessAdapter implements ApplicationListener {
     try {
       if (modularWorldServer != null) modularWorldServer.dispose();
     } catch (Exception e) {
-      Log.error(Branding.NAME, "", ModularWorldException.getModularWorldException(e));
+      Log.error(ModularWorldException.getModularWorldException(e));
     }
   }
 }

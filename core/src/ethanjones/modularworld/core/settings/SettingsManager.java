@@ -89,7 +89,7 @@ public class SettingsManager {
       print(s);
     }
     for (Setting s : settingGroup.getChildSettings()) {
-      Log.debug("Settings", SettingGroup.getString(s, true, false));
+      Log.debug(SettingGroup.getString(s, true, false));
     }
   }
 }

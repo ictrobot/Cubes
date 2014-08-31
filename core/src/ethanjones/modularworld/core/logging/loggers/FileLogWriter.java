@@ -1,10 +1,10 @@
-package ethanjones.modularworld.core.logging;
+package ethanjones.modularworld.core.logging.loggers;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 
-public class FileLogWriter implements LogWriter {
+public class FileLogWriter extends TextLogWriter {
 
   public static File file;
   FileOutputStream fileOutputStream;
@@ -22,24 +22,6 @@ public class FileLogWriter implements LogWriter {
   }
 
   @Override
-  public void log(LogLevel level, String tag, String message) {
-    writeToFile(SysOutLogWriter.getString(level, tag, message));
-    printStream.flush();
-  }
-
-  @Override
-  public void log(LogLevel level, String tag, String message, Throwable throwable) {
-    log(level, tag, message);
-    throwable.printStackTrace(printStream);
-    printStream.println();
-    printStream.flush();
-  }
-
-  public void writeToFile(String string) {
-    printStream.println(string);
-  }
-
-  @Override
   public void dispose() {
     try {
       printStream.close();
@@ -47,5 +29,10 @@ public class FileLogWriter implements LogWriter {
     } catch (Exception e) {
 
     }
+  }
+
+  @Override
+  protected void println(String string) {
+    printStream.println(string);
   }
 }

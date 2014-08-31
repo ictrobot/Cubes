@@ -57,7 +57,7 @@ public abstract class ModularWorld implements ApplicationListener, TimeHandler {
     baseFolder = compatibility.getBaseFolder();
     baseFolder.mkdirs();
 
-    Log.info(Branding.NAME, Branding.DEBUG); //Can't log till base folder setup
+    Log.info(Branding.DEBUG); //Can't log till base folder setup
 
     compatibility.logEnvironment();
     Debug.printProperties();

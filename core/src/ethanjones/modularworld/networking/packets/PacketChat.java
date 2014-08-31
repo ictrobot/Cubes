@@ -26,7 +26,7 @@ public class PacketChat extends Packet {
   @Override
   public void handlePacket() {
     if (getSide() == Side.Server) {
-      Log.info("Chat", msg);
+      Log.info(" [Chat]" + msg);
       for (PlayerManager playerManager : ModularWorldServer.instance.playerManagers.values()) {
         playerManager.sendPacket(this);
       }
