@@ -60,21 +60,23 @@ public class CameraController extends InputAdapter {
   }
 
   public void update(float deltaTime) {
-    tmp.set(camera.direction);
-    //tmp.y = 0;
     if (keys.containsKey(FORWARD)) {
+      tmp.set(camera.direction);
       tmp.nor().scl(deltaTime * speed);
       camera.position.add(tmp);
     }
     if (keys.containsKey(BACKWARD)) {
+      tmp.set(camera.direction);
       tmp.nor().scl(-deltaTime * speed);
       camera.position.add(tmp);
     }
     if (keys.containsKey(STRAFE_LEFT)) {
+      tmp.set(camera.direction);
       tmp.crs(camera.up).nor().scl(-deltaTime * speed);
       camera.position.add(tmp);
     }
     if (keys.containsKey(STRAFE_RIGHT)) {
+      tmp.set(camera.direction);
       tmp.crs(camera.up).nor().scl(deltaTime * speed);
       camera.position.add(tmp);
     }
