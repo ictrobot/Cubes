@@ -61,7 +61,7 @@ public class CameraController extends InputAdapter {
 
   public void update(float deltaTime) {
     tmp.set(camera.direction);
-    tmp.y = 0;
+    //tmp.y = 0;
     if (keys.containsKey(FORWARD)) {
       tmp.nor().scl(deltaTime * speed);
       camera.position.add(tmp);
@@ -78,14 +78,14 @@ public class CameraController extends InputAdapter {
       tmp.crs(camera.up).nor().scl(deltaTime * speed);
       camera.position.add(tmp);
     }
-    if (keys.containsKey(JUMP) && jumpCount == 0) {
-      jumpCount = 1.25f;
-    }
-    if (jumpCount > 0) {
-      camera.position.y += Math.min(jumpCount, deltaTime * 2);
-      jumpCount -= deltaTime * 2;
-      if (jumpCount < 0) jumpCount = 0;
-    }
+    //if (keys.containsKey(JUMP) && jumpCount == 0) {
+    //  jumpCount = 1.25f;
+    //}
+    //if (jumpCount > 0) {
+    //camera.position.y += Math.min(jumpCount, deltaTime * 2);
+    //  jumpCount -= deltaTime * 2;
+    //  if (jumpCount < 0) jumpCount = 0;
+    //}
     camera.update(true);
   }
 }

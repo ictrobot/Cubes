@@ -17,12 +17,13 @@ public class PacketQueue {
   }
 
   public void addPacket(Packet packet) {
+    if (!packet.shouldSend()) return;
     Array<Packet> array = getArray(packet.getPriority());
     synchronized (array) {
       array.add(packet);
-      synchronized (sync) {
-        if (packet.shouldSend()) sync.notifyAll();
-      }
+    }
+    synchronized (sync) {
+      sync.notifyAll();
     }
   }
 

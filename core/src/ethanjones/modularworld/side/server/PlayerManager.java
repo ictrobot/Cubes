@@ -25,7 +25,7 @@ public class PlayerManager {
   private PacketConnect packetConnect;
   private SocketMonitor socketMonitor;
   private Player player;
-  private volatile Coordinates playerCoordinates; //any methods that access should be 'synchronized'
+  private volatile Coordinates playerCoordinates; //blocks should be "synchronized (playerCoordinates) {"
 
   private int renderDistance;
 
@@ -75,26 +75,30 @@ public class PlayerManager {
   }
 
 
-  private synchronized void initialLoadAreas() {
+  private void initialLoadAreas() {
     AreaReference check = new AreaReference();
-    for (int areaX = playerCoordinates.areaX - renderDistance; areaX <= playerCoordinates.areaX + renderDistance; areaX++) {
-      check.areaX = areaX;
-      for (int areaY = Math.max(playerCoordinates.areaY - renderDistance, 0); areaY <= playerCoordinates.areaY + renderDistance; areaY++) {
-        check.areaY = areaY;
-        for (int areaZ = playerCoordinates.areaZ - renderDistance; areaZ <= playerCoordinates.areaZ + renderDistance; areaZ++) {
-          check.areaZ = areaZ;
-          sendAndRequestArea(check);
+    synchronized (playerCoordinates) {
+      for (int areaX = playerCoordinates.areaX - renderDistance; areaX <= playerCoordinates.areaX + renderDistance; areaX++) {
+        check.areaX = areaX;
+        for (int areaY = Math.max(playerCoordinates.areaY - renderDistance, 0); areaY <= playerCoordinates.areaY + renderDistance; areaY++) {
+          check.areaY = areaY;
+          for (int areaZ = playerCoordinates.areaZ - renderDistance; areaZ <= playerCoordinates.areaZ + renderDistance; areaZ++) {
+            check.areaZ = areaZ;
+            sendAndRequestArea(check);
+          }
         }
       }
     }
   }
 
   @EventHandler
-  public synchronized void blockChanged(BlockEvent blockEvent) {
+  public void blockChanged(BlockEvent blockEvent) {
     BlockCoordinates coordinates = blockEvent.getBlockCoordinates();
-    if (Math.abs(coordinates.areaX - playerCoordinates.areaX) > renderDistance) return;
-    if (Math.abs(coordinates.areaY - playerCoordinates.areaY) > renderDistance) return;
-    if (Math.abs(coordinates.areaZ - playerCoordinates.areaZ) > renderDistance) return;
+    synchronized (playerCoordinates) {
+      if (Math.abs(coordinates.areaX - playerCoordinates.areaX) > renderDistance) return;
+      if (Math.abs(coordinates.areaY - playerCoordinates.areaY) > renderDistance) return;
+      if (Math.abs(coordinates.areaZ - playerCoordinates.areaZ) > renderDistance) return;
+    }
     PacketBlockChanged packet = new PacketBlockChanged();
     packet.x = coordinates.blockX;
     packet.y = coordinates.blockY;
@@ -120,11 +124,13 @@ public class PlayerManager {
     socketMonitor.queue(packet);
   }
 
-  public synchronized boolean shouldSendArea(int areaX, int areaY, int areaZ) {
-    if (Math.abs(areaX - playerCoordinates.areaX) <= renderDistance && Math.abs(areaY - playerCoordinates.areaY) <= renderDistance && Math.abs(areaZ - playerCoordinates.areaZ) <= renderDistance) {
-      return true;
+  public boolean shouldSendArea(int areaX, int areaY, int areaZ) {
+    synchronized (playerCoordinates) {
+      if (Math.abs(areaX - playerCoordinates.areaX) <= renderDistance && Math.abs(areaY - playerCoordinates.areaY) <= renderDistance && Math.abs(areaZ - playerCoordinates.areaZ) <= renderDistance) {
+        return true;
+      }
+      return false;
     }
-    return false;
   }
 
   public void click(PacketClick.Click type) {
