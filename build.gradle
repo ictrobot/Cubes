@@ -109,8 +109,10 @@ tasks.eclipse.doLast {
 }
 
 task ci(dependsOn: ['core:jar', 'android:assembleDebug', 'android:assembleRelease', 'desktop-lwjgl:dist', 'desktop-headless:dist']) << {
-    publish.execute()
+
 }
+
+publish.shouldRunAfter('ci')
 
 publishing {
     publications {
