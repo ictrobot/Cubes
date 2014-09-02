@@ -112,7 +112,7 @@ task ci(dependsOn: ['core:jar', 'android:assembleDebug', 'android:assembleReleas
 
 }
 
-publish.shouldRunAfter('ci')
+publish.mustRunAfter('ci')
 
 publishing {
     publications {
