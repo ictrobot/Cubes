@@ -49,6 +49,10 @@ public abstract class Compatibility {
 
   }
 
+  public boolean isTouchScreen() {
+    return false;
+  }
+
   protected abstract void run(ApplicationListener applicationListener);
 
   public void startModularWorld() {

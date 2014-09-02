@@ -97,3 +97,7 @@ project(":ios") {
 tasks.eclipse.doLast {
     delete ".project"
 }
+
+task ci(dependsOn: ['android:assembleDebug', 'android:assembleRelease', 'desktop-lwjgl:dist', 'desktop-headless:dist']) {
+  
+}

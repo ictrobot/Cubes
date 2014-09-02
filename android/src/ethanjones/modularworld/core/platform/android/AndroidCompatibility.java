@@ -22,11 +22,16 @@ public class AndroidCompatibility extends Compatibility {
 
   @Override
   public void logEnvironment() {
-    Log.debug("Properties", "Android Version:    " + Build.VERSION.RELEASE);
-    Log.debug("Properties", "Android SDK:        " + Build.VERSION.SDK_INT);
-    Log.debug("Properties", "Brand:              " + Build.BRAND);
-    Log.debug("Properties", "Model:              " + Build.MODEL);
-    Log.debug("Properties", "Product:            " + Build.PRODUCT);
+    Log.debug("Android Version:    " + Build.VERSION.RELEASE);
+    Log.debug("Android SDK:        " + Build.VERSION.SDK_INT);
+    Log.debug("Brand:              " + Build.BRAND);
+    Log.debug("Model:              " + Build.MODEL);
+    Log.debug("Product:            " + Build.PRODUCT);
+  }
+
+  @Override
+  public boolean isTouchScreen() {
+    return true;
   }
 
   @Override

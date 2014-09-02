@@ -1,6 +1,7 @@
 package ethanjones.modularworld.graphics.rendering;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -8,6 +9,8 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import ethanjones.modularworld.graphics.GraphicsHelper;
 import ethanjones.modularworld.graphics.menu.actor.ResizableTextField;
+import ethanjones.modularworld.input.keyboard.KeyTypedListener;
+import ethanjones.modularworld.input.keyboard.KeyboardHelper;
 import ethanjones.modularworld.networking.NetworkingManager;
 import ethanjones.modularworld.networking.packets.PacketChat;
 import ethanjones.modularworld.side.client.ClientDebug;
@@ -16,6 +19,38 @@ import ethanjones.modularworld.side.client.ModularWorldClient;
 import static ethanjones.modularworld.graphics.menu.Menu.skin;
 
 public class HudRenderer implements Disposable {
+
+  private class KeyListener implements KeyTypedListener {
+
+    final int debug = Input.Keys.F1;
+    final int chat = Input.Keys.F2;
+
+    boolean debugDown = false;
+    boolean chatDown = false;
+
+    @Override
+    public void keyDown(int keycode) {
+      if (keycode == debug && !debugDown) {
+        debugDown = true;
+        debugEnabled = !debugEnabled;
+      }
+      if (keycode == chat && !chatDown) {
+        chatDown = true;
+        chatEnabled = !chatEnabled;
+      }
+    }
+
+    @Override
+    public void keyUp(int keycode) {
+      if (keycode == debug) debugDown = false;
+      if (keycode == chat) chatDown = false;
+    }
+
+    @Override
+    public void keyTyped(char character) {
+
+    }
+  }
 
   boolean chatEnabled = false; //TODO: Keyboard shortcuts and on screen buttons
   boolean debugEnabled = false;
@@ -47,6 +82,7 @@ public class HudRenderer implements Disposable {
         }
       }
     });
+    KeyboardHelper.addKeyTypedListener(new KeyListener());
   }
 
   public void render() {
