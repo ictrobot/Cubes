@@ -2,6 +2,7 @@
 .metadata
 .gradle/
 .idea/
+repo/
 html/war/
 bin/
 tmp/
