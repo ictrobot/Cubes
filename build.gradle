@@ -108,11 +108,11 @@ tasks.eclipse.doLast {
     delete ".project"
 }
 
-task ci(dependsOn: ['core:jar', 'android:assembleDebug', 'android:assembleRelease', 'desktop-lwjgl:dist', 'desktop-headless:dist']) << {
+task ci(dependsOn: ['core:jar', 'publish', 'android:assembleDebug', 'android:assembleRelease', 'desktop-lwjgl:dist', 'desktop-headless:dist']) << {
 
 }
 
-publish.mustRunAfter('ci')
+publish.shouldRunAfter('core:jar')
 
 publishing {
     publications {
