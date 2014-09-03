@@ -23,6 +23,10 @@ publishing {
             version buildProperties.version
 
             pom.withXml {
+                def parent = asNode().appendNode('parent')
+                parent.appendNode('groupId','org.sonatype.oss')
+                parent.appendNode('artifactId','oss-parent')
+                parent.appendNode('version','5')
                 def repositories = asNode().appendNode('repositories')
                 def libgdxSnapshots = repositories.appendNode('repository')
                 libgdxSnapshots.appendNode('id', 'libgdxSnapshots')
