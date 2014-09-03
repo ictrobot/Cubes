@@ -122,12 +122,14 @@ publishing {
             artifact 'build/outputs/apk/android-debug.apk'
             groupId 'ethanjones.modularworld'
             artifactId 'android-debug'
+            classifier "debug"
             version buildProperties.version
         }
         maven(MavenPublication) {
             artifact 'build/outputs/apk/android-release.apk'
             groupId 'ethanjones.modularworld'
             artifactId 'android-release'
+            classifier "release"
             version buildProperties.version
         }
     }
