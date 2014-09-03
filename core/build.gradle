@@ -8,10 +8,16 @@ eclipse.project {
 dependencies {
 }
 
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
 publishing {
     publications {
         jar(MavenPublication) {
             artifact 'build/libs/core.jar'
+            artifact sourcesJar
             groupId 'ethanjones.modularworld'
             artifactId 'core'
             version buildProperties.version
