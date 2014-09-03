@@ -30,6 +30,6 @@ public class AndroidModLoader implements ModLoader {
 
   @Override
   public Class<?> loadClass(Properties properties) throws Exception {
-    return map.get(properties.getProperty("dexFile")).loadClass(properties.getProperty("className"));
+    return map.get(properties.getProperty("modDex")).loadClass(properties.getProperty("modClass"));
   }
 }

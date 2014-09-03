@@ -37,6 +37,6 @@ public class DesktopModLoader implements ModLoader {
 
   @Override
   public Class<?> loadClass(Properties properties) throws Exception {
-    return externalJarLoader.loadClass(properties.getProperty("className"));
+    return externalJarLoader.loadClass(properties.getProperty("modClass"));
   }
 }
