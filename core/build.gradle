@@ -21,6 +21,13 @@ publishing {
             groupId 'ethanjones.modularworld'
             artifactId 'core'
             version buildProperties.version
+
+            pom.withXml {
+                def dependency = asNode().appendNode('dependencies').appendNode('dependency')
+                dependency.appendNode('groupId', 'com.badlogicgames.gdx')
+                dependency.appendNode('artifactId', 'gdx')
+                dependency.appendNode('version',  gdxVersion)
+            }
         }
     }
     repositories {
