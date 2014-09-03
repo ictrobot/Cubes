@@ -11,12 +11,14 @@ buildscript {
     }
 }
 
-def build = new Properties()
-file("android/assets/version").withReader { reader ->
-    build.load(reader)
-    build.version = build.major + "." + build.minor + "." + build.point
-    println "VERSION: " + build.version
-    println "BUILD:   " + build.build
+ext {
+    buildProperties = new Properties()
+    file("android/assets/version").withReader { reader ->
+        buildProperties.load(reader)
+        buildProperties.version = buildProperties.major + "." + buildProperties.minor + "." + buildProperties.point
+        println "VERSION: " + buildProperties.version
+        println "BUILD:   " + buildProperties.build
+    }
 }
 
 allprojects {

@@ -49,7 +49,7 @@ publishing {
             artifact 'build/libs/desktop-headless.jar'
             groupId 'ethanjones.modularworld'
             artifactId 'desktop-headless'
-            version build.version
+            version buildProperties.version
         }
     }
     repositories {

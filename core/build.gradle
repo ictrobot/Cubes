@@ -14,7 +14,7 @@ publishing {
             artifact 'build/libs/core.jar'
             groupId 'ethanjones.modularworld'
             artifactId 'core'
-            version build.version
+            version buildProperties.version
         }
     }
     repositories {

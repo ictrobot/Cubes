@@ -49,7 +49,7 @@ publishing {
             artifact 'build/libs/desktop-lwjgl.jar'
             groupId 'ethanjones.modularworld'
             artifactId 'desktop-lwjgl'
-            version build.version
+            version buildProperties.version
         }
     }
     repositories {
