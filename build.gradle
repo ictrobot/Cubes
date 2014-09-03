@@ -110,6 +110,6 @@ tasks.eclipse.doLast {
     delete ".project"
 }
 
-task ci(dependsOn: ['publish']) << {
+task ci(dependsOn: ['core:publish', 'desktop-headless:publish', 'desktop-lwjgl:publish', 'android:publish']) << {
 
 }
