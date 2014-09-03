@@ -26,9 +26,11 @@ publishing {
                 def repositories = asNode().appendNode('repositories')
                 def libgdxSnapshots = repositories.appendNode('repository')
                 libgdxSnapshots.appendNode('id', 'libgdxSnapshots')
+                libgdxSnapshots.appendNode('name', 'libgdxSnapshots')
                 libgdxSnapshots.appendNode('url', 'https://oss.sonatype.org/content/repositories/snapshots/')
                 def libgdxReleases = repositories.appendNode('repository')
                 libgdxReleases.appendNode('id', 'libgdxReleases')
+                libgdxReleases.appendNode('name', 'libgdxReleases')
                 libgdxReleases.appendNode('url', 'https://oss.sonatype.org/content/repositories/releases/')
 
                 def dependency = asNode().appendNode('dependencies').appendNode('dependency')
