@@ -119,13 +119,13 @@ idea {
 publishing {
     publications {
         maven(MavenPublication) {
-            artifact 'build/outputs/apk/android-debug.jar'
+            artifact 'build/outputs/apk/android-debug.apk'
             groupId 'ethanjones.modularworld'
             artifactId 'android-debug'
             version buildProperties.version
         }
         maven(MavenPublication) {
-            artifact 'build/outputs/apk/android-release.jar'
+            artifact 'build/outputs/apk/android-release.apk'
             groupId 'ethanjones.modularworld'
             artifactId 'android-debug'
             version buildProperties.version
