@@ -118,18 +118,14 @@ idea {
 
 publishing {
     publications {
-        maven(MavenPublication) {
-            artifact 'build/outputs/apk/android-debug.apk' {
-                classifier "debug"
-            }
+        debug(MavenPublication) {
+            artifact 'build/outputs/apk/android-debug.apk'
             groupId 'ethanjones.modularworld'
             artifactId 'android-debug'
             version buildProperties.version
         }
-        maven(MavenPublication) {
-            artifact 'build/outputs/apk/android-release.apk' {
-                classifier "release"
-            }
+        release(MavenPublication) {
+            artifact 'build/outputs/apk/android-release.apk'
             groupId 'ethanjones.modularworld'
             artifactId 'android-release'
             version buildProperties.version
