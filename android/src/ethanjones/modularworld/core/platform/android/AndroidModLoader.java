@@ -24,7 +24,7 @@ public class AndroidModLoader implements ModLoader {
 
   @Override
   public void load(FileHandle file) throws Exception {
-    DexClassLoader classLoader = new DexClassLoader(file.path(), androidCompatibility.androidLauncher.getDir("dex", Context.MODE_PRIVATE).getAbsolutePath(), null, AndroidModLoader.class.getClassLoader());
+    DexClassLoader classLoader = new DexClassLoader(file.file().getAbsolutePath(), androidCompatibility.androidLauncher.getDir("dex", Context.MODE_PRIVATE).getAbsolutePath(), null, AndroidModLoader.class.getClassLoader());
     map.put(file.name(), classLoader);
   }
 
