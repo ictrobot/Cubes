@@ -42,3 +42,21 @@ task afterEclipseImport(description: "Post processing after project generation",
         printer.print(classpath)
     }
 }
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifact 'build/libs/desktop-headless.jar'
+            groupId 'ethanjones.modularworld'
+            artifactId 'desktop-headless'
+            version build.version
+        }
+    }
+    repositories {
+        maven {
+            url "../repo"
+        }
+    }
+}
+
+publish.dependsOn(['dist'])

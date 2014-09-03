@@ -108,24 +108,6 @@ tasks.eclipse.doLast {
     delete ".project"
 }
 
-task ci(dependsOn: ['core:jar', 'publish', 'android:assembleDebug', 'android:assembleRelease', 'desktop-lwjgl:dist', 'desktop-headless:dist']) << {
+task ci(dependsOn: ['publish']) << {
 
-}
-
-publish.shouldRunAfter('core:jar')
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            artifact 'core/build/libs/core.jar'
-            groupId 'ethanjones'
-            artifactId 'modularworld'
-            version build.version
-        }
-    }
-    repositories {
-        maven {
-            url "repo"
-        }
-    }
 }

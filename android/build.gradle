@@ -115,3 +115,27 @@ idea {
         }
     }
 }
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifact 'build/outputs/apk/android-debug.jar'
+            groupId 'ethanjones.modularworld'
+            artifactId 'android-debug'
+            version build.version
+        }
+        maven(MavenPublication) {
+            artifact 'build/outputs/apk/android-release.jar'
+            groupId 'ethanjones.modularworld'
+            artifactId 'android-debug'
+            version build.version
+        }
+    }
+    repositories {
+        maven {
+            url "../repo"
+        }
+    }
+}
+
+publish.dependsOn(['assembleDebug', 'assembleRelease'])

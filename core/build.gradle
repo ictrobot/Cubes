@@ -7,3 +7,21 @@ eclipse.project {
 }
 dependencies {
 }
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifact 'build/libs/core.jar'
+            groupId 'ethanjones.modularworld'
+            artifactId 'core'
+            version build.version
+        }
+    }
+    repositories {
+        maven {
+            url "../repo"
+        }
+    }
+}
+
+publish.dependsOn(['jar'])
