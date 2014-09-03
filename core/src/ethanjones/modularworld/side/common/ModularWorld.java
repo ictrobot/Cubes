@@ -98,10 +98,15 @@ public abstract class ModularWorld implements ApplicationListener, TimeHandler {
     Menu.staticDispose();
   }
 
+  protected static void sharedDispose() {
+    timing.dispose();
+  }
+
   /**
    * Always exits if is headless
    */
   public static final void quit(boolean exit) {
+    sharedDispose();
     if (ModularWorldClient.instance != null) {
       ModularWorldClient.instance.dispose();
     }

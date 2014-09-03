@@ -1,8 +1,10 @@
 package ethanjones.modularworld.core.timing;
 
+import com.badlogic.gdx.utils.Disposable;
+
 import java.util.ArrayList;
 
-public class Timing {
+public class Timing implements Disposable{
 
   private ArrayList<TimeHandlerWrapper> handlers;
   private long lastTime;
@@ -27,4 +29,8 @@ public class Timing {
     lastTime = time;
   }
 
+  @Override
+  public void dispose() {
+    handlers.clear();
+  }
 }
