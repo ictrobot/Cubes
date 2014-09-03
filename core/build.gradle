@@ -23,10 +23,18 @@ publishing {
             version buildProperties.version
 
             pom.withXml {
+                def repositories = asNode().appendNode('repositories')
+                def libgdxSnapshots = repositories.appendNode('repository')
+                libgdxSnapshots.appendNode('id', 'libgdxSnapshots')
+                libgdxSnapshots.appendNode('url', 'https://oss.sonatype.org/content/repositories/snapshots/')
+                def libgdxReleases = repositories.appendNode('repository')
+                libgdxReleases.appendNode('id', 'libgdxReleases')
+                libgdxReleases.appendNode('url', 'https://oss.sonatype.org/content/repositories/releases/')
+
                 def dependency = asNode().appendNode('dependencies').appendNode('dependency')
                 dependency.appendNode('groupId', 'com.badlogicgames.gdx')
                 dependency.appendNode('artifactId', 'gdx')
-                dependency.appendNode('version',  gdxVersion)
+                dependency.appendNode('version', gdxVersion)
             }
         }
     }
