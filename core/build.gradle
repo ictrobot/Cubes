@@ -35,6 +35,7 @@ publishing {
                 dependency.appendNode('groupId', 'com.badlogicgames.gdx')
                 dependency.appendNode('artifactId', 'gdx')
                 dependency.appendNode('version', gdxVersion)
+                dependency.appendNode('type', 'jar')
             }
         }
     }
