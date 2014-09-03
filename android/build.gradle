@@ -127,7 +127,7 @@ publishing {
         maven(MavenPublication) {
             artifact 'build/outputs/apk/android-release.apk'
             groupId 'ethanjones.modularworld'
-            artifactId 'android-debug'
+            artifactId 'android-release'
             version buildProperties.version
         }
     }
