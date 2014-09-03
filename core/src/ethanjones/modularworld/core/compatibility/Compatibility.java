@@ -9,6 +9,7 @@ import ethanjones.modularworld.core.adapter.GraphicalAdapter;
 import ethanjones.modularworld.core.adapter.HeadlessAdapter;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.core.logging.UncaughtExceptionHandler;
+import ethanjones.modularworld.core.mod.ModLoader;
 import ethanjones.modularworld.graphics.asset.AssetFinder;
 import ethanjones.modularworld.graphics.asset.AssetManager;
 import ethanjones.modularworld.side.common.ModularWorld;
@@ -80,4 +81,6 @@ public abstract class Compatibility {
       }
     }
   }
+
+  public abstract ModLoader getModLoader();
 }

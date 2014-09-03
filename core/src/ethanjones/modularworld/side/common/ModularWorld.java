@@ -14,6 +14,7 @@ import ethanjones.modularworld.core.debug.Memory;
 import ethanjones.modularworld.core.events.EventBus;
 import ethanjones.modularworld.core.localization.Localization;
 import ethanjones.modularworld.core.logging.Log;
+import ethanjones.modularworld.core.mod.ModManager;
 import ethanjones.modularworld.core.settings.Settings;
 import ethanjones.modularworld.core.settings.SettingsManager;
 import ethanjones.modularworld.core.thread.Threads;
@@ -84,6 +85,8 @@ public abstract class ModularWorld implements ApplicationListener, TimeHandler {
     }
 
     Localization.load(assetManager.assets);
+
+    ModManager.init();
 
     setup = true;
   }

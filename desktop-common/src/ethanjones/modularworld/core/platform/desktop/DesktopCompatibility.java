@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import ethanjones.modularworld.core.Branding;
 import ethanjones.modularworld.core.compatibility.Compatibility;
+import ethanjones.modularworld.core.mod.ModLoader;
 import ethanjones.modularworld.graphics.asset.AssetFinder;
 import ethanjones.modularworld.graphics.asset.AssetManager;
 
@@ -12,6 +13,7 @@ public abstract class DesktopCompatibility extends Compatibility {
 
   public final OS os;
   private final String[] arg;
+  protected DesktopModLoader modLoader;
 
   protected DesktopCompatibility(Application.ApplicationType applicationType, String[] arg) {
     super(applicationType);
@@ -27,6 +29,8 @@ public abstract class DesktopCompatibility extends Compatibility {
     } else {
       os = OS.Unknown;
     }
+
+    modLoader = new DesktopModLoader();
   }
 
   public FileHandle getBaseFolder() {
@@ -54,5 +58,10 @@ public abstract class DesktopCompatibility extends Compatibility {
   @Override
   public boolean isTouchScreen() {
     return true;
+  }
+
+  @Override
+  public ModLoader getModLoader() {
+    return modLoader;
   }
 }
