@@ -6,6 +6,7 @@ import dalvik.system.DexClassLoader;
 import ethanjones.modularworld.core.mod.ModLoader;
 
 import java.util.HashMap;
+import java.util.Properties;
 
 public class AndroidModLoader implements ModLoader {
 
@@ -28,7 +29,7 @@ public class AndroidModLoader implements ModLoader {
   }
 
   @Override
-  public Class<?> loadClass(String file, String className) throws Exception {
-    return map.get(file).loadClass(className);
+  public Class<?> loadClass(Properties properties) throws Exception {
+    return map.get(properties.getProperty("dexFile")).loadClass(properties.getProperty("className"));
   }
 }

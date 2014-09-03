@@ -6,6 +6,7 @@ import ethanjones.modularworld.core.mod.ModLoader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Properties;
 
 public class DesktopModLoader implements ModLoader {
 
@@ -35,7 +36,7 @@ public class DesktopModLoader implements ModLoader {
   }
 
   @Override
-  public Class<?> loadClass(String file, String className) throws Exception {
-    return externalJarLoader.loadClass(className);
+  public Class<?> loadClass(Properties properties) throws Exception {
+    return externalJarLoader.loadClass(properties.getProperty("className"));
   }
 }

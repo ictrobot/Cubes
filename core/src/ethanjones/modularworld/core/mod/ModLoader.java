@@ -2,6 +2,8 @@ package ethanjones.modularworld.core.mod;
 
 import com.badlogic.gdx.files.FileHandle;
 
+import java.util.Properties;
+
 public interface ModLoader {
   public static enum Type {
     jar, dex
@@ -11,5 +13,5 @@ public interface ModLoader {
 
   public void load(FileHandle file) throws Exception;
 
-  public Class<?> loadClass(String fileName, String className) throws Exception;
+  public Class<?> loadClass(Properties properties) throws Exception;
 }

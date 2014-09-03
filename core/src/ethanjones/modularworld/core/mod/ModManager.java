@@ -60,9 +60,9 @@ public class ModManager {
       }
     }
     for (Properties properties : propertiesArray) {
-      if (properties.containsKey("modClass") && properties.containsKey("modFile")) {
+      if (properties.containsKey("modClass")) {
         try {
-          Class<? extends Mod> c = modLoader.loadClass(properties.getProperty("modFile"), properties.getProperty("modClass")).asSubclass(Mod.class);
+          Class<? extends Mod> c = modLoader.loadClass(properties).asSubclass(Mod.class);
           Mod mod = c.newInstance();
           mod.create();
         } catch (Exception e) {
