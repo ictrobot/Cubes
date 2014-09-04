@@ -9,15 +9,34 @@ dependencies {
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
     from sourceSets.main.allSource
+}
+
+task properites() {
+    Properties props = new Properties()
+    File propsFile = new File(project.getBuildDir(), '/core.properties')
+    propsFile.delete();
+    props.setProperty('gdxVersion', gdxVersion.toString())
+    props.setProperty('androidBuildToolsVersion', androidBuildToolsVersion.toString())
+    props.setProperty('androidSdkVersion', androidSdkVersion.toString())
+    props.setProperty('buildMajor', buildProperties.major.toString())
+    props.setProperty('buildMinor', buildProperties.minor.toString())
+    props.setProperty('buildPoint', buildProperties.point.toString())
+    props.setProperty('buildVersion', buildProperties.version.toString())
+    props.setProperty('buildNumber', buildProperties.build.toString())
+    props.store(propsFile.newWriter(), null)
 }
 
 publishing {
     publications {
         jar(MavenPublication) {
-            artifact 'build/libs/core.jar'
-            artifact sourcesJar
+            artifact new File(project.getBuildDir(), '/libs/core.jar')
+            artifact sourcesJar {
+                classifier = 'sources'
+            }
+            artifact(new File(project.getBuildDir(), '/core.properties')) {
+                classifier "properties"
+            }
             groupId 'ethanjones.modularworld'
             artifactId 'core'
             version buildProperties.version
@@ -45,4 +64,4 @@ publishing {
     }
 }
 
-publish.dependsOn(['jar'])
+publish.dependsOn(['properites'])

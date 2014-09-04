@@ -27,7 +27,9 @@ allprojects {
     ext {
         appName = 'Modular World'
         gdxVersion = '1.3.2-SNAPSHOT'
-        roboVMVersion = '0.0.14'
+        androidBuildToolsVersion = '19.1.0'
+        androidSdkVersion = 19
+        buildProperties = getRootProject().buildProperties
     }
 
     repositories {
