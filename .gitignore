@@ -3,7 +3,6 @@
 .gradle/
 .idea/
 repo/
-html/war/
 bin/
 tmp/
 jars/
@@ -17,7 +16,6 @@ local.properties
 .classpath
 .settings/
 .loadpath
-mcp/
 *.launch
 *.iml
 .cproject
@@ -66,7 +64,7 @@ ClientBin
 stylecop.*
 ~$*
 *.dbmdl
-Generated_Code #added for RIA/Silverlight projects
+Generated_Code
 
 _UpgradeReport_Files/
 Backup*/
