@@ -2,11 +2,11 @@ package ethanjones.modularworld.core.platform.desktop;
 
 import com.badlogic.gdx.files.FileHandle;
 import ethanjones.modularworld.core.mod.ModLoader;
+import ethanjones.modularworld.core.mod.ModType;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Properties;
 
 public class DesktopModLoader implements ModLoader {
 
@@ -26,17 +26,13 @@ public class DesktopModLoader implements ModLoader {
   }
 
   @Override
-  public boolean supports(Type type) {
-    return type == Type.jar;
+  public boolean supports(ModType type) {
+    return type == ModType.jar;
   }
 
   @Override
-  public void load(FileHandle file) throws Exception {
-    externalJarLoader.addFile(file);
-  }
-
-  @Override
-  public Class<?> loadClass(Properties properties) throws Exception {
-    return externalJarLoader.loadClass(properties.getProperty("modClass"));
+  public Class<?> loadClass(FileHandle classFile, String className) throws Exception {
+    externalJarLoader.addFile(classFile);
+    return externalJarLoader.loadClass(className);
   }
 }

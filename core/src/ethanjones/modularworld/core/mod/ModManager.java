@@ -1,7 +1,6 @@
 package ethanjones.modularworld.core.mod;
 
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.Array;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.side.common.ModularWorld;
 
@@ -11,8 +10,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class ModManager {
-
-  private static Array<Properties> propertiesArray = new Array<Properties>();
 
   private static FileHandle[] getModFiles() {
     FileHandle base = ModularWorld.compatibility.getBaseFolder().child("mods");
@@ -35,39 +32,55 @@ public class ModManager {
     modAssets.deleteDirectory();
     modAssets.mkdirs();
     for (FileHandle fileHandle : getModFiles()) {
+      FileHandle classFile = null;
+      String className = null;
+      String modName = "";
       try {
+        modName = fileHandle.name();
         InputStream inputStream = new FileInputStream(fileHandle.file());
         ZipInputStream zipInputStream = new ZipInputStream(inputStream);
         ZipEntry entry;
         while ((entry = zipInputStream.getNextEntry()) != null) {
           FileHandle f = temp.child(fileHandle.name()).child(entry.getName());
-          if (!entry.isDirectory() && entry.getName().toLowerCase().endsWith(".jar") && modLoader.supports(ModLoader.Type.jar)) {
-            writeToFile(f, zipInputStream);
-            modLoader.load(f);
-          } else if (!entry.isDirectory() && entry.getName().toLowerCase().endsWith(".dex") && ModularWorld.compatibility.getModLoader().supports(ModLoader.Type.dex)) {
-            writeToFile(f, zipInputStream);
-            modLoader.load(f);
-          } else if (!entry.isDirectory() && entry.getName().toLowerCase().endsWith(".properties")) {
+          if (!entry.isDirectory() && entry.getName().toLowerCase().equals("mod.jar")) {
+            if (modLoader.supports(ModType.jar)) {
+              writeToFile(f, zipInputStream);
+              classFile = f;
+            }
+          } else if (!entry.isDirectory() && entry.getName().toLowerCase().equals("mod.dex")) {
+            if (modLoader.supports(ModType.dex)) {
+              writeToFile(f, zipInputStream);
+              classFile = f;
+            }
+          } else if (!entry.isDirectory() && entry.getName().toLowerCase().equals("mod.properties")) {
             Properties properties = new Properties();
             properties.load(zipInputStream);
-            propertiesArray.add(properties);
-          } else if (entry.getName().startsWith("assets")) {
-            writeToFile(modAssets.child(entry.getName()), zipInputStream);
+            className = properties.getProperty("modClass");
+          } else {
+            writeToFile(modAssets.child(fileHandle.name()).child(entry.getName()), zipInputStream);
           }
         }
-      } catch (Exception e) {
-        Log.error("Failed to load mod: " + fileHandle.name(), e);
-      }
-    }
-    for (Properties properties : propertiesArray) {
-      if (properties.containsKey("modClass")) {
-        try {
-          Class<? extends Mod> c = modLoader.loadClass(properties).asSubclass(Mod.class);
-          Mod mod = c.newInstance();
-          mod.create();
-        } catch (Exception e) {
-          Log.debug("Failed to make instance of mod: " + properties.getProperty("modClass"), e);
+        if (classFile == null) {
+          Log.error("Mod " + modName + " does not contain a jar/dex");
+          continue;
         }
+        if (className == null) {
+          Log.error("Mod " + modName + " does not contain a properties file");
+          continue;
+        }
+      } catch (Exception e) {
+        Log.error("Failed to load mod: " + modName, e);
+      }
+      try {
+        Log.info("Trying to load mod " + modName);
+        Class<? extends Mod> c = modLoader.loadClass(classFile, className).asSubclass(Mod.class);
+        Log.info("Creating instance of mod " + modName);
+        Mod mod = c.newInstance();
+        Log.info("Calling create on mod " + modName);
+        mod.create();
+        Log.info("Loaded mod " + modName);
+      } catch (Exception e) {
+        Log.debug("Failed to make instance of mod: " + className, e);
       }
     }
   }

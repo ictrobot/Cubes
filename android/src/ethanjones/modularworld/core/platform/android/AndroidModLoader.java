@@ -4,9 +4,9 @@ import android.content.Context;
 import com.badlogic.gdx.files.FileHandle;
 import dalvik.system.DexClassLoader;
 import ethanjones.modularworld.core.mod.ModLoader;
+import ethanjones.modularworld.core.mod.ModType;
 
 import java.util.HashMap;
-import java.util.Properties;
 
 public class AndroidModLoader implements ModLoader {
 
@@ -18,18 +18,13 @@ public class AndroidModLoader implements ModLoader {
   }
 
   @Override
-  public boolean supports(Type type) {
-    return type == Type.dex;
+  public boolean supports(ModType type) {
+    return type == ModType.dex;
   }
 
   @Override
-  public void load(FileHandle file) throws Exception {
-    DexClassLoader classLoader = new DexClassLoader(file.file().getAbsolutePath(), androidCompatibility.androidLauncher.getDir("dex", Context.MODE_PRIVATE).getAbsolutePath(), null, AndroidModLoader.class.getClassLoader());
-    map.put(file.name(), classLoader);
-  }
-
-  @Override
-  public Class<?> loadClass(Properties properties) throws Exception {
-    return map.get(properties.getProperty("modDex")).loadClass(properties.getProperty("modClass"));
+  public Class<?> loadClass(FileHandle classFile, String className) throws Exception {
+    DexClassLoader classLoader = new DexClassLoader(classFile.file().getAbsolutePath(), androidCompatibility.androidLauncher.getDir("dex", Context.MODE_PRIVATE).getAbsolutePath(), null, AndroidModLoader.class.getClassLoader());
+    return classLoader.loadClass(className);
   }
 }
