@@ -13,20 +13,17 @@ android {
 
         instrumentTest.setRoot('tests')
     }
-    buildTypes {
+    signingConfigs {
         release {
-            signingConfig signingConfigs.release
-        }
-    }
-}
-
-if (System.getenv("KEY_STORE_FILE") != null) {
-    android.signingConfigs {
-        release {
-            storeFile file(System.getenv("KEY_STORE_FILE"))
+            storeFile file(System.getenv("KEY_STORE_FILE") != null ? System.getenv("KEY_STORE_FILE") : "keystore")
             keyAlias System.getenv("KEY_STORE_ALIAS")
             storePassword System.getenv("KEY_STORE_PASS")
             keyPassword System.getenv("KEY_STORE_PASS")
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
         }
     }
 }
