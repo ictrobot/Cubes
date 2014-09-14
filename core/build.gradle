@@ -10,7 +10,7 @@ dependencies {
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     from sourceSets.main.allSource
-    archiveName = "core - sources.jar"
+    archiveName = "core-sources.jar"
 }
 
 jar.archiveName = "core.jar"
