@@ -1,8 +1,8 @@
 package ethanjones.modularworld.graphics;
 
 import com.badlogic.gdx.graphics.Pixmap;
-import ethanjones.modularworld.core.data.DataGroup;
-import ethanjones.modularworld.core.data.other.DataParser;
+import ethanjones.data.DataGroup;
+import ethanjones.data.other.DataParser;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,9 +1,9 @@
 package ethanjones.modularworld.block;
 
-import ethanjones.modularworld.core.data.Data;
-import ethanjones.modularworld.core.data.DataGroup;
-import ethanjones.modularworld.core.data.basic.DataString;
-import ethanjones.modularworld.core.data.other.DataParser;
+import ethanjones.data.Data;
+import ethanjones.data.DataGroup;
+import ethanjones.data.basic.DataString;
+import ethanjones.data.other.DataParser;
 
 import java.util.HashMap;
 import java.util.Map;

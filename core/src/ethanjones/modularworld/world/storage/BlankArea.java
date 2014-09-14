@@ -1,7 +1,7 @@
 package ethanjones.modularworld.world.storage;
 
 import ethanjones.modularworld.block.Block;
-import ethanjones.modularworld.core.data.DataGroup;
+import ethanjones.data.DataGroup;
 import ethanjones.modularworld.networking.packets.PacketBlockChanged;
 
 public class BlankArea extends Area {

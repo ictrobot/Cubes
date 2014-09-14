@@ -1,8 +1,8 @@
 package ethanjones.modularworld.entity;
 
 import com.badlogic.gdx.math.Vector3;
-import ethanjones.modularworld.core.data.DataGroup;
-import ethanjones.modularworld.core.data.other.DataParser;
+import ethanjones.data.DataGroup;
+import ethanjones.data.other.DataParser;
 import ethanjones.modularworld.core.util.VectorUtil;
 
 public class Entity implements DataParser<DataGroup> {

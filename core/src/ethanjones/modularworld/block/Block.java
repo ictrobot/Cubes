@@ -1,7 +1,7 @@
 package ethanjones.modularworld.block;
 
 import com.badlogic.gdx.math.collision.BoundingBox;
-import ethanjones.modularworld.core.data.DataGroup;
+import ethanjones.data.DataGroup;
 import ethanjones.modularworld.graphics.world.BlockTextureHandler;
 
 public abstract class Block {

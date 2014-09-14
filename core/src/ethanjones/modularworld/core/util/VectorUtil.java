@@ -1,8 +1,8 @@
 package ethanjones.modularworld.core.util;
 
 import com.badlogic.gdx.math.Vector3;
-import ethanjones.modularworld.core.data.DataList;
-import ethanjones.modularworld.core.data.basic.DataFloat;
+import ethanjones.data.DataList;
+import ethanjones.data.basic.DataFloat;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

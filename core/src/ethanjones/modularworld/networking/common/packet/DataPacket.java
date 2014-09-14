@@ -1,8 +1,8 @@
 package ethanjones.modularworld.networking.common.packet;
 
-import ethanjones.modularworld.core.data.DataGroup;
-import ethanjones.modularworld.core.data.DataTools;
-import ethanjones.modularworld.core.data.other.DataParser;
+import ethanjones.data.DataGroup;
+import ethanjones.data.DataTools;
+import ethanjones.data.other.DataParser;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

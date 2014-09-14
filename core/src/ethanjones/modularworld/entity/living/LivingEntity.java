@@ -1,7 +1,7 @@
 package ethanjones.modularworld.entity.living;
 
 import com.badlogic.gdx.math.Vector3;
-import ethanjones.modularworld.core.data.DataGroup;
+import ethanjones.data.DataGroup;
 import ethanjones.modularworld.entity.Entity;
 
 public class LivingEntity extends Entity {

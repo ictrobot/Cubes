@@ -1,8 +1,7 @@
 package ethanjones.modularworld.networking.packets;
 
-import ethanjones.modularworld.core.data.DataGroup;
+import ethanjones.data.DataGroup;
 import ethanjones.modularworld.networking.common.packet.DataPacket;
-import ethanjones.modularworld.networking.common.packet.Packet;
 import ethanjones.modularworld.networking.common.packet.PacketPriority;
 import ethanjones.modularworld.side.Side;
 import ethanjones.modularworld.side.client.ModularWorldClient;
