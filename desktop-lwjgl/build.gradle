@@ -46,7 +46,7 @@ task afterEclipseImport(description: "Post processing after project generation",
 publishing {
     publications {
         jar(MavenPublication) {
-            artifact 'build/libs/desktop-lwjgl.jar'
+            artifact tasks.jar
             groupId 'ethanjones.modularworld'
             artifactId 'desktop-lwjgl'
             version buildProperties.version

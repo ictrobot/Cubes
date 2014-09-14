@@ -12,6 +12,8 @@ task sourcesJar(type: Jar, dependsOn: classes) {
     from sourceSets.main.allSource
 }
 
+jar.archiveName = "core.jar"
+
 task properites() {
     Properties props = new Properties()
     project.getBuildDir().mkdir();
@@ -31,8 +33,8 @@ task properites() {
 publishing {
     publications {
         jar(MavenPublication) {
-            artifact new File(project.getBuildDir(), '/libs/core.jar')
-            artifact sourcesJar {
+            artifact tasks.jar
+            artifact tasks.sourcesJar {
                 classifier = 'sources'
             }
             artifact(new File(project.getBuildDir(), '/core.properties')) {
