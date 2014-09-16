@@ -23,6 +23,7 @@ task properites() {
     props.setProperty('gdxVersion', gdxVersion.toString())
     props.setProperty('androidBuildToolsVersion', androidBuildToolsVersion.toString())
     props.setProperty('androidSdkVersion', androidSdkVersion.toString())
+    props.setProperty('dataVersion', dataVersion.toString())
     props.setProperty('buildMajor', buildProperties.major.toString())
     props.setProperty('buildMinor', buildProperties.minor.toString())
     props.setProperty('buildPoint', buildProperties.point.toString())
@@ -53,11 +54,19 @@ publishing {
                 def libgdxReleases = repositories.appendNode('repository')
                 libgdxReleases.appendNode('id', 'libgdxReleases')
                 libgdxReleases.appendNode('url', 'https://oss.sonatype.org/content/repositories/releases/')
+                def dataRepo = repositories.appendNode('repository')
+                dataRepo.appendNode('id', 'dataRepo')
+                dataRepo.appendNode('url', 'https://raw.githubusercontent.com/ictrobot/mvn-repo/master/')
 
-                def dependency = asNode().appendNode('dependencies').appendNode('dependency')
-                dependency.appendNode('groupId', 'com.badlogicgames.gdx')
-                dependency.appendNode('artifactId', 'gdx')
-                dependency.appendNode('version', gdxVersion)
+                def dependencies = asNode().appendNode('dependencies')
+                def dependencyLibgdx = dependencies.appendNode('dependency')
+                dependencyLibgdx.appendNode('groupId', 'com.badlogicgames.gdx')
+                dependencyLibgdx.appendNode('artifactId', 'gdx')
+                dependencyLibgdx.appendNode('version', gdxVersion)
+                def dependencyData = dependencies.appendNode('dependency')
+                dependencyData.appendNode('groupId', 'ethanjones')
+                dependencyData.appendNode('artifactId', 'data')
+                dependencyData.appendNode('version', dataVersion)
             }
         }
     }
