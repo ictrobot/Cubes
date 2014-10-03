@@ -21,6 +21,7 @@ public class MainMenu extends Menu {
   Table buttons;
   TextButton singleplayer;
   TextButton multiplayer;
+  TextButton serveronly;
   TextButton quit;
 
   public MainMenu() {
@@ -55,7 +56,15 @@ public class MainMenu extends Menu {
         return true;
       }
     });
-    //TODO Add button for Server only
+    buttons.addActor(serveronly = new TextButton(Localization.get("menu.main.serveronly"), skin));
+    serveronly.addListener(new EventListener() {
+      @Override
+      public boolean handle(Event event) {
+        if (!(event instanceof ChangeListener.ChangeEvent)) return false;
+        GraphicalAdapter.instance.setMenu(new ServerSetupMenu());
+        return true;
+      }
+    });
   }
 
   @Override
@@ -68,7 +77,7 @@ public class MainMenu extends Menu {
   public void resize(int width, int height) {
     super.resize(width, height);
     MenuTools.setTitle(name);
-    MenuTools.arrange(width / 4, height / 4, width / 2, height / 2, MenuTools.Direction.Above, quit, multiplayer, singleplayer);
+    MenuTools.arrange(width / 4, height / 4, width / 2, height / 2, MenuTools.Direction.Above, quit, serveronly, multiplayer, singleplayer);
     MenuTools.fitText(singleplayer, multiplayer, quit);
   }
 }

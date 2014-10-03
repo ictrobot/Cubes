@@ -1,14 +1,23 @@
 en_GB
-menu.main.singleplayer=Singleplayer
-menu.main.multiplayer=Multiplayer
-menu.main.quit=Quit
 menu.general.back=Back
 menu.general.loading=Loading
 menu.general.return_main_menu=Return to main menu
-menu.multiplayer_connect.title=Multiplayer
-menu.multiplayer_connect.address=Address
-menu.multiplayer_connect.port=Port (8080)
-menu.multiplayer_connect.connect=Connect
-menu.multiplayer_connect.connecting=Connecting
-menu.multiplayer_connect.failed=Failed to connect
-menu.multiplayer_connect.failed_exception=Failed to connect:
+
+menu.main.singleplayer=Singleplayer
+menu.main.multiplayer=Multiplayer
+menu.main.serveronly=Server only
+menu.main.quit=Quit
+
+menu.multiplayer.title=Multiplayer
+menu.multiplayer.address=Address
+menu.multiplayer.port=Port (8080)
+menu.multiplayer.connect=Connect
+menu.multiplayer.connecting=Connecting
+menu.multiplayer.failed=Failed to connect
+menu.multiplayer.failed_exception=Failed to connect:
+
+menu.server.title=Server
+menu.server.port=Port
+menu.server.start=Start
+menu.server.running=Running
+menu.server.stop=Stop

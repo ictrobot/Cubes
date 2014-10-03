@@ -11,11 +11,11 @@ public class MultiplayerFailedMenu extends InfoMenu {
   private boolean firstRender = true;
 
   public MultiplayerFailedMenu(Exception e) {
-    super(Localization.get("menu.multiplayer_connect.failed_exception") + System.lineSeparator() + e.getClass().getSimpleName(), Localization.get("menu.general.return_main_menu"));
+    super(Localization.get("menu.multiplayer.failed_exception") + System.lineSeparator() + e.getClass().getSimpleName(), Localization.get("menu.general.return_main_menu"));
   }
 
   public MultiplayerFailedMenu() {
-    super(Localization.get("menu.multiplayer_connect.failed"), Localization.get("menu.general.return_main_menu"));
+    super(Localization.get("menu.multiplayer.failed"), Localization.get("menu.general.return_main_menu"));
   }
 
   public void render() {

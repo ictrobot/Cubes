@@ -18,7 +18,7 @@ public class SocketInput extends SocketIO {
   @Override
   public void run() {
     while (socketMonitor.running.get()) {
-      try {
+      try {//TODO: Stop sending class name
         Packet packet = packet = Class.forName(dataInputStream.readUTF()).asSubclass(Packet.class).newInstance();
         packet.read(dataInputStream);
         packet.setSocketMonitor(socketMonitor);

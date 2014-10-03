@@ -59,7 +59,7 @@ public class Localization {
       if (local != null) {
         language = local;
       } else {
-        language = languages.get("en_US");
+        language = languages.get("en_GB");
       }
     }
     return language;

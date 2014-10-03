@@ -13,7 +13,7 @@ public class MultiplayerLoadingMenu extends InfoMenu {
   private int frameNum = 0;
 
   public MultiplayerLoadingMenu(String address, int port) {
-    super(Localization.get("menu.multiplayer_connect.connecting"), false);
+    super(Localization.get("menu.multiplayer.connecting"), false);
     this.address = address;
     this.port = port;
   }
