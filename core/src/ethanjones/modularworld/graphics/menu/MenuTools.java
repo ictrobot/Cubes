@@ -4,7 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import ethanjones.modularworld.core.adapter.GraphicalAdapter;
 import ethanjones.modularworld.core.localization.Localization;
@@ -60,8 +62,9 @@ public class MenuTools {
     }
   }
 
-  public static void setTitle(Actor actor) {
-    actor.setBounds(0, Gdx.graphics.getHeight() / 6 * 5, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 6);
+  public static void setTitle(Label label) {
+    label.setBounds(0, Gdx.graphics.getHeight() / 6 * 5, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 6);
+    label.setAlignment(Align.center, Align.center);
   }
 
   public static void copySize(Actor main, Actor... others) {
