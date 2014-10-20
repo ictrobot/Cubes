@@ -48,7 +48,7 @@ task afterEclipseImport(description: "Post processing after project generation",
 publishing {
     publications {
         jar(MavenPublication) {
-            artifact tasks.jar
+            artifact dist
             groupId 'ethanjones.modularworld'
             artifactId 'desktop-headless'
             version buildProperties.version
