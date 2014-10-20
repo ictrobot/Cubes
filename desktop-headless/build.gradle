@@ -20,6 +20,8 @@ task dist(dependsOn: classes, type: Jar) {
     from { configurations.compile.collect { zipTree(it) } }
     from files(project.assetsDir);
 
+    archiveName = 'desktop-headless.jar'
+
     manifest {
         attributes 'Main-Class': project.mainClassName
     }
