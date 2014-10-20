@@ -10,19 +10,18 @@ import ethanjones.modularworld.core.adapter.GraphicalAdapter;
 import ethanjones.modularworld.core.localization.Localization;
 import ethanjones.modularworld.graphics.menu.Menu;
 import ethanjones.modularworld.graphics.menu.MenuTools;
-import ethanjones.modularworld.graphics.menu.actor.ResizableTextField;
 
 public class ServerSetupMenu extends Menu {
 
   Label title;
-  ResizableTextField port;
+  TextField port;
   TextButton start;
   TextButton back;
 
   public ServerSetupMenu() {
     super();
     title = new Label(Localization.get("menu.server.title"), skin.get("title", Label.LabelStyle.class));
-    port = new ResizableTextField("", skin);
+    port = new TextField("", skin);
     port.setMessageText(Localization.get("menu.server.port"));
     port.setTextFieldFilter(new TextField.TextFieldFilter.DigitsOnlyFilter());
     start = new TextButton(Localization.get("menu.server.start"), skin);
@@ -53,6 +52,5 @@ public class ServerSetupMenu extends Menu {
     MenuTools.arrange(width / 4, height / 2, width / 2, height / 4, MenuTools.Direction.Above, start, port);
     MenuTools.copyPosAndSize(start, back);
     back.setY(0);
-    MenuTools.fitText(start, port, back);
   }
 }

@@ -8,7 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import ethanjones.modularworld.graphics.GraphicsHelper;
-import ethanjones.modularworld.graphics.menu.actor.ResizableTextField;
 import ethanjones.modularworld.input.keyboard.KeyTypedListener;
 import ethanjones.modularworld.input.keyboard.KeyboardHelper;
 import ethanjones.modularworld.networking.NetworkingManager;
@@ -56,7 +55,7 @@ public class HudRenderer implements Disposable {
   boolean debugEnabled = false;
 
   Stage stage;
-  ResizableTextField chat;
+  TextField chat;
   ClientDebug.DebugLabel debug;
 
   public HudRenderer() {
@@ -69,7 +68,7 @@ public class HudRenderer implements Disposable {
     TextField.TextFieldStyle chatStyle = new TextField.TextFieldStyle(defaultStyle);
     chatStyle.background = new TextureRegionDrawable(GraphicsHelper.getTexture("hud/ChatBackground.png").textureRegion);
 
-    chat = new ResizableTextField("", chatStyle);
+    chat = new TextField("", chatStyle);
     chat.setTextFieldListener(new TextField.TextFieldListener() {
       @Override
       public void keyTyped(TextField textField, char c) {

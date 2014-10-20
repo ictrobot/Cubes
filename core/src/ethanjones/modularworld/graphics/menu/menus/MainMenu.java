@@ -78,6 +78,5 @@ public class MainMenu extends Menu {
     super.resize(width, height);
     MenuTools.setTitle(name);
     MenuTools.arrange(width / 4, height / 4, width / 2, height / 2, MenuTools.Direction.Above, quit, serveronly, multiplayer, singleplayer);
-    MenuTools.fitText(singleplayer, multiplayer, quit);
   }
 }

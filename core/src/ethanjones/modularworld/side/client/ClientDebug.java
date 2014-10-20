@@ -36,7 +36,7 @@ public class ClientDebug {
     set(DebugType.ram, "RAM TF:" + Memory.totalFree + " F:" + Memory.free + " M:" + Memory.max + " A:" + Memory.max);
     Vector3 p = ModularWorldClient.instance.player.position;
     set(DebugType.coordinates, "P X:" + String.format("%.2f", p.x) + " Y:" + String.format("%.2f", p.y) + " Z:" + String.format("%.2f", p.z));
-    set(DebugType.areaCoordinates, "A X:" + BlockCoordinates.area((int) Math.ceil(p.x)) + BlockCoordinates.area((int) Math.ceil(p.y)) + " Z:" + BlockCoordinates.area((int) Math.ceil(p.z)));
+    set(DebugType.areaCoordinates, "A X:" + BlockCoordinates.area((int) Math.ceil(p.x)) + " Y:" + BlockCoordinates.area((int) Math.ceil(p.y)) + " Z:" + BlockCoordinates.area((int) Math.ceil(p.z)));
     set(DebugType.zoneCoordinates, "Z X:" + AreaCoordinates.zone((int) Math.ceil(p.x)) + " Z:" + AreaCoordinates.zone((int) Math.ceil(p.z)));
     set(DebugType.direction, "D X:" + ModularWorldClient.instance.player.angle.x + " Y:" + ModularWorldClient.instance.player.angle.y);
     loop.add(System.currentTimeMillis() - lastTime);
@@ -72,7 +72,7 @@ public class ClientDebug {
     static final LabelStyle style = new LabelStyle();
 
     static {
-      style.font = Fonts.Size2;
+      style.font = Fonts.Size1;
     }
 
     public DebugLabel() {

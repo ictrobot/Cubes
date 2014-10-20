@@ -10,22 +10,21 @@ import ethanjones.modularworld.core.adapter.GraphicalAdapter;
 import ethanjones.modularworld.core.localization.Localization;
 import ethanjones.modularworld.graphics.menu.Menu;
 import ethanjones.modularworld.graphics.menu.MenuTools;
-import ethanjones.modularworld.graphics.menu.actor.ResizableTextField;
 
 public class MultiplayerConnectMenu extends Menu {
 
   Label title;
-  ResizableTextField address;
-  ResizableTextField port;
+  TextField address;
+  TextField port;
   TextButton connect;
   TextButton back;
 
   public MultiplayerConnectMenu() {
     super();
     title = new Label(Localization.get("menu.multiplayer.title"), skin.get("title", Label.LabelStyle.class));
-    address = new ResizableTextField("", skin);
+    address = new TextField("", skin);
     address.setMessageText(Localization.get("menu.multiplayer.address"));
-    port = new ResizableTextField("", skin);
+    port = new TextField("", skin);
     port.setMessageText(Localization.get("menu.multiplayer.port"));
     port.setTextFieldFilter(new TextField.TextFieldFilter.DigitsOnlyFilter());
     connect = new TextButton(Localization.get("menu.multiplayer.connect"), skin);
@@ -57,6 +56,5 @@ public class MultiplayerConnectMenu extends Menu {
     MenuTools.arrange(width / 4, height / 4, width / 2, height / 2, MenuTools.Direction.Above, connect, port, address);
     MenuTools.copyPosAndSize(connect, back);
     back.setY(0);
-    MenuTools.fitText(connect, port, address, back);
   }
 }

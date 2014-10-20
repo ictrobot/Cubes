@@ -42,8 +42,8 @@ public class Fonts {
 
     public void updateScale() {
       super.setScale(1, 1);
-      float x = Gdx.graphics.getWidth() * scale / 12.5f;
-      float y = Gdx.graphics.getHeight() * scale / 12.5f;
+      float x = Gdx.graphics.getWidth() * (scale + 1) / 20f;
+      float y = Gdx.graphics.getHeight() * (scale + 1) / 20f;
       TextBounds bounds = getBounds("ABCDEF");
       float v = Math.min(x / bounds.width, y / bounds.height);
       super.setScale(v, v);
