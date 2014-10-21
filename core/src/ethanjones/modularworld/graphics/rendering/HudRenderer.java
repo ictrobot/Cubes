@@ -2,6 +2,7 @@ package ethanjones.modularworld.graphics.rendering;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -31,11 +32,11 @@ public class HudRenderer implements Disposable {
     public void keyDown(int keycode) {
       if (keycode == debug && !debugDown) {
         debugDown = true;
-        debugEnabled = !debugEnabled;
+        setDebugEnabled(!isDebugEnabled());
       }
       if (keycode == chat && !chatDown) {
         chatDown = true;
-        chatEnabled = !chatEnabled;
+        setChatEnabled(!isChatEnabled());
       }
     }
 
@@ -51,8 +52,8 @@ public class HudRenderer implements Disposable {
     }
   }
 
-  boolean chatEnabled = false; //TODO: Keyboard shortcuts and on screen buttons
-  boolean debugEnabled = false;
+  private boolean chatEnabled; //TODO: On screen buttons
+  private boolean debugEnabled;
 
   Stage stage;
   TextField chat;
@@ -77,17 +78,20 @@ public class HudRenderer implements Disposable {
           packetChat.msg = chat.getText();
           NetworkingManager.clientNetworking.sendToServer(packetChat);
           chat.setText("");
-          chatEnabled = false;
+          setChatEnabled(false);
         }
       }
     });
     KeyboardHelper.addKeyTypedListener(new KeyListener());
+
+    setChatEnabled(false);
+    setDebugEnabled(false);
   }
 
   public void render() {
     stage.clear();
-    if (debugEnabled) stage.addActor(debug);
-    if (chatEnabled) {
+    if (isDebugEnabled()) stage.addActor(debug);
+    if (isChatEnabled()) {
       stage.addActor(chat);
       stage.setKeyboardFocus(chat);
     }
@@ -103,5 +107,26 @@ public class HudRenderer implements Disposable {
   @Override
   public void dispose() {
     stage.dispose();
+  }
+
+  public boolean isChatEnabled() {
+    return chatEnabled;
+  }
+
+  public boolean isDebugEnabled() {
+    return debugEnabled;
+  }
+
+  public void setChatEnabled(boolean chatEnabled) {
+    this.chatEnabled = chatEnabled;
+  }
+
+  public void setDebugEnabled(boolean debugEnabled) {
+    if (debugEnabled) {
+      GLProfiler.disable();
+    } else {
+      GLProfiler.enable();
+    }
+    this.debugEnabled = debugEnabled;
   }
 }

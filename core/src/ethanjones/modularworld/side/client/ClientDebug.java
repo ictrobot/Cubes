@@ -1,6 +1,7 @@
 package ethanjones.modularworld.side.client;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import ethanjones.modularworld.core.Branding;
@@ -33,7 +34,7 @@ public class ClientDebug {
   public static void update() {
     fps.add(Gdx.graphics.getFramesPerSecond());
     set(DebugType.fps, "FPS:" + fps.getCurrent() + " AFPS:" + fps.getAverage());
-    set(DebugType.ram, "RAM TF:" + Memory.totalFree + " F:" + Memory.free + " M:" + Memory.max + " A:" + Memory.max);
+    set(DebugType.ram, "RAM F:" + Memory.totalFree + "MB U:" + Memory.used + "MB");
     Vector3 p = ModularWorldClient.instance.player.position;
     set(DebugType.coordinates, "P X:" + String.format("%.2f", p.x) + " Y:" + String.format("%.2f", p.y) + " Z:" + String.format("%.2f", p.z));
     set(DebugType.areaCoordinates, "A X:" + BlockCoordinates.area((int) Math.ceil(p.x)) + " Y:" + BlockCoordinates.area((int) Math.ceil(p.y)) + " Z:" + BlockCoordinates.area((int) Math.ceil(p.z)));
@@ -42,6 +43,16 @@ public class ClientDebug {
     loop.add(System.currentTimeMillis() - lastTime);
     lastTime = System.currentTimeMillis();
     set(DebugType.loop, "L MS:" + String.format("%03d", loop.getCurrent()) + " AMS:" + String.format("%03d", loop.getAverage()));
+
+    set(DebugType.calls, "C:" + GLProfiler.calls);
+    set(DebugType.drawCalls, "DC:" + GLProfiler.drawCalls);
+    set(DebugType.shaderSwitches, "S:" + GLProfiler.shaderSwitches);
+    set(DebugType.textureBindings, "T:" + GLProfiler.textureBindings);
+    set(DebugType.vertexCount, "V:" + GLProfiler.vertexCount.latest);
+    GLProfiler.calls = 0;
+    GLProfiler.drawCalls = 0;
+    GLProfiler.shaderSwitches = 0;
+    GLProfiler.textureBindings = 0;
   }
 
   public static void set(DebugType debugType, String string) {
@@ -65,6 +76,12 @@ public class ClientDebug {
     direction,
     blank2,
     loop,
+    blank3,
+    calls,
+    drawCalls,
+    shaderSwitches,
+    textureBindings,
+    vertexCount
   }
 
   public static class DebugLabel extends Label {

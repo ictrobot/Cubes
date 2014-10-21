@@ -63,7 +63,7 @@ public class ModularWorldClient extends ModularWorld {
     }
     super.render();
     inputChain.beforeRender();
-    ClientDebug.update();
+    if (renderer.hud.isDebugEnabled()) ClientDebug.update();
     renderer.render();
     inputChain.afterRender();
     player.update();
