@@ -11,12 +11,19 @@ public class ModularWorldSecurityManager extends SecurityManager {
     super();
   }
 
+  private static void stackTrace(LogLevel logLevel, Class[] classes) {
+    Log.log(logLevel, "Stack trace:");
+    for (int i = 0; i < classes.length; i++) {
+      Log.log(logLevel, "  " + classes[i].getName());
+    }
+  }
+
   @Override
   public void checkPermission(Permission perm) {
     if (getClassContext().length < 5) throw new SecurityException();
     String c = getClassContext()[4].getName();
     if (perm.getName().startsWith("exitVM")) {
-      if (c.startsWith("com.badlogic.gdx.backends.lwjgl.Lwjgl") || c.equals("ethanjones.modularworld.side.common.ModularWorld")) {
+      if (c.startsWith("com.badlogic.gdx.backends.lwjgl.Lwjgl") || c.equals("ethanjones.modularworld.side.common.ModularWorld") || c.equals("ethanjones.modularworld.core.system.Debug")) {
         Log.debug("Allowing class \'" + c + "\' to exit");
         stackTrace(LogLevel.debug, getClassContext());
       } else {
@@ -32,13 +39,6 @@ public class ModularWorldSecurityManager extends SecurityManager {
       Log.error("Class \'" + c + "\' tried to create a security manager");
       stackTrace(LogLevel.error, getClassContext());
       throw new SecurityException("Cannot create a security manager");
-    }
-  }
-
-  private static void stackTrace(LogLevel logLevel, Class[] classes) {
-    Log.log(logLevel, "Stack trace:");
-    for (int i = 0; i < classes.length; i++) {
-      Log.log(logLevel, "  " + classes[i].getName());
     }
   }
 }

@@ -1,4 +1,4 @@
-package ethanjones.modularworld.core.debug;
+package ethanjones.modularworld.core.system;
 
 public class Memory {
 

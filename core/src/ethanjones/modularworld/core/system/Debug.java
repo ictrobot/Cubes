@@ -1,8 +1,10 @@
-package ethanjones.modularworld.core.debug;
+package ethanjones.modularworld.core.system;
 
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.core.logging.loggers.FileLogWriter;
+import ethanjones.modularworld.side.client.ModularWorldClient;
 import ethanjones.modularworld.side.common.ModularWorld;
+import ethanjones.modularworld.side.server.ModularWorldServer;
 
 public class Debug {
 
@@ -21,4 +23,34 @@ public class Debug {
       Log.debug("Log file:           " + FileLogWriter.file.getAbsolutePath());
   }
 
+  public static synchronized void crash(Throwable throwable) {
+    try {
+      Log.error("CRASH");
+    } catch (Exception e) {
+
+    }
+    try {
+      Log.error(throwable);
+    } catch (Exception e) {
+      throwable.printStackTrace();
+    }
+    try {
+      if (ModularWorldClient.instance != null) ModularWorldClient.instance.dispose();
+    } catch (Exception e) {
+
+    }
+    try {
+      if (ModularWorldServer.instance != null) ModularWorldServer.instance.dispose();
+    } catch (Exception e) {
+
+    }
+    System.exit(1);
+  }
+
+  public static class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
+    @Override
+    public void uncaughtException(Thread t, Throwable e) {
+      crash(e);
+    }
+  }
 }

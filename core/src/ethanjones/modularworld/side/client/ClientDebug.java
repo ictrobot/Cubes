@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import ethanjones.modularworld.core.system.Branding;
-import ethanjones.modularworld.core.debug.Memory;
+import ethanjones.modularworld.core.system.Memory;
 import ethanjones.modularworld.core.util.LongAverage;
 import ethanjones.modularworld.graphics.menu.Fonts;
 import ethanjones.modularworld.world.coordinates.AreaCoordinates;

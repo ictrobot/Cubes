@@ -7,8 +7,8 @@ import com.badlogic.gdx.files.FileHandle;
 import ethanjones.modularworld.core.adapter.GraphicalAdapter;
 import ethanjones.modularworld.core.adapter.HeadlessAdapter;
 import ethanjones.modularworld.core.logging.Log;
-import ethanjones.modularworld.core.logging.UncaughtExceptionHandler;
 import ethanjones.modularworld.core.mod.ModLoader;
+import ethanjones.modularworld.core.system.Debug;
 import ethanjones.modularworld.core.system.ModularWorldException;
 import ethanjones.modularworld.core.system.ModularWorldSecurityManager;
 import ethanjones.modularworld.graphics.asset.AssetFinder;
@@ -24,6 +24,10 @@ public abstract class Compatibility {
     this.applicationType = applicationType;
   }
 
+  public static Compatibility get() {
+    return compatibility;
+  }
+
   public void init() {
     ModularWorld.eventBus.register(this);
   }
@@ -31,7 +35,6 @@ public abstract class Compatibility {
   public boolean isHeadless() {
     return false;
   }
-
 
   public FileHandle getBaseFolder() {
     return Gdx.files.absolute(System.getProperty("user.dir"));
@@ -61,7 +64,7 @@ public abstract class Compatibility {
   public void startModularWorld() {
     compatibility = this;
 
-    UncaughtExceptionHandler uncaughtExceptionHandler = new UncaughtExceptionHandler();
+    Debug.UncaughtExceptionHandler uncaughtExceptionHandler = new Debug.UncaughtExceptionHandler();
     Thread.setDefaultUncaughtExceptionHandler(uncaughtExceptionHandler);
     Thread.currentThread().setUncaughtExceptionHandler(uncaughtExceptionHandler);
 
@@ -99,8 +102,4 @@ public abstract class Compatibility {
   }
 
   public abstract ModLoader getModLoader();
-
-  public static Compatibility get() {
-    return compatibility;
-  }
 }
