@@ -1,8 +1,8 @@
 package ethanjones.modularworld.core.events;
 
-import ethanjones.modularworld.core.system.ModularWorldException;
 import ethanjones.modularworld.core.logging.Log;
-import ethanjones.modularworld.side.common.ModularWorld;
+import ethanjones.modularworld.core.system.ModularWorldException;
+import ethanjones.modularworld.side.Sided;
 
 public class Event {
 
@@ -15,7 +15,7 @@ public class Event {
   }
 
   public boolean post() {
-    return ModularWorld.eventBus.post(this);
+    return Sided.getEventBus().post(this);
   }
 
   public boolean isCancelable() {

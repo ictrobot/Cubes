@@ -1,16 +1,16 @@
 package ethanjones.modularworld.world.storage;
 
-import ethanjones.modularworld.block.Block;
-import ethanjones.modularworld.core.system.ModularWorldException;
 import ethanjones.data.DataGroup;
 import ethanjones.data.DataList;
 import ethanjones.data.basic.DataInteger;
 import ethanjones.data.other.DataParser;
+import ethanjones.modularworld.block.Block;
 import ethanjones.modularworld.core.events.world.block.BlockChangedEvent;
+import ethanjones.modularworld.core.system.ModularWorldException;
 import ethanjones.modularworld.graphics.world.AreaRenderer;
 import ethanjones.modularworld.networking.packets.PacketBlockChanged;
+import ethanjones.modularworld.side.Sided;
 import ethanjones.modularworld.side.client.ModularWorldClient;
-import ethanjones.modularworld.side.common.ModularWorld;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
 import ethanjones.modularworld.world.reference.BlockReference;
 
@@ -66,7 +66,7 @@ public class Area implements DataParser<DataGroup> {
   }
 
   public Block getBlockFactory(int x, int y, int z) {
-    return ModularWorld.blockManager.toFactory(blockFactories[Math.abs(x % SIZE_BLOCKS) + Math.abs(z % SIZE_BLOCKS) * SIZE_BLOCKS + Math.abs(y % SIZE_BLOCKS) * SIZE_BLOCKS_SQUARED]);
+    return Sided.getBlockManager().toFactory(blockFactories[Math.abs(x % SIZE_BLOCKS) + Math.abs(z % SIZE_BLOCKS) * SIZE_BLOCKS + Math.abs(y % SIZE_BLOCKS) * SIZE_BLOCKS_SQUARED]);
   }
 
   public void setBlockFactory(Block block, int x, int y, int z) {
@@ -77,8 +77,8 @@ public class Area implements DataParser<DataGroup> {
     int ref = Math.abs(x % SIZE_BLOCKS) + Math.abs(z % SIZE_BLOCKS) * SIZE_BLOCKS + Math.abs(y % SIZE_BLOCKS) * SIZE_BLOCKS_SQUARED;
     int b = blockFactories[ref];
     if (areaRenderer != null) areaRenderer.dirty = true;
-    blockFactories[ref] = ModularWorld.blockManager.toInt(block);
-    if (event) new BlockChangedEvent(new BlockCoordinates(x, y, z), ModularWorld.blockManager.toFactory(b)).post();
+    blockFactories[ref] = Sided.getBlockManager().toInt(block);
+    if (event) new BlockChangedEvent(new BlockCoordinates(x, y, z), Sided.getBlockManager().toFactory(b)).post();
   }
 
   public void unload() {

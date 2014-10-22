@@ -10,7 +10,7 @@ import ethanjones.modularworld.graphics.world.RayTracing;
 import ethanjones.modularworld.networking.common.packet.Packet;
 import ethanjones.modularworld.networking.common.socket.SocketMonitor;
 import ethanjones.modularworld.networking.packets.*;
-import ethanjones.modularworld.side.common.ModularWorld;
+import ethanjones.modularworld.side.Sided;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
 import ethanjones.modularworld.world.coordinates.Coordinates;
 import ethanjones.modularworld.world.reference.AreaReference;
@@ -38,7 +38,7 @@ public class PlayerManager {
 
     renderDistance = packetConnect.renderDistance;
 
-    ModularWorld.eventBus.register(this);
+    Sided.getEventBus().register(this);
 
     socketMonitor.queue(new PacketConnected());
 
@@ -103,7 +103,7 @@ public class PlayerManager {
     packet.x = coordinates.blockX;
     packet.y = coordinates.blockY;
     packet.z = coordinates.blockZ;
-    packet.factory = ModularWorld.blockManager.toInt(ModularWorldServer.instance.world.getBlockFactory(packet.x, packet.y, packet.z));
+    packet.factory = Sided.getBlockManager().toInt(ModularWorldServer.instance.world.getBlockFactory(packet.x, packet.y, packet.z));
     socketMonitor.getSocketOutput().getPacketQueue().addPacket(packet);
   }
 

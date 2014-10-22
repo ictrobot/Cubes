@@ -2,6 +2,7 @@ package ethanjones.modularworld.networking.common.socket;
 
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.networking.common.packet.Packet;
+import ethanjones.modularworld.side.Sided;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -17,6 +18,7 @@ public class SocketInput extends SocketIO {
 
   @Override
   public void run() {
+    Sided.setSide(socketMonitor.networking.getSide());
     while (socketMonitor.running.get()) {
       try {//TODO: Stop sending class name
         Packet packet = packet = Class.forName(dataInputStream.readUTF()).asSubclass(Packet.class).newInstance();

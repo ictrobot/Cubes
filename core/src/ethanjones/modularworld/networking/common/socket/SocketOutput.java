@@ -3,6 +3,7 @@ package ethanjones.modularworld.networking.common.socket;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.networking.common.packet.Packet;
 import ethanjones.modularworld.networking.common.packet.PacketQueue;
+import ethanjones.modularworld.side.Sided;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -20,6 +21,7 @@ public class SocketOutput extends SocketIO {
 
   @Override
   public void run() {
+    Sided.setSide(socketMonitor.networking.getSide());
     while (socketMonitor.running.get()) {
       try {
         if (packetQueue.isEmpty()) {

@@ -13,7 +13,8 @@ import ethanjones.modularworld.core.system.ModularWorldException;
 import ethanjones.modularworld.core.system.ModularWorldSecurityManager;
 import ethanjones.modularworld.graphics.asset.AssetFinder;
 import ethanjones.modularworld.graphics.asset.AssetManager;
-import ethanjones.modularworld.side.common.ModularWorld;
+import ethanjones.modularworld.side.Side;
+import ethanjones.modularworld.side.Sided;
 
 public abstract class Compatibility {
 
@@ -28,8 +29,8 @@ public abstract class Compatibility {
     return compatibility;
   }
 
-  public void init() {
-    ModularWorld.eventBus.register(this);
+  public void init(Side side) {
+    if (side != null) Sided.getEventBus().register(this);
   }
 
   public boolean isHeadless() {

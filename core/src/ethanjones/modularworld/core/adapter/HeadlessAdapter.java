@@ -2,6 +2,7 @@ package ethanjones.modularworld.core.adapter;
 
 import com.badlogic.gdx.ApplicationListener;
 import ethanjones.modularworld.core.system.Debug;
+import ethanjones.modularworld.core.system.Memory;
 import ethanjones.modularworld.networking.server.ServerNetworkingParameter;
 import ethanjones.modularworld.side.common.ModularWorld;
 import ethanjones.modularworld.side.server.ModularWorldServer;
@@ -24,17 +25,13 @@ public class HeadlessAdapter implements ApplicationListener {
 
   @Override
   public void resize(int width, int height) {
-    try {
-      modularWorldServer.resize(width, height);
-    } catch (Exception e) {
-      Debug.crash(e);
-    }
+
   }
 
   @Override
   public void render() {
     try {
-      ModularWorld.staticRender();
+      Memory.update();
       modularWorldServer.render();
     } catch (Exception e) {
       Debug.crash(e);
@@ -43,20 +40,12 @@ public class HeadlessAdapter implements ApplicationListener {
 
   @Override
   public void pause() {
-    try {
-      modularWorldServer.pause();
-    } catch (Exception e) {
-      Debug.crash(e);
-    }
+
   }
 
   @Override
   public void resume() {
-    try {
-      modularWorldServer.resume();
-    } catch (Exception e) {
-      Debug.crash(e);
-    }
+
   }
 
   @Override

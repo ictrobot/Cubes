@@ -45,4 +45,8 @@ public abstract class Networking {
   public final void processPackets() {
     packetBuffer.process();
   }
+
+  public final Side getSide() {
+    return side;
+  }
 }

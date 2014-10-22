@@ -5,7 +5,7 @@ import ethanjones.modularworld.block.basic.BlockDirt;
 import ethanjones.modularworld.block.basic.BlockGrass;
 import ethanjones.modularworld.block.basic.BlockStone;
 import ethanjones.modularworld.core.util.Register;
-import ethanjones.modularworld.side.common.ModularWorld;
+import ethanjones.modularworld.side.Sided;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class Blocks {
           if (o instanceof Block) {
             f.set(null, o);
             factories.add((Block) o);
-            ModularWorld.blockManager.register((Block) o);
+            Sided.getBlockManager().register((Block) o);
           }
         }
       } catch (Exception e) {

@@ -1,8 +1,7 @@
 package ethanjones.modularworld.core.settings;
 
-import ethanjones.modularworld.core.events.setting.AfterProcessSettingEvent;
 import ethanjones.modularworld.graphics.rendering.BlockRenderer;
-import ethanjones.modularworld.side.common.ModularWorld;
+import ethanjones.modularworld.side.Sided;
 
 public enum Settings {
   username(new StringSetting(null, null, "User")),
@@ -22,11 +21,10 @@ public enum Settings {
     for (Enum e : Settings.class.getEnumConstants()) {
       ((Settings) e).process();
     }
-    new AfterProcessSettingEvent().post();
   }
 
   public Setting getSetting() {
-    SettingGroup group = ModularWorld.settings.main;
+    SettingGroup group = Sided.getSettingsManager().main;
     for (String str : groupPath) {
       group = group.getSettingGroup(str);
     }
@@ -55,7 +53,7 @@ public enum Settings {
     setting.name = name;
     groupPath = new String[parts.length - 1];
     int i = 0;
-    SettingGroup group = ModularWorld.settings.main;
+    SettingGroup group = Sided.getSettingsManager().main;
     while (i < parts.length - 1) {
       groupPath[i] = parts[i];
       group = group.getSettingGroup(parts[i]);

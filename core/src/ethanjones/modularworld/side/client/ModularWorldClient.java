@@ -1,10 +1,11 @@
 package ethanjones.modularworld.side.client;
 
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import ethanjones.modularworld.block.Blocks;
-import ethanjones.modularworld.core.system.ModularWorldException;
 import ethanjones.modularworld.core.compatibility.Compatibility;
+import ethanjones.modularworld.core.system.ModularWorldException;
 import ethanjones.modularworld.entity.living.player.Player;
 import ethanjones.modularworld.graphics.rendering.Renderer;
 import ethanjones.modularworld.input.InputChain;
@@ -15,7 +16,7 @@ import ethanjones.modularworld.side.Side;
 import ethanjones.modularworld.side.common.ModularWorld;
 import ethanjones.modularworld.world.WorldClient;
 
-public class ModularWorldClient extends ModularWorld {
+public class ModularWorldClient extends ModularWorld implements ApplicationListener {
 
   public static ModularWorldClient instance;
   private final ClientNetworkingParameter clientNetworkingParameter;
@@ -52,7 +53,6 @@ public class ModularWorldClient extends ModularWorld {
 
   @Override
   public void resize(int width, int height) {
-    super.resize(width, height);
     renderer.resize();
   }
 
@@ -68,6 +68,16 @@ public class ModularWorldClient extends ModularWorld {
     renderer.render();
     inputChain.afterRender();
     player.update();
+  }
+
+  @Override
+  public void pause() {
+
+  }
+
+  @Override
+  public void resume() {
+
   }
 
   @Override

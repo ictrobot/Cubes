@@ -1,9 +1,9 @@
 package ethanjones.modularworld.core.system;
 
+import ethanjones.modularworld.core.compatibility.Compatibility;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.core.logging.loggers.FileLogWriter;
 import ethanjones.modularworld.side.client.ModularWorldClient;
-import ethanjones.modularworld.side.common.ModularWorld;
 import ethanjones.modularworld.side.server.ModularWorldServer;
 
 public class Debug {
@@ -18,7 +18,7 @@ public class Debug {
     Log.debug("OS Version:         " + System.getProperty("os.version"));
     Log.debug("User Home:          " + System.getProperty("user.home"));
     Log.debug("Working Directory:  " + System.getProperty("user.dir"));
-    Log.debug("Base Directory:     " + ModularWorld.baseFolder.file().getAbsolutePath());
+    Log.debug("Base Directory:     " + Compatibility.get().getBaseFolder().file().getAbsolutePath());
     if (FileLogWriter.file != null)
       Log.debug("Log file:           " + FileLogWriter.file.getAbsolutePath());
   }

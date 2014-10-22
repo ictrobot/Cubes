@@ -11,8 +11,8 @@ import com.badlogic.gdx.utils.Pool;
 import ethanjones.modularworld.block.Block;
 import ethanjones.modularworld.core.util.Direction;
 import ethanjones.modularworld.graphics.GraphicsHelper;
+import ethanjones.modularworld.side.Sided;
 import ethanjones.modularworld.side.client.ModularWorldClient;
-import ethanjones.modularworld.side.common.ModularWorld;
 import ethanjones.modularworld.world.storage.Area;
 
 import static ethanjones.modularworld.graphics.world.FaceVertices.*;
@@ -96,7 +96,7 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
     for (int y = 0; y < SIZE_BLOCKS; y++) {
       for (int z = 0; z < SIZE_BLOCKS; z++) {
         for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
-          Block block = ModularWorld.blockManager.toFactory(area.blockFactories[i]);
+          Block block = Sided.getBlockManager().toFactory(area.blockFactories[i]);
           if (block == null) continue;
           BlockTextureHandler textureHandler = block.getTextureHandler(null); //TODO Pass block datagroup
           if (x < SIZE_BLOCKS - 1) {

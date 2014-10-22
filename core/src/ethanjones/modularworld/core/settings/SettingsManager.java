@@ -1,9 +1,9 @@
 package ethanjones.modularworld.core.settings;
 
 import com.badlogic.gdx.files.FileHandle;
-import ethanjones.modularworld.core.system.ModularWorldException;
+import ethanjones.modularworld.core.compatibility.Compatibility;
 import ethanjones.modularworld.core.logging.Log;
-import ethanjones.modularworld.side.common.ModularWorld;
+import ethanjones.modularworld.core.system.ModularWorldException;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -62,13 +62,13 @@ public class SettingsManager {
   }
 
   public void writeToFile() {
-    FileHandle fileHandle = ModularWorld.baseFolder.child("settings.conf");
+    FileHandle fileHandle = Compatibility.get().getBaseFolder().child("settings.conf");
     fileHandle.writeString(main.getString(), false);
   }
 
   public void readFromFile() {
     Setting.restoreFailed.clear();
-    FileHandle fileHandle = ModularWorld.baseFolder.child("settings.conf");
+    FileHandle fileHandle = Compatibility.get().getBaseFolder().child("settings.conf");
     try {
       fileHandle.file().createNewFile();
     } catch (Exception e) {

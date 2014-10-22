@@ -6,6 +6,7 @@ import ethanjones.modularworld.networking.NetworkingManager;
 import ethanjones.modularworld.networking.common.socket.SocketMonitor;
 import ethanjones.modularworld.networking.server.ServerNetworkingParameter;
 import ethanjones.modularworld.side.Side;
+import ethanjones.modularworld.side.Sided;
 import ethanjones.modularworld.side.common.ModularWorld;
 import ethanjones.modularworld.world.WorldServer;
 import ethanjones.modularworld.world.generator.BasicWorldGenerator;
@@ -33,7 +34,7 @@ public class ModularWorldServer extends ModularWorld implements TimeHandler {
 
     world = new WorldServer(new BasicWorldGenerator());
 
-    timing.addHandler(this, 250);
+    Sided.getTiming().addHandler(this, 250);
   }
 
   @Override

@@ -1,39 +1,28 @@
 package ethanjones.modularworld.side.common;
 
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
-import ethanjones.modularworld.block.BlockManager;
-import ethanjones.modularworld.block.Blocks;
 import ethanjones.modularworld.core.adapter.GraphicalAdapter;
 import ethanjones.modularworld.core.compatibility.Compatibility;
-import ethanjones.modularworld.core.events.EventBus;
 import ethanjones.modularworld.core.localization.Localization;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.core.mod.ModManager;
-import ethanjones.modularworld.core.settings.Settings;
-import ethanjones.modularworld.core.settings.SettingsManager;
-import ethanjones.modularworld.core.system.*;
+import ethanjones.modularworld.core.system.Branding;
+import ethanjones.modularworld.core.system.Debug;
+import ethanjones.modularworld.core.system.ModularWorldException;
+import ethanjones.modularworld.core.system.Threads;
 import ethanjones.modularworld.core.timing.TimeHandler;
-import ethanjones.modularworld.core.timing.Timing;
-import ethanjones.modularworld.graphics.GraphicsHelper;
-import ethanjones.modularworld.graphics.asset.AssetManager;
 import ethanjones.modularworld.graphics.menu.Menu;
 import ethanjones.modularworld.networking.NetworkingManager;
 import ethanjones.modularworld.side.Side;
+import ethanjones.modularworld.side.Sided;
+import ethanjones.modularworld.side.SimpleApplication;
 import ethanjones.modularworld.side.client.ModularWorldClient;
 import ethanjones.modularworld.side.server.ModularWorldServer;
 import ethanjones.modularworld.world.World;
 
-public abstract class ModularWorld implements ApplicationListener, TimeHandler {
+public abstract class ModularWorld implements SimpleApplication, TimeHandler {
 
   private static final int tickMS = 16;
-  public static AssetManager assetManager;
-  public static FileHandle baseFolder;
-  public static EventBus eventBus;
-  public static SettingsManager settings;
-  public static BlockManager blockManager;
-  public static Timing timing;
   private static boolean setup;
   private final Side side;
   public World world;
@@ -47,48 +36,22 @@ public abstract class ModularWorld implements ApplicationListener, TimeHandler {
     if (Compatibility.get() == null)
       Log.error(new ModularWorldException("No Compatibility module for this platform: " + Gdx.app.getType().name() + ", OS: " + System.getProperty("os.name") + ", Arch:" + System.getProperty("os.arch")));
 
-    eventBus = new EventBus();
-    Compatibility.get().init();
-
-    baseFolder = Compatibility.get().getBaseFolder();
-    baseFolder.mkdirs();
+    Compatibility.get().getBaseFolder().mkdirs();
 
     Log.info(Branding.DEBUG); //Can't log till base folder setup
-
-    Compatibility.get().logEnvironment();
     Debug.printProperties();
 
-    settings = new SettingsManager();
-    Settings.processAll();
-    settings.readFromFile();
-    settings.print();
-
-    assetManager = new AssetManager();
-    blockManager = new BlockManager();
-
-    Blocks.init();
-
-    timing = new Timing();
+    Sided.setupGlobal();
+    Compatibility.get().init(null);
+    Compatibility.get().logEnvironment();
 
     Threads.init();
 
-    AssetManager assetManager = new AssetManager();
-    Compatibility.get().getAssets(assetManager);
-
-    if (!Compatibility.get().isHeadless()) {
-      GraphicsHelper.init(assetManager);
-    }
-
-    Localization.load(assetManager.assets);
+    Localization.load(Sided.getAssetManager().assets);
 
     ModManager.init();
 
     setup = true;
-  }
-
-  public static void staticRender() {
-    Memory.update();
-    timing.update();
   }
 
   protected static void staticDispose() {
@@ -96,15 +59,10 @@ public abstract class ModularWorld implements ApplicationListener, TimeHandler {
     Menu.staticDispose();
   }
 
-  protected static void sharedDispose() {
-    timing.dispose();
-  }
-
   /**
    * Always exits if is headless
    */
   public static final void quit(boolean exit) {
-    sharedDispose();
     if (ModularWorldClient.instance != null) {
       ModularWorldClient.instance.dispose();
     }
@@ -122,13 +80,10 @@ public abstract class ModularWorld implements ApplicationListener, TimeHandler {
   @Override
   public void create() {
     //TODO Rewrite settings, have two classes "Client" and "Server"
-    eventBus.register(this);
-    timing.addHandler(this, tickMS);
-  }
-
-  @Override
-  public void resize(int width, int height) {
-
+    Sided.setup(side);
+    Compatibility.get().init(side);
+    Sided.getEventBus().register(this);
+    Sided.getTiming().addHandler(this, tickMS);
   }
 
   @Override
@@ -141,17 +96,7 @@ public abstract class ModularWorld implements ApplicationListener, TimeHandler {
   }
 
   public void write() {
-    settings.writeToFile();
-  }
-
-  @Override
-  public void pause() {
-
-  }
-
-  @Override
-  public void resume() {
-
+    Sided.getSettingsManager().writeToFile();
   }
 
   @Override
@@ -159,6 +104,7 @@ public abstract class ModularWorld implements ApplicationListener, TimeHandler {
     write();
     NetworkingManager.getNetworking(side).stop();
     world.dispose();
+    Sided.reset(side);
   }
 
   public void time(int interval) {
