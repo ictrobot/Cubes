@@ -1,6 +1,6 @@
 package ethanjones.modularworld.core.events;
 
-import ethanjones.modularworld.core.ModularWorldException;
+import ethanjones.modularworld.core.system.ModularWorldException;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.side.common.ModularWorld;
 

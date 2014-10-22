@@ -1,7 +1,7 @@
 package ethanjones.modularworld.world;
 
 import com.badlogic.gdx.utils.Pool;
-import ethanjones.modularworld.core.thread.Threads;
+import ethanjones.modularworld.core.system.Threads;
 import ethanjones.modularworld.world.generator.WorldGenerator;
 import ethanjones.modularworld.world.reference.AreaReference;
 import ethanjones.modularworld.world.storage.Area;

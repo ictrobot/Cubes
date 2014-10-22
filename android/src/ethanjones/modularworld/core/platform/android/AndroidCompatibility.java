@@ -6,7 +6,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.files.FileHandle;
-import ethanjones.modularworld.core.Branding;
+import ethanjones.modularworld.core.system.Branding;
 import ethanjones.modularworld.core.compatibility.Compatibility;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.core.mod.ModLoader;

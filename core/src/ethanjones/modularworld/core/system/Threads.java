@@ -1,4 +1,4 @@
-package ethanjones.modularworld.core.thread;
+package ethanjones.modularworld.core.system;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
@@ -11,8 +11,11 @@ public class Threads {
 
   public static void init() {
     executor = new ScheduledThreadPoolExecutor(8, new ThreadFactory() {
+      int threads = 0;
+
       public Thread newThread(Runnable r) {
         Thread t = new Thread(r);
+        t.setName("Executor-" + threads++);
         t.setDaemon(true);
         return t;
       }

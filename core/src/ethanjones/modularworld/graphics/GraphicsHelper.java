@@ -14,7 +14,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import ethanjones.modularworld.core.ModularWorldException;
+import ethanjones.modularworld.core.system.ModularWorldException;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.graphics.asset.AssetManager;
 import ethanjones.modularworld.side.common.ModularWorld;

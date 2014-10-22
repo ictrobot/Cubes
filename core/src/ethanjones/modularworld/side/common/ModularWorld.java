@@ -5,8 +5,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import ethanjones.modularworld.block.BlockManager;
 import ethanjones.modularworld.block.Blocks;
-import ethanjones.modularworld.core.Branding;
-import ethanjones.modularworld.core.ModularWorldException;
+import ethanjones.modularworld.core.system.Branding;
+import ethanjones.modularworld.core.system.ModularWorldException;
 import ethanjones.modularworld.core.adapter.GraphicalAdapter;
 import ethanjones.modularworld.core.compatibility.Compatibility;
 import ethanjones.modularworld.core.debug.Debug;
@@ -17,7 +17,7 @@ import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.core.mod.ModManager;
 import ethanjones.modularworld.core.settings.Settings;
 import ethanjones.modularworld.core.settings.SettingsManager;
-import ethanjones.modularworld.core.thread.Threads;
+import ethanjones.modularworld.core.system.Threads;
 import ethanjones.modularworld.core.timing.TimeHandler;
 import ethanjones.modularworld.core.timing.Timing;
 import ethanjones.modularworld.graphics.GraphicsHelper;
@@ -32,7 +32,6 @@ import ethanjones.modularworld.world.World;
 public abstract class ModularWorld implements ApplicationListener, TimeHandler {
 
   private static final int tickMS = 16;
-  public static Compatibility compatibility;
   public static AssetManager assetManager;
   public static FileHandle baseFolder;
   public static EventBus eventBus;
@@ -49,18 +48,18 @@ public abstract class ModularWorld implements ApplicationListener, TimeHandler {
 
   public static void setup() {
     if (setup) return;
-    if (compatibility == null)
+    if (Compatibility.get() == null)
       Log.error(new ModularWorldException("No Compatibility module for this platform: " + Gdx.app.getType().name() + ", OS: " + System.getProperty("os.name") + ", Arch:" + System.getProperty("os.arch")));
 
     eventBus = new EventBus();
-    compatibility.init();
+    Compatibility.get().init();
 
-    baseFolder = compatibility.getBaseFolder();
+    baseFolder = Compatibility.get().getBaseFolder();
     baseFolder.mkdirs();
 
     Log.info(Branding.DEBUG); //Can't log till base folder setup
 
-    compatibility.logEnvironment();
+    Compatibility.get().logEnvironment();
     Debug.printProperties();
 
     settings = new SettingsManager();
@@ -78,9 +77,9 @@ public abstract class ModularWorld implements ApplicationListener, TimeHandler {
     Threads.init();
 
     AssetManager assetManager = new AssetManager();
-    compatibility.getAssets(assetManager);
+    Compatibility.get().getAssets(assetManager);
 
-    if (!compatibility.isHeadless()) {
+    if (!Compatibility.get().isHeadless()) {
       GraphicsHelper.init(assetManager);
     }
 
@@ -116,7 +115,7 @@ public abstract class ModularWorld implements ApplicationListener, TimeHandler {
     if (ModularWorldServer.instance != null) {
       ModularWorldServer.instance.dispose();
     }
-    if (exit || compatibility.isHeadless()) {
+    if (exit || Compatibility.get().isHeadless()) {
       staticDispose();
       System.exit(0);
     } else {

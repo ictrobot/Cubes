@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import ethanjones.modularworld.core.Branding;
+import ethanjones.modularworld.core.system.Branding;
 import ethanjones.modularworld.core.debug.Memory;
 import ethanjones.modularworld.core.util.LongAverage;
 import ethanjones.modularworld.graphics.menu.Fonts;
@@ -102,7 +102,7 @@ public class ClientDebug {
       for (DebugType debugType : DebugType.values()) {
         String str = get(debugType);
         if (str != null) {
-          s.append(str).append(System.lineSeparator());
+          s.append(str).append(System.getProperty("line.separator"));
         }
       }
       setText(s.toString());

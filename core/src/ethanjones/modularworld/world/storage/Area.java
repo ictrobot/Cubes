@@ -1,7 +1,7 @@
 package ethanjones.modularworld.world.storage;
 
 import ethanjones.modularworld.block.Block;
-import ethanjones.modularworld.core.ModularWorldException;
+import ethanjones.modularworld.core.system.ModularWorldException;
 import ethanjones.data.DataGroup;
 import ethanjones.data.DataList;
 import ethanjones.data.basic.DataInteger;

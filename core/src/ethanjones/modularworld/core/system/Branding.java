@@ -1,4 +1,4 @@
-package ethanjones.modularworld.core;
+package ethanjones.modularworld.core.system;
 
 import com.badlogic.gdx.Gdx;
 import ethanjones.modularworld.core.logging.Log;

@@ -1,8 +1,8 @@
 package ethanjones.modularworld.core.mod;
 
 import com.badlogic.gdx.files.FileHandle;
+import ethanjones.modularworld.core.compatibility.Compatibility;
 import ethanjones.modularworld.core.logging.Log;
-import ethanjones.modularworld.side.common.ModularWorld;
 
 import java.io.*;
 import java.util.Properties;
@@ -12,7 +12,7 @@ import java.util.zip.ZipInputStream;
 public class ModManager {
 
   private static FileHandle[] getModFiles() {
-    FileHandle base = ModularWorld.compatibility.getBaseFolder().child("mods");
+    FileHandle base = Compatibility.get().getBaseFolder().child("mods");
     base.mkdirs();
     return base.list(new FileFilter() {
       @Override
@@ -24,11 +24,11 @@ public class ModManager {
   }
 
   public static void init() {
-    ModLoader modLoader = ModularWorld.compatibility.getModLoader();
-    FileHandle temp = ModularWorld.compatibility.getBaseFolder().child("modTemp");
+    ModLoader modLoader = Compatibility.get().getModLoader();
+    FileHandle temp = Compatibility.get().getBaseFolder().child("modTemp");
     temp.deleteDirectory();
     temp.mkdirs();
-    FileHandle modAssets = ModularWorld.compatibility.getBaseFolder().child("modAssets");
+    FileHandle modAssets = Compatibility.get().getBaseFolder().child("modAssets");
     modAssets.deleteDirectory();
     modAssets.mkdirs();
     for (FileHandle fileHandle : getModFiles()) {

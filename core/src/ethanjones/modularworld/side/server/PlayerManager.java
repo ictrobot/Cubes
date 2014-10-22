@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.collision.Ray;
 import ethanjones.modularworld.block.Blocks;
 import ethanjones.modularworld.core.events.EventHandler;
 import ethanjones.modularworld.core.events.world.block.BlockEvent;
-import ethanjones.modularworld.core.thread.Threads;
+import ethanjones.modularworld.core.system.Threads;
 import ethanjones.modularworld.entity.living.player.Player;
 import ethanjones.modularworld.graphics.world.RayTracing;
 import ethanjones.modularworld.networking.common.packet.Packet;

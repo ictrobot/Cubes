@@ -4,18 +4,20 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import ethanjones.modularworld.core.ModularWorldException;
 import ethanjones.modularworld.core.adapter.GraphicalAdapter;
 import ethanjones.modularworld.core.adapter.HeadlessAdapter;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.core.logging.UncaughtExceptionHandler;
 import ethanjones.modularworld.core.mod.ModLoader;
+import ethanjones.modularworld.core.system.ModularWorldException;
+import ethanjones.modularworld.core.system.ModularWorldSecurityManager;
 import ethanjones.modularworld.graphics.asset.AssetFinder;
 import ethanjones.modularworld.graphics.asset.AssetManager;
 import ethanjones.modularworld.side.common.ModularWorld;
 
 public abstract class Compatibility {
 
+  private static Compatibility compatibility;
   public final Application.ApplicationType applicationType;
 
   protected Compatibility(Application.ApplicationType applicationType) {
@@ -57,11 +59,25 @@ public abstract class Compatibility {
   protected abstract void run(ApplicationListener applicationListener);
 
   public void startModularWorld() {
-    ModularWorld.compatibility = this;
+    compatibility = this;
 
     UncaughtExceptionHandler uncaughtExceptionHandler = new UncaughtExceptionHandler();
     Thread.setDefaultUncaughtExceptionHandler(uncaughtExceptionHandler);
     Thread.currentThread().setUncaughtExceptionHandler(uncaughtExceptionHandler);
+
+    try {
+      System.setSecurityManager(new ModularWorldSecurityManager());
+    } catch (SecurityException se) {
+      try {
+        Log.info("Security Manager already exists. This should not happen!");
+        if (System.getSecurityManager() != null)
+          Log.info("Security Manager class: " + System.getSecurityManager().getClass());
+        System.exit(1);
+      } catch (Exception e) {
+        se.printStackTrace();
+        e.printStackTrace();
+      }
+    }
 
     try {
       if (isHeadless()) {
@@ -83,4 +99,8 @@ public abstract class Compatibility {
   }
 
   public abstract ModLoader getModLoader();
+
+  public static Compatibility get() {
+    return compatibility;
+  }
 }

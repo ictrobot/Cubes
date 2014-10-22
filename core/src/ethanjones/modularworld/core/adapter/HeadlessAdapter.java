@@ -1,7 +1,7 @@
 package ethanjones.modularworld.core.adapter;
 
 import com.badlogic.gdx.ApplicationListener;
-import ethanjones.modularworld.core.ModularWorldException;
+import ethanjones.modularworld.core.system.ModularWorldException;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.networking.server.ServerNetworkingParameter;
 import ethanjones.modularworld.side.common.ModularWorld;

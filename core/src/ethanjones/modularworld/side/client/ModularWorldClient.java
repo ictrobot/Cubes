@@ -3,7 +3,8 @@ package ethanjones.modularworld.side.client;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import ethanjones.modularworld.block.Blocks;
-import ethanjones.modularworld.core.ModularWorldException;
+import ethanjones.modularworld.core.system.ModularWorldException;
+import ethanjones.modularworld.core.compatibility.Compatibility;
 import ethanjones.modularworld.entity.living.player.Player;
 import ethanjones.modularworld.graphics.rendering.Renderer;
 import ethanjones.modularworld.input.InputChain;
@@ -26,7 +27,7 @@ public class ModularWorldClient extends ModularWorld {
 
   public ModularWorldClient(ClientNetworkingParameter clientNetworkingParameter) {
     super(Side.Client);
-    if (compatibility.isHeadless()) throw new ModularWorldException("Client requires Graphics ");
+    if (Compatibility.get().isHeadless()) throw new ModularWorldException("Client requires Graphics ");
     this.clientNetworkingParameter = clientNetworkingParameter;
     ModularWorldClient.instance = this;
   }

@@ -2,10 +2,10 @@ package ethanjones.modularworld.core.logging;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import ethanjones.modularworld.core.compatibility.Compatibility;
 import ethanjones.modularworld.core.logging.loggers.FileLogWriter;
 import ethanjones.modularworld.core.logging.loggers.GdxAppLogWriter;
 import ethanjones.modularworld.core.logging.loggers.SysOutLogWriter;
-import ethanjones.modularworld.side.common.ModularWorld;
 
 import java.io.File;
 
@@ -15,22 +15,24 @@ public class Log {
   private static LogWriter file;
 
   static {
+
     try {
-      if (Application.ApplicationType.Android == Gdx.app.getType()) {
+      if (Gdx.app != null && Application.ApplicationType.Android == Gdx.app.getType()) {
         output = new GdxAppLogWriter();
       } else {
         output = new SysOutLogWriter();
       }
     } catch (Exception e) {
-
+      e.printStackTrace();
     }
     try {
-      file = new FileLogWriter(new File(ModularWorld.baseFolder.file(), "log.txt"));
+      file = new FileLogWriter(new File(Compatibility.get().getBaseFolder().file(), "log.txt"));
     } catch (Exception e) {
+      e.printStackTrace();
       try {
         file = new FileLogWriter(new File(System.getProperty("user.dir"), "log.txt"));
       } catch (Exception ex) {
-
+        e.printStackTrace();
       }
     }
   }
