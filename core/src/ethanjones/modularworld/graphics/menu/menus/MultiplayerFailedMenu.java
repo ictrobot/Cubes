@@ -25,7 +25,8 @@ public class MultiplayerFailedMenu extends InfoMenu {
       @Override
       public boolean handle(Event event) {
         if (!(event instanceof ChangeListener.ChangeEvent)) return false;
-        GraphicalAdapter.instance.gotoMainMenu();
+        GraphicalAdapter.instance.setMenu(null);
+        GraphicalAdapter.instance.setModularWorld(null, null);
         return true;
       }
     });

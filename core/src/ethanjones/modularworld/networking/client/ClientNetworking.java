@@ -1,7 +1,6 @@
 package ethanjones.modularworld.networking.client;
 
 import com.badlogic.gdx.Gdx;
-import ethanjones.modularworld.core.adapter.GraphicalAdapter;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.networking.NetworkingManager;
 import ethanjones.modularworld.networking.common.Networking;
@@ -11,6 +10,7 @@ import ethanjones.modularworld.networking.common.socket.SocketMonitor;
 import ethanjones.modularworld.networking.packets.PacketPlayerInfo;
 import ethanjones.modularworld.side.Side;
 import ethanjones.modularworld.side.client.ModularWorldClient;
+import ethanjones.modularworld.side.common.ModularWorld;
 
 public class ClientNetworking extends Networking {
 
@@ -35,7 +35,7 @@ public class ClientNetworking extends Networking {
 
   @Override
   public synchronized void tick() {
-    if (getNetworkingState() != NetworkingState.Running) GraphicalAdapter.instance.gotoMainMenu();
+    if (getNetworkingState() != NetworkingState.Running) ModularWorld.quit(false);
     PacketPlayerInfo packetPlayerInfo = new PacketPlayerInfo();
     packetPlayerInfo.angle = ModularWorldClient.instance.player.angle;
     packetPlayerInfo.position = ModularWorldClient.instance.player.position;

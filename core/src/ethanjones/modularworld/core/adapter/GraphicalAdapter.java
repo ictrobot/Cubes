@@ -7,6 +7,7 @@ import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.core.system.Branding;
 import ethanjones.modularworld.core.system.Debug;
 import ethanjones.modularworld.core.system.Memory;
+import ethanjones.modularworld.core.system.ModularWorldSecurityManager;
 import ethanjones.modularworld.graphics.menu.Fonts;
 import ethanjones.modularworld.graphics.menu.Menu;
 import ethanjones.modularworld.graphics.menu.MenuManager;
@@ -35,6 +36,9 @@ public class GraphicalAdapter implements ApplicationListener {
   }
 
   public void setMenu(Menu menu) {
+    SecurityManager sm = System.getSecurityManager();
+    if (sm != null)
+      sm.checkPermission(new RuntimePermission(ModularWorldSecurityManager.MW_GRAPHICAL_ADAPTER_SET_MENU));
     Menu old = this.menu;
     if (old != null) {
       old.hide();
@@ -52,22 +56,27 @@ public class GraphicalAdapter implements ApplicationListener {
   }
 
   public void setModularWorld(ModularWorldServer modularWorldServer, ModularWorldClient modularWorldClient) {
-    if (this.modularWorldServerThread != null) this.modularWorldServerThread.dispose();
-    if (this.modularWorldClient != null) this.modularWorldClient.dispose();
-
+    SecurityManager sm = System.getSecurityManager();
+    if (sm != null) sm.checkPermission(new RuntimePermission(ModularWorldSecurityManager.MW_GRAPHICAL_ADAPTER_SET));
     if (modularWorldServer != null) {
-      Log.debug("ModularWorldServer set");
       modularWorldServerThread = new ModularWorldServerThread(modularWorldServer);
+      ModularWorldServer.instance = modularWorldServer;
+      Log.debug("ModularWorldServer set");
       modularWorldServerThread.start();
     } else {
+      modularWorldServerThread = null;
+      ModularWorldServer.instance = null;
       Log.debug("ModularWorldServer set to null");
     }
     if (modularWorldClient != null) {
+      this.modularWorldClient = modularWorldClient;
+      ModularWorldClient.instance = modularWorldClient;
       Log.debug("ModularWorldClient set");
       modularWorldClient.create();
       modularWorldClient.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-      this.modularWorldClient = modularWorldClient;
     } else {
+      this.modularWorldClient = null;
+      ModularWorldClient.instance = null;
       Log.debug("ModularWorldClient set to null");
     }
   }
@@ -75,7 +84,7 @@ public class GraphicalAdapter implements ApplicationListener {
   @Override
   public void create() {
     try {
-      Thread.currentThread().setName("MAIN");
+      Thread.currentThread().setName(Side.Client.name());
       ModularWorld.setup();
       Sided.setup(Side.Client);
       Gdx.graphics.setTitle(Branding.DEBUG);
@@ -142,10 +151,5 @@ public class GraphicalAdapter implements ApplicationListener {
     } catch (Exception e) {
       Debug.crash(e);
     }
-  }
-
-  public void gotoMainMenu() {
-    setModularWorld(null, null);
-    setMenu(new MainMenu());
   }
 }

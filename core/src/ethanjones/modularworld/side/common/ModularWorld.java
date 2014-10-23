@@ -12,6 +12,7 @@ import ethanjones.modularworld.core.system.ModularWorldException;
 import ethanjones.modularworld.core.system.Threads;
 import ethanjones.modularworld.core.timing.TimeHandler;
 import ethanjones.modularworld.graphics.menu.Menu;
+import ethanjones.modularworld.graphics.menu.menus.MainMenu;
 import ethanjones.modularworld.networking.NetworkingManager;
 import ethanjones.modularworld.side.Side;
 import ethanjones.modularworld.side.Sided;
@@ -22,7 +23,7 @@ import ethanjones.modularworld.world.World;
 
 public abstract class ModularWorld implements SimpleApplication, TimeHandler {
 
-  private static final int tickMS = 16;
+  public static final int tickMS = 16;
   private static boolean setup;
   private final Side side;
   public World world;
@@ -62,19 +63,32 @@ public abstract class ModularWorld implements SimpleApplication, TimeHandler {
   /**
    * Always exits if is headless
    */
-  public static final void quit(boolean exit) {
+  public static synchronized final void quit(boolean exit) {
+    if (ModularWorldServer.instance != null) {
+      if (ModularWorldServer.instance.thread != null) {
+        ModularWorldServer.instance.thread.dispose();
+        try {
+          ModularWorldServer.instance.thread.join(10000); //Wait for 10 seconds
+        } catch (InterruptedException e) {
+
+        }
+      } else {
+        ModularWorldServer.instance.dispose();
+      }
+    }
+
     if (ModularWorldClient.instance != null) {
       ModularWorldClient.instance.dispose();
     }
-    if (ModularWorldServer.instance != null) {
-      ModularWorldServer.instance.dispose();
-    }
+
     if (exit || Compatibility.get().isHeadless()) {
       staticDispose();
       System.exit(0);
     } else {
-      GraphicalAdapter.instance.gotoMainMenu();
+      GraphicalAdapter.instance.setModularWorld(null, null);
+      GraphicalAdapter.instance.setMenu(new MainMenu());
     }
+
   }
 
   @Override
@@ -89,6 +103,7 @@ public abstract class ModularWorld implements SimpleApplication, TimeHandler {
   @Override
   public void render() {
     NetworkingManager.getNetworking(side).processPackets();
+    Sided.getTiming().update();
   }
 
   public void tick() {

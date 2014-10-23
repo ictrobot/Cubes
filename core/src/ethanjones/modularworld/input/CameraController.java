@@ -15,13 +15,16 @@ public class CameraController extends InputAdapter {
   private int STRAFE_RIGHT = Input.Keys.D;
   private int FORWARD = Input.Keys.W;
   private int BACKWARD = Input.Keys.S;
-  private int JUMP = Input.Keys.SPACE;
-  private float jumpCount = 0;
+  //private int JUMP = Input.Keys.SPACE;
+  //private float jumpCount = 0;
   private float speed = 5;
   private float degreesPerPixel = 0.5f;
 
   public CameraController(Camera camera) {
     this.camera = camera;
+    camera.position.set(0, 6.5f, 0);
+    camera.direction.set(1, 0, 0);
+    camera.update();
   }
 
   @Override

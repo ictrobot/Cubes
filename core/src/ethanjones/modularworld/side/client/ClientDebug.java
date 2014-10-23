@@ -34,15 +34,15 @@ public class ClientDebug {
   public static void update() {
     fps.add(Gdx.graphics.getFramesPerSecond());
     set(DebugType.fps, "FPS:" + fps.getCurrent() + " AFPS:" + fps.getAverage());
-    set(DebugType.ram, "RAM F:" + Memory.totalFree + "MB U:" + Memory.used + "MB");
+    set(DebugType.ram, "RAM T:" + Memory.max + "MB F:" + Memory.totalFree + "MB U:" + Memory.used + "MB");
     Vector3 p = ModularWorldClient.instance.player.position;
     set(DebugType.coordinates, "P X:" + String.format("%.2f", p.x) + " Y:" + String.format("%.2f", p.y) + " Z:" + String.format("%.2f", p.z));
     set(DebugType.areaCoordinates, "A X:" + BlockCoordinates.area((int) Math.ceil(p.x)) + " Y:" + BlockCoordinates.area((int) Math.ceil(p.y)) + " Z:" + BlockCoordinates.area((int) Math.ceil(p.z)));
-    set(DebugType.zoneCoordinates, "Z X:" + AreaCoordinates.zone((int) Math.ceil(p.x)) + " Z:" + AreaCoordinates.zone((int) Math.ceil(p.z)));
-    set(DebugType.direction, "D X:" + ModularWorldClient.instance.player.angle.x + " Y:" + ModularWorldClient.instance.player.angle.y);
+    set(DebugType.zoneCoordinates, "Z X:" + AreaCoordinates.zone(BlockCoordinates.area((int) Math.ceil(p.x))) + " Z:" + AreaCoordinates.zone(BlockCoordinates.area((int) Math.ceil(p.z))));
+    set(DebugType.direction, "D X:" + String.format("%02f", ModularWorldClient.instance.player.angle.x) + " Y:" + String.format("%02f", ModularWorldClient.instance.player.angle.y));
     loop.add(System.currentTimeMillis() - lastTime);
     lastTime = System.currentTimeMillis();
-    set(DebugType.loop, "L MS:" + String.format("%03d", loop.getCurrent()) + " AMS:" + String.format("%03d", loop.getAverage()));
+    set(DebugType.loop, "L MS:" + String.format("%01d", loop.getCurrent()) + " AMS:" + String.format("%01d", loop.getAverage()));
 
     set(DebugType.calls, "C:" + GLProfiler.calls);
     set(DebugType.drawCalls, "DC:" + GLProfiler.drawCalls);

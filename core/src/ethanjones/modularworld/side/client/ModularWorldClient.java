@@ -30,7 +30,6 @@ public class ModularWorldClient extends ModularWorld implements ApplicationListe
     super(Side.Client);
     if (Compatibility.get().isHeadless()) throw new ModularWorldException("Client requires Graphics ");
     this.clientNetworkingParameter = clientNetworkingParameter;
-    ModularWorldClient.instance = this;
   }
 
   @Override

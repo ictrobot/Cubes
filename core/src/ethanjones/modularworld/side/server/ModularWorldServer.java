@@ -17,13 +17,13 @@ public class ModularWorldServer extends ModularWorld implements TimeHandler {
 
   public static ModularWorldServer instance;
   private final ServerNetworkingParameter serverNetworkingParameter;
+  public ModularWorldServerThread thread; //only on singleplayer
   public HashMap<SocketMonitor, PlayerManager> playerManagers;
   private boolean disposed = false;
 
   public ModularWorldServer(ServerNetworkingParameter serverNetworkingParameter) {
     super(Side.Server);
     this.serverNetworkingParameter = serverNetworkingParameter;
-    ModularWorldServer.instance = this;
     playerManagers = new HashMap<SocketMonitor, PlayerManager>();
   }
 

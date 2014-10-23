@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationListener;
 import ethanjones.modularworld.core.system.Debug;
 import ethanjones.modularworld.core.system.Memory;
 import ethanjones.modularworld.networking.server.ServerNetworkingParameter;
+import ethanjones.modularworld.side.Side;
 import ethanjones.modularworld.side.common.ModularWorld;
 import ethanjones.modularworld.side.server.ModularWorldServer;
 
@@ -14,7 +15,7 @@ public class HeadlessAdapter implements ApplicationListener {
   @Override
   public void create() {
     try {
-      Thread.currentThread().setName("MAIN");
+      Thread.currentThread().setName(Side.Server.name());
       ModularWorld.setup();
       modularWorldServer = new ModularWorldServer(new ServerNetworkingParameter());
       modularWorldServer.create();
