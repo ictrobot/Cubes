@@ -9,7 +9,7 @@ import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class ModManager {
+public class ModManager { //TODO: Pack assets. Make modes useful
 
   private static FileHandle[] getModFiles() {
     FileHandle base = Compatibility.get().getBaseFolder().child("mods");
@@ -56,8 +56,8 @@ public class ModManager {
             Properties properties = new Properties();
             properties.load(zipInputStream);
             className = properties.getProperty("modClass");
-          } else {
-            writeToFile(modAssets.child(fileHandle.name()).child(entry.getName()), zipInputStream);
+          } else if (!entry.isDirectory() && entry.getName().toLowerCase().startsWith("assets/")) {
+            writeToFile(modAssets.child(fileHandle.name()).child(entry.getName().substring(7)), zipInputStream);
           }
         }
         if (classFile == null) {
