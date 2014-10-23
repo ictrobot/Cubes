@@ -6,6 +6,8 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.IntIntMap;
+import ethanjones.modularworld.side.client.ModularWorldClient;
+import ethanjones.modularworld.world.WorldClient;
 
 public class CameraController extends InputAdapter {
   private final Camera camera;
@@ -63,26 +65,32 @@ public class CameraController extends InputAdapter {
   }
 
   public void update(float deltaTime) {
+    boolean moved = false;
     if (keys.containsKey(FORWARD)) {
       tmp.set(camera.direction);
       tmp.nor().scl(deltaTime * speed);
       camera.position.add(tmp);
+      moved = true;
     }
     if (keys.containsKey(BACKWARD)) {
       tmp.set(camera.direction);
       tmp.nor().scl(-deltaTime * speed);
       camera.position.add(tmp);
+      moved = true;
     }
     if (keys.containsKey(STRAFE_LEFT)) {
       tmp.set(camera.direction);
       tmp.crs(camera.up).nor().scl(-deltaTime * speed);
       camera.position.add(tmp);
+      moved = true;
     }
     if (keys.containsKey(STRAFE_RIGHT)) {
       tmp.set(camera.direction);
       tmp.crs(camera.up).nor().scl(deltaTime * speed);
       camera.position.add(tmp);
+      moved = true;
     }
+    if (moved) ((WorldClient) ModularWorldClient.instance.world).playerChangedPosition();
     //if (keys.containsKey(JUMP) && jumpCount == 0) {
     //  jumpCount = 1.25f;
     //}

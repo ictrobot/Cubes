@@ -110,14 +110,10 @@ public class PlayerManager {
   private void sendAndRequestArea(AreaReference areaReference) {
     Area area = ModularWorldServer.instance.world.getAreaInternal(areaReference, false, false);
     if (area == null || area instanceof BlankArea) {
-      requestArea(areaReference.clone());
+      Threads.execute(new SendWorldCallable(new GenerateWorldCallable(areaReference.clone(), (ethanjones.modularworld.world.WorldServer) ModularWorldServer.instance.world), socketMonitor.getSocketOutput().getPacketQueue(), this));
     } else {
       Threads.execute(new SendWorldCallable(ModularWorldServer.instance.world.getAreaInternal(areaReference, false, false), socketMonitor.getSocketOutput().getPacketQueue(), this));
     }
-  }
-
-  private void requestArea(AreaReference areaReference) {
-    Threads.execute(new SendWorldCallable(new GenerateWorldCallable(areaReference, (ethanjones.modularworld.world.WorldServer) ModularWorldServer.instance.world), socketMonitor.getSocketOutput().getPacketQueue(), this));
   }
 
   public void sendPacket(Packet packet) {
