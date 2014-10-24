@@ -6,8 +6,15 @@ public class ModularWorldSecurity {
 
   private static StackTraceElement[] getStackTrace() {
     StackTraceElement[] st = Thread.currentThread().getStackTrace();
-    StackTraceElement[] stackTrace = new StackTraceElement[st.length - 3];
-    System.arraycopy(st, 3, stackTrace, 0, stackTrace.length);
+    int pos = -1;
+    for (int i = 0; i < st.length; i++) {
+      if (st[i].getClassName().equals(ModularWorldSecurity.class.getName())) {
+        pos = i + 2; // + 2 removes "getStackTrace" and "check..."
+        break;
+      }
+    }
+    StackTraceElement[] stackTrace = new StackTraceElement[st.length - pos];
+    System.arraycopy(st, pos, stackTrace, 0, stackTrace.length);
     return stackTrace;
   }
 

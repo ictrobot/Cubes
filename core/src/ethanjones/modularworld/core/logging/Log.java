@@ -15,11 +15,6 @@ public class Log {
   private static LogWriter file;
 
   static {
-    System.out.println("log init");
-    for (StackTraceElement stackTraceElement : Thread.currentThread().getStackTrace()) {
-      System.out.println(stackTraceElement.toString());
-    }
-
     try {
       if (Gdx.app != null && Application.ApplicationType.Android == Gdx.app.getType()) {
         output = new GdxAppLogWriter();
