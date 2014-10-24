@@ -39,7 +39,7 @@ public class ClientDebug {
     set(DebugType.coordinates, "P X:" + String.format("%.2f", p.x) + " Y:" + String.format("%.2f", p.y) + " Z:" + String.format("%.2f", p.z));
     set(DebugType.areaCoordinates, "A X:" + BlockCoordinates.area((int) Math.ceil(p.x)) + " Y:" + BlockCoordinates.area((int) Math.ceil(p.y)) + " Z:" + BlockCoordinates.area((int) Math.ceil(p.z)));
     set(DebugType.zoneCoordinates, "Z X:" + AreaCoordinates.zone(BlockCoordinates.area((int) Math.ceil(p.x))) + " Z:" + AreaCoordinates.zone(BlockCoordinates.area((int) Math.ceil(p.z))));
-    set(DebugType.direction, "D X:" + String.format("%02f", ModularWorldClient.instance.player.angle.x) + " Y:" + String.format("%02f", ModularWorldClient.instance.player.angle.y));
+    set(DebugType.direction, "D X:" + String.format("%02f", ModularWorldClient.instance.player.angle.x) + " Y:" + String.format("%02f", ModularWorldClient.instance.player.angle.y) + " Z:" + String.format("%02f", ModularWorldClient.instance.player.angle.z));
     loop.add(System.currentTimeMillis() - lastTime);
     lastTime = System.currentTimeMillis();
     set(DebugType.loop, "L MS:" + String.format("%01d", loop.getCurrent()) + " AMS:" + String.format("%01d", loop.getAverage()));
