@@ -10,7 +10,6 @@ import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.core.mod.ModLoader;
 import ethanjones.modularworld.core.system.Debug;
 import ethanjones.modularworld.core.system.ModularWorldException;
-import ethanjones.modularworld.core.system.ModularWorldSecurityManager;
 import ethanjones.modularworld.graphics.asset.AssetFinder;
 import ethanjones.modularworld.graphics.asset.AssetManager;
 import ethanjones.modularworld.side.Side;
@@ -68,20 +67,6 @@ public abstract class Compatibility {
     Debug.UncaughtExceptionHandler uncaughtExceptionHandler = new Debug.UncaughtExceptionHandler();
     Thread.setDefaultUncaughtExceptionHandler(uncaughtExceptionHandler);
     Thread.currentThread().setUncaughtExceptionHandler(uncaughtExceptionHandler);
-
-    try {
-      System.setSecurityManager(new ModularWorldSecurityManager());
-    } catch (SecurityException se) {
-      try {
-        Log.info("Security Manager already exists. This should not happen!");
-        if (System.getSecurityManager() != null)
-          Log.info("Security Manager class: " + System.getSecurityManager().getClass());
-        System.exit(1);
-      } catch (Exception e) {
-        se.printStackTrace();
-        e.printStackTrace();
-      }
-    }
 
     try {
       if (isHeadless()) {

@@ -74,9 +74,9 @@ public class ModManager { //TODO: Pack assets. Make modes useful
       try {
         Log.info("Trying to load mod " + modName);
         Class<? extends Mod> c = modLoader.loadClass(classFile, className).asSubclass(Mod.class);
-        Log.info("Creating instance of mod " + modName);
+        Log.debug("Creating instance of mod " + modName);
         Mod mod = c.newInstance();
-        Log.info("Calling create on mod " + modName);
+        Log.debug("Calling create on mod " + modName);
         mod.create();
         Log.info("Loaded mod " + modName);
       } catch (Exception e) {

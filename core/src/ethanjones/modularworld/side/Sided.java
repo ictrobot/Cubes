@@ -7,7 +7,7 @@ import ethanjones.modularworld.core.events.EventBus;
 import ethanjones.modularworld.core.settings.Settings;
 import ethanjones.modularworld.core.settings.SettingsManager;
 import ethanjones.modularworld.core.system.ModularWorldException;
-import ethanjones.modularworld.core.system.ModularWorldSecurityManager;
+import ethanjones.modularworld.core.system.ModularWorldSecurity;
 import ethanjones.modularworld.core.timing.Timing;
 import ethanjones.modularworld.graphics.GraphicsHelper;
 import ethanjones.modularworld.graphics.asset.AssetManager;
@@ -60,10 +60,7 @@ public class Sided {
   }
 
   public static void setupGlobal() {
-    SecurityManager sm = System.getSecurityManager();
-    if (sm != null) {
-      sm.checkPermission(new RuntimePermission(ModularWorldSecurityManager.MW_SIDED_SETUP));
-    }
+    ModularWorldSecurity.checkSidedSetup();
 
     settingsManager = new SettingsManager();
     Settings.processAll();
@@ -79,10 +76,7 @@ public class Sided {
   }
 
   public static void setup(Side side) {
-    SecurityManager sm = System.getSecurityManager();
-    if (sm != null) {
-      sm.checkPermission(new RuntimePermission(ModularWorldSecurityManager.MW_SIDED_SETUP));
-    }
+    ModularWorldSecurity.checkSidedSetup();
 
     if (side == null || getData(side) != null) return;
 
@@ -108,12 +102,9 @@ public class Sided {
   }
 
   public static void reset(Side side) {
-    if (side == null) return;
+    ModularWorldSecurity.checkSidedReset();
 
-    SecurityManager sm = System.getSecurityManager();
-    if (sm != null) {
-      sm.checkPermission(new RuntimePermission(ModularWorldSecurityManager.MW_SIDED_RESET));
-    }
+    if (side == null) return;
 
     switch (side) {
       case Client:

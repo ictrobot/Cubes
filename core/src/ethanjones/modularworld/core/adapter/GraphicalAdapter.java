@@ -7,7 +7,7 @@ import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.core.system.Branding;
 import ethanjones.modularworld.core.system.Debug;
 import ethanjones.modularworld.core.system.Memory;
-import ethanjones.modularworld.core.system.ModularWorldSecurityManager;
+import ethanjones.modularworld.core.system.ModularWorldSecurity;
 import ethanjones.modularworld.graphics.menu.Fonts;
 import ethanjones.modularworld.graphics.menu.Menu;
 import ethanjones.modularworld.graphics.menu.MenuManager;
@@ -36,9 +36,7 @@ public class GraphicalAdapter implements ApplicationListener {
   }
 
   public void setMenu(Menu menu) {
-    SecurityManager sm = System.getSecurityManager();
-    if (sm != null)
-      sm.checkPermission(new RuntimePermission(ModularWorldSecurityManager.MW_GRAPHICAL_ADAPTER_SET_MENU));
+    ModularWorldSecurity.checkSetMenu();
     Menu old = this.menu;
     if (old != null) {
       old.hide();
@@ -56,8 +54,7 @@ public class GraphicalAdapter implements ApplicationListener {
   }
 
   public void setModularWorld(ModularWorldServer modularWorldServer, ModularWorldClient modularWorldClient) {
-    SecurityManager sm = System.getSecurityManager();
-    if (sm != null) sm.checkPermission(new RuntimePermission(ModularWorldSecurityManager.MW_GRAPHICAL_ADAPTER_SET));
+    ModularWorldSecurity.checkSetMW();
     if (modularWorldServer != null) {
       modularWorldServerThread = new ModularWorldServerThread(modularWorldServer);
       ModularWorldServer.instance = modularWorldServer;
