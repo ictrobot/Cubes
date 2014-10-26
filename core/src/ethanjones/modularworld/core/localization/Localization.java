@@ -1,7 +1,7 @@
 package ethanjones.modularworld.core.localization;
 
-import ethanjones.modularworld.core.system.ModularWorldException;
 import ethanjones.modularworld.core.logging.Log;
+import ethanjones.modularworld.core.system.ModularWorldException;
 import ethanjones.modularworld.graphics.asset.AssetManager;
 
 import java.util.HashMap;
@@ -10,7 +10,10 @@ import java.util.Scanner;
 
 public class Localization {
 
+  public static final String DEFAULT_LANGUAGE = "en_GB";
+
   private static HashMap<String, Language> languages = new HashMap<String, Language>();
+  private static Language defaultLanguage;
   private static Language language;
 
   private static Language load(String string) {
@@ -45,28 +48,35 @@ public class Localization {
     AssetManager.AssetFolder languageFolder = assetFolder.folders.get("language");
     for (AssetManager.Asset asset : languageFolder.files.values()) {
       try {
-        Language language = load(new String(asset.bytes));
+        language = load(new String(asset.bytes));
         languages.put(language.getCode(), language);
+        Log.debug("Loaded localisation \"" + language.getCode() + "\" from file \"" + asset.path + "\"");
       } catch (Exception e) {
-        Log.error(new ModularWorldException("Failed to read language file: " + asset.path, e));
+        Log.error(new ModularWorldException("Failed to read localisation file: " + asset.path, e));
       }
+    }
+
+    defaultLanguage = languages.get(DEFAULT_LANGUAGE);
+    if (defaultLanguage == null)
+      throw new ModularWorldException("Failed to load the default language (" + DEFAULT_LANGUAGE + ")");
+
+    String local = Locale.getDefault().getLanguage() + "_" + Locale.getDefault().getCountry();
+    language = languages.get(local);
+    if (language == null) {
+      Log.info("No localisation for " + local);
+    } else {
+      Log.info("Localisation loaded for " + local);
     }
   }
 
-  public static Language getLangauage() {
-    if (language == null) {
-      Language local = languages.get(Locale.getDefault().getLanguage() + "_" + Locale.getDefault().getCountry());
-      if (local != null) {
-        language = local;
-      } else {
-        language = languages.get("en_GB");
-      }
-    }
-    return language;
-  }
 
   public static String get(String str) {
-    String s = getLangauage().get(str);
-    return s != null ? s : str;
+    if (language != null) {
+      String localised = language.get(str);
+      if (localised != null) return localised;
+    }
+    String defaultLocalised = defaultLanguage.get(str);
+    if (defaultLocalised != null) return defaultLocalised;
+    return str;
   }
 }
