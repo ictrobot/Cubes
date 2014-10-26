@@ -15,7 +15,7 @@ public class Player extends LivingEntity {
 
   public Player(Camera camera) {
     super(camera.position, camera.direction, 20);
-    this.username = Settings.username.getStringSetting().getValue();
+    this.username = Settings.getStringSettingValue(Settings.USERNAME);
   }
 
 }

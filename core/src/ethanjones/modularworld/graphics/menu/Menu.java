@@ -5,10 +5,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -32,14 +29,18 @@ public abstract class Menu {
     NinePatch buttonUp = new NinePatch(GraphicsHelper.getTexture("hud/ButtonUp.png").textureRegion, 8, 8, 8, 8);
     skin.add("default", new TextButton.TextButtonStyle(new NinePatchDrawable(buttonUp), new NinePatchDrawable(buttonDown), null, skin.getFont("default")));
 
-    NinePatch textBackground = new NinePatch(GraphicsHelper.getTexture("hud/TextBox.png").textureRegion, 8, 8, 8, 8);
     skin.add("default", new TextField.TextFieldStyle(
         skin.getFont("default"),
         Color.BLACK,
-        new TextureRegionDrawable(GraphicsHelper.getTexture("hud/TextCursor.png").textureRegion),
-        new TextureRegionDrawable(GraphicsHelper.getTexture("hud/TextSelection.png").textureRegion),
-        new NinePatchDrawable(textBackground))
+        new TextureRegionDrawable(GraphicsHelper.getTexture("hud/TextFieldCursor.png").textureRegion),
+        new TextureRegionDrawable(GraphicsHelper.getTexture("hud/TextFieldSelection.png").textureRegion),
+        new NinePatchDrawable(new NinePatch(GraphicsHelper.getTexture("hud/TextFieldBackground.png").textureRegion, 8, 8, 8, 8)))
     );
+
+    skin.add("default-horizontal", new Slider.SliderStyle(
+      new NinePatchDrawable(new NinePatch(GraphicsHelper.getTexture("hud/SliderBackground.png").textureRegion, 8, 8, 8, 8)),
+      new TextureRegionDrawable(GraphicsHelper.getTexture("hud/SliderKnob.png").textureRegion)
+    ));
 
     spriteBatch = new SpriteBatch();
     viewport = new ScreenViewport();

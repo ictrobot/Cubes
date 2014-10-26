@@ -1,101 +1,48 @@
 package ethanjones.modularworld.core.settings;
 
 
-import java.util.Collection;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import ethanjones.modularworld.core.localization.Localization;
+import ethanjones.modularworld.graphics.menu.Menu;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class SettingGroup {
 
-  private static final String lineSeparator = System.getProperty("line.separator");
-
-  private final SettingGroup parent;
+  private final ArrayList<String> children;
   private final HashMap<String, SettingGroup> childGroups;
-  private final HashMap<String, Setting> childSettings;
-  private String name;
 
-
-  public SettingGroup(String name, SettingGroup parent) {
-    this.name = name;
-    this.parent = parent;
-    if (parent != null) {
-      this.parent.setSettingGroup(this);
-    }
+  public SettingGroup() {
+    children = new ArrayList<String>();
     childGroups = new HashMap<String, SettingGroup>();
-    childSettings = new HashMap<String, Setting>();
   }
 
-  protected static String getString(Setting<?> setting, boolean equals, boolean line) {
-    StringBuilder s = new StringBuilder();
-    s.append(setting.name);
-    if (equals) s.append("=").append(setting.getString());
-    SettingGroup group = setting.parent;
-    while (group != null) {
-      s.insert(0, ".").insert(0, group.getName());
-      group = group.getParent();
-    }
-    if (line) s.append(lineSeparator);
-    return s.toString();
+  public SettingGroup add(String notLocalised) {
+    children.add(notLocalised);
+    return this;
   }
 
-  public SettingGroup getParent() {
-    return parent;
+  public SettingGroup add(String name, SettingGroup settingGroup) {
+    childGroups.put(name, settingGroup);
+    return this;
   }
 
-  public Collection<SettingGroup> getChildGroups() {
-    return childGroups.values();
-  }
-
-  public SettingGroup getSettingGroup(String name) {
-    SettingGroup s = childGroups.get(name);
-    if (s != null) {
-      return s;
-    }
-    return new SettingGroup(name, this);
-  }
-
-  public SettingGroup setSettingGroup(SettingGroup setting) {
-    childGroups.put(setting.getName(), setting);
-    return setting;
-  }
-
-  public Collection<Setting> getChildSettings() {
-    return childSettings.values();
-  }
-
-  public Setting getSetting(String name, Setting setting) {
-    Setting s = childSettings.get(name);
-    if (s != null) {
-      return s;
-    }
-    getChildSettings().add(setting);
-    return setting;
-  }
-
-  public Setting getSetting(String name) {
-    return childSettings.get(name);
-  }
-
-  public Setting setSetting(Setting setting) {
-    childSettings.put(setting.getName(), setting);
-    return setting;
-  }
-
-  public String getString() {
-    StringBuilder stringBuilder = new StringBuilder();
-    for (SettingGroup settingGroup : getChildGroups()) {
-      stringBuilder.append(settingGroup.getString());
-    }
-    for (Setting setting : getChildSettings()) {
-      stringBuilder.append(getString(setting, true, true));
-    }
-    return stringBuilder.toString();
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public int hashCode() {
-    return name.hashCode() ^ childGroups.hashCode() ^ childSettings.hashCode();
+  public Actor getActor(final VisualSettingManager visualSettingManager) {
+    final TextButton textButton = new TextButton(Localization.get("menu.settings.open_group"), Menu.skin);
+    final SettingGroup settingGroup = this;
+    textButton.addListener(new EventListener() {
+      @Override
+      public boolean handle(Event event) {
+        if (!(event instanceof ChangeListener.ChangeEvent)) return false;
+        visualSettingManager.setSettingGroup(settingGroup);
+        return true;
+      }
+    });
+    return textButton;
   }
 }

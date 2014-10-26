@@ -21,3 +21,10 @@ menu.server.port=Port
 menu.server.start=Start
 menu.server.running=Running
 menu.server.stop=Stop
+
+menu.settings.open_group=Open
+
+settings.graphics.viewDistance=Rendering Distance
+settings.username=Username
+settings.graphics.fieldOfView=FOV
+settings.networking.port=Port

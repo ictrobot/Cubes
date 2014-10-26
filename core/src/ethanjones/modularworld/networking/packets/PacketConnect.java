@@ -18,8 +18,8 @@ public class PacketConnect extends DataPacket {
   @Override
   public DataGroup write() {
     DataGroup dataGroup = new DataGroup();
-    dataGroup.setString("username", Settings.username.getStringSetting().getString());
-    dataGroup.setInteger("renderDistance", Settings.renderer_block_viewDistance.getIntegerSetting().getValue());
+    dataGroup.setString("username", Settings.getStringSettingValue(Settings.USERNAME));
+    dataGroup.setInteger("renderDistance", Settings.getIntegerSettingValue(Settings.GRAPHICS_VIEW_DISTANCE));
     return dataGroup;
   }
 

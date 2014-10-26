@@ -4,8 +4,6 @@ import ethanjones.modularworld.block.BlockManager;
 import ethanjones.modularworld.block.Blocks;
 import ethanjones.modularworld.core.compatibility.Compatibility;
 import ethanjones.modularworld.core.events.EventBus;
-import ethanjones.modularworld.core.settings.Settings;
-import ethanjones.modularworld.core.settings.SettingsManager;
 import ethanjones.modularworld.core.system.ModularWorldException;
 import ethanjones.modularworld.core.system.ModularWorldSecurity;
 import ethanjones.modularworld.core.timing.Timing;
@@ -25,7 +23,6 @@ public class Sided {
   };
   //SHARED
   private static AssetManager assetManager;
-  private static SettingsManager settingsManager;
 
   public static Side getSide() {
     return sideLocal.get();
@@ -37,10 +34,6 @@ public class Sided {
   public static void setSide(Side side) {
     if (mainLocal.get()) return;
     sideLocal.set(side);
-  }
-
-  public static SettingsManager getSettingsManager() {
-    return settingsManager;
   }
 
   public static AssetManager getAssetManager() {
@@ -61,11 +54,6 @@ public class Sided {
 
   public static void setupGlobal() {
     ModularWorldSecurity.checkSidedSetup();
-
-    settingsManager = new SettingsManager();
-    Settings.processAll();
-    settingsManager.readFromFile();
-    settingsManager.print();
 
     assetManager = new AssetManager();
     Compatibility.get().getAssets(assetManager);

@@ -36,7 +36,7 @@ public class BlockRenderer implements Disposable {
     environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
     environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 
-    camera = new PerspectiveCamera(Settings.input_fieldOfView.getIntegerSetting().getValue(), Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) {
+    camera = new PerspectiveCamera(Settings.getIntegerSettingValue(Settings.GRAPHICS_FOV), Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) {
       @Override
       public void update(boolean b) {
         viewportWidth = Gdx.graphics.getWidth();
@@ -51,7 +51,7 @@ public class BlockRenderer implements Disposable {
   public void render() {
     modelBatch.begin(camera);
 
-    int renderDistance = Settings.renderer_block_viewDistance.getIntegerSetting().getValue();
+    int renderDistance = Settings.getIntegerSettingValue(Settings.GRAPHICS_VIEW_DISTANCE);
 
     AreaReference pos = ((WorldClient) ModularWorldClient.instance.world).playerArea;
     for (int areaX = pos.areaX - renderDistance; areaX <= pos.areaX + renderDistance; areaX++) {

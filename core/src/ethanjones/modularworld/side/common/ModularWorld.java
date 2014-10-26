@@ -6,6 +6,7 @@ import ethanjones.modularworld.core.compatibility.Compatibility;
 import ethanjones.modularworld.core.localization.Localization;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.core.mod.ModManager;
+import ethanjones.modularworld.core.settings.Settings;
 import ethanjones.modularworld.core.system.Branding;
 import ethanjones.modularworld.core.system.Debug;
 import ethanjones.modularworld.core.system.ModularWorldException;
@@ -43,12 +44,14 @@ public abstract class ModularWorld implements SimpleApplication, TimeHandler {
     Debug.printProperties();
 
     Sided.setupGlobal();
+
     Compatibility.get().init(null);
     Compatibility.get().logEnvironment();
 
-    Threads.init();
-
     Localization.load(Sided.getAssetManager().assets);
+    Settings.init();
+
+    Threads.init();
 
     ModManager.init();
 
@@ -111,7 +114,7 @@ public abstract class ModularWorld implements SimpleApplication, TimeHandler {
   }
 
   public void write() {
-    Sided.getSettingsManager().writeToFile();
+    Settings.write();
   }
 
   @Override
