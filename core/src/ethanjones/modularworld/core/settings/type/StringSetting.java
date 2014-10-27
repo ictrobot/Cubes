@@ -1,12 +1,14 @@
 package ethanjones.modularworld.core.settings.type;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import ethanjones.data.DataGroup;
 import ethanjones.modularworld.core.settings.Setting;
 import ethanjones.modularworld.core.settings.VisualSettingManager;
 import ethanjones.modularworld.graphics.menu.Menu;
+import ethanjones.modularworld.graphics.menu.menus.SettingsMenu;
 
 public class StringSetting extends Setting {
 
@@ -30,7 +32,15 @@ public class StringSetting extends Setting {
 
   @Override
   public Actor getActor(VisualSettingManager visualSettingManager) {
-    TextField textField = new TextField(s, Menu.skin);
+    final TextField textField = new TextField(s, Menu.skin);
+    textField.addListener(new EventListener() {
+      @Override
+      public boolean handle(Event event) {
+        if (!(event instanceof SettingsMenu.SaveEvent)) return false;
+        set(textField.getText());
+        return true;
+      }
+    });
     return textField;
   }
 

@@ -37,10 +37,13 @@ public class Settings {
     base
       .add(USERNAME)
       .add(GROUP_GRAPHICS, new SettingGroup()
-        .add(GRAPHICS_VIEW_DISTANCE)
-        .add(GRAPHICS_FOV))
+          .add(GRAPHICS_VIEW_DISTANCE)
+          .add(GRAPHICS_FOV)
+      )
       .add(GROUP_NETWORKING, new SettingGroup()
-        .add(NETWORKING_PORT));
+          .add(NETWORKING_PORT)
+      )
+    ;
 
     read();
 

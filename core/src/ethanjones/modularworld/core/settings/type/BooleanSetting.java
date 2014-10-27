@@ -5,7 +5,6 @@ import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import ethanjones.data.DataGroup;
 import ethanjones.modularworld.core.settings.Setting;
 import ethanjones.modularworld.core.settings.VisualSettingManager;
@@ -37,7 +36,7 @@ public class BooleanSetting extends Setting {
     textButton.addListener(new EventListener() {
       @Override
       public boolean handle(Event event) {
-        if (!(event instanceof ChangeListener.ChangeEvent)) return false;
+        if (!(event instanceof ChangeListener.ChangeEvent)) return false; //easier than SettingsMenu.SaveEvent and works
         set(!get());
         textButton.setText(b ? "True" : "False");
         return true;
