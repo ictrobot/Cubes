@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import ethanjones.data.DataGroup;
 import ethanjones.modularworld.core.settings.Setting;
 import ethanjones.modularworld.core.settings.VisualSettingManager;

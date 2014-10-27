@@ -45,4 +45,12 @@ public class SettingGroup {
     });
     return textButton;
   }
+
+  public ArrayList<String> getChildren() {
+    return children;
+  }
+
+  public HashMap<String, SettingGroup> getChildGroups() {
+    return childGroups;
+  }
 }

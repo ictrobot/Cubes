@@ -6,6 +6,7 @@ menu.general.return_main_menu=Return to main menu
 menu.main.singleplayer=Singleplayer
 menu.main.multiplayer=Multiplayer
 menu.main.serveronly=Server only
+menu.main.settings=Settings
 menu.main.quit=Quit
 
 menu.multiplayer.title=Multiplayer
@@ -22,9 +23,14 @@ menu.server.start=Start
 menu.server.running=Running
 menu.server.stop=Stop
 
+menu.settings.title=Settings
 menu.settings.open_group=Open
 
-settings.graphics.viewDistance=Rendering Distance
 settings.username=Username
+
+settings.graphics=Graphics
+settings.graphics.viewDistance=Rendering Distance
 settings.graphics.fieldOfView=FOV
+
+settings.networking=Networking
 settings.networking.port=Port

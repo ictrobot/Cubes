@@ -25,7 +25,7 @@ public class Settings {
   public static final String GROUP_NETWORKING = "networking";
 
 
-  protected static SettingGroup main = new SettingGroup();
+  protected static SettingGroup base = new SettingGroup();
   protected static HashMap<String, Setting> settings = new HashMap<String, Setting>();
 
   public static void init() {
@@ -34,7 +34,7 @@ public class Settings {
     addSetting(GRAPHICS_FOV, new IntegerSetting(67, 10, 120, IntegerSetting.Type.Slider));
     addSetting(NETWORKING_PORT, new IntegerSetting(8080));
 
-    main
+    base
       .add(USERNAME)
       .add(GROUP_GRAPHICS, new SettingGroup()
         .add(GRAPHICS_VIEW_DISTANCE)
@@ -83,7 +83,6 @@ public class Settings {
     return getStringSetting(notLocalised).get();
   }
 
-  //IO
   public static void write() {
     FileHandle fileHandle = Compatibility.get().getBaseFolder().child("settings.data");
     DataGroup dataGroup = new DataGroup();
@@ -117,5 +116,13 @@ public class Settings {
 
   public static String getLocalisedSettingName(String notLocalised) {
     return Localization.get("settings." + notLocalised);
+  }
+
+  public static String getLocalisedSettingGroupName(String notLocalised) {
+    return Localization.get("settings." + notLocalised);
+  }
+
+  public static SettingGroup getBaseSettingGroup() {
+    return base;
   }
 }

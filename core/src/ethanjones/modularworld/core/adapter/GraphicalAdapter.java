@@ -81,10 +81,10 @@ public class GraphicalAdapter implements ApplicationListener {
   @Override
   public void create() {
     try {
+      Gdx.graphics.setTitle(Branding.DEBUG);
       Thread.currentThread().setName(Side.Client.name());
       ModularWorld.setup();
       Sided.setup(Side.Client);
-      Gdx.graphics.setTitle(Branding.DEBUG);
       setMenu(new MainMenu());
     } catch (Exception e) {
       Debug.crash(e);

@@ -1,6 +1,7 @@
 package ethanjones.modularworld.core.settings;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import ethanjones.data.DataGroup;
 import ethanjones.data.other.DataParser;
 

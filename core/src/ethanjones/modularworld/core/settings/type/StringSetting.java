@@ -2,6 +2,7 @@ package ethanjones.modularworld.core.settings.type;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import ethanjones.data.DataGroup;
 import ethanjones.modularworld.core.settings.Setting;
 import ethanjones.modularworld.core.settings.VisualSettingManager;

@@ -6,10 +6,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import ethanjones.modularworld.core.system.Branding;
 import ethanjones.modularworld.core.adapter.GraphicalAdapter;
 import ethanjones.modularworld.core.localization.Localization;
 import ethanjones.modularworld.core.logging.Log;
+import ethanjones.modularworld.core.system.Branding;
 import ethanjones.modularworld.graphics.menu.Menu;
 import ethanjones.modularworld.graphics.menu.MenuTools;
 import ethanjones.modularworld.side.common.ModularWorld;
@@ -22,6 +22,7 @@ public class MainMenu extends Menu {
   TextButton singleplayer;
   TextButton multiplayer;
   TextButton serveronly;
+  TextButton settings;
   TextButton quit;
 
   public MainMenu() {
@@ -34,16 +35,6 @@ public class MainMenu extends Menu {
       public boolean handle(Event event) {
         if (!(event instanceof ChangeListener.ChangeEvent)) return false;
         GraphicalAdapter.instance.setMenu(new SingleplayerLoadingMenu());
-        return true;
-      }
-    });
-    buttons.addActor(quit = new TextButton(Localization.get("menu.main.quit"), skin));
-    quit.addListener(new EventListener() {
-      @Override
-      public boolean handle(Event event) {
-        if (!(event instanceof ChangeListener.ChangeEvent)) return false;
-        Log.debug("Quit pressed");
-        ModularWorld.quit(true);
         return true;
       }
     });
@@ -65,6 +56,26 @@ public class MainMenu extends Menu {
         return true;
       }
     });
+    buttons.addActor(settings = new TextButton(Localization.get("menu.main.settings"), skin));
+    settings.addListener(new EventListener() {
+      @Override
+      public boolean handle(Event event) {
+        if (!(event instanceof ChangeListener.ChangeEvent)) return false;
+        GraphicalAdapter.instance.setMenu(new SettingsMenu());
+        return true;
+      }
+    });
+
+    buttons.addActor(quit = new TextButton(Localization.get("menu.main.quit"), skin));
+    quit.addListener(new EventListener() {
+      @Override
+      public boolean handle(Event event) {
+        if (!(event instanceof ChangeListener.ChangeEvent)) return false;
+        Log.debug("Quit pressed");
+        ModularWorld.quit(true);
+        return true;
+      }
+    });
   }
 
   @Override
@@ -77,6 +88,6 @@ public class MainMenu extends Menu {
   public void resize(int width, int height) {
     super.resize(width, height);
     MenuTools.setTitle(name);
-    MenuTools.arrange(width / 4, height / 4, width / 2, height / 2, MenuTools.Direction.Above, quit, serveronly, multiplayer, singleplayer);
+    MenuTools.arrange(width / 4, height / 4, width / 2, height / 2, MenuTools.Direction.Above, quit, settings, serveronly, multiplayer, singleplayer);
   }
 }

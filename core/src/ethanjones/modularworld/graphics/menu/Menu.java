@@ -42,6 +42,8 @@ public abstract class Menu {
       new TextureRegionDrawable(GraphicsHelper.getTexture("hud/SliderKnob.png").textureRegion)
     ));
 
+    skin.add("default", new ScrollPane.ScrollPaneStyle());
+
     spriteBatch = new SpriteBatch();
     viewport = new ScreenViewport();
 
@@ -71,12 +73,12 @@ public abstract class Menu {
     stage.draw();
   }
 
-  public final void hide() {
+  public void hide() {
     InputChain.getInputMultiplexer().removeProcessor(stage);
     stage.clear();
   }
 
-  public final void show() {
+  public void show() {
     InputChain.getInputMultiplexer().addProcessor(0, stage);
     addActors();
   }
