@@ -1,7 +1,6 @@
 package ethanjones.modularworld.networking.packets;
 
-import ethanjones.modularworld.networking.common.packet.Packet;
-import ethanjones.modularworld.networking.common.packet.PacketPriority;
+import ethanjones.modularworld.networking.packet.Packet;
 import ethanjones.modularworld.side.server.ModularWorldServer;
 
 import java.io.DataInputStream;
@@ -10,10 +9,6 @@ import java.io.DataOutputStream;
 public class PacketClick extends Packet {
 
   public Click type;
-
-  public PacketClick() {
-    super(PacketPriority.HIGH);
-  }
 
   @Override
   public void write(DataOutputStream dataOutputStream) throws Exception {
@@ -27,7 +22,7 @@ public class PacketClick extends Packet {
 
   @Override
   public void handlePacket() {
-    ModularWorldServer.instance.playerManagers.get(this.getSocketMonitor()).click(type);
+    ModularWorldServer.instance.playerManagers.get(getPacketEnvironment().getReceiving().getSocketMonitor()).click(type);
   }
 
   public static enum Click {

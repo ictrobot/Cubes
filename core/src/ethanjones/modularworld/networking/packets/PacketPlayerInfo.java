@@ -2,7 +2,7 @@ package ethanjones.modularworld.networking.packets;
 
 import com.badlogic.gdx.math.Vector3;
 import ethanjones.modularworld.core.util.VectorUtil;
-import ethanjones.modularworld.networking.common.packet.Packet;
+import ethanjones.modularworld.networking.packet.Packet;
 import ethanjones.modularworld.side.Side;
 import ethanjones.modularworld.side.client.ModularWorldClient;
 import ethanjones.modularworld.side.server.ModularWorldServer;
@@ -29,8 +29,8 @@ public class PacketPlayerInfo extends Packet {
 
   @Override
   public void handlePacket() {
-    if (getSide() == Side.Server) {
-      ModularWorldServer.instance.playerManagers.get(getSocketMonitor()).handleInfo(this);
+    if (getPacketEnvironment().getReceiving().getSide() == Side.Server) {
+      ModularWorldServer.instance.playerManagers.get(getPacketEnvironment().getReceiving().getSocketMonitor()).handleInfo(this);
     } else {
       ModularWorldClient.instance.player.angle.set(angle);
       ModularWorldClient.instance.player.position.set(position);

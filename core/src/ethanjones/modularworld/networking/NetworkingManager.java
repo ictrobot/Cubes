@@ -5,7 +5,6 @@ import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.SocketHints;
 import ethanjones.modularworld.networking.client.ClientNetworking;
 import ethanjones.modularworld.networking.client.ClientNetworkingParameter;
-import ethanjones.modularworld.networking.common.Networking;
 import ethanjones.modularworld.networking.packets.PacketConnect;
 import ethanjones.modularworld.networking.server.ServerNetworking;
 import ethanjones.modularworld.networking.server.ServerNetworkingParameter;

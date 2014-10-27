@@ -2,12 +2,11 @@ package ethanjones.modularworld.networking.client;
 
 import com.badlogic.gdx.Gdx;
 import ethanjones.modularworld.core.logging.Log;
+import ethanjones.modularworld.networking.Networking;
 import ethanjones.modularworld.networking.NetworkingManager;
-import ethanjones.modularworld.networking.common.Networking;
-import ethanjones.modularworld.networking.common.NetworkingState;
-import ethanjones.modularworld.networking.common.packet.Packet;
-import ethanjones.modularworld.networking.common.socket.SocketMonitor;
+import ethanjones.modularworld.networking.packet.Packet;
 import ethanjones.modularworld.networking.packets.PacketPlayerInfo;
+import ethanjones.modularworld.networking.socket.SocketMonitor;
 import ethanjones.modularworld.side.Side;
 import ethanjones.modularworld.side.client.ModularWorldClient;
 import ethanjones.modularworld.side.common.ModularWorld;

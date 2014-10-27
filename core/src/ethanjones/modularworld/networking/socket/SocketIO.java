@@ -1,4 +1,4 @@
-package ethanjones.modularworld.networking.common.socket;
+package ethanjones.modularworld.networking.socket;
 
 import com.badlogic.gdx.utils.Disposable;
 

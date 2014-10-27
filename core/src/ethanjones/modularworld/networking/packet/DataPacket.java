@@ -1,21 +1,14 @@
-package ethanjones.modularworld.networking.common.packet;
+package ethanjones.modularworld.networking.packet;
 
 import ethanjones.data.DataGroup;
 import ethanjones.data.DataTools;
 import ethanjones.data.other.DataParser;
+import ethanjones.modularworld.networking.packet.environment.PacketPriority;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
 public abstract class DataPacket extends Packet implements DataParser<DataGroup> {
-
-  public DataPacket() {
-    super();
-  }
-
-  public DataPacket(PacketPriority priority) {
-    super(priority);
-  }
 
   @Override
   public void read(DataInputStream dataInputStream) throws Exception {

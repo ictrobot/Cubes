@@ -1,9 +1,9 @@
-package ethanjones.modularworld.networking.common.socket;
+package ethanjones.modularworld.networking.socket;
 
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.utils.Disposable;
-import ethanjones.modularworld.networking.common.Networking;
-import ethanjones.modularworld.networking.common.packet.Packet;
+import ethanjones.modularworld.networking.Networking;
+import ethanjones.modularworld.networking.packet.Packet;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -49,6 +49,10 @@ public class SocketMonitor implements Disposable {
 
   public String getRemoteAddress() {
     return remoteAddress;
+  }
+
+  public Networking getNetworking() {
+    return networking;
   }
 
   public void queue(Packet packet) {

@@ -7,9 +7,9 @@ import ethanjones.modularworld.core.events.world.block.BlockEvent;
 import ethanjones.modularworld.core.system.Threads;
 import ethanjones.modularworld.entity.living.player.Player;
 import ethanjones.modularworld.graphics.world.RayTracing;
-import ethanjones.modularworld.networking.common.packet.Packet;
-import ethanjones.modularworld.networking.common.socket.SocketMonitor;
+import ethanjones.modularworld.networking.packet.Packet;
 import ethanjones.modularworld.networking.packets.*;
+import ethanjones.modularworld.networking.socket.SocketMonitor;
 import ethanjones.modularworld.side.Sided;
 import ethanjones.modularworld.world.coordinates.BlockCoordinates;
 import ethanjones.modularworld.world.coordinates.Coordinates;
@@ -30,11 +30,12 @@ public class PlayerManager {
   private int renderDistance;
 
   public PlayerManager(PacketConnect packetConnect) {
-    ModularWorldServer.instance.playerManagers.put(packetConnect.getSocketMonitor(), this);
     this.packetConnect = packetConnect;
-    this.socketMonitor = packetConnect.getSocketMonitor();
-    this.player = new Player(packetConnect.username); //TODO Check if known
+    this.socketMonitor = packetConnect.getPacketEnvironment().getReceiving().getSocketMonitor();
+    this.player = new Player(packetConnect.username); //TODO Store users and world
     this.playerCoordinates = new Coordinates(player.position);
+
+    ModularWorldServer.instance.playerManagers.put(socketMonitor, this);
 
     renderDistance = packetConnect.renderDistance;
 

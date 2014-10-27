@@ -1,7 +1,7 @@
 package ethanjones.modularworld.networking.packets;
 
 import ethanjones.modularworld.core.logging.Log;
-import ethanjones.modularworld.networking.common.packet.Packet;
+import ethanjones.modularworld.networking.packet.Packet;
 import ethanjones.modularworld.side.Side;
 import ethanjones.modularworld.side.server.ModularWorldServer;
 import ethanjones.modularworld.side.server.PlayerManager;
@@ -25,7 +25,7 @@ public class PacketChat extends Packet {
 
   @Override
   public void handlePacket() {
-    if (getSide() == Side.Server) {
+    if (getPacketEnvironment().getReceiving().getSide() == Side.Server) {
       Log.info(" [Chat]" + msg);
       for (PlayerManager playerManager : ModularWorldServer.instance.playerManagers.values()) {
         playerManager.sendPacket(this);

@@ -96,7 +96,6 @@ public abstract class ModularWorld implements SimpleApplication, TimeHandler {
 
   @Override
   public void create() {
-    //TODO Rewrite settings, have two classes "Client" and "Server"
     Sided.setup(side);
     Compatibility.get().init(side);
     Sided.getEventBus().register(this);

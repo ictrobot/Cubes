@@ -1,8 +1,8 @@
 package ethanjones.modularworld.networking.packets;
 
 import ethanjones.data.DataGroup;
-import ethanjones.modularworld.networking.common.packet.DataPacket;
-import ethanjones.modularworld.networking.common.packet.PacketPriority;
+import ethanjones.modularworld.networking.packet.DataPacket;
+import ethanjones.modularworld.networking.packet.environment.PacketPriority;
 import ethanjones.modularworld.side.Side;
 import ethanjones.modularworld.side.client.ModularWorldClient;
 import ethanjones.modularworld.side.server.PlayerManager;
@@ -19,12 +19,12 @@ public class PacketArea extends DataPacket {
   public PlayerManager playerManager;
 
   public PacketArea() {
-    super(PacketPriority.LOW);
+    getPacketEnvironment().getSending().setPacketPriority(PacketPriority.Low);
   }
 
   @Override
   public void handlePacket() {
-    if (getSide() != Side.Client) return;
+    if (getPacketEnvironment().getReceiving().getSide() != Side.Client) return;
     areaReference.setFromArea(areaX, areaY, areaZ);
     Area a = new Area(areaX, areaY, areaZ);
     a.read(area);

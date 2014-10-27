@@ -2,8 +2,8 @@ package ethanjones.modularworld.networking.packets;
 
 import ethanjones.data.DataGroup;
 import ethanjones.modularworld.core.settings.Settings;
-import ethanjones.modularworld.networking.common.packet.DataPacket;
-import ethanjones.modularworld.networking.common.packet.PacketPriority;
+import ethanjones.modularworld.networking.packet.DataPacket;
+import ethanjones.modularworld.networking.packet.environment.PacketPriority;
 import ethanjones.modularworld.side.server.PlayerManager;
 
 public class PacketConnect extends DataPacket {
@@ -12,7 +12,7 @@ public class PacketConnect extends DataPacket {
   public String username;
 
   public PacketConnect() {
-    super(PacketPriority.HIGH);
+    getPacketEnvironment().getSending().setPacketPriority(PacketPriority.High);
   }
 
   @Override

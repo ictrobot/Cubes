@@ -3,10 +3,9 @@ package ethanjones.modularworld.networking.server;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.utils.Array;
 import ethanjones.modularworld.core.logging.Log;
+import ethanjones.modularworld.networking.Networking;
 import ethanjones.modularworld.networking.NetworkingManager;
-import ethanjones.modularworld.networking.common.Networking;
-import ethanjones.modularworld.networking.common.NetworkingState;
-import ethanjones.modularworld.networking.common.socket.SocketMonitor;
+import ethanjones.modularworld.networking.socket.SocketMonitor;
 import ethanjones.modularworld.side.Side;
 import ethanjones.modularworld.side.server.ModularWorldServer;
 

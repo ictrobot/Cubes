@@ -1,8 +1,9 @@
-package ethanjones.modularworld.networking.common;
+package ethanjones.modularworld.networking;
 
-import ethanjones.modularworld.networking.common.packet.Packet;
-import ethanjones.modularworld.networking.common.packet.PacketBuffer;
-import ethanjones.modularworld.networking.common.socket.SocketMonitor;
+import ethanjones.modularworld.networking.packet.Packet;
+import ethanjones.modularworld.networking.packet.PacketBuffer;
+import ethanjones.modularworld.networking.packet.PacketIDDatabase;
+import ethanjones.modularworld.networking.socket.SocketMonitor;
 import ethanjones.modularworld.side.Side;
 
 public abstract class Networking {
@@ -10,10 +11,12 @@ public abstract class Networking {
   private final Side side;
   private PacketBuffer packetBuffer;
   private volatile NetworkingState networkingState;
+  private PacketIDDatabase packetIDDatabase;
 
   public Networking(Side side) {
     this.side = side;
     this.packetBuffer = new PacketBuffer();
+    this.packetIDDatabase = new PacketIDDatabase();
   }
 
   public NetworkingState getNetworkingState() {
@@ -36,7 +39,7 @@ public abstract class Networking {
   public abstract void disconnected(SocketMonitor socketMonitor, Exception e);
 
   public final void received(Packet packet) {
-    packetBuffer.addPacket(packet, side);
+    packetBuffer.addPacket(packet);
   }
 
   /**
@@ -48,5 +51,13 @@ public abstract class Networking {
 
   public final Side getSide() {
     return side;
+  }
+
+  public PacketIDDatabase getPacketIDDatabase() {
+    return packetIDDatabase;
+  }
+
+  public static enum NetworkingState {
+    Starting, Running, Stopping, Stopped;
   }
 }

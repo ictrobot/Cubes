@@ -1,6 +1,7 @@
-package ethanjones.modularworld.networking.common.packet;
+package ethanjones.modularworld.networking.packet;
 
 import com.badlogic.gdx.utils.Array;
+import ethanjones.modularworld.networking.packet.environment.PacketPriority;
 
 public class PacketQueue {
 
@@ -18,7 +19,7 @@ public class PacketQueue {
 
   public void addPacket(Packet packet) {
     if (!packet.shouldSend()) return;
-    Array<Packet> array = getArray(packet.getPriority());
+    Array<Packet> array = getArray(packet.getPacketEnvironment().getSending().getPacketPriority());
     synchronized (array) {
       array.add(packet);
     }
@@ -30,9 +31,9 @@ public class PacketQueue {
   public Packet getPacket() {
     Packet packet;
 
-    if ((packet = getPacket(PacketPriority.HIGH)) != null) return packet;
-    if ((packet = getPacket(PacketPriority.MEDIUM)) != null) return packet;
-    if ((packet = getPacket(PacketPriority.LOW)) != null) return packet;
+    if ((packet = getPacket(PacketPriority.High)) != null) return packet;
+    if ((packet = getPacket(PacketPriority.Medium)) != null) return packet;
+    if ((packet = getPacket(PacketPriority.Low)) != null) return packet;
     return null;
   }
 
@@ -73,9 +74,9 @@ public class PacketQueue {
 
   private Array<Packet> getArray(PacketPriority priority) {
     switch (priority) {
-      case HIGH:
+      case High:
         return high;
-      case MEDIUM:
+      case Medium:
         return medium;
       default:
         return low;

@@ -1,6 +1,6 @@
 package ethanjones.modularworld.world.thread;
 
-import ethanjones.modularworld.networking.common.packet.PacketQueue;
+import ethanjones.modularworld.networking.packet.PacketQueue;
 import ethanjones.modularworld.networking.packets.PacketArea;
 import ethanjones.modularworld.side.server.PlayerManager;
 import ethanjones.modularworld.world.storage.Area;
