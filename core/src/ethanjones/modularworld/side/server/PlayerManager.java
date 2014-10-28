@@ -98,7 +98,7 @@ public class PlayerManager {
     packet.x = blockReference.blockX;
     packet.y = blockReference.blockY;
     packet.z = blockReference.blockZ;
-    packet.factory = Sided.getBlockManager().toInt(ModularWorldServer.instance.world.getBlockFactory(packet.x, packet.y, packet.z));
+    packet.block = Sided.getBlockManager().toInt(ModularWorldServer.instance.world.getBlock(packet.x, packet.y, packet.z));
     socketMonitor.queue(packet);
   }
 
@@ -129,7 +129,7 @@ public class PlayerManager {
       RayTracing.BlockIntersection blockIntersection = RayTracing.getBlockIntersection(player.position, player.angle, ModularWorldServer.instance.world);
       if (blockIntersection == null) return;
       BlockReference blockReference = blockIntersection.getBlockReference();
-      ModularWorldServer.instance.world.setBlockFactory(null, blockReference.blockX, blockReference.blockY, blockReference.blockZ);
+      ModularWorldServer.instance.world.setBlock(null, blockReference.blockX, blockReference.blockY, blockReference.blockZ);
     }
   }
 }

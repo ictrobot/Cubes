@@ -10,18 +10,18 @@ public class BasicWorldGenerator extends WorldGenerator {
     if (area.y == 0) {
       for (int x = 0; x < Area.SIZE_BLOCKS; x++) {
         for (int z = 0; z < Area.SIZE_BLOCKS; z++) {
-          area.setBlockFactory(Blocks.bedrock, x, 0, z, false);
-          area.setBlockFactory(Blocks.stone, x, 1, z, false);
-          area.setBlockFactory(Blocks.stone, x, 2, z, false);
-          area.setBlockFactory(Blocks.dirt, x, 3, z, false);
-          area.setBlockFactory(Blocks.grass, x, 4, z, false);
+          area.setBlock(Blocks.bedrock, x, 0, z, false);
+          area.setBlock(Blocks.stone, x, 1, z, false);
+          area.setBlock(Blocks.stone, x, 2, z, false);
+          area.setBlock(Blocks.dirt, x, 3, z, false);
+          area.setBlock(Blocks.grass, x, 4, z, false);
         }
       }
       if (area.x == 0 && area.z == 0) {
-        area.setBlockFactory(Blocks.bedrock, 1, 4, 1, false);
-        area.setBlockFactory(Blocks.bedrock, 1, 7, 1, false);
-        area.setBlockFactory(Blocks.stone, 5, 5, 3, false);
-        area.setBlockFactory(Blocks.grass, 3, 5, 5, false);
+        area.setBlock(Blocks.bedrock, 1, 4, 1, false);
+        area.setBlock(Blocks.bedrock, 1, 7, 1, false);
+        area.setBlock(Blocks.stone, 5, 5, 3, false);
+        area.setBlock(Blocks.grass, 3, 5, 5, false);
       }
     }
   }

@@ -12,14 +12,14 @@ public class PacketBlockChanged extends Packet {
   public int x;
   public int y;
   public int z;
-  public int factory;
+  public int block;
 
   @Override
   public void write(DataOutputStream dataOutputStream) throws Exception {
     dataOutputStream.writeInt(x);
     dataOutputStream.writeInt(y);
     dataOutputStream.writeInt(z);
-    dataOutputStream.writeInt(factory);
+    dataOutputStream.writeInt(block);
   }
 
   @Override
@@ -27,7 +27,7 @@ public class PacketBlockChanged extends Packet {
     x = dataInputStream.readInt();
     y = dataInputStream.readInt();
     z = dataInputStream.readInt();
-    factory = dataInputStream.readInt();
+    block = dataInputStream.readInt();
   }
 
   @Override

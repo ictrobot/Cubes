@@ -1,7 +1,7 @@
 package ethanjones.modularworld.world.storage;
 
-import ethanjones.modularworld.block.Block;
 import ethanjones.data.DataGroup;
+import ethanjones.modularworld.block.Block;
 import ethanjones.modularworld.networking.packets.PacketBlockChanged;
 
 public class BlankArea extends Area {
@@ -15,12 +15,12 @@ public class BlankArea extends Area {
   }
 
   @Override
-  public Block getBlockFactory(int x, int y, int z) {
+  public Block getBlock(int x, int y, int z) {
     return null;
   }
 
   @Override
-  public void setBlockFactory(Block block, int x, int y, int z, boolean event) {
+  public void setBlock(Block block, int x, int y, int z, boolean event) {
 
   }
 

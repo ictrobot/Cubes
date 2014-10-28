@@ -45,12 +45,12 @@ public abstract class World implements Disposable {
     return area;
   }
 
-  public Block getBlockFactory(int x, int y, int z) {
-    return getArea(MathHelper.area(x), MathHelper.area(y), MathHelper.area(z)).getBlockFactory(x, y, z);
+  public Block getBlock(int x, int y, int z) {
+    return getArea(MathHelper.area(x), MathHelper.area(y), MathHelper.area(z)).getBlock(x, y, z);
   }
 
-  public void setBlockFactory(Block block, int x, int y, int z) {
-    getArea(MathHelper.area(x), MathHelper.area(y), MathHelper.area(z)).setBlockFactory(block, x, y, z);
+  public void setBlock(Block block, int x, int y, int z) {
+    getArea(MathHelper.area(x), MathHelper.area(y), MathHelper.area(z)).setBlock(block, x, y, z);
   }
 
 }

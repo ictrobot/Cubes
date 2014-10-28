@@ -64,21 +64,21 @@ public class Area implements DataParser<DataGroup> {
     blockFactories = new int[SIZE_BLOCKS_CUBED];
   }
 
-  public Block getBlockFactory(int x, int y, int z) {
-    return Sided.getBlockManager().toFactory(blockFactories[getRef(x, y, z)]);
+  public Block getBlock(int x, int y, int z) {
+    return Sided.getBlockManager().toBlock(blockFactories[getRef(x, y, z)]);
   }
 
-  public void setBlockFactory(Block block, int x, int y, int z) {
-    setBlockFactory(block, x, y, z, true);
+  public void setBlock(Block block, int x, int y, int z) {
+    setBlock(block, x, y, z, true);
   }
 
-  public void setBlockFactory(Block block, int x, int y, int z, boolean event) {
+  public void setBlock(Block block, int x, int y, int z, boolean event) {
     int ref = getRef(x, y, z);
     int b = blockFactories[ref];
     blockFactories[ref] = Sided.getBlockManager().toInt(block);
     if (areaRenderer != null) areaRenderer.dirty = true;
     if (event)
-      new BlockChangedEvent(new BlockReference().setFromBlockCoordinates(x, y, z), Sided.getBlockManager().toFactory(b)).post();
+      new BlockChangedEvent(new BlockReference().setFromBlockCoordinates(x, y, z), Sided.getBlockManager().toBlock(b)).post();
   }
 
   public void unload() {
@@ -171,7 +171,7 @@ public class Area implements DataParser<DataGroup> {
   }
 
   public void handleChange(PacketBlockChanged packet) {
-    setBlockFactory(Sided.getBlockManager().toFactory(packet.factory), packet.x, packet.y, packet.z, false);
+    setBlock(Sided.getBlockManager().toBlock(packet.block), packet.x, packet.y, packet.z, false);
   }
 
   private int getRef(int x, int y, int z) {

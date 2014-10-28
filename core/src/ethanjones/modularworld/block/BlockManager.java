@@ -28,7 +28,7 @@ public class BlockManager implements DataParser<DataGroup> {
     }
   }
 
-  public Block toFactory(int i) {
+  public Block toBlock(int i) {
     if (i == 0) return null;
     synchronized (this) {
       return ids.get(i);

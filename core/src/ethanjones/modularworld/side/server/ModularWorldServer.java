@@ -48,6 +48,6 @@ public class ModularWorldServer extends ModularWorld implements TimeHandler {
   public void time(int interval) {
     super.time(interval);
     if (interval != 250) return;
-    world.setBlockFactory(Blocks.dirt, (int) (Math.random() * 16), (int) (8 + (Math.random() * 7)), (int) (Math.random() * 16));
+    world.setBlock(Blocks.dirt, (int) (Math.random() * 16), (int) (8 + (Math.random() * 7)), (int) (Math.random() * 16));
   }
 }

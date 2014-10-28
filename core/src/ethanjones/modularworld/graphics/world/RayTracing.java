@@ -45,7 +45,7 @@ public class RayTracing {
     //no effect since direction is normalised
 
     while (true) {
-      if (world.getBlockFactory(x, y, z) != null) {
+      if (world.getBlock(x, y, z) != null) {
         return new BlockIntersection(new BlockReference().setFromBlockCoordinates(x, y, z), face);
       }
 
