@@ -1,18 +1,15 @@
 package ethanjones.modularworld.side.server;
 
-import com.badlogic.gdx.math.collision.Ray;
-import ethanjones.modularworld.block.Blocks;
 import ethanjones.modularworld.core.events.EventHandler;
 import ethanjones.modularworld.core.events.world.block.BlockEvent;
 import ethanjones.modularworld.core.system.Threads;
+import ethanjones.modularworld.core.util.MathHelper;
 import ethanjones.modularworld.entity.living.player.Player;
 import ethanjones.modularworld.graphics.world.RayTracing;
 import ethanjones.modularworld.networking.packet.Packet;
 import ethanjones.modularworld.networking.packets.*;
 import ethanjones.modularworld.networking.socket.SocketMonitor;
 import ethanjones.modularworld.side.Sided;
-import ethanjones.modularworld.world.coordinates.BlockCoordinates;
-import ethanjones.modularworld.world.coordinates.Coordinates;
 import ethanjones.modularworld.world.reference.AreaReference;
 import ethanjones.modularworld.world.reference.BlockReference;
 import ethanjones.modularworld.world.storage.Area;
@@ -22,18 +19,17 @@ import ethanjones.modularworld.world.thread.SendWorldCallable;
 
 public class PlayerManager {
 
+  private final Player player;
+  private final AreaReference playerArea;
   private PacketConnect packetConnect;
   private SocketMonitor socketMonitor;
-  private Player player;
-  private volatile Coordinates playerCoordinates; //blocks should be "synchronized (playerCoordinates) {"
-
   private int renderDistance;
 
   public PlayerManager(PacketConnect packetConnect) {
     this.packetConnect = packetConnect;
     this.socketMonitor = packetConnect.getPacketEnvironment().getReceiving().getSocketMonitor();
     this.player = new Player(packetConnect.username); //TODO Store users and world
-    this.playerCoordinates = new Coordinates(player.position);
+    this.playerArea = new AreaReference().setFromPositionVector3(player.position);
 
     ModularWorldServer.instance.playerManagers.put(socketMonitor, this);
 
@@ -46,13 +42,9 @@ public class PlayerManager {
     initialLoadAreas();
   }
 
-  public void playerChangedPosition() {
-    playerCoordinates = new Coordinates(player.position);
-  }
-
   public void handleInfo(PacketPlayerInfo packetPlayerInfo) {
-    AreaReference n = new AreaReference().setFromVector3(packetPlayerInfo.position);
-    AreaReference o = new AreaReference().setFromVector3(player.position);
+    AreaReference n = new AreaReference().setFromPositionVector3(packetPlayerInfo.position);
+    AreaReference o = new AreaReference().setFromPositionVector3(player.position);
     if (!n.equals(o)) {
       AreaReference check = new AreaReference();
       for (int areaX = n.areaX - renderDistance; areaX <= n.areaX + renderDistance; areaX++) {
@@ -70,7 +62,9 @@ public class PlayerManager {
     }
     if (!player.position.equals(packetPlayerInfo.position)) {
       player.position.set(packetPlayerInfo.position);
-      playerChangedPosition();
+      synchronized (playerArea) {
+        playerArea.setFromPositionVector3(player.position);
+      }
     }
     player.angle.set(packetPlayerInfo.angle);
   }
@@ -78,12 +72,12 @@ public class PlayerManager {
 
   private void initialLoadAreas() {
     AreaReference check = new AreaReference();
-    synchronized (playerCoordinates) {
-      for (int areaX = playerCoordinates.areaX - renderDistance; areaX <= playerCoordinates.areaX + renderDistance; areaX++) {
+    synchronized (playerArea) {
+      for (int areaX = playerArea.areaX - renderDistance; areaX <= playerArea.areaX + renderDistance; areaX++) {
         check.areaX = areaX;
-        for (int areaY = Math.max(playerCoordinates.areaY - renderDistance, 0); areaY <= playerCoordinates.areaY + renderDistance; areaY++) {
+        for (int areaY = Math.max(playerArea.areaY - renderDistance, 0); areaY <= playerArea.areaY + renderDistance; areaY++) {
           check.areaY = areaY;
-          for (int areaZ = playerCoordinates.areaZ - renderDistance; areaZ <= playerCoordinates.areaZ + renderDistance; areaZ++) {
+          for (int areaZ = playerArea.areaZ - renderDistance; areaZ <= playerArea.areaZ + renderDistance; areaZ++) {
             check.areaZ = areaZ;
             sendAndRequestArea(check);
           }
@@ -94,18 +88,18 @@ public class PlayerManager {
 
   @EventHandler
   public void blockChanged(BlockEvent blockEvent) {
-    BlockCoordinates coordinates = blockEvent.getBlockCoordinates();
-    synchronized (playerCoordinates) {
-      if (Math.abs(coordinates.areaX - playerCoordinates.areaX) > renderDistance) return;
-      if (Math.abs(coordinates.areaY - playerCoordinates.areaY) > renderDistance) return;
-      if (Math.abs(coordinates.areaZ - playerCoordinates.areaZ) > renderDistance) return;
+    BlockReference blockReference = blockEvent.getBlockReference();
+    synchronized (playerArea) {
+      if (Math.abs(MathHelper.area(blockReference.blockX) - playerArea.areaX) > renderDistance) return;
+      if (Math.abs(MathHelper.area(blockReference.blockY) - playerArea.areaY) > renderDistance) return;
+      if (Math.abs(MathHelper.area(blockReference.blockZ) - playerArea.areaZ) > renderDistance) return;
     }
     PacketBlockChanged packet = new PacketBlockChanged();
-    packet.x = coordinates.blockX;
-    packet.y = coordinates.blockY;
-    packet.z = coordinates.blockZ;
+    packet.x = blockReference.blockX;
+    packet.y = blockReference.blockY;
+    packet.z = blockReference.blockZ;
     packet.factory = Sided.getBlockManager().toInt(ModularWorldServer.instance.world.getBlockFactory(packet.x, packet.y, packet.z));
-    socketMonitor.getSocketOutput().getPacketQueue().addPacket(packet);
+    socketMonitor.queue(packet);
   }
 
   private void sendAndRequestArea(AreaReference areaReference) {
@@ -122,8 +116,8 @@ public class PlayerManager {
   }
 
   public boolean shouldSendArea(int areaX, int areaY, int areaZ) {
-    synchronized (playerCoordinates) {
-      if (Math.abs(areaX - playerCoordinates.areaX) <= renderDistance && Math.abs(areaY - playerCoordinates.areaY) <= renderDistance && Math.abs(areaZ - playerCoordinates.areaZ) <= renderDistance) {
+    synchronized (playerArea) {
+      if (Math.abs(areaX - playerArea.areaX) <= renderDistance && Math.abs(areaY - playerArea.areaY) <= renderDistance && Math.abs(areaZ - playerArea.areaZ) <= renderDistance) {
         return true;
       }
       return false;
@@ -132,9 +126,10 @@ public class PlayerManager {
 
   public void click(PacketClick.Click type) {
     if (type == PacketClick.Click.left) {
-      BlockReference blockReference = RayTracing.getIntersection(new Ray(player.position, player.angle), ModularWorldServer.instance.world, 8);
-      if (blockReference == null) return;
-      ModularWorldServer.instance.world.setBlockFactory(Blocks.stone, blockReference.blockX, blockReference.blockY, blockReference.blockZ);
+      RayTracing.BlockIntersection blockIntersection = RayTracing.getBlockIntersection(player.position, player.angle, ModularWorldServer.instance.world);
+      if (blockIntersection == null) return;
+      BlockReference blockReference = blockIntersection.getBlockReference();
+      ModularWorldServer.instance.world.setBlockFactory(null, blockReference.blockX, blockReference.blockY, blockReference.blockZ);
     }
   }
 }

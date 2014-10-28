@@ -1,13 +1,10 @@
 package ethanjones.modularworld.input;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Disposable;
 import ethanjones.modularworld.input.keyboard.KeyboardHelper;
-import ethanjones.modularworld.networking.NetworkingManager;
-import ethanjones.modularworld.networking.packets.PacketClick;
 
 public class InputChain implements Disposable {
 
@@ -33,19 +30,6 @@ public class InputChain implements Disposable {
 
   public void beforeRender() {
     cameraController.update();
-    PacketClick packet = new PacketClick();
-    if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-      packet.type = PacketClick.Click.get(Input.Buttons.LEFT);
-    }
-    if (Gdx.input.isButtonPressed(Input.Buttons.MIDDLE)) {
-      packet.type = PacketClick.Click.get(Input.Buttons.MIDDLE);
-    }
-    if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
-      packet.type = PacketClick.Click.get(Input.Buttons.RIGHT);
-    }
-    if (packet.type != null) {
-      NetworkingManager.clientNetworking.sendToServer(packet);
-    }
   }
 
   public void afterRender() {

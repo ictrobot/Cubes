@@ -2,8 +2,7 @@ package ethanjones.modularworld.world.reference;
 
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Pool;
-import ethanjones.modularworld.world.coordinates.AreaCoordinates;
-import ethanjones.modularworld.world.coordinates.BlockCoordinates;
+import ethanjones.modularworld.core.util.MathHelper;
 import ethanjones.modularworld.world.storage.Area;
 
 public class AreaReference implements Pool.Poolable, Cloneable {
@@ -16,58 +15,62 @@ public class AreaReference implements Pool.Poolable, Cloneable {
 
   }
 
-  public AreaReference clear() {
+  @Override
+  public void reset() {
     areaX = 0;
     areaY = 0;
     areaZ = 0;
-    return this;
   }
 
   public AreaReference setFromArea(Area area) {
-    setFromArea(area.x, area.y, area.z);
+    this.areaX = area.x;
+    this.areaY = area.y;
+    this.areaZ = area.z;
     return this;
   }
 
-  public AreaReference setFromAreaCoordinates(AreaCoordinates areaCoordinates) {
-    setFromArea(areaCoordinates.areaX, areaCoordinates.areaY, areaCoordinates.areaZ);
+  public AreaReference setFromAreaReference(AreaReference areaReference) {
+    this.areaX = areaReference.areaX;
+    this.areaY = areaReference.areaY;
+    this.areaZ = areaReference.areaZ;
     return this;
   }
 
-  public AreaReference setFromArea(int areaX, int areaY, int areaZ) {
+  public AreaReference setFromAreaCoordinates(int areaX, int areaY, int areaZ) {
     this.areaX = areaX;
     this.areaY = areaY;
     this.areaZ = areaZ;
     return this;
   }
 
-  public AreaCoordinates getAreaCoordinates() {
-    return new AreaCoordinates(areaX, areaY, areaZ);
+  public AreaReference setFromBlockCoordinates(int blockX, int blockY, int blockZ) {
+    this.areaX = MathHelper.area(blockX);
+    this.areaY = MathHelper.area(blockY);
+    this.areaZ = MathHelper.area(blockZ);
+    return this;
   }
 
-  public AreaReference setFromBlock(int blockX, int blockY, int blockZ) {
-    this.areaX = BlockCoordinates.area(blockX);
-    this.areaY = BlockCoordinates.area(blockY);
-    this.areaZ = BlockCoordinates.area(blockZ);
+  public AreaReference setFromBlockReference(BlockReference blockReference) {
+    this.areaX = MathHelper.area(blockReference.blockX);
+    this.areaY = MathHelper.area(blockReference.blockY);
+    this.areaZ = MathHelper.area(blockReference.blockZ);
     return this;
   }
 
   public AreaReference setFromPosition(float x, float y, float z) {
-    setFromBlock((int) Math.ceil(x), (int) Math.ceil(y), (int) Math.ceil(z));
+    this.areaX = MathHelper.area(MathHelper.block(x));
+    this.areaY = MathHelper.area(MathHelper.block(y));
+    this.areaZ = MathHelper.area(MathHelper.block(z));
     return this;
   }
 
-  public AreaReference setFromVector3(Vector3 vector3) {
+  public AreaReference setFromPositionVector3(Vector3 vector3) {
     setFromPosition(vector3.x, vector3.y, vector3.z);
     return this;
   }
 
-  @Override
-  public void reset() {
-    clear();
-  }
-
   public AreaReference clone() {
-    return new AreaReference().setFromArea(areaX, areaY, areaZ);
+    return new AreaReference().setFromAreaReference(this);
   }
 
   @Override
@@ -86,6 +89,6 @@ public class AreaReference implements Pool.Poolable, Cloneable {
       AreaReference areaReference = (AreaReference) obj;
       return areaReference.areaX == areaX && areaReference.areaY == areaY && areaReference.areaZ == areaZ;
     }
-    return super.equals(obj);
+    return false;
   }
 }

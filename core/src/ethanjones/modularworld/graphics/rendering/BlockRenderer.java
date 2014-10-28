@@ -19,9 +19,6 @@ import ethanjones.modularworld.world.storage.Area;
 
 public class BlockRenderer implements Disposable {
 
-  public static int RENDER_DISTANCE_MAX = 10;
-  public static int RENDER_DISTANCE_MIN = 1;
-
   public Environment environment;
   public PerspectiveCamera camera;
 
@@ -44,6 +41,8 @@ public class BlockRenderer implements Disposable {
         super.update(b);
       }
     };
+    camera.near = 0.1f;
+    camera.far = 300f;
 
     ModularWorldClient.instance.inputChain.cameraController = new CameraController(camera);
   }
@@ -60,12 +59,11 @@ public class BlockRenderer implements Disposable {
           Area area = ModularWorldClient.instance.world.getArea(areaX, areaY, areaZ);
           if (areaInFrustum(area, camera.frustum)) {
             if (area.areaRenderer == null) {
-              area.areaRenderer = areaRendererPool.obtain().set(area);
+              areaRendererPool.obtain().set(area);
             }
             modelBatch.render(area.areaRenderer, environment);
           } else if (area.areaRenderer != null) {
             areaRendererPool.free(area.areaRenderer);
-            area.areaRenderer = null;
           }
         }
       }

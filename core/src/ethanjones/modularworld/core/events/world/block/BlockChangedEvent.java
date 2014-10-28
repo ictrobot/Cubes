@@ -1,14 +1,14 @@
 package ethanjones.modularworld.core.events.world.block;
 
 import ethanjones.modularworld.block.Block;
-import ethanjones.modularworld.world.coordinates.BlockCoordinates;
+import ethanjones.modularworld.world.reference.BlockReference;
 
 public class BlockChangedEvent extends BlockEvent {
 
   private final Block oldBlock;
 
-  public BlockChangedEvent(BlockCoordinates blockCoordinates, Block oldBlock) {
-    super(false, blockCoordinates);
+  public BlockChangedEvent(BlockReference blockReference, Block oldBlock) {
+    super(false, blockReference);
     this.oldBlock = oldBlock;
   }
 

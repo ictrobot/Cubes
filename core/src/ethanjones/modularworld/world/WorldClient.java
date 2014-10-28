@@ -19,7 +19,7 @@ public class WorldClient extends World {
 
   public WorldClient() {
     super();
-    playerArea = new AreaReference().setFromVector3(ModularWorldClient.instance.player.position);
+    playerArea = new AreaReference().setFromPositionVector3(ModularWorldClient.instance.player.position);
     minAreaX = playerArea.areaX - AREA_LOAD_RADIUS;
     minAreaY = playerArea.areaY - AREA_LOAD_RADIUS;
     minAreaZ = playerArea.areaZ - AREA_LOAD_RADIUS;
@@ -29,7 +29,7 @@ public class WorldClient extends World {
 
   public void playerChangedPosition() {
     synchronized (this) {
-      playerArea.setFromVector3(ModularWorldClient.instance.player.position);
+      playerArea.setFromPositionVector3(ModularWorldClient.instance.player.position);
       if (playerArea.areaX - AREA_LOAD_RADIUS != minAreaX || playerArea.areaY - AREA_LOAD_RADIUS != minAreaY || playerArea.areaZ - AREA_LOAD_RADIUS != minAreaZ) {
         minAreaX = playerArea.areaX - AREA_LOAD_RADIUS;
         minAreaY = playerArea.areaY - AREA_LOAD_RADIUS;

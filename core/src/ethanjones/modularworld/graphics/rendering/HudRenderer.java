@@ -4,7 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -20,48 +22,17 @@ import static ethanjones.modularworld.graphics.menu.Menu.skin;
 
 public class HudRenderer implements Disposable {
 
-  private class KeyListener implements KeyTypedListener {
-
-    final int debug = Input.Keys.F1;
-    final int chat = Input.Keys.F2;
-
-    boolean debugDown = false;
-    boolean chatDown = false;
-
-    @Override
-    public void keyDown(int keycode) {
-      if (keycode == debug && !debugDown) {
-        debugDown = true;
-        setDebugEnabled(!isDebugEnabled());
-      }
-      if (keycode == chat && !chatDown) {
-        chatDown = true;
-        setChatEnabled(!isChatEnabled());
-      }
-    }
-
-    @Override
-    public void keyUp(int keycode) {
-      if (keycode == debug) debugDown = false;
-      if (keycode == chat) chatDown = false;
-    }
-
-    @Override
-    public void keyTyped(char character) {
-
-    }
-  }
-
-  private boolean chatEnabled; //TODO: On screen buttons
-  private boolean debugEnabled;
-
   Stage stage;
   TextField chat;
+  Image crosshair;
   ClientDebug.DebugLabel debug;
-
+  private boolean chatEnabled; //TODO: On screen buttons
+  private boolean debugEnabled;
   public HudRenderer() {
     stage = new Stage(new ScreenViewport());
     ModularWorldClient.instance.inputChain.hud = stage;
+
+    crosshair = new Image(GraphicsHelper.getTexture("hud/Crosshair.png").textureRegion);
 
     debug = new ClientDebug.DebugLabel();
 
@@ -95,13 +66,18 @@ public class HudRenderer implements Disposable {
       stage.addActor(chat);
       stage.setKeyboardFocus(chat);
     }
+    stage.addActor(crosshair);
     stage.act();
     stage.draw();
   }
 
   public void resize() {
     stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+    debug.setBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    debug.setAlignment(Align.topLeft, Align.topLeft);
     chat.setBounds(0, 0, Gdx.graphics.getWidth(), chat.getStyle().font.getBounds("ABC123").height * 1.5f);
+    float crosshairSize = Math.min(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) / 20;
+    crosshair.setBounds((Gdx.graphics.getWidth() / 2) - (crosshairSize / 2), (Gdx.graphics.getHeight() / 2) - (crosshairSize / 2), crosshairSize, crosshairSize);
   }
 
   @Override
@@ -113,12 +89,12 @@ public class HudRenderer implements Disposable {
     return chatEnabled;
   }
 
-  public boolean isDebugEnabled() {
-    return debugEnabled;
-  }
-
   public void setChatEnabled(boolean chatEnabled) {
     this.chatEnabled = chatEnabled;
+  }
+
+  public boolean isDebugEnabled() {
+    return debugEnabled;
   }
 
   public void setDebugEnabled(boolean debugEnabled) {
@@ -128,5 +104,37 @@ public class HudRenderer implements Disposable {
       GLProfiler.enable();
     }
     this.debugEnabled = debugEnabled;
+  }
+
+  private class KeyListener implements KeyTypedListener {
+
+    final int debug = Input.Keys.F1;
+    final int chat = Input.Keys.F2;
+
+    boolean debugDown = false;
+    boolean chatDown = false;
+
+    @Override
+    public void keyDown(int keycode) {
+      if (keycode == debug && !debugDown) {
+        debugDown = true;
+        setDebugEnabled(!isDebugEnabled());
+      }
+      if (keycode == chat && !chatDown) {
+        chatDown = true;
+        setChatEnabled(!isChatEnabled());
+      }
+    }
+
+    @Override
+    public void keyUp(int keycode) {
+      if (keycode == debug) debugDown = false;
+      if (keycode == chat) chatDown = false;
+    }
+
+    @Override
+    public void keyTyped(char character) {
+
+    }
   }
 }

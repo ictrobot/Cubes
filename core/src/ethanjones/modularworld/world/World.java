@@ -2,7 +2,7 @@ package ethanjones.modularworld.world;
 
 import com.badlogic.gdx.utils.Disposable;
 import ethanjones.modularworld.block.Block;
-import ethanjones.modularworld.world.coordinates.BlockCoordinates;
+import ethanjones.modularworld.core.util.MathHelper;
 import ethanjones.modularworld.world.reference.AreaReference;
 import ethanjones.modularworld.world.reference.AreaReferencePool;
 import ethanjones.modularworld.world.storage.Area;
@@ -36,7 +36,7 @@ public abstract class World implements Disposable {
   public Area getArea(int areaX, int areaY, int areaZ) {
     AreaReference areaReference;
     synchronized (areaReferencePool) {
-      areaReference = areaReferencePool.obtain().setFromArea(areaX, areaY, areaZ);
+      areaReference = areaReferencePool.obtain().setFromAreaCoordinates(areaX, areaY, areaZ);
     }
     Area area = getArea(areaReference);
     synchronized (areaReferencePool) {
@@ -46,11 +46,11 @@ public abstract class World implements Disposable {
   }
 
   public Block getBlockFactory(int x, int y, int z) {
-    return getArea(BlockCoordinates.area(x), BlockCoordinates.area(y), BlockCoordinates.area(z)).getBlockFactory(x, y, z);
+    return getArea(MathHelper.area(x), MathHelper.area(y), MathHelper.area(z)).getBlockFactory(x, y, z);
   }
 
   public void setBlockFactory(Block block, int x, int y, int z) {
-    getArea(BlockCoordinates.area(x), BlockCoordinates.area(y), BlockCoordinates.area(z)).setBlockFactory(block, x, y, z);
+    getArea(MathHelper.area(x), MathHelper.area(y), MathHelper.area(z)).setBlockFactory(block, x, y, z);
   }
 
 }

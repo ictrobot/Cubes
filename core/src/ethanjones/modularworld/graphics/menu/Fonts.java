@@ -33,6 +33,7 @@ public class Fonts {
     private StaticBitmapFont(int scale) {
       super(GraphicsHelper.assetManager.assets.folders.get("font").files.get("font.fnt").fileHandle);
       this.scale = scale;
+      updateScale();
     }
 
     @Override

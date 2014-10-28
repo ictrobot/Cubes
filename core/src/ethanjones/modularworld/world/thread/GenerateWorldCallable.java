@@ -21,7 +21,7 @@ public class GenerateWorldCallable implements Callable<Area> {
   public Area call() throws Exception {
     Area area = new Area(areaReference.areaX, areaReference.areaY, areaReference.areaZ, false);
     world.getWorldGenerator().generate(area);
-    new GenerationEvent(area, areaReference.getAreaCoordinates()).post();
+    new GenerationEvent(area, areaReference).post();
     area.generated = true;
     world.setAreaInternal(areaReference, area);
     return area;

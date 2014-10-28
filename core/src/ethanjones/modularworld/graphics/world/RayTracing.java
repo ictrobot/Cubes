@@ -1,53 +1,116 @@
 package ethanjones.modularworld.graphics.world;
 
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.BoundingBox;
-import com.badlogic.gdx.math.collision.Ray;
-import ethanjones.modularworld.block.Block;
-import ethanjones.modularworld.side.client.ModularWorldClient;
 import ethanjones.modularworld.world.World;
 import ethanjones.modularworld.world.reference.BlockReference;
 
+import static java.lang.Math.floor;
+import static java.lang.Math.signum;
+
 public class RayTracing {
 
-  public static BlockReference getIntersectionClient() {
-    return getIntersection(new Ray(ModularWorldClient.instance.renderer.block.camera.position, ModularWorldClient.instance.renderer.block.camera.direction), ModularWorldClient.instance.world, 8);
+  public static BlockIntersection getBlockIntersection(Vector3 origin, Vector3 direction, World world) {
+    return raycast(origin, direction, 6, world);
   }
 
-  public static BlockReference getIntersection(Ray ray, World world, int maxLength) { //TODO Fix
-    Vector3 tmp1 = ray.origin.cpy();
-    Vector3 tmp2 = ray.getEndPoint(new Vector3(), maxLength);
-    int x1 = (int) Math.floor(tmp1.x);
-    int y1 = (int) Math.floor(tmp1.y);
-    int z1 = (int) Math.floor(tmp1.z);
-    int x2 = (int) Math.floor(tmp2.x);
-    int y2 = (int) Math.floor(tmp2.y);
-    int z2 = (int) Math.floor(tmp2.z);
-    int startX = Math.min(x1, x2);
-    int startY = Math.min(y1, y2);
-    int startZ = Math.min(z1, z2);
-    int endX = Math.max(x1, x2);
-    int endY = Math.max(y1, y2);
-    int endZ = Math.max(z1, z2);
-    tmp2.set(1, 1, 1);
-    for (int x = startX; x <= endX; x++) {
-      for (int y = startY; y <= endY; y++) {
-        for (int z = startZ; z <= endZ; z++) {
-          Block block = world.getBlockFactory(x, y, z);
-          if (block == null) continue;
-          BoundingBox boundingBox = block.getBoundingBox();
-          tmp1.set(x + 0.5f, y + 0.5f, z + 0.5f);
-          if (boundingBox == null) {
-            if (Intersector.intersectRayBoundsFast(ray, tmp1, tmp2)) {
-              return new BlockReference().set(x, y, z);
-            }
-          } else if (Intersector.intersectRayBoundsFast(ray, tmp1, boundingBox.getDimensions())) {
-            return new BlockReference().set(x, y, z);
-          }
+  /**
+   * https://github.com/kpreid/cubes/blob/c5e61fa22cb7f9ba03cd9f22e5327d738ec93969/world.js#L317
+   */
+  private static BlockIntersection raycast(Vector3 origin, Vector3 direction, int radius, World world) {
+    if (direction.x == 0 && direction.y == 0 && direction.z == 0) return null;
+
+    int x = (int) floor(origin.x);
+    int y = (int) floor(origin.y);
+    int z = (int) floor(origin.z);
+
+    float dx = direction.x;
+    float dy = direction.y;
+    float dz = direction.z;
+
+    float stepX = signum(dx);
+    float stepY = signum(dy);
+    float stepZ = signum(dz);
+
+    float tMaxX = intbound(origin.x, direction.x);
+    float tMaxY = intbound(origin.y, direction.y);
+    float tMaxZ = intbound(origin.z, direction.z);
+
+    float tDeltaX = stepX / direction.x;
+    float tDeltaY = stepY / direction.y;
+    float tDeltaZ = stepZ / direction.z;
+
+    BlockFace face = BlockFace.maxY; //current block face?
+
+    //radius /= Math.sqrt(direction.x * direction.x + direction.y * direction.y + direction.z * direction.z);
+    //no effect since direction is normalised
+
+    while (true) {
+      if (world.getBlockFactory(x, y, z) != null) {
+        return new BlockIntersection(new BlockReference().setFromBlockCoordinates(x, y, z), face);
+      }
+
+      if (tMaxX < tMaxY) {
+        if (tMaxX < tMaxZ) {          // tMaxX < tMaxY && tMaxX < tMaxZ
+          if (tMaxX > radius) break;
+          x += stepX;
+          tMaxX += tDeltaX;
+          face = getFace(-stepX, 0, 0);
+        } else {                      // tMaxX < tMaxY && tMaxX > tMaxZ
+          if (tMaxZ > radius) break;
+          z += stepZ;
+          tMaxZ += tDeltaZ;
+          face = getFace(0, 0, -stepZ);
+        }
+      } else {
+        if (tMaxY < tMaxZ) {          // tMaxX > tMaxY && tMaxY < tMaxZ
+          if (tMaxY > radius) break;
+          y += stepY;
+          tMaxY += tDeltaY;
+          face = getFace(0, -stepY, 0);
+        } else {                      // tMaxX > tMaxY && tMaxY > tMaxZ
+          if (tMaxZ > radius) break;
+          z += stepZ;
+          tMaxZ += tDeltaZ;
+          face = getFace(0, 0, -stepZ);
         }
       }
     }
     return null;
+  }
+
+  private static BlockFace getFace(float x, float y, float z) {
+    if (x > 0 && y == 0 && z == 0) return BlockFace.maxX;
+    if (x < 0 && y == 0 && z == 0) return BlockFace.minX;
+
+    if (x == 0 && y > 0 && z == 0) return BlockFace.maxY;
+    if (x == 0 && y < 0 && z == 0) return BlockFace.minY;
+
+    if (x == 0 && y == 0 && z > 0) return BlockFace.maxZ;
+    if (x == 0 && y == 0 && z < 0) return BlockFace.minZ;
+
+    return null;
+  }
+
+  private static float intbound(float s, float ds) {
+    if (ds < 0) return intbound(-s, -ds);
+    return (1 - (s % 1)) / ds;
+  }
+
+  public static class BlockIntersection {
+    private final BlockReference blockReference;
+    private final BlockFace blockFace;
+
+    public BlockIntersection(BlockReference blockReference, BlockFace blockFace) {
+      this.blockReference = blockReference;
+      this.blockFace = blockFace;
+    }
+
+    public BlockReference getBlockReference() {
+      return blockReference;
+    }
+
+    public BlockFace getBlockFace() {
+      return blockFace;
+    }
   }
 }

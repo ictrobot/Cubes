@@ -11,7 +11,6 @@ import ethanjones.modularworld.graphics.world.AreaRenderer;
 import ethanjones.modularworld.networking.packets.PacketBlockChanged;
 import ethanjones.modularworld.side.Sided;
 import ethanjones.modularworld.side.client.ModularWorldClient;
-import ethanjones.modularworld.world.coordinates.BlockCoordinates;
 import ethanjones.modularworld.world.reference.BlockReference;
 
 import java.util.ArrayList;
@@ -66,7 +65,7 @@ public class Area implements DataParser<DataGroup> {
   }
 
   public Block getBlockFactory(int x, int y, int z) {
-    return Sided.getBlockManager().toFactory(blockFactories[Math.abs(x % SIZE_BLOCKS) + Math.abs(z % SIZE_BLOCKS) * SIZE_BLOCKS + Math.abs(y % SIZE_BLOCKS) * SIZE_BLOCKS_SQUARED]);
+    return Sided.getBlockManager().toFactory(blockFactories[getRef(x, y, z)]);
   }
 
   public void setBlockFactory(Block block, int x, int y, int z) {
@@ -74,11 +73,12 @@ public class Area implements DataParser<DataGroup> {
   }
 
   public void setBlockFactory(Block block, int x, int y, int z, boolean event) {
-    int ref = Math.abs(x % SIZE_BLOCKS) + Math.abs(z % SIZE_BLOCKS) * SIZE_BLOCKS + Math.abs(y % SIZE_BLOCKS) * SIZE_BLOCKS_SQUARED;
+    int ref = getRef(x, y, z);
     int b = blockFactories[ref];
-    if (areaRenderer != null) areaRenderer.dirty = true;
     blockFactories[ref] = Sided.getBlockManager().toInt(block);
-    if (event) new BlockChangedEvent(new BlockCoordinates(x, y, z), Sided.getBlockManager().toFactory(b)).post();
+    if (areaRenderer != null) areaRenderer.dirty = true;
+    if (event)
+      new BlockChangedEvent(new BlockReference().setFromBlockCoordinates(x, y, z), Sided.getBlockManager().toFactory(b)).post();
   }
 
   public void unload() {
@@ -106,7 +106,7 @@ public class Area implements DataParser<DataGroup> {
         for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
           int b = blockFactories[i];
           if (b != 0) {
-            blocks.add(new BlockReference().set(x, y, z));
+            blocks.add(new BlockReference().setFromBlockCoordinates(x, y, z));
             if (blocks.size() < SIZE_BLOCKS_SQUARED / 8) {
               DataGroup d = new DataGroup();
               d.setByte("x", (byte) x);
@@ -171,8 +171,10 @@ public class Area implements DataParser<DataGroup> {
   }
 
   public void handleChange(PacketBlockChanged packet) {
-    int ref = Math.abs(packet.x % SIZE_BLOCKS) + Math.abs(packet.z % SIZE_BLOCKS) * SIZE_BLOCKS + Math.abs(packet.y % SIZE_BLOCKS) * SIZE_BLOCKS_SQUARED;
-    blockFactories[ref] = packet.factory;
-    if (areaRenderer != null) areaRenderer.dirty = true;
+    setBlockFactory(Sided.getBlockManager().toFactory(packet.factory), packet.x, packet.y, packet.z, false);
+  }
+
+  private int getRef(int x, int y, int z) {
+    return (0 <= x && x < SIZE_BLOCKS ? x : x - minBlockX) + (0 <= z && z < SIZE_BLOCKS ? z : z - minBlockZ) * SIZE_BLOCKS + (0 <= y && y < SIZE_BLOCKS ? y : y - minBlockY) * SIZE_BLOCKS_SQUARED;
   }
 }

@@ -1,25 +1,25 @@
 package ethanjones.modularworld.core.events.world.generation;
 
 import ethanjones.modularworld.core.events.Event;
-import ethanjones.modularworld.world.coordinates.AreaCoordinates;
+import ethanjones.modularworld.world.reference.AreaReference;
 import ethanjones.modularworld.world.storage.Area;
 
 public class GenerationEvent extends Event {
 
   private final Area area;
-  private final AreaCoordinates areaCoordinates;
+  private final AreaReference areaReference;
 
-  public GenerationEvent(Area area, AreaCoordinates areaCoordinates) {
+  public GenerationEvent(Area area, AreaReference areaReference) {
     super(false);
     this.area = area;
-    this.areaCoordinates = areaCoordinates;
+    this.areaReference = areaReference;
   }
 
   public Area getArea() {
     return area;
   }
 
-  public AreaCoordinates getAreaCoordinates() {
-    return areaCoordinates;
+  public AreaReference getAreaReference() {
+    return areaReference;
   }
 }

@@ -35,8 +35,6 @@ public class ModularWorldClient extends ModularWorld implements ApplicationListe
   @Override
   public void create() {
     super.create();
-
-    ClientDebug.setup();
     NetworkingManager.connectClient(clientNetworkingParameter);
 
     inputChain = new InputChain();

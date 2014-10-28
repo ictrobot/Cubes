@@ -32,6 +32,6 @@ public class PacketBlockChanged extends Packet {
 
   @Override
   public void handlePacket() {
-    ModularWorldClient.instance.world.getArea(new AreaReference().setFromBlock(x, y, z)).handleChange(this);
+    ModularWorldClient.instance.world.getArea(new AreaReference().setFromBlockCoordinates(x, y, z)).handleChange(this);
   }
 }

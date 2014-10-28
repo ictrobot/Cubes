@@ -1,10 +1,12 @@
 package ethanjones.modularworld.networking.client;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.networking.Networking;
 import ethanjones.modularworld.networking.NetworkingManager;
 import ethanjones.modularworld.networking.packet.Packet;
+import ethanjones.modularworld.networking.packets.PacketClick;
 import ethanjones.modularworld.networking.packets.PacketPlayerInfo;
 import ethanjones.modularworld.networking.socket.SocketMonitor;
 import ethanjones.modularworld.side.Side;
@@ -35,10 +37,25 @@ public class ClientNetworking extends Networking {
   @Override
   public synchronized void tick() {
     if (getNetworkingState() != NetworkingState.Running) ModularWorld.quit(false);
+
     PacketPlayerInfo packetPlayerInfo = new PacketPlayerInfo();
     packetPlayerInfo.angle = ModularWorldClient.instance.player.angle;
     packetPlayerInfo.position = ModularWorldClient.instance.player.position;
     sendToServer(packetPlayerInfo);
+
+    PacketClick packet = new PacketClick();
+    if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+      packet.type = PacketClick.Click.get(Input.Buttons.LEFT);
+    }
+    if (Gdx.input.isButtonPressed(Input.Buttons.MIDDLE)) {
+      packet.type = PacketClick.Click.get(Input.Buttons.MIDDLE);
+    }
+    if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
+      packet.type = PacketClick.Click.get(Input.Buttons.RIGHT);
+    }
+    if (packet.type != null) {
+      NetworkingManager.clientNetworking.sendToServer(packet);
+    }
   }
 
   @Override

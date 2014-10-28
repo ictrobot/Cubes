@@ -25,7 +25,7 @@ public class PacketArea extends DataPacket {
   @Override
   public void handlePacket() {
     if (getPacketEnvironment().getReceiving().getSide() != Side.Client) return;
-    areaReference.setFromArea(areaX, areaY, areaZ);
+    areaReference.setFromAreaCoordinates(areaX, areaY, areaZ);
     Area a = new Area(areaX, areaY, areaZ);
     a.read(area);
     ModularWorldClient.instance.world.setAreaInternal(areaReference, a);

@@ -148,12 +148,14 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
 
   @Override
   public void reset() {
+    area.areaRenderer = null;
     area = null;
     dirty = true;
   }
 
   public AreaRenderer set(Area area) {
     this.area = area;
+    this.area.areaRenderer = this;
     this.dirty = true;
     this.offset.set(area.minBlockX, area.minBlockY, area.minBlockZ);
     return this;
