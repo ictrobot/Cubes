@@ -14,7 +14,7 @@ public class TexturePacker {
   Map<String, PackRectangle> rectangles;
 
   public TexturePacker(int width, int height, int padding) {
-    this.pixmap = new Pixmap(width, height, Pixmap.Format.RGBA4444);
+    this.pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
     this.padding = padding;
     this.root = new Node(0, 0, width, height, null, null, null);
     this.rectangles = new HashMap<String, PackRectangle>();
