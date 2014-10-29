@@ -2,6 +2,7 @@ package ethanjones.modularworld.networking.client;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Vector3;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.networking.Networking;
 import ethanjones.modularworld.networking.NetworkingManager;
@@ -19,6 +20,9 @@ public class ClientNetworking extends Networking {
   private final String host;
   private final int port;
   private SocketMonitor socketMonitor;
+
+  private Vector3 prevPosition = new Vector3();
+  private Vector3 prevDirection = new Vector3();
 
   public ClientNetworking(String host, int port) {
     super(Side.Client);
@@ -38,10 +42,14 @@ public class ClientNetworking extends Networking {
   public synchronized void tick() {
     if (getNetworkingState() != NetworkingState.Running) ModularWorld.quit(false);
 
-    PacketPlayerInfo packetPlayerInfo = new PacketPlayerInfo();
-    packetPlayerInfo.angle = ModularWorldClient.instance.player.angle;
-    packetPlayerInfo.position = ModularWorldClient.instance.player.position;
-    sendToServer(packetPlayerInfo);
+    if (!ModularWorldClient.instance.player.position.equals(prevPosition) || !ModularWorldClient.instance.player.angle.equals(prevDirection)) {
+      PacketPlayerInfo packetPlayerInfo = new PacketPlayerInfo();
+      packetPlayerInfo.angle = ModularWorldClient.instance.player.angle;
+      packetPlayerInfo.position = ModularWorldClient.instance.player.position;
+      sendToServer(packetPlayerInfo);
+      prevPosition.set(ModularWorldClient.instance.player.position);
+      prevDirection.set(ModularWorldClient.instance.player.angle);
+    }
 
     PacketClick packet = new PacketClick();
     if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
