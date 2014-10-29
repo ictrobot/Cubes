@@ -24,7 +24,7 @@ import ethanjones.modularworld.world.World;
 
 public abstract class ModularWorld implements SimpleApplication, TimeHandler {
 
-  public static final int tickMS = 16;
+  public static final int tickMS = 25;
   private static boolean setup;
   private final Side side;
   public World world;
