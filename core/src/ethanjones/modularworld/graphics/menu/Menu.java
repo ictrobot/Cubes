@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import ethanjones.modularworld.graphics.GraphicsHelper;
+import ethanjones.modularworld.graphics.assets.Assets;
 import ethanjones.modularworld.input.InputChain;
 
 public abstract class Menu {
@@ -25,21 +25,21 @@ public abstract class Menu {
     skin.add("default", new Label.LabelStyle(skin.getFont("default"), Color.WHITE));
     skin.add("title", new Label.LabelStyle(Fonts.Size7, Color.WHITE));
 
-    NinePatch buttonDown = new NinePatch(GraphicsHelper.getTexture("hud/ButtonDown.png").textureRegion, 8, 8, 8, 8);
-    NinePatch buttonUp = new NinePatch(GraphicsHelper.getTexture("hud/ButtonUp.png").textureRegion, 8, 8, 8, 8);
+    NinePatch buttonDown = new NinePatch(Assets.getTextureRegion("core:hud/ButtonDown.png"), 8, 8, 8, 8);
+    NinePatch buttonUp = new NinePatch(Assets.getTextureRegion("core:hud/ButtonUp.png"), 8, 8, 8, 8);
     skin.add("default", new TextButton.TextButtonStyle(new NinePatchDrawable(buttonUp), new NinePatchDrawable(buttonDown), null, skin.getFont("default")));
 
     skin.add("default", new TextField.TextFieldStyle(
         skin.getFont("default"),
         Color.BLACK,
-        new TextureRegionDrawable(GraphicsHelper.getTexture("hud/TextFieldCursor.png").textureRegion),
-        new TextureRegionDrawable(GraphicsHelper.getTexture("hud/TextFieldSelection.png").textureRegion),
-        new NinePatchDrawable(new NinePatch(GraphicsHelper.getTexture("hud/TextFieldBackground.png").textureRegion, 8, 8, 8, 8)))
+        new TextureRegionDrawable(Assets.getTextureRegion("core:hud/TextFieldCursor.png")),
+        new TextureRegionDrawable(Assets.getTextureRegion("core:hud/TextFieldSelection.png")),
+        new NinePatchDrawable(new NinePatch(Assets.getTextureRegion("core:hud/TextFieldBackground.png"), 8, 8, 8, 8)))
     );
 
     skin.add("default-horizontal", new Slider.SliderStyle(
-      new NinePatchDrawable(new NinePatch(GraphicsHelper.getTexture("hud/SliderBackground.png").textureRegion, 8, 8, 8, 8)),
-      new TextureRegionDrawable(GraphicsHelper.getTexture("hud/SliderKnob.png").textureRegion)
+      new NinePatchDrawable(new NinePatch(Assets.getTextureRegion("core:hud/SliderBackground.png"), 8, 8, 8, 8)),
+      new TextureRegionDrawable(Assets.getTextureRegion("core:hud/SliderKnob.png"))
     ));
 
     skin.add("default", new ScrollPane.ScrollPaneStyle());

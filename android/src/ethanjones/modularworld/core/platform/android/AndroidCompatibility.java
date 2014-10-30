@@ -6,11 +6,10 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.files.FileHandle;
-import ethanjones.modularworld.core.system.Branding;
 import ethanjones.modularworld.core.compatibility.Compatibility;
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.core.mod.ModLoader;
-import ethanjones.modularworld.graphics.asset.AssetManager;
+import ethanjones.modularworld.core.system.Branding;
 
 public class AndroidCompatibility extends Compatibility {
 
@@ -48,8 +47,8 @@ public class AndroidCompatibility extends Compatibility {
   }
 
   @Override
-  public void getAssets(AssetManager assetManager) {
-    super.getAssets(assetManager);
+  public void setupAssets() {
+    super.setupAssets();
   }
 
   @Override

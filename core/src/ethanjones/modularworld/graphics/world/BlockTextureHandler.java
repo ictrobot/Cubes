@@ -1,8 +1,8 @@
 package ethanjones.modularworld.graphics.world;
 
 import ethanjones.modularworld.core.util.Direction;
-import ethanjones.modularworld.graphics.GraphicsHelper;
-import ethanjones.modularworld.graphics.PackedTexture;
+import ethanjones.modularworld.graphics.assets.Assets;
+import ethanjones.modularworld.graphics.assets.PackedTexture;
 
 import java.util.Arrays;
 
@@ -12,7 +12,7 @@ public class BlockTextureHandler {
 
   public BlockTextureHandler(String mainTextureName) {
     packedTextures = new PackedTexture[6];
-    Arrays.fill(packedTextures, GraphicsHelper.getBlockTexture(mainTextureName));
+    Arrays.fill(packedTextures, Assets.getBlockTexture(mainTextureName));
   }
 
   public PackedTexture getSide(Direction direction) {
@@ -24,7 +24,7 @@ public class BlockTextureHandler {
   }
 
   public BlockTextureHandler setSide(Direction direction, String name) {
-    packedTextures[direction.index] = GraphicsHelper.getBlockTexture(name);
+    packedTextures[direction.index] = Assets.getBlockTexture(name);
     return this;
   }
 

@@ -10,8 +10,8 @@ import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.core.mod.ModLoader;
 import ethanjones.modularworld.core.system.Debug;
 import ethanjones.modularworld.core.system.ModularWorldException;
-import ethanjones.modularworld.graphics.asset.AssetFinder;
-import ethanjones.modularworld.graphics.asset.AssetManager;
+import ethanjones.modularworld.graphics.assets.AssetFinder;
+import ethanjones.modularworld.graphics.assets.Assets;
 import ethanjones.modularworld.side.Side;
 import ethanjones.modularworld.side.Sided;
 
@@ -47,8 +47,8 @@ public abstract class Compatibility {
   /**
    * Gets assets using FileHandles by default
    */
-  public void getAssets(AssetManager assetManager) {
-    AssetFinder.findAssets(Gdx.files.internal("assets"), assetManager.assets, "");
+  public void setupAssets() {
+    AssetFinder.findAssets(Gdx.files.internal("assets"), Assets.CORE);
   }
 
   public void logEnvironment() {

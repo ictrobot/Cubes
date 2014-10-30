@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import ethanjones.modularworld.graphics.GraphicsHelper;
+import ethanjones.modularworld.graphics.assets.Assets;
 import ethanjones.modularworld.input.keyboard.KeyTypedListener;
 import ethanjones.modularworld.input.keyboard.KeyboardHelper;
 import ethanjones.modularworld.networking.NetworkingManager;
@@ -28,17 +28,18 @@ public class HudRenderer implements Disposable {
   ClientDebug.DebugLabel debug;
   private boolean chatEnabled; //TODO: On screen buttons
   private boolean debugEnabled;
+
   public HudRenderer() {
     stage = new Stage(new ScreenViewport());
     ModularWorldClient.instance.inputChain.hud = stage;
 
-    crosshair = new Image(GraphicsHelper.getTexture("hud/Crosshair.png").textureRegion);
+    crosshair = new Image(Assets.getTextureRegion("core:hud/Crosshair.png"));
 
     debug = new ClientDebug.DebugLabel();
 
     TextField.TextFieldStyle defaultStyle = skin.get("default", TextField.TextFieldStyle.class);
     TextField.TextFieldStyle chatStyle = new TextField.TextFieldStyle(defaultStyle);
-    chatStyle.background = new TextureRegionDrawable(GraphicsHelper.getTexture("hud/ChatBackground.png").textureRegion);
+    chatStyle.background = new TextureRegionDrawable(Assets.getTextureRegion("core:hud/ChatBackground.png"));
 
     chat = new TextField("", chatStyle);
     chat.setTextFieldListener(new TextField.TextFieldListener() {

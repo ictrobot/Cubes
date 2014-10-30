@@ -2,13 +2,10 @@ package ethanjones.modularworld.side;
 
 import ethanjones.modularworld.block.BlockManager;
 import ethanjones.modularworld.block.Blocks;
-import ethanjones.modularworld.core.compatibility.Compatibility;
 import ethanjones.modularworld.core.events.EventBus;
 import ethanjones.modularworld.core.system.ModularWorldException;
 import ethanjones.modularworld.core.system.ModularWorldSecurity;
 import ethanjones.modularworld.core.timing.Timing;
-import ethanjones.modularworld.graphics.GraphicsHelper;
-import ethanjones.modularworld.graphics.asset.AssetManager;
 
 public class Sided {
 
@@ -21,8 +18,6 @@ public class Sided {
       return false;
     }
   };
-  //SHARED
-  private static AssetManager assetManager;
 
   public static Side getSide() {
     return sideLocal.get();
@@ -34,10 +29,6 @@ public class Sided {
   public static void setSide(Side side) {
     if (mainLocal.get()) return;
     sideLocal.set(side);
-  }
-
-  public static AssetManager getAssetManager() {
-    return assetManager;
   }
 
   public static EventBus getEventBus() {
@@ -54,13 +45,6 @@ public class Sided {
 
   public static void setupGlobal() {
     ModularWorldSecurity.checkSidedSetup();
-
-    assetManager = new AssetManager();
-    Compatibility.get().getAssets(assetManager);
-
-    if (!Compatibility.get().isHeadless()) {
-      GraphicsHelper.init(assetManager);
-    }
   }
 
   public static void setup(Side side) {

@@ -4,6 +4,6 @@ import ethanjones.modularworld.block.Block;
 
 public class BlockStone extends Block {
   public BlockStone() {
-    super("Stone");
+    super("core:block/Stone.png");
   }
 }

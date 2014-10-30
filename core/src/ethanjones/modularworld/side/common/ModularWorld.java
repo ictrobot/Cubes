@@ -12,6 +12,7 @@ import ethanjones.modularworld.core.system.Debug;
 import ethanjones.modularworld.core.system.ModularWorldException;
 import ethanjones.modularworld.core.system.Threads;
 import ethanjones.modularworld.core.timing.TimeHandler;
+import ethanjones.modularworld.graphics.assets.Assets;
 import ethanjones.modularworld.graphics.menu.Menu;
 import ethanjones.modularworld.graphics.menu.menus.MainMenu;
 import ethanjones.modularworld.networking.NetworkingManager;
@@ -44,11 +45,12 @@ public abstract class ModularWorld implements SimpleApplication, TimeHandler {
     Debug.printProperties();
 
     Sided.setupGlobal();
+    Assets.init();
 
     Compatibility.get().init(null);
     Compatibility.get().logEnvironment();
 
-    Localization.load(Sided.getAssetManager().assets);
+    Localization.load();
     Settings.init();
 
     Threads.init();

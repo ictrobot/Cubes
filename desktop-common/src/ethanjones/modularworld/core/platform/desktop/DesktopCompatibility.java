@@ -3,11 +3,10 @@ package ethanjones.modularworld.core.platform.desktop;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import ethanjones.modularworld.core.system.Branding;
 import ethanjones.modularworld.core.compatibility.Compatibility;
 import ethanjones.modularworld.core.mod.ModLoader;
-import ethanjones.modularworld.graphics.asset.AssetFinder;
-import ethanjones.modularworld.graphics.asset.AssetManager;
+import ethanjones.modularworld.core.system.Branding;
+import ethanjones.modularworld.graphics.assets.AssetFinder;
 
 public abstract class DesktopCompatibility extends Compatibility {
 
@@ -47,11 +46,11 @@ public abstract class DesktopCompatibility extends Compatibility {
   }
 
   @Override
-  public void getAssets(AssetManager assetManager) {
+  public void setupAssets() {
     if (Gdx.files.internal("version").file().exists()) {
-      super.getAssets(assetManager);
+      super.setupAssets();
     } else {//files are in a jar
-      AssetFinder.extractAssets(assetManager);
+      AssetFinder.extractCoreAssets();
     }
   }
 

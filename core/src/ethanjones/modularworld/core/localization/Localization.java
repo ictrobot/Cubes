@@ -2,7 +2,9 @@ package ethanjones.modularworld.core.localization;
 
 import ethanjones.modularworld.core.logging.Log;
 import ethanjones.modularworld.core.system.ModularWorldException;
-import ethanjones.modularworld.graphics.asset.AssetManager;
+import ethanjones.modularworld.graphics.assets.Asset;
+import ethanjones.modularworld.graphics.assets.AssetType;
+import ethanjones.modularworld.graphics.assets.Assets;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -44,15 +46,14 @@ public class Localization {
     return null;
   }
 
-  public static void load(AssetManager.AssetFolder assetFolder) {
-    AssetManager.AssetFolder languageFolder = assetFolder.folders.get("language");
-    for (AssetManager.Asset asset : languageFolder.files.values()) {
+  public static void load() {
+    for (Asset asset : Assets.getCoreAssetManager().getAssets(AssetType.language.name())) {
       try {
-        language = load(new String(asset.bytes));
+        language = load(asset.getFileHandle().readString());
         languages.put(language.getCode(), language);
-        Log.debug("Loaded localisation \"" + language.getCode() + "\" from file \"" + asset.path + "\"");
+        Log.debug("Loaded localisation \"" + language.getCode() + "\" from file \"" + asset.getPath() + "\"");
       } catch (Exception e) {
-        Log.error(new ModularWorldException("Failed to read localisation file: " + asset.path, e));
+        Log.error(new ModularWorldException("Failed to read localisation file: " + asset.getPath(), e));
       }
     }
 

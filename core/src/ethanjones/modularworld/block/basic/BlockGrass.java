@@ -5,11 +5,11 @@ import ethanjones.modularworld.core.util.Direction;
 
 public class BlockGrass extends Block {
   public BlockGrass() {
-    super("Grass - Side");
+    super("core:block/Grass - Side.png");
   }
 
   public void loadGraphics() {
     super.loadGraphics();
-    this.textureHandler.setSide(Direction.posY, "Grass").setSide(Direction.negY, "Dirt");
+    this.textureHandler.setSide(Direction.posY, "core:block/Grass.png").setSide(Direction.negY, "core:block/Dirt.png");
   }
 }

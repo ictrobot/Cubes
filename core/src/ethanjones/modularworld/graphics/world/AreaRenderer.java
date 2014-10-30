@@ -2,15 +2,17 @@ package ethanjones.modularworld.graphics.world;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.RenderableProvider;
+import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
 import ethanjones.modularworld.block.Block;
 import ethanjones.modularworld.core.util.Direction;
-import ethanjones.modularworld.graphics.GraphicsHelper;
+import ethanjones.modularworld.graphics.assets.Assets;
 import ethanjones.modularworld.side.Sided;
 import ethanjones.modularworld.side.client.ModularWorldClient;
 import ethanjones.modularworld.world.storage.Area;
@@ -19,6 +21,8 @@ import static ethanjones.modularworld.graphics.world.FaceVertices.*;
 import static ethanjones.modularworld.world.storage.Area.*;
 
 public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolable {
+
+  public static final VertexAttributes vertexAttributes = MeshBuilder.createAttributes(VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates);
 
   public static final int MAX_X_OFFSET = 1;
   public static final int MIN_X_OFFSET = -MAX_X_OFFSET;
@@ -58,7 +62,7 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
   private Area area;
 
   protected AreaRenderer() {
-    mesh = new Mesh(true, vertices.length, indices.length, GraphicsHelper.vertexAttributes);
+    mesh = new Mesh(true, vertices.length, indices.length, vertexAttributes);
     mesh.setIndices(indices);
   }
 
@@ -73,7 +77,7 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
     }
     if (numVertices <= 0) return;
     Renderable renderable = pool.obtain();
-    renderable.material = GraphicsHelper.getBlockTextureSheet();
+    renderable.material = Assets.blockPackedTextureSheet.getMaterial();
     renderable.mesh = mesh;
     renderable.meshPartOffset = 0;
     renderable.meshPartSize = numVertices;

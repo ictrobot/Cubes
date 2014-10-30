@@ -2,7 +2,7 @@ package ethanjones.modularworld.graphics.menu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import ethanjones.modularworld.graphics.GraphicsHelper;
+import ethanjones.modularworld.graphics.assets.Assets;
 
 public class Fonts {
 
@@ -31,7 +31,7 @@ public class Fonts {
     private final int scale;
 
     private StaticBitmapFont(int scale) {
-      super(GraphicsHelper.assetManager.assets.folders.get("font").files.get("font.fnt").fileHandle);
+      super(Assets.getCoreAssetManager().getAsset("font/font.fnt").getFileHandle());
       this.scale = scale;
       updateScale();
     }
