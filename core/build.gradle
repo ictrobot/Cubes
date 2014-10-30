@@ -42,7 +42,7 @@ publishing {
             artifact(new File(project.getBuildDir(), '/core.properties')) {
                 classifier "properties"
             }
-            groupId 'ethanjones.modularworld'
+            groupId 'ethanjones.cubes'
             artifactId 'core'
             version buildProperties.version
 

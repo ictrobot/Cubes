@@ -3,7 +3,7 @@ apply plugin: "java"
 sourceCompatibility = 1.6
 sourceSets.main.java.srcDirs = ["src/"]
 
-project.ext.mainClassName = "ethanjones.modularworld.core.platform.desktop.HeadlessLauncher"
+project.ext.mainClassName = "ethanjones.cubes.core.platform.desktop.HeadlessLauncher"
 project.ext.assetsDir = new File("../android/assets");
 
 task run(dependsOn: classes, type: JavaExec) {
@@ -49,7 +49,7 @@ publishing {
     publications {
         jar(MavenPublication) {
             artifact dist
-            groupId 'ethanjones.modularworld'
+            groupId 'ethanjones.cubes'
             artifactId 'desktop-headless'
             version buildProperties.version
         }

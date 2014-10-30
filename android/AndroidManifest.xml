@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ethanjones.modularworld.core.platform.android"
+<manifest
+    package="ethanjones.cubes.core.platform.android"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:versionCode="1234"
     android:versionName="%versionName%">
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="19" />
+        android:targetSdkVersion="21" />
     <uses-feature android:glEsVersion="0x00020000" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -18,10 +19,10 @@
         android:label="@string/app_name"
         android:theme="@style/GdxTheme">
         <activity
-            android:name="ethanjones.modularworld.core.platform.android.AndroidLauncher"
+            android:name="ethanjones.cubes.core.platform.android.AndroidLauncher"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
-            android:screenOrientation="landscape"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize">
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

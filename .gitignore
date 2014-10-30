@@ -1,7 +1,12 @@
 .project
 .metadata
 .gradle/
-.idea/
+*.dic
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/gradle.xml
+.idea/libraries/
+.idea/dictionaries/
 repo/
 bin/
 tmp/
@@ -17,7 +22,6 @@ local.properties
 .settings/
 .loadpath
 *.launch
-*.iml
 .cproject
 
 .buildpath
@@ -41,7 +45,6 @@ local.properties
 *.tlb
 *.tli
 *.tlh
-*.tmp
 *.vspscc
 .builds
 *.dotCover

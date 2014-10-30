@@ -1,0 +1,61 @@
+package ethanjones.cubes.graphics.menu.menus;
+
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+
+import ethanjones.cubes.core.adapter.GraphicalAdapter;
+import ethanjones.cubes.core.localization.Localization;
+import ethanjones.cubes.graphics.menu.Menu;
+import ethanjones.cubes.graphics.menu.MenuTools;
+
+public class MultiplayerConnectMenu extends Menu {
+
+  Label title;
+  TextField address;
+  TextField port;
+  TextButton connect;
+  TextButton back;
+
+  public MultiplayerConnectMenu() {
+    super();
+    title = new Label(Localization.get("menu.multiplayer.title"), skin.get("title", Label.LabelStyle.class));
+    address = new TextField("", skin);
+    address.setMessageText(Localization.get("menu.multiplayer.address"));
+    port = new TextField("", skin);
+    port.setMessageText(Localization.get("menu.multiplayer.port"));
+    port.setTextFieldFilter(new TextField.TextFieldFilter.DigitsOnlyFilter());
+    connect = new TextButton(Localization.get("menu.multiplayer.connect"), skin);
+    back = MenuTools.getBackButton(this);
+
+    connect.addListener(new EventListener() {
+      @Override
+      public boolean handle(Event event) {
+        if (!(event instanceof ChangeListener.ChangeEvent)) return false;
+        GraphicalAdapter.instance.setMenu(new MultiplayerLoadingMenu(address.getText(), port.getText().isEmpty() ? 8080 : Integer.parseInt(port.getText())));
+        return true;
+      }
+    });
+  }
+
+  @Override
+  public void resize(int width, int height) {
+    super.resize(width, height);
+    MenuTools.setTitle(title);
+    MenuTools.arrange(width / 4, height / 4, width / 2, height / 2, MenuTools.Direction.Above, connect, port, address);
+    MenuTools.copyPosAndSize(connect, back);
+    back.setY(0);
+  }
+
+  @Override
+  public void addActors() {
+    stage.addActor(title);
+    stage.addActor(address);
+    stage.addActor(port);
+    stage.addActor(connect);
+    stage.addActor(back);
+  }
+}
