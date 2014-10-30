@@ -10,7 +10,7 @@ buildscript {
 
 ext {
     buildProperties = new Properties()
-    file("android/assets/version").withReader { reader ->
+    file("assets/version").withReader { reader ->
         buildProperties.load(reader)
         buildProperties.version = buildProperties.major + "." + buildProperties.minor + "." + buildProperties.point
         println "VERSION: " + buildProperties.version
