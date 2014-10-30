@@ -1,4 +1,4 @@
-Cubes
+![Cubes](/assets/assets/logo.png)
 =============
 
 Summer project started in 2014 by Ethan Jones.
