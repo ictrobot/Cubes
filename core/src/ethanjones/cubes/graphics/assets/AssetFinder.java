@@ -52,8 +52,6 @@ public class AssetFinder {
           String name = ze.getName().replace("\\", "/");
           if (name.startsWith(assets) && !ze.isDirectory()) {
             name = name.substring(ze.getName().lastIndexOf(assets) + assets.length() + 1);
-            int index = name.lastIndexOf("/");
-            if (index == -1) continue;
             assetManager.assets.put(name, new Asset(assetManager, name, Gdx.files.internal(ze.getName())));
           }
         }
