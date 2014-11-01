@@ -1,6 +1,8 @@
 package ethanjones.cubes.world.generator;
 
+import ethanjones.cubes.block.Block;
 import ethanjones.cubes.block.Blocks;
+import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.world.storage.Area;
 
 public class BasicWorldGenerator extends WorldGenerator {
@@ -10,19 +12,23 @@ public class BasicWorldGenerator extends WorldGenerator {
     if (area.y == 0) {
       for (int x = 0; x < Area.SIZE_BLOCKS; x++) {
         for (int z = 0; z < Area.SIZE_BLOCKS; z++) {
-          area.setBlock(Blocks.bedrock, x, 0, z, false);
-          area.setBlock(Blocks.stone, x, 1, z, false);
-          area.setBlock(Blocks.stone, x, 2, z, false);
-          area.setBlock(Blocks.dirt, x, 3, z, false);
-          area.setBlock(Blocks.grass, x, 4, z, false);
+          set(area, Blocks.bedrock, x, 0, z);
+          set(area, Blocks.stone, x, 1, z);
+          set(area, Blocks.dirt, x, 3, z);
+          set(area, Blocks.grass, x, 4, z);
         }
       }
       if (area.x == 0 && area.z == 0) {
-        area.setBlock(Blocks.bedrock, 1, 4, 1, false);
-        area.setBlock(Blocks.bedrock, 1, 7, 1, false);
-        area.setBlock(Blocks.stone, 5, 5, 3, false);
-        area.setBlock(Blocks.grass, 3, 5, 5, false);
+        set(area, Blocks.bedrock, 1, 4, 1);
+        set(area, Blocks.bedrock, 1, 7, 1);
+        set(area, Blocks.stone, 5, 5, 3);
+        set(area, Blocks.grass, 3, 5, 5);
       }
     }
+  }
+
+  public void set(Area area, Block block, int x, int y, int z) {
+    int ref = area.getRef(x, y, z);
+    area.blockFactories[ref] = Sided.getBlockManager().toInt(block);
   }
 }

@@ -21,11 +21,6 @@ public class BlankArea extends Area {
   }
 
   @Override
-  public void setBlock(Block block, int x, int y, int z, boolean event) {
-
-  }
-
-  @Override
   public DataGroup write() {
     return new DataGroup();
   }
@@ -37,6 +32,11 @@ public class BlankArea extends Area {
 
   @Override
   public void handleChange(PacketBlockChanged packet) {
+
+  }
+
+  @Override
+  public void setBlock(Block block, int x, int y, int z) {
 
   }
 }

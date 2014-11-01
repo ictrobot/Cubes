@@ -68,22 +68,8 @@ public class Area implements DataParser<DataGroup> {
     return Sided.getBlockManager().toBlock(blockFactories[getRef(x, y, z)]);
   }
 
-  private int getRef(int x, int y, int z) {
+  public int getRef(int x, int y, int z) {
     return (0 <= x && x < SIZE_BLOCKS ? x : x - minBlockX) + (0 <= z && z < SIZE_BLOCKS ? z : z - minBlockZ) * SIZE_BLOCKS + (0 <= y && y < SIZE_BLOCKS ? y : y - minBlockY) * SIZE_BLOCKS_SQUARED;
-  }
-
-  public void setBlock(Block block, int x, int y, int z) {
-    setBlock(block, x, y, z, true);
-  }
-
-  public void setBlock(Block block, int x, int y, int z, boolean event) {
-    int ref = getRef(x, y, z);
-    int b = blockFactories[ref];
-    blockFactories[ref] = Sided.getBlockManager().toInt(block);
-    if (areaRenderer != null) areaRenderer.dirty = true;
-    if (event) {
-      new BlockChangedEvent(new BlockReference().setFromBlockCoordinates(x, y, z), Sided.getBlockManager().toBlock(b)).post();
-    }
   }
 
   public void unload() {
@@ -177,6 +163,14 @@ public class Area implements DataParser<DataGroup> {
   }
 
   public void handleChange(PacketBlockChanged packet) {
-    setBlock(Sided.getBlockManager().toBlock(packet.block), packet.x, packet.y, packet.z, false);
+    setBlock(Sided.getBlockManager().toBlock(packet.block), packet.x, packet.y, packet.z);
+  }
+
+  public void setBlock(Block block, int x, int y, int z) {
+    int ref = getRef(x, y, z);
+    int b = blockFactories[ref];
+    blockFactories[ref] = Sided.getBlockManager().toInt(block);
+    if (areaRenderer != null) areaRenderer.dirty = true;
+    new BlockChangedEvent(new BlockReference().setFromBlockCoordinates(x, y, z), Sided.getBlockManager().toBlock(b)).post();
   }
 }
