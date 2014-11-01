@@ -12,6 +12,7 @@ public class BasicWorldGenerator extends WorldGenerator {
         for (int z = 0; z < Area.SIZE_BLOCKS; z++) {
           set(area, Blocks.bedrock, x, 0, z);
           set(area, Blocks.stone, x, 1, z);
+          set(area, Blocks.stone, x, 2, z);
           set(area, Blocks.dirt, x, 3, z);
           set(area, Blocks.grass, x, 4, z);
         }
