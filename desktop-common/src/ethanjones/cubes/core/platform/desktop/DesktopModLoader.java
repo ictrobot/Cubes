@@ -1,29 +1,21 @@
 package ethanjones.cubes.core.platform.desktop;
 
 import com.badlogic.gdx.files.FileHandle;
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
 import ethanjones.cubes.core.mod.ModLoader;
-import ethanjones.cubes.core.mod.ModType;
 
 public class DesktopModLoader implements ModLoader {
 
   public class ExternalJarLoader extends URLClassLoader {
 
-    public ExternalJarLoader() {
-      super(new URL[0]);
-    }
-
-    public void addFile(FileHandle fileHandle) throws MalformedURLException {
-      URL url = fileHandle.file().toURI().toURL();
-      super.addURL(url);
+    public ExternalJarLoader(FileHandle fileHandle) throws IOException {
+      super(new URL[]{fileHandle.file().toURI().toURL()});
     }
 
   }
-
-  ExternalJarLoader externalJarLoader = new ExternalJarLoader();
 
   @Override
   public boolean supports(ModType type) {
@@ -32,7 +24,6 @@ public class DesktopModLoader implements ModLoader {
 
   @Override
   public Class<?> loadClass(FileHandle classFile, String className) throws Exception {
-    externalJarLoader.addFile(classFile);
-    return externalJarLoader.loadClass(className);
+    return new ExternalJarLoader(classFile).loadClass(className);
   }
 }

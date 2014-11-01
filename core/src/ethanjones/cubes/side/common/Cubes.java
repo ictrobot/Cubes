@@ -7,6 +7,9 @@ import ethanjones.cubes.core.compatibility.Compatibility;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.mod.ModManager;
+import ethanjones.cubes.core.mod.event.InitializationEvent;
+import ethanjones.cubes.core.mod.event.PostInitializationEvent;
+import ethanjones.cubes.core.mod.event.PreInitializationEvent;
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.core.system.CubesException;
@@ -41,19 +44,21 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
     Debug.printProperties();
 
     Sided.setupGlobal();
-
     Compatibility.get().init(null);
     Compatibility.get().logEnvironment();
 
-    Settings.init();
-    Threads.init();
-
     Assets.preInit();
     ModManager.init();
+    ModManager.postModEvent(new PreInitializationEvent());
+
+    Settings.init();
+    Threads.init();
+    ModManager.postModEvent(new InitializationEvent());
+
     Assets.init();
     Localization.load();
-
     Settings.print();
+    ModManager.postModEvent(new PostInitializationEvent());
 
     setup = true;
   }
@@ -66,7 +71,7 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
       if (CubesServer.instance.thread != null) {
         CubesServer.instance.thread.dispose();
         try {
-          CubesServer.instance.thread.join(10000); //Wait for 10 seconds
+          CubesServer.instance.thread.join(1000); //Wait for 1 second
         } catch (InterruptedException e) {
 
         }
@@ -80,18 +85,13 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
     }
 
     if (exit || Compatibility.get().isHeadless()) {
-      staticDispose();
+      Threads.disposeExecutor();
+      Menu.staticDispose();
       System.exit(0);
     } else {
       GraphicalAdapter.instance.setCubes(null, null);
       GraphicalAdapter.instance.setMenu(new MainMenu());
     }
-
-  }
-
-  protected static void staticDispose() {
-    Threads.disposeExecutor();
-    Menu.staticDispose();
   }
 
   private final Side side;

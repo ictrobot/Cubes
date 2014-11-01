@@ -3,6 +3,9 @@ package ethanjones.cubes.side.server;
 import java.util.HashMap;
 
 import ethanjones.cubes.block.Blocks;
+import ethanjones.cubes.core.mod.ModManager;
+import ethanjones.cubes.core.mod.event.StartingServerEvent;
+import ethanjones.cubes.core.mod.event.StoppingServerEvent;
 import ethanjones.cubes.core.timing.TimeHandler;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.server.ServerNetworkingParameter;
@@ -35,11 +38,14 @@ public class CubesServer extends Cubes implements TimeHandler {
     world = new WorldServer(new BasicWorldGenerator());
 
     Sided.getTiming().addHandler(this, 250);
+
+    ModManager.postModEvent(new StartingServerEvent());
   }
 
   @Override
   public void dispose() {
     if (disposed) return;
+    ModManager.postModEvent(new StoppingServerEvent());
     super.dispose();
     disposed = true;
   }

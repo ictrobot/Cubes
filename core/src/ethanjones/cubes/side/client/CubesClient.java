@@ -6,6 +6,9 @@ import com.badlogic.gdx.Input;
 
 import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.core.compatibility.Compatibility;
+import ethanjones.cubes.core.mod.ModManager;
+import ethanjones.cubes.core.mod.event.StartingClientEvent;
+import ethanjones.cubes.core.mod.event.StoppingClientEvent;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.graphics.rendering.Renderer;
@@ -47,6 +50,8 @@ public class CubesClient extends Cubes implements ApplicationListener {
     Gdx.input.setInputProcessor(InputChain.getInputMultiplexer());
 
     world = new WorldClient();
+
+    ModManager.postModEvent(new StartingClientEvent());
   }
 
   @Override
@@ -66,6 +71,7 @@ public class CubesClient extends Cubes implements ApplicationListener {
   @Override
   public void dispose() {
     if (disposed) return;
+    ModManager.postModEvent(new StoppingClientEvent());
     super.dispose();
     renderer.dispose();
     inputChain.dispose();
