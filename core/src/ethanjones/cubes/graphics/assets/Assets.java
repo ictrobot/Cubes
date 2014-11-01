@@ -20,6 +20,7 @@ public class Assets {
   public static final String CORE = "core";
   public static HashMap<String, AssetManager> assetManagers = new HashMap<String, AssetManager>();
   public static PackedTextureSheet blockPackedTextureSheet;
+  public static FileHandle assetsFolder = Compatibility.get().getBaseFolder().child("assets");
 
   public static AssetManager getCoreAssetManager() {
     return getAssetManager(CORE);
@@ -58,8 +59,17 @@ public class Assets {
     return new Material(TextureAttribute.createDiffuse(texture));
   }
 
-  public static void init() {
+  public static void preInit() {
+    if (assetsFolder.isDirectory()) { //Empty directory
+      assetsFolder.deleteDirectory();
+    } else {
+      assetsFolder.delete();
+    }
+    assetsFolder.mkdirs();
     Compatibility.get().setupAssets();
+  }
+
+  public static void init() {
     blockPackedTextureSheet = getPackedTextureSheet(AssetType.block);
   }
 
@@ -76,7 +86,7 @@ public class Assets {
         }
       }
     }
-    FileHandle fileHandle = Compatibility.get().getBaseFolder().child("assets").child("PackedTextures");
+    FileHandle fileHandle = assetsFolder.child("packed");
     fileHandle.mkdirs();
     fileHandle = fileHandle.child(assetType.name() + ".cim");
 

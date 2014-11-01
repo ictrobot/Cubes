@@ -41,17 +41,19 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
     Debug.printProperties();
 
     Sided.setupGlobal();
-    Assets.init();
 
     Compatibility.get().init(null);
     Compatibility.get().logEnvironment();
 
-    Localization.load();
     Settings.init();
-
     Threads.init();
 
+    Assets.preInit();
     ModManager.init();
+    Assets.init();
+    Localization.load();
+
+    Settings.print();
 
     setup = true;
   }

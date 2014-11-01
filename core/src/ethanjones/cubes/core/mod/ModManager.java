@@ -8,21 +8,21 @@ import java.util.zip.ZipInputStream;
 
 import ethanjones.cubes.core.compatibility.Compatibility;
 import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.graphics.assets.AssetFinder;
+import ethanjones.cubes.graphics.assets.Assets;
 
-public class ModManager { //TODO: Pack assets. Make modes useful
+public class ModManager { //TODO: Make modes useful
 
   public static void init() {
     ModLoader modLoader = Compatibility.get().getModLoader();
     FileHandle temp = Compatibility.get().getBaseFolder().child("modTemp");
     temp.deleteDirectory();
     temp.mkdirs();
-    FileHandle modAssets = Compatibility.get().getBaseFolder().child("modAssets");
-    modAssets.deleteDirectory();
-    modAssets.mkdirs();
     for (FileHandle fileHandle : getModFiles()) {
       FileHandle classFile = null;
       String className = null;
       String modName = "";
+      FileHandle modAssets = Assets.assetsFolder.child(fileHandle.name());
       try {
         modName = fileHandle.name();
         InputStream inputStream = new FileInputStream(fileHandle.file());
@@ -45,7 +45,7 @@ public class ModManager { //TODO: Pack assets. Make modes useful
             properties.load(zipInputStream);
             className = properties.getProperty("modClass");
           } else if (!entry.isDirectory() && entry.getName().toLowerCase().startsWith("assets/")) {
-            writeToFile(modAssets.child(fileHandle.name()).child(entry.getName().substring(7)), zipInputStream);
+            writeToFile(modAssets.child(entry.getName().substring(7)), zipInputStream);
           }
         }
         if (classFile == null) {
@@ -60,6 +60,12 @@ public class ModManager { //TODO: Pack assets. Make modes useful
         Log.error("Failed to load mod: " + modName, e);
       }
       try {
+        if (modAssets.exists() && modAssets.isDirectory()) {
+          Log.debug("Loading assets for " + modName);
+          AssetFinder.findAssets(modAssets, modName);
+        } else {
+          Log.debug("No assets detected for " + modName);
+        }
         Log.info("Trying to load mod " + modName);
         Class<? extends Mod> c = modLoader.loadClass(classFile, className).asSubclass(Mod.class);
         Log.debug("Creating instance of mod " + modName);
@@ -80,7 +86,7 @@ public class ModManager { //TODO: Pack assets. Make modes useful
       @Override
       public boolean accept(File pathname) {
         String s = pathname.getName().toLowerCase();
-        return s.endsWith(".mod");
+        return s.endsWith(".cm");
       }
     });
   }

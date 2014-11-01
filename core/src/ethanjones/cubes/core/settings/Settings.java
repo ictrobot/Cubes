@@ -36,10 +36,6 @@ public class Settings {
     base.add(USERNAME).add(GROUP_GRAPHICS, new SettingGroup().add(GRAPHICS_VIEW_DISTANCE).add(GRAPHICS_FOV)).add(GROUP_NETWORKING, new SettingGroup().add(NETWORKING_PORT));
 
     read();
-
-    for (Map.Entry<String, Setting> entry : settings.entrySet()) {
-      Log.debug("Setting \"" + getLocalisedSettingName(entry.getKey()) + "\" = \"" + entry.getValue() + "\"");
-    }
   }
 
   public static void addSetting(String notLocalised, Setting setting) {
@@ -60,6 +56,12 @@ public class Settings {
       if (setting != null && entry.getValue() instanceof DataGroup) {
         setting.read((DataGroup) entry.getValue());
       }
+    }
+  }
+
+  public static void print() {
+    for (Map.Entry<String, Setting> entry : settings.entrySet()) {
+      Log.debug("Setting \"" + getLocalisedSettingName(entry.getKey()) + "\" = \"" + entry.getValue() + "\"");
     }
   }
 
