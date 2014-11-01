@@ -1,8 +1,6 @@
 package ethanjones.cubes.world.generator;
 
-import ethanjones.cubes.block.Block;
 import ethanjones.cubes.block.Blocks;
-import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.world.storage.Area;
 
 public class BasicWorldGenerator extends WorldGenerator {
@@ -25,10 +23,5 @@ public class BasicWorldGenerator extends WorldGenerator {
         set(area, Blocks.grass, 3, 5, 5);
       }
     }
-  }
-
-  public void set(Area area, Block block, int x, int y, int z) {
-    int ref = area.getRef(x, y, z);
-    area.blockFactories[ref] = Sided.getBlockManager().toInt(block);
   }
 }
