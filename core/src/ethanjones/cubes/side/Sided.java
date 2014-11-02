@@ -15,6 +15,7 @@ public class Sided {
     Timing timing;
     BlockManager blockManager;
   }
+
   private static Data clientData;
   private static Data serverData;
   private static ThreadLocal<Side> sideLocal = new ThreadLocal<Side>();
@@ -69,10 +70,6 @@ public class Sided {
     return getData().blockManager;
   }
 
-  public static void setupGlobal() {
-    CubesSecurity.checkSidedSetup();
-  }
-
   public static void setup(Side side) {
     CubesSecurity.checkSidedSetup();
 
@@ -96,7 +93,7 @@ public class Sided {
     data.eventBus = new EventBus();
     data.timing = new Timing();
     data.blockManager = new BlockManager();
-    Blocks.init();
+    Blocks.register();
   }
 
   public static void reset(Side side) {

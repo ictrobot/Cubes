@@ -2,6 +2,7 @@ package ethanjones.cubes.side.common;
 
 import com.badlogic.gdx.Gdx;
 
+import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.core.adapter.GraphicalAdapter;
 import ethanjones.cubes.core.compatibility.Compatibility;
 import ethanjones.cubes.core.localization.Localization;
@@ -43,9 +44,10 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
     Log.info(Branding.DEBUG); //Can't log till base folder setup
     Debug.printProperties();
 
-    Sided.setupGlobal();
     Compatibility.get().init(null);
     Compatibility.get().logEnvironment();
+
+    Blocks.init();
 
     Assets.preInit();
     ModManager.init();
