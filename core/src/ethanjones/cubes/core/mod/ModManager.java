@@ -22,9 +22,10 @@ public class ModManager {
   private static boolean init = false;
   private static List<ModInstance> mods;
 
-  public static void init() {
+  public synchronized static void init() {
     if (init) return;
     init = true;
+    Log.debug("Loading mods");
     ArrayList<ModInstance> mods = new ArrayList<ModInstance>();
     ModLoader modLoader = Compatibility.get().getModLoader();
     FileHandle temp = Compatibility.get().getBaseFolder().child("mods").child("temp");
@@ -36,7 +37,6 @@ public class ModManager {
       String modName = "";
       FileHandle modAssets = Assets.assetsFolder.child(fileHandle.name());
       try {
-        modName = fileHandle.name();
         InputStream inputStream = new FileInputStream(fileHandle.file());
         ZipInputStream zipInputStream = new ZipInputStream(inputStream);
         ZipEntry entry;
@@ -56,17 +56,20 @@ public class ModManager {
             Properties properties = new Properties();
             properties.load(zipInputStream);
             className = properties.getProperty("modClass");
+            modName = properties.getProperty("modName");
           } else if (!entry.isDirectory() && entry.getName().toLowerCase().startsWith("assets/")) {
             writeToFile(modAssets.child(entry.getName().substring(7)), zipInputStream);
           }
         }
         if (classFile == null) {
-          Log.error("Mod " + modName + " does not contain a jar/dex");
+          Log.error("Mod " + fileHandle.name() + " does not contain a jar/dex");
           continue;
         }
         if (className == null) {
-          Log.error("Mod " + modName + " does not contain a properties file");
+          Log.error("Mod " + fileHandle.name() + " does not contain a properties file");
           continue;
+        } else {
+          Log.debug("Mod file: \'" + fileHandle.name() + "\' Name: \'" + modName + "\'");
         }
       } catch (Exception e) {
         Log.error("Failed to load mod: " + modName, e);
@@ -83,7 +86,7 @@ public class ModManager {
         Log.debug("Creating instance of mod " + modName);
         Object mod = c.newInstance();
         Log.debug("Initialising ModInstance");
-        ModInstance modInstance = new ModInstance(mod, fileHandle);
+        ModInstance modInstance = new ModInstance(mod, modName, fileHandle);
         modInstance.init();
         mods.add(modInstance);
         Log.info("Loaded mod " + modName);
@@ -118,11 +121,11 @@ public class ModManager {
     fileOutputStream.close();
   }
 
-  public static List<ModInstance> getMods() {
+  public synchronized static List<ModInstance> getMods() {
     return mods;
   }
 
-  public static void postModEvent(ModEvent modEvent) {
+  public synchronized static void postModEvent(ModEvent modEvent) {
     Log.debug("Posting " + modEvent.getClass().getSimpleName());
     for (ModInstance mod : mods) {
       try {
