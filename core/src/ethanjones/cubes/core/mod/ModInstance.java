@@ -3,7 +3,10 @@ package ethanjones.cubes.core.mod;
 import com.badlogic.gdx.files.FileHandle;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.mod.event.ModEvent;
@@ -15,12 +18,14 @@ public final class ModInstance<T> {
   private final T mod;
   private final String modName;
   private final FileHandle modFile;
+  private ArrayList<ModState> modStates;
   private HashMap<Class<? extends ModEvent>, Method> modEventHandlers;
 
   public ModInstance(T mod, String modName, FileHandle modFile) {
     this.mod = mod;
     this.modName = modName;
     this.modFile = modFile;
+    modStates = new ArrayList<ModState>();
     modEventHandlers = new HashMap<Class<? extends ModEvent>, Method>();
   }
 
@@ -51,8 +56,13 @@ public final class ModInstance<T> {
       Log.debug("No method to handle " + modEvent.getClass().getSimpleName() + " in mod " + modName);
       return;
     }
-    Log.debug("Passing " + modEvent.getClass().getSimpleName() + " to mod " + modName);
+    addState(modEvent.getModState());
+    Log.debug("Posting " + modEvent.getClass().getSimpleName() + " to mod " + modName);
     method.invoke(mod, modEvent);
+  }
+
+  protected void addState(ModState modState) {
+    modStates.add(modState);
   }
 
   public String toString() {
@@ -73,5 +83,9 @@ public final class ModInstance<T> {
 
   public AssetManager getAssetManager() {
     return Assets.getAssetManager(modFile.name());
+  }
+
+  public List<ModState> getModStates() {
+    return Collections.unmodifiableList(modStates);
   }
 }
