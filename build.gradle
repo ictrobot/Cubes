@@ -16,11 +16,14 @@ ext {
         println "VERSION: " + buildProperties.version
     }
     build = null;
-    if (System.getenv("BUILD_NUMBER") != null) {
-        build = System.getenv("BUILD_NUMBER");
-        file("assets/build").write("build=" + build, 'UTF-8')
+    if (hasGit()) {
+        build = shell("git rev-list HEAD --count");
+        hash = shell("git rev-parse HEAD")
+        file("assets/build").write("build=" + build + System.getProperty("line.separator") + "hash=" + hash, 'UTF-8')
         println "BUILD:   " + build
+        println "HASH:    " + hash
     } else {
+        println "Git was not found in path!"
         file("assets/build").delete()
     }
 }
@@ -31,7 +34,7 @@ allprojects {
     apply plugin: "maven-publish"
 
     version = System.getenv("BUILD_NUMBER")
-    
+
     ext {
         appName = 'Cubes'
         gdxVersion = '1.4.1'
@@ -107,4 +110,16 @@ tasks.eclipse.doLast {
 
 task ci(dependsOn: ['core:publish', 'desktop-headless:publish', 'desktop-lwjgl:publish', 'android:assembleDebug', 'android:assembleRelease']) << {
 
+}
+
+def boolean hasGit() {
+    def proc = "git rev-parse --short HEAD".execute()
+    proc.waitFor()
+    return proc.exitValue() == 0;
+}
+
+def String shell(String str) {
+    def proc = str.execute()
+    proc.waitFor()
+    return proc.text.trim()
 }
