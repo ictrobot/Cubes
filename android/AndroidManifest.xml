@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
     package="ethanjones.cubes.core.platform.android"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:versionCode="1234"
-    android:versionName="%versionName%">
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-sdk
-        android:minSdkVersion="8"
-        android:targetSdkVersion="21" />
     <uses-feature android:glEsVersion="0x00020000" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />

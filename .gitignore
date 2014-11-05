@@ -2,11 +2,9 @@
 .metadata
 .gradle/
 *.dic
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/gradle.xml
-.idea/libraries/
-.idea/dictionaries/
+.idea/
+*.iml
+assets/build
 repo/
 bin/
 tmp/
@@ -101,5 +99,5 @@ pip-log.txt
 .mr.developer.cfg
 
 .DS_Store
-android/assets/log.txt
+assets/log.txt
 hs_err_pid*.log

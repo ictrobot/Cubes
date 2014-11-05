@@ -28,11 +28,11 @@ public class Branding {
       NAME = "Cubes";
       PLATFORM = Gdx.app.getType().name();
 
-      Properties prop = new Properties();
+      Properties properties = new Properties();
       InputStream input = null;
       try {
         input = Gdx.files.internal("version").read();
-        prop.load(input);
+        properties.load(input);
       } catch (IOException ex) {
         Log.error("Failed to load version", ex);
       } finally {
@@ -44,14 +44,36 @@ public class Branding {
           }
         }
       }
-      VERSION_MAJOR = prop.getProperty("major");
-      VERSION_MINOR = prop.getProperty("minor");
-      VERSION_POINT = prop.getProperty("point");
-      VERSION_BUILD = prop.getProperty("build");
+
+      if (Gdx.files.internal("build").exists()) {
+        try {
+          Properties buildProperties = new Properties();
+          input = Gdx.files.internal("build").read();
+          buildProperties.load(input);
+          if (buildProperties.getProperty("build") != null) {
+            properties.setProperty("build", buildProperties.getProperty("build"));
+          }
+        } catch (IOException ex) {
+          Log.error("Failed to load build", ex);
+        } finally {
+          if (input != null) {
+            try {
+              input.close();
+            } catch (IOException e) {
+
+            }
+          }
+        }
+      }
+
+      VERSION_MAJOR = properties.getProperty("major");
+      VERSION_MINOR = properties.getProperty("minor");
+      VERSION_POINT = properties.getProperty("point");
+      VERSION_BUILD = properties.getProperty("build") != null ? properties.getProperty("build") : "";
       VERSION_FULL = VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_POINT + "." + VERSION_BUILD;
       VERSION_MAJOR_MINOR_POINT = VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_POINT;
 
-      if (VERSION_BUILD.contentEquals("%BUILD_" + "NUMBER%")) {
+      if (VERSION_BUILD.isEmpty()) {
         VERSION = "Development [" + VERSION_MAJOR_MINOR_POINT + "]";
         IS_DEBUG = true;
       } else {

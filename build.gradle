@@ -14,7 +14,14 @@ ext {
         buildProperties.load(reader)
         buildProperties.version = buildProperties.major + "." + buildProperties.minor + "." + buildProperties.point
         println "VERSION: " + buildProperties.version
-        println "BUILD:   " + buildProperties.build
+    }
+    build = null;
+    if (System.getenv("BUILD_NUMBER") != null) {
+        build = System.getenv("BUILD_NUMBER");
+        file("assets/build").write("build=" + build, 'UTF-8')
+        println "BUILD:   " + build
+    } else {
+        file("assets/build").delete()
     }
 }
 
@@ -28,10 +35,11 @@ allprojects {
     ext {
         appName = 'Cubes'
         gdxVersion = '1.4.1'
-        androidBuildToolsVersion = '20.0.0'
-        androidSdkVersion = 20
+        androidBuildToolsVersion = '21.1'
+        androidSdkVersion = 21
         dataVersion = 1.0
         buildProperties = getRootProject().buildProperties
+        build = getRootProject().build
     }
 
     repositories {
