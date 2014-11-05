@@ -31,7 +31,7 @@ allprojects {
     apply plugin: "maven-publish"
 
     version = System.getenv("BUILD_NUMBER")
-
+    
     ext {
         appName = 'Cubes'
         gdxVersion = '1.4.1'
