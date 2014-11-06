@@ -38,7 +38,7 @@ ext {
     if (localProperties.CUBES_KEYSTORE_PASSWORD == null) localProperties.CUBES_KEYSTORE_PASSWORD = "password"
     if (localProperties.CUBES_KEY_ALIAS == null) localProperties.CUBES_KEY_ALIAS = "android"
     if (localProperties.CUBES_KEY_PASSWORD == null) localProperties.CUBES_KEY_PASSWORD = "password"
-    if (localProperties.CUBES_MAVEN_REPO == null) localProperties.CUBES_MAVEN_REPO = getRootProject().getProjectDir().absolutePath + "/repo/" + mavenType
+    if (localProperties.CUBES_MAVEN_REPO == null) localProperties.CUBES_MAVEN_REPO = getRootProject().getProjectDir().absolutePath + "/repo/"
 }
 
 allprojects {
@@ -65,7 +65,8 @@ allprojects {
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
-        maven { url "https://raw.githubusercontent.com/ictrobot/mvn-repo/master/" }
+        maven { url "https://raw.githubusercontent.com/ictrobot/mvn-repo/master/snapshots" }
+        maven { url "https://raw.githubusercontent.com/ictrobot/mvn-repo/master/releases" }
     }
 }
 
