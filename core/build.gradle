@@ -44,7 +44,7 @@ publishing {
             }
             groupId 'ethanjones.cubes'
             artifactId 'core'
-            version buildProperties.version
+            version getMavenVersionString()
 
             pom.withXml {
                 def repositories = asNode().appendNode('repositories')
@@ -72,7 +72,7 @@ publishing {
     }
     repositories {
         maven {
-            url "../repo"
+            url getMavenRepo()
         }
     }
 }

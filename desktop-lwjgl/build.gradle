@@ -51,12 +51,12 @@ publishing {
             artifact dist
             groupId 'ethanjones.cubes'
             artifactId 'desktop-lwjgl'
-            version buildProperties.version
+            version getMavenVersionString()
         }
     }
     repositories {
         maven {
-            url "../repo"
+            url getMavenRepo()
         }
     }
 }

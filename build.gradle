@@ -15,10 +15,11 @@ ext {
         buildProperties.version = buildProperties.major + "." + buildProperties.minor + "." + buildProperties.point
         println "VERSION: " + buildProperties.version
     }
+
     build = null;
     if (hasGit()) {
-        build = shell("git rev-list HEAD --count");
-        hash = shell("git rev-parse HEAD")
+        build = shell("git rev-list HEAD --count").text.trim()
+        hash = shell("git rev-parse HEAD").text.trim()
         file("assets/build").write("build=" + build + System.getProperty("line.separator") + "hash=" + hash, 'UTF-8')
         println "BUILD:   " + build
         println "HASH:    " + hash
@@ -26,6 +27,18 @@ ext {
         println "Git was not found in path!"
         file("assets/build").delete()
     }
+
+    localProperties = new Properties()
+    if (file("build.properties").exists()) {
+        file("build.properties").withReader { reader ->
+            localProperties.load(reader)
+        }
+    }
+    if (localProperties.CUBES_KEYSTORE_FILE == null) localProperties.CUBES_KEYSTORE_FILE = "keystore"
+    if (localProperties.CUBES_KEYSTORE_PASSWORD == null) localProperties.CUBES_KEYSTORE_PASSWORD = "password"
+    if (localProperties.CUBES_KEY_ALIAS == null) localProperties.CUBES_KEY_ALIAS = "android"
+    if (localProperties.CUBES_KEY_PASSWORD == null) localProperties.CUBES_KEY_PASSWORD = "password"
+    if (localProperties.CUBES_MAVEN_REPO == null) localProperties.CUBES_MAVEN_REPO = getRootProject().getProjectDir().absolutePath + "/repo/" + mavenType
 }
 
 allprojects {
@@ -43,6 +56,8 @@ allprojects {
         dataVersion = 1.0
         buildProperties = getRootProject().buildProperties
         build = getRootProject().build
+        localProperties = getRootProject().localProperties
+        isRelease = false
     }
 
     repositories {
@@ -108,8 +123,26 @@ tasks.eclipse.doLast {
     delete ".project"
 }
 
-task ci(dependsOn: ['core:publish', 'desktop-headless:publish', 'desktop-lwjgl:publish', 'android:assembleDebug', 'android:assembleRelease']) << {
+task ci(dependsOn: ['core:publish', 'desktop-headless:dist', 'desktop-lwjgl:dist', 'android:assembleDebug', 'android:assembleRelease']) << {
 
+}
+
+def String getMavenVersionString() {
+    def str = buildProperties.version;
+    if (!isRelease) {
+        str = str + "-SNAPSHOT"
+    }
+    return str
+}
+
+def String getMavenRepo() {
+    def str = localProperties.CUBES_MAVEN_REPO + "/"
+    if (isRelease) {
+        str = str + "releases"
+    } else {
+        str = str + "snapshots"
+    }
+    return str
 }
 
 def boolean hasGit() {
@@ -118,8 +151,8 @@ def boolean hasGit() {
     return proc.exitValue() == 0;
 }
 
-def String shell(String str) {
+def Process shell(String str) {
     def proc = str.execute()
     proc.waitFor()
-    return proc.text.trim()
+    return proc
 }
