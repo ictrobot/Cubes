@@ -57,7 +57,7 @@ public abstract class DesktopCompatibility extends Compatibility {
 
   @Override
   public boolean isTouchScreen() {
-    return true;
+    return false;
   }
 
   @Override

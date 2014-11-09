@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Touchpad.TouchpadStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -35,6 +36,8 @@ public abstract class Menu {
     skin.add("default-horizontal", new Slider.SliderStyle(new NinePatchDrawable(new NinePatch(Assets.getTextureRegion("core:hud/SliderBackground.png"), 8, 8, 8, 8)), new TextureRegionDrawable(Assets.getTextureRegion("core:hud/SliderKnob.png"))));
 
     skin.add("default", new ScrollPane.ScrollPaneStyle());
+
+    skin.add("default", new TouchpadStyle(new TextureRegionDrawable(Assets.getTextureRegion("core:hud/TouchpadBackground.png")), new TextureRegionDrawable(Assets.getTextureRegion("core:hud/TouchpadKnob.png"))));
 
     spriteBatch = new SpriteBatch();
     viewport = new ScreenViewport();

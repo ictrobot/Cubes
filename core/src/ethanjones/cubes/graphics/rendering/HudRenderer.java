@@ -3,19 +3,26 @@ package ethanjones.cubes.graphics.rendering;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import ethanjones.cubes.core.compatibility.Compatibility;
+import ethanjones.cubes.core.timing.TimeHandler;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.input.keyboard.KeyTypedListener;
 import ethanjones.cubes.input.keyboard.KeyboardHelper;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketChat;
+import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.client.ClientDebug;
 import ethanjones.cubes.side.client.CubesClient;
 
@@ -54,9 +61,11 @@ public class HudRenderer implements Disposable {
 
     }
   }
+
   Stage stage;
   TextField chat;
   Image crosshair;
+  Touchpad touchpad;
   ClientDebug.DebugLabel debug;
   private boolean chatEnabled; //TODO: On screen buttons
   private boolean debugEnabled;
@@ -88,16 +97,37 @@ public class HudRenderer implements Disposable {
     });
     KeyboardHelper.addKeyTypedListener(new KeyListener());
 
+    if (Compatibility.get().isTouchScreen()) {
+      touchpad = new Touchpad(10f, skin);
+      touchpad.addListener(new EventListener() {
+        @Override
+        public boolean handle(Event event) {
+          if (event instanceof ChangeEvent) return true;
+          return false;
+        }
+      });
+
+      CubesClient.instance.inputChain.cameraController.touchpad = touchpad;
+
+      stage.addActor(touchpad);
+    }
     setChatEnabled(false);
     setDebugEnabled(false);
+
+    stage.addActor(crosshair);
   }
 
   public void render() {
-    stage.clear();
-    if (isDebugEnabled()) stage.addActor(debug);
+    stage.getRoot().removeActor(debug);
+    if (isDebugEnabled()) {
+      stage.getRoot().addActor(debug);
+    }
+    stage.getRoot().removeActor(chat);
     if (isChatEnabled()) {
       stage.addActor(chat);
       stage.setKeyboardFocus(chat);
+    } else {
+      stage.setKeyboardFocus(null);
     }
     stage.addActor(crosshair);
     stage.act();
@@ -132,6 +162,9 @@ public class HudRenderer implements Disposable {
     chat.setBounds(0, 0, Gdx.graphics.getWidth(), chat.getStyle().font.getBounds("ABC123").height * 1.5f);
     float crosshairSize = Math.min(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) / 20;
     crosshair.setBounds((Gdx.graphics.getWidth() / 2) - (crosshairSize / 2), (Gdx.graphics.getHeight() / 2) - (crosshairSize / 2), crosshairSize, crosshairSize);
+    if (touchpad != null) {
+      touchpad.setBounds(Gdx.graphics.getWidth() / 3 * 2, 0, Gdx.graphics.getWidth() / 3, Gdx.graphics.getWidth() / 3);
+    }
   }
 
   @Override

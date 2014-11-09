@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.utils.IntIntMap;
 
 import ethanjones.cubes.side.client.CubesClient;
@@ -23,6 +24,7 @@ public class CameraController extends InputAdapter {
   //private float jumpCount = 0;
   private float speed = 5;
   private float degreesPerPixel = 0.5f;
+  public Touchpad touchpad; //movement on android
 
   public CameraController(Camera camera) {
     this.camera = camera;
@@ -67,40 +69,48 @@ public class CameraController extends InputAdapter {
   }
 
   public void update(float deltaTime) {
+    if (touchpad != null) {
+      float knobPercentY = touchpad.getKnobPercentY();
+      float up = knobPercentY > 0 ? knobPercentY : 0;
+      float down = knobPercentY < 0 ? -knobPercentY : 0;
+
+      float knobPercentX = touchpad.getKnobPercentX();
+      float right = knobPercentX > 0 ? knobPercentX : 0;
+      float left = knobPercentX < 0 ? -knobPercentX : 0;
+
+      update(1, up, down, left, right);
+    } else {
+      update(deltaTime, keys.containsKey(FORWARD) ? 1f : 0f, keys.containsKey(BACKWARD) ? 1f : 0f, keys.containsKey(STRAFE_LEFT) ? 1f : 0f, keys.containsKey(STRAFE_RIGHT) ? 1f : 0f);
+    }
+  }
+
+  public void update(float deltaTime, float forward, float backward, float left, float right) {
     boolean moved = false;
-    if (keys.containsKey(FORWARD)) {
+    if (forward > 0) {
       tmp.set(camera.direction);
-      tmp.nor().scl(deltaTime * speed);
+      tmp.nor().scl(deltaTime * speed * forward);
       camera.position.add(tmp);
       moved = true;
     }
-    if (keys.containsKey(BACKWARD)) {
+    if (backward > 0) {
       tmp.set(camera.direction);
-      tmp.nor().scl(-deltaTime * speed);
+      tmp.nor().scl(-deltaTime * speed * backward);
       camera.position.add(tmp);
       moved = true;
     }
-    if (keys.containsKey(STRAFE_LEFT)) {
+    if (left > 0) {
       tmp.set(camera.direction);
-      tmp.crs(camera.up).nor().scl(-deltaTime * speed);
+      tmp.crs(camera.up).nor().scl(-deltaTime * speed * left);
       camera.position.add(tmp);
       moved = true;
     }
-    if (keys.containsKey(STRAFE_RIGHT)) {
+    if (right > 0) {
       tmp.set(camera.direction);
-      tmp.crs(camera.up).nor().scl(deltaTime * speed);
+      tmp.crs(camera.up).nor().scl(deltaTime * speed * right);
       camera.position.add(tmp);
       moved = true;
     }
     if (moved) ((WorldClient) CubesClient.instance.world).playerChangedPosition();
-    //if (keys.containsKey(JUMP) && jumpCount == 0) {
-    //  jumpCount = 1.25f;
-    //}
-    //if (jumpCount > 0) {
-    //camera.position.y += Math.min(jumpCount, deltaTime * 2);
-    //  jumpCount -= deltaTime * 2;
-    //  if (jumpCount < 0) jumpCount = 0;
-    //}
     camera.update(true);
   }
 }
