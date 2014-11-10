@@ -1,5 +1,8 @@
 package ethanjones.cubes.side.server;
 
+import com.badlogic.gdx.Input.Buttons;
+import java.util.ArrayList;
+
 import ethanjones.cubes.core.events.EventHandler;
 import ethanjones.cubes.core.events.world.block.BlockEvent;
 import ethanjones.cubes.core.system.Threads;
@@ -21,8 +24,10 @@ public class PlayerManager {
 
   private final Player player;
   private final AreaReference playerArea;
-  private PacketConnect packetConnect;
-  private SocketMonitor socketMonitor;
+  private final PacketConnect packetConnect;
+  private final SocketMonitor socketMonitor;
+  private final ArrayList<Integer> keys;
+  private final ArrayList<Integer> buttons;
   private int renderDistance;
 
   public PlayerManager(PacketConnect packetConnect) {
@@ -30,6 +35,8 @@ public class PlayerManager {
     this.socketMonitor = packetConnect.getPacketEnvironment().getReceiving().getSocketMonitor();
     this.player = new Player(packetConnect.username); //TODO Store users and world
     this.playerArea = new AreaReference().setFromPositionVector3(player.position);
+    this.keys = new ArrayList<Integer>();
+    this.buttons = new ArrayList<Integer>();
 
     CubesServer.instance.playerManagers.put(socketMonitor, this);
 
@@ -123,8 +130,58 @@ public class PlayerManager {
     }
   }
 
-  public void click(PacketClick.Click type) {
-    if (type == PacketClick.Click.left) {
+  public void handlePacket(PacketButton packetButton) {
+    synchronized (buttons) {
+      switch (packetButton.action) {
+        case PacketButton.BUTTON_DOWN:
+          if (!buttons.contains(packetButton.button)) buttons.add(packetButton.button);
+          return;
+        case PacketButton.BUTTON_UP:
+          buttons.remove((Integer) packetButton.button);
+          return;
+      }
+    }
+  }
+
+  public void handlePacket(PacketKey packetKey) {
+    synchronized (keys) {
+      switch (packetKey.action) {
+        case PacketKey.KEY_DOWN:
+          if (!keys.contains(packetKey.key)) buttons.add(packetKey.key);
+          return;
+        case PacketKey.KEY_UP:
+          keys.remove((Integer) packetKey.key);
+          return;
+      }
+    }
+  }
+
+  public boolean keyDown(int key) {
+    synchronized (keys) {
+      return keys.contains(key);
+    }
+  }
+
+  public boolean keyUp(int key) {
+    synchronized (keys) {
+      return !keys.contains(key);
+    }
+  }
+
+  public boolean buttonDown(int button) {
+    synchronized (buttons) {
+      return buttons.contains(button);
+    }
+  }
+
+  public boolean buttonUp(int button) {
+    synchronized (buttons) {
+      return !buttons.contains(button);
+    }
+  }
+
+  protected void update() {
+    if (buttonDown(Buttons.LEFT)) {
       RayTracing.BlockIntersection blockIntersection = RayTracing.getBlockIntersection(player.position, player.angle, CubesServer.instance.world);
       if (blockIntersection == null) return;
       BlockReference blockReference = blockIntersection.getBlockReference();

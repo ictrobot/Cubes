@@ -6,8 +6,9 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 public class LwjglCompatibility extends DesktopCompatibility {
-  protected LwjglCompatibility(String[] arg) {
-    super(Application.ApplicationType.Desktop, arg);
+
+  protected LwjglCompatibility(LwjglLauncher lwjglLauncher, String[] arg) {
+    super(lwjglLauncher, Application.ApplicationType.Desktop, arg);
   }
 
   @Override

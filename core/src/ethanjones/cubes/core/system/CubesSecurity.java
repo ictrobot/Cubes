@@ -1,5 +1,6 @@
 package ethanjones.cubes.core.system;
 
+import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.logging.Log;
 
 public class CubesSecurity {
@@ -40,7 +41,7 @@ public class CubesSecurity {
 
   public static void checkSetMW() {
     String c = getStackTrace()[1].getClassName();
-    if (c.equals("ethanjones.cubes.side.common.Cubes") || c.equals("ethanjones.cubes.core.adapter.GraphicalAdapter") || c.startsWith("ethanjones.cubes.graphics.menu.")) {
+    if (c.equals("ethanjones.cubes.side.common.Cubes") || c.equals("ethanjones.cubes.core.adapter.GraphicalAdapter") || c.startsWith("ethanjones.cubes.graphics.menu.") || c.equals(Compatibility.get().getClass().getName())) {
       Log.debug("Allowing class \'" + c + "\' to set the Cubes instances");
     } else {
       Log.error("Class \'" + c + "\' tried to set the Cubes instances");
@@ -50,7 +51,7 @@ public class CubesSecurity {
 
   public static void checkSetMenu() {
     String c = getStackTrace()[1].getClassName();
-    if (c.equals("ethanjones.cubes.side.common.Cubes") || c.equals("ethanjones.cubes.core.adapter.GraphicalAdapter") || c.startsWith("ethanjones.cubes.graphics.menu.")) {
+    if (c.equals("ethanjones.cubes.side.common.Cubes") || c.equals("ethanjones.cubes.core.adapter.GraphicalAdapter") || c.startsWith("ethanjones.cubes.graphics.menu.") || c.equals(Compatibility.get().getClass().getName())) {
       Log.debug("Allowing class \'" + c + "\' to set the menu");
     } else {
       Log.error("Class \'" + c + "\' tried to set the menu");

@@ -12,6 +12,7 @@ import ethanjones.cubes.networking.server.ServerNetworkingParameter;
 import ethanjones.cubes.networking.socket.SocketMonitor;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
+import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.WorldServer;
 import ethanjones.cubes.world.generator.BasicWorldGenerator;
@@ -34,6 +35,11 @@ public class CubesServer extends Cubes implements TimeHandler {
   public void create() {
     super.create();
     NetworkingManager.startServer(serverNetworkingParameter);
+    if (CubesClient.instance != null && CubesClient.instance.wait != null) {
+      synchronized (CubesClient.instance.wait) {
+        CubesClient.instance.wait.notifyAll();
+      }
+    }
 
     world = new WorldServer(new BasicWorldGenerator());
 
@@ -48,6 +54,15 @@ public class CubesServer extends Cubes implements TimeHandler {
     ModManager.postModEvent(new StoppingServerEvent());
     super.dispose();
     disposed = true;
+  }
+
+  @Override
+  public void render() {
+    super.render();
+
+    for (PlayerManager playerManager : playerManagers.values()) {
+      playerManager.update();
+    }
   }
 
   @Override

@@ -96,6 +96,10 @@ public class Sided {
     Blocks.register();
   }
 
+  public static boolean isSetup(Side side) {
+    return side != null && getData(side) != null;
+  }
+
   public static void reset(Side side) {
     CubesSecurity.checkSidedReset();
 

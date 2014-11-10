@@ -4,8 +4,8 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
-import ethanjones.cubes.core.compatibility.Compatibility;
 import ethanjones.cubes.core.mod.ModLoader;
+import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.graphics.assets.AssetFinder;
 
@@ -15,8 +15,8 @@ public abstract class DesktopCompatibility extends Compatibility {
   private final String[] arg;
   protected DesktopModLoader modLoader;
 
-  protected DesktopCompatibility(Application.ApplicationType applicationType, String[] arg) {
-    super(applicationType);
+  protected DesktopCompatibility(DesktopLauncher desktopLauncher, Application.ApplicationType applicationType, String[] arg) {
+    super(desktopLauncher, applicationType);
     this.arg = arg;
 
     String str = (System.getProperty("os.name")).toUpperCase();

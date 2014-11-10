@@ -1,8 +1,6 @@
 package ethanjones.cubes.core.settings;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import java.util.ArrayList;
@@ -34,12 +32,10 @@ public class SettingGroup {
   public Actor getActor(final VisualSettingManager visualSettingManager) {
     final TextButton textButton = new TextButton(Localization.get("menu.settings.open_group"), Menu.skin);
     final SettingGroup settingGroup = this;
-    textButton.addListener(new EventListener() {
+    textButton.addListener(new ChangeListener() {
       @Override
-      public boolean handle(Event event) {
-        if (!(event instanceof ChangeListener.ChangeEvent)) return false;
+      public void changed(ChangeEvent event, Actor actor) {
         visualSettingManager.setSettingGroup(settingGroup);
-        return true;
       }
     });
     return textButton;

@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 
 import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.core.adapter.GraphicalAdapter;
-import ethanjones.cubes.core.compatibility.Compatibility;
+import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.mod.ModManager;

@@ -9,7 +9,7 @@ import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import ethanjones.cubes.core.compatibility.Compatibility;
+import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.mod.ModLoader.ModType;
 import ethanjones.cubes.core.mod.event.ModEvent;

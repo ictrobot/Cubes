@@ -9,8 +9,8 @@ import ethanjones.cubes.graphics.menu.MenuTools;
 
 public class InfoMenu extends Menu {
 
-  Label text;
-  TextButton button;
+  protected Label text;
+  protected TextButton button;
 
   public InfoMenu(String labelText, String buttonText) {
     super();

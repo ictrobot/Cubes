@@ -5,6 +5,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import ethanjones.cubes.core.adapter.GraphicalAdapter;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.networking.client.ClientNetworkingParameter;
+import ethanjones.cubes.side.Side;
+import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.client.CubesClient;
 
 public class MultiplayerLoadingMenu extends InfoMenu {
@@ -22,7 +24,8 @@ public class MultiplayerLoadingMenu extends InfoMenu {
   public void render() {
     super.render();
     frameNum++;
-    if (frameNum != 2) return;
+    if (frameNum == 1) return;
+    if (Sided.isSetup(Side.Server)) return;
     try {
       CubesClient cubesClient = new CubesClient(new ClientNetworkingParameter(address, port));
       GraphicalAdapter.instance.setCubes(null, cubesClient);

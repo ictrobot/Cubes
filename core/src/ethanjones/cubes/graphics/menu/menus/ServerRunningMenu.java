@@ -1,5 +1,6 @@
 package ethanjones.cubes.graphics.menu.menus;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -7,6 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import ethanjones.cubes.core.adapter.GraphicalAdapter;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.networking.server.ServerNetworkingParameter;
+import ethanjones.cubes.side.Side;
+import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.CubesServer;
 
@@ -16,7 +19,7 @@ public class ServerRunningMenu extends InfoMenu {
   private int frameNum = 0;
 
   public ServerRunningMenu(int port) {
-    super(Localization.get("menu.server.running"), Localization.get("menu.server.stop"));
+    super(Localization.get("menu.general.loading"), Localization.get("menu.server.stop"));
     this.port = port;
 
     addButtonListener(new EventListener() {
@@ -32,8 +35,11 @@ public class ServerRunningMenu extends InfoMenu {
   public void render() {
     super.render();
     frameNum++;
-    if (frameNum != 2) return;
+    if (frameNum == 1) return;
+    if (Sided.isSetup(Side.Server)) return;
     CubesServer cubesServer = new CubesServer(new ServerNetworkingParameter(port));
     GraphicalAdapter.instance.setCubes(cubesServer, null);
+    text.setText(Localization.get("menu.server.running"));
+    resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
   }
 }

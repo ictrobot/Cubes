@@ -2,6 +2,7 @@ package ethanjones.cubes.core.adapter;
 
 import com.badlogic.gdx.ApplicationListener;
 
+import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.core.system.Memory;
 import ethanjones.cubes.networking.server.ServerNetworkingParameter;
@@ -11,7 +12,13 @@ import ethanjones.cubes.side.server.CubesServer;
 
 public class HeadlessAdapter implements ApplicationListener {
 
-  CubesServer cubesServer;
+  public static HeadlessAdapter instance;
+
+  private CubesServer cubesServer;
+
+  public HeadlessAdapter() {
+    HeadlessAdapter.instance = this;
+  }
 
   @Override
   public void create() {
@@ -33,6 +40,7 @@ public class HeadlessAdapter implements ApplicationListener {
   @Override
   public void render() {
     try {
+      Compatibility.get().render();
       Memory.update();
       cubesServer.render();
     } catch (Exception e) {

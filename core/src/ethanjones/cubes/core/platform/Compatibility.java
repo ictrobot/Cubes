@@ -1,6 +1,7 @@
-package ethanjones.cubes.core.compatibility;
+package ethanjones.cubes.core.platform;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -10,7 +11,7 @@ import ethanjones.cubes.core.adapter.HeadlessAdapter;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.mod.ModLoader;
 import ethanjones.cubes.core.system.CubesException;
-import ethanjones.cubes.core.system.Debug;
+import ethanjones.cubes.core.system.Debug.UncaughtExceptionHandler;
 import ethanjones.cubes.graphics.assets.AssetFinder;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.side.Side;
@@ -23,14 +24,25 @@ public abstract class Compatibility {
   public static Compatibility get() {
     return compatibility;
   }
-  public final Application.ApplicationType applicationType;
 
-  protected Compatibility(Application.ApplicationType applicationType) {
+  private final Launcher launcher;
+  private final Application.ApplicationType applicationType;
+
+  protected Compatibility(Launcher launcher, Application.ApplicationType applicationType) {
+    this.launcher = launcher;
     this.applicationType = applicationType;
   }
 
   public void init(Side side) {
     if (side != null) Sided.getEventBus().register(this);
+  }
+
+  public final Launcher getLauncher() {
+    return launcher;
+  }
+
+  public final ApplicationType getApplicationType() {
+    return applicationType;
   }
 
   public FileHandle getBaseFolder() {
@@ -59,9 +71,8 @@ public abstract class Compatibility {
   public void startCubes() {
     compatibility = this;
 
-    Debug.UncaughtExceptionHandler uncaughtExceptionHandler = new Debug.UncaughtExceptionHandler();
-    Thread.setDefaultUncaughtExceptionHandler(uncaughtExceptionHandler);
-    Thread.currentThread().setUncaughtExceptionHandler(uncaughtExceptionHandler);
+    Thread.setDefaultUncaughtExceptionHandler(UncaughtExceptionHandler.instance);
+    Thread.currentThread().setUncaughtExceptionHandler(UncaughtExceptionHandler.instance);
 
     try {
       if (isHeadless()) {
@@ -89,4 +100,8 @@ public abstract class Compatibility {
   protected abstract void run(ApplicationListener applicationListener);
 
   public abstract ModLoader getModLoader();
+
+  public void render() {
+
+  }
 }

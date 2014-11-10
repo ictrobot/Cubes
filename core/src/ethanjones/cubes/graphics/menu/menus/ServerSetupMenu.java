@@ -1,7 +1,6 @@
 package ethanjones.cubes.graphics.menu.menus;
 
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -9,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import ethanjones.cubes.core.adapter.GraphicalAdapter;
 import ethanjones.cubes.core.localization.Localization;
+import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menu.MenuTools;
 
@@ -19,7 +19,7 @@ public class ServerSetupMenu extends Menu {
   TextButton start;
   TextButton back;
 
-  public ServerSetupMenu() {
+  public ServerSetupMenu() { //FIXME run in own thread
     super();
     title = new Label(Localization.get("menu.server.title"), skin.get("title", Label.LabelStyle.class));
     port = new TextField("", skin);
@@ -28,12 +28,10 @@ public class ServerSetupMenu extends Menu {
     start = new TextButton(Localization.get("menu.server.start"), skin);
     back = MenuTools.getBackButton(this);
 
-    start.addListener(new EventListener() {
+    start.addListener(new ChangeListener() {
       @Override
-      public boolean handle(Event event) {
-        if (!(event instanceof ChangeListener.ChangeEvent)) return false;
-        GraphicalAdapter.instance.setMenu(new ServerRunningMenu(port.getText().isEmpty() ? 8080 : Integer.parseInt(port.getText())));
-        return true;
+      public void changed(ChangeEvent event, Actor actor) {
+        GraphicalAdapter.instance.setMenu(new ServerRunningMenu(port.getText().isEmpty() ? Settings.getIntegerSettingValue(Settings.NETWORKING_PORT) : Integer.parseInt(port.getText())));
       }
     });
   }

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import ethanjones.cubes.core.compatibility.Compatibility;
+import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.logging.Log;
 
 public class Assets {

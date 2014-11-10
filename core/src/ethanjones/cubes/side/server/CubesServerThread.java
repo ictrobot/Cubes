@@ -15,6 +15,7 @@ public class CubesServerThread extends Thread implements Disposable {
     this.server = server;
     this.server.thread = this;
     setName(Side.Server.name());
+    setUncaughtExceptionHandler(Debug.UncaughtExceptionHandler.instance);
   }
 
   @Override

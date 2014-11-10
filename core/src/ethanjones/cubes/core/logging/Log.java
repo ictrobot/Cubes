@@ -4,7 +4,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import java.io.File;
 
-import ethanjones.cubes.core.compatibility.Compatibility;
+import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.logging.loggers.FileLogWriter;
 import ethanjones.cubes.core.logging.loggers.GdxAppLogWriter;
 import ethanjones.cubes.core.logging.loggers.SysOutLogWriter;

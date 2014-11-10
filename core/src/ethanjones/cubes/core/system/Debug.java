@@ -2,13 +2,13 @@ package ethanjones.cubes.core.system;
 
 import java.util.List;
 
-import ethanjones.cubes.core.compatibility.Compatibility;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.logging.LogLevel;
 import ethanjones.cubes.core.logging.loggers.FileLogWriter;
 import ethanjones.cubes.core.mod.ModInstance;
 import ethanjones.cubes.core.mod.ModManager;
 import ethanjones.cubes.core.mod.ModState;
+import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.server.CubesServer;
 
@@ -16,9 +16,15 @@ public class Debug {
 
   public static class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
 
+    public static final UncaughtExceptionHandler instance = new UncaughtExceptionHandler();
+
+    private UncaughtExceptionHandler() {
+
+    }
+
     @Override
-    public void uncaughtException(Thread t, Throwable e) {
-      crash(e);
+    public void uncaughtException(Thread thread, Throwable throwable) {
+      crash(throwable);
     }
   }
 

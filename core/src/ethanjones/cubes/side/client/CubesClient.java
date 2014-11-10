@@ -5,7 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 
 import ethanjones.cubes.block.Blocks;
-import ethanjones.cubes.core.compatibility.Compatibility;
+import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.mod.ModManager;
 import ethanjones.cubes.core.mod.event.StartingClientEvent;
 import ethanjones.cubes.core.mod.event.StoppingClientEvent;
@@ -29,6 +29,7 @@ public class CubesClient extends Cubes implements ApplicationListener {
   public InputChain inputChain;
   public Renderer renderer;
   private boolean disposed;
+  public Object wait;
 
   public CubesClient(ClientNetworkingParameter clientNetworkingParameter) {
     super(Side.Client);
@@ -39,6 +40,13 @@ public class CubesClient extends Cubes implements ApplicationListener {
   @Override
   public void create() {
     super.create();
+    try {
+      synchronized (wait) {
+        wait.wait();
+      }
+    } catch (InterruptedException e) {
+    }
+    wait = null;
     NetworkingManager.connectClient(clientNetworkingParameter);
 
     inputChain = new InputChain();

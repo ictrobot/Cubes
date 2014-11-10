@@ -1,7 +1,6 @@
 package ethanjones.cubes.graphics.menu.menus;
 
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -31,12 +30,10 @@ public class MultiplayerConnectMenu extends Menu {
     connect = new TextButton(Localization.get("menu.multiplayer.connect"), skin);
     back = MenuTools.getBackButton(this);
 
-    connect.addListener(new EventListener() {
+    connect.addListener(new ChangeListener() {
       @Override
-      public boolean handle(Event event) {
-        if (!(event instanceof ChangeListener.ChangeEvent)) return false;
+      public void changed(ChangeEvent event, Actor actor) {
         GraphicalAdapter.instance.setMenu(new MultiplayerLoadingMenu(address.getText(), port.getText().isEmpty() ? 8080 : Integer.parseInt(port.getText())));
-        return true;
       }
     });
   }

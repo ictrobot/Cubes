@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 
 import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.core.system.CubesSecurity;
 import ethanjones.cubes.core.system.Debug;
@@ -106,6 +107,7 @@ public class GraphicalAdapter implements ApplicationListener {
   @Override
   public void render() {
     try {
+      Compatibility.get().render();
       Memory.update();
       Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
       Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);

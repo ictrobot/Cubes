@@ -26,13 +26,11 @@ public class BooleanSetting extends Setting {
   @Override
   public Actor getActor(VisualSettingManager visualSettingManager) {
     final TextButton textButton = new TextButton(b ? "True" : "False", Menu.skin);
-    textButton.addListener(new EventListener() {
+    textButton.addListener(new ChangeListener() {
       @Override
-      public boolean handle(Event event) {
-        if (!(event instanceof ChangeListener.ChangeEvent)) return false; //easier than SettingsMenu.SaveEvent and works
+      public void changed(ChangeEvent event, Actor actor) {//easier than SettingsMenu.SaveEvent and works
         set(!get());
         textButton.setText(b ? "True" : "False");
-        return true;
       }
     });
     return textButton;

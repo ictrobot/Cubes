@@ -2,8 +2,6 @@ package ethanjones.cubes.graphics.menu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
@@ -101,14 +99,12 @@ public class MenuTools {
 
   public static TextButton getBackButton(final Menu menu) {
     TextButton textButton = new TextButton(Localization.get("menu.general.back"), Menu.skin);
-    textButton.addListener(new EventListener() {
+    textButton.addListener(new ChangeListener() {
       @Override
-      public boolean handle(Event event) {
-        if (!(event instanceof ChangeListener.ChangeEvent)) return false;
+      public void changed(ChangeEvent event, Actor actor) {
         Menu prev = MenuManager.getPrevious(menu);
-        if (prev == null) return false;
+        if (prev == null) return;
         GraphicalAdapter.instance.setMenu(prev);
-        return true;
       }
     });
     return textButton;

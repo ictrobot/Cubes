@@ -8,7 +8,7 @@ import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.networking.Networking;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packet.Packet;
-import ethanjones.cubes.networking.packets.PacketClick;
+import ethanjones.cubes.networking.packets.PacketButton;
 import ethanjones.cubes.networking.packets.PacketPlayerInfo;
 import ethanjones.cubes.networking.socket.SocketMonitor;
 import ethanjones.cubes.side.Side;
@@ -50,20 +50,6 @@ public class ClientNetworking extends Networking {
       sendToServer(packetPlayerInfo);
       prevPosition.set(CubesClient.instance.player.position);
       prevDirection.set(CubesClient.instance.player.angle);
-    }
-
-    PacketClick packet = new PacketClick();
-    if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-      packet.type = PacketClick.Click.get(Input.Buttons.LEFT);
-    }
-    if (Gdx.input.isButtonPressed(Input.Buttons.MIDDLE)) {
-      packet.type = PacketClick.Click.get(Input.Buttons.MIDDLE);
-    }
-    if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
-      packet.type = PacketClick.Click.get(Input.Buttons.RIGHT);
-    }
-    if (packet.type != null) {
-      NetworkingManager.clientNetworking.sendToServer(packet);
     }
   }
 
