@@ -27,6 +27,7 @@ import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketChat;
 import ethanjones.cubes.side.client.ClientDebug;
 import ethanjones.cubes.side.client.CubesClient;
+import ethanjones.cubes.side.common.Cubes;
 
 import static ethanjones.cubes.graphics.menu.Menu.skin;
 
@@ -76,7 +77,7 @@ public class HudRenderer implements Disposable {
 
   public HudRenderer() {
     stage = new Stage(new ScreenViewport());
-    CubesClient.instance.inputChain.hud = stage;
+    Cubes.getClient().inputChain.hud = stage;
 
     crosshair = new Image(Assets.getTextureRegion("core:hud/Crosshair.png"));
 
@@ -104,7 +105,7 @@ public class HudRenderer implements Disposable {
     if (Compatibility.get().isTouchScreen()) {
       touchpad = new Touchpad(10f, skin);
 
-      CubesClient.instance.inputChain.cameraController.touchpad = touchpad;
+      Cubes.getClient().inputChain.cameraController.touchpad = touchpad;
 
       debugButton = new TextButton(Localization.get("hud.debug"), skin, "tiny");
       debugButton.addListener(new ChangeListener() {

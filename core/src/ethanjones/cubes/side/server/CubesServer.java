@@ -12,18 +12,15 @@ import ethanjones.cubes.networking.server.ServerNetworkingParameter;
 import ethanjones.cubes.networking.socket.SocketMonitor;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
-import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.WorldServer;
 import ethanjones.cubes.world.generator.BasicWorldGenerator;
 
 public class CubesServer extends Cubes implements TimeHandler {
 
-  public static CubesServer instance;
   private final ServerNetworkingParameter serverNetworkingParameter;
   public CubesServerThread thread; //only on singleplayer
   public HashMap<SocketMonitor, PlayerManager> playerManagers;
-  private boolean disposed = false;
 
   public CubesServer(ServerNetworkingParameter serverNetworkingParameter) {
     super(Side.Server);
@@ -35,9 +32,9 @@ public class CubesServer extends Cubes implements TimeHandler {
   public void create() {
     super.create();
     NetworkingManager.startServer(serverNetworkingParameter);
-    if (CubesClient.instance != null && CubesClient.instance.wait != null) {
-      synchronized (CubesClient.instance.wait) {
-        CubesClient.instance.wait.notifyAll();
+    if (Cubes.getClient() != null && Cubes.getClient().wait != null) {
+      synchronized (Cubes.getClient().wait) {
+        Cubes.getClient().wait.notifyAll();
       }
     }
 
@@ -49,20 +46,22 @@ public class CubesServer extends Cubes implements TimeHandler {
   }
 
   @Override
-  public void dispose() {
-    if (disposed) return;
+  public void stop() {
+    if (stopped) return;
     ModManager.postModEvent(new StoppingServerEvent());
-    super.dispose();
-    disposed = true;
+    if (thread != null) thread.dispose();
+    super.stop();
   }
 
   @Override
   public void render() {
+    if (stopped) return;
     super.render();
 
     for (PlayerManager playerManager : playerManagers.values()) {
       playerManager.update();
     }
+    checkStop();
   }
 
   @Override

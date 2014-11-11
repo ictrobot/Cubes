@@ -11,7 +11,7 @@ import com.badlogic.gdx.utils.IntIntMap;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketButton;
 import ethanjones.cubes.networking.packets.PacketKey;
-import ethanjones.cubes.side.client.CubesClient;
+import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.WorldClient;
 
 public class CameraController extends InputAdapter {
@@ -134,7 +134,7 @@ public class CameraController extends InputAdapter {
       camera.position.add(tmp);
       moved = true;
     }
-    if (moved) ((WorldClient) CubesClient.instance.world).playerChangedPosition();
+    if (moved) ((WorldClient) Cubes.getClient().world).playerChangedPosition();
     camera.update(true);
   }
 }

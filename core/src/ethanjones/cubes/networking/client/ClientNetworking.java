@@ -1,18 +1,16 @@
 package ethanjones.cubes.networking.client;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector3;
 
 import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.networking.Networking;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packet.Packet;
-import ethanjones.cubes.networking.packets.PacketButton;
 import ethanjones.cubes.networking.packets.PacketPlayerInfo;
 import ethanjones.cubes.networking.socket.SocketMonitor;
 import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.common.Cubes;
 
 public class ClientNetworking extends Networking {
@@ -41,15 +39,15 @@ public class ClientNetworking extends Networking {
 
   @Override
   public synchronized void tick() {
-    if (getNetworkingState() != NetworkingState.Running) Cubes.quit(false);
+    if (getNetworkingState() != NetworkingState.Running) Adapter.gotoMainMenu();
 
-    if (!CubesClient.instance.player.position.equals(prevPosition) || !CubesClient.instance.player.angle.equals(prevDirection)) {
+    if (!Cubes.getClient().player.position.equals(prevPosition) || !Cubes.getClient().player.angle.equals(prevDirection)) {
       PacketPlayerInfo packetPlayerInfo = new PacketPlayerInfo();
-      packetPlayerInfo.angle = CubesClient.instance.player.angle;
-      packetPlayerInfo.position = CubesClient.instance.player.position;
+      packetPlayerInfo.angle = Cubes.getClient().player.angle;
+      packetPlayerInfo.position = Cubes.getClient().player.position;
       sendToServer(packetPlayerInfo);
-      prevPosition.set(CubesClient.instance.player.position);
-      prevDirection.set(CubesClient.instance.player.angle);
+      prevPosition.set(Cubes.getClient().player.position);
+      prevDirection.set(Cubes.getClient().player.angle);
     }
   }
 

@@ -6,6 +6,7 @@ import ethanjones.cubes.networking.packet.DataPacket;
 import ethanjones.cubes.networking.packet.environment.PacketPriority;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.client.CubesClient;
+import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.PlayerManager;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.storage.Area;
@@ -29,7 +30,7 @@ public class PacketArea extends DataPacket {
     areaReference.setFromAreaCoordinates(areaX, areaY, areaZ);
     Area a = new Area(areaX, areaY, areaZ);
     a.read(area);
-    CubesClient.instance.world.setAreaInternal(areaReference, a);
+    Cubes.getClient().world.setAreaInternal(areaReference, a);
   }
 
   @Override

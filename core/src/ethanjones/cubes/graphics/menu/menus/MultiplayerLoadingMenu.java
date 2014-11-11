@@ -2,11 +2,9 @@ package ethanjones.cubes.graphics.menu.menus;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-import ethanjones.cubes.core.adapter.GraphicalAdapter;
 import ethanjones.cubes.core.localization.Localization;
+import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.networking.client.ClientNetworkingParameter;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.client.CubesClient;
 
 public class MultiplayerLoadingMenu extends InfoMenu {
@@ -24,15 +22,16 @@ public class MultiplayerLoadingMenu extends InfoMenu {
   public void render() {
     super.render();
     frameNum++;
-    if (frameNum == 1) return;
-    if (Sided.isSetup(Side.Server)) return;
+    if (frameNum != 2) return;
     try {
       CubesClient cubesClient = new CubesClient(new ClientNetworkingParameter(address, port));
-      GraphicalAdapter.instance.setCubes(null, cubesClient);
-      GraphicalAdapter.instance.setMenu(null);
+      Adapter.setServer(null);
+      Adapter.setClient(cubesClient);
+      Adapter.setMenu(null);
     } catch (Exception e) {
       if (e instanceof GdxRuntimeException && e.getCause() instanceof Exception) e = (Exception) e.getCause();
-      GraphicalAdapter.instance.setMenu(new MultiplayerFailedMenu(e));
+      Adapter.setClient(null);
+      Adapter.setMenu(new MultiplayerFailedMenu(e));
     }
   }
 }

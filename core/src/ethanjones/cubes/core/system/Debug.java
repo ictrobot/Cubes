@@ -9,8 +9,7 @@ import ethanjones.cubes.core.mod.ModInstance;
 import ethanjones.cubes.core.mod.ModManager;
 import ethanjones.cubes.core.mod.ModState;
 import ethanjones.cubes.core.platform.Compatibility;
-import ethanjones.cubes.side.client.CubesClient;
-import ethanjones.cubes.side.server.CubesServer;
+import ethanjones.cubes.side.common.Cubes;
 
 public class Debug {
 
@@ -63,16 +62,15 @@ public class Debug {
 
     }
     try {
-      if (CubesClient.instance != null) CubesClient.instance.dispose();
+      if (Cubes.getClient() != null) Cubes.getClient().dispose();
     } catch (Exception e) {
 
     }
     try {
-      if (CubesServer.instance != null) CubesServer.instance.dispose();
+      if (Cubes.getServer() != null) Cubes.getServer().dispose();
     } catch (Exception e) {
 
-    }
-    System.exit(1);
+    } System.exit(1);
   }
 
   public static synchronized void printMods(LogLevel logLevel) {

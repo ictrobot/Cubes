@@ -11,12 +11,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
 
-import ethanjones.cubes.core.adapter.GraphicalAdapter;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.graphics.menu.Menu;
-import ethanjones.cubes.side.common.Cubes;
 
 public class MainMenu extends Menu {
 
@@ -49,28 +48,28 @@ public class MainMenu extends Menu {
     singleplayer.addListener(new ChangeListener() {
       @Override
       public void changed(ChangeEvent event, Actor actor) {
-        GraphicalAdapter.instance.setMenu(new SingleplayerLoadingMenu());
+        Adapter.setMenu(new SingleplayerLoadingMenu());
       }
     });
     buttons.add(multiplayer = new TextButton(Localization.get("menu.main.multiplayer"), skin)).row();
     multiplayer.addListener(new ChangeListener() {
       @Override
       public void changed(ChangeEvent event, Actor actor) {
-        GraphicalAdapter.instance.setMenu(new MultiplayerConnectMenu());
+        Adapter.setMenu(new MultiplayerConnectMenu());
       }
     });
     buttons.add(serveronly = new TextButton(Localization.get("menu.main.serveronly"), skin)).row();
     serveronly.addListener(new ChangeListener() {
       @Override
       public void changed(ChangeEvent event, Actor actor) {
-        GraphicalAdapter.instance.setMenu(new ServerSetupMenu());
+        Adapter.setMenu(new ServerSetupMenu());
       }
     });
     buttons.add(settings = new TextButton(Localization.get("menu.main.settings"), skin)).row();
     settings.addListener(new ChangeListener() {
       @Override
       public void changed(ChangeEvent event, Actor actor) {
-        GraphicalAdapter.instance.setMenu(new SettingsMenu());
+        Adapter.setMenu(new SettingsMenu());
       }
     });
     buttons.add(quit = new TextButton(Localization.get("menu.main.quit"), skin)).row();
@@ -78,7 +77,7 @@ public class MainMenu extends Menu {
       @Override
       public void changed(ChangeEvent event, Actor actor) {
         Log.debug("Quit pressed");
-        Cubes.quit(true);
+        Adapter.quit();
       }
     });
   }

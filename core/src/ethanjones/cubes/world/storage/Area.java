@@ -13,6 +13,7 @@ import ethanjones.cubes.graphics.world.AreaRenderer;
 import ethanjones.cubes.networking.packets.PacketBlockChanged;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.client.CubesClient;
+import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.reference.BlockReference;
 
 public class Area implements DataParser<DataGroup> {
@@ -73,7 +74,7 @@ public class Area implements DataParser<DataGroup> {
   }
 
   public void unload() {
-    if (areaRenderer != null) CubesClient.instance.renderer.block.free(areaRenderer);
+    if (areaRenderer != null) Cubes.getClient().renderer.block.free(areaRenderer);
     blockFactories = null;
   }
 
@@ -159,7 +160,7 @@ public class Area implements DataParser<DataGroup> {
         }
       }
     }
-    if (areaRenderer != null) areaRenderer.dirty = true;
+    if (areaRenderer != null) areaRenderer.refresh = true;
   }
 
   public void handleChange(PacketBlockChanged packet) {
@@ -170,7 +171,7 @@ public class Area implements DataParser<DataGroup> {
     int ref = getRef(x, y, z);
     int b = blockFactories[ref];
     blockFactories[ref] = Sided.getBlockManager().toInt(block);
-    if (areaRenderer != null) areaRenderer.dirty = true;
+    if (areaRenderer != null) areaRenderer.refresh = true;
     new BlockChangedEvent(new BlockReference().setFromBlockCoordinates(x, y, z), Sided.getBlockManager().toBlock(b)).post();
   }
 }

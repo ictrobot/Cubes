@@ -5,10 +5,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 
 import ethanjones.cubes.block.Blocks;
-import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.mod.ModManager;
 import ethanjones.cubes.core.mod.event.StartingClientEvent;
 import ethanjones.cubes.core.mod.event.StoppingClientEvent;
+import ethanjones.cubes.core.platform.Adapter;
+import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.graphics.rendering.Renderer;
@@ -22,13 +23,10 @@ import ethanjones.cubes.world.WorldClient;
 
 public class CubesClient extends Cubes implements ApplicationListener {
 
-  public static CubesClient instance;
   private final ClientNetworkingParameter clientNetworkingParameter;
-
   public Player player;
   public InputChain inputChain;
   public Renderer renderer;
-  private boolean disposed;
   public Object wait;
 
   public CubesClient(ClientNetworkingParameter clientNetworkingParameter) {
@@ -64,8 +62,9 @@ public class CubesClient extends Cubes implements ApplicationListener {
 
   @Override
   public void render() {
+    if (stopped) return;
     if (KeyboardHelper.isKeyDown(Input.Keys.ESCAPE)) {
-      Cubes.quit(false);
+      Adapter.gotoMainMenu();
       return;
     }
     super.render();
@@ -74,16 +73,16 @@ public class CubesClient extends Cubes implements ApplicationListener {
     renderer.render();
     inputChain.afterRender();
     player.update();
+    checkStop();
   }
 
   @Override
-  public void dispose() {
-    if (disposed) return;
+  public void stop() {
+    if (stopped) return;
     ModManager.postModEvent(new StoppingClientEvent());
-    super.dispose();
+    super.stop();
     renderer.dispose();
     inputChain.dispose();
-    disposed = true;
   }
 
   @Override

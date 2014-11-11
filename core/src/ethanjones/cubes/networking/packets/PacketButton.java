@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
 import ethanjones.cubes.networking.packet.Packet;
+import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.CubesServer;
 
 public class PacketButton extends Packet {
@@ -28,6 +29,6 @@ public class PacketButton extends Packet {
 
   @Override
   public void handlePacket() {
-    CubesServer.instance.playerManagers.get(getPacketEnvironment().getReceiving().getSocketMonitor()).handlePacket(this);
+    Cubes.getServer().playerManagers.get(getPacketEnvironment().getReceiving().getSocketMonitor()).handlePacket(this);
   }
 }

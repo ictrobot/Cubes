@@ -8,6 +8,7 @@ import ethanjones.cubes.networking.Networking;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.socket.SocketMonitor;
 import ethanjones.cubes.side.Side;
+import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.CubesServer;
 
 public class ServerNetworking extends Networking {
@@ -54,7 +55,7 @@ public class ServerNetworking extends Networking {
       return;
     }
     Log.info("Disconnected from " + socketMonitor.getRemoteAddress(), e);
-    CubesServer.instance.playerManagers.remove(socketMonitor);
+    Cubes.getServer().playerManagers.remove(socketMonitor);
   }
 
   protected synchronized void accepted(Socket socket) {

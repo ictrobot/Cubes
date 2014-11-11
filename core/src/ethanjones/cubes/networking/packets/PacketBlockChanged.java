@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 
 import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.side.client.CubesClient;
+import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.reference.AreaReference;
 
 public class PacketBlockChanged extends Packet {
@@ -32,6 +33,6 @@ public class PacketBlockChanged extends Packet {
 
   @Override
   public void handlePacket() {
-    CubesClient.instance.world.getArea(new AreaReference().setFromBlockCoordinates(x, y, z)).handleChange(this);
+    Cubes.getClient().world.getArea(new AreaReference().setFromBlockCoordinates(x, y, z)).handleChange(this);
   }
 }

@@ -1,6 +1,6 @@
 package ethanjones.cubes.world;
 
-import ethanjones.cubes.side.client.CubesClient;
+import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.storage.Area;
 
@@ -19,7 +19,7 @@ public class WorldClient extends World {
 
   public WorldClient() {
     super();
-    playerArea = new AreaReference().setFromPositionVector3(CubesClient.instance.player.position);
+    playerArea = new AreaReference().setFromPositionVector3(Cubes.getClient().player.position);
     minAreaX = playerArea.areaX - AREA_LOAD_RADIUS;
     minAreaY = playerArea.areaY - AREA_LOAD_RADIUS;
     minAreaZ = playerArea.areaZ - AREA_LOAD_RADIUS;
@@ -28,7 +28,7 @@ public class WorldClient extends World {
 
   public void playerChangedPosition() {
     synchronized (this) {
-      playerArea.setFromPositionVector3(CubesClient.instance.player.position);
+      playerArea.setFromPositionVector3(Cubes.getClient().player.position);
       if (playerArea.areaX - AREA_LOAD_RADIUS != minAreaX || playerArea.areaY - AREA_LOAD_RADIUS != minAreaY || playerArea.areaZ - AREA_LOAD_RADIUS != minAreaZ) {
         minAreaX = playerArea.areaX - AREA_LOAD_RADIUS;
         minAreaY = playerArea.areaY - AREA_LOAD_RADIUS;

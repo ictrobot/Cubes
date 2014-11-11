@@ -7,6 +7,7 @@ import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.networking.packet.environment.SendingPacketEnvironment;
 import ethanjones.cubes.side.Side;
+import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.CubesServer;
 import ethanjones.cubes.side.server.PlayerManager;
 
@@ -29,7 +30,7 @@ public class PacketChat extends Packet {
     if (getPacketEnvironment().getReceiving().getSide() == Side.Server) {
       Log.info(" [Chat]" + msg);
       setPacketEnvironment(new SendingPacketEnvironment());
-      for (PlayerManager playerManager : CubesServer.instance.playerManagers.values()) {
+      for (PlayerManager playerManager : Cubes.getServer().playerManagers.values()) {
         playerManager.sendPacket(this);
       }
     }

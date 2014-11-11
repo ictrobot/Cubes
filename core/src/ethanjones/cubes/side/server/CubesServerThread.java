@@ -8,7 +8,7 @@ import ethanjones.cubes.side.common.Cubes;
 
 public class CubesServerThread extends Thread implements Disposable {
 
-  private final CubesServer server;
+  public final CubesServer server;
   private boolean running = false;
 
   public CubesServerThread(CubesServer server) {

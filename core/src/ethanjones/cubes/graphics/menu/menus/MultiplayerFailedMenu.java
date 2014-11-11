@@ -4,7 +4,8 @@ import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
-import ethanjones.cubes.core.adapter.GraphicalAdapter;
+import ethanjones.cubes.core.platform.Adapter;
+import ethanjones.cubes.core.platform.GraphicalAdapter;
 import ethanjones.cubes.core.localization.Localization;
 
 public class MultiplayerFailedMenu extends InfoMenu {
@@ -26,12 +27,12 @@ public class MultiplayerFailedMenu extends InfoMenu {
       @Override
       public boolean handle(Event event) {
         if (!(event instanceof ChangeListener.ChangeEvent)) return false;
-        GraphicalAdapter.instance.setMenu(null);
-        GraphicalAdapter.instance.setCubes(null, null);
+        Adapter.setMenu(null);
+        Adapter.setClient(null);
+        Adapter.setServer(null);
         return true;
       }
     });
-    GraphicalAdapter.instance.setCubes(null, null);
     firstRender = false;
   }
 }

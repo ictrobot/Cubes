@@ -13,6 +13,7 @@ import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.networking.packets.*;
 import ethanjones.cubes.networking.socket.SocketMonitor;
 import ethanjones.cubes.side.Sided;
+import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.storage.Area;
@@ -22,6 +23,7 @@ import ethanjones.cubes.world.thread.SendWorldCallable;
 
 public class PlayerManager {
 
+  private final CubesServer server;
   private final Player player;
   private final AreaReference playerArea;
   private final PacketConnect packetConnect;
@@ -31,6 +33,7 @@ public class PlayerManager {
   private int renderDistance;
 
   public PlayerManager(PacketConnect packetConnect) {
+    this.server = Cubes.getServer();
     this.packetConnect = packetConnect;
     this.socketMonitor = packetConnect.getPacketEnvironment().getReceiving().getSocketMonitor();
     this.player = new Player(packetConnect.username); //TODO Store users and world
@@ -38,7 +41,7 @@ public class PlayerManager {
     this.keys = new ArrayList<Integer>();
     this.buttons = new ArrayList<Integer>();
 
-    CubesServer.instance.playerManagers.put(socketMonitor, this);
+    server.playerManagers.put(socketMonitor, this);
 
     renderDistance = packetConnect.renderDistance;
 
@@ -66,11 +69,11 @@ public class PlayerManager {
   }
 
   private void sendAndRequestArea(AreaReference areaReference) {
-    Area area = CubesServer.instance.world.getAreaInternal(areaReference, false, false);
+    Area area = server.world.getAreaInternal(areaReference, false, false);
     if (area == null || area instanceof BlankArea) {
-      Threads.execute(new SendWorldCallable(new GenerateWorldCallable(areaReference.clone(), (ethanjones.cubes.world.WorldServer) CubesServer.instance.world), socketMonitor.getSocketOutput().getPacketQueue(), this));
+      Threads.execute(new SendWorldCallable(new GenerateWorldCallable(areaReference.clone(), (ethanjones.cubes.world.WorldServer) server.world), socketMonitor.getSocketOutput().getPacketQueue(), this));
     } else {
-      Threads.execute(new SendWorldCallable(CubesServer.instance.world.getAreaInternal(areaReference, false, false), socketMonitor.getSocketOutput().getPacketQueue(), this));
+      Threads.execute(new SendWorldCallable(server.world.getAreaInternal(areaReference, false, false), socketMonitor.getSocketOutput().getPacketQueue(), this));
     }
   }
 
@@ -113,7 +116,7 @@ public class PlayerManager {
     packet.x = blockReference.blockX;
     packet.y = blockReference.blockY;
     packet.z = blockReference.blockZ;
-    packet.block = Sided.getBlockManager().toInt(CubesServer.instance.world.getBlock(packet.x, packet.y, packet.z));
+    packet.block = Sided.getBlockManager().toInt(server.world.getBlock(packet.x, packet.y, packet.z));
     socketMonitor.queue(packet);
   }
 
@@ -182,10 +185,10 @@ public class PlayerManager {
 
   protected void update() {
     if (buttonDown(Buttons.LEFT)) {
-      RayTracing.BlockIntersection blockIntersection = RayTracing.getBlockIntersection(player.position, player.angle, CubesServer.instance.world);
+      RayTracing.BlockIntersection blockIntersection = RayTracing.getBlockIntersection(player.position, player.angle, server.world);
       if (blockIntersection == null) return;
       BlockReference blockReference = blockIntersection.getBlockReference();
-      CubesServer.instance.world.setBlock(null, blockReference.blockX, blockReference.blockY, blockReference.blockZ);
+      server.world.setBlock(null, blockReference.blockX, blockReference.blockY, blockReference.blockZ);
     }
   }
 }

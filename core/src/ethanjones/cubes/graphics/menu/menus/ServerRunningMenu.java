@@ -5,12 +5,9 @@ import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
-import ethanjones.cubes.core.adapter.GraphicalAdapter;
 import ethanjones.cubes.core.localization.Localization;
+import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.networking.server.ServerNetworkingParameter;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
-import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.CubesServer;
 
 public class ServerRunningMenu extends InfoMenu {
@@ -26,7 +23,7 @@ public class ServerRunningMenu extends InfoMenu {
       @Override
       public boolean handle(Event event) {
         if (!(event instanceof ChangeListener.ChangeEvent)) return false;
-        Cubes.quit(false);
+        Adapter.gotoMainMenu();
         return true;
       }
     });
@@ -35,10 +32,10 @@ public class ServerRunningMenu extends InfoMenu {
   public void render() {
     super.render();
     frameNum++;
-    if (frameNum == 1) return;
-    if (Sided.isSetup(Side.Server)) return;
+    if (frameNum != 2) return;
     CubesServer cubesServer = new CubesServer(new ServerNetworkingParameter(port));
-    GraphicalAdapter.instance.setCubes(cubesServer, null);
+    Adapter.setServer(cubesServer);
+    Adapter.setClient(null);
     text.setText(Localization.get("menu.server.running"));
     resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
   }

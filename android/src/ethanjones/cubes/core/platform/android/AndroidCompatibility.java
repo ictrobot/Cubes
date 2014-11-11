@@ -7,14 +7,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.files.FileHandle;
 
-import ethanjones.cubes.core.adapter.GraphicalAdapter;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.mod.ModLoader;
+import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menu.MenuManager;
-import ethanjones.cubes.graphics.menu.menus.MainMenu;
+import ethanjones.cubes.side.common.Cubes;
 
 public class AndroidCompatibility extends Compatibility {
 
@@ -72,15 +72,14 @@ public class AndroidCompatibility extends Compatibility {
   public void render() {
     if (back) {
       back = false;
-      Menu current = GraphicalAdapter.instance.getMenu();
-      if (current == null) {
-        GraphicalAdapter.instance.setMenu(new MainMenu());
-        GraphicalAdapter.instance.setCubes(null, null);
+      Menu current = Adapter.getMenu();
+      if (Cubes.getClient() != null || Cubes.getServer() != null || current == null) {
+        Adapter.gotoMainMenu();
         return;
       }
       Menu prev = MenuManager.getPrevious(current);
       if (prev == null) return;
-      GraphicalAdapter.instance.setMenu(prev);
+      Adapter.setMenu(prev);
     }
   }
 }

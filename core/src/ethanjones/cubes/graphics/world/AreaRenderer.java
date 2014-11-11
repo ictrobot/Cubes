@@ -16,6 +16,7 @@ import ethanjones.cubes.core.util.Direction;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.client.CubesClient;
+import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.storage.Area;
 
 import static ethanjones.cubes.graphics.world.FaceVertices.*;
@@ -57,7 +58,7 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
   }
 
   public Mesh mesh;
-  public boolean dirty = true;
+  public boolean refresh = true;
   Vector3 offset = new Vector3();
   private int numVertices = 0;
   private Area area;
@@ -70,11 +71,11 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
   @Override
   public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
     if (area == null) return;
-    if (dirty) {
+    if (refresh) {
       int numVerts = calculateVertices(vertices);
       numVertices = numVerts / 4 * 6;
       mesh.setVertices(vertices, 0, numVerts * VERTEX_SIZE);
-      dirty = false;
+      refresh = false;
     }
     if (numVertices <= 0) return;
     Renderable renderable = pool.obtain();
@@ -89,12 +90,12 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
   public int calculateVertices(float[] vertices) {
     if (area == null) return 0;
 
-    Area maxX = CubesClient.instance.world.getArea(area.x + 1, area.y, area.z);
-    Area minX = CubesClient.instance.world.getArea(area.x - 1, area.y, area.z);
-    Area maxY = CubesClient.instance.world.getArea(area.x, area.y + 1, area.z);
-    Area minY = CubesClient.instance.world.getArea(area.x, area.y - 1, area.z);
-    Area maxZ = CubesClient.instance.world.getArea(area.x, area.y, area.z + 1);
-    Area minZ = CubesClient.instance.world.getArea(area.x, area.y, area.z - 1);
+    Area maxX = Cubes.getClient().world.getArea(area.x + 1, area.y, area.z);
+    Area minX = Cubes.getClient().world.getArea(area.x - 1, area.y, area.z);
+    Area maxY = Cubes.getClient().world.getArea(area.x, area.y + 1, area.z);
+    Area minY = Cubes.getClient().world.getArea(area.x, area.y - 1, area.z);
+    Area maxZ = Cubes.getClient().world.getArea(area.x, area.y, area.z + 1);
+    Area minZ = Cubes.getClient().world.getArea(area.x, area.y, area.z - 1);
 
     int i = 0;
     int vertexOffset = 0;
@@ -161,13 +162,13 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
   public void reset() {
     area.areaRenderer = null;
     area = null;
-    dirty = true;
+    refresh = true;
   }
 
   public AreaRenderer set(Area area) {
     this.area = area;
     this.area.areaRenderer = this;
-    this.dirty = true;
+    this.refresh = true;
     this.offset.set(area.minBlockX, area.minBlockY, area.minBlockZ);
     return this;
   }

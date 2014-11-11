@@ -9,7 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import java.util.ArrayList;
 import java.util.Map;
 
-import ethanjones.cubes.core.adapter.GraphicalAdapter;
+import ethanjones.cubes.core.platform.Adapter;
+import ethanjones.cubes.core.platform.GraphicalAdapter;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.settings.SettingGroup;
 import ethanjones.cubes.core.settings.Settings;
@@ -138,6 +139,6 @@ public class SettingsMenu extends Menu implements VisualSettingManager {
 
   @Override
   public void setSettingGroup(SettingGroup settingGroup) {
-    GraphicalAdapter.instance.setMenu(new SettingsMenu(settingGroup));
+    Adapter.setMenu(new SettingsMenu(settingGroup));
   }
 }

@@ -7,7 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
-import ethanjones.cubes.core.adapter.GraphicalAdapter;
+import ethanjones.cubes.core.platform.Adapter;
+import ethanjones.cubes.core.platform.GraphicalAdapter;
 import ethanjones.cubes.core.localization.Localization;
 
 public class MenuTools {
@@ -104,7 +105,7 @@ public class MenuTools {
       public void changed(ChangeEvent event, Actor actor) {
         Menu prev = MenuManager.getPrevious(menu);
         if (prev == null) return;
-        GraphicalAdapter.instance.setMenu(prev);
+        Adapter.setMenu(prev);
       }
     });
     return textButton;

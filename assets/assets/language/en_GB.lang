@@ -1,6 +1,7 @@
 en_GB
 menu.general.back=Back
 menu.general.loading=Loading
+menu.general.waiting=Waiting
 menu.general.return_main_menu=Return to main menu
 
 menu.main.singleplayer=Singleplayer
@@ -34,6 +35,7 @@ settings.graphics.fieldOfView=FOV
 
 settings.networking=Networking
 settings.networking.port=Port
+
 
 hud.chat=Chat
 hud.debug=Debug

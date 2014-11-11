@@ -6,8 +6,6 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
-import ethanjones.cubes.core.adapter.GraphicalAdapter;
-import ethanjones.cubes.core.adapter.HeadlessAdapter;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.mod.ModLoader;
 import ethanjones.cubes.core.system.CubesException;
