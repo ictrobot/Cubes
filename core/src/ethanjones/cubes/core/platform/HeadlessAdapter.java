@@ -3,6 +3,7 @@ package ethanjones.cubes.core.platform;
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.core.system.Memory;
 import ethanjones.cubes.graphics.menu.Menu;
+import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.server.ServerNetworkingParameter;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.client.CubesClient;
@@ -22,7 +23,8 @@ public class HeadlessAdapter implements AdapterInterface {
     try {
       Thread.currentThread().setName(Side.Server.name());
       Cubes.setup(this);
-      cubesServer = new CubesServer(new ServerNetworkingParameter());
+      NetworkingManager.serverPreInit(new ServerNetworkingParameter());
+      cubesServer = new CubesServer();
       cubesServer.create();
     } catch (Exception e) {
       Debug.crash(e);

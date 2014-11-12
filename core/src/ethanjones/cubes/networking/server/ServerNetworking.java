@@ -9,23 +9,29 @@ import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.socket.SocketMonitor;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.common.Cubes;
-import ethanjones.cubes.side.server.CubesServer;
 
 public class ServerNetworking extends Networking {
 
+  private final ServerNetworkingParameter serverNetworkingParameter;
   private final int port;
   private Array<SocketMonitor> sockets;
-  private SocketMonitorServer serverSocketMonitor;
+  private ServerSocketMonitor serverSocketMonitor;
 
-  public ServerNetworking(int port) {
+  public ServerNetworking(ServerNetworkingParameter serverNetworkingParameter) {
     super(Side.Server);
+    this.serverNetworkingParameter = serverNetworkingParameter;
+    this.port = serverNetworkingParameter.port;
     sockets = new Array<SocketMonitor>();
-    this.port = port;
-    serverSocketMonitor = new SocketMonitorServer(port);
   }
 
-  public synchronized void start() {
-    setNetworkingState(NetworkingState.Starting);
+  public synchronized void preInit() throws Exception {
+    setNetworkingState(NetworkingState.PreInit);
+    serverSocketMonitor = new ServerSocketMonitor(port);
+  }
+
+  @Override
+  public void init() {
+    setNetworkingState(NetworkingState.Init);
     Log.info("Starting Server Networking");
     serverSocketMonitor.start();
     setNetworkingState(NetworkingState.Running);
@@ -55,6 +61,7 @@ public class ServerNetworking extends Networking {
       return;
     }
     Log.info("Disconnected from " + socketMonitor.getRemoteAddress(), e);
+    packetBuffer.removeFromSender(socketMonitor);
     Cubes.getServer().playerManagers.remove(socketMonitor);
   }
 

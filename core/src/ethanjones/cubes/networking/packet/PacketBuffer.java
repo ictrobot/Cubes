@@ -1,8 +1,10 @@
 package ethanjones.cubes.networking.packet;
 
 import com.badlogic.gdx.utils.Array;
+import java.util.Iterator;
 
 import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.networking.socket.SocketMonitor;
 
 public class PacketBuffer {
 
@@ -32,6 +34,18 @@ public class PacketBuffer {
           } else {
             Log.error("Failed to handle packet", e);
           }
+        }
+      }
+    }
+  }
+
+  public void removeFromSender(SocketMonitor socketMonitor) {
+    synchronized (packets) {
+      Iterator<Packet> iterator = packets.iterator();
+      while (iterator.hasNext()) {
+        Packet packet = iterator.next();
+        if (packet.getPacketEnvironment().getReceiving().getSocketMonitor() == socketMonitor) {
+          iterator.remove();
         }
       }
     }

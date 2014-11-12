@@ -31,7 +31,7 @@ public class Settings {
     addSetting(USERNAME, new StringSetting("User"));
     addSetting(GRAPHICS_VIEW_DISTANCE, new IntegerSetting(1, 1, 10, IntegerSetting.Type.Slider));
     addSetting(GRAPHICS_FOV, new IntegerSetting(67, 10, 120, IntegerSetting.Type.Slider));
-    addSetting(NETWORKING_PORT, new IntegerSetting(8080));
+    addSetting(NETWORKING_PORT, new IntegerSetting(24842));
 
     base.add(USERNAME).add(GROUP_GRAPHICS, new SettingGroup().add(GRAPHICS_VIEW_DISTANCE).add(GRAPHICS_FOV)).add(GROUP_NETWORKING, new SettingGroup().add(NETWORKING_PORT));
 

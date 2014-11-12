@@ -6,7 +6,6 @@ import com.badlogic.gdx.net.SocketHints;
 
 import ethanjones.cubes.networking.client.ClientNetworking;
 import ethanjones.cubes.networking.client.ClientNetworkingParameter;
-import ethanjones.cubes.networking.packets.PacketConnect;
 import ethanjones.cubes.networking.server.ServerNetworking;
 import ethanjones.cubes.networking.server.ServerNetworkingParameter;
 import ethanjones.cubes.side.Side;
@@ -28,15 +27,22 @@ public class NetworkingManager {
     socketHints.connectTimeout = 30000;
   }
 
-  public static void connectClient(ClientNetworkingParameter clientNetworkingParameter) {
-    clientNetworking = new ClientNetworking(clientNetworkingParameter.host, clientNetworkingParameter.port);
-    clientNetworking.start();
-    clientNetworking.sendToServer(new PacketConnect());
+  public static void clientPreInit(ClientNetworkingParameter clientNetworkingParameter) throws Exception {
+    clientNetworking = new ClientNetworking(clientNetworkingParameter);
+    clientNetworking.preInit();
   }
 
-  public static void startServer(ServerNetworkingParameter serverNetworkingParameter) {
-    serverNetworking = new ServerNetworking(serverNetworkingParameter.port);
-    serverNetworking.start();
+  public static void clientInit() {
+    clientNetworking.init();
+  }
+
+  public static void serverPreInit(ServerNetworkingParameter serverNetworkingParameter) throws Exception {
+    serverNetworking = new ServerNetworking(serverNetworkingParameter);
+    serverNetworking.preInit();
+  }
+
+  public static void serverInit() {
+    serverNetworking.init();
   }
 
   public static Networking getNetworking(Side side) {

@@ -13,10 +13,10 @@ public class Branding {
   public final static String PLATFORM;
 
   public final static String VERSION_HASH;
-  public final static String VERSION_MAJOR;
-  public final static String VERSION_MINOR;
-  public final static String VERSION_POINT;
-  public final static String VERSION_BUILD;
+  public final static int VERSION_MAJOR;
+  public final static int VERSION_MINOR;
+  public final static int VERSION_POINT;
+  public final static int VERSION_BUILD;
   public final static String VERSION_FULL;
   public final static String VERSION_MAJOR_MINOR_POINT;
   public final static String VERSION;
@@ -68,18 +68,20 @@ public class Branding {
         }
       }
 
-      VERSION_MAJOR = properties.getProperty("major");
-      VERSION_MINOR = properties.getProperty("minor");
-      VERSION_POINT = properties.getProperty("point");
-      VERSION_BUILD = properties.getProperty("build") != null ? properties.getProperty("build") : "";
+      VERSION_MAJOR = Integer.parseInt(properties.getProperty("major"));
+      VERSION_MINOR = Integer.parseInt(properties.getProperty("minor"));
+      VERSION_POINT = Integer.parseInt(properties.getProperty("point"));
+      VERSION_BUILD = properties.getProperty("build") != null ? Integer.parseInt(properties.getProperty("build")) : -1;
       VERSION_HASH = properties.getProperty("hash") != null ? properties.getProperty("hash") : "";
-      VERSION_FULL = VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_POINT + "." + VERSION_BUILD;
-      VERSION_MAJOR_MINOR_POINT = VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_POINT;
 
-      if (VERSION_BUILD.isEmpty()) {
-        VERSION = "Development [" + VERSION_MAJOR_MINOR_POINT + "]";
+      if (VERSION_BUILD == -1) {
+        VERSION_FULL = VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_POINT;
+        VERSION_MAJOR_MINOR_POINT = VERSION_FULL;
+        VERSION = "Development [" + VERSION_FULL + "]";
         IS_DEBUG = true;
       } else {
+        VERSION_FULL = VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_POINT + "." + VERSION_BUILD;
+        VERSION_MAJOR_MINOR_POINT = VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_POINT;
         VERSION = VERSION_FULL;
         IS_DEBUG = false;
       }

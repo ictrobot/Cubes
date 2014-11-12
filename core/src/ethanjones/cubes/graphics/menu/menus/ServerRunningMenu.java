@@ -6,7 +6,9 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import ethanjones.cubes.core.localization.Localization;
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Adapter;
+import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.server.ServerNetworkingParameter;
 import ethanjones.cubes.side.server.CubesServer;
 
@@ -33,7 +35,15 @@ public class ServerRunningMenu extends InfoMenu {
     super.render();
     frameNum++;
     if (frameNum != 2) return;
-    CubesServer cubesServer = new CubesServer(new ServerNetworkingParameter(port));
+    try {
+      NetworkingManager.serverPreInit(new ServerNetworkingParameter(port));
+    } catch (Exception e) {
+      Log.error("Failed to start the server", e); //FIXME make menu
+      Adapter.setMenu(new MainMenu());
+      Adapter.setServer(null);
+      Adapter.setClient(null);
+    }
+    CubesServer cubesServer = new CubesServer();
     Adapter.setServer(cubesServer);
     Adapter.setClient(null);
     text.setText(Localization.get("menu.server.running"));

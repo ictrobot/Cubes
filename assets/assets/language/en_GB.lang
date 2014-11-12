@@ -12,14 +12,14 @@ menu.main.quit=Quit
 
 menu.multiplayer.title=Multiplayer
 menu.multiplayer.address=Address
-menu.multiplayer.port=Port (8080)
+menu.multiplayer.port=Port (%s)
 menu.multiplayer.connect=Connect
 menu.multiplayer.connecting=Connecting
 menu.multiplayer.failed=Failed to connect
 menu.multiplayer.failed_exception=Failed to connect:
 
 menu.server.title=Server
-menu.server.port=Port
+menu.server.port=Port (%s)
 menu.server.start=Start
 menu.server.running=Running
 menu.server.stop=Stop

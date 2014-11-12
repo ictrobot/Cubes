@@ -9,10 +9,11 @@ import ethanjones.cubes.side.Side;
 public abstract class Networking {
 
   public static enum NetworkingState {
-    Starting, Running, Stopping, Stopped
+    PreInit, Init, Running, Stopping, Stopped
   }
+
   private final Side side;
-  private PacketBuffer packetBuffer;
+  protected PacketBuffer packetBuffer;
   private volatile NetworkingState networkingState;
   private PacketIDDatabase packetIDDatabase;
 
@@ -30,7 +31,12 @@ public abstract class Networking {
     this.networkingState = networkingState;
   }
 
-  public abstract void start();
+  /**
+   * Construct socket
+   */
+  public abstract void preInit() throws Exception;
+
+  public abstract void init();
 
   public abstract void tick();
 

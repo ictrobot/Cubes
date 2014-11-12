@@ -71,13 +71,18 @@ public class Localization {
     return null;
   }
 
-  public static String get(String str) {
+  public static String get(String str, Object... format) {
     if (language != null) {
       String localised = language.get(str);
-      if (localised != null) return localised;
+      if (localised != null) return format(localised, format);
     }
     String defaultLocalised = defaultLanguage.get(str);
-    if (defaultLocalised != null) return defaultLocalised;
+    if (defaultLocalised != null) return format(defaultLocalised, format);
     return str;
+  }
+
+  private static String format(String str, Object[] format) {
+    if (format.length == 0) return str;
+    return String.format(str, format);
   }
 }

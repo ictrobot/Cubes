@@ -25,7 +25,7 @@ public class MultiplayerConnectMenu extends Menu {
     address = new TextField("", skin);
     address.setMessageText(Localization.get("menu.multiplayer.address"));
     port = new TextField("", skin);
-    port.setMessageText(Localization.get("menu.multiplayer.port"));
+    port.setMessageText(Localization.get("menu.multiplayer.port", 24842)); //Not "Settings.getIntegerSettingValue(Settings.NETWORKING_PORT)" because the port is set on the server
     port.setTextFieldFilter(new TextField.TextFieldFilter.DigitsOnlyFilter());
     connect = new TextButton(Localization.get("menu.multiplayer.connect"), skin);
     back = MenuTools.getBackButton(this);
@@ -33,7 +33,7 @@ public class MultiplayerConnectMenu extends Menu {
     connect.addListener(new ChangeListener() {
       @Override
       public void changed(ChangeEvent event, Actor actor) {
-        Adapter.setMenu(new MultiplayerLoadingMenu(address.getText(), port.getText().isEmpty() ? 8080 : Integer.parseInt(port.getText())));
+        Adapter.setMenu(new MultiplayerLoadingMenu(address.getText().isEmpty() ? "localhost" : address.getText(), port.getText().isEmpty() ? 24842 : Integer.parseInt(port.getText())));
       }
     });
   }

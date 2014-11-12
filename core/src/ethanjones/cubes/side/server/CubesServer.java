@@ -8,7 +8,6 @@ import ethanjones.cubes.core.mod.event.StartingServerEvent;
 import ethanjones.cubes.core.mod.event.StoppingServerEvent;
 import ethanjones.cubes.core.timing.TimeHandler;
 import ethanjones.cubes.networking.NetworkingManager;
-import ethanjones.cubes.networking.server.ServerNetworkingParameter;
 import ethanjones.cubes.networking.socket.SocketMonitor;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
@@ -18,25 +17,18 @@ import ethanjones.cubes.world.generator.BasicWorldGenerator;
 
 public class CubesServer extends Cubes implements TimeHandler {
 
-  private final ServerNetworkingParameter serverNetworkingParameter;
   public CubesServerThread thread; //only on singleplayer
   public HashMap<SocketMonitor, PlayerManager> playerManagers;
 
-  public CubesServer(ServerNetworkingParameter serverNetworkingParameter) {
+  public CubesServer() {
     super(Side.Server);
-    this.serverNetworkingParameter = serverNetworkingParameter;
     playerManagers = new HashMap<SocketMonitor, PlayerManager>();
   }
 
   @Override
   public void create() {
     super.create();
-    NetworkingManager.startServer(serverNetworkingParameter);
-    if (Cubes.getClient() != null && Cubes.getClient().wait != null) {
-      synchronized (Cubes.getClient().wait) {
-        Cubes.getClient().wait.notifyAll();
-      }
-    }
+    NetworkingManager.serverInit();
 
     world = new WorldServer(new BasicWorldGenerator());
 
