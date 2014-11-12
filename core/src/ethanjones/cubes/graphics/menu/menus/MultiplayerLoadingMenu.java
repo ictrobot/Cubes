@@ -36,7 +36,9 @@ public class MultiplayerLoadingMenu extends InfoMenu {
       Adapter.setClient(null);
       Log.error("Failed to connect", e);
       Log.error("Address:" + address + " Port:" + port);
-      Adapter.setMenu(new MultiplayerFailedMenu(e));
+      Adapter.setMenu(new ConnectionFailedMenu(e));
+      Adapter.setClient(null);
+      Adapter.setServer(null);
     }
   }
 }

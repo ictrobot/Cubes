@@ -38,10 +38,11 @@ public class ServerRunningMenu extends InfoMenu {
     try {
       NetworkingManager.serverPreInit(new ServerNetworkingParameter(port));
     } catch (Exception e) {
-      Log.error("Failed to start the server", e); //FIXME make menu
-      Adapter.setMenu(new MainMenu());
-      Adapter.setServer(null);
+      Log.error("Failed to start server", e);
+      Adapter.setMenu(new ConnectionFailedMenu(e));
       Adapter.setClient(null);
+      Adapter.setServer(null);
+      return;
     }
     CubesServer cubesServer = new CubesServer();
     Adapter.setServer(cubesServer);

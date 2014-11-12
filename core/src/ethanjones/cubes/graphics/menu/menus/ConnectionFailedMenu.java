@@ -7,16 +7,21 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.platform.Adapter;
 
-public class MultiplayerFailedMenu extends InfoMenu {
+public class ConnectionFailedMenu extends InfoMenu {
+
+  private static String getString(Exception e) {
+    if (e.getCause() == null) return System.lineSeparator() + e.getClass().getSimpleName();
+    return System.lineSeparator() + e.getClass().getSimpleName() + System.lineSeparator() + e.getCause();
+  }
 
   private boolean firstRender = true;
 
-  public MultiplayerFailedMenu(Exception e) {
-    super(Localization.get("menu.multiplayer.failed_exception") + System.lineSeparator() + e.getClass().getSimpleName(), Localization.get("menu.general.return_main_menu"));
+  public ConnectionFailedMenu(Exception e) {
+    super(Localization.get("menu.connection_failed.failed_exception") + getString(e), Localization.get("menu.general.return_main_menu"));
   }
 
-  public MultiplayerFailedMenu() {
-    super(Localization.get("menu.multiplayer.failed"), Localization.get("menu.general.return_main_menu"));
+  public ConnectionFailedMenu() {
+    super(Localization.get("menu.connection_failed.failed"), Localization.get("menu.general.return_main_menu"));
   }
 
   public void render() {
@@ -27,8 +32,6 @@ public class MultiplayerFailedMenu extends InfoMenu {
       public boolean handle(Event event) {
         if (!(event instanceof ChangeListener.ChangeEvent)) return false;
         Adapter.setMenu(new MainMenu());
-        Adapter.setClient(null);
-        Adapter.setServer(null);
         return true;
       }
     });

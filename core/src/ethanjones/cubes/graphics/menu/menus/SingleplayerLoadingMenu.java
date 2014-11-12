@@ -21,8 +21,12 @@ public class SingleplayerLoadingMenu extends InfoMenu {
     try {
       NetworkingManager.serverPreInit(new ServerNetworkingParameter());
       NetworkingManager.clientPreInit(new ClientNetworkingParameter("localhost", Settings.getIntegerSettingValue(Settings.NETWORKING_PORT)));
-    } catch (Exception e) { //FIXME
-      Log.error("Failed to open singleplayer", e);
+    } catch (Exception e) {
+      Log.error("Failed to start singleplayer", e);
+      Adapter.setMenu(new ConnectionFailedMenu(e));
+      Adapter.setClient(null);
+      Adapter.setServer(null);
+      return;
     }
     Adapter.setServer(new CubesServer());
     Adapter.setClient(new CubesClient());
