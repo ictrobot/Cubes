@@ -30,6 +30,9 @@ public class Debug {
   private static volatile boolean hasCrashed = false;
 
   public static void printProperties() {
+    if (Branding.VERSION_HASH != null && !Branding.VERSION_HASH.isEmpty()) {
+      Log.debug("Hash:               " + Branding.VERSION_HASH);
+    }
     Log.debug("Java Home:          " + System.getProperty("java.home"));
     Log.debug("Java Vendor:        " + System.getProperty("java.vendor"));
     Log.debug("Java Vendor URL:    " + System.getProperty("java.vendor.url"));
@@ -70,7 +73,8 @@ public class Debug {
       if (Cubes.getServer() != null) Cubes.getServer().dispose();
     } catch (Exception e) {
 
-    } System.exit(1);
+    }
+    System.exit(1);
   }
 
   public static synchronized void printMods(LogLevel logLevel) {

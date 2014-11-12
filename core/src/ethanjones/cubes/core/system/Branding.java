@@ -12,6 +12,7 @@ public class Branding {
   public final static String NAME;
   public final static String PLATFORM;
 
+  public final static String VERSION_HASH;
   public final static String VERSION_MAJOR;
   public final static String VERSION_MINOR;
   public final static String VERSION_POINT;
@@ -52,6 +53,7 @@ public class Branding {
           buildProperties.load(input);
           if (buildProperties.getProperty("build") != null) {
             properties.setProperty("build", buildProperties.getProperty("build"));
+            properties.setProperty("hash", buildProperties.getProperty("hash"));
           }
         } catch (IOException ex) {
           Log.error("Failed to load build", ex);
@@ -70,6 +72,7 @@ public class Branding {
       VERSION_MINOR = properties.getProperty("minor");
       VERSION_POINT = properties.getProperty("point");
       VERSION_BUILD = properties.getProperty("build") != null ? properties.getProperty("build") : "";
+      VERSION_HASH = properties.getProperty("hash") != null ? properties.getProperty("hash") : "";
       VERSION_FULL = VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_POINT + "." + VERSION_BUILD;
       VERSION_MAJOR_MINOR_POINT = VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_POINT;
 

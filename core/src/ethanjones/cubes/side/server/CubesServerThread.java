@@ -1,12 +1,10 @@
 package ethanjones.cubes.side.server;
 
-import com.badlogic.gdx.utils.Disposable;
-
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.common.Cubes;
 
-public class CubesServerThread extends Thread implements Disposable {
+public class CubesServerThread extends Thread {
 
   public final CubesServer server;
   private boolean running = false;
@@ -42,8 +40,7 @@ public class CubesServerThread extends Thread implements Disposable {
     }
   }
 
-  @Override
-  public void dispose() {
+  protected void dispose() {
     running = false;
   }
 }

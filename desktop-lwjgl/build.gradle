@@ -6,14 +6,6 @@ sourceSets.main.java.srcDirs = ["src/"]
 project.ext.mainClassName = "ethanjones.cubes.core.platform.desktop.LwjglLauncher"
 project.ext.assetsDir = new File("../assets");
 
-task run(dependsOn: classes, type: JavaExec) {
-    main = project.mainClassName
-    classpath = sourceSets.main.runtimeClasspath
-    standardInput = System.in
-    workingDir = project.assetsDir
-    ignoreExitValue = true
-}
-
 task dist(dependsOn: classes, type: Jar) {
     from files(sourceSets.main.output.classesDir)
     from files(sourceSets.main.output.resourcesDir)
@@ -26,6 +18,17 @@ task dist(dependsOn: classes, type: Jar) {
         attributes 'Main-Class': project.mainClassName
     }
 }
+
+task run() << { //DOES NOT BUILD AUTOMATICALLY
+    file(project.buildDir.absolutePath + "/run").mkdirs()
+    javaexec {
+        main = "-jar"
+        args dist.archivePath
+        workingDir = project.buildDir.absolutePath + "/run"
+    }
+}
+
+run.mustRunAfter dist
 
 eclipse {
     project {

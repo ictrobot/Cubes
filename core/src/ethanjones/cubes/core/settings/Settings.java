@@ -7,9 +7,9 @@ import ethanjones.data.DataTools;
 import java.util.HashMap;
 import java.util.Map;
 
-import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.settings.type.BooleanSetting;
 import ethanjones.cubes.core.settings.type.IntegerSetting;
 import ethanjones.cubes.core.settings.type.StringSetting;
@@ -35,21 +35,23 @@ public class Settings {
 
     base.add(USERNAME).add(GROUP_GRAPHICS, new SettingGroup().add(GRAPHICS_VIEW_DISTANCE).add(GRAPHICS_FOV)).add(GROUP_NETWORKING, new SettingGroup().add(NETWORKING_PORT));
 
-    read();
+    if (!read()) {
+      write();
+    }
   }
 
   public static void addSetting(String notLocalised, Setting setting) {
     settings.put(notLocalised, setting);
   }
 
-  public static void read() {
+  public static boolean read() {
     FileHandle fileHandle = Compatibility.get().getBaseFolder().child("settings.data");
     DataGroup dataGroup;
     try {
       dataGroup = (DataGroup) DataTools.read(fileHandle.file());
     } catch (Exception e) {
       Log.error("Failed to read settings", e);
-      return;
+      return false;
     }
     for (Map.Entry<String, Data> entry : dataGroup.getEntrySet()) {
       Setting setting = settings.get(entry.getKey());
@@ -57,6 +59,7 @@ public class Settings {
         setting.read((DataGroup) entry.getValue());
       }
     }
+    return true;
   }
 
   public static void print() {
@@ -99,7 +102,7 @@ public class Settings {
     return (StringSetting) getSetting(notLocalised);
   }
 
-  public static void write() {
+  public static boolean write() {
     FileHandle fileHandle = Compatibility.get().getBaseFolder().child("settings.data");
     DataGroup dataGroup = new DataGroup();
     for (Map.Entry<String, Setting> entry : settings.entrySet()) {
@@ -110,7 +113,9 @@ public class Settings {
     } catch (Exception e) {
       Log.error("Failed to write settings", e);
       fileHandle.delete();
+      return false;
     }
+    return true;
   }
 
   public static String getLocalisedSettingGroupName(String notLocalised) {
