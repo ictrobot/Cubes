@@ -60,6 +60,10 @@ public class AndroidCompatibility extends Compatibility {
   @Override
   protected void run(ApplicationListener applicationListener) {
     AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+    config.useAccelerometer = false;
+    config.useCompass = false;
+    config.useWakelock = true;
+    config.useImmersiveMode = true;
     androidLauncher.initialize(applicationListener, config);
   }
 
