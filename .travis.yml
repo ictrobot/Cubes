@@ -5,4 +5,17 @@ jdk:
   - oraclejdk7
   - openjdk7
 
-script: "./gradlew travis"
+before_install:
+ - true
+install:
+ - true
+before_script:
+ - "chmod +x gradlew"
+script:
+ - "./gradlew travis"
+after_success:
+ - true
+after_failure:
+ - true
+after_script:
+ - true
