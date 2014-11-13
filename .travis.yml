@@ -8,7 +8,7 @@ jdk:
 before_install:
  - true
 install:
- - true
+ - "sudo apt-get install lib32stdc++6 lib32z1"
 before_script:
  - "chmod +x gradlew"
 script:
@@ -16,6 +16,6 @@ script:
 after_success:
  - true
 after_failure:
- - "tree /home/travis/.android-sdk/"
+ - true
 after_script:
  - true
