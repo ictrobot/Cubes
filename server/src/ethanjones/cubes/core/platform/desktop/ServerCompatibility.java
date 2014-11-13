@@ -5,13 +5,13 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.files.FileHandle;
 
-public class HeadlessCompatibility extends DesktopCompatibility {
+public class ServerCompatibility extends DesktopCompatibility {
 
-  protected HeadlessCompatibility(HeadlessLauncher headlessLauncher, String[] arg) {
-    super(headlessLauncher, Application.ApplicationType.HeadlessDesktop, arg);
+  protected ServerCompatibility(ServerLauncher serverLauncher, String[] arg) {
+    super(serverLauncher, Application.ApplicationType.HeadlessDesktop, arg);
   }
 
-  public boolean isHeadless() {
+  public boolean isServer() {
     return true;
   }
 

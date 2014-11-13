@@ -1,19 +1,19 @@
 package ethanjones.cubes.core.platform.desktop;
 
-public class HeadlessLauncher implements DesktopLauncher {
+public class ClientLauncher implements DesktopLauncher {
 
   private final String[] arg;
 
-  private HeadlessLauncher(String[] arg) {
+  private ClientLauncher(String[] arg) {
     this.arg = arg;
   }
 
   public static void main(String[] arg) {
-    new HeadlessLauncher(arg).start();
+    new ClientLauncher(arg).start();
   }
 
   private void start() {
     DesktopSecurityManager.setup();
-    new HeadlessCompatibility(this, arg).startCubes();
+    new ClientCompatibility(this, arg).startCubes();
   }
 }

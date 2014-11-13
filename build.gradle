@@ -79,7 +79,7 @@ project(":core") {
     }
 }
 
-project(":desktop-common") {
+project(":desktop") {
     apply plugin: "java"
 
     dependencies {
@@ -88,20 +88,20 @@ project(":desktop-common") {
     }
 }
 
-project(":desktop-lwjgl") {
+project(":client") {
     apply plugin: "java"
 
     dependencies {
-        compile project(":desktop-common")
+        compile project(":desktop")
         compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
     }
 }
 
-project(":desktop-headless") {
+project(":server") {
     apply plugin: "java"
 
     dependencies {
-        compile project(":desktop-common")
+        compile project(":desktop")
         compile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
     }
 }
@@ -124,12 +124,12 @@ tasks.eclipse.doLast {
     delete ".project"
 }
 
-task ci(dependsOn: ['core:publish', 'desktop-headless:dist', 'desktop-lwjgl:dist', 'android:assembleDebug', 'android:assembleRelease']) << {
+task ci(dependsOn: ['core:publish', 'server:dist', 'client:dist', 'android:assembleDebug', 'android:assembleRelease']) << {
 
 }
 
-task travis(dependsOn: ['core:jar', 'desktop-headless:dist', 'desktop-lwjgl:dist', 'android:assembleDebug']) {
-    
+task travis(dependsOn: ['core:jar', 'server:dist', 'client:dist', 'android:assembleDebug']) {
+
 }
 
 def String getMavenVersionString() {

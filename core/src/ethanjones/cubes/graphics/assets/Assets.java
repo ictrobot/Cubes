@@ -74,7 +74,7 @@ public class Assets {
   }
 
   private static PackedTextureSheet getPackedTextureSheet(AssetType assetType) {
-    if (Compatibility.get().isHeadless()) return null;
+    if (Compatibility.get().isServer()) return null;
     TexturePacker texturePacker = new TexturePacker(2048, 2048, 0);
     for (Map.Entry<String, AssetManager> entry : assetManagers.entrySet()) {
       ArrayList<Asset> assets = entry.getValue().getAssets(assetType.name() + "/");

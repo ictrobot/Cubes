@@ -10,11 +10,11 @@ import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.CubesServer;
 
-public class HeadlessAdapter implements AdapterInterface {
+public class ServerAdapter implements AdapterInterface {
 
   private CubesServer cubesServer;
 
-  public HeadlessAdapter() {
+  public ServerAdapter() {
     Adapter.setInterface(this);
   }
 
@@ -68,17 +68,17 @@ public class HeadlessAdapter implements AdapterInterface {
 
   @Override
   public void setClient(CubesClient cubesClient) throws UnsupportedOperationException {
-    throw new UnsupportedOperationException("Headless adapter cannot set client");
+    throw new UnsupportedOperationException("Cannot set client");
   }
 
   @Override
   public void setServer(CubesServer cubesServer) throws UnsupportedOperationException {
-    throw new UnsupportedOperationException("Headless adapter cannot set server");
+    throw new UnsupportedOperationException("Cannot set server");
   }
 
   @Override
   public void setMenu(Menu menu) throws UnsupportedOperationException {
-    throw new UnsupportedOperationException("Headless adapter cannot set menu");
+    throw new UnsupportedOperationException("Cannot set menu");
   }
 
   @Override

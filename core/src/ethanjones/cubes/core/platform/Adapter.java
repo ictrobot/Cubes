@@ -41,10 +41,10 @@ public class Adapter {
   }
 
   /**
-   * Will exit if headless
+   * Will exit if server
    */
   public static void gotoMainMenu() {
-    if (Compatibility.get().isHeadless()) quit();
+    if (Compatibility.get().isServer()) quit();
     if (mainMenu) return;
     mainMenu = true;
     WaitingMenu waitingMenu = new WaitingMenu(new Callback() {

@@ -3,7 +3,7 @@ apply plugin: "java"
 sourceCompatibility = 1.7
 sourceSets.main.java.srcDirs = ["src/"]
 
-project.ext.mainClassName = "ethanjones.cubes.core.platform.desktop.HeadlessLauncher"
+project.ext.mainClassName = "ethanjones.cubes.core.platform.desktop.ClientLauncher"
 project.ext.assetsDir = new File("../assets");
 
 task dist(dependsOn: classes, type: Jar) {
@@ -12,7 +12,7 @@ task dist(dependsOn: classes, type: Jar) {
     from { configurations.compile.collect { zipTree(it) } }
     from files(project.assetsDir);
 
-    archiveName = 'desktop-headless.jar'
+    archiveName = 'client.jar'
 
     manifest {
         attributes 'Main-Class': project.mainClassName
@@ -25,6 +25,7 @@ task run() << { //DOES NOT BUILD AUTOMATICALLY
         main = "-jar"
         args dist.archivePath
         workingDir = project.buildDir.absolutePath + "/run"
+        ignoreExitValue = true
     }
 }
 
@@ -32,7 +33,7 @@ run.mustRunAfter dist
 
 eclipse {
     project {
-        name = appName + "-desktop-headless"
+        name = appName + "-client"
         linkedResource name: 'assets', type: '2', location: 'PARENT-1-PROJECT_LOC/android/assets'
     }
 }
@@ -53,7 +54,7 @@ publishing {
         jar(MavenPublication) {
             artifact dist
             groupId 'ethanjones.cubes'
-            artifactId 'desktop-headless'
+            artifactId 'client'
             version getMavenVersionString()
         }
     }

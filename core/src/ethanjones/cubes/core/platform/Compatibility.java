@@ -73,8 +73,8 @@ public abstract class Compatibility {
     Thread.currentThread().setUncaughtExceptionHandler(UncaughtExceptionHandler.instance);
 
     try {
-      if (isHeadless()) {
-        run(new HeadlessAdapter());
+      if (isServer()) {
+        run(new ServerAdapter());
       } else {
         run(new GraphicalAdapter());
       }
@@ -91,7 +91,7 @@ public abstract class Compatibility {
     }
   }
 
-  public boolean isHeadless() {
+  public boolean isServer() {
     return false;
   }
 
