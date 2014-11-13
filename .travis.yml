@@ -16,6 +16,6 @@ script:
 after_success:
  - true
 after_failure:
- - true
+ - "tree /home/travis/.android-sdk/"
 after_script:
  - true
