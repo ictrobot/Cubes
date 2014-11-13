@@ -128,6 +128,10 @@ task ci(dependsOn: ['core:publish', 'desktop-headless:dist', 'desktop-lwjgl:dist
 
 }
 
+task travis(dependsOn: ['core:jar', 'desktop-headless:dist', 'desktop-lwjgl:dist', 'android:assembleDebug']) {
+    
+}
+
 def String getMavenVersionString() {
     def str = buildProperties.version;
     if (!isRelease) {
