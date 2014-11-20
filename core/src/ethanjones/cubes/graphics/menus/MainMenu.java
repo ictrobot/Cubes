@@ -1,4 +1,4 @@
-package ethanjones.cubes.graphics.menu.menus;
+package ethanjones.cubes.graphics.menus;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;

@@ -1,25 +1,34 @@
 package ethanjones.cubes.networking;
 
+import com.badlogic.gdx.net.ServerSocketHints;
+import com.badlogic.gdx.net.SocketHints;
+
 import ethanjones.cubes.networking.packet.Packet;
-import ethanjones.cubes.networking.packet.PacketBuffer;
 import ethanjones.cubes.networking.packet.PacketIDDatabase;
+import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.networking.socket.SocketMonitor;
-import ethanjones.cubes.side.Side;
 
 public abstract class Networking {
 
   public static enum NetworkingState {
-    PreInit, Init, Running, Stopping, Stopped
+    Starting, Running, Stopping
   }
 
-  private final Side side;
-  protected PacketBuffer packetBuffer;
+  public final static ServerSocketHints serverSocketHints;
+  public final static SocketHints socketHints;
+
+  static {
+    serverSocketHints = new ServerSocketHints();
+    serverSocketHints.acceptTimeout = 0;
+    socketHints = new SocketHints();
+    socketHints.keepAlive = true;
+    socketHints.connectTimeout = 30000;
+  }
+
   private volatile NetworkingState networkingState;
   private PacketIDDatabase packetIDDatabase;
 
-  public Networking(Side side) {
-    this.side = side;
-    this.packetBuffer = new PacketBuffer();
+  public Networking() {
     this.packetIDDatabase = new PacketIDDatabase();
   }
 
@@ -31,38 +40,28 @@ public abstract class Networking {
     this.networkingState = networkingState;
   }
 
-  /**
-   * Construct socket
-   */
   public abstract void preInit() throws Exception;
 
   public abstract void init();
 
-  public abstract void tick();
+  public abstract void update();
 
   public abstract void stop();
 
-  /**
-   * @param e may be null
-   */
+  public void sendPacketToServer(Packet packet) throws UnsupportedOperationException {
+    throw new UnsupportedOperationException();
+  }
+
+  public void sendPacketToClient(Packet packet, ClientIdentifier clientIdentifier) throws UnsupportedOperationException {
+    throw new UnsupportedOperationException();
+  }
+
   public abstract void disconnected(SocketMonitor socketMonitor, Exception e);
 
-  public final void received(Packet packet) {
-    packetBuffer.addPacket(packet);
-  }
+  public abstract void received(SocketMonitor socketMonitor, Packet packet);
 
-  /**
-   * Call on main thread
-   */
-  public final void processPackets() {
-    packetBuffer.process();
-  }
+  public abstract PacketIDDatabase getPacketIDDatabase();
 
-  public final Side getSide() {
-    return side;
-  }
+  public abstract void processPackets();
 
-  public PacketIDDatabase getPacketIDDatabase() {
-    return packetIDDatabase;
-  }
 }

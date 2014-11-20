@@ -9,10 +9,11 @@ import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.CubesServer;
+import ethanjones.cubes.side.server.dedicated.DedicatedServer;
 
 public class ServerAdapter implements AdapterInterface {
 
-  private CubesServer cubesServer;
+  private DedicatedServer cubesServer;
 
   public ServerAdapter() {
     Adapter.setInterface(this);
@@ -24,7 +25,7 @@ public class ServerAdapter implements AdapterInterface {
       Thread.currentThread().setName(Side.Server.name());
       Cubes.setup(this);
       NetworkingManager.serverPreInit(new ServerNetworkingParameter());
-      cubesServer = new CubesServer();
+      cubesServer = new DedicatedServer();
       cubesServer.create();
     } catch (Exception e) {
       Debug.crash(e);

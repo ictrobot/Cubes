@@ -3,9 +3,9 @@ package ethanjones.cubes.networking.packets;
 import ethanjones.data.DataGroup;
 
 import ethanjones.cubes.networking.packet.DataPacket;
-import ethanjones.cubes.networking.packet.environment.PacketPriority;
+import ethanjones.cubes.networking.packet.PacketPriority;
 import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.client.CubesClient;
+import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.PlayerManager;
 import ethanjones.cubes.world.reference.AreaReference;
@@ -21,12 +21,12 @@ public class PacketArea extends DataPacket {
   public PlayerManager playerManager;
 
   public PacketArea() {
-    getPacketEnvironment().getSending().setPacketPriority(PacketPriority.Low);
+    setPacketPriority(PacketPriority.Low);
   }
 
   @Override
   public void handlePacket() {
-    if (getPacketEnvironment().getReceiving().getSide() != Side.Client) return;
+    if ( Sided.getSide() != Side.Client) return;
     areaReference.setFromAreaCoordinates(areaX, areaY, areaZ);
     Area a = new Area(areaX, areaY, areaZ);
     a.read(area);

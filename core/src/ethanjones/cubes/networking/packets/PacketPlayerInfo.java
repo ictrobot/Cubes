@@ -7,9 +7,8 @@ import java.io.DataOutputStream;
 import ethanjones.cubes.core.util.VectorUtil;
 import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.client.CubesClient;
+import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
-import ethanjones.cubes.side.server.CubesServer;
 
 public class PacketPlayerInfo extends Packet {
 
@@ -30,8 +29,8 @@ public class PacketPlayerInfo extends Packet {
 
   @Override
   public void handlePacket() {
-    if (getPacketEnvironment().getReceiving().getSide() == Side.Server) {
-      Cubes.getServer().playerManagers.get(getPacketEnvironment().getReceiving().getSocketMonitor()).handleInfo(this);
+    if (Sided.getSide() == Side.Server) {
+      Cubes.getServer().getClient(getSocketMonitor()).getPlayerManager().handlePacket(this);
     } else {
       Cubes.getClient().player.angle.set(angle);
       Cubes.getClient().player.position.set(position);

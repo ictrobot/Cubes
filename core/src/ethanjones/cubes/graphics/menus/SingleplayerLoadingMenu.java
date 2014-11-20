@@ -1,14 +1,13 @@
-package ethanjones.cubes.graphics.menu.menus;
+package ethanjones.cubes.graphics.menus;
 
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Adapter;
-import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.networking.NetworkingManager;
-import ethanjones.cubes.networking.client.ClientNetworkingParameter;
-import ethanjones.cubes.networking.server.ServerNetworkingParameter;
 import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.server.CubesServer;
+import ethanjones.cubes.side.server.integrated.IntegratedServer;
+import ethanjones.cubes.side.server.integrated.SingleplayerServer;
 
 public class SingleplayerLoadingMenu extends InfoMenu {
 
@@ -19,8 +18,14 @@ public class SingleplayerLoadingMenu extends InfoMenu {
   public void render() {
     super.render();
     try {
-      NetworkingManager.serverPreInit(new ServerNetworkingParameter());
-      NetworkingManager.clientPreInit(new ClientNetworkingParameter("localhost", Settings.getIntegerSettingValue(Settings.NETWORKING_PORT)));
+      try {
+        NetworkingManager.singleplayerPreInit();
+        Adapter.setServer(new SingleplayerServer());
+        Adapter.setClient(new CubesClient());
+        Adapter.setMenu(null);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     } catch (Exception e) {
       Log.error("Failed to start singleplayer", e);
       Adapter.setMenu(new ConnectionFailedMenu(e));
@@ -28,8 +33,5 @@ public class SingleplayerLoadingMenu extends InfoMenu {
       Adapter.setServer(null);
       return;
     }
-    Adapter.setServer(new CubesServer());
-    Adapter.setClient(new CubesClient());
-    Adapter.setMenu(null);
   }
 }

@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.IntIntMap;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketButton;
 import ethanjones.cubes.networking.packets.PacketKey;
+import ethanjones.cubes.networking.packets.PacketPlayerInfo;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.WorldClient;
 
@@ -27,6 +28,9 @@ public class CameraController extends InputAdapter {
   private float degreesPerPixel = 0.5f;
   public Touchpad touchpad; //movement on android
 
+  private Vector3 prevPosition = new Vector3();
+  private Vector3 prevDirection = new Vector3();
+
   public CameraController(Camera camera) {
     this.camera = camera;
     camera.position.set(0, 6.5f, 0);
@@ -41,7 +45,7 @@ public class CameraController extends InputAdapter {
     PacketKey packetKey = new PacketKey();
     packetKey.action = PacketKey.KEY_DOWN;
     packetKey.key = keycode;
-    NetworkingManager.clientNetworking.sendToServer(packetKey);
+    NetworkingManager.sendPacketToServer(packetKey);
     return true;
   }
 
@@ -51,7 +55,7 @@ public class CameraController extends InputAdapter {
     PacketKey packetKey = new PacketKey();
     packetKey.action = PacketKey.KEY_UP;
     packetKey.key = keycode;
-    NetworkingManager.clientNetworking.sendToServer(packetKey);
+    NetworkingManager.sendPacketToServer(packetKey);
     return true;
   }
 
@@ -60,7 +64,7 @@ public class CameraController extends InputAdapter {
     PacketButton packetButton = new PacketButton();
     packetButton.action = PacketButton.BUTTON_DOWN;
     packetButton.button = button;
-    NetworkingManager.clientNetworking.sendToServer(packetButton);
+    NetworkingManager.sendPacketToServer(packetButton);
     return true;
   }
 
@@ -69,7 +73,7 @@ public class CameraController extends InputAdapter {
     PacketButton packetButton = new PacketButton();
     packetButton.action = PacketButton.BUTTON_UP;
     packetButton.button = button;
-    NetworkingManager.clientNetworking.sendToServer(packetButton);
+    NetworkingManager.sendPacketToServer(packetButton);
     return true;
   }
 
@@ -136,6 +140,17 @@ public class CameraController extends InputAdapter {
     }
     if (moved) ((WorldClient) Cubes.getClient().world).playerChangedPosition();
     camera.update(true);
+  }
+
+  public void tick() {
+    if (!Cubes.getClient().player.position.equals(prevPosition) || !Cubes.getClient().player.angle.equals(prevDirection)) {
+      PacketPlayerInfo packetPlayerInfo = new PacketPlayerInfo();
+      packetPlayerInfo.angle = Cubes.getClient().player.angle;
+      packetPlayerInfo.position = Cubes.getClient().player.position;
+      NetworkingManager.sendPacketToServer(packetPlayerInfo);
+      prevPosition.set(Cubes.getClient().player.position);
+      prevDirection.set(Cubes.getClient().player.angle);
+    }
   }
 }
 

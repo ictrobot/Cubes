@@ -1,4 +1,4 @@
-package ethanjones.cubes.graphics.menu.menus;
+package ethanjones.cubes.graphics.menus;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import ethanjones.cubes.core.platform.Adapter;
-import ethanjones.cubes.core.platform.GraphicalAdapter;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.settings.SettingGroup;
 import ethanjones.cubes.core.settings.Settings;

@@ -9,7 +9,7 @@ import ethanjones.cubes.core.settings.Setting;
 import ethanjones.cubes.core.settings.VisualSettingManager;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.graphics.menu.Menu;
-import ethanjones.cubes.graphics.menu.menus.SettingsMenu;
+import ethanjones.cubes.graphics.menus.SettingsMenu;
 
 public class IntegerSetting extends Setting {
 

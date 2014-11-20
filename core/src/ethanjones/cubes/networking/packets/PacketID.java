@@ -4,7 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
 import ethanjones.cubes.networking.packet.Packet;
-import ethanjones.cubes.networking.packet.environment.PacketPriority;
+import ethanjones.cubes.networking.packet.PacketPriority;
 
 public class PacketID extends Packet {
 
@@ -12,7 +12,7 @@ public class PacketID extends Packet {
   public int id;
 
   public PacketID() {
-    getPacketEnvironment().getSending().setPacketPriority(PacketPriority.High);
+    setPacketPriority(PacketPriority.High);
   }
 
   @Override
@@ -25,7 +25,7 @@ public class PacketID extends Packet {
   public void read(DataInputStream dataInputStream) throws Exception {
     c = dataInputStream.readUTF();
     id = dataInputStream.readInt();
-    getPacketEnvironment().getReceiving().getSocketMonitor().getNetworking().getPacketIDDatabase().process(this);
+    getSocketMonitor().getNetworking().getPacketIDDatabase().process(this);
   }
 
   @Override

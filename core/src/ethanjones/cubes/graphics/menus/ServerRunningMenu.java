@@ -1,4 +1,4 @@
-package ethanjones.cubes.graphics.menu.menus;
+package ethanjones.cubes.graphics.menus;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Event;
@@ -10,7 +10,8 @@ import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.server.ServerNetworkingParameter;
-import ethanjones.cubes.side.server.CubesServer;
+import ethanjones.cubes.side.server.integrated.IntegratedServer;
+import ethanjones.cubes.side.server.integrated.ServerOnlyServer;
 
 public class ServerRunningMenu extends InfoMenu {
 
@@ -37,6 +38,8 @@ public class ServerRunningMenu extends InfoMenu {
     if (frameNum != 2) return;
     try {
       NetworkingManager.serverPreInit(new ServerNetworkingParameter(port));
+      Adapter.setServer(new ServerOnlyServer());
+      Adapter.setClient(null);
     } catch (Exception e) {
       Log.error("Failed to start server", e);
       Adapter.setMenu(new ConnectionFailedMenu(e));
@@ -44,9 +47,6 @@ public class ServerRunningMenu extends InfoMenu {
       Adapter.setServer(null);
       return;
     }
-    CubesServer cubesServer = new CubesServer();
-    Adapter.setServer(cubesServer);
-    Adapter.setClient(null);
     text.setText(Localization.get("menu.server.running"));
     resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
   }

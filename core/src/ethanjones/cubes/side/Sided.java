@@ -6,6 +6,8 @@ import ethanjones.cubes.core.events.EventBus;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.CubesSecurity;
 import ethanjones.cubes.core.timing.Timing;
+import ethanjones.cubes.networking.Networking;
+import ethanjones.cubes.networking.NetworkingManager;
 
 public class Sided {
 
@@ -68,6 +70,10 @@ public class Sided {
 
   public static BlockManager getBlockManager() {
     return getData().blockManager;
+  }
+
+  public static Networking getNetworking() {
+    return NetworkingManager.getNetworking(getSide());
   }
 
   public static void setup(Side side) {

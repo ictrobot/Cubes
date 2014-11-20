@@ -1,6 +1,6 @@
 package ethanjones.cubes.side.server;
 
-import java.util.HashMap;
+import java.util.List;
 
 import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.core.mod.ModManager;
@@ -8,6 +8,7 @@ import ethanjones.cubes.core.mod.event.StartingServerEvent;
 import ethanjones.cubes.core.mod.event.StoppingServerEvent;
 import ethanjones.cubes.core.timing.TimeHandler;
 import ethanjones.cubes.networking.NetworkingManager;
+import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.networking.socket.SocketMonitor;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
@@ -15,14 +16,10 @@ import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.WorldServer;
 import ethanjones.cubes.world.generator.BasicWorldGenerator;
 
-public class CubesServer extends Cubes implements TimeHandler {
-
-  public CubesServerThread thread; //only on singleplayer
-  public HashMap<SocketMonitor, PlayerManager> playerManagers;
+public abstract class CubesServer extends Cubes implements TimeHandler {
 
   public CubesServer() {
     super(Side.Server);
-    playerManagers = new HashMap<SocketMonitor, PlayerManager>();
   }
 
   @Override
@@ -41,7 +38,6 @@ public class CubesServer extends Cubes implements TimeHandler {
   public void stop() {
     if (stopped) return;
     ModManager.postModEvent(new StoppingServerEvent());
-    if (thread != null) thread.dispose();
     super.stop();
   }
 
@@ -50,8 +46,8 @@ public class CubesServer extends Cubes implements TimeHandler {
     if (stopped) return;
     super.render();
 
-    for (PlayerManager playerManager : playerManagers.values()) {
-      playerManager.update();
+    for (ClientIdentifier clientIdentifier : getAllClients()) {
+      clientIdentifier.getPlayerManager().update();
     }
     checkStop();
   }
@@ -62,4 +58,14 @@ public class CubesServer extends Cubes implements TimeHandler {
     if (interval != 250) return;
     world.setBlock(Blocks.dirt, (int) (Math.random() * 16), (int) (8 + (Math.random() * 7)), (int) (Math.random() * 16));
   }
+
+  public abstract boolean isDedicated();
+
+  public abstract ClientIdentifier getClient(SocketMonitor socketMonitor);
+
+  public abstract void addClient(ClientIdentifier clientIdentifier);
+
+  public abstract void removeClient(SocketMonitor socketMonitor);
+
+  public abstract List<ClientIdentifier> getAllClients();
 }

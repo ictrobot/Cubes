@@ -44,7 +44,7 @@ public class PacketBuffer {
       Iterator<Packet> iterator = packets.iterator();
       while (iterator.hasNext()) {
         Packet packet = iterator.next();
-        if (packet.getPacketEnvironment().getReceiving().getSocketMonitor() == socketMonitor) {
+        if (packet.getSocketMonitor() == socketMonitor) {
           iterator.remove();
         }
       }

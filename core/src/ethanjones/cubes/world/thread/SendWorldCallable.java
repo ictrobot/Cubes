@@ -2,43 +2,31 @@ package ethanjones.cubes.world.thread;
 
 import java.util.concurrent.Callable;
 
-import ethanjones.cubes.networking.packet.PacketQueue;
+import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketArea;
+import ethanjones.cubes.networking.server.ClientIdentifier;
+import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.server.PlayerManager;
 import ethanjones.cubes.world.storage.Area;
 
 public class SendWorldCallable implements Callable {
 
+  private final ClientIdentifier clientIdentifier;
   private final GenerateWorldCallable generateWorldCallable;
   private final Area area;
-  private final PacketQueue packetQueue;
   private final PlayerManager playerManager;
 
-  public SendWorldCallable(Area area, PacketQueue packetQueue) {
+  public SendWorldCallable(Area area, ClientIdentifier clientIdentifier, PlayerManager playerManager) {
+    this.clientIdentifier = clientIdentifier;
     this.generateWorldCallable = null;
     this.area = area;
-    this.packetQueue = packetQueue;
-    this.playerManager = null;
-  }
-
-  public SendWorldCallable(Area area, PacketQueue packetQueue, PlayerManager playerManager) {
-    this.generateWorldCallable = null;
-    this.area = area;
-    this.packetQueue = packetQueue;
     this.playerManager = playerManager;
   }
 
-  public SendWorldCallable(GenerateWorldCallable generateWorldCallable, PacketQueue packetQueue) {
+  public SendWorldCallable(GenerateWorldCallable generateWorldCallable, ClientIdentifier clientIdentifier, PlayerManager playerManager) {
+    this.clientIdentifier = clientIdentifier;
     this.generateWorldCallable = generateWorldCallable;
     this.area = null;
-    this.packetQueue = packetQueue;
-    this.playerManager = null;
-  }
-
-  public SendWorldCallable(GenerateWorldCallable generateWorldCallable, PacketQueue packetQueue, PlayerManager playerManager) {
-    this.generateWorldCallable = generateWorldCallable;
-    this.area = null;
-    this.packetQueue = packetQueue;
     this.playerManager = playerManager;
   }
 
@@ -51,7 +39,7 @@ public class SendWorldCallable implements Callable {
     packetArea.areaZ = area.z;
     packetArea.playerManager = playerManager;
     packetArea.area = area.write();
-    packetQueue.addPacket(packetArea);
+    NetworkingManager.sendPacketToClient(packetArea, clientIdentifier);
     return area;
   }
 }

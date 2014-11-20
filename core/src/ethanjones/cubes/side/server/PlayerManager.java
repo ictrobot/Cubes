@@ -7,13 +7,13 @@ import ethanjones.cubes.core.events.EventHandler;
 import ethanjones.cubes.core.events.world.block.BlockEvent;
 import ethanjones.cubes.core.system.Threads;
 import ethanjones.cubes.core.util.MathHelper;
-import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.graphics.world.RayTracing;
-import ethanjones.cubes.networking.packet.Packet;
+import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.*;
-import ethanjones.cubes.networking.socket.SocketMonitor;
+import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.world.WorldServer;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.storage.Area;
@@ -23,31 +23,25 @@ import ethanjones.cubes.world.thread.SendWorldCallable;
 
 public class PlayerManager {
 
+  public final ClientIdentifier client;
   private final CubesServer server;
-  private final Player player;
   private final AreaReference playerArea;
-  private final PacketConnect packetConnect;
-  private final SocketMonitor socketMonitor;
   private final ArrayList<Integer> keys;
   private final ArrayList<Integer> buttons;
   private int renderDistance;
 
-  public PlayerManager(PacketConnect packetConnect) {
+  public PlayerManager(ClientIdentifier clientIdentifier, PacketConnect packetConnect) {
     this.server = Cubes.getServer();
-    this.packetConnect = packetConnect;
-    this.socketMonitor = packetConnect.getPacketEnvironment().getReceiving().getSocketMonitor();
-    this.player = new Player(packetConnect.username); //TODO Store users and world
-    this.playerArea = new AreaReference().setFromPositionVector3(player.position);
+    this.client = clientIdentifier;
+    this.playerArea = new AreaReference().setFromPositionVector3(client.getPlayer().position);
     this.keys = new ArrayList<Integer>();
     this.buttons = new ArrayList<Integer>();
-
-    server.playerManagers.put(socketMonitor, this);
 
     renderDistance = packetConnect.renderDistance;
 
     Sided.getEventBus().register(this);
 
-    socketMonitor.queue(new PacketConnected());
+    NetworkingManager.sendPacketToClient(new PacketConnected(), clientIdentifier);
 
     initialLoadAreas();
   }
@@ -71,15 +65,15 @@ public class PlayerManager {
   private void sendAndRequestArea(AreaReference areaReference) {
     Area area = server.world.getAreaInternal(areaReference, false, false);
     if (area == null || area instanceof BlankArea) {
-      Threads.execute(new SendWorldCallable(new GenerateWorldCallable(areaReference.clone(), (ethanjones.cubes.world.WorldServer) server.world), socketMonitor.getSocketOutput().getPacketQueue(), this));
+      Threads.execute(new SendWorldCallable(new GenerateWorldCallable(areaReference.clone(), (WorldServer) server.world), client, this));
     } else {
-      Threads.execute(new SendWorldCallable(server.world.getAreaInternal(areaReference, false, false), socketMonitor.getSocketOutput().getPacketQueue(), this));
+      Threads.execute(new SendWorldCallable(server.world.getAreaInternal(areaReference, false, false), client, this));
     }
   }
 
-  public void handleInfo(PacketPlayerInfo packetPlayerInfo) {
+  public void handlePacket(PacketPlayerInfo packetPlayerInfo) {
     AreaReference n = new AreaReference().setFromPositionVector3(packetPlayerInfo.position);
-    AreaReference o = new AreaReference().setFromPositionVector3(player.position);
+    AreaReference o = new AreaReference().setFromPositionVector3(client.getPlayer().position);
     if (!n.equals(o)) {
       AreaReference check = new AreaReference();
       for (int areaX = n.areaX - renderDistance; areaX <= n.areaX + renderDistance; areaX++) {
@@ -95,13 +89,13 @@ public class PlayerManager {
         }
       }
     }
-    if (!player.position.equals(packetPlayerInfo.position)) {
-      player.position.set(packetPlayerInfo.position);
+    if (!client.getPlayer().position.equals(packetPlayerInfo.position)) {
+      client.getPlayer().position.set(packetPlayerInfo.position);
       synchronized (playerArea) {
-        playerArea.setFromPositionVector3(player.position);
+        playerArea.setFromPositionVector3(client.getPlayer().position);
       }
     }
-    player.angle.set(packetPlayerInfo.angle);
+    client.getPlayer().angle.set(packetPlayerInfo.angle);
   }
 
   @EventHandler
@@ -117,11 +111,7 @@ public class PlayerManager {
     packet.y = blockReference.blockY;
     packet.z = blockReference.blockZ;
     packet.block = Sided.getBlockManager().toInt(server.world.getBlock(packet.x, packet.y, packet.z));
-    socketMonitor.queue(packet);
-  }
-
-  public void sendPacket(Packet packet) {
-    socketMonitor.queue(packet);
+    NetworkingManager.sendPacketToClient(new PacketConnected(), client);
   }
 
   public boolean shouldSendArea(int areaX, int areaY, int areaZ) {
@@ -185,7 +175,7 @@ public class PlayerManager {
 
   protected void update() {
     if (buttonDown(Buttons.LEFT)) {
-      RayTracing.BlockIntersection blockIntersection = RayTracing.getBlockIntersection(player.position, player.angle, server.world);
+      RayTracing.BlockIntersection blockIntersection = RayTracing.getBlockIntersection(client.getPlayer().position, client.getPlayer().angle, server.world);
       if (blockIntersection == null) return;
       BlockReference blockReference = blockIntersection.getBlockReference();
       server.world.setBlock(null, blockReference.blockX, blockReference.blockY, blockReference.blockZ);

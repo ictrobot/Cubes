@@ -13,7 +13,6 @@ import ethanjones.cubes.core.mod.event.PostInitializationEvent;
 import ethanjones.cubes.core.mod.event.PreInitializationEvent;
 import ethanjones.cubes.core.platform.AdapterInterface;
 import ethanjones.cubes.core.platform.Compatibility;
-import ethanjones.cubes.core.platform.GraphicalAdapter;
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.core.system.CubesException;
@@ -21,7 +20,6 @@ import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.core.system.Threads;
 import ethanjones.cubes.core.timing.TimeHandler;
 import ethanjones.cubes.graphics.assets.Assets;
-import ethanjones.cubes.graphics.menu.menus.WaitingMenu;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.side.ControlMessage;
 import ethanjones.cubes.side.ControlMessage.Status;
@@ -105,7 +103,7 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
   }
 
   @Override
-  public final void dispose() {
+  public void dispose() {
     ControlMessage controlMessage = new ControlMessage();
     controlMessage.status = Status.Stop;
     MessageManager.sendMessage(controlMessage, this);
@@ -146,6 +144,6 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
   }
 
   public void tick() {
-    NetworkingManager.getNetworking(side).tick();
+    NetworkingManager.getNetworking(side).update();
   }
 }

@@ -7,7 +7,6 @@ import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.networking.packet.PacketIDDatabase;
 import ethanjones.cubes.networking.packet.PacketQueue;
-import ethanjones.cubes.networking.packet.environment.PacketSendingType;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 
@@ -26,7 +25,7 @@ public class SocketOutput extends SocketIO {
 
   @Override
   public void run() {
-    Sided.setSide(socketMonitor.networking.getSide());
+    Sided.setSide(socketMonitor.getSide());
     while (socketMonitor.running.get()) {
       try {
         if (packetQueue.isEmpty()) {
@@ -36,23 +35,19 @@ public class SocketOutput extends SocketIO {
         Packet packet = packetQueue.getPacket();
         if (packet == null) continue;
 
-        PacketSendingType sendType = packet.getPacketEnvironment().getSending().getSendingType();
         Class<? extends Packet> packetClass = packet.getClass();
-        if (sendType == null) {
-          if (packetIDDatabase.contains(packetClass)) {
-            sendType = PacketSendingType.ID;
-          } else {
-            sendType = PacketSendingType.NAME;
-          }
+        boolean sendID = false;
+        if (packetIDDatabase.contains(packetClass)) {
+          sendID = true;
         }
 
-        if (sendType == PacketSendingType.ID) {
+        if (sendID) {
           dataOutputStream.writeByte(0);
           dataOutputStream.writeInt(packetIDDatabase.get(packetClass));
-        } else if (sendType == PacketSendingType.NAME) {
+        } else {
           dataOutputStream.writeByte(1);
           dataOutputStream.writeUTF(packetClass.getName());
-          if (socketMonitor.getNetworking().getSide() == Side.Server) {
+          if (socketMonitor.getSide() == Side.Server) {
             packetIDDatabase.sendID(packetClass, socketMonitor);
           }
         }
@@ -60,7 +55,7 @@ public class SocketOutput extends SocketIO {
         packet.write(dataOutputStream);
 
       } catch (IOException e) {
-        socketMonitor.networking.disconnected(socketMonitor, e);
+        socketMonitor.getNetworking().disconnected(socketMonitor, e);
         return;
       } catch (Exception e) {
         Log.info("Failed to write packet", e);

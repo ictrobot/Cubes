@@ -29,6 +29,6 @@ public class PacketKey extends Packet {
 
   @Override
   public void handlePacket() {
-    Cubes.getServer().playerManagers.get(getPacketEnvironment().getReceiving().getSocketMonitor()).handlePacket(this);
+    Cubes.getServer().getClient(getSocketMonitor()).getPlayerManager().handlePacket(this);
   }
 }

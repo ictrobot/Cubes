@@ -94,7 +94,7 @@ public class HudRenderer implements Disposable {
         if (c == '\n' || c == '\r') {
           PacketChat packetChat = new PacketChat();
           packetChat.msg = chat.getText();
-          NetworkingManager.clientNetworking.sendToServer(packetChat);
+          NetworkingManager.sendPacketToServer(packetChat);
           chat.setText("");
           setChatEnabled(false);
         }

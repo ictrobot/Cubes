@@ -1,31 +1,20 @@
 package ethanjones.cubes.networking;
 
-import com.badlogic.gdx.Net;
-import com.badlogic.gdx.net.ServerSocketHints;
-import com.badlogic.gdx.net.SocketHints;
-
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.networking.client.ClientNetworking;
 import ethanjones.cubes.networking.client.ClientNetworkingParameter;
+import ethanjones.cubes.networking.packet.Packet;
+import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.networking.server.ServerNetworking;
 import ethanjones.cubes.networking.server.ServerNetworkingParameter;
+import ethanjones.cubes.networking.singleplayer.SingleplayerNetworking;
 import ethanjones.cubes.side.Side;
+import ethanjones.cubes.side.common.Cubes;
 
 public class NetworkingManager {
 
-  public final static ServerSocketHints serverSocketHints;
-  public final static SocketHints socketHints;
-  public final static Net.Protocol protocol = Net.Protocol.TCP;
-
-  public static ClientNetworking clientNetworking;
-  public static ServerNetworking serverNetworking;
-
-  static {
-    serverSocketHints = new ServerSocketHints();
-    serverSocketHints.acceptTimeout = 0;
-    socketHints = new SocketHints();
-    socketHints.keepAlive = true;
-    socketHints.connectTimeout = 30000;
-  }
+  private static Networking clientNetworking;
+  private static Networking serverNetworking;
 
   public static void clientPreInit(ClientNetworkingParameter clientNetworkingParameter) throws Exception {
     clientNetworking = new ClientNetworking(clientNetworkingParameter);
@@ -43,6 +32,38 @@ public class NetworkingManager {
 
   public static void serverInit() {
     serverNetworking.init();
+  }
+
+  public static void singleplayerPreInit() throws Exception {
+    clientNetworking = new SingleplayerNetworking();
+    serverNetworking = clientNetworking;
+    clientNetworking.preInit();
+  }
+
+  public static void sendPacketToServer(Packet packet) {
+    if (clientNetworking != null) {
+      clientNetworking.sendPacketToServer(packet);
+    } else {
+      Log.warning("Cannot send " + packet.toString() + " as networking not set up yet");
+    }
+  }
+
+  public static void sendPacketToClient(Packet packet, ClientIdentifier clientIdentifier) {
+    if (serverNetworking != null) {
+      serverNetworking.sendPacketToClient(packet, clientIdentifier);
+    } else {
+      Log.warning("Cannot send " + packet.toString() + " as networking not set up yet");
+    }
+  }
+
+  public static void sendPacketToAllClients(Packet packet) {
+    if (serverNetworking != null && Cubes.getServer() != null) {
+      for (ClientIdentifier clientIdentifier : Cubes.getServer().getAllClients()) {
+        serverNetworking.sendPacketToClient(packet, clientIdentifier);
+      }
+    } else {
+      Log.warning("Cannot send " + packet.toString() + " as networking not set up yet");
+    }
   }
 
   public static Networking getNetworking(Side side) {

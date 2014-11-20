@@ -4,28 +4,29 @@ import ethanjones.data.DataGroup;
 
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.networking.packet.DataPacket;
-import ethanjones.cubes.networking.packet.environment.PacketPriority;
-import ethanjones.cubes.side.server.PlayerManager;
+import ethanjones.cubes.networking.packet.PacketPriority;
+import ethanjones.cubes.networking.server.ClientIdentifier;
+import ethanjones.cubes.side.common.Cubes;
 
 public class PacketConnect extends DataPacket {
 
-  public int renderDistance;
-  public String username;
+  public String username = Settings.getStringSettingValue(Settings.USERNAME);
+  public int renderDistance = Settings.getIntegerSettingValue(Settings.GRAPHICS_VIEW_DISTANCE);
 
   public PacketConnect() {
-    getPacketEnvironment().getSending().setPacketPriority(PacketPriority.High);
+    setPacketPriority(PacketPriority.High);
   }
 
   @Override
   public void handlePacket() {
-    new PlayerManager(this);
+    Cubes.getServer().addClient(new ClientIdentifier(getSocketMonitor(), this));
   }
 
   @Override
   public DataGroup write() {
     DataGroup dataGroup = new DataGroup();
-    dataGroup.setString("username", Settings.getStringSettingValue(Settings.USERNAME));
-    dataGroup.setInteger("renderDistance", Settings.getIntegerSettingValue(Settings.GRAPHICS_VIEW_DISTANCE));
+    dataGroup.setString("username", username);
+    dataGroup.setInteger("renderDistance", renderDistance);
     return dataGroup;
   }
 

@@ -4,12 +4,10 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
 import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packet.Packet;
-import ethanjones.cubes.networking.packet.environment.SendingPacketEnvironment;
 import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.common.Cubes;
-import ethanjones.cubes.side.server.CubesServer;
-import ethanjones.cubes.side.server.PlayerManager;
+import ethanjones.cubes.side.Sided;
 
 public class PacketChat extends Packet {
 
@@ -27,12 +25,9 @@ public class PacketChat extends Packet {
 
   @Override
   public void handlePacket() {
-    if (getPacketEnvironment().getReceiving().getSide() == Side.Server) {
+    if (Sided.getSide() == Side.Server) {
       Log.info(" [Chat]" + msg);
-      setPacketEnvironment(new SendingPacketEnvironment());
-      for (PlayerManager playerManager : Cubes.getServer().playerManagers.values()) {
-        playerManager.sendPacket(this);
-      }
+      NetworkingManager.sendPacketToAllClients(this);
     }
   }
 }

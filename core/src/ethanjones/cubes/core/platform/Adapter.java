@@ -4,8 +4,8 @@ import com.badlogic.gdx.Gdx;
 
 import ethanjones.cubes.core.messaging.MessageManager;
 import ethanjones.cubes.graphics.menu.Menu;
-import ethanjones.cubes.graphics.menu.menus.WaitingMenu;
-import ethanjones.cubes.graphics.menu.menus.WaitingMenu.Callback;
+import ethanjones.cubes.graphics.menus.WaitingMenu;
+import ethanjones.cubes.graphics.menus.WaitingMenu.Callback;
 import ethanjones.cubes.side.ControlMessage;
 import ethanjones.cubes.side.ControlMessage.Status;
 import ethanjones.cubes.side.client.CubesClient;

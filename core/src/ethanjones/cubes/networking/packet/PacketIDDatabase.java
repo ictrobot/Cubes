@@ -6,12 +6,14 @@ import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.networking.packets.PacketID;
 import ethanjones.cubes.networking.socket.SocketMonitor;
 import ethanjones.cubes.side.Side;
+import ethanjones.cubes.side.Sided;
 
 public class PacketIDDatabase {
 
   private static enum State {
     Waiting, Confirmed
   }
+
   private final Object lock;
   int i;
   private HashMap<Integer, Class<? extends Packet>> intClass;
@@ -59,7 +61,7 @@ public class PacketIDDatabase {
   public void process(PacketID packetID) {
     if (packetID.c == null) return;
     Class<? extends Packet> c = getPacketClass(packetID.c);
-    if (packetID.getPacketEnvironment().getReceiving().getSocketMonitor().getNetworking().getSide() == Side.Client) {
+    if (Sided.getSide() == Side.Client) {
       synchronized (lock) {
         if (states.get(c) == State.Confirmed) return;
         intClass.put(packetID.id, c);
@@ -68,7 +70,7 @@ public class PacketIDDatabase {
       PacketID confirming = new PacketID();
       confirming.id = packetID.id;
       confirming.c = packetID.c;
-      packetID.getPacketEnvironment().getReceiving().getSocketMonitor().queue(confirming);
+      packetID.getSocketMonitor().getSocketOutput().getPacketQueue().addPacket(confirming);
     }
     synchronized (lock) {
       states.put(c, State.Confirmed);
@@ -94,7 +96,7 @@ public class PacketIDDatabase {
     synchronized (lock) {
       packetID.id = classInt.get(packetClass);
     }
-    socketMonitor.queue(packetID);
+    socketMonitor.getSocketOutput().getPacketQueue().addPacket(packetID);
   }
 
   public void allocate(Class<? extends Packet> packetClass) {

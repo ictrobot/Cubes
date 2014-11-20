@@ -10,17 +10,17 @@ import ethanjones.cubes.core.system.Memory;
 import ethanjones.cubes.graphics.menu.Fonts;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menu.MenuManager;
-import ethanjones.cubes.graphics.menu.menus.MainMenu;
+import ethanjones.cubes.graphics.menus.MainMenu;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.CubesServer;
-import ethanjones.cubes.side.server.CubesServerThread;
+import ethanjones.cubes.side.server.integrated.IntegratedServer;
 
 public class GraphicalAdapter implements AdapterInterface {
 
   private Menu menu;
-  private CubesServerThread cubesServerThread;
+  private IntegratedServer cubesServer;
   private CubesClient cubesClient;
 
   public GraphicalAdapter() {
@@ -45,11 +45,15 @@ public class GraphicalAdapter implements AdapterInterface {
   public void setServer(CubesServer cubesServer) throws UnsupportedOperationException {
     //CubesSecurity.checkSetCubes();
     if (cubesServer != null) {
-      cubesServerThread = new CubesServerThread(cubesServer);
-      Log.debug("Server set");
-      cubesServerThread.start();
+      if (cubesServer instanceof IntegratedServer) {
+        this.cubesServer = (IntegratedServer) cubesServer;
+        Log.debug("Server set");
+        this.cubesServer.start();
+      } else {
+        Log.warning("Server can only be set to an IntegratedServer");
+      }
     } else {
-      cubesServerThread = null;
+      this.cubesServer = null;
       Log.debug("Server set to null");
     }
   }
@@ -80,7 +84,7 @@ public class GraphicalAdapter implements AdapterInterface {
 
   @Override
   public CubesServer getServer() {
-    return cubesServerThread != null ? cubesServerThread.server : null;
+    return cubesServer;
   }
 
   @Override
@@ -155,11 +159,11 @@ public class GraphicalAdapter implements AdapterInterface {
         menu.hide();
       }
       if (cubesClient != null) cubesClient.dispose();
-      if (cubesServerThread != null) {
-        cubesServerThread.server.dispose();
+      if (cubesServer != null) {
+        cubesServer.dispose();
         try {
-          cubesServerThread.join(1000); //Wait for 1 second
-          if (cubesServerThread.isAlive()) Log.error("Failed to stop server thread");
+          cubesServer.getThread().join(1000); //Wait for 1 second
+          if (cubesServer.getThread().isAlive()) Log.error("Failed to stop server thread");
         } catch (InterruptedException e) {
         }
       }

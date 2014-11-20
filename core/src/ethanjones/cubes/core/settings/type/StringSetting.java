@@ -9,7 +9,7 @@ import ethanjones.data.DataGroup;
 import ethanjones.cubes.core.settings.Setting;
 import ethanjones.cubes.core.settings.VisualSettingManager;
 import ethanjones.cubes.graphics.menu.Menu;
-import ethanjones.cubes.graphics.menu.menus.SettingsMenu;
+import ethanjones.cubes.graphics.menus.SettingsMenu;
 
 public class StringSetting extends Setting {
 

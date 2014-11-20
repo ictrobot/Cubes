@@ -2,8 +2,6 @@ package ethanjones.cubes.networking.packet;
 
 import com.badlogic.gdx.utils.Array;
 
-import ethanjones.cubes.networking.packet.environment.PacketPriority;
-
 public class PacketQueue {
 
   private Object sync;
@@ -20,7 +18,7 @@ public class PacketQueue {
 
   public void addPacket(Packet packet) {
     if (!packet.shouldSend()) return;
-    Array<Packet> array = getArray(packet.getPacketEnvironment().getSending().getPacketPriority());
+    Array<Packet> array = getArray(packet.getPacketPriority());
     synchronized (array) {
       array.add(packet);
     }

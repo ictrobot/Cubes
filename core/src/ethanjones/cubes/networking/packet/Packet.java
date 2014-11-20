@@ -3,15 +3,15 @@ package ethanjones.cubes.networking.packet;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
-import ethanjones.cubes.networking.packet.environment.PacketEnvironment;
-import ethanjones.cubes.networking.packet.environment.SendingPacketEnvironment;
+import ethanjones.cubes.networking.socket.SocketMonitor;
 
 public abstract class Packet {
 
-  private PacketEnvironment packetEnvironment;
+  private PacketPriority packetPriority;
+  private SocketMonitor socketMonitor;
 
-  public Packet() {//Always initialised as sending
-    setPacketEnvironment(new SendingPacketEnvironment());
+  public Packet() {
+    packetPriority = PacketPriority.Medium;
   }
 
   public abstract void write(DataOutputStream dataOutputStream) throws Exception;
@@ -29,11 +29,19 @@ public abstract class Packet {
 
   public abstract void handlePacket();
 
-  public final PacketEnvironment getPacketEnvironment() {
-    return packetEnvironment;
+  public void setPacketPriority(PacketPriority packetPriority) {
+    this.packetPriority = packetPriority;
   }
 
-  public void setPacketEnvironment(PacketEnvironment packetEnvironment) {
-    this.packetEnvironment = packetEnvironment;
+  public PacketPriority getPacketPriority() {
+    return packetPriority;
+  }
+
+  public void setSocketMonitor(SocketMonitor socketMonitor) {
+    this.socketMonitor = socketMonitor;
+  }
+
+  public SocketMonitor getSocketMonitor() {
+    return socketMonitor;
   }
 }
