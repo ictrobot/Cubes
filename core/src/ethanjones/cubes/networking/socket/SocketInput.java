@@ -5,19 +5,16 @@ import java.io.IOException;
 
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.networking.packet.Packet;
-import ethanjones.cubes.networking.packet.PacketIDDatabase;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 
 public class SocketInput extends SocketIO {
 
   private final DataInputStream dataInputStream;
-  private final PacketIDDatabase packetIDDatabase;
 
   public SocketInput(SocketMonitor socketMonitor) {
     super(socketMonitor);
     this.dataInputStream = new DataInputStream(socketMonitor.getSocket().getInputStream());
-    this.packetIDDatabase = socketMonitor.getNetworking().getPacketIDDatabase();
   }
 
   @Override
@@ -29,11 +26,11 @@ public class SocketInput extends SocketIO {
 
         int b = dataInputStream.readByte();
         if (b == 0) {
-          packetClass = packetIDDatabase.get(dataInputStream.readInt());
+          packetClass = socketMonitor.getPacketIDDatabase().get(dataInputStream.readInt());
         } else {
           packetClass = Class.forName(dataInputStream.readUTF()).asSubclass(Packet.class);
           if (socketMonitor.getSide() == Side.Server) {
-            packetIDDatabase.sendID(packetClass, socketMonitor);
+            socketMonitor.getPacketIDDatabase().sendID(packetClass, socketMonitor);
           }
         }
 

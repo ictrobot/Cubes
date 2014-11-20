@@ -16,7 +16,6 @@ public class ServerNetworking extends Networking {
 
   private final ServerNetworkingParameter serverNetworkingParameter;
   private PacketBuffer packetBuffer;
-  private PacketIDDatabase packetIDDatabase;
   private Array<SocketMonitor> sockets;
   private ServerSocketMonitor serverSocketMonitor;
 
@@ -24,7 +23,6 @@ public class ServerNetworking extends Networking {
     super();
     this.serverNetworkingParameter = serverNetworkingParameter;
     this.packetBuffer = new PacketBuffer();
-    this.packetIDDatabase = new PacketIDDatabase();
     sockets = new Array<SocketMonitor>();
   }
 
@@ -76,11 +74,6 @@ public class ServerNetworking extends Networking {
   @Override
   public void received(SocketMonitor socketMonitor, Packet packet) {
     packetBuffer.addPacket(packet);
-  }
-
-  @Override
-  public PacketIDDatabase getPacketIDDatabase() {
-    return packetIDDatabase;
   }
 
   protected synchronized void accepted(Socket socket) {

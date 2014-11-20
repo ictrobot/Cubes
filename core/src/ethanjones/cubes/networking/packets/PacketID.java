@@ -25,7 +25,7 @@ public class PacketID extends Packet {
   public void read(DataInputStream dataInputStream) throws Exception {
     c = dataInputStream.readUTF();
     id = dataInputStream.readInt();
-    getSocketMonitor().getNetworking().getPacketIDDatabase().process(this);
+    getSocketMonitor().getPacketIDDatabase().process(this);
   }
 
   @Override

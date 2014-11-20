@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.Disposable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import ethanjones.cubes.networking.Networking;
-import ethanjones.cubes.networking.packet.Packet;
+import ethanjones.cubes.networking.packet.PacketIDDatabase;
 import ethanjones.cubes.side.Side;
 
 public class SocketMonitor implements Disposable {
@@ -16,6 +16,7 @@ public class SocketMonitor implements Disposable {
   private final Socket socket;
   private final SocketInput socketInput;
   private final SocketOutput socketOutput;
+  private final PacketIDDatabase packetIDDatabase;
 
   public SocketMonitor(Socket socket, Networking networking, Side side) {
     this.socket = socket;
@@ -26,6 +27,7 @@ public class SocketMonitor implements Disposable {
     socketOutput = new SocketOutput(this);
     socketInput.start("Socket Input: " + socket.getRemoteAddress());
     socketOutput.start("Socket Output: " + socket.getRemoteAddress());
+    this.packetIDDatabase = new PacketIDDatabase();
   }
 
   @Override
@@ -54,5 +56,9 @@ public class SocketMonitor implements Disposable {
 
   public SocketOutput getSocketOutput() {
     return socketOutput;
+  }
+
+  public PacketIDDatabase getPacketIDDatabase() {
+    return packetIDDatabase;
   }
 }

@@ -25,14 +25,12 @@ public class ClientNetworking extends Networking {
 
   private final ClientNetworkingParameter clientNetworkingParameter;
   private PacketBuffer packetBuffer;
-  private PacketIDDatabase packetIDDatabase;
   private SocketMonitor socketMonitor;
   private Socket socket;
 
   public ClientNetworking(ClientNetworkingParameter clientNetworkingParameter) {
     this.clientNetworkingParameter = clientNetworkingParameter;
     this.packetBuffer = new PacketBuffer();
-    this.packetIDDatabase = new PacketIDDatabase();
   }
 
   public synchronized void preInit() throws Exception {
@@ -135,11 +133,6 @@ public class ClientNetworking extends Networking {
 
   public void received(SocketMonitor socketMonitor, Packet packet) {
     packetBuffer.addPacket(packet);
-  }
-
-  @Override
-  public PacketIDDatabase getPacketIDDatabase() {
-    return packetIDDatabase;
   }
 
   public void processPackets() {

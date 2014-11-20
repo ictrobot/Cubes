@@ -38,8 +38,8 @@ public class EventBus {
       this.valid = false;
     }
   }
+
   private HashMap<Class<? extends Event>, List<EventHandlerWrapper>> data = new HashMap<Class<? extends Event>, List<EventHandlerWrapper>>();
-  private List<EventHandlerWrapper> allEventHandlerWrappers = new ArrayList<EventHandlerWrapper>();
 
   public EventBus register(Object instance) {
     try {
@@ -69,16 +69,6 @@ public class EventBus {
       }
       eventHandlerWrappers.add(eventHandlerWrapper);
       return this;
-    }
-  }
-
-  public void invalidate(Object object) {
-    Iterator<EventHandlerWrapper> iterator = allEventHandlerWrappers.iterator();
-    while (iterator.hasNext()) {
-      EventHandlerWrapper next = iterator.next();
-      if (next.equals(object)) {
-        next.invalidate();
-      }
     }
   }
 

@@ -14,13 +14,11 @@ public class SocketOutput extends SocketIO {
 
   private final DataOutputStream dataOutputStream;
   private final PacketQueue packetQueue;
-  private final PacketIDDatabase packetIDDatabase;
 
   public SocketOutput(SocketMonitor socketMonitor) {
     super(socketMonitor);
     this.dataOutputStream = new DataOutputStream(socketMonitor.getSocket().getOutputStream());
     this.packetQueue = new PacketQueue();
-    this.packetIDDatabase = socketMonitor.getNetworking().getPacketIDDatabase();
   }
 
   @Override
@@ -37,18 +35,18 @@ public class SocketOutput extends SocketIO {
 
         Class<? extends Packet> packetClass = packet.getClass();
         boolean sendID = false;
-        if (packetIDDatabase.contains(packetClass)) {
+        if (socketMonitor.getPacketIDDatabase().contains(packetClass)) {
           sendID = true;
         }
 
         if (sendID) {
           dataOutputStream.writeByte(0);
-          dataOutputStream.writeInt(packetIDDatabase.get(packetClass));
+          dataOutputStream.writeInt(socketMonitor.getPacketIDDatabase().get(packetClass));
         } else {
           dataOutputStream.writeByte(1);
           dataOutputStream.writeUTF(packetClass.getName());
           if (socketMonitor.getSide() == Side.Server) {
-            packetIDDatabase.sendID(packetClass, socketMonitor);
+            socketMonitor.getPacketIDDatabase().sendID(packetClass, socketMonitor);
           }
         }
 

@@ -61,11 +61,6 @@ public class SingleplayerNetworking extends Networking {
   }
 
   @Override
-  public PacketIDDatabase getPacketIDDatabase() {
-    return null;
-  }
-
-  @Override
   public void processPackets() {
     Side side = Sided.getSide();
     if (side == null) return;

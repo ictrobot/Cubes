@@ -60,8 +60,6 @@ public abstract class Networking {
 
   public abstract void received(SocketMonitor socketMonitor, Packet packet);
 
-  public abstract PacketIDDatabase getPacketIDDatabase();
-
   public abstract void processPackets();
 
 }
