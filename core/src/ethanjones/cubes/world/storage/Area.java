@@ -10,9 +10,7 @@ import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.events.world.block.BlockChangedEvent;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.graphics.world.AreaRenderer;
-import ethanjones.cubes.networking.packets.PacketBlockChanged;
 import ethanjones.cubes.side.Sided;
-import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.reference.BlockReference;
 
@@ -161,10 +159,6 @@ public class Area implements DataParser<DataGroup> {
       }
     }
     if (areaRenderer != null) areaRenderer.refresh = true;
-  }
-
-  public void handleChange(PacketBlockChanged packet) {
-    setBlock(Sided.getBlockManager().toBlock(packet.block), packet.x, packet.y, packet.z);
   }
 
   public void setBlock(Block block, int x, int y, int z) {

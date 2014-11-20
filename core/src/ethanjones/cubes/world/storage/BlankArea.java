@@ -3,7 +3,6 @@ package ethanjones.cubes.world.storage;
 import ethanjones.data.DataGroup;
 
 import ethanjones.cubes.block.Block;
-import ethanjones.cubes.networking.packets.PacketBlockChanged;
 
 public class BlankArea extends Area {
 
@@ -27,11 +26,6 @@ public class BlankArea extends Area {
 
   @Override
   public void read(DataGroup data) {
-
-  }
-
-  @Override
-  public void handleChange(PacketBlockChanged packet) {
 
   }
 

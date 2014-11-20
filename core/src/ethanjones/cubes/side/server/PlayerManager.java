@@ -111,7 +111,7 @@ public class PlayerManager {
     packet.y = blockReference.blockY;
     packet.z = blockReference.blockZ;
     packet.block = Sided.getBlockManager().toInt(server.world.getBlock(packet.x, packet.y, packet.z));
-    NetworkingManager.sendPacketToClient(new PacketConnected(), client);
+    NetworkingManager.sendPacketToClient(packet, client);
   }
 
   public boolean shouldSendArea(int areaX, int areaY, int areaZ) {
