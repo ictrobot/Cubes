@@ -7,7 +7,7 @@ import ethanjones.data.other.DataParser;
 import java.util.ArrayList;
 
 import ethanjones.cubes.block.Block;
-import ethanjones.cubes.core.events.world.block.BlockChangedEvent;
+import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.graphics.world.AreaRenderer;
 import ethanjones.cubes.side.Sided;

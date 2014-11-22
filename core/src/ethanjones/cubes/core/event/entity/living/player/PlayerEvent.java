@@ -1,6 +1,6 @@
-package ethanjones.cubes.core.events.entity.living.player;
+package ethanjones.cubes.core.event.entity.living.player;
 
-import ethanjones.cubes.core.events.entity.living.LivingEntityEvent;
+import ethanjones.cubes.core.event.entity.living.LivingEntityEvent;
 
 public class PlayerEvent extends LivingEntityEvent {
 

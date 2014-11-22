@@ -1,6 +1,6 @@
-package ethanjones.cubes.core.events.world.block;
+package ethanjones.cubes.core.event.world.block;
 
-import ethanjones.cubes.core.events.world.WorldEvent;
+import ethanjones.cubes.core.event.world.WorldEvent;
 import ethanjones.cubes.world.reference.BlockReference;
 
 public class BlockEvent extends WorldEvent {
