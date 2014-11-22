@@ -59,6 +59,7 @@ public class EventBus {
   public <E extends Event> E post(E event) {
     if (event == null) return null;
     Class<?> c = event.getClass();
+    final List<EventHandler> posted = new ArrayList<EventHandler>(); //Prevents being posted multiple times to same EventHandler
     while (c != null && Event.class.isAssignableFrom(c)) {
       Class<? extends Event> eventClass = c.asSubclass(Event.class);
       final List<EventHandler> list = getList(eventClass);
@@ -66,8 +67,10 @@ public class EventBus {
         Iterator<EventHandler> iterator = list.iterator();
         while (iterator.hasNext()) {
           EventHandler eventHandler = iterator.next();
+          if (posted.contains(eventHandler)) continue;
+          posted.add(eventHandler);
           try {
-            ((EventHandler<E>) eventHandler).onEvent(event);
+            eventHandler.onEvent(event);
           } catch (Exception e) {
             iterator.remove();
             Log.warning("EventHandler " + eventHandler.getClass().getSimpleName() + " has been removed as it throw an exception while handling " + event.getClass().getSimpleName());
