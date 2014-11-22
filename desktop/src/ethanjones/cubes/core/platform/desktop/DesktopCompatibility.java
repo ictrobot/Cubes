@@ -4,6 +4,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.mod.ModLoader;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.system.Branding;
@@ -48,10 +49,12 @@ public abstract class DesktopCompatibility extends Compatibility {
 
   @Override
   public void setupAssets() {
-    if (Gdx.files.internal("version").file().exists()) {
-      super.setupAssets();
-    } else {//files are in a jar
+    if (Gdx.files.classpath("version").exists()) { //files in a jar
+      Log.debug("Extracting assets");
       AssetFinder.extractCoreAssets();
+    } else {
+      Log.debug("Finding assets");
+      super.setupAssets();
     }
   }
 
