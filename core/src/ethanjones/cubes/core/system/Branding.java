@@ -1,6 +1,7 @@
 package ethanjones.cubes.core.system;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -32,7 +33,7 @@ public class Branding {
       Properties properties = new Properties();
       InputStream input = null;
       try {
-        input = Gdx.files.internal("version").read();
+        input = getFile("version").read();
         properties.load(input);
       } catch (IOException ex) {
         Log.error("Failed to load version", ex);
@@ -46,10 +47,11 @@ public class Branding {
         }
       }
 
-      if (Gdx.files.internal("build").exists()) {
+      FileHandle buildFile = getFile("build");
+      if (buildFile.exists()) {
         try {
           Properties buildProperties = new Properties();
-          input = Gdx.files.internal("build").read();
+          input = buildFile.read();
           buildProperties.load(input);
           if (buildProperties.getProperty("build") != null) {
             properties.setProperty("build", buildProperties.getProperty("build"));
@@ -91,5 +93,11 @@ public class Branding {
       e.printStackTrace();
       throw new CubesException(e);
     }
+  }
+
+  private static FileHandle getFile(String file) {
+    FileHandle f = Gdx.files.classpath(file);
+    if (f.exists()) return f;
+    return Gdx.files.internal(file);
   }
 }
