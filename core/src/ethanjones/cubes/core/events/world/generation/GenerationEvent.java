@@ -1,10 +1,10 @@
-package ethanjones.cubes.core.event.world.generation;
+package ethanjones.cubes.core.events.world.generation;
 
-import ethanjones.cubes.core.event.world.WorldEvent;
+import ethanjones.cubes.core.events.Event;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.storage.Area;
 
-public class GenerationEvent extends WorldEvent {
+public class GenerationEvent extends Event {
 
   private final Area area;
   private final AreaReference areaReference;

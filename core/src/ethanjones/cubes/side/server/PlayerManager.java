@@ -3,8 +3,8 @@ package ethanjones.cubes.side.server;
 import com.badlogic.gdx.Input.Buttons;
 import java.util.ArrayList;
 
-import ethanjones.cubes.core.event.EventHandler;
-import ethanjones.cubes.core.event.world.block.BlockEvent;
+import ethanjones.cubes.core.events.EventHandler;
+import ethanjones.cubes.core.events.world.block.BlockEvent;
 import ethanjones.cubes.core.system.Threads;
 import ethanjones.cubes.core.util.MathHelper;
 import ethanjones.cubes.graphics.world.RayTracing;
@@ -21,7 +21,7 @@ import ethanjones.cubes.world.storage.BlankArea;
 import ethanjones.cubes.world.thread.GenerateWorldCallable;
 import ethanjones.cubes.world.thread.SendWorldCallable;
 
-public class PlayerManager implements EventHandler<BlockEvent> {
+public class PlayerManager {
 
   public final ClientIdentifier client;
   private final CubesServer server;
@@ -98,9 +98,9 @@ public class PlayerManager implements EventHandler<BlockEvent> {
     client.getPlayer().angle.set(packetPlayerInfo.angle);
   }
 
-  @Override
-  public void onEvent(BlockEvent event) {
-    BlockReference blockReference = event.getBlockReference();
+  @EventHandler
+  public void blockChanged(BlockEvent blockEvent) {
+    BlockReference blockReference = blockEvent.getBlockReference();
     synchronized (playerArea) {
       if (Math.abs(MathHelper.area(blockReference.blockX) - playerArea.areaX) > renderDistance) return;
       if (Math.abs(MathHelper.area(blockReference.blockY) - playerArea.areaY) > renderDistance) return;

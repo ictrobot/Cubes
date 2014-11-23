@@ -1,4 +1,4 @@
-package ethanjones.cubes.core.event.world.block;
+package ethanjones.cubes.core.events.world.block;
 
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.world.reference.BlockReference;
