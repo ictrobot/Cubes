@@ -1,4 +1,4 @@
-package ethanjones.cubes.core.events;
+package ethanjones.cubes.core.event;
 
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.CubesException;
@@ -7,19 +7,25 @@ import ethanjones.cubes.side.Sided;
 public class Event {
 
   private final boolean cancelable;
+  private final boolean threaded;
   private boolean canceled;
 
-  public Event(boolean cancelable) {
+  public Event(boolean cancelable, boolean threaded) {
     this.cancelable = cancelable;
+    this.threaded = threaded;
     this.canceled = false;
   }
 
-  public boolean post() {
+  public Event post() {
     return Sided.getEventBus().post(this);
   }
 
   public boolean isCancelable() {
     return cancelable;
+  }
+
+  public boolean isThreaded() {
+    return threaded;
   }
 
   public boolean isCanceled() {

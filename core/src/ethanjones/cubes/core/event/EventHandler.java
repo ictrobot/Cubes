@@ -1,4 +1,4 @@
-package ethanjones.cubes.core.events;
+package ethanjones.cubes.core.event;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

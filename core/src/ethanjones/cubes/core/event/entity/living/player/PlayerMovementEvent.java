@@ -1,4 +1,4 @@
-package ethanjones.cubes.core.events.entity.living.player;
+package ethanjones.cubes.core.event.entity.living.player;
 
 public class PlayerMovementEvent extends PlayerEvent {
 

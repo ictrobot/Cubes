@@ -2,7 +2,7 @@ package ethanjones.cubes.side;
 
 import ethanjones.cubes.block.BlockManager;
 import ethanjones.cubes.block.Blocks;
-import ethanjones.cubes.core.events.EventBus;
+import ethanjones.cubes.core.event.EventBus;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.CubesSecurity;
 import ethanjones.cubes.core.timing.Timing;

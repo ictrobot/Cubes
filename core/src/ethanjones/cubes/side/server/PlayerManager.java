@@ -3,8 +3,8 @@ package ethanjones.cubes.side.server;
 import com.badlogic.gdx.Input.Buttons;
 import java.util.ArrayList;
 
-import ethanjones.cubes.core.events.EventHandler;
-import ethanjones.cubes.core.events.world.block.BlockEvent;
+import ethanjones.cubes.core.event.EventHandler;
+import ethanjones.cubes.core.event.world.block.BlockEvent;
 import ethanjones.cubes.core.system.Threads;
 import ethanjones.cubes.core.util.MathHelper;
 import ethanjones.cubes.graphics.world.RayTracing;
