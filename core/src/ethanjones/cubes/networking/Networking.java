@@ -22,7 +22,7 @@ public abstract class Networking {
     serverSocketHints.acceptTimeout = 0;
     socketHints = new SocketHints();
     socketHints.keepAlive = true;
-    socketHints.connectTimeout = 30000;
+    socketHints.connectTimeout = 10000;
   }
 
   private volatile NetworkingState networkingState;
