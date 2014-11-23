@@ -16,6 +16,22 @@ import ethanjones.cubes.side.Side;
 
 public class ClientNetworking extends Networking {
 
+  //Send packet when disconnecting and log better
+
+  public static PingResult ping(ClientNetworkingParameter clientNetworkingParameter) {
+    Log.debug("Pinging Host:" + clientNetworkingParameter.host + " Port:" + clientNetworkingParameter.port);
+    Socket socket;
+    try {
+      socket = Gdx.net.newClientSocket(Protocol.TCP, clientNetworkingParameter.host, clientNetworkingParameter.port, socketHints);
+      return ClientConnectionInitializer.ping(socket);
+    } catch (Exception e) {
+      PingResult pingResult = new PingResult();
+      pingResult.failure = true;
+      pingResult.exception = e;
+      return pingResult;
+    }
+  }
+
   private final ClientNetworkingParameter clientNetworkingParameter;
   private PacketBuffer packetBuffer;
   private SocketMonitor socketMonitor;
@@ -37,7 +53,7 @@ public class ClientNetworking extends Networking {
       if (!(e.getCause() instanceof Exception)) throw e;
       throw (Exception) e.getCause();
     }
-    ClientConnectionInitializer.check(socket);
+    ClientConnectionInitializer.connect(socket);
     this.socket = socket;
     Log.info("Successfully connected");
   }

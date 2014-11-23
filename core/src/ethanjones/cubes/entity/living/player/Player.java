@@ -7,7 +7,7 @@ import ethanjones.cubes.entity.living.LivingEntity;
 
 public class Player extends LivingEntity {
 
-  private final String username;
+  public final String username;
 
   public Player(String username) {
     super(20);
