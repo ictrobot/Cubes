@@ -37,6 +37,7 @@ settings.graphics.fieldOfView=FOV
 settings.networking=Networking
 settings.networking.port=Port
 
-
 hud.chat=Chat
 hud.debug=Debug
+
+commands.unknown=Unknown command!

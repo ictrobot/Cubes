@@ -21,6 +21,12 @@ public class SingleplayerServer extends IntegratedServer {
   }
 
   @Override
+  public ClientIdentifier getClient(String username) {
+    if (username.equals(singleplayerClientIdentifier.getPlayer().username)) return singleplayerClientIdentifier;
+    return null;
+  }
+
+  @Override
   public void addClient(ClientIdentifier clientIdentifier) {
 
   }

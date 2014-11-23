@@ -25,6 +25,18 @@ public class DedicatedServer extends CubesServer {
   }
 
   @Override
+  public ClientIdentifier getClient(String username) {
+    synchronized (clients) {
+      for (ClientIdentifier clientIdentifier : clients.values()) {
+        if (clientIdentifier.getPlayer().username.equals(username)) {
+          return clientIdentifier;
+        }
+      }
+    }
+    return null;
+  }
+
+  @Override
   public void addClient(ClientIdentifier clientIdentifier) {
     synchronized (clients) {
       clients.put(clientIdentifier.getSocketMonitor(), clientIdentifier);
