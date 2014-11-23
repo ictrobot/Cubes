@@ -3,7 +3,6 @@ package ethanjones.cubes.world;
 import com.badlogic.gdx.utils.Disposable;
 
 import ethanjones.cubes.block.Block;
-import ethanjones.cubes.core.util.MathHelper;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.AreaReferencePool;
 import ethanjones.cubes.world.storage.Area;
@@ -31,7 +30,7 @@ public abstract class World implements Disposable {
   public abstract Area getAreaInternal(AreaReference areaReference, boolean request, boolean returnBlank);
 
   public Block getBlock(int x, int y, int z) {
-    return getArea(MathHelper.area(x), MathHelper.area(y), MathHelper.area(z)).getBlock(x, y, z);
+    return getArea(CoordinateConverter.area(x), CoordinateConverter.area(y), CoordinateConverter.area(z)).getBlock(x, y, z);
   }
 
   public Area getArea(int areaX, int areaY, int areaZ) {
@@ -51,7 +50,7 @@ public abstract class World implements Disposable {
   }
 
   public void setBlock(Block block, int x, int y, int z) {
-    getArea(MathHelper.area(x), MathHelper.area(y), MathHelper.area(z)).setBlock(block, x, y, z);
+    getArea(CoordinateConverter.area(x), CoordinateConverter.area(y), CoordinateConverter.area(z)).setBlock(block, x, y, z);
   }
 
 }

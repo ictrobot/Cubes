@@ -2,7 +2,7 @@ package ethanjones.cubes.world.reference;
 
 import com.badlogic.gdx.utils.Pool;
 
-import ethanjones.cubes.core.util.MathHelper;
+import ethanjones.cubes.world.CoordinateConverter;
 
 public class BlockReference implements Pool.Poolable {
 
@@ -18,9 +18,9 @@ public class BlockReference implements Pool.Poolable {
   }
 
   public BlockReference setFromPosition(float x, float y, float z) {
-    this.blockX = MathHelper.block(x);
-    this.blockY = MathHelper.block(y);
-    this.blockZ = MathHelper.block(z);
+    this.blockX = CoordinateConverter.block(x);
+    this.blockY = CoordinateConverter.block(y);
+    this.blockZ = CoordinateConverter.block(z);
     return this;
   }
 

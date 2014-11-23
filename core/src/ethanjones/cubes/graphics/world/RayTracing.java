@@ -2,6 +2,7 @@ package ethanjones.cubes.graphics.world;
 
 import com.badlogic.gdx.math.Vector3;
 
+import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.reference.BlockReference;
 
@@ -59,7 +60,7 @@ public class RayTracing {
     float tDeltaY = stepY / direction.y;
     float tDeltaZ = stepZ / direction.z;
 
-    BlockFace face = BlockFace.maxY; //current block face?
+    BlockFace face = BlockFace.posY; //current block face?
 
     //radius /= Math.sqrt(direction.x * direction.x + direction.y * direction.y + direction.z * direction.z);
     //no effect since direction is normalised
@@ -99,14 +100,14 @@ public class RayTracing {
   }
 
   private static BlockFace getFace(float x, float y, float z) {
-    if (x > 0 && y == 0 && z == 0) return BlockFace.maxX;
-    if (x < 0 && y == 0 && z == 0) return BlockFace.minX;
+    if (x > 0 && y == 0 && z == 0) return BlockFace.posX;
+    if (x < 0 && y == 0 && z == 0) return BlockFace.negX;
 
-    if (x == 0 && y > 0 && z == 0) return BlockFace.maxY;
-    if (x == 0 && y < 0 && z == 0) return BlockFace.minY;
+    if (x == 0 && y > 0 && z == 0) return BlockFace.posY;
+    if (x == 0 && y < 0 && z == 0) return BlockFace.negY;
 
-    if (x == 0 && y == 0 && z > 0) return BlockFace.maxZ;
-    if (x == 0 && y == 0 && z < 0) return BlockFace.minZ;
+    if (x == 0 && y == 0 && z > 0) return BlockFace.posZ;
+    if (x == 0 && y == 0 && z < 0) return BlockFace.negZ;
 
     return null;
   }

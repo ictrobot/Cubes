@@ -7,7 +7,7 @@ import java.util.List;
 
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.CubesException;
-import ethanjones.cubes.core.system.Threads;
+import ethanjones.cubes.core.system.Executor;
 
 public class EventBus {
 
@@ -39,7 +39,7 @@ public class EventBus {
   public <E extends Event> E post(E event) {
     if (event == null) return null;
     if (event.isThreaded()) {
-      Threads.execute(new EventCallable(this, event));
+      Executor.execute(new EventCallable(this, event));
       return null; //Still being called
     } else {
       EventCallable.run(this, event);

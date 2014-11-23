@@ -1,12 +1,12 @@
 package ethanjones.cubes.core.timing;
 
-public class TimeHandlerWrapper {
+public class TimeWrapper {
 
   private final TimeHandler timeHandler;
   private final int maxMS;
   private int currentMS;
 
-  public TimeHandlerWrapper(TimeHandler timeHandler, int MS) {
+  public TimeWrapper(TimeHandler timeHandler, int MS) {
     this.timeHandler = timeHandler;
     this.maxMS = MS;
     this.currentMS = MS;

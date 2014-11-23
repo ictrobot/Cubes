@@ -5,8 +5,8 @@ import java.util.ArrayList;
 
 import ethanjones.cubes.core.event.EventHandler;
 import ethanjones.cubes.core.event.world.block.BlockEvent;
-import ethanjones.cubes.core.system.Threads;
-import ethanjones.cubes.core.util.MathHelper;
+import ethanjones.cubes.core.system.Executor;
+import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.graphics.world.RayTracing;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.*;
@@ -65,9 +65,9 @@ public class PlayerManager {
   private void sendAndRequestArea(AreaReference areaReference) {
     Area area = server.world.getAreaInternal(areaReference, false, false);
     if (area == null || area instanceof BlankArea) {
-      Threads.execute(new SendWorldCallable(new GenerateWorldCallable(areaReference.clone(), (WorldServer) server.world), client, this));
+      Executor.execute(new SendWorldCallable(new GenerateWorldCallable(areaReference.clone(), (WorldServer) server.world), client, this));
     } else {
-      Threads.execute(new SendWorldCallable(server.world.getAreaInternal(areaReference, false, false), client, this));
+      Executor.execute(new SendWorldCallable(server.world.getAreaInternal(areaReference, false, false), client, this));
     }
   }
 
@@ -102,9 +102,9 @@ public class PlayerManager {
   public void blockChanged(BlockEvent blockEvent) {
     BlockReference blockReference = blockEvent.getBlockReference();
     synchronized (playerArea) {
-      if (Math.abs(MathHelper.area(blockReference.blockX) - playerArea.areaX) > renderDistance) return;
-      if (Math.abs(MathHelper.area(blockReference.blockY) - playerArea.areaY) > renderDistance) return;
-      if (Math.abs(MathHelper.area(blockReference.blockZ) - playerArea.areaZ) > renderDistance) return;
+      if (Math.abs(CoordinateConverter.area(blockReference.blockX) - playerArea.areaX) > renderDistance) return;
+      if (Math.abs(CoordinateConverter.area(blockReference.blockY) - playerArea.areaY) > renderDistance) return;
+      if (Math.abs(CoordinateConverter.area(blockReference.blockZ) - playerArea.areaZ) > renderDistance) return;
     }
     PacketBlockChanged packet = new PacketBlockChanged();
     packet.x = blockReference.blockX;

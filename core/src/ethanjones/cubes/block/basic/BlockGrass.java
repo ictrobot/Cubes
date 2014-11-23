@@ -1,7 +1,7 @@
 package ethanjones.cubes.block.basic;
 
 import ethanjones.cubes.block.Block;
-import ethanjones.cubes.core.util.Direction;
+import ethanjones.cubes.core.util.BlockFace;
 
 public class BlockGrass extends Block {
 
@@ -11,6 +11,6 @@ public class BlockGrass extends Block {
 
   public void loadGraphics() {
     super.loadGraphics();
-    this.textureHandler.setSide(Direction.posY, "core:block/Grass.png").setSide(Direction.negY, "core:block/Dirt.png");
+    this.textureHandler.setSide(BlockFace.posY, "core:block/Grass.png").setSide(BlockFace.negY, "core:block/Dirt.png");
   }
 }

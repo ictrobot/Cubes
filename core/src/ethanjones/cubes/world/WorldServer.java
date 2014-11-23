@@ -3,7 +3,7 @@ package ethanjones.cubes.world;
 import com.badlogic.gdx.utils.Pool;
 import java.util.HashMap;
 
-import ethanjones.cubes.core.system.Threads;
+import ethanjones.cubes.core.system.Executor;
 import ethanjones.cubes.world.generator.WorldGenerator;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.storage.Area;
@@ -97,7 +97,7 @@ public class WorldServer extends World {
 
   public void requestArea(AreaReference areaReference) {
     setAreaInternal(areaReference, World.BLANK_AREA);
-    Threads.execute(new GenerateWorldCallable(areaReference, this));
+    Executor.execute(new GenerateWorldCallable(areaReference, this));
   }
 
 

@@ -5,24 +5,24 @@ import java.util.ArrayList;
 
 public class Timing implements Disposable {
 
-  private ArrayList<TimeHandlerWrapper> handlers;
+  private ArrayList<TimeWrapper> handlers;
   private long lastTime;
 
   public Timing() {
-    handlers = new ArrayList<TimeHandlerWrapper>();
+    handlers = new ArrayList<TimeWrapper>();
     lastTime = System.currentTimeMillis();
   }
 
   public void addHandler(TimeHandler timeHandler, int... millisecondIntervals) {
     for (int ms : millisecondIntervals) {
-      handlers.add(new TimeHandlerWrapper(timeHandler, ms));
+      handlers.add(new TimeWrapper(timeHandler, ms));
     }
   }
 
   public void update() {
     long time = System.currentTimeMillis();
     int deltaMS = (int) (time - lastTime);
-    for (TimeHandlerWrapper handler : handlers) {
+    for (TimeWrapper handler : handlers) {
       handler.update(deltaMS);
     }
     lastTime = time;

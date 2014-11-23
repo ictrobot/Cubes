@@ -3,7 +3,7 @@ package ethanjones.cubes.world.reference;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Pool;
 
-import ethanjones.cubes.core.util.MathHelper;
+import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.storage.Area;
 
 public class AreaReference implements Pool.Poolable, Cloneable {
@@ -38,16 +38,16 @@ public class AreaReference implements Pool.Poolable, Cloneable {
   }
 
   public AreaReference setFromBlockCoordinates(int blockX, int blockY, int blockZ) {
-    this.areaX = MathHelper.area(blockX);
-    this.areaY = MathHelper.area(blockY);
-    this.areaZ = MathHelper.area(blockZ);
+    this.areaX = CoordinateConverter.area(blockX);
+    this.areaY = CoordinateConverter.area(blockY);
+    this.areaZ = CoordinateConverter.area(blockZ);
     return this;
   }
 
   public AreaReference setFromBlockReference(BlockReference blockReference) {
-    this.areaX = MathHelper.area(blockReference.blockX);
-    this.areaY = MathHelper.area(blockReference.blockY);
-    this.areaZ = MathHelper.area(blockReference.blockZ);
+    this.areaX = CoordinateConverter.area(blockReference.blockX);
+    this.areaY = CoordinateConverter.area(blockReference.blockY);
+    this.areaZ = CoordinateConverter.area(blockReference.blockZ);
     return this;
   }
 
@@ -57,9 +57,9 @@ public class AreaReference implements Pool.Poolable, Cloneable {
   }
 
   public AreaReference setFromPosition(float x, float y, float z) {
-    this.areaX = MathHelper.area(MathHelper.block(x));
-    this.areaY = MathHelper.area(MathHelper.block(y));
-    this.areaZ = MathHelper.area(MathHelper.block(z));
+    this.areaX = CoordinateConverter.area(CoordinateConverter.block(x));
+    this.areaY = CoordinateConverter.area(CoordinateConverter.block(y));
+    this.areaZ = CoordinateConverter.area(CoordinateConverter.block(z));
     return this;
   }
 

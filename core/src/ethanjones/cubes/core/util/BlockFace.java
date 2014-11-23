@@ -1,6 +1,6 @@
 package ethanjones.cubes.core.util;
 
-public enum Direction {
+public enum BlockFace {
   posX(0),
   negX(1),
   posY(2),
@@ -10,7 +10,7 @@ public enum Direction {
 
   public int index;
 
-  private Direction(int index) {
+  private BlockFace(int index) {
     this.index = index;
   }
 }
