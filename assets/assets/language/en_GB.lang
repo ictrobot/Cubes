@@ -1,4 +1,6 @@
 en_GB
+
+#Menu
 menu.general.back=Back
 menu.general.loading=Loading
 menu.general.waiting=Waiting
@@ -28,6 +30,7 @@ menu.connection_failed.failed_exception=Failed to connect:
 menu.settings.title=Settings
 menu.settings.open_group=Open
 
+#Settings
 settings.username=Username
 
 settings.graphics=Graphics
@@ -37,7 +40,26 @@ settings.graphics.fieldOfView=FOV
 settings.networking=Networking
 settings.networking.port=Port
 
+#Hud
 hud.chat=Chat
 hud.debug=Debug
 
-commands.unknown=Unknown command!
+#Commands
+commands.common.unknownCommand=Unknown command! Type help for a list of commands
+commands.common.failedPermissionCheck=You do not have permission to run this command
+commands.common.console=CONSOLE
+
+commands.common.value.coordinate.parsing=Not a coordinate
+commands.common.value.coordinate.string=[coordinate]
+commands.common.value.blockCoordinate.parsing=Not a number
+commands.common.value.blockCoordinate.string=[blockCoordinate]
+commands.common.value.clientIdentifier.parsing=Not a username
+commands.common.value.clientIdentifier.string=[username]
+commands.common.value.command.parsing=Not a command
+commands.common.value.command.string=[command]
+
+commands.help.commands=Commands:
+commands.help.command=Command %s:
+commands.help.format=%1$s - %2$s
+
+commands.stop.message=Stopping...

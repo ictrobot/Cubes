@@ -1,4 +1,4 @@
-package ethanjones.cubes.networking.command;
+package ethanjones.cubes.side.server.command;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 import ethanjones.cubes.core.localization.Localization;
 
-public class CommandManager { //TODO: help text
+public class CommandManager {
 
   public static HashMap<String, CommandBuilder> commands = new HashMap<String, CommandBuilder>();
 
@@ -25,15 +25,18 @@ public class CommandManager { //TODO: help text
       return;
     }
     CommandBuilder commandBuilder = commands.get(arg.get(0));
-    if (check(commandSender, commandBuilder, arg, new ArrayList<CommandArgument>(), 1)) {
+    ArrayList<CommandArgument> commandArguments = new ArrayList<CommandArgument>();
+    commandArguments.add(new CommandArgument<CommandBuilder>(commandBuilder, CommandValue.command));
+    if (!check(commandSender, commandBuilder, arg, commandArguments, 1)) {
       unknownCommand(commandSender);
     }
   }
 
   private static boolean check(CommandSender sender, CommandBuilder commandBuilder, ArrayList<String> arg, ArrayList<CommandArgument> arguments, int i) {
-    boolean failed = true;
+    boolean success = false;
     if (i < arg.size()) {
       for (CommandBuilder builder : commandBuilder.getChildren()) {
+        if (success) break;
         String a = arg.get(i);
         if (builder.getCommandString() != null) {
           if (builder.getCommandString().equals(a)) {
@@ -41,7 +44,7 @@ public class CommandManager { //TODO: help text
             ArrayList<CommandArgument> c = new ArrayList<CommandArgument>();
             c.addAll(arguments);
             c.add(commandArgument);
-            failed = check(sender, builder, arg, c, i + 1) ? true : failed;
+            success = check(sender, builder, arg, c, i + 1);
           }
         } else {
           try {
@@ -50,28 +53,36 @@ public class CommandManager { //TODO: help text
             ArrayList<CommandArgument> c = new ArrayList<CommandArgument>();
             c.addAll(arguments);
             c.add(commandArgument);
-            failed = check(sender, builder, arg, c, i + 1) ? true : failed;
+            success = check(sender, builder, arg, c, i + 1);
           } catch (Exception e) {
 
           }
         }
       }
-    }
-    if (failed) {
+    } else {
       if (commandBuilder.getCommandListener() != null) {
-        CommandListener commandListener = commandBuilder.getCommandListener();
-        failed = false;
-        commandListener.onCommand(commandBuilder, arguments, sender);
+        success = true;
+        if (CommandPermission.check(commandBuilder.getCommandPermission(), sender.getPermissionLevel())) {
+          CommandListener commandListener = commandBuilder.getCommandListener();
+          commandListener.onCommand(commandBuilder, arguments, sender);
+        } else {
+          permissionCheckFailed(sender);
+        }
       }
     }
-    return failed;
+    return success;
   }
 
-  private static void unknownCommand(CommandSender commandSender) {
-    commandSender.print(Localization.get("commands.unknown"));
+  public static void unknownCommand(CommandSender commandSender) {
+    commandSender.print(Localization.get("commands.common.unknownCommand"));
+  }
+
+  public static void permissionCheckFailed(CommandSender commandSender) {
+    commandSender.print(Localization.get("commands.common.failedPermissionCheck"));
   }
 
   public static void reset() {
     commands.clear();
+    BasicCommands.init();
   }
 }

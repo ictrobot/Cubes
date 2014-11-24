@@ -10,6 +10,7 @@ bin/
 tmp/
 jars/
 temp/
+assets/server
 build.properties
 *.tmp
 *.bak

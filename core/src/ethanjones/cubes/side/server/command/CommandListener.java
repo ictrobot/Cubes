@@ -1,4 +1,4 @@
-package ethanjones.cubes.networking.command;
+package ethanjones.cubes.side.server.command;
 
 import java.util.List;
 

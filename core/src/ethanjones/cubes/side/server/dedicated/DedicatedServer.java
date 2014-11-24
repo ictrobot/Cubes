@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.networking.socket.SocketMonitor;
 import ethanjones.cubes.side.server.CubesServer;
@@ -11,6 +12,19 @@ import ethanjones.cubes.side.server.CubesServer;
 public class DedicatedServer extends CubesServer {
 
   private final HashMap<SocketMonitor, ClientIdentifier> clients = new HashMap<SocketMonitor, ClientIdentifier>();
+  private ConsoleCommandSender consoleCommandSender;
+
+  @Override
+  public void create() {
+    super.create();
+    consoleCommandSender = new ConsoleCommandSender();
+  }
+
+  @Override
+  public void render() {
+    super.render();
+    consoleCommandSender.update();
+  }
 
   @Override
   public boolean isDedicated() {

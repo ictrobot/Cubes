@@ -1,4 +1,4 @@
-package ethanjones.cubes.networking.command;
+package ethanjones.cubes.side.server.command;
 
 public class CommandArgument<T> {
 
@@ -6,6 +6,7 @@ public class CommandArgument<T> {
   private final CommandValue<T> commandValue;
 
   public CommandArgument(T obj, CommandValue<T> commandValue) {
+    if (obj == null) throw new NullPointerException();
     this.obj = obj;
     this.commandValue = commandValue;
   }

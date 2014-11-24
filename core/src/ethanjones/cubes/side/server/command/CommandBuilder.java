@@ -1,4 +1,4 @@
-package ethanjones.cubes.networking.command;
+package ethanjones.cubes.side.server.command;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,6 +12,7 @@ public class CommandBuilder {
   private final CommandValue commandValue;
   private final String commandString;
   private CommandListener commandListener;
+  private CommandPermission commandPermission;
   private String helpText;
 
   public CommandBuilder(String base) {
@@ -32,6 +33,7 @@ public class CommandBuilder {
     this.childrenUnmodifiable = Collections.unmodifiableList(children);
     this.commandString = commandString;
     this.commandValue = commandValue;
+    this.commandPermission = parent != null ? parent.getCommandPermission() : CommandPermission.Basic; //inherit command permission
   }
 
   public CommandBuilder getParent() {
@@ -62,6 +64,15 @@ public class CommandBuilder {
 
   public CommandListener getCommandListener() {
     return commandListener;
+  }
+
+  public CommandBuilder setCommandPermission(CommandPermission commandPermission) {
+    this.commandPermission = commandPermission;
+    return this;
+  }
+
+  public CommandPermission getCommandPermission() {
+    return commandPermission;
   }
 
   public List<CommandBuilder> getChildren() {

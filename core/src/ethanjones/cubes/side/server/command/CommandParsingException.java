@@ -1,6 +1,8 @@
-package ethanjones.cubes.networking.command;
+package ethanjones.cubes.side.server.command;
 
-public class CommandParsingException extends Exception {
+import ethanjones.cubes.core.localization.LocalizedException;
+
+public class CommandParsingException extends LocalizedException {
 
   public CommandParsingException(String arg0) {
     super(arg0);
