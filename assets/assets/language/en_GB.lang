@@ -47,7 +47,6 @@ hud.debug=Debug
 #Commands
 commands.common.unknownCommand=Unknown command! Type help for a list of commands
 commands.common.failedPermissionCheck=You do not have permission to run this command
-commands.common.console=CONSOLE
 
 commands.common.value.coordinate.parsing=Not a coordinate
 commands.common.value.coordinate.string=[coordinate]
@@ -63,3 +62,7 @@ commands.help.command=Command %s:
 commands.help.format=%1$s - %2$s
 
 commands.stop.message=Stopping...
+
+#Server
+server.console_capitals=CONSOLE
+server.chat=Chat

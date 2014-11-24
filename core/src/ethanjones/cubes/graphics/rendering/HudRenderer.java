@@ -2,82 +2,69 @@ package ethanjones.cubes.graphics.rendering;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import java.util.ArrayList;
 
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.graphics.assets.Assets;
-import ethanjones.cubes.input.keyboard.KeyTypedListener;
+import ethanjones.cubes.graphics.menu.Fonts;
+import ethanjones.cubes.input.keyboard.KeyTypedAdapter;
 import ethanjones.cubes.input.keyboard.KeyboardHelper;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketChat;
 import ethanjones.cubes.side.client.ClientDebug;
-import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.common.Cubes;
 
 import static ethanjones.cubes.graphics.menu.Menu.skin;
 
 public class HudRenderer implements Disposable {
 
-  private class KeyListener implements KeyTypedListener {
+  private class KeyListener extends KeyTypedAdapter {
 
     final int debug = Input.Keys.F1;
     final int chat = Input.Keys.F2;
 
-    boolean debugDown = false;
-    boolean chatDown = false;
-
     @Override
     public void keyDown(int keycode) {
-      if (keycode == debug && !debugDown) {
-        debugDown = true;
+      if (keycode == debug) {
         setDebugEnabled(!isDebugEnabled());
       }
-      if (keycode == chat && !chatDown) {
-        chatDown = true;
+      if (keycode == chat) {
         setChatEnabled(!isChatEnabled());
       }
-    }
-
-    @Override
-    public void keyUp(int keycode) {
-      if (keycode == debug) debugDown = false;
-      if (keycode == chat) chatDown = false;
-    }
-
-    @Override
-    public void keyTyped(char character) {
-
     }
   }
 
   Stage stage;
   TextField chat;
+  Label chatLog;
+  ArrayList<String> chatStrings = new ArrayList<String>();
   Image crosshair;
   Touchpad touchpad;
   TextButton debugButton;
   TextButton chatButton;
   ClientDebug.DebugLabel debug;
-  private boolean chatEnabled; //TODO: On screen buttons
+  KeyListener keyListener;
+  private boolean chatEnabled;
   private boolean debugEnabled;
 
   public HudRenderer() {
     stage = new Stage(new ScreenViewport());
     Cubes.getClient().inputChain.hud = stage;
+
+    keyListener = new KeyListener();
+    KeyboardHelper.addKeyTypedListener(keyListener);
 
     crosshair = new Image(Assets.getTextureRegion("core:hud/Crosshair.png"));
 
@@ -85,6 +72,7 @@ public class HudRenderer implements Disposable {
 
     TextField.TextFieldStyle defaultStyle = skin.get("default", TextField.TextFieldStyle.class);
     TextField.TextFieldStyle chatStyle = new TextField.TextFieldStyle(defaultStyle);
+    chatStyle.font = Fonts.Size2;
     chatStyle.background = new TextureRegionDrawable(Assets.getTextureRegion("core:hud/ChatBackground.png"));
 
     chat = new TextField("", chatStyle);
@@ -97,10 +85,12 @@ public class HudRenderer implements Disposable {
           NetworkingManager.sendPacketToServer(packetChat);
           chat.setText("");
           setChatEnabled(false);
+
         }
       }
     });
-    KeyboardHelper.addKeyTypedListener(new KeyListener());
+    chatLog = new Label("", new LabelStyle(Fonts.Size2, Color.WHITE));
+    chatLog.setAlignment(Align.bottomLeft, Align.left);
 
     if (Compatibility.get().isTouchScreen()) {
       touchpad = new Touchpad(10f, skin);
@@ -137,9 +127,11 @@ public class HudRenderer implements Disposable {
       stage.getRoot().addActor(debug);
     }
     stage.getRoot().removeActor(chat);
+    stage.getRoot().removeActor(chatLog);
     if (isChatEnabled()) {
       stage.addActor(chat);
       stage.setKeyboardFocus(chat);
+      stage.addActor(chatLog);
     } else {
       stage.setKeyboardFocus(null);
     }
@@ -174,6 +166,8 @@ public class HudRenderer implements Disposable {
     debug.setBounds(0, 0, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight());
     debug.setAlignment(Align.topLeft, Align.topLeft);
     chat.setBounds(0, 0, Gdx.graphics.getWidth(), chat.getStyle().font.getBounds("ABC123").height * 1.5f);
+    chatLog.setBounds(0, chat.getHeight(), Gdx.graphics.getWidth(), chatLog.getStyle().font.getBounds("ABC123").height * 5);
+
     float crosshairSize = Math.min(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) / 20;
     crosshair.setBounds((Gdx.graphics.getWidth() / 2) - (crosshairSize / 2), (Gdx.graphics.getHeight() / 2) - (crosshairSize / 2), crosshairSize, crosshairSize);
     if (touchpad != null) {
@@ -187,8 +181,21 @@ public class HudRenderer implements Disposable {
     }
   }
 
+  public void print(String string) {
+    chatStrings.add(0, string);
+    String str = "";
+    for (int i = Math.min(4, chatStrings.size() - 1); i >= 0; i--) {
+      str = str + chatStrings.get(i) + "\n";
+    }
+    chatLog.setText(str);
+  }
+
   @Override
   public void dispose() {
     stage.dispose();
+  }
+
+  public boolean noCursorCatching() {
+    return chatEnabled;
   }
 }

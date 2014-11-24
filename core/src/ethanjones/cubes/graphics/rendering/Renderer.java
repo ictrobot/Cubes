@@ -30,4 +30,8 @@ public class Renderer {
   public void resize() {
     hud.resize();
   }
+
+  public boolean noCursorCatching() {
+    return hud.noCursorCatching();
+  }
 }

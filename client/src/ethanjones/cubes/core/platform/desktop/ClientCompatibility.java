@@ -17,6 +17,7 @@ public class ClientCompatibility extends DesktopCompatibility {
     config.vSyncEnabled = false;
     config.foregroundFPS = 0;
     config.backgroundFPS = 0;
+    config.forceExit = false;
     new LwjglApplication(applicationListener, config);
   }
 }

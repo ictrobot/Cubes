@@ -1,5 +1,6 @@
 package ethanjones.cubes.core.platform;
 
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.core.system.Memory;
 import ethanjones.cubes.graphics.menu.Menu;
@@ -61,7 +62,8 @@ public class ServerAdapter implements AdapterInterface {
   @Override
   public void dispose() {
     try {
-      cubesServer.dispose();
+      Log.debug("Disposing adapter");
+      cubesServer.stop();
     } catch (Exception e) {
       Debug.crash(e);
     }

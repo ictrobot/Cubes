@@ -122,10 +122,10 @@ public class GraphicalAdapter implements AdapterInterface {
       Memory.update();
       Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
       Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-      if (menu == null) {
-        Gdx.input.setCursorCatched(true);
-      } else {
+      if (menu != null || (Cubes.getClient() != null && Cubes.getClient().renderer.noCursorCatching())) {
         Gdx.input.setCursorCatched(false);
+      } else {
+        Gdx.input.setCursorCatched(true);
       }
       if (cubesClient != null) cubesClient.render();
       if (menu != null) menu.render(); //Render menu over client
@@ -155,10 +155,11 @@ public class GraphicalAdapter implements AdapterInterface {
   @Override
   public void dispose() {
     try {
+      Log.debug("Disposing adapter");
       if (menu != null) {
         menu.hide();
       }
-      if (cubesClient != null) cubesClient.dispose();
+      if (cubesClient != null) cubesClient.stop();
       if (cubesServer != null) {
         cubesServer.dispose();
         try {

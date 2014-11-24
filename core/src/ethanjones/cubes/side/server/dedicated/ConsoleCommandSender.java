@@ -22,7 +22,7 @@ public class ConsoleCommandSender implements CommandSender {
 
   @Override
   public void print(String string) {
-    Log.info("[" + Localization.get("commands.common.console") + "] " + string);
+    Log.info("[" + Localization.get("server.console_capitals") + "] " + string);
   }
 
   @Override
