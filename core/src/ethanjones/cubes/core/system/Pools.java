@@ -49,6 +49,26 @@ public class Pools {
     }
   }
 
+  public static <T> void free(T obj) {
+    Pool pool = pool(obj);
+    if (pool == null) return;
+    synchronized (pool) {
+      pool.free(obj);
+    }
+  }
+
+  private static Pool pool(Object object) {
+    Class<?> c = object.getClass();
+    synchronized (pools) {
+      while (c != null && !c.equals(Object.class)) {
+        Pool pool = pools.get(c);
+        if (pool != null) return pool;
+        c = c.getSuperclass();
+      }
+    }
+    return null;
+  }
+
   private static <T> Pool<T> pool(Class<T> c) {
     synchronized (pools) {
       return pools.get(c);
