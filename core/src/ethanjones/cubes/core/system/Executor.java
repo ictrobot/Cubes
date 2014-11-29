@@ -49,7 +49,7 @@ public class Executor {
 
   private static synchronized void start() {
     synchronized (sync) {
-      executor = new ScheduledThreadPoolExecutor(8, new ThreadFactory() {
+      executor = new ScheduledThreadPoolExecutor(4, new ThreadFactory() {
         int threads = 0;
 
         public Thread newThread(Runnable r) {

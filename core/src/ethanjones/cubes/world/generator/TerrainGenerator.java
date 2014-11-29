@@ -4,7 +4,7 @@ import ethanjones.cubes.block.Block;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.world.storage.Area;
 
-public abstract class WorldGenerator {
+public abstract class TerrainGenerator {
 
   public abstract void generate(Area area);
 

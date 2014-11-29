@@ -137,8 +137,8 @@ public class CameraController extends InputAdapter {
       tmp.crs(camera.up).nor().scl(deltaTime * speed * right);
       camera.position.add(tmp);
       moved = true;
-    }
-    if (moved) ((WorldClient) Cubes.getClient().world).playerChangedPosition();
+    }//FIXME
+    //if (moved) ((WorldClient) Cubes.getClient().world).playerChangedPosition();
     camera.update(true);
   }
 

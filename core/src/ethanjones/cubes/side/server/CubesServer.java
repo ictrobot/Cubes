@@ -16,7 +16,7 @@ import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.command.CommandManager;
 import ethanjones.cubes.world.WorldServer;
-import ethanjones.cubes.world.generator.BasicWorldGenerator;
+import ethanjones.cubes.world.generator.BasicTerrainGenerator;
 
 public abstract class CubesServer extends Cubes implements TimeHandler {
 
@@ -30,7 +30,7 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
     CommandManager.reset();
     NetworkingManager.serverInit();
 
-    world = new WorldServer(new BasicWorldGenerator());
+    world = new WorldServer(new BasicTerrainGenerator());
 
     Sided.getTiming().addHandler(this, 250);
 

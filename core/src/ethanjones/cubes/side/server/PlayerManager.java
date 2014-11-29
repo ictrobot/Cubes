@@ -6,18 +6,17 @@ import java.util.ArrayList;
 import ethanjones.cubes.core.event.EventHandler;
 import ethanjones.cubes.core.event.world.block.BlockEvent;
 import ethanjones.cubes.core.system.Executor;
-import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.graphics.world.RayTracing;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.*;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.WorldServer;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.storage.Area;
-import ethanjones.cubes.world.storage.BlankArea;
 import ethanjones.cubes.world.thread.GenerateWorldCallable;
 import ethanjones.cubes.world.thread.SendWorldCallable;
 
@@ -63,11 +62,11 @@ public class PlayerManager {
   }
 
   private void sendAndRequestArea(AreaReference areaReference) {
-    Area area = server.world.getAreaInternal(areaReference, false, false);
-    if (area == null || area instanceof BlankArea) {
+    Area area = server.world.getAreaInternal(areaReference, false);
+    if (area == null) {
       Executor.execute(new SendWorldCallable(new GenerateWorldCallable(areaReference.clone(), (WorldServer) server.world), client, this));
     } else {
-      Executor.execute(new SendWorldCallable(server.world.getAreaInternal(areaReference, false, false), client, this));
+      Executor.execute(new SendWorldCallable(server.world.getAreaInternal(areaReference, false), client, this));
     }
   }
 

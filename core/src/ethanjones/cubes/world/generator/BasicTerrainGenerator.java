@@ -3,7 +3,7 @@ package ethanjones.cubes.world.generator;
 import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.world.storage.Area;
 
-public class BasicWorldGenerator extends WorldGenerator {
+public class BasicTerrainGenerator extends TerrainGenerator {
 
   @Override
   public void generate(Area area) {

@@ -1,35 +1,69 @@
 package ethanjones.cubes.world;
 
 import com.badlogic.gdx.utils.Disposable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.system.Pools;
+import ethanjones.cubes.world.generator.TerrainGenerator;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.storage.Area;
-import ethanjones.cubes.world.storage.BlankArea;
 
 public abstract class World implements Disposable {
 
-  public final static BlankArea BLANK_AREA = new BlankArea();
+  protected final HashMap<AreaReference, Area> map;
+  protected final TerrainGenerator terrainGenerator;
+  protected final ArrayList<AreaReference> requested;
 
-  public World() {
-
+  public World(TerrainGenerator terrainGenerator) {
+    this.terrainGenerator = terrainGenerator;
+    map = new HashMap<AreaReference, Area>(1024);
+    requested = new ArrayList<AreaReference>();
   }
 
-  public abstract boolean setAreaInternal(AreaReference areaReference, Area area);
-
-  public Area getAreaPlain(AreaReference areaReference) {
-    return getAreaInternal(areaReference, false, true);
+  public Area getAreaInternal(AreaReference areaReference, boolean request) {
+    Area area;
+    synchronized (map) {
+      area = map.get(areaReference);
+    }
+    if (area != null) {
+      return area;
+    } else if (request) {
+      requestArea(areaReference);
+    }
+    return null;
   }
 
-  /**
-   * @param request     If the area should be requested
-   * @param returnBlank If BLANK_AREA should be returned if null
-   */
-  public abstract Area getAreaInternal(AreaReference areaReference, boolean request, boolean returnBlank);
+  public boolean setAreaInternal(AreaReference areaReference, Area area) {
+    synchronized (map) {
+      map.put(areaReference.clone(), area);
+    }
+    return true;
+  }
+
+  public void requestArea(AreaReference areaReference) {
+    synchronized (requested) {
+      if (requested.contains(areaReference)) {
+        return;
+      } else {
+        requested.add(areaReference.clone());
+      }
+    }
+    requestAreaInternal(areaReference.clone());
+  }
+
+  protected abstract void requestAreaInternal(AreaReference areaReference);
 
   public Block getBlock(int x, int y, int z) {
-    return getArea(CoordinateConverter.area(x), CoordinateConverter.area(y), CoordinateConverter.area(z)).getBlock(x, y, z);
+    Area area = getArea(CoordinateConverter.area(x), CoordinateConverter.area(y), CoordinateConverter.area(z));
+    return area == null ? null : area.getBlock(x, y, z);
+  }
+
+  public void setBlock(Block block, int x, int y, int z) {
+    Area area = getArea(CoordinateConverter.area(x), CoordinateConverter.area(y), CoordinateConverter.area(z));
+    if (area != null) area.setBlock(block, x, y, z);
   }
 
   public Area getArea(int areaX, int areaY, int areaZ) {
@@ -40,11 +74,21 @@ public abstract class World implements Disposable {
   }
 
   public Area getArea(AreaReference areaReference) {
-    return getAreaInternal(areaReference, true, true);
+    return getAreaInternal(areaReference, true);
   }
 
-  public void setBlock(Block block, int x, int y, int z) {
-    getArea(CoordinateConverter.area(x), CoordinateConverter.area(y), CoordinateConverter.area(z)).setBlock(block, x, y, z);
+  public TerrainGenerator getTerrainGenerator() {
+    return terrainGenerator;
+  }
+
+  @Override
+  public void dispose() {
+    synchronized (map) {
+      for (Entry<AreaReference, Area> entry : map.entrySet()) {
+        entry.getValue().unload();
+      }
+      map.clear();
+    }
   }
 
 }
