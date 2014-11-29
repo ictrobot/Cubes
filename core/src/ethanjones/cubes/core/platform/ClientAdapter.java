@@ -17,13 +17,13 @@ import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.CubesServer;
 import ethanjones.cubes.side.server.integrated.IntegratedServer;
 
-public class GraphicalAdapter implements AdapterInterface {
+public class ClientAdapter implements AdapterInterface {
 
   private Menu menu;
   private IntegratedServer cubesServer;
   private CubesClient cubesClient;
 
-  public GraphicalAdapter() {
+  public ClientAdapter() {
     Adapter.setInterface(this);
   }
 

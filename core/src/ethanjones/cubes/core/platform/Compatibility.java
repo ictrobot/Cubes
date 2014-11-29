@@ -76,7 +76,7 @@ public abstract class Compatibility {
       if (isServer()) {
         run(new ServerAdapter());
       } else {
-        run(new GraphicalAdapter());
+        run(new ClientAdapter());
       }
     } catch (Exception e) {
       try {
