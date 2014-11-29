@@ -33,7 +33,7 @@ public abstract class World implements Disposable {
   }
 
   public Area getArea(int areaX, int areaY, int areaZ) {
-    AreaReference areaReference = Pools.obtain(AreaReference.class).setFromAreaCoordinates(areaX, areaY, areaZ);
+    AreaReference areaReference = Pools.obtainAreaReference().setFromAreaCoordinates(areaX, areaY, areaZ);
     Area area = getArea(areaReference);
     Pools.free(AreaReference.class, areaReference);
     return area;

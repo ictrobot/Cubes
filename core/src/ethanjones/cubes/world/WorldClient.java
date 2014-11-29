@@ -37,7 +37,7 @@ public class WorldClient extends World {
         Area[] old;
         old = areasAroundPlayer;
         areasAroundPlayer = new Area[AREA_LOAD_DISTANCE_CUBED];
-        AreaReference areaReference = Pools.obtain(AreaReference.class);
+        AreaReference areaReference = Pools.obtainAreaReference();
         for (int i = 0; i < AREA_LOAD_DISTANCE_CUBED; i++) {
           Area o = old[i];
           if (o != null) {

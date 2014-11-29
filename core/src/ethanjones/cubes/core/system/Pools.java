@@ -57,6 +57,39 @@ public class Pools {
     }
   }
 
+  //Individual types
+  public static AreaReference obtainAreaReference() {
+    Pool<AreaReference> pool = pool(AreaReference.class);
+    if (pool == null) return null;
+    synchronized (pool) {
+      return pool.obtain();
+    }
+  }
+
+  public static void free(AreaReference obj) {
+    Pool pool = pool(AreaReference.class);
+    if (pool == null) return;
+    synchronized (pool) {
+      pool.free(obj);
+    }
+  }
+
+  public static BlockReference obtainBlockReference() {
+    Pool<BlockReference> pool = pool(BlockReference.class);
+    if (pool == null) return null;
+    synchronized (pool) {
+      return pool.obtain();
+    }
+  }
+
+  public static void free(BlockReference obj) {
+    Pool pool = pool(BlockReference.class);
+    if (pool == null) return;
+    synchronized (pool) {
+      pool.free(obj);
+    }
+  }
+
   private static Pool pool(Object object) {
     Class<?> c = object.getClass();
     synchronized (pools) {
