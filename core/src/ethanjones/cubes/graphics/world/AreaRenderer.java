@@ -159,7 +159,7 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
 
   @Override
   public void reset() {
-    area.areaRenderer = null;
+    if (area != null) area.areaRenderer = null;
     area = null;
     refresh = true;
   }

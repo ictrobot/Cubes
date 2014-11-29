@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.utils.Disposable;
 
 import ethanjones.cubes.core.settings.Settings;
+import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.graphics.world.AreaRenderer;
 import ethanjones.cubes.graphics.world.AreaRendererPool;
 import ethanjones.cubes.input.CameraController;
@@ -26,7 +27,9 @@ public class BlockRenderer implements Disposable {
 
   private ModelBatch modelBatch;
 
-  private AreaRendererPool areaRendererPool = new AreaRendererPool();
+  static {
+    Pools.registerType(AreaRenderer.class, new AreaRendererPool());
+  }
 
   public BlockRenderer() {
     modelBatch = new ModelBatch();
@@ -61,11 +64,11 @@ public class BlockRenderer implements Disposable {
           Area area = CubesClient.getClient().world.getArea(areaX, areaY, areaZ);
           if (areaInFrustum(area, camera.frustum)) {
             if (area.areaRenderer == null) {
-              areaRendererPool.obtain().set(area);
+              Pools.obtain(AreaRenderer.class).set(area);
             }
             modelBatch.render(area.areaRenderer, environment);
           } else if (area.areaRenderer != null) {
-            areaRendererPool.free(area.areaRenderer);
+            Pools.free(AreaRenderer.class, area.areaRenderer);
           }
         }
       }
@@ -81,9 +84,5 @@ public class BlockRenderer implements Disposable {
   @Override
   public void dispose() {
     modelBatch.dispose();
-  }
-
-  public void free(AreaRenderer areaRenderer) {
-    areaRendererPool.free(areaRenderer);
   }
 }

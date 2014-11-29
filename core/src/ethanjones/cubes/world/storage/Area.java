@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
 import ethanjones.cubes.core.system.CubesException;
+import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.graphics.world.AreaRenderer;
 import ethanjones.cubes.side.Sided;
-import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.reference.BlockReference;
 
 public class Area implements DataParser<DataGroup> {
@@ -72,7 +72,7 @@ public class Area implements DataParser<DataGroup> {
   }
 
   public void unload() {
-    if (areaRenderer != null) Cubes.getClient().renderer.block.free(areaRenderer);
+    if (areaRenderer != null) Pools.free(AreaRenderer.class, areaRenderer);
     blockFactories = null;
   }
 

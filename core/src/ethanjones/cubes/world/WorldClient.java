@@ -1,5 +1,6 @@
 package ethanjones.cubes.world;
 
+import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.storage.Area;
@@ -36,7 +37,7 @@ public class WorldClient extends World {
         Area[] old;
         old = areasAroundPlayer;
         areasAroundPlayer = new Area[AREA_LOAD_DISTANCE_CUBED];
-        AreaReference areaReference = areaReferencePool.obtain();
+        AreaReference areaReference = Pools.obtain(AreaReference.class);
         for (int i = 0; i < AREA_LOAD_DISTANCE_CUBED; i++) {
           Area o = old[i];
           if (o != null) {
@@ -46,7 +47,7 @@ public class WorldClient extends World {
             }
           }
         }
-        areaReferencePool.free(areaReference);
+        Pools.free(AreaReference.class, areaReference);
       }
     }
   }

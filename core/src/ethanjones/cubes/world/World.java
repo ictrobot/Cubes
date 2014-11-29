@@ -3,18 +3,17 @@ package ethanjones.cubes.world;
 import com.badlogic.gdx.utils.Disposable;
 
 import ethanjones.cubes.block.Block;
+import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.world.reference.AreaReference;
-import ethanjones.cubes.world.reference.AreaReferencePool;
 import ethanjones.cubes.world.storage.Area;
 import ethanjones.cubes.world.storage.BlankArea;
 
 public abstract class World implements Disposable {
 
   public final static BlankArea BLANK_AREA = new BlankArea();
-  protected final AreaReferencePool areaReferencePool;
 
   public World() {
-    this.areaReferencePool = new AreaReferencePool();
+
   }
 
   public abstract boolean setAreaInternal(AreaReference areaReference, Area area);
@@ -34,14 +33,9 @@ public abstract class World implements Disposable {
   }
 
   public Area getArea(int areaX, int areaY, int areaZ) {
-    AreaReference areaReference;
-    synchronized (areaReferencePool) {
-      areaReference = areaReferencePool.obtain().setFromAreaCoordinates(areaX, areaY, areaZ);
-    }
+    AreaReference areaReference = Pools.obtain(AreaReference.class).setFromAreaCoordinates(areaX, areaY, areaZ);
     Area area = getArea(areaReference);
-    synchronized (areaReferencePool) {
-      areaReferencePool.free(areaReference);
-    }
+    Pools.free(AreaReference.class, areaReference);
     return area;
   }
 
