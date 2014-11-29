@@ -13,9 +13,9 @@ import ethanjones.cubes.world.storage.Area;
 
 public abstract class World implements Disposable {
 
-  protected final HashMap<AreaReference, Area> map;
-  protected final TerrainGenerator terrainGenerator;
-  protected final ArrayList<AreaReference> requested;
+  public final HashMap<AreaReference, Area> map;
+  public final TerrainGenerator terrainGenerator;
+  public final ArrayList<AreaReference> requested;
 
   public World(TerrainGenerator terrainGenerator) {
     this.terrainGenerator = terrainGenerator;

@@ -13,7 +13,6 @@ import ethanjones.cubes.networking.packets.PacketButton;
 import ethanjones.cubes.networking.packets.PacketKey;
 import ethanjones.cubes.networking.packets.PacketPlayerInfo;
 import ethanjones.cubes.side.common.Cubes;
-import ethanjones.cubes.world.WorldClient;
 
 public class CameraController extends InputAdapter {
 

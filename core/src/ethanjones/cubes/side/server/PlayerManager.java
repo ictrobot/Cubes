@@ -13,7 +13,7 @@ import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.CoordinateConverter;
-import ethanjones.cubes.world.WorldServer;
+import ethanjones.cubes.world.server.WorldServer;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.storage.Area;

@@ -18,7 +18,7 @@ import ethanjones.cubes.input.keyboard.KeyboardHelper;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.common.Cubes;
-import ethanjones.cubes.world.WorldClient;
+import ethanjones.cubes.world.client.WorldClient;
 
 public class CubesClient extends Cubes implements ApplicationListener {
 
