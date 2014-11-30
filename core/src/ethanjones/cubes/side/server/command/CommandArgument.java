@@ -18,4 +18,8 @@ public class CommandArgument<T> {
   public CommandValue<T> getCommandValue() {
     return commandValue;
   }
+
+  public String toString() {
+    return commandValue.toString();
+  }
 }

@@ -11,11 +11,11 @@ public abstract class CommandValue<T> {
   public abstract String toString();
 
   //Localise exceptions, strings, help messages and everything command related
-  public static final CommandValue<Double> coordinate = new CommandValue<Double>() {
+  public static final CommandValue<Float> coordinate = new CommandValue<Float>() {
     @Override
-    public Double getArgument(String string) throws CommandParsingException {
+    public Float getArgument(String string) throws CommandParsingException {
       try {
-        return Double.parseDouble(string);
+        return Float.parseFloat(string);
       } catch (NumberFormatException e) {
         throw new CommandParsingException("commands.common.value.coordinate.parsing");
       }

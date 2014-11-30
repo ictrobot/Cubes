@@ -13,7 +13,7 @@ import ethanjones.cubes.side.server.command.CommandSender;
 public class Player extends LivingEntity implements CommandSender {
 
   public final String username;
-  private final ClientIdentifier clientIdentifier;
+  public final ClientIdentifier clientIdentifier;
 
   public Player(String username, ClientIdentifier clientIdentifier) {
     super(20);

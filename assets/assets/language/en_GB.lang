@@ -47,6 +47,8 @@ hud.debug=Debug
 #Commands
 commands.common.unknownCommand=Unknown command! Type help for a list of commands
 commands.common.failedPermissionCheck=You do not have permission to run this command
+commands.common.onlyPlayer=Only players can run this command!
+commands.common.exception=%s while running command
 
 commands.common.value.coordinate.parsing=Not a coordinate
 commands.common.value.coordinate.string=[coordinate]

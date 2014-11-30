@@ -112,32 +112,26 @@ public class CameraController extends InputAdapter {
 
   private void update(float forward, float backward, float left, float right) {
     float deltaTime = Gdx.graphics.getRawDeltaTime();
-    boolean moved = false;
     if (forward > 0) {
       tmp.set(camera.direction);
       tmp.nor().scl(deltaTime * speed * forward);
       camera.position.add(tmp);
-      moved = true;
     }
     if (backward > 0) {
       tmp.set(camera.direction);
       tmp.nor().scl(-deltaTime * speed * backward);
       camera.position.add(tmp);
-      moved = true;
     }
     if (left > 0) {
       tmp.set(camera.direction);
       tmp.crs(camera.up).nor().scl(-deltaTime * speed * left);
       camera.position.add(tmp);
-      moved = true;
     }
     if (right > 0) {
       tmp.set(camera.direction);
       tmp.crs(camera.up).nor().scl(deltaTime * speed * right);
       camera.position.add(tmp);
-      moved = true;
-    }//FIXME
-    //if (moved) ((WorldClient) Cubes.getClient().world).playerChangedPosition();
+    }
     camera.update(true);
   }
 
