@@ -127,7 +127,11 @@ public class ClientAdapter implements AdapterInterface {
       } else {
         Gdx.input.setCursorCatched(true);
       }
-      if (cubesClient != null) cubesClient.render();
+      if (cubesClient != null) {
+        cubesClient.render();
+      } else {
+        MenuManager.renderBackground();
+      }
       if (menu != null) menu.render(); //Render menu over client
     } catch (Exception e) {
       Debug.crash(e);

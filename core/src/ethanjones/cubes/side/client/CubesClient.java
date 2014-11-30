@@ -39,7 +39,6 @@ public class CubesClient extends Cubes implements ApplicationListener {
     inputChain = new InputChain();
     renderer = new Renderer();
     player = new Player(renderer.block.camera);
-    Blocks.loadGraphics();
 
     inputChain.setup();
     Gdx.input.setInputProcessor(InputChain.getInputMultiplexer());

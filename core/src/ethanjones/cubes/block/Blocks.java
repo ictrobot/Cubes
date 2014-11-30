@@ -2,6 +2,8 @@ package ethanjones.cubes.block;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import ethanjones.cubes.block.basic.BlockBedrock;
 import ethanjones.cubes.block.basic.BlockDirt;
@@ -21,7 +23,8 @@ public class Blocks {
   @Register
   public static BlockGrass grass;
 
-  private static ArrayList<Block> factories = new ArrayList<Block>();
+  private static ArrayList<Block> blocks = new ArrayList<Block>();
+  private static List<Block> blocksUnmodifiable = Collections.unmodifiableList(blocks);
 
   public static void init() {
     for (Field f : Blocks.class.getFields()) {
@@ -31,7 +34,7 @@ public class Blocks {
           Object o = f.getType().newInstance();
           if (o instanceof Block) {
             f.set(null, o);
-            factories.add((Block) o);
+            blocks.add((Block) o);
           }
         }
       } catch (Exception e) {
@@ -56,8 +59,12 @@ public class Blocks {
   }
 
   public static void loadGraphics() {
-    for (Block f : factories) {
+    for (Block f : blocks) {
       f.loadGraphics();
     }
+  }
+
+  public static List<Block> getBlocks() {
+    return blocksUnmodifiable;
   }
 }
