@@ -20,6 +20,10 @@ public class Adapter {
     if (adapter == null && adapterInterface != null) adapter = adapterInterface;
   }
 
+  public static AdapterInterface getInterface() {
+    return adapter;
+  }
+
   public static void quit() {
     Gdx.app.exit();
   }
