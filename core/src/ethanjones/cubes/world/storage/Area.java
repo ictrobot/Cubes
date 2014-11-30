@@ -36,7 +36,7 @@ public class Area implements DataParser<DataGroup> {
   private final boolean render;
   public boolean generated = false;
   public AreaRenderer areaRenderer;
-  public int[] blockFactories;
+  public final int[] blockFactories; //Always sync on blockFactories
 
   /**
    * In area coords
@@ -64,7 +64,9 @@ public class Area implements DataParser<DataGroup> {
   }
 
   public Block getBlock(int x, int y, int z) {
-    return Sided.getBlockManager().toBlock(blockFactories[getRef(x, y, z)]);
+    synchronized (blockFactories) {
+      return Sided.getBlockManager().toBlock(blockFactories[getRef(x, y, z)]);
+    }
   }
 
   public int getRef(int x, int y, int z) {
@@ -73,7 +75,7 @@ public class Area implements DataParser<DataGroup> {
 
   public void unload() {
     if (areaRenderer != null) Pools.free(AreaRenderer.class, areaRenderer);
-    blockFactories = null;
+    //blockFactories = null;
   }
 
   @Override
@@ -88,38 +90,40 @@ public class Area implements DataParser<DataGroup> {
     DataGroup world = new DataGroup();
     ArrayList<BlockReference> blocks = new ArrayList<BlockReference>();
     int i = 0;
-    for (int y = 0; y < SIZE_BLOCKS; y++) {
-      DataList<DataInteger> factories = new DataList<DataInteger>();
-      DataList<DataGroup> partial = new DataList<DataGroup>();
-      blocks.clear();
-      for (int z = 0; z < SIZE_BLOCKS; z++) {
-        for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
-          int b = blockFactories[i];
-          if (b != 0) {
-            blocks.add(new BlockReference().setFromBlockCoordinates(x, y, z));
-            if (blocks.size() < SIZE_BLOCKS_SQUARED / 8) {
-              DataGroup d = new DataGroup();
-              d.setByte("x", (byte) x);
-              d.setByte("y", (byte) y);
-              d.setByte("z", (byte) z);
-              d.setInteger("b", b);
-              partial.add(d);
+    synchronized (blockFactories) {
+      for (int y = 0; y < SIZE_BLOCKS; y++) {
+        DataList<DataInteger> factories = new DataList<DataInteger>();
+        DataList<DataGroup> partial = new DataList<DataGroup>();
+        blocks.clear();
+        for (int z = 0; z < SIZE_BLOCKS; z++) {
+          for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
+            int b = blockFactories[i];
+            if (b != 0) {
+              blocks.add(new BlockReference().setFromBlockCoordinates(x, y, z));
+              if (blocks.size() < SIZE_BLOCKS_SQUARED / 8) {
+                DataGroup d = new DataGroup();
+                d.setByte("x", (byte) x);
+                d.setByte("y", (byte) y);
+                d.setByte("z", (byte) z);
+                d.setInteger("b", b);
+                partial.add(d);
+              }
             }
+            factories.add(new DataInteger(b));
           }
-          factories.add(new DataInteger(b));
         }
-      }
-      if (blocks.size() == 0) { //Blank Y
-        continue;
-      }
-      if (blocks.size() < SIZE_BLOCKS_SQUARED / 8) {
-        DataGroup d = new DataGroup();
-        d.setList("part", partial);
-        world.setValue(y + "", d);
-      } else {
-        DataGroup d = new DataGroup();
-        d.setList("factories", factories);
-        world.setValue(y + "", d);
+        if (blocks.size() == 0) { //Blank Y
+          continue;
+        }
+        if (blocks.size() < SIZE_BLOCKS_SQUARED / 8) {
+          DataGroup d = new DataGroup();
+          d.setList("part", partial);
+          world.setValue(y + "", d);
+        } else {
+          DataGroup d = new DataGroup();
+          d.setList("factories", factories);
+          world.setValue(y + "", d);
+        }
       }
     }
     dataGroup.setGroup("world", world);
@@ -136,24 +140,25 @@ public class Area implements DataParser<DataGroup> {
     }
     generated = data.getBoolean("generated");
     DataGroup world = data.getGroup("world");
-
-    for (int y = 0; y < SIZE_BLOCKS; y++) {
-      if (!world.contains(y + "")) {
-        continue;
-      }
-      DataGroup d = world.getGroup(y + "");
-      if (d.contains("part")) {
-        DataList<DataGroup> partial = d.getList("part");
-        for (DataGroup b : partial) {
-          blockFactories[b.getByte("x") + (b.getByte("y") * SIZE_BLOCKS_SQUARED) + (b.getByte("z") * SIZE_BLOCKS)] = b.getInteger("b");
+    synchronized (blockFactories) {
+      for (int y = 0; y < SIZE_BLOCKS; y++) {
+        if (!world.contains(y + "")) {
+          continue;
         }
-      } else {
-        DataList<DataInteger> list = d.getList("factories");
-        int i = 0;
-        int base = y * SIZE_BLOCKS_SQUARED;
-        for (int z = 0; z < SIZE_BLOCKS; z++) {
-          for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
-            blockFactories[base + i] = list.get(i).get();
+        DataGroup d = world.getGroup(y + "");
+        if (d.contains("part")) {
+          DataList<DataGroup> partial = d.getList("part");
+          for (DataGroup b : partial) {
+            blockFactories[b.getByte("x") + (b.getByte("y") * SIZE_BLOCKS_SQUARED) + (b.getByte("z") * SIZE_BLOCKS)] = b.getInteger("b");
+          }
+        } else {
+          DataList<DataInteger> list = d.getList("factories");
+          int i = 0;
+          int base = y * SIZE_BLOCKS_SQUARED;
+          for (int z = 0; z < SIZE_BLOCKS; z++) {
+            for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
+              blockFactories[base + i] = list.get(i).get();
+            }
           }
         }
       }
@@ -163,8 +168,11 @@ public class Area implements DataParser<DataGroup> {
 
   public void setBlock(Block block, int x, int y, int z) {
     int ref = getRef(x, y, z);
-    int b = blockFactories[ref];
-    blockFactories[ref] = Sided.getBlockManager().toInt(block);
+    int b;
+    synchronized (blockFactories) {
+      b = blockFactories[ref];
+      blockFactories[ref] = Sided.getBlockManager().toInt(block);
+    }
     if (areaRenderer != null) areaRenderer.refresh = true;
     new BlockChangedEvent(new BlockReference().setFromBlockCoordinates(x, y, z), Sided.getBlockManager().toBlock(b)).post();
   }

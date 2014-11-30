@@ -10,6 +10,8 @@ public abstract class TerrainGenerator {
 
   public void set(Area area, Block block, int x, int y, int z) {
     int ref = area.getRef(x, y, z);
-    area.blockFactories[ref] = Sided.getBlockManager().toInt(block);
+    synchronized (area.blockFactories) {
+      area.blockFactories[ref] = Sided.getBlockManager().toInt(block);
+    }
   }
 }

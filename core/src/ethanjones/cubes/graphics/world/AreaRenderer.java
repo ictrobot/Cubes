@@ -98,53 +98,55 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
 
     int i = 0;
     int vertexOffset = 0;
-    for (int y = 0; y < SIZE_BLOCKS; y++) {
-      for (int z = 0; z < SIZE_BLOCKS; z++) {
-        for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
-          Block block = Sided.getBlockManager().toBlock(area.blockFactories[i]);
-          if (block == null) continue;
-          BlockTextureHandler textureHandler = block.getTextureHandler(null); //TODO Pass block datagroup
-          if (x < SIZE_BLOCKS - 1) {
-            if (area.blockFactories[i + MAX_X_OFFSET] == 0) {
+    synchronized (area.blockFactories) {
+      for (int y = 0; y < SIZE_BLOCKS; y++) {
+        for (int z = 0; z < SIZE_BLOCKS; z++) {
+          for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
+            Block block = Sided.getBlockManager().toBlock(area.blockFactories[i]);
+            if (block == null) continue;
+            BlockTextureHandler textureHandler = block.getTextureHandler(null); //TODO Pass block datagroup
+            if (x < SIZE_BLOCKS - 1) {
+              if (area.blockFactories[i + MAX_X_OFFSET] == 0) {
+                vertexOffset = createMaxX(offset, textureHandler.getSide(BlockFace.posX).textureRegion, x, y, z, vertices, vertexOffset);
+              }
+            } else if (maxX == null || maxX.getBlock(MIN_AREA, y, z) == null) {
               vertexOffset = createMaxX(offset, textureHandler.getSide(BlockFace.posX).textureRegion, x, y, z, vertices, vertexOffset);
             }
-          } else if (maxX == null || maxX.getBlock(MIN_AREA, y, z) == null) {
-            vertexOffset = createMaxX(offset, textureHandler.getSide(BlockFace.posX).textureRegion, x, y, z, vertices, vertexOffset);
-          }
-          if (x > 0) {
-            if (area.blockFactories[i + MIN_X_OFFSET] == 0) {
+            if (x > 0) {
+              if (area.blockFactories[i + MIN_X_OFFSET] == 0) {
+                vertexOffset = createMinX(offset, textureHandler.getSide(BlockFace.negX).textureRegion, x, y, z, vertices, vertexOffset);
+              }
+            } else if (minX == null || minX.getBlock(MAX_AREA, y, z) == null) {
               vertexOffset = createMinX(offset, textureHandler.getSide(BlockFace.negX).textureRegion, x, y, z, vertices, vertexOffset);
             }
-          } else if (minX == null || minX.getBlock(MAX_AREA, y, z) == null) {
-            vertexOffset = createMinX(offset, textureHandler.getSide(BlockFace.negX).textureRegion, x, y, z, vertices, vertexOffset);
-          }
-          if (y < SIZE_BLOCKS - 1) {
-            if (area.blockFactories[i + MAX_Y_OFFSET] == 0) {
+            if (y < SIZE_BLOCKS - 1) {
+              if (area.blockFactories[i + MAX_Y_OFFSET] == 0) {
+                vertexOffset = createMaxY(offset, textureHandler.getSide(BlockFace.posY).textureRegion, x, y, z, vertices, vertexOffset);
+              }
+            } else if (maxY == null || maxY.getBlock(x, MIN_AREA, z) == null) {
               vertexOffset = createMaxY(offset, textureHandler.getSide(BlockFace.posY).textureRegion, x, y, z, vertices, vertexOffset);
             }
-          } else if (maxY == null || maxY.getBlock(x, MIN_AREA, z) == null) {
-            vertexOffset = createMaxY(offset, textureHandler.getSide(BlockFace.posY).textureRegion, x, y, z, vertices, vertexOffset);
-          }
-          if (y > 0) {
-            if (area.blockFactories[i + MIN_Y_OFFSET] == 0) {
+            if (y > 0) {
+              if (area.blockFactories[i + MIN_Y_OFFSET] == 0) {
+                vertexOffset = createMinY(offset, textureHandler.getSide(BlockFace.negY).textureRegion, x, y, z, vertices, vertexOffset);
+              }
+            } else if (minY == null || minY.getBlock(x, MAX_AREA, z) == null) {
               vertexOffset = createMinY(offset, textureHandler.getSide(BlockFace.negY).textureRegion, x, y, z, vertices, vertexOffset);
             }
-          } else if (minY == null || minY.getBlock(x, MAX_AREA, z) == null) {
-            vertexOffset = createMinY(offset, textureHandler.getSide(BlockFace.negY).textureRegion, x, y, z, vertices, vertexOffset);
-          }
-          if (z < SIZE_BLOCKS - 1) {
-            if (area.blockFactories[i + MAX_Z_OFFSET] == 0) {
+            if (z < SIZE_BLOCKS - 1) {
+              if (area.blockFactories[i + MAX_Z_OFFSET] == 0) {
+                vertexOffset = createMaxZ(offset, textureHandler.getSide(BlockFace.posZ).textureRegion, x, y, z, vertices, vertexOffset);
+              }
+            } else if (maxZ == null || maxZ.getBlock(x, y, MIN_AREA) == null) {
               vertexOffset = createMaxZ(offset, textureHandler.getSide(BlockFace.posZ).textureRegion, x, y, z, vertices, vertexOffset);
             }
-          } else if (maxZ == null || maxZ.getBlock(x, y, MIN_AREA) == null) {
-            vertexOffset = createMaxZ(offset, textureHandler.getSide(BlockFace.posZ).textureRegion, x, y, z, vertices, vertexOffset);
-          }
-          if (z > 0) {
-            if (area.blockFactories[i + MIN_Z_OFFSET] == 0) {
+            if (z > 0) {
+              if (area.blockFactories[i + MIN_Z_OFFSET] == 0) {
+                vertexOffset = createMinZ(offset, textureHandler.getSide(BlockFace.negZ).textureRegion, x, y, z, vertices, vertexOffset);
+              }
+            } else if (minZ == null || minZ.getBlock(x, y, MAX_AREA) == null) {
               vertexOffset = createMinZ(offset, textureHandler.getSide(BlockFace.negZ).textureRegion, x, y, z, vertices, vertexOffset);
             }
-          } else if (minZ == null || minZ.getBlock(x, y, MAX_AREA) == null) {
-            vertexOffset = createMinZ(offset, textureHandler.getSide(BlockFace.negZ).textureRegion, x, y, z, vertices, vertexOffset);
           }
         }
       }
