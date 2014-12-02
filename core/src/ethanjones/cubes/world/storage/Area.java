@@ -6,7 +6,6 @@ import ethanjones.data.basic.DataByte;
 import ethanjones.data.basic.DataInteger;
 import ethanjones.data.other.DataParser;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.block.data.BlockData;
@@ -99,13 +98,14 @@ public class Area implements DataParser<DataGroup> {
     dataGroup.setBoolean("generated", generated);
 
     DataGroup world = new DataGroup();
+    DataList<DataGroup> blockDataList = new DataList<DataGroup>();
+    world.setList("data", blockDataList);
     ArrayList<BlockReference> blocks = new ArrayList<BlockReference>();
     int i = 0;
     synchronized (this) {
       for (int y = 0; y < SIZE_BLOCKS; y++) {
         DataList<DataInteger> factories = new DataList<DataInteger>();
         DataList<DataGroup> partial = new DataList<DataGroup>();
-        blocks.clear();
         for (int z = 0; z < SIZE_BLOCKS; z++) {
           for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
             int b = blockFactories[i];
@@ -118,6 +118,20 @@ public class Area implements DataParser<DataGroup> {
                 d.setByte("z", (byte) z);
                 d.setInteger("b", b);
                 partial.add(d);
+              }
+              BlockData data = blockData[i];
+              if (data != null) {
+                DataGroup d = new DataGroup();
+                d.setByte("x", (byte) x);
+                d.setByte("y", (byte) y);
+                d.setByte("z", (byte) z);
+                byte[] bytes = data.getData();
+                DataList<DataByte> dataBytes = new DataList<DataByte>();
+                for (int e = 0; e < bytes.length; e++) {
+                  dataBytes.add(new DataByte(bytes[e]));
+                }
+                d.setList("d", dataBytes);
+                blockDataList.add(d);
               }
             }
             factories.add(new DataInteger(b));
@@ -136,20 +150,6 @@ public class Area implements DataParser<DataGroup> {
           world.setValue(y + "", d);
         }
       }
-      DataList<DataByte> dataBytes = new DataList<DataByte>();
-      for (i = 0; i < blockData.length; i++) {
-        BlockData b = blockData[i];
-        if (b == null) {
-          dataBytes.add(new DataByte((byte) 0));
-        } else {
-          byte[] data = b.getData();
-          dataBytes.add(new DataByte((byte) data.length));
-          for (byte aByte : data) {
-            dataBytes.add(new DataByte(aByte));
-          }
-        }
-      }
-      world.setList("data", dataBytes);
     }
     dataGroup.setGroup("world", world);
     return dataGroup;
@@ -187,22 +187,19 @@ public class Area implements DataParser<DataGroup> {
           }
         }
       }
-      DataList<DataByte> list = world.getList("data");
-      Iterator<DataByte> iterator = list.iterator();
-      int i = 0;
-      while (i < blockData.length) {
-        byte b = iterator.next().get();
-        if (b == 0) {
-          blockData[i] = null;
-        } else {
-          byte[] bytes = new byte[b];
-          for (int d = 0; d < b; d++) {
-            bytes[d] = iterator.next().get();
-          }
-          blockData[i] = Sided.getBlockManager().toBlock(blockFactories[i]).getBlockData();
-          blockData[i].setData(bytes);
+      DataList<DataGroup> list = world.getList("data");
+      for (DataGroup dataGroup : list) {
+        int x = dataGroup.getByte("x");
+        int y = dataGroup.getByte("y");
+        int z = dataGroup.getByte("z");
+        int ref = getRef(x, y, z);
+        DataList<DataByte> dataBytes = dataGroup.getList("d");
+        byte[] bytes = new byte[dataBytes.size()];
+        for (int d = 0; d < bytes.length; d++) {
+          bytes[d] = dataBytes.get(d).get();
         }
-        i++;
+        blockData[ref] = Sided.getBlockManager().toBlock(blockFactories[ref]).getBlockData();
+        blockData[ref].setData(bytes);
       }
     }
     if (areaRenderer != null) areaRenderer.refresh = true;
