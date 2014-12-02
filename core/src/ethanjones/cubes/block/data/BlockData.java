@@ -42,4 +42,14 @@ public class BlockData {
   public void setData(byte[] data) {
     this.data = data;
   }
+
+  public String toString() {
+    String str = "[";
+    for (int i = 0; i < data.length; i++) {
+      Attribute attribute = blockAttributes.attributes.get(i);
+      str += attribute.getName() + "=" + attribute.getValues().get(data[i] + offset).toString();
+      if (i != data.length - 1) str += ", ";
+    }
+    return str + "]";
+  }
 }
