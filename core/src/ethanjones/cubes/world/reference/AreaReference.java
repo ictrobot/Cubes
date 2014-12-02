@@ -12,17 +12,6 @@ public class AreaReference implements Pool.Poolable, Cloneable {
   public int areaY;
   public int areaZ;
 
-  public AreaReference() {
-
-  }
-
-  @Override
-  public void reset() {
-    areaX = 0;
-    areaY = 0;
-    areaZ = 0;
-  }
-
   public AreaReference setFromArea(Area area) {
     this.areaX = area.x;
     this.areaY = area.y;
@@ -34,6 +23,13 @@ public class AreaReference implements Pool.Poolable, Cloneable {
     this.areaX = areaX;
     this.areaY = areaY;
     this.areaZ = areaZ;
+    return this;
+  }
+
+  public AreaReference setFromAreaReference(AreaReference areaReference) {
+    this.areaX = areaReference.areaX;
+    this.areaY = areaReference.areaY;
+    this.areaZ = areaReference.areaZ;
     return this;
   }
 
@@ -65,7 +61,7 @@ public class AreaReference implements Pool.Poolable, Cloneable {
 
   @Override
   public int hashCode() {
-    return (Math.abs(areaX) + 1) ^ (Math.abs(areaY) + 1) ^ (Math.abs(areaZ) + 1);
+    return areaX ^ areaY ^ areaZ;
   }
 
   @Override
@@ -81,15 +77,15 @@ public class AreaReference implements Pool.Poolable, Cloneable {
     return new AreaReference().setFromAreaReference(this);
   }
 
-  public AreaReference setFromAreaReference(AreaReference areaReference) {
-    this.areaX = areaReference.areaX;
-    this.areaY = areaReference.areaY;
-    this.areaZ = areaReference.areaZ;
-    return this;
-  }
-
   @Override
   public String toString() {
     return areaX + "," + areaY + "," + areaZ;
+  }
+
+  @Override
+  public void reset() {
+    areaX = 0;
+    areaY = 0;
+    areaZ = 0;
   }
 }

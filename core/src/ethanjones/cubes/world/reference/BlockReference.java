@@ -17,11 +17,36 @@ public class BlockReference implements Pool.Poolable {
     return this;
   }
 
+  public BlockReference setFromBlockReference(BlockReference blockReference) {
+    this.blockX = blockReference.blockX;
+    this.blockY = blockReference.blockY;
+    this.blockZ = blockReference.blockZ;
+    return this;
+  }
+
   public BlockReference setFromPosition(float x, float y, float z) {
     this.blockX = CoordinateConverter.block(x);
     this.blockY = CoordinateConverter.block(y);
     this.blockZ = CoordinateConverter.block(z);
     return this;
+  }
+
+  @Override
+  public int hashCode() {
+    return blockX ^ blockY ^ blockZ;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj instanceof BlockReference) {
+      BlockReference blockReference = (BlockReference) obj;
+      return blockReference.blockX == blockX && blockReference.blockY == blockY && blockReference.blockZ == blockZ;
+    }
+    return false;
+  }
+
+  public BlockReference clone() {
+    return new BlockReference().setFromBlockReference(this);
   }
 
   public String toString() {
@@ -34,4 +59,5 @@ public class BlockReference implements Pool.Poolable {
     blockY = 0;
     blockZ = 0;
   }
+
 }
