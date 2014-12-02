@@ -1,5 +1,6 @@
 package ethanjones.cubes.side.common;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 
 import ethanjones.cubes.block.Blocks;
@@ -51,7 +52,7 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
     Compatibility.get().init(null);
     Compatibility.get().logEnvironment();
 
-    MemoryChecker.init();
+    if (Compatibility.get().getApplicationType() != ApplicationType.Android) MemoryChecker.init(); //FIXME
 
     Blocks.init();
 
