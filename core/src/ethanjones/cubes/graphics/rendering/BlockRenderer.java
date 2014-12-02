@@ -35,7 +35,7 @@ public class BlockRenderer implements Disposable {
 
     environment = new Environment();
     environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
-    environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
+    environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.9f, -0.8f));
 
     camera = new PerspectiveCamera(Settings.getIntegerSettingValue(Settings.GRAPHICS_FOV), Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) {
       @Override
