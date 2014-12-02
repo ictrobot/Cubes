@@ -98,13 +98,13 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
 
     int i = 0;
     int vertexOffset = 0;
-    synchronized (area.blockFactories) {
+    synchronized (area) {
       for (int y = 0; y < SIZE_BLOCKS; y++) {
         for (int z = 0; z < SIZE_BLOCKS; z++) {
           for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
             Block block = Sided.getBlockManager().toBlock(area.blockFactories[i]);
             if (block == null) continue;
-            BlockTextureHandler textureHandler = block.getTextureHandler(null); //TODO Pass block datagroup
+            BlockTextureHandler textureHandler = block.getTextureHandler(area.blockData[i]);
             if (x < SIZE_BLOCKS - 1) {
               if (area.blockFactories[i + MAX_X_OFFSET] == 0) {
                 vertexOffset = createMaxX(offset, textureHandler.getSide(BlockFace.posX).textureRegion, x, y, z, vertices, vertexOffset);

@@ -1,32 +1,29 @@
 package ethanjones.cubes.block;
 
-import com.badlogic.gdx.math.collision.BoundingBox;
-import ethanjones.data.DataGroup;
-
+import ethanjones.cubes.block.data.BlockAttributes;
+import ethanjones.cubes.block.data.BlockData;
 import ethanjones.cubes.graphics.world.BlockTextureHandler;
 
 public abstract class Block {
 
   protected BlockTextureHandler textureHandler;
+  protected BlockAttributes blockAttributes;
   String mainMaterial;
 
   public Block(String mainMaterial) {
     this.mainMaterial = mainMaterial;
+    this.blockAttributes = null;
   }
 
   public void loadGraphics() {
     textureHandler = new BlockTextureHandler(mainMaterial);
   }
 
-  public BlockTextureHandler getTextureHandler(DataGroup data) {
+  public BlockTextureHandler getTextureHandler(BlockData blockData) {
     return textureHandler;
   }
 
-  /**
-   * @return custom bounding box
-   */
-  public BoundingBox getBoundingBox() {
-    return null;
+  public BlockData getBlockData() {
+    return blockAttributes == null ? null : new BlockData(blockAttributes);
   }
-
 }

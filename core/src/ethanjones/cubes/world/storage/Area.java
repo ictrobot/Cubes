@@ -2,11 +2,14 @@ package ethanjones.cubes.world.storage;
 
 import ethanjones.data.DataGroup;
 import ethanjones.data.DataList;
+import ethanjones.data.basic.DataByte;
 import ethanjones.data.basic.DataInteger;
 import ethanjones.data.other.DataParser;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import ethanjones.cubes.block.Block;
+import ethanjones.cubes.block.data.BlockData;
 import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.Pools;
@@ -36,7 +39,8 @@ public class Area implements DataParser<DataGroup> {
   private final boolean render;
   public boolean generated = false;
   public AreaRenderer areaRenderer;
-  public final int[] blockFactories; //Always sync on blockFactories
+  public final int[] blockFactories; //Always sync on this
+  public final BlockData[] blockData;
 
   /**
    * In area coords
@@ -61,11 +65,18 @@ public class Area implements DataParser<DataGroup> {
     cenBlockZ = (float) (maxBlockZ + minBlockZ) / 2f;
 
     blockFactories = new int[SIZE_BLOCKS_CUBED];
+    blockData = new BlockData[SIZE_BLOCKS_CUBED];
   }
 
   public Block getBlock(int x, int y, int z) {
-    synchronized (blockFactories) {
+    synchronized (this) {
       return Sided.getBlockManager().toBlock(blockFactories[getRef(x, y, z)]);
+    }
+  }
+
+  public BlockData getBlockData(int x, int y, int z) {
+    synchronized (this) {
+      return blockData[getRef(x, y, z)];
     }
   }
 
@@ -90,7 +101,7 @@ public class Area implements DataParser<DataGroup> {
     DataGroup world = new DataGroup();
     ArrayList<BlockReference> blocks = new ArrayList<BlockReference>();
     int i = 0;
-    synchronized (blockFactories) {
+    synchronized (this) {
       for (int y = 0; y < SIZE_BLOCKS; y++) {
         DataList<DataInteger> factories = new DataList<DataInteger>();
         DataList<DataGroup> partial = new DataList<DataGroup>();
@@ -125,6 +136,20 @@ public class Area implements DataParser<DataGroup> {
           world.setValue(y + "", d);
         }
       }
+      DataList<DataByte> dataBytes = new DataList<DataByte>();
+      for (i = 0; i < blockData.length; i++) {
+        BlockData b = blockData[i];
+        if (b == null) {
+          dataBytes.add(new DataByte((byte) 0));
+        } else {
+          byte[] data = b.getData();
+          dataBytes.add(new DataByte((byte) data.length));
+          for (byte aByte : data) {
+            dataBytes.add(new DataByte(aByte));
+          }
+        }
+      }
+      world.setList("data", dataBytes);
     }
     dataGroup.setGroup("world", world);
     return dataGroup;
@@ -140,7 +165,7 @@ public class Area implements DataParser<DataGroup> {
     }
     generated = data.getBoolean("generated");
     DataGroup world = data.getGroup("world");
-    synchronized (blockFactories) {
+    synchronized (this) {
       for (int y = 0; y < SIZE_BLOCKS; y++) {
         if (!world.contains(y + "")) {
           continue;
@@ -162,6 +187,23 @@ public class Area implements DataParser<DataGroup> {
           }
         }
       }
+      DataList<DataByte> list = world.getList("data");
+      Iterator<DataByte> iterator = list.iterator();
+      int i = 0;
+      while (i < blockData.length) {
+        byte b = iterator.next().get();
+        if (b == 0) {
+          blockData[i] = null;
+        } else {
+          byte[] bytes = new byte[b];
+          for (int d = 0; d < b; d++) {
+            bytes[d] = iterator.next().get();
+          }
+          blockData[i] = Sided.getBlockManager().toBlock(blockFactories[i]).getBlockData();
+          blockData[i].setData(bytes);
+        }
+        i++;
+      }
     }
     if (areaRenderer != null) areaRenderer.refresh = true;
   }
@@ -169,10 +211,11 @@ public class Area implements DataParser<DataGroup> {
   public void setBlock(Block block, int x, int y, int z) {
     int ref = getRef(x, y, z);
     int b;
-    synchronized (blockFactories) {
+    synchronized (this) {
       b = blockFactories[ref];
       blockFactories[ref] = Sided.getBlockManager().toInt(block);
     }
+    blockData[ref] = block == null ? null : block.getBlockData();
     if (areaRenderer != null) areaRenderer.refresh = true;
     new BlockChangedEvent(new BlockReference().setFromBlockCoordinates(x, y, z), Sided.getBlockManager().toBlock(b)).post();
   }
