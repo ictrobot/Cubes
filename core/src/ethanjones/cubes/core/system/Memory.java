@@ -17,10 +17,10 @@ public class Memory {
   public synchronized static void update() {
     Runtime runtime = Runtime.getRuntime();
 
-    max = (int) runtime.maxMemory() / divideMB;
-    allocated = (int) runtime.totalMemory() / divideMB;
-    free = (int) runtime.freeMemory() / divideMB;
+    max = (int) (runtime.maxMemory() / divideMB);
+    allocated = (int) (runtime.totalMemory() / divideMB);
+    free = (int) (runtime.freeMemory() / divideMB);
     totalFree = free + (max - allocated);
-    used = max - totalFree;
+    used = allocated - free;
   }
 }
