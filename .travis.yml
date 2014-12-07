@@ -8,7 +8,7 @@ jdk:
 before_install:
  - true
 install:
- - "apt-get update"
+ - "sudo apt-get update"
  - "sudo apt-get install lib32stdc++6 lib32z1"
 before_script:
  - "chmod +x gradlew"
