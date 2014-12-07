@@ -23,6 +23,13 @@ public class Area implements DataParser<DataGroup> {
   public static final int SIZE_BLOCKS_CUBED = SIZE_BLOCKS_SQUARED * SIZE_BLOCKS;
   public static final int HALF_SIZE_BLOCKS = SIZE_BLOCKS / 2;
 
+  public static final int MAX_X_OFFSET = 1;
+  public static final int MIN_X_OFFSET = -MAX_X_OFFSET;
+  public static final int MAX_Y_OFFSET = SIZE_BLOCKS_SQUARED;
+  public static final int MIN_Y_OFFSET = -MAX_Y_OFFSET;
+  public static final int MAX_Z_OFFSET = SIZE_BLOCKS;
+  public static final int MIN_Z_OFFSET = -MAX_Z_OFFSET;
+
   public final int x;
   public final int y;
   public final int z;
@@ -35,24 +42,16 @@ public class Area implements DataParser<DataGroup> {
   public final int minBlockX;
   public final int minBlockY;
   public final int minBlockZ;
-  private final boolean render;
   public boolean generated = false;
-  public AreaRenderer areaRenderer;
-  public final int[] blockFactories; //Always sync on this
+  public AreaRenderer areaRenderer; //Always null on server
+  public final int[] blocks; //Always sync on this
   public final BlockData[] blockData;
+  public final boolean[] visible;
 
-  /**
-   * In area coords
-   */
   public Area(int x, int y, int z) {
-    this(x, y, z, true);
-  }
-
-  public Area(int x, int y, int z, boolean render) {
     this.x = x;
     this.y = y;
     this.z = z;
-    this.render = render;
     maxBlockX = ((x + 1) * SIZE_BLOCKS) - 1;
     maxBlockY = ((y + 1) * SIZE_BLOCKS) - 1;
     maxBlockZ = ((z + 1) * SIZE_BLOCKS) - 1;
@@ -63,13 +62,14 @@ public class Area implements DataParser<DataGroup> {
     cenBlockY = (float) (maxBlockY + minBlockY) / 2f;
     cenBlockZ = (float) (maxBlockZ + minBlockZ) / 2f;
 
-    blockFactories = new int[SIZE_BLOCKS_CUBED];
+    blocks = new int[SIZE_BLOCKS_CUBED];
     blockData = new BlockData[SIZE_BLOCKS_CUBED];
+    visible = new boolean[SIZE_BLOCKS_CUBED];
   }
 
   public Block getBlock(int x, int y, int z) {
     synchronized (this) {
-      return Sided.getBlockManager().toBlock(blockFactories[getRef(x, y, z)]);
+      return Sided.getBlockManager().toBlock(blocks[getRef(x, y, z)]);
     }
   }
 
@@ -85,7 +85,7 @@ public class Area implements DataParser<DataGroup> {
 
   public void unload() {
     if (areaRenderer != null) Pools.free(AreaRenderer.class, areaRenderer);
-    //blockFactories = null;
+    //blocks = null;
   }
 
   @Override
@@ -100,18 +100,18 @@ public class Area implements DataParser<DataGroup> {
     DataGroup world = new DataGroup();
     DataList<DataGroup> blockDataList = new DataList<DataGroup>();
     world.setList("data", blockDataList);
-    ArrayList<BlockReference> blocks = new ArrayList<BlockReference>();
+    ArrayList<BlockReference> blocksList = new ArrayList<BlockReference>();
     int i = 0;
     synchronized (this) {
       for (int y = 0; y < SIZE_BLOCKS; y++) {
-        DataList<DataInteger> factories = new DataList<DataInteger>();
+        DataList<DataInteger> blocks = new DataList<DataInteger>();
         DataList<DataGroup> partial = new DataList<DataGroup>();
         for (int z = 0; z < SIZE_BLOCKS; z++) {
           for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
-            int b = blockFactories[i];
+            int b = this.blocks[i];
             if (b != 0) {
-              blocks.add(new BlockReference().setFromBlockCoordinates(x, y, z));
-              if (blocks.size() < SIZE_BLOCKS_SQUARED / 8) {
+              blocksList.add(new BlockReference().setFromBlockCoordinates(x, y, z));
+              if (blocksList.size() < SIZE_BLOCKS_SQUARED / 8) {
                 DataGroup d = new DataGroup();
                 d.setByte("x", (byte) x);
                 d.setByte("y", (byte) y);
@@ -134,19 +134,19 @@ public class Area implements DataParser<DataGroup> {
                 blockDataList.add(d);
               }
             }
-            factories.add(new DataInteger(b));
+            blocks.add(new DataInteger(b));
           }
         }
-        if (blocks.size() == 0) { //Blank Y
+        if (blocksList.size() == 0) { //Blank Y
           continue;
         }
-        if (blocks.size() < SIZE_BLOCKS_SQUARED / 8) {
+        if (blocksList.size() < SIZE_BLOCKS_SQUARED / 8) {
           DataGroup d = new DataGroup();
           d.setList("part", partial);
           world.setValue(y + "", d);
         } else {
           DataGroup d = new DataGroup();
-          d.setList("factories", factories);
+          d.setList("blocks", blocks);
           world.setValue(y + "", d);
         }
       }
@@ -174,15 +174,15 @@ public class Area implements DataParser<DataGroup> {
         if (d.contains("part")) {
           DataList<DataGroup> partial = d.getList("part");
           for (DataGroup b : partial) {
-            blockFactories[b.getByte("x") + (b.getByte("y") * SIZE_BLOCKS_SQUARED) + (b.getByte("z") * SIZE_BLOCKS)] = b.getInteger("b");
+            blocks[b.getByte("x") + (b.getByte("y") * SIZE_BLOCKS_SQUARED) + (b.getByte("z") * SIZE_BLOCKS)] = b.getInteger("b");
           }
         } else {
-          DataList<DataInteger> list = d.getList("factories");
+          DataList<DataInteger> list = d.getList("blocks");
           int i = 0;
           int base = y * SIZE_BLOCKS_SQUARED;
           for (int z = 0; z < SIZE_BLOCKS; z++) {
             for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
-              blockFactories[base + i] = list.get(i).get();
+              blocks[base + i] = list.get(i).get();
             }
           }
         }
@@ -198,22 +198,104 @@ public class Area implements DataParser<DataGroup> {
         for (int d = 0; d < bytes.length; d++) {
           bytes[d] = dataBytes.get(d).get();
         }
-        blockData[ref] = Sided.getBlockManager().toBlock(blockFactories[ref]).getBlockData();
+        blockData[ref] = Sided.getBlockManager().toBlock(blocks[ref]).getBlockData();
         blockData[ref].setData(bytes);
       }
+
+      int i = 0;
+      for (int y = 0; y < SIZE_BLOCKS; y++) {
+        for (int z = 0; z < SIZE_BLOCKS; z++) {
+          for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
+            update(x, y, z, i);
+          }
+        }
+      }
     }
+
     if (areaRenderer != null) areaRenderer.refresh = true;
+  }
+
+  private void updateSurrounding(int x, int y, int z, int ref) {
+    update(x, y, z, ref);
+    update(x + 1, y, z, ref + MAX_X_OFFSET);
+    update(x - 1, y, z, ref + MIN_X_OFFSET);
+    update(x, y + 1, z, ref + MAX_Y_OFFSET);
+    update(x, y - 1, z, ref + MIN_Y_OFFSET);
+    update(x, y, z + 1, ref + MAX_Z_OFFSET);
+    update(x, y, z - 1, ref + MIN_Z_OFFSET);
+  }
+
+  private void update(int x, int y, int z, int i) {
+    synchronized (this) {
+      if (x < SIZE_BLOCKS - 1) {
+        if (blocks[i + MAX_X_OFFSET] == 0) {
+          visible[i] = true;
+          return;
+        }
+      } else {
+        visible[i] = true;
+        return;
+      }
+      if (x > 0) {
+        if (blocks[i + MIN_X_OFFSET] == 0) {
+          visible[i] = true;
+          return;
+        }
+      } else {
+        visible[i] = true;
+        return;
+      }
+      if (y < SIZE_BLOCKS - 1) {
+        if (blocks[i + MAX_Y_OFFSET] == 0) {
+          visible[i] = true;
+          return;
+        }
+      } else {
+        visible[i] = true;
+        return;
+      }
+      if (y > 0) {
+        if (blocks[i + MIN_Y_OFFSET] == 0) {
+          visible[i] = true;
+          return;
+        }
+      } else {
+        visible[i] = true;
+        return;
+      }
+      if (z < SIZE_BLOCKS - 1) {
+        if (blocks[i + MAX_Z_OFFSET] == 0) {
+          visible[i] = true;
+          return;
+        }
+      } else {
+        visible[i] = true;
+        return;
+      }
+      if (z > 0) {
+        if (blocks[i + MIN_Z_OFFSET] == 0) {
+          visible[i] = true;
+          //return;
+        }
+      } else {
+        visible[i] = true;
+        //return;
+      }
+    }
   }
 
   public void setBlock(Block block, int x, int y, int z) {
     int ref = getRef(x, y, z);
     int b;
     synchronized (this) {
-      b = blockFactories[ref];
-      blockFactories[ref] = Sided.getBlockManager().toInt(block);
+      b = blocks[ref];
+      blocks[ref] = Sided.getBlockManager().toInt(block);
     }
     blockData[ref] = block == null ? null : block.getBlockData();
+
+    updateSurrounding(x, y, z, ref);
     if (areaRenderer != null) areaRenderer.refresh = true;
+
     new BlockChangedEvent(new BlockReference().setFromBlockCoordinates(x, y, z), Sided.getBlockManager().toBlock(b)).post();
   }
 }
