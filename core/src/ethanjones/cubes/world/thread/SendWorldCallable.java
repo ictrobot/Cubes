@@ -5,7 +5,6 @@ import java.util.concurrent.Callable;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketArea;
 import ethanjones.cubes.networking.server.ClientIdentifier;
-import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.server.PlayerManager;
 import ethanjones.cubes.world.storage.Area;
 
@@ -38,7 +37,7 @@ public class SendWorldCallable implements Callable {
     packetArea.areaY = area.y;
     packetArea.areaZ = area.z;
     packetArea.playerManager = playerManager;
-    packetArea.area = area.write();
+    packetArea.area = area.toIntArray();
     NetworkingManager.sendPacketToClient(packetArea, clientIdentifier);
     return area;
   }

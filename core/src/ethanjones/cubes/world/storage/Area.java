@@ -4,8 +4,6 @@ import ethanjones.data.DataGroup;
 import ethanjones.data.DataList;
 import ethanjones.data.basic.DataByte;
 import ethanjones.data.basic.DataInteger;
-import ethanjones.data.other.DataParser;
-import java.util.ArrayList;
 
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.block.data.BlockData;
@@ -16,7 +14,7 @@ import ethanjones.cubes.graphics.world.AreaRenderer;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.world.reference.BlockReference;
 
-public class Area implements DataParser<DataGroup> {
+public class Area {
 
   public static final int SIZE_BLOCKS = 16;
   public static final int SIZE_BLOCKS_SQUARED = SIZE_BLOCKS * SIZE_BLOCKS;
@@ -88,118 +86,48 @@ public class Area implements DataParser<DataGroup> {
     //blocks = null;
   }
 
-  @Override
-  public DataGroup write() {
-    DataGroup dataGroup = new DataGroup();
-
-    dataGroup.setInteger("x", x);
-    dataGroup.setInteger("y", y);
-    dataGroup.setInteger("z", z);
-    dataGroup.setBoolean("generated", generated);
-
-    DataGroup world = new DataGroup();
-    DataList<DataGroup> blockDataList = new DataList<DataGroup>();
-    world.setList("data", blockDataList);
-    ArrayList<BlockReference> blocksList = new ArrayList<BlockReference>();
-    int i = 0;
+  public int[] toIntArray() {
     synchronized (this) {
-      for (int y = 0; y < SIZE_BLOCKS; y++) {
-        DataList<DataInteger> blocks = new DataList<DataInteger>();
-        DataList<DataGroup> partial = new DataList<DataGroup>();
-        for (int z = 0; z < SIZE_BLOCKS; z++) {
-          for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
-            int b = this.blocks[i];
-            if (b != 0) {
-              blocksList.add(new BlockReference().setFromBlockCoordinates(x, y, z));
-              if (blocksList.size() < SIZE_BLOCKS_SQUARED / 8) {
-                DataGroup d = new DataGroup();
-                d.setByte("x", (byte) x);
-                d.setByte("y", (byte) y);
-                d.setByte("z", (byte) z);
-                d.setInteger("b", b);
-                partial.add(d);
-              }
-              BlockData data = blockData[i];
-              if (data != null) {
-                DataGroup d = new DataGroup();
-                d.setByte("x", (byte) x);
-                d.setByte("y", (byte) y);
-                d.setByte("z", (byte) z);
-                byte[] bytes = data.getData();
-                DataList<DataByte> dataBytes = new DataList<DataByte>();
-                for (int e = 0; e < bytes.length; e++) {
-                  dataBytes.add(new DataByte(bytes[e]));
-                }
-                d.setList("d", dataBytes);
-                blockDataList.add(d);
-              }
-            }
-            blocks.add(new DataInteger(b));
+      int size = 0;
+      for (int i = 0; i < SIZE_BLOCKS_CUBED; i++) {
+        size++;
+        if (blockData[i] != null) size += blockData[i].data.length + 1;
+      }
+      int[] data = new int[size];
+      int offset = 0;
+      for (int i = 0; i < SIZE_BLOCKS_CUBED; i++) { //Includes blocks and blockData
+        BlockData d = blockData[i];
+        if (d == null) {
+          data[offset++] = blocks[i];
+        } else {
+          data[offset++] = -blocks[i];
+          for (byte b : d.data) {
+            data[offset++] = b;
           }
         }
-        if (blocksList.size() == 0) { //Blank Y
-          continue;
-        }
-        if (blocksList.size() < SIZE_BLOCKS_SQUARED / 8) {
-          DataGroup d = new DataGroup();
-          d.setList("part", partial);
-          world.setValue(y + "", d);
-        } else {
-          DataGroup d = new DataGroup();
-          d.setList("blocks", blocks);
-          world.setValue(y + "", d);
-        }
       }
+      return data;
     }
-    dataGroup.setGroup("world", world);
-    return dataGroup;
   }
 
-  @Override
-  public void read(DataGroup data) {
-    int aX = data.getInteger("x");
-    int aY = data.getInteger("y");
-    int aZ = data.getInteger("z");
-    if (aX != x || aY != y || aZ != z) {
-      throw new CubesException("Wrong coordinates, " + aX + " " + aY + " " + aZ + " expected " + x + " " + y + " " + z);
-    }
-    generated = data.getBoolean("generated");
-    DataGroup world = data.getGroup("world");
+  public void fromIntArray(int[] data) {
     synchronized (this) {
-      for (int y = 0; y < SIZE_BLOCKS; y++) {
-        if (!world.contains(y + "")) {
-          continue;
-        }
-        DataGroup d = world.getGroup(y + "");
-        if (d.contains("part")) {
-          DataList<DataGroup> partial = d.getList("part");
-          for (DataGroup b : partial) {
-            blocks[b.getByte("x") + (b.getByte("y") * SIZE_BLOCKS_SQUARED) + (b.getByte("z") * SIZE_BLOCKS)] = b.getInteger("b");
-          }
+      int offset = 0;
+      for (int i = 0; i < SIZE_BLOCKS_CUBED; i++) {
+        int v = data[offset++];
+        if (v == 0) {
+          blocks[i] = 0;
+          blockData[i] = null;
+        } else if (v > 0) {
+          blocks[i] = v;
+          blockData[i] = null;
         } else {
-          DataList<DataInteger> list = d.getList("blocks");
-          int i = 0;
-          int base = y * SIZE_BLOCKS_SQUARED;
-          for (int z = 0; z < SIZE_BLOCKS; z++) {
-            for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
-              blocks[base + i] = list.get(i).get();
-            }
+          blocks[i] = -v;
+          BlockData d = Sided.getBlockManager().toBlock(-v).getBlockData();
+          for (int z = 0; z < d.data.length; z++) {
+            d.data[z] = (byte) data[offset++];
           }
         }
-      }
-      DataList<DataGroup> list = world.getList("data");
-      for (DataGroup dataGroup : list) {
-        int x = dataGroup.getByte("x");
-        int y = dataGroup.getByte("y");
-        int z = dataGroup.getByte("z");
-        int ref = getRef(x, y, z);
-        DataList<DataByte> dataBytes = dataGroup.getList("d");
-        byte[] bytes = new byte[dataBytes.size()];
-        for (int d = 0; d < bytes.length; d++) {
-          bytes[d] = dataBytes.get(d).get();
-        }
-        blockData[ref] = Sided.getBlockManager().toBlock(blocks[ref]).getBlockData();
-        blockData[ref].setData(bytes);
       }
 
       int i = 0;
@@ -211,8 +139,6 @@ public class Area implements DataParser<DataGroup> {
         }
       }
     }
-
-    if (areaRenderer != null) areaRenderer.refresh = true;
   }
 
   private void updateSurrounding(int x, int y, int z, int ref) {
@@ -290,8 +216,8 @@ public class Area implements DataParser<DataGroup> {
     synchronized (this) {
       b = blocks[ref];
       blocks[ref] = Sided.getBlockManager().toInt(block);
+      blockData[ref] = block == null ? null : block.getBlockData();
     }
-    blockData[ref] = block == null ? null : block.getBlockData();
 
     updateSurrounding(x, y, z, ref);
     if (areaRenderer != null) areaRenderer.refresh = true;

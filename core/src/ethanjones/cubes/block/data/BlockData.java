@@ -7,7 +7,7 @@ public class BlockData {
   private static final int offset = 128;
 
   private final BlockAttributes blockAttributes;
-  private byte[] data;
+  public byte[] data;
 
   public BlockData(BlockAttributes blockAttributes) {
     this.blockAttributes = blockAttributes;
@@ -33,14 +33,6 @@ public class BlockData {
 
   public int getAttributeData(int attributeNum) {
     return data[attributeNum] + offset;
-  }
-
-  public byte[] getData() {
-    return data;
-  }
-
-  public void setData(byte[] data) {
-    this.data = data;
   }
 
   public String toString() {
