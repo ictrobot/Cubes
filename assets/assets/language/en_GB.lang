@@ -68,3 +68,4 @@ commands.stop.message=Stopping...
 #Server
 server.console_capitals=CONSOLE
 server.chat=Chat
+server.server_loaded=Server Loaded!

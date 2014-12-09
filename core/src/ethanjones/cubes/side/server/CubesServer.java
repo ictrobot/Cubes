@@ -3,6 +3,8 @@ package ethanjones.cubes.side.server;
 import java.util.List;
 
 import ethanjones.cubes.block.Blocks;
+import ethanjones.cubes.core.localization.Localization;
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.mod.ModManager;
 import ethanjones.cubes.core.mod.event.StartingServerEvent;
 import ethanjones.cubes.core.mod.event.StoppingServerEvent;
@@ -15,8 +17,8 @@ import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.command.CommandManager;
-import ethanjones.cubes.world.server.WorldServer;
 import ethanjones.cubes.world.generator.BasicTerrainGenerator;
+import ethanjones.cubes.world.server.WorldServer;
 
 public abstract class CubesServer extends Cubes implements TimeHandler {
 
@@ -35,6 +37,8 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
     Sided.getTiming().addHandler(this, 250);
 
     ModManager.postModEvent(new StartingServerEvent());
+
+    Log.info(Localization.get("server.server_loaded"));
   }
 
   @Override
