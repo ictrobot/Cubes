@@ -61,4 +61,9 @@ public class PacketArea extends Packet {
     if (playerManager == null) return true;
     return playerManager.shouldSendArea(areaX, areaY, areaZ);
   }
+
+  @Override
+  public boolean shouldCompress() {
+    return true;
+  }
 }

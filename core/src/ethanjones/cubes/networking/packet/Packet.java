@@ -44,4 +44,8 @@ public abstract class Packet {
   public SocketMonitor getSocketMonitor() {
     return socketMonitor;
   }
+
+  public boolean shouldCompress() {
+    return false;
+  }
 }
