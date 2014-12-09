@@ -91,7 +91,7 @@ public class Area {
       int size = 0;
       for (int i = 0; i < SIZE_BLOCKS_CUBED; i++) {
         size++;
-        if (blockData[i] != null) size += blockData[i].data.length + 1;
+        if (blockData[i] != null) size += blockData[i].data.length;
       }
       int[] data = new int[size];
       int offset = 0;
