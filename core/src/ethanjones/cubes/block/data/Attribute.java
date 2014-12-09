@@ -1,10 +1,12 @@
 package ethanjones.cubes.block.data;
 
-import java.util.List;
-
 public interface Attribute<T> {
 
   String getName();
 
-  List<T> getValues();
+  int getAttribute(T t);
+
+  T getAttribute(int i);
+
+  int getDefault();
 }

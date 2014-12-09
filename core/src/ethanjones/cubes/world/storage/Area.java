@@ -101,8 +101,8 @@ public class Area {
           data[offset++] = blocks[i];
         } else {
           data[offset++] = -blocks[i];
-          for (byte b : d.data) {
-            data[offset++] = b;
+          for (int z : d.data) {
+            data[offset++] = z;
           }
         }
       }
@@ -125,7 +125,7 @@ public class Area {
           blocks[i] = -v;
           BlockData d = Sided.getBlockManager().toBlock(-v).getBlockData();
           for (int z = 0; z < d.data.length; z++) {
-            d.data[z] = (byte) data[offset++];
+            d.data[z] = data[offset++];
           }
         }
       }
