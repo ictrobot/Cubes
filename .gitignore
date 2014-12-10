@@ -11,6 +11,7 @@ tmp/
 jars/
 temp/
 assets/server
+android/libs/
 build.properties
 *.tmp
 *.bak

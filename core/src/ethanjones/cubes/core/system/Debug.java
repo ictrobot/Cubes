@@ -1,5 +1,6 @@
 package ethanjones.cubes.core.system;
 
+import com.badlogic.gdx.Version;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -43,6 +44,7 @@ public class Debug {
     Log.debug("OS Version:         " + System.getProperty("os.version"));
     Memory.update();
     Log.debug("Maximum Memory:     " + Memory.max + Memory.unit);
+    Log.debug("libGDX version      " + Version.VERSION);
     Log.debug("User Home:          " + System.getProperty("user.home"));
     Log.debug("Working Directory:  " + System.getProperty("user.dir"));
     Log.debug("Base Directory:     " + Compatibility.get().getBaseFolder().file().getAbsolutePath());
