@@ -1,91 +1,47 @@
 package ethanjones.cubes.core.mod;
 
 import com.badlogic.gdx.files.FileHandle;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
-import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.mod.event.ModEvent;
 import ethanjones.cubes.graphics.assets.AssetManager;
-import ethanjones.cubes.graphics.assets.Assets;
 
-public final class ModInstance<T> {
+public abstract class ModInstance {
 
-  private final T mod;
-  private final String modName;
-  private final FileHandle modFile;
-  private ArrayList<ModState> modStates;
-  private HashMap<Class<? extends ModEvent>, Method> modEventHandlers;
+  protected final String name;
+  protected final FileHandle file;
+  protected final AssetManager assetManager;
 
-  public ModInstance(T mod, String modName, FileHandle modFile) {
-    this.mod = mod;
-    this.modName = modName;
-    this.modFile = modFile;
-    modStates = new ArrayList<ModState>();
-    modEventHandlers = new HashMap<Class<? extends ModEvent>, Method>();
+  protected ModInstance(String name, FileHandle file, AssetManager assetManager) {
+    this.name = name;
+    this.file = file;
+    this.assetManager = assetManager;
   }
 
-  protected void init() {
-    for (Method method : mod.getClass().getMethods()) {
-      if (method.getAnnotation(ModEventHandler.class) != null) {
-        boolean error = false;
-        if (Modifier.isStatic(method.getModifiers())) {
-          Log.error("Methods annotated with " + ModEventHandler.class.getSimpleName() + " must not be static");
-          error = true;
-        }
-        if (method.getParameterTypes().length != 1 || method.getParameterTypes()[0].getSuperclass() != ModEvent.class) {
-          Log.error("Methods annotated with " + ModEventHandler.class.getSimpleName() + " must have only one parameter which must be the " + ModEvent.class.getSimpleName() + " instance");
-          error = true;
-        }
-        if (error) {
-          Log.error("Mod:" + modName + " Class:" + mod.getClass().getName() + " Method:" + method);
-          continue;
-        }
-        modEventHandlers.put(method.getParameterTypes()[0].asSubclass(ModEvent.class), method);
-      }
-    }
+  protected abstract void init() throws Exception;
+
+  protected abstract void event(ModEvent modEvent) throws Exception;
+
+  protected abstract void addState(ModState modState);
+
+  public abstract List<ModState> getModStates();
+
+  public abstract Object getMod();
+
+  public FileHandle getFile() {
+    return file;
   }
 
-  protected void event(ModEvent modEvent) throws Exception {
-    Method method = modEventHandlers.get(modEvent.getClass());
-    if (method == null) {
-      Log.debug("No method to handle " + modEvent.getClass().getSimpleName() + " in mod " + modName);
-      return;
-    }
-    addState(modEvent.getModState());
-    Log.debug("Posting " + modEvent.getClass().getSimpleName() + " to mod " + modName);
-    method.invoke(mod, modEvent);
-  }
-
-  protected void addState(ModState modState) {
-    modStates.add(modState);
-  }
-
-  public String toString() {
-    return modName + " " + mod.getClass().getName();
-  }
-
-  public T getMod() {
-    return mod;
-  }
-
-  public FileHandle getModFile() {
-    return modFile;
-  }
-
-  public String getModName() {
-    return modName;
+  public String getName() {
+    return name;
   }
 
   public AssetManager getAssetManager() {
-    return Assets.getAssetManager(modFile.name());
+    return assetManager;
   }
 
-  public List<ModState> getModStates() {
-    return Collections.unmodifiableList(modStates);
+  public String toString() {
+    return this.getClass().getSimpleName() + ": " + name;
   }
+
 }

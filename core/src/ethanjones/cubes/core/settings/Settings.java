@@ -69,7 +69,7 @@ public class Settings {
   }
 
   public static String getLocalisedSettingName(String notLocalised) {
-    return Localization.get("settings." + notLocalised);
+    return Localization.get("setting." + notLocalised);
   }
 
   //Get casted values
@@ -119,7 +119,7 @@ public class Settings {
   }
 
   public static String getLocalisedSettingGroupName(String notLocalised) {
-    return Localization.get("settings." + notLocalised);
+    return Localization.get("setting." + notLocalised);
   }
 
   public static SettingGroup getBaseSettingGroup() {

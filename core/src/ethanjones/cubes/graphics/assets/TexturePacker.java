@@ -60,7 +60,7 @@ public class TexturePacker {
   }
 
   public boolean insertImage(String name, Pixmap image) {
-    if (rectangles.containsKey(name)) throw new RuntimeException("Key with name '" + name + "' is already in map");
+    if (rectangles.containsKey(name)) throw new RuntimeException("Key with name \"" + name + "\" is already in map");
 
     int borderPixels = padding;
     borderPixels <<= 1;

@@ -5,6 +5,6 @@ import ethanjones.cubes.block.Block;
 public class BlockDirt extends Block {
 
   public BlockDirt() {
-    super("core:block/Dirt.png");
+    super("core:dirt");
   }
 }

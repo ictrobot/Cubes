@@ -8,7 +8,7 @@ public interface ModLoader {
     jar, dex
   }
 
-  public boolean supports(ModType type);
+  public ModType getType();
 
   public Class<?> loadClass(FileHandle file, String className) throws Exception;
 }

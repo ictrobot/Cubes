@@ -9,12 +9,15 @@ import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.mod.ModLoader.ModType;
 import ethanjones.cubes.core.mod.event.ModEvent;
+import ethanjones.cubes.core.mod.java.JavaModInstance;
+import ethanjones.cubes.core.mod.json.JsonModInstance;
+import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.graphics.assets.AssetFinder;
+import ethanjones.cubes.graphics.assets.AssetManager;
 import ethanjones.cubes.graphics.assets.Assets;
 
 public class ModManager {
@@ -34,62 +37,93 @@ public class ModManager {
     for (FileHandle fileHandle : getModFiles()) {
       FileHandle classFile = null;
       String className = null;
-      String modName = "";
+      String name = "";
+      List<FileHandle> jsonFiles = new ArrayList<FileHandle>();
       FileHandle modAssets = Assets.assetsFolder.child(fileHandle.name());
       try {
         InputStream inputStream = new FileInputStream(fileHandle.file());
         ZipInputStream zipInputStream = new ZipInputStream(inputStream);
         ZipEntry entry;
         while ((entry = zipInputStream.getNextEntry()) != null) {
-          FileHandle f = temp.child(fileHandle.name()).child(entry.getName());
-          if (!entry.isDirectory() && entry.getName().toLowerCase().equals("mod.jar")) {
-            if (modLoader.supports(ModType.jar)) {
+          if (!entry.isDirectory()) {
+            String entryName = entry.getName().toLowerCase();
+            FileHandle f = temp.child(fileHandle.name()).child(entry.getName());
+            if (entryName.equals("mod.jar")) {
+              if (modLoader.getType() == ModType.jar) {
+                writeToFile(f, zipInputStream);
+                classFile = f;
+              }
+            } else if (entryName.equals("mod.dex")) {
+              if (modLoader.getType() == ModType.dex) {
+                writeToFile(f, zipInputStream);
+                classFile = f;
+              }
+            } else if (entryName.equals("mod.properties")) {
+              Properties properties = new Properties();
+              properties.load(zipInputStream);
+              className = properties.getProperty("modClass");
+              name = properties.getProperty("modName");
+            } else if (entryName.startsWith("assets/")) {
+              writeToFile(modAssets.child(entry.getName().substring(7)), zipInputStream);
+            } else if (entryName.endsWith(".json")) { //if a json file not in assets
               writeToFile(f, zipInputStream);
-              classFile = f;
+              jsonFiles.add(f);
             }
-          } else if (!entry.isDirectory() && entry.getName().toLowerCase().equals("mod.dex")) {
-            if (modLoader.supports(ModType.dex)) {
-              writeToFile(f, zipInputStream);
-              classFile = f;
-            }
-          } else if (!entry.isDirectory() && entry.getName().toLowerCase().equals("mod.properties")) {
-            Properties properties = new Properties();
-            properties.load(zipInputStream);
-            className = properties.getProperty("modClass");
-            modName = properties.getProperty("modName");
-          } else if (!entry.isDirectory() && entry.getName().toLowerCase().startsWith("assets/")) {
-            writeToFile(modAssets.child(entry.getName().substring(7)), zipInputStream);
           }
         }
-        if (classFile == null) {
-          Log.error("Mod " + fileHandle.name() + " does not contain a jar/dex");
-          continue;
-        }
-        if (className == null) {
+        if (name == null) {
           Log.error("Mod " + fileHandle.name() + " does not contain a properties file");
           continue;
+        }
+        if (jsonFiles.isEmpty()) {
+          if (className == null) {
+            Log.error("Mod " + fileHandle.name() + " does not contain a \"mod.properties\" with a \"className\" or json files");
+            continue;
+          }
+          if (classFile == null) {
+            Log.error("Mod " + fileHandle.name() + " does not contain a " + modLoader.getType());
+            continue;
+          }
         } else {
-          Log.debug("Mod file: \'" + fileHandle.name() + "\' Name: \'" + modName + "\'");
+          if (className == null && classFile != null) {
+            Log.error("Mod " + fileHandle.name() + " does not contain a \"mod.properties\" with a \"className\"");
+          } else if (className != null && classFile == null) {
+            Log.error("Mod " + fileHandle.name() + " does not contain a " + modLoader.getType());
+          }
         }
       } catch (Exception e) {
-        Log.error("Failed to load mod: " + modName, e);
+        Log.error("Failed to load mod: " + name, e);
       }
       try {
+        Log.debug("Mod file: \"" + fileHandle.name() + "\" Name: \"" + name + "\"");
+        AssetManager assetManager;
         if (modAssets.exists() && modAssets.isDirectory()) {
-          Log.debug("Loading assets for " + modName);
-          AssetFinder.findAssets(modAssets, modName);
+          Log.debug("Loading assets for " + name);
+          assetManager = AssetFinder.findAssets(modAssets, name);
         } else {
-          Log.debug("No assets detected for " + modName);
+          Log.debug("No assets detected for " + name);
+          assetManager = null;
         }
-        Log.info("Trying to load mod " + modName);
-        Class<?> c = modLoader.loadClass(classFile, className);
-        Log.debug("Creating instance of mod " + modName);
-        Object mod = c.newInstance();
-        Log.debug("Initialising ModInstance");
-        ModInstance modInstance = new ModInstance(mod, modName, fileHandle);
-        modInstance.init();
-        mods.add(modInstance);
-        Log.info("Loaded mod " + modName);
+        jsonFiles = Collections.unmodifiableList(jsonFiles);
+        if (!jsonFiles.isEmpty()) {
+          Log.debug("Initialising JsonModInstance");
+          JsonModInstance jsonModInstance = new JsonModInstance(name, fileHandle, assetManager, jsonFiles);
+          ((ModInstance) jsonModInstance).init();
+          mods.add(jsonModInstance);
+          Log.info("Loaded Json mod " + name);
+        }
+        if (className != null) {
+          Log.info("Trying to load Java mod " + name);
+          Class<?> c = modLoader.loadClass(classFile, className);
+          Log.debug("Creating instance of Java mod " + name);
+          Object mod = c.newInstance();
+          Log.debug("Initialising JavaModInstance");
+          JavaModInstance javaModInstance = new JavaModInstance(name, fileHandle, assetManager, mod);
+          ((ModInstance) javaModInstance).init();
+          mods.add(javaModInstance);
+          Log.info("Loaded Java mod " + name);
+        }
+
       } catch (Exception e) {
         Log.debug("Failed to make instance of mod: " + className, e);
       }

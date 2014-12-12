@@ -7,9 +7,9 @@ public class CubesSecurity {
   public static void checkSidedSetup() {
     String c = getStackTrace()[1].getClassName();
     if (c.equals("ethanjones.cubes.side.common.Cubes") || c.equals("ethanjones.cubes.core.platform.GraphicalAdapter")) {
-      Log.debug("Allowing class \'" + c + "\' to change sided variables");
+      Log.debug("Allowing class \"" + c + "\" to change sided variables");
     } else {
-      Log.error("Class \'" + c + "\' tried to change sided variables");
+      Log.error("Class \"" + c + "\" tried to change sided variables");
       throw new SecurityException("Cannot change sided variables");
     }
   }
@@ -31,32 +31,10 @@ public class CubesSecurity {
   public static void checkSidedReset() {
     String c = getStackTrace()[1].getClassName();
     if (c.equals("ethanjones.cubes.side.common.Cubes") || c.equals("ethanjones.cubes.core.platform.GraphicalAdapter")) {
-      Log.debug("Allowing class \'" + c + "\' to reset sided variables");
+      Log.debug("Allowing class \"" + c + "\" to reset sided variables");
     } else {
-      Log.error("Class \'" + c + "\' tried to reset sided variables");
+      Log.error("Class \"" + c + "\" tried to reset sided variables");
       throw new SecurityException("Cannot reset sided variables");
     }
   }
-
-  /**
-   public static void checkSetCubes() {
-   String c = getStackTrace()[2].getClassName();
-   if (c.equals("ethanjones.cubes.side.common.Cubes") || c.equals("ethanjones.cubes.core.platform.GraphicalAdapter") || c.startsWith("ethanjones.cubes.graphics.menu.") || c.equals(Compatibility.get().getClass().getName())) {
-   Log.debug("Allowing class \'" + c + "\' to set the Cubes instances");
-   } else {
-   Log.error("Class \'" + c + "\' tried to set the Cubes instances");
-   throw new SecurityException("Cannot set the Cubes instances");
-   }
-   }
-
-   public static void checkSetMenu() {
-   String c = getStackTrace()[2].getClassName();
-   if (c.equals("ethanjones.cubes.side.common.Cubes") || c.equals("ethanjones.cubes.core.platform.GraphicalAdapter") || c.startsWith("ethanjones.cubes.graphics.menu.") || c.equals(Compatibility.get().getClass().getName())) {
-   Log.debug("Allowing class \'" + c + "\' to set the menu");
-   } else {
-   Log.error("Class \'" + c + "\' tried to set the menu");
-   throw new SecurityException("Cannot set the menu");
-   }
-   }
-   **/
 }

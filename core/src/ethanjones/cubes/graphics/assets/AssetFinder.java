@@ -14,10 +14,11 @@ public class AssetFinder {
   /**
    * Uses FileHandles to find assets
    */
-  public static void findAssets(FileHandle parent, String assetManagerName) {
+  public static AssetManager findAssets(FileHandle parent, String assetManagerName) {
     AssetManager assetManager = new AssetManager(assetManagerName);
     findAssets(parent, assetManager, "");
     addAssetManager(assetManager);
+    return assetManager;
   }
 
   private static void findAssets(FileHandle parent, AssetManager assetManager, String path) {
@@ -34,8 +35,16 @@ public class AssetFinder {
   /**
    * Extracts assets from the jar
    */
-  public static void extractAssets(URL jar, String assetManagerName) {
+  public static AssetManager extractAssets(URL jar, String assetManagerName) {
     AssetManager assetManager = new AssetManager(assetManagerName);
+    extractAssets(jar, assetManager);
+    addAssetManager(assetManager);
+    return assetManager;
+  }
+
+  public static void extractCoreAssets() {
+    AssetManager assetManager = new AssetManager(Assets.CORE);
+    URL jar = AssetFinder.class.getProtectionDomain().getCodeSource().getLocation();
     extractAssets(jar, assetManager);
     addAssetManager(assetManager);
   }
@@ -64,12 +73,5 @@ public class AssetFinder {
 
   private static void addAssetManager(AssetManager assetManager) {
     Assets.assetManagers.put(assetManager.getName(), assetManager);
-  }
-
-  public static void extractCoreAssets() {
-    AssetManager assetManager = new AssetManager(Assets.CORE);
-    URL jar = AssetFinder.class.getProtectionDomain().getCodeSource().getLocation();
-    extractAssets(jar, assetManager);
-    addAssetManager(assetManager);
   }
 }

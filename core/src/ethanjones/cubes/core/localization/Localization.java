@@ -7,6 +7,7 @@ import java.util.Scanner;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.graphics.assets.Asset;
+import ethanjones.cubes.graphics.assets.AssetManager;
 import ethanjones.cubes.graphics.assets.AssetType;
 import ethanjones.cubes.graphics.assets.Assets;
 
@@ -19,13 +20,21 @@ public class Localization {
   private static Language language;
 
   public static void load() {
-    for (Asset asset : Assets.getCoreAssetManager().getAssets(AssetType.language.name())) {
-      try {
-        language = load(asset.getFileHandle().readString());
-        languages.put(language.getCode(), language);
-        Log.debug("Loaded localisation \"" + language.getCode() + "\" from file \"" + asset.getPath() + "\"");
-      } catch (Exception e) {
-        Log.error(new CubesException("Failed to read localisation file: " + asset.getPath(), e));
+    for (AssetManager assetManager : Assets.getAssetManagers()) {
+      for (Asset asset : assetManager.getAssets(AssetType.language.name())) {
+        String lang = asset.getPath().substring(AssetType.language.name().length() + 1);
+        lang = lang.substring(0, lang.indexOf("/"));
+        Language language = languages.get(lang);
+        if (language == null) {
+          language = new Language(lang);
+          languages.put(lang, language);
+        }
+        try {
+          load(language, asset.getFileHandle().readString());
+          Log.debug("Loaded localisation file \"" + assetManager.getName() + ":" + asset.getPath() + "\"");
+        } catch (Exception e) {
+          Log.error(new CubesException("Failed to read localisation file: " + asset.getPath(), e));
+        }
       }
     }
 
@@ -43,32 +52,18 @@ public class Localization {
     }
   }
 
-  private static Language load(String string) {
-    try {
-      HashMap<String, String> data = new HashMap<String, String>();
-      Scanner scanner = new Scanner(string);
-      String code = "";
-      int i = 0;
-      while (scanner.hasNextLine()) {
-        String line = scanner.nextLine();
-        if (line.startsWith("#")) continue;
-        i++;
-        if (i == 1) {
-          code = line;
-          continue;
-        }
-        int index = line.indexOf("=");
-        if (index == -1) continue;
-        String str = line.substring(0, index).toLowerCase();
-        String localization = line.substring(index + 1);
-        data.put(str, localization);
-      }
-      scanner.close();
-      return new Language(code, data);
-    } catch (Exception e) {
-      Log.error(new CubesException("Failed to read language file: " + string, e));
+  private static void load(Language language, String string) throws Exception {
+    Scanner scanner = new Scanner(string);
+    while (scanner.hasNextLine()) {
+      String line = scanner.nextLine();
+      if (line.startsWith("#")) continue;
+      int index = line.indexOf("=");
+      if (index == -1) continue;
+      String str = line.substring(0, index).toLowerCase();
+      String localization = line.substring(index + 1);
+      language.add(str, localization);
     }
-    return null;
+    scanner.close();
   }
 
   public static String get(String str, Object... format) {
@@ -84,5 +79,9 @@ public class Localization {
   private static String format(String str, Object[] format) {
     if (format.length == 0) return str;
     return String.format(str, format);
+  }
+
+  public static void add(String lang, String unlocalized, String localized) {
+    languages.get(lang).add(unlocalized, localized);
   }
 }

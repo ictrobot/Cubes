@@ -18,8 +18,8 @@ public class DesktopModLoader implements ModLoader {
   }
 
   @Override
-  public boolean supports(ModType type) {
-    return type == ModType.jar;
+  public ModType getType() {
+    return ModType.jar;
   }
 
   @Override

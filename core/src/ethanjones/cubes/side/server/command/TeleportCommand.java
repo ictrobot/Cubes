@@ -25,7 +25,7 @@ public class TeleportCommand {
           packetPlayerInfo.position = new Vector3().set(x, y, z);
           NetworkingManager.sendPacketToClient(packetPlayerInfo, ((Player) sender).clientIdentifier);
         } else {
-          sender.print(Localization.get("commands.common.onlyPlayer"));
+          sender.print(Localization.get("command.common.onlyPlayer"));
         }
       }
     });
@@ -38,7 +38,7 @@ public class TeleportCommand {
           packetPlayerInfo.position = new Vector3().set(((ClientIdentifier) arguments.get(1).get()).getPlayer().position);
           NetworkingManager.sendPacketToClient(packetPlayerInfo, ((Player) sender).clientIdentifier);
         } else {
-          sender.print(Localization.get("commands.common.onlyPlayer"));
+          sender.print(Localization.get("command.common.onlyPlayer"));
         }
       }
     });

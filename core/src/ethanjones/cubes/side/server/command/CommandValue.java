@@ -23,7 +23,7 @@ public abstract class CommandValue<T> {
 
     @Override
     public String toString() {
-      return Localization.get("commands.common.value.coordinate.string");
+      return Localization.get("command.common.value.coordinate.string");
     }
   };
 
@@ -39,7 +39,7 @@ public abstract class CommandValue<T> {
 
     @Override
     public String toString() {
-      return Localization.get("commands.common.value.blockCoordinate.string");
+      return Localization.get("command.common.value.blockCoordinate.string");
     }
   };
 
@@ -53,7 +53,7 @@ public abstract class CommandValue<T> {
 
     @Override
     public String toString() {
-      return Localization.get("commands.common.value.clientIdentifier.string");
+      return Localization.get("command.common.value.clientIdentifier.string");
     }
   };
 
@@ -67,7 +67,7 @@ public abstract class CommandValue<T> {
 
     @Override
     public String toString() {
-      return Localization.get("commands.common.value.command.string");
+      return Localization.get("command.common.value.command.string");
     }
   };
 

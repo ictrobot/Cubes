@@ -1,0 +1,19 @@
+command.common.unknownCommand=Unknown command! Type help for a list of commands
+command.common.failedPermissionCheck=You do not have permission to run this command
+command.common.onlyPlayer=Only players can run this command!
+command.common.exception=%s while running command
+
+command.common.value.coordinate.parsing=Not a coordinate
+command.common.value.coordinate.string=[coordinate]
+command.common.value.blockCoordinate.parsing=Not a number
+command.common.value.blockCoordinate.string=[blockCoordinate]
+command.common.value.clientIdentifier.parsing=Not a username
+command.common.value.clientIdentifier.string=[username]
+command.common.value.command.parsing=Not a command
+command.common.value.command.string=[command]
+
+command.help.commands=Commands:
+command.help.command=Command %s:
+command.help.format=%1$s - %2$s
+
+command.stop.message=Stopping...

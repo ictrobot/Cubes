@@ -1,0 +1,8 @@
+settings.username=Username
+
+setting.graphics=Graphics
+setting.graphics.viewDistance=Rendering Distance
+setting.graphics.fieldOfView=FOV
+
+setting.networking=Networking
+setting.networking.port=Port

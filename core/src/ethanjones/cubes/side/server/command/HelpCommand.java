@@ -12,12 +12,12 @@ public class HelpCommand {
     new CommandBuilder("help").register().setCommandListener(new CommandListener() {
       @Override
       public void onCommand(CommandBuilder builder, List<CommandArgument> arguments, CommandSender sender) {
-        sender.print(Localization.get("commands.help.commands"));
+        sender.print(Localization.get("command.help.commands"));
         for (Entry<String, CommandBuilder> entry : CommandManager.commands.entrySet()) {
           if (!CommandPermission.check(entry.getValue().getCommandPermission(), sender.getPermissionLevel())) continue;
           String str = entry.getKey();
           if (entry.getValue().getHelpText() != null) {
-            str = Localization.get("commands.help.format", str, entry.getValue().getHelpText());
+            str = Localization.get("command.help.format", str, entry.getValue().getHelpText());
           }
           sender.print(str);
         }
@@ -37,7 +37,7 @@ public class HelpCommand {
 
   public static void print(CommandBuilder builder, CommandSender sender) {
     String base = builder.getCommandString();
-    sender.print(Localization.get("commands.help.command", base));
+    sender.print(Localization.get("command.help.command", base));
     if (builder.getCommandListener() != null) {
       if (builder.getHelpText() != null) {
         sender.print(format(base, builder.getHelpText()));
@@ -70,7 +70,7 @@ public class HelpCommand {
   }
 
   private static String format(String first, String second) {
-    return Localization.get(Localization.get("commands.help.format", first, second));
+    return Localization.get(Localization.get("command.help.format", first, second));
   }
   
 }

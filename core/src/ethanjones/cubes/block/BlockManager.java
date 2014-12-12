@@ -7,16 +7,20 @@ import ethanjones.data.other.DataParser;
 import java.util.HashMap;
 import java.util.Map;
 
+import ethanjones.cubes.core.logging.Log;
+
 public class BlockManager implements DataParser<DataGroup> {
 
-  volatile HashMap<Integer, Block> ids;
+  volatile HashMap<Integer, Block> ints;
   volatile HashMap<Block, Integer> blocks;
+  volatile HashMap<String, Block> ids;
   volatile HashMap<Class<? extends Block>, Block> classes;
   volatile int unused = 1;
 
   public BlockManager() {
-    ids = new HashMap<Integer, Block>();
+    ints = new HashMap<Integer, Block>();
     blocks = new HashMap<Block, Integer>();
+    ids = new HashMap<String, Block>();
     classes = new HashMap<Class<? extends Block>, Block>();
   }
 
@@ -30,7 +34,14 @@ public class BlockManager implements DataParser<DataGroup> {
   public Block toBlock(int i) {
     if (i == 0) return null;
     synchronized (this) {
-      return ids.get(i);
+      return ints.get(i);
+    }
+  }
+
+  public Block toBlock(String id) {
+    if (id == null || id.isEmpty()) return null;
+    synchronized (this) {
+      return ids.get(id);
     }
   }
 
@@ -48,20 +59,21 @@ public class BlockManager implements DataParser<DataGroup> {
   @Override
   public void read(DataGroup data) {
     synchronized (this) {
-      ids.clear();
+      ints.clear();
       blocks.clear();
       for (Map.Entry<String, Data> entry : data.getEntrySet()) {
         int i = Integer.parseInt(entry.getKey());
         Class<? extends Block> c;
         try {
           c = Class.forName(((DataString) entry.getValue()).get()).asSubclass(Block.class);
-        } catch (ClassNotFoundException e) {
+        } catch (Exception e) {
+          Log.error("Failed to read block", e);
           continue;
         }
-        if (c == null) continue;
         Block block = classes.get(c);
-        ids.put(i, block);
+        ints.put(i, block);
         blocks.put(block, i);
+        ids.put(block.id, block);
       }
     }
   }
@@ -69,15 +81,16 @@ public class BlockManager implements DataParser<DataGroup> {
   public void register(Block block) {
     synchronized (this) {
       int i = findFree();
-      ids.put(i, block);
+      ints.put(i, block);
       blocks.put(block, i);
+      ids.put(block.id, block);
       classes.put(block.getClass(), block);
     }
   }
 
   private int findFree() {
     int i = -1;
-    if (ids.get(unused) == null) {
+    if (ints.get(unused) == null) {
       i = unused;
     }
     unused++;

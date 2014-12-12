@@ -57,8 +57,8 @@ public class CommandManager {
             success = check(sender, builder, arg, c, i + 1, str);
           }
         } catch (Exception e) {
-          Log.warning(e.getClass().getSimpleName() + " while running command '" + str + "'", e);
-          sender.print(Localization.get("commands.common.exception", e.getClass().getSimpleName()));
+          Log.warning(e.getClass().getSimpleName() + " while running command \"" + str + "\"", e);
+          sender.print(Localization.get("command.common.exception", e.getClass().getSimpleName()));
           return true;
         }
       }
@@ -77,11 +77,11 @@ public class CommandManager {
   }
 
   public static void unknownCommand(CommandSender commandSender) {
-    commandSender.print(Localization.get("commands.common.unknownCommand"));
+    commandSender.print(Localization.get("command.common.unknownCommand"));
   }
 
   public static void permissionCheckFailed(CommandSender commandSender) {
-    commandSender.print(Localization.get("commands.common.failedPermissionCheck"));
+    commandSender.print(Localization.get("command.common.failedPermissionCheck"));
   }
 
   public static void reset() {

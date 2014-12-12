@@ -53,7 +53,7 @@ public class MenuManager {
           blocks.remove(index);
           continue;
         }
-        texture = textureHandler.getSide(BlockFace.posX).textureRegion;
+        texture = textureHandler.getSide(BlockFace.posX);
       }
       if (texture == null) {
         disableBackground = true;

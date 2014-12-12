@@ -1,0 +1,28 @@
+menu.general.back=Back
+menu.general.loading=Loading
+menu.general.waiting=Waiting
+menu.general.return_main_menu=Return to main menu
+
+menu.main.singleplayer=Singleplayer
+menu.main.multiplayer=Multiplayer
+menu.main.serveronly=Server only
+menu.main.settings=Settings
+menu.main.quit=Quit
+
+menu.multiplayer.title=Multiplayer
+menu.multiplayer.address=Address
+menu.multiplayer.port=Port (%s)
+menu.multiplayer.connect=Connect
+menu.multiplayer.connecting=Connecting
+
+menu.server.title=Server
+menu.server.port=Port (%s)
+menu.server.start=Start
+menu.server.running=Running
+menu.server.stop=Stop
+
+menu.connection_failed.failed=Failed to connect
+menu.connection_failed.failed_exception=Failed to connect:
+
+menu.settings.title=Settings
+menu.settings.open_group=Open

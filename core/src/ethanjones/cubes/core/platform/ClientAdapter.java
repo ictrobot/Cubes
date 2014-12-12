@@ -3,6 +3,7 @@ package ethanjones.cubes.core.platform;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 
+import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.core.system.Debug;
@@ -99,6 +100,7 @@ public class ClientAdapter implements AdapterInterface {
       Thread.currentThread().setName(Side.Client.name());
       Cubes.setup(this);
       setMenu(new MainMenu());
+      Log.info(Localization.get("client.client_loaded"));
     } catch (Exception e) {
       Debug.crash(e);
     }

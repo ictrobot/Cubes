@@ -88,9 +88,9 @@ public class Debug {
   public static synchronized void printMods(LogLevel logLevel) {
     if (ModManager.getMods().size() > 0) {
       Log.log(logLevel, "Mods:");
-      for (ModInstance modInstance : ModManager.getMods()) {
-        String str = modInstance.getModName();
-        List<ModState> modStates = modInstance.getModStates();
+      for (ModInstance javaModInstance : ModManager.getMods()) {
+        String str = javaModInstance.getName();
+        List<ModState> modStates = javaModInstance.getModStates();
         if (modStates.size() > 0) str = str + " - ";
         for (int i = 0; i < modStates.size(); i++) {
           str = str + modStates.get(i).name();

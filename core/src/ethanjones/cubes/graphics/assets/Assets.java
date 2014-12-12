@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import ethanjones.cubes.core.logging.Log;
@@ -18,12 +19,18 @@ import ethanjones.cubes.core.platform.Compatibility;
 public class Assets {
 
   public static final String CORE = "core";
-  public static HashMap<String, AssetManager> assetManagers = new HashMap<String, AssetManager>();
+  protected static HashMap<String, AssetManager> assetManagers = new HashMap<String, AssetManager>();
   public static PackedTextureSheet blockPackedTextureSheet;
   public static FileHandle assetsFolder = Compatibility.get().getBaseFolder().child("assets");
 
   public static AssetManager getCoreAssetManager() {
     return getAssetManager(CORE);
+  }
+
+  public static List<AssetManager> getAssetManagers() {
+    List<AssetManager> list = new ArrayList<AssetManager>();
+    list.addAll(assetManagers.values());
+    return list;
   }
 
   public static AssetManager getAssetManager(String name) {
@@ -111,8 +118,8 @@ public class Assets {
     return packedTextureSheet;
   }
 
-  public static PackedTexture getBlockTexture(String name) {
+  public static TextureRegion getBlockTexture(String name) {
     PackedTexture packedTexture = blockPackedTextureSheet.getPackedTextures().get(name);
-    return packedTexture;
+    return packedTexture == null ? null : packedTexture.textureRegion;
   }
 }

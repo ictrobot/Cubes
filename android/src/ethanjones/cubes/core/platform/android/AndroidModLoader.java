@@ -15,8 +15,8 @@ public class AndroidModLoader implements ModLoader {
   }
 
   @Override
-  public boolean supports(ModType type) {
-    return type == ModType.dex;
+  public ModType getType() {
+    return ModType.dex;
   }
 
   @Override
