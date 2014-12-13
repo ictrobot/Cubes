@@ -2,7 +2,11 @@ package ethanjones.cubes.graphics.rendering;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -15,8 +19,11 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import java.util.ArrayList;
 
+import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.platform.Compatibility;
+import ethanjones.cubes.core.util.BlockFace;
+import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.graphics.menu.Fonts;
 import ethanjones.cubes.input.keyboard.KeyTypedAdapter;
@@ -43,6 +50,16 @@ public class HudRenderer implements Disposable {
       if (keycode == chat) {
         setChatEnabled(!isChatEnabled());
       }
+      if (keycode == Keys.NUM_1) Cubes.getClient().player.setSelectedSlot(0);
+      if (keycode == Keys.NUM_2) Cubes.getClient().player.setSelectedSlot(1);
+      if (keycode == Keys.NUM_3) Cubes.getClient().player.setSelectedSlot(2);
+      if (keycode == Keys.NUM_4) Cubes.getClient().player.setSelectedSlot(3);
+      if (keycode == Keys.NUM_5) Cubes.getClient().player.setSelectedSlot(4);
+      if (keycode == Keys.NUM_6) Cubes.getClient().player.setSelectedSlot(5);
+      if (keycode == Keys.NUM_7) Cubes.getClient().player.setSelectedSlot(6);
+      if (keycode == Keys.NUM_8) Cubes.getClient().player.setSelectedSlot(7);
+      if (keycode == Keys.NUM_9) Cubes.getClient().player.setSelectedSlot(8);
+      if (keycode == Keys.NUM_0) Cubes.getClient().player.setSelectedSlot(9);
     }
   }
 
@@ -56,8 +73,12 @@ public class HudRenderer implements Disposable {
   TextButton chatButton;
   ClientDebug.DebugLabel debug;
   KeyListener keyListener;
+  Texture hotbarSlot;
+  Texture hotbarSelected;
   private boolean chatEnabled;
   private boolean debugEnabled;
+
+  SpriteBatch spriteBatch;
 
   public HudRenderer() {
     stage = new Stage(new ScreenViewport());
@@ -119,6 +140,10 @@ public class HudRenderer implements Disposable {
     setDebugEnabled(false);
 
     stage.addActor(crosshair);
+
+    spriteBatch = new SpriteBatch();
+    hotbarSelected = Assets.getTexture("core:hud/HotbarSelected.png");
+    hotbarSlot = Assets.getTexture("core:hud/HotbarSlot.png");
   }
 
   public void render() {
@@ -138,6 +163,10 @@ public class HudRenderer implements Disposable {
     stage.addActor(crosshair);
     stage.act();
     stage.draw();
+
+    spriteBatch.begin();
+    renderHotbar(spriteBatch);
+    spriteBatch.end();
   }
 
   public boolean isDebugEnabled() {
@@ -197,5 +226,23 @@ public class HudRenderer implements Disposable {
 
   public boolean noCursorCatching() {
     return chatEnabled;
+  }
+
+  public void renderHotbar(SpriteBatch spriteBatch) {
+    Player player = Cubes.getClient().player;
+    int startWidth = (Gdx.graphics.getWidth() / 2) - (hotbarSlot.getWidth() * 5);
+    for (int i = 0; i < 10; i++) {
+      int minX = startWidth + (i * hotbarSlot.getWidth());
+      if (i == player.getSelectedSlot()) {
+        spriteBatch.draw(hotbarSelected, minX, 0);
+      } else {
+        spriteBatch.draw(hotbarSlot, minX, 0);
+      }
+      Block block = player.getHotbar(i);
+      if (block != null) {
+        TextureRegion side = block.getTextureHandler(null).getSide(BlockFace.posX);
+        spriteBatch.draw(side, minX + 8, 8);
+      }
+    }
   }
 }

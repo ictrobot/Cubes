@@ -14,6 +14,7 @@ public class Area {
   public static final int SIZE_BLOCKS_SQUARED = SIZE_BLOCKS * SIZE_BLOCKS;
   public static final int SIZE_BLOCKS_CUBED = SIZE_BLOCKS_SQUARED * SIZE_BLOCKS;
   public static final int HALF_SIZE_BLOCKS = SIZE_BLOCKS / 2;
+  public static final int MAX_BLOCK_INDEX = SIZE_BLOCKS - 1;
 
   public static final int MAX_X_OFFSET = 1;
   public static final int MIN_X_OFFSET = -MAX_X_OFFSET;
@@ -72,7 +73,7 @@ public class Area {
   }
 
   public int getRef(int x, int y, int z) {
-    return (0 <= x && x < SIZE_BLOCKS ? x : x - minBlockX) + (0 <= z && z < SIZE_BLOCKS ? z : z - minBlockZ) * SIZE_BLOCKS + (0 <= y && y < SIZE_BLOCKS ? y : y - minBlockY) * SIZE_BLOCKS_SQUARED;
+    return x + z * SIZE_BLOCKS + y * SIZE_BLOCKS_SQUARED;
   }
 
   public void unload() {
@@ -137,12 +138,12 @@ public class Area {
 
   private void updateSurrounding(int x, int y, int z, int ref) {
     update(x, y, z, ref);
-    update(x + 1, y, z, ref + MAX_X_OFFSET);
-    update(x - 1, y, z, ref + MIN_X_OFFSET);
-    update(x, y + 1, z, ref + MAX_Y_OFFSET);
-    update(x, y - 1, z, ref + MIN_Y_OFFSET);
-    update(x, y, z + 1, ref + MAX_Z_OFFSET);
-    update(x, y, z - 1, ref + MIN_Z_OFFSET);
+    if (y < MAX_BLOCK_INDEX) update(x + 1, y, z, ref + MAX_X_OFFSET);
+    if (x > 0) update(x - 1, y, z, ref + MIN_X_OFFSET);
+    if (y < MAX_BLOCK_INDEX) update(x, y + 1, z, ref + MAX_Y_OFFSET);
+    if (y > 0) update(x, y - 1, z, ref + MIN_Y_OFFSET);
+    if (y < MAX_BLOCK_INDEX) update(x, y, z + 1, ref + MAX_Z_OFFSET);
+    if (z > 0) update(x, y, z - 1, ref + MIN_Z_OFFSET);
   }
 
   private void update(int x, int y, int z, int i) {
@@ -216,6 +217,6 @@ public class Area {
     updateSurrounding(x, y, z, ref);
     if (areaRenderer != null) areaRenderer.refresh = true;
 
-    new BlockChangedEvent(new BlockReference().setFromBlockCoordinates(x, y, z), Sided.getBlockManager().toBlock(b)).post();
+    new BlockChangedEvent(new BlockReference().setFromBlockCoordinates(x + minBlockX, y + minBlockY, z + minBlockZ), Sided.getBlockManager().toBlock(b)).post();
   }
 }

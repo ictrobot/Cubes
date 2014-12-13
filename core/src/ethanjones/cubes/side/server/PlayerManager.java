@@ -3,6 +3,7 @@ package ethanjones.cubes.side.server;
 import com.badlogic.gdx.Input.Buttons;
 import java.util.ArrayList;
 
+import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.event.EventHandler;
 import ethanjones.cubes.core.event.world.block.BlockEvent;
 import ethanjones.cubes.core.system.Executor;
@@ -13,9 +14,9 @@ import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.CoordinateConverter;
-import ethanjones.cubes.world.server.WorldServer;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
+import ethanjones.cubes.world.server.WorldServer;
 import ethanjones.cubes.world.storage.Area;
 import ethanjones.cubes.world.thread.GenerateWorldCallable;
 import ethanjones.cubes.world.thread.SendWorldCallable;
@@ -27,6 +28,8 @@ public class PlayerManager {
   private final AreaReference playerArea;
   private final ArrayList<Integer> keys;
   private final ArrayList<Integer> buttons;
+  private final ArrayList<Integer> recentKeys;
+  private final ArrayList<Integer> recentButtons;
   private int renderDistance;
 
   public PlayerManager(ClientIdentifier clientIdentifier, PacketConnect packetConnect) {
@@ -35,6 +38,8 @@ public class PlayerManager {
     this.playerArea = new AreaReference().setFromPositionVector3(client.getPlayer().position);
     this.keys = new ArrayList<Integer>();
     this.buttons = new ArrayList<Integer>();
+    this.recentKeys = new ArrayList<Integer>();
+    this.recentButtons = new ArrayList<Integer>();
 
     renderDistance = packetConnect.renderDistance;
 
@@ -127,6 +132,7 @@ public class PlayerManager {
       switch (packetButton.action) {
         case PacketButton.BUTTON_DOWN:
           if (!buttons.contains(packetButton.button)) buttons.add(packetButton.button);
+          if (!recentButtons.contains(packetButton.button)) recentButtons.add(packetButton.button);
           return;
         case PacketButton.BUTTON_UP:
           buttons.remove((Integer) packetButton.button);
@@ -140,6 +146,7 @@ public class PlayerManager {
       switch (packetKey.action) {
         case PacketKey.KEY_DOWN:
           if (!keys.contains(packetKey.key)) buttons.add(packetKey.key);
+          if (!recentKeys.contains(packetKey.key)) recentKeys.add(packetKey.key);
           return;
         case PacketKey.KEY_UP:
           keys.remove((Integer) packetKey.key);
@@ -151,6 +158,12 @@ public class PlayerManager {
   public boolean keyDown(int key) {
     synchronized (keys) {
       return keys.contains(key);
+    }
+  }
+
+  public boolean keyDownRecent(int key) {
+    synchronized (keys) {
+      return recentKeys.contains(key);
     }
   }
 
@@ -166,6 +179,12 @@ public class PlayerManager {
     }
   }
 
+  public boolean buttonDownRecent(int button) {
+    synchronized (buttons) {
+      return recentButtons.contains(button);
+    }
+  }
+
   public boolean buttonUp(int button) {
     synchronized (buttons) {
       return !buttons.contains(button);
@@ -173,11 +192,48 @@ public class PlayerManager {
   }
 
   protected void update() {
-    if (buttonDown(Buttons.LEFT)) {
+    if (buttonDownRecent(Buttons.LEFT)) {
       RayTracing.BlockIntersection blockIntersection = RayTracing.getBlockIntersection(client.getPlayer().position, client.getPlayer().angle, server.world);
-      if (blockIntersection == null) return;
-      BlockReference blockReference = blockIntersection.getBlockReference();
-      server.world.setBlock(null, blockReference.blockX, blockReference.blockY, blockReference.blockZ);
+      if (blockIntersection != null) {
+        BlockReference blockReference = blockIntersection.getBlockReference();
+        server.world.setBlock(null, blockReference.blockX, blockReference.blockY, blockReference.blockZ);
+      }
+    }
+    if (buttonDownRecent(Buttons.RIGHT)) {
+      Block block = client.getPlayer().getHotbarSelected();
+      if (block != null) {
+        RayTracing.BlockIntersection blockIntersection = RayTracing.getBlockIntersection(client.getPlayer().position, client.getPlayer().angle, server.world);
+        if (blockIntersection != null) {
+          BlockReference blockReference = blockIntersection.getBlockReference();
+          switch (blockIntersection.getBlockFace()) {
+            case posX:
+              blockReference.blockX++;
+              break;
+            case negX:
+              blockReference.blockX--;
+              break;
+            case posY:
+              blockReference.blockY++;
+              break;
+            case negY:
+              blockReference.blockY--;
+              break;
+            case posZ:
+              blockReference.blockZ++;
+              break;
+            case negZ:
+              blockReference.blockZ--;
+              break;
+          }
+          server.world.setBlock(block, blockReference.blockX, blockReference.blockY, blockReference.blockZ);
+        }
+      }
+    }
+    synchronized (buttons) {
+      recentButtons.clear();
+    }
+    synchronized (keys) {
+      recentKeys.clear();
     }
   }
 }
