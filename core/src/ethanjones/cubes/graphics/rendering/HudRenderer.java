@@ -10,8 +10,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -67,14 +70,16 @@ public class HudRenderer implements Disposable {
   TextField chat;
   Label chatLog;
   ArrayList<String> chatStrings = new ArrayList<String>();
-  Image crosshair;
   Touchpad touchpad;
   TextButton debugButton;
   TextButton chatButton;
   ClientDebug.DebugLabel debug;
   KeyListener keyListener;
+
+  Texture crosshair;
   Texture hotbarSlot;
   Texture hotbarSelected;
+
   private boolean chatEnabled;
   private boolean debugEnabled;
 
@@ -86,9 +91,6 @@ public class HudRenderer implements Disposable {
 
     keyListener = new KeyListener();
     KeyboardHelper.addKeyTypedListener(keyListener);
-
-    crosshair = new Image(Assets.getTextureRegion("core:hud/Crosshair.png"));
-
     debug = new ClientDebug.DebugLabel();
 
     TextField.TextFieldStyle defaultStyle = skin.get("default", TextField.TextFieldStyle.class);
@@ -139,9 +141,8 @@ public class HudRenderer implements Disposable {
     setChatEnabled(false);
     setDebugEnabled(false);
 
-    stage.addActor(crosshair);
-
     spriteBatch = new SpriteBatch();
+    crosshair = Assets.getTexture("core:hud/Crosshair.png");
     hotbarSelected = Assets.getTexture("core:hud/HotbarSelected.png");
     hotbarSlot = Assets.getTexture("core:hud/HotbarSlot.png");
   }
@@ -160,11 +161,12 @@ public class HudRenderer implements Disposable {
     } else {
       stage.setKeyboardFocus(null);
     }
-    stage.addActor(crosshair);
     stage.act();
     stage.draw();
 
     spriteBatch.begin();
+    float crosshairSize = Math.min(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) / 40;
+    spriteBatch.draw(crosshair, (Gdx.graphics.getWidth() / 2) - crosshairSize, (Gdx.graphics.getHeight() / 2) - crosshairSize, crosshairSize * 2, crosshairSize * 2);
     renderHotbar(spriteBatch);
     spriteBatch.end();
   }
@@ -197,8 +199,6 @@ public class HudRenderer implements Disposable {
     chat.setBounds(0, 0, Gdx.graphics.getWidth(), chat.getStyle().font.getBounds("ABC123").height * 1.5f);
     chatLog.setBounds(0, chat.getHeight(), Gdx.graphics.getWidth(), chatLog.getStyle().font.getBounds("ABC123").height * 5);
 
-    float crosshairSize = Math.min(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) / 20;
-    crosshair.setBounds((Gdx.graphics.getWidth() / 2) - (crosshairSize / 2), (Gdx.graphics.getHeight() / 2) - (crosshairSize / 2), crosshairSize, crosshairSize);
     if (touchpad != null) {
       touchpad.setBounds(Gdx.graphics.getWidth() / 3 * 2, 0, Gdx.graphics.getWidth() / 3, Gdx.graphics.getWidth() / 3);
     }
