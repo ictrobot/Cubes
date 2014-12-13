@@ -9,11 +9,13 @@ public class BlockReference implements Pool.Poolable {
   public int blockX;
   public int blockY;
   public int blockZ;
+  private int hashCode = 0;
 
   public BlockReference setFromBlockCoordinates(int blockX, int blockY, int blockZ) {
     this.blockX = blockX;
     this.blockY = blockY;
     this.blockZ = blockZ;
+    this.hashCode = 0;
     return this;
   }
 
@@ -21,6 +23,7 @@ public class BlockReference implements Pool.Poolable {
     this.blockX = blockReference.blockX;
     this.blockY = blockReference.blockY;
     this.blockZ = blockReference.blockZ;
+    this.hashCode = blockReference.hashCode;
     return this;
   }
 
@@ -28,12 +31,21 @@ public class BlockReference implements Pool.Poolable {
     this.blockX = CoordinateConverter.block(x);
     this.blockY = CoordinateConverter.block(y);
     this.blockZ = CoordinateConverter.block(z);
+    this.hashCode = 0;
     return this;
   }
 
   @Override
   public int hashCode() {
-    return blockX ^ blockY ^ blockZ;
+    if (hashCode == 0) updateHashCode();
+    return hashCode;
+  }
+
+  public void updateHashCode() {
+    hashCode = 7;
+    hashCode = 31 * hashCode + blockX;
+    hashCode = 31 * hashCode + blockY;
+    hashCode = 31 * hashCode + blockZ;
   }
 
   @Override
@@ -58,6 +70,7 @@ public class BlockReference implements Pool.Poolable {
     blockX = 0;
     blockY = 0;
     blockZ = 0;
+    hashCode = 0;
   }
 
 }

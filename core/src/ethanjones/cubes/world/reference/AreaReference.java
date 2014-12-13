@@ -11,11 +11,13 @@ public class AreaReference implements Pool.Poolable, Cloneable {
   public int areaX;
   public int areaY;
   public int areaZ;
+  private int hashCode = 0;
 
   public AreaReference setFromArea(Area area) {
     this.areaX = area.x;
     this.areaY = area.y;
     this.areaZ = area.z;
+    this.hashCode = 0;
     return this;
   }
 
@@ -23,6 +25,7 @@ public class AreaReference implements Pool.Poolable, Cloneable {
     this.areaX = areaX;
     this.areaY = areaY;
     this.areaZ = areaZ;
+    this.hashCode = 0;
     return this;
   }
 
@@ -30,6 +33,7 @@ public class AreaReference implements Pool.Poolable, Cloneable {
     this.areaX = areaReference.areaX;
     this.areaY = areaReference.areaY;
     this.areaZ = areaReference.areaZ;
+    this.hashCode = areaReference.hashCode;
     return this;
   }
 
@@ -37,6 +41,7 @@ public class AreaReference implements Pool.Poolable, Cloneable {
     this.areaX = CoordinateConverter.area(blockX);
     this.areaY = CoordinateConverter.area(blockY);
     this.areaZ = CoordinateConverter.area(blockZ);
+    this.hashCode = 0;
     return this;
   }
 
@@ -44,6 +49,7 @@ public class AreaReference implements Pool.Poolable, Cloneable {
     this.areaX = CoordinateConverter.area(blockReference.blockX);
     this.areaY = CoordinateConverter.area(blockReference.blockY);
     this.areaZ = CoordinateConverter.area(blockReference.blockZ);
+    this.hashCode = 0;
     return this;
   }
 
@@ -56,12 +62,21 @@ public class AreaReference implements Pool.Poolable, Cloneable {
     this.areaX = CoordinateConverter.area(CoordinateConverter.block(x));
     this.areaY = CoordinateConverter.area(CoordinateConverter.block(y));
     this.areaZ = CoordinateConverter.area(CoordinateConverter.block(z));
+    this.hashCode = 0;
     return this;
   }
 
   @Override
   public int hashCode() {
-    return areaX ^ areaY ^ areaZ;
+    if (hashCode == 0) updateHashCode();
+    return hashCode;
+  }
+
+  public void updateHashCode() {
+    hashCode = 7;
+    hashCode = 31 * hashCode + areaX;
+    hashCode = 31 * hashCode + areaY;
+    hashCode = 31 * hashCode + areaZ;
   }
 
   @Override
@@ -87,5 +102,6 @@ public class AreaReference implements Pool.Poolable, Cloneable {
     areaX = 0;
     areaY = 0;
     areaZ = 0;
+    hashCode = 0;
   }
 }
