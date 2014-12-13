@@ -76,6 +76,7 @@ public class CubesClient extends Cubes implements ApplicationListener {
   public void tick() {
     super.tick();
     inputChain.cameraController.tick();
+    ClientDebug.tick();
   }
 
   @Override

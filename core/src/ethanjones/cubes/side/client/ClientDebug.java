@@ -7,9 +7,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
 import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.core.system.Memory;
-import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.graphics.menu.Fonts;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.world.CoordinateConverter;
 
 public class ClientDebug {
 
@@ -40,7 +40,6 @@ public class ClientDebug {
 
   public static void update() {
     Vector3 p = Cubes.getClient().player.position;
-    fps.add(Gdx.graphics.getFramesPerSecond());
     loop.add((int) (System.currentTimeMillis() - lastTime));
     lastTime = System.currentTimeMillis();
 
@@ -55,6 +54,10 @@ public class ClientDebug {
     GLProfiler.drawCalls = 0;
     GLProfiler.shaderSwitches = 0;
     GLProfiler.textureBindings = 0;
+  }
+
+  public static void tick() {
+    fps.add(Gdx.graphics.getFramesPerSecond());
   }
 
   public static class Average {
