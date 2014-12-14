@@ -223,6 +223,7 @@ public class HudRenderer implements Disposable {
   @Override
   public void dispose() {
     stage.dispose();
+    spriteBatch.dispose();
   }
 
   public boolean noCursorCatching() {
