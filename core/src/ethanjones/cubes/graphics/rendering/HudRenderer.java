@@ -1,7 +1,6 @@
 package ethanjones.cubes.graphics.rendering;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -21,10 +20,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import java.util.ArrayList;
+import java.util.List;
 
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.localization.Localization;
-import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.entity.living.player.Player;
@@ -34,6 +33,7 @@ import ethanjones.cubes.input.keyboard.KeyTypedAdapter;
 import ethanjones.cubes.input.keyboard.KeyboardHelper;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketChat;
+import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.client.ClientDebug;
 import ethanjones.cubes.side.common.Cubes;
 
@@ -43,17 +43,16 @@ public class HudRenderer implements Disposable {
 
   private class KeyListener extends KeyTypedAdapter {
 
-    final int debug = Input.Keys.F1;
-    final int chat = Input.Keys.F2;
+    final int debug = Keys.F1;
+    final int chat = Keys.F2;
+    final int blocksMenu = Keys.E;
 
     @Override
     public void keyDown(int keycode) {
-      if (keycode == debug) {
-        setDebugEnabled(!isDebugEnabled());
-      }
-      if (keycode == chat) {
-        setChatEnabled(!isChatEnabled());
-      }
+      if (keycode == debug) setDebugEnabled(!isDebugEnabled());
+      if (keycode == chat) setChatEnabled(!isChatEnabled());
+      if (keycode == blocksMenu) setBlocksMenuEnabled(!isBlocksMenuEnabled());
+
       if (keycode == Keys.NUM_1) Cubes.getClient().player.setSelectedSlot(0);
       if (keycode == Keys.NUM_2) Cubes.getClient().player.setSelectedSlot(1);
       if (keycode == Keys.NUM_3) Cubes.getClient().player.setSelectedSlot(2);
@@ -82,9 +81,11 @@ public class HudRenderer implements Disposable {
   Texture crosshair;
   Texture hotbarSlot;
   Texture hotbarSelected;
+  Block[][] blocks;
 
   private boolean chatEnabled;
   private boolean debugEnabled;
+  private boolean blocksMenuEnabled;
 
   public HudRenderer() {
     spriteBatch = new SpriteBatch();
@@ -146,6 +147,17 @@ public class HudRenderer implements Disposable {
     crosshair = Assets.getTexture("core:hud/Crosshair.png");
     hotbarSelected = Assets.getTexture("core:hud/HotbarSelected.png");
     hotbarSlot = Assets.getTexture("core:hud/HotbarSlot.png");
+
+    blocks = new Block[10][6];
+    int i = 0;
+    List<Block> list = Sided.getBlockManager().getBlocks();
+    for (int y = 0; y < 6; y++) {
+      for (int x = 0; x < 10; x++, i++) {
+        if (i >= list.size()) break;
+        blocks[x][y] = list.get(i);
+      }
+      if (i >= list.size()) break;
+    }
   }
 
   public void render() {
@@ -168,7 +180,8 @@ public class HudRenderer implements Disposable {
     spriteBatch.begin();
     float crosshairSize = Math.min(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) / 40;
     spriteBatch.draw(crosshair, (Gdx.graphics.getWidth() / 2) - crosshairSize, (Gdx.graphics.getHeight() / 2) - crosshairSize, crosshairSize * 2, crosshairSize * 2);
-    renderHotbar(spriteBatch);
+    renderHotbar();
+    if (isBlocksMenuEnabled()) renderBlockMenu();
     spriteBatch.end();
   }
 
@@ -178,6 +191,10 @@ public class HudRenderer implements Disposable {
 
   public boolean isChatEnabled() {
     return chatEnabled;
+  }
+
+  public boolean isBlocksMenuEnabled() {
+    return blocksMenuEnabled;
   }
 
   public void setChatEnabled(boolean chatEnabled) {
@@ -191,6 +208,10 @@ public class HudRenderer implements Disposable {
       GLProfiler.enable();
     }
     this.debugEnabled = debugEnabled;
+  }
+
+  public void setBlocksMenuEnabled(boolean blocksMenuEnabled) {
+    this.blocksMenuEnabled = blocksMenuEnabled;
   }
 
   public void resize() {
@@ -227,10 +248,10 @@ public class HudRenderer implements Disposable {
   }
 
   public boolean noCursorCatching() {
-    return chatEnabled;
+    return chatEnabled || blocksMenuEnabled;
   }
 
-  public void renderHotbar(SpriteBatch spriteBatch) {
+  public void renderHotbar() {
     Player player = Cubes.getClient().player;
     int startWidth = (Gdx.graphics.getWidth() / 2) - (hotbarSlot.getWidth() * 5);
     for (int i = 0; i < 10; i++) {
@@ -244,6 +265,41 @@ public class HudRenderer implements Disposable {
       if (block != null) {
         TextureRegion side = block.getTextureHandler(null).getSide(BlockFace.posX);
         spriteBatch.draw(side, minX + 8, 8);
+      }
+    }
+  }
+
+  public void renderBlockMenu() {
+    int i = 0;
+    int startWidth = (Gdx.graphics.getWidth() / 2) - (hotbarSlot.getWidth() * 5);
+    int startHeight = (Gdx.graphics.getHeight() / 2) - (hotbarSlot.getHeight() * 3);
+    for (int y = 0; y < 6; y++) {
+      int minY = startHeight + ((5 - y) * hotbarSlot.getHeight());
+      for (int x = 0; x < 10; x++, i++) {
+        int minX = startWidth + (x * hotbarSlot.getWidth());
+        spriteBatch.draw(hotbarSlot, minX, minY);
+        Block block = blocks[x][y];
+        if (block == null) continue;
+        TextureRegion side = block.getTextureHandler(null).getSide(BlockFace.posX);
+        spriteBatch.draw(side, minX + 8, minY + 8);
+      }
+    }
+  }
+
+  public void touch(int screenX, int screenY, int pointer, int button) {
+    if (isBlocksMenuEnabled()) {
+      int startWidth = (Gdx.graphics.getWidth() / 2) - (hotbarSlot.getWidth() * 5);
+      int startHeight = (Gdx.graphics.getHeight() / 2) - (hotbarSlot.getHeight() * 3);
+      int x = screenX - startWidth;
+      int y = screenY - startHeight;
+      if (x < 0 || y < 0) return;
+      int remX = x % hotbarSlot.getWidth();
+      int remY = y % hotbarSlot.getHeight();
+      if (remX >= 8 && remX <= 40 && remY >= 8 && remY <= 40) {
+        int slotX = x / hotbarSlot.getWidth();
+        int slotY = y / hotbarSlot.getHeight();
+        if (slotX >= blocks.length || slotY >= blocks[0].length) return;
+        Cubes.getClient().player.setHotbar(blocks[slotX][slotY]);
       }
     }
   }

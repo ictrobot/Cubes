@@ -4,8 +4,7 @@ import ethanjones.data.Data;
 import ethanjones.data.DataGroup;
 import ethanjones.data.basic.DataString;
 import ethanjones.data.other.DataParser;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import ethanjones.cubes.core.logging.Log;
 
@@ -15,6 +14,8 @@ public class BlockManager implements DataParser<DataGroup> {
   volatile HashMap<Block, Integer> blocks;
   volatile HashMap<String, Block> ids;
   volatile HashMap<Class<? extends Block>, Block> classes;
+  volatile ArrayList<Block> blockList;
+  volatile List<Block> unmodifiableBlockList;
   volatile int unused = 1;
 
   public BlockManager() {
@@ -22,6 +23,8 @@ public class BlockManager implements DataParser<DataGroup> {
     blocks = new HashMap<Block, Integer>();
     ids = new HashMap<String, Block>();
     classes = new HashMap<Class<? extends Block>, Block>();
+    blockList = new ArrayList<Block>();
+    unmodifiableBlockList = Collections.unmodifiableList(blockList);
   }
 
   public int toInt(Block block) {
@@ -85,7 +88,12 @@ public class BlockManager implements DataParser<DataGroup> {
       blocks.put(block, i);
       ids.put(block.id, block);
       classes.put(block.getClass(), block);
+      blockList.add(block);
     }
+  }
+
+  public List<Block> getBlocks() {
+    return unmodifiableBlockList;
   }
 
   private int findFree() {
