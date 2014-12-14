@@ -2,17 +2,56 @@ package ethanjones.cubes.graphics.menu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeBitmapFontData;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.graphics.assets.Assets;
 
 public class Fonts {
+
+  protected static class CopyBitmapFontData extends BitmapFontData {
+
+    public CopyBitmapFontData(BitmapFontData base) {
+      super();
+      this.imagePath = base.imagePath;
+      this.imagePaths = base.imagePaths;
+      this.fontFile = base.fontFile;
+      this.flipped = base.flipped;
+      this.lineHeight = base.lineHeight;
+      this.capHeight = base.capHeight;
+      this.ascent = base.ascent;
+      this.descent = base.descent;
+      this.down = base.down;
+      this.scaleX = base.scaleX;
+      this.scaleY = base.scaleY;
+      System.arraycopy(base.glyphs, 0, this.glyphs, 0, base.glyphs.length);
+      this.spaceWidth = base.spaceWidth;
+      this.xHeight = base.xHeight;
+    }
+
+  }
+
+  private static FreeTypeBitmapFontData data;
+
+  static {
+    Log.debug("Generating font");
+    FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Assets.getAsset("core:font/font.ttf").getFileHandle());
+    FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+    parameter.size = 10;
+    data = generator.generateData(parameter);
+    generator.dispose();
+    Log.debug("Font generated");
+  }
 
   protected static class StaticBitmapFont extends BitmapFont {
 
     private final int scale;
 
     private StaticBitmapFont(int scale) {
-      super(Assets.getCoreAssetManager().getAsset("font/font.fnt").getFileHandle());
+      super(new CopyBitmapFontData(data), data.getTextureRegions(), false);
       this.scale = scale;
       updateScale();
     }
