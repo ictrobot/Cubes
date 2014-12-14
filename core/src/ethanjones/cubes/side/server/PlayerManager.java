@@ -45,7 +45,9 @@ public class PlayerManager {
 
     Sided.getEventBus().register(this);
 
-    NetworkingManager.sendPacketToClient(new PacketConnected(), clientIdentifier);
+    PacketConnected packetConnected = new PacketConnected();
+    packetConnected.blockManager = Sided.getBlockManager().write();
+    NetworkingManager.sendPacketToClient(packetConnected, clientIdentifier);
 
     initialLoadAreas();
   }

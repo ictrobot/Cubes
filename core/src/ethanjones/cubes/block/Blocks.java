@@ -10,7 +10,6 @@ import ethanjones.cubes.block.basic.BlockDirt;
 import ethanjones.cubes.block.basic.BlockGrass;
 import ethanjones.cubes.block.basic.BlockStone;
 import ethanjones.cubes.core.util.Register;
-import ethanjones.cubes.side.Sided;
 
 public class Blocks {
 
@@ -35,21 +34,7 @@ public class Blocks {
           if (o instanceof Block) {
             f.set(null, o);
             blocks.add((Block) o);
-          }
-        }
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
-  }
-
-  public static void register() {
-    for (Field f : Blocks.class.getFields()) {
-      try {
-        if (f.isAnnotationPresent(Register.class)) {
-          Object o = f.get(null);
-          if (o instanceof Block) {
-            Sided.getBlockManager().register((Block) o);
+            BlockManager.register((Block) o);
           }
         }
       } catch (Exception e) {

@@ -3,6 +3,7 @@ package ethanjones.cubes.side.common;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 
+import ethanjones.cubes.block.BlockManager;
 import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
@@ -54,6 +55,7 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
 
     if (Compatibility.get().getApplicationType() != ApplicationType.Android) MemoryChecker.init(); //FIXME
 
+    BlockManager.preInit();
     Blocks.init();
 
     Assets.preInit();
@@ -68,6 +70,7 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
     Localization.load();
     Settings.print();
     ModManager.postModEvent(new PostInitializationEvent());
+    BlockManager.postInit();
 
     setup = true;
   }

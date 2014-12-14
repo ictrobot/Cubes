@@ -1,7 +1,6 @@
 package ethanjones.cubes.side;
 
 import ethanjones.cubes.block.BlockManager;
-import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.core.event.EventBus;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.CubesSecurity;
@@ -84,22 +83,20 @@ public class Sided {
     sideLocal.set(side);
     mainLocal.set(true);
 
-    Data data = null;
+    Data data = new Data();
     switch (side) {
       case Client:
-        clientData = new Data();
-        data = clientData;
+        clientData = data;
         break;
       case Server:
-        serverData = new Data();
-        data = serverData;
+        serverData = data;
         break;
     }
 
     data.eventBus = new EventBus();
     data.timing = new Timing();
     data.blockManager = new BlockManager();
-    Blocks.register();
+    if (side == Side.Server) data.blockManager.generateDefault(); //TODO Need to store with world
   }
 
   public static boolean isSetup(Side side) {

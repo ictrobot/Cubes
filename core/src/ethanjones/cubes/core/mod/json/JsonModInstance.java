@@ -10,7 +10,10 @@ import java.util.List;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.mod.ModInstance;
 import ethanjones.cubes.core.mod.ModState;
-import ethanjones.cubes.core.mod.event.*;
+import ethanjones.cubes.core.mod.event.ModEvent;
+import ethanjones.cubes.core.mod.event.PostInitializationEvent;
+import ethanjones.cubes.core.mod.event.PreInitializationEvent;
+import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.graphics.assets.AssetManager;
 
 public class JsonModInstance extends ModInstance {
@@ -45,14 +48,12 @@ public class JsonModInstance extends ModInstance {
     if (modEvent instanceof PreInitializationEvent) {
       for (JsonBlockParameter blockParameter : blockParameters) {
         blockParameter.init(this);
+        blockParameter.register(this);
       }
     } else if (modEvent instanceof PostInitializationEvent) {
+      if (Compatibility.get().isServer()) return;
       for (JsonBlockParameter blockParameter : blockParameters) {
         blockParameter.loadGraphics();
-      }
-    } else if (modEvent instanceof StartingClientEvent || modEvent instanceof StartingServerEvent) {
-      for (JsonBlockParameter blockParameter : blockParameters) {
-        blockParameter.register(this);
       }
     }
   }

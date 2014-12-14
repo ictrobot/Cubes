@@ -2,7 +2,7 @@ package ethanjones.cubes.block;
 
 import ethanjones.data.Data;
 import ethanjones.data.DataGroup;
-import ethanjones.data.basic.DataString;
+import ethanjones.data.basic.DataInteger;
 import ethanjones.data.other.DataParser;
 import java.util.*;
 
@@ -10,41 +10,72 @@ import ethanjones.cubes.core.logging.Log;
 
 public class BlockManager implements DataParser<DataGroup> {
 
-  volatile HashMap<Integer, Block> ints;
-  volatile HashMap<Block, Integer> blocks;
-  volatile HashMap<String, Block> ids;
-  volatile HashMap<Class<? extends Block>, Block> classes;
-  volatile ArrayList<Block> blockList;
-  volatile List<Block> unmodifiableBlockList;
-  volatile int unused = 1;
+  private static volatile boolean canRegister = false;
+  private static final ArrayList<Block> blockList = new ArrayList<Block>();
+  private static final List<Block> unmodifiableBlockList = Collections.unmodifiableList(blockList);
+  private static final HashMap<String, Block> idToBlock = new HashMap<String, Block>();
+
+  public static void register(Block block) {
+    if (block == null) return;
+    if (!canRegister) {
+      Log.error("Tried to register \"" + block.id + "\" after postInit");
+      return;
+    }
+
+    synchronized (BlockManager.class) {
+      blockList.add(block);
+      idToBlock.put(block.id, block);
+    }
+  }
+
+  public static Block toBlock(String id) {
+    if (id == null || id.isEmpty()) return null;
+    synchronized (BlockManager.class) {
+      return idToBlock.get(id);
+    }
+  }
+
+  public static List<Block> getBlocks() {
+    return unmodifiableBlockList;
+  }
+
+  public static void preInit() {
+    if (blockList.size() == 0) canRegister = true;
+  }
+
+  public static void postInit() {
+    canRegister = false;
+  }
+
+  private volatile HashMap<Integer, Block> integerToBlock;
+  private volatile HashMap<Block, Integer> blockToInteger;
 
   public BlockManager() {
-    ints = new HashMap<Integer, Block>();
-    blocks = new HashMap<Block, Integer>();
-    ids = new HashMap<String, Block>();
-    classes = new HashMap<Class<? extends Block>, Block>();
-    blockList = new ArrayList<Block>();
-    unmodifiableBlockList = Collections.unmodifiableList(blockList);
+    integerToBlock = new HashMap<Integer, Block>();
+    blockToInteger = new HashMap<Block, Integer>();
+  }
+
+  public void generateDefault() {
+    if (integerToBlock.size() > 0) return;
+    int i = 0;
+    for (Block block : blockList) {
+      integerToBlock.put(i, block);
+      blockToInteger.put(block, i);
+      i++;
+    }
   }
 
   public int toInt(Block block) {
     if (block == null) return 0;
     synchronized (this) {
-      return blocks.get(block);
+      return blockToInteger.get(block);
     }
   }
 
   public Block toBlock(int i) {
     if (i == 0) return null;
     synchronized (this) {
-      return ints.get(i);
-    }
-  }
-
-  public Block toBlock(String id) {
-    if (id == null || id.isEmpty()) return null;
-    synchronized (this) {
-      return ids.get(id);
+      return integerToBlock.get(i);
     }
   }
 
@@ -52,8 +83,8 @@ public class BlockManager implements DataParser<DataGroup> {
   public DataGroup write() {
     synchronized (this) {
       DataGroup dataGroup = new DataGroup();
-      for (Map.Entry<Block, Integer> entry : blocks.entrySet()) {
-        dataGroup.setString(entry.getValue().toString(), entry.getKey().getClass().getName());
+      for (Map.Entry<Block, Integer> entry : blockToInteger.entrySet()) {
+        dataGroup.setInteger(entry.getKey().id, entry.getValue());
       }
       return dataGroup;
     }
@@ -61,47 +92,16 @@ public class BlockManager implements DataParser<DataGroup> {
 
   @Override
   public void read(DataGroup data) {
+    if (integerToBlock.size() > 0) return;
     synchronized (this) {
-      ints.clear();
-      blocks.clear();
-      for (Map.Entry<String, Data> entry : data.getEntrySet()) {
-        int i = Integer.parseInt(entry.getKey());
-        Class<? extends Block> c;
-        try {
-          c = Class.forName(((DataString) entry.getValue()).get()).asSubclass(Block.class);
-        } catch (Exception e) {
-          Log.error("Failed to read block", e);
-          continue;
+      synchronized (BlockManager.class) {
+        for (Map.Entry<String, Data> entry : data.getEntrySet()) {
+          Block block = idToBlock.get(entry.getKey());
+          int i = ((DataInteger) entry.getValue()).get();
+          integerToBlock.put(i, block);
+          blockToInteger.put(block, i);
         }
-        Block block = classes.get(c);
-        ints.put(i, block);
-        blocks.put(block, i);
-        ids.put(block.id, block);
       }
     }
-  }
-
-  public void register(Block block) {
-    synchronized (this) {
-      int i = findFree();
-      ints.put(i, block);
-      blocks.put(block, i);
-      ids.put(block.id, block);
-      classes.put(block.getClass(), block);
-      blockList.add(block);
-    }
-  }
-
-  public List<Block> getBlocks() {
-    return unmodifiableBlockList;
-  }
-
-  private int findFree() {
-    int i = -1;
-    if (ints.get(unused) == null) {
-      i = unused;
-    }
-    unused++;
-    return i != -1 ? i : findFree();
   }
 }
