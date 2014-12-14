@@ -166,7 +166,7 @@ public class ModManager {
         mod.event(modEvent);
       } catch (Exception e) {
         mod.addState(ModState.Error);
-        throw new CubesException("Exception while posting " + modEvent.getClass().getSimpleName() + " to mod " + mod.getMod().getClass().getSimpleName(), e);
+        throw new CubesException("Exception while posting " + modEvent.getClass().getSimpleName() + " to mod " + mod.name, e);
       }
     }
     Log.debug("Finished posting " + modEvent.getClass().getSimpleName());
