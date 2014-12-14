@@ -40,7 +40,7 @@ public class PacketChat extends Packet {
         NetworkingManager.sendPacketToAllClients(packetChat);
       }
     } else {
-      Cubes.getClient().renderer.hud.print(msg);
+      Cubes.getClient().renderer.guiRenderer.print(msg);
     }
   }
 }

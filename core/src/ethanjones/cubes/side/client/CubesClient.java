@@ -37,7 +37,7 @@ public class CubesClient extends Cubes implements ApplicationListener {
 
     inputChain = new InputChain();
     renderer = new Renderer();
-    player = new Player(renderer.block.camera);
+    player = new Player(renderer.worldRenderer.camera);
 
     inputChain.setup();
     Gdx.input.setInputProcessor(InputChain.getInputMultiplexer());
@@ -56,7 +56,7 @@ public class CubesClient extends Cubes implements ApplicationListener {
     }
     super.render();
     inputChain.beforeRender();
-    if (renderer.hud.isDebugEnabled()) ClientDebug.update();
+    if (renderer.guiRenderer.isDebugEnabled()) ClientDebug.update();
     renderer.render();
     inputChain.afterRender();
     player.update();

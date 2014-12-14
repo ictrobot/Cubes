@@ -6,32 +6,32 @@ import com.badlogic.gdx.graphics.profiling.GLProfiler;
 
 public class Renderer {
 
-  public BlockRenderer block;
-  public HudRenderer hud;
+  public WorldRenderer worldRenderer;
+  public GuiRenderer guiRenderer;
 
   public Renderer() {
-    block = new BlockRenderer();
-    hud = new HudRenderer();
+    worldRenderer = new WorldRenderer();
+    guiRenderer = new GuiRenderer();
   }
 
   public void render() {
     Gdx.gl20.glDisable(GL20.GL_BLEND);
 
-    block.render();
-    hud.render();
+    worldRenderer.render();
+    guiRenderer.render();
   }
 
   public void dispose() {
     GLProfiler.disable();
-    block.dispose();
-    hud.dispose();
+    worldRenderer.dispose();
+    guiRenderer.dispose();
   }
 
   public void resize() {
-    hud.resize();
+    guiRenderer.resize();
   }
 
   public boolean noCursorCatching() {
-    return hud.noCursorCatching();
+    return guiRenderer.noCursorCatching();
   }
 }

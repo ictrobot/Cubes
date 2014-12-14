@@ -19,7 +19,7 @@ import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.storage.Area;
 
-public class BlockRenderer implements Disposable {
+public class WorldRenderer implements Disposable {
 
   public Environment environment;
   public PerspectiveCamera camera;
@@ -30,7 +30,7 @@ public class BlockRenderer implements Disposable {
     Pools.registerType(AreaRenderer.class, new AreaRendererPool());
   }
 
-  public BlockRenderer() {
+  public WorldRenderer() {
     modelBatch = new ModelBatch();
 
     environment = new Environment();

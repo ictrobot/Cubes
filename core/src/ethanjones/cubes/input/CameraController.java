@@ -60,7 +60,7 @@ public class CameraController extends InputAdapter {
 
   @Override
   public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-    Cubes.getClient().renderer.hud.touch(screenX, screenY, pointer, button);
+    Cubes.getClient().renderer.guiRenderer.touch(screenX, screenY, pointer, button);
 
     PacketButton packetButton = new PacketButton();
     packetButton.action = PacketButton.BUTTON_DOWN;
@@ -85,7 +85,7 @@ public class CameraController extends InputAdapter {
 
   @Override
   public boolean mouseMoved(int screenX, int screenY) {
-    if (Cubes.getClient().renderer.hud.noCursorCatching()) return false;
+    if (Cubes.getClient().renderer.guiRenderer.noCursorCatching()) return false;
     float deltaX = -Gdx.input.getDeltaX() * degreesPerPixel;
     float deltaY = -Gdx.input.getDeltaY() * degreesPerPixel;
     camera.direction.rotate(camera.up, deltaX);
@@ -99,7 +99,7 @@ public class CameraController extends InputAdapter {
   }
 
   public void update() {
-    if (Cubes.getClient().renderer.hud.noCursorCatching()) return;
+    if (Cubes.getClient().renderer.guiRenderer.noCursorCatching()) return;
     if (touchpad != null) {
       float knobPercentY = touchpad.getKnobPercentY();
       float up = knobPercentY > 0 ? knobPercentY : 0;

@@ -39,7 +39,7 @@ import ethanjones.cubes.side.common.Cubes;
 
 import static ethanjones.cubes.graphics.menu.Menu.skin;
 
-public class HudRenderer implements Disposable {
+public class GuiRenderer implements Disposable {
 
   private class KeyListener extends KeyTypedAdapter {
 
@@ -87,7 +87,7 @@ public class HudRenderer implements Disposable {
   private boolean debugEnabled;
   private boolean blocksMenuEnabled;
 
-  public HudRenderer() {
+  public GuiRenderer() {
     spriteBatch = new SpriteBatch();
     stage = new Stage(new ScreenViewport(), spriteBatch);
     Cubes.getClient().inputChain.hud = stage;
