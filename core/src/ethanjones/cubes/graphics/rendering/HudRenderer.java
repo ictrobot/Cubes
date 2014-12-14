@@ -24,6 +24,7 @@ import java.util.ArrayList;
 
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.localization.Localization;
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.entity.living.player.Player;
@@ -66,7 +67,9 @@ public class HudRenderer implements Disposable {
     }
   }
 
+  SpriteBatch spriteBatch;
   Stage stage;
+
   TextField chat;
   Label chatLog;
   ArrayList<String> chatStrings = new ArrayList<String>();
@@ -83,10 +86,9 @@ public class HudRenderer implements Disposable {
   private boolean chatEnabled;
   private boolean debugEnabled;
 
-  SpriteBatch spriteBatch;
-
   public HudRenderer() {
-    stage = new Stage(new ScreenViewport());
+    spriteBatch = new SpriteBatch();
+    stage = new Stage(new ScreenViewport(), spriteBatch);
     Cubes.getClient().inputChain.hud = stage;
 
     keyListener = new KeyListener();
@@ -141,7 +143,6 @@ public class HudRenderer implements Disposable {
     setChatEnabled(false);
     setDebugEnabled(false);
 
-    spriteBatch = new SpriteBatch();
     crosshair = Assets.getTexture("core:hud/Crosshair.png");
     hotbarSelected = Assets.getTexture("core:hud/HotbarSelected.png");
     hotbarSlot = Assets.getTexture("core:hud/HotbarSlot.png");
