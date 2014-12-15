@@ -75,6 +75,7 @@ public class GuiRenderer implements Disposable {
   Touchpad touchpad;
   TextButton debugButton;
   TextButton chatButton;
+  TextButton blockSelectorButton;
   ClientDebug.DebugLabel debug;
   KeyListener keyListener;
 
@@ -137,12 +138,21 @@ public class GuiRenderer implements Disposable {
           setChatEnabled(!isChatEnabled());
         }
       });
+      blockSelectorButton = new TextButton(Localization.get("hud.block"), skin, "tiny");
+      blockSelectorButton.addListener(new ChangeListener() {
+        @Override
+        public void changed(ChangeEvent event, Actor actor) {
+          setBlocksMenuEnabled(!isBlocksMenuEnabled());
+        }
+      });
       stage.addActor(touchpad);
       stage.addActor(debugButton);
       stage.addActor(chatButton);
+      stage.addActor(blockSelectorButton);
     }
     setChatEnabled(false);
     setDebugEnabled(false);
+    setBlocksMenuEnabled(false);
 
     crosshair = Assets.getTexture("core:hud/Crosshair.png");
     hotbarSelected = Assets.getTexture("core:hud/HotbarSelected.png");
@@ -224,11 +234,12 @@ public class GuiRenderer implements Disposable {
     if (touchpad != null) {
       touchpad.setBounds(Gdx.graphics.getWidth() / 3 * 2, 0, Gdx.graphics.getWidth() / 3, Gdx.graphics.getWidth() / 3);
     }
-    if (chatButton != null && debugButton != null) {
+    if (chatButton != null && debugButton != null && blockSelectorButton != null) {
       float width = Math.max(chatButton.getPrefWidth(), debugButton.getPrefWidth());
       float height = Math.max(chatButton.getPrefHeight(), debugButton.getPrefHeight());
       chatButton.setBounds(Gdx.graphics.getWidth() - width, Gdx.graphics.getHeight() - height, width, height);
       debugButton.setBounds(Gdx.graphics.getWidth() - width - width, Gdx.graphics.getHeight() - height, width, height);
+      blockSelectorButton.setBounds(Gdx.graphics.getWidth() - width - width - width, Gdx.graphics.getHeight() - height, width, height);
     }
   }
 
