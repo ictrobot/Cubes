@@ -29,7 +29,7 @@ public class Settings {
 
   public static void init() {
     addSetting(USERNAME, new StringSetting("User"));
-    addSetting(GRAPHICS_VIEW_DISTANCE, new IntegerSetting(1, 1, 10, IntegerSetting.Type.Slider));
+    addSetting(GRAPHICS_VIEW_DISTANCE, new IntegerSetting(1, 1, 16, IntegerSetting.Type.Slider));
     addSetting(GRAPHICS_FOV, new IntegerSetting(67, 10, 120, IntegerSetting.Type.Slider));
     addSetting(NETWORKING_PORT, new IntegerSetting(24842));
 
