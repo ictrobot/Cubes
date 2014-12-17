@@ -17,6 +17,11 @@ public class WorldClient extends World {
   }
 
   @Override
+  public void requestArea(AreaReference areaReference) {
+
+  }
+
+  @Override
   protected void requestAreaInternal(AreaReference areaReference) {
 
   }
