@@ -15,6 +15,7 @@ public abstract class TerrainGenerator {
 
   protected void set(Area area, Block block, BlockData blockData, int x, int y, int z) {
     int ref = area.getRef(x, y, z);
+    area.checkArrays();
     synchronized (area) {
       area.blocks[ref] = Sided.getBlockManager().toInt(block);
       area.blockData[ref] = blockData;

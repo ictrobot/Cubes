@@ -62,7 +62,7 @@ public class WorldRenderer implements Disposable {
         for (int areaZ = pos.areaZ - renderDistance; areaZ <= pos.areaZ + renderDistance; areaZ++) {
           Area area = CubesClient.getClient().world.getArea(areaX, areaY, areaZ);
           if (area == null) continue;
-          if (areaInFrustum(area, camera.frustum)) {
+          if (!area.isBlank() && areaInFrustum(area, camera.frustum)) {
             if (area.areaRenderer == null) {
               Pools.obtain(AreaRenderer.class).set(area);
             }

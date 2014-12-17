@@ -35,11 +35,12 @@ public class Area {
   public final int minBlockX;
   public final int minBlockY;
   public final int minBlockZ;
-  public boolean generated = false;
+
   public AreaRenderer areaRenderer; //Always null on server
-  public final int[] blocks; //Always sync on this
-  public final BlockData[] blockData;
-  public final boolean[] visible;
+
+  public int[] blocks; //0 = null, positive = visible, negative = invisible
+  public BlockData[] blockData;
+  public boolean[] visible;
 
   public Area(int x, int y, int z) {
     this.x = x;
@@ -54,19 +55,17 @@ public class Area {
     cenBlockX = (float) (maxBlockX + minBlockX) / 2f;
     cenBlockY = (float) (maxBlockY + minBlockY) / 2f;
     cenBlockZ = (float) (maxBlockZ + minBlockZ) / 2f;
-
-    blocks = new int[SIZE_BLOCKS_CUBED];
-    blockData = new BlockData[SIZE_BLOCKS_CUBED];
-    visible = new boolean[SIZE_BLOCKS_CUBED];
   }
 
   public Block getBlock(int x, int y, int z) {
+    if (isBlank()) return null;
     synchronized (this) {
       return Sided.getBlockManager().toBlock(blocks[getRef(x, y, z)]);
     }
   }
 
   public BlockData getBlockData(int x, int y, int z) {
+    if (isBlank()) return null;
     synchronized (this) {
       return blockData[getRef(x, y, z)];
     }
@@ -78,11 +77,15 @@ public class Area {
 
   public void unload() {
     if (areaRenderer != null) Pools.free(AreaRenderer.class, areaRenderer);
+    removeArrays();
     //blocks = null;
   }
 
   public int[] toIntArray() {
     synchronized (this) {
+      if (isBlank()) {
+        return new int[0];
+      }
       int size = 0;
       for (int i = 0; i < SIZE_BLOCKS_CUBED; i++) {
         size++;
@@ -107,6 +110,11 @@ public class Area {
 
   public void fromIntArray(int[] data) {
     synchronized (this) {
+      if (data.length == 0) {
+        removeArrays();
+        return;
+      }
+      checkArrays();
       int offset = 0;
       for (int i = 0; i < SIZE_BLOCKS_CUBED; i++) {
         int v = data[offset++];
@@ -206,6 +214,7 @@ public class Area {
   }
 
   public void setBlock(Block block, int x, int y, int z) {
+    checkArrays();
     int ref = getRef(x, y, z);
     int b;
     synchronized (this) {
@@ -218,5 +227,31 @@ public class Area {
     if (areaRenderer != null) areaRenderer.refresh = true;
 
     new BlockChangedEvent(new BlockReference().setFromBlockCoordinates(x + minBlockX, y + minBlockY, z + minBlockZ), Sided.getBlockManager().toBlock(b)).post();
+  }
+
+  public void checkArrays() {
+    synchronized (this) {
+      if (isBlank()) setupArrays();
+    }
+  }
+
+  private void setupArrays() {
+    synchronized (this) {
+      blocks = new int[SIZE_BLOCKS_CUBED];
+      blockData = new BlockData[SIZE_BLOCKS_CUBED];
+      visible = new boolean[SIZE_BLOCKS_CUBED];
+    }
+  }
+
+  private void removeArrays() {
+    synchronized (this) {
+      blocks = null;
+      blockData = null;
+      visible = null;
+    }
+  }
+
+  public boolean isBlank() {
+    return blocks == null;
   }
 }

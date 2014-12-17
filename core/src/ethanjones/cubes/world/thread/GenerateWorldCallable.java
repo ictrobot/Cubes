@@ -3,8 +3,8 @@ package ethanjones.cubes.world.thread;
 import java.util.concurrent.Callable;
 
 import ethanjones.cubes.core.event.world.generation.GenerationEvent;
-import ethanjones.cubes.world.server.WorldServer;
 import ethanjones.cubes.world.reference.AreaReference;
+import ethanjones.cubes.world.server.WorldServer;
 import ethanjones.cubes.world.storage.Area;
 
 public class GenerateWorldCallable implements Callable<Area> {
@@ -22,7 +22,6 @@ public class GenerateWorldCallable implements Callable<Area> {
     Area area = new Area(areaReference.areaX, areaReference.areaY, areaReference.areaZ);
     world.getTerrainGenerator().generate(area);
     new GenerationEvent(area, areaReference).post();
-    area.generated = true;
     world.setAreaInternal(areaReference, area);
     return area;
   }
