@@ -1,5 +1,6 @@
 package ethanjones.cubes.core.settings.type;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -131,5 +132,6 @@ public class IntegerSetting extends Setting {
   @Override
   public void read(DataGroup data) {
     i = data.getInteger("data");
+    if (hasRange) MathUtils.clamp(i, rangeStart, rangeEnd);
   }
 }
