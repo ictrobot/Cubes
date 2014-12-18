@@ -1,4 +1,4 @@
-package ethanjones.cubes.graphics.menus;
+package ethanjones.cubes.graphics.menu;
 
 import java.util.ArrayList;
 import java.util.List;

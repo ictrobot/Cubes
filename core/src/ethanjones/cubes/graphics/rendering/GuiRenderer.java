@@ -28,7 +28,8 @@ import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.graphics.assets.Assets;
-import ethanjones.cubes.graphics.menu.Fonts;
+import ethanjones.cubes.graphics.gui.Fonts;
+import ethanjones.cubes.graphics.gui.Gui;
 import ethanjones.cubes.input.keyboard.KeyTypedAdapter;
 import ethanjones.cubes.input.keyboard.KeyboardHelper;
 import ethanjones.cubes.networking.NetworkingManager;
@@ -36,8 +37,6 @@ import ethanjones.cubes.networking.packets.PacketChat;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.client.ClientDebug;
 import ethanjones.cubes.side.common.Cubes;
-
-import static ethanjones.cubes.graphics.menu.Menu.skin;
 
 public class GuiRenderer implements Disposable {
 
@@ -97,7 +96,7 @@ public class GuiRenderer implements Disposable {
     KeyboardHelper.addKeyTypedListener(keyListener);
     debug = new ClientDebug.DebugLabel();
 
-    TextField.TextFieldStyle defaultStyle = skin.get("default", TextField.TextFieldStyle.class);
+    TextField.TextFieldStyle defaultStyle = Gui.skin.get("default", TextField.TextFieldStyle.class);
     TextField.TextFieldStyle chatStyle = new TextField.TextFieldStyle(defaultStyle);
     chatStyle.font = Fonts.Size2;
     chatStyle.background = new TextureRegionDrawable(Assets.getTextureRegion("core:hud/ChatBackground.png"));
@@ -120,25 +119,25 @@ public class GuiRenderer implements Disposable {
     chatLog.setAlignment(Align.bottomLeft, Align.left);
 
     if (Compatibility.get().isTouchScreen()) {
-      touchpad = new Touchpad(10f, skin);
+      touchpad = new Touchpad(10f, Gui.skin);
 
       Cubes.getClient().inputChain.cameraController.touchpad = touchpad;
 
-      debugButton = new TextButton(Localization.get("hud.debug"), skin, "tiny");
+      debugButton = new TextButton(Localization.get("hud.debug"), Gui.skin, "tiny");
       debugButton.addListener(new ChangeListener() {
         @Override
         public void changed(ChangeEvent event, Actor actor) {
           setDebugEnabled(!isDebugEnabled());
         }
       });
-      chatButton = new TextButton(Localization.get("hud.chat"), skin, "tiny");
+      chatButton = new TextButton(Localization.get("hud.chat"), Gui.skin, "tiny");
       chatButton.addListener(new ChangeListener() {
         @Override
         public void changed(ChangeEvent event, Actor actor) {
           setChatEnabled(!isChatEnabled());
         }
       });
-      blockSelectorButton = new TextButton(Localization.get("hud.block"), skin, "tiny");
+      blockSelectorButton = new TextButton(Localization.get("hud.block"), Gui.skin, "tiny");
       blockSelectorButton.addListener(new ChangeListener() {
         @Override
         public void changed(ChangeEvent event, Actor actor) {

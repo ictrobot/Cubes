@@ -8,8 +8,8 @@ import ethanjones.data.DataGroup;
 
 import ethanjones.cubes.core.settings.Setting;
 import ethanjones.cubes.core.settings.VisualSettingManager;
-import ethanjones.cubes.graphics.menu.Menu;
-import ethanjones.cubes.graphics.menus.SettingsMenu;
+import ethanjones.cubes.graphics.gui.Gui;
+import ethanjones.cubes.graphics.menu.SettingsMenu;
 
 public class StringSetting extends Setting {
 
@@ -29,7 +29,7 @@ public class StringSetting extends Setting {
 
   @Override
   public Actor getActor(VisualSettingManager visualSettingManager) {
-    final TextField textField = new TextField(s, Menu.skin);
+    final TextField textField = new TextField(s, Gui.skin);
     textField.addListener(new EventListener() {
       @Override
       public boolean handle(Event event) {

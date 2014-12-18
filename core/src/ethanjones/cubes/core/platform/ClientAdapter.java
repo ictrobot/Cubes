@@ -8,10 +8,11 @@ import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.core.system.Memory;
-import ethanjones.cubes.graphics.menu.Fonts;
-import ethanjones.cubes.graphics.menu.Menu;
-import ethanjones.cubes.graphics.menu.MenuManager;
-import ethanjones.cubes.graphics.menus.MainMenu;
+import ethanjones.cubes.graphics.gui.Fonts;
+import ethanjones.cubes.graphics.gui.Gui;
+import ethanjones.cubes.graphics.gui.Menu;
+import ethanjones.cubes.graphics.gui.MenuManager;
+import ethanjones.cubes.graphics.menu.MainMenu;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.common.Cubes;
@@ -109,6 +110,7 @@ public class ClientAdapter implements AdapterInterface {
   @Override
   public void resize(int width, int height) {
     try {
+      Gui.batch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
       Fonts.resize();
       if (menu != null) menu.resize(width, height);
       if (cubesClient != null) cubesClient.resize(width, height);

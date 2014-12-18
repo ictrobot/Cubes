@@ -9,14 +9,15 @@ import ethanjones.data.DataGroup;
 import ethanjones.cubes.core.settings.Setting;
 import ethanjones.cubes.core.settings.VisualSettingManager;
 import ethanjones.cubes.core.system.CubesException;
-import ethanjones.cubes.graphics.menu.Menu;
-import ethanjones.cubes.graphics.menus.SettingsMenu;
+import ethanjones.cubes.graphics.gui.Gui;
+import ethanjones.cubes.graphics.menu.SettingsMenu;
 
 public class IntegerSetting extends Setting {
 
   public static enum Type {
     TextField, Slider
   }
+
   private int i;
   private boolean hasRange;
   private Type type;
@@ -72,7 +73,7 @@ public class IntegerSetting extends Setting {
   }
 
   private TextField getTextField() {
-    final TextField textField = new TextField(i + "", Menu.skin);
+    final TextField textField = new TextField(i + "", Gui.skin);
     textField.addListener(new EventListener() {
       @Override
       public boolean handle(Event event) {
@@ -98,7 +99,7 @@ public class IntegerSetting extends Setting {
 
   public Slider getSlider() {
     if (!hasRange) throw new CubesException("Range required");
-    final Slider slider = new Slider(rangeStart, rangeEnd, 1f, false, Menu.skin);
+    final Slider slider = new Slider(rangeStart, rangeEnd, 1f, false, Gui.skin);
     slider.setValue(i);
     slider.addListener(new EventListener() {
       @Override

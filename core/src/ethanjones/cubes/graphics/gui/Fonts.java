@@ -1,4 +1,4 @@
-package ethanjones.cubes.graphics.menu;
+package ethanjones.cubes.graphics.gui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -79,6 +79,8 @@ public class Fonts {
   public static final StaticBitmapFont Size6 = new StaticBitmapFont(6);
   public static final StaticBitmapFont Size7 = new StaticBitmapFont(7);
   public static final StaticBitmapFont Size8 = new StaticBitmapFont(8);
+
+  public static final StaticBitmapFont Default = Size3;
 
   public static void resize() {
     Size1.updateScale();

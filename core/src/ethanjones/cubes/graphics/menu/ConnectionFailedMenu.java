@@ -1,4 +1,4 @@
-package ethanjones.cubes.graphics.menus;
+package ethanjones.cubes.graphics.menu;
 
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;

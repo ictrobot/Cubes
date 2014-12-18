@@ -1,4 +1,4 @@
-package ethanjones.cubes.graphics.menu;
+package ethanjones.cubes.graphics.gui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

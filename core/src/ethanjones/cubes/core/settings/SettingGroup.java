@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import ethanjones.cubes.core.localization.Localization;
-import ethanjones.cubes.graphics.menu.Menu;
+import ethanjones.cubes.graphics.gui.Gui;
 
 public class SettingGroup {
 
@@ -30,7 +30,7 @@ public class SettingGroup {
   }
 
   public Actor getActor(final VisualSettingManager visualSettingManager) {
-    final TextButton textButton = new TextButton(Localization.get("menu.settings.open_group"), Menu.skin);
+    final TextButton textButton = new TextButton(Localization.get("menu.settings.open_group"), Gui.skin);
     final SettingGroup settingGroup = this;
     textButton.addListener(new ChangeListener() {
       @Override
