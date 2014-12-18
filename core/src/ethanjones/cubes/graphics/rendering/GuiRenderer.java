@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -38,6 +37,8 @@ import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.client.ClientDebug;
 import ethanjones.cubes.side.common.Cubes;
 
+import static ethanjones.cubes.graphics.gui.Gui.batch;
+
 public class GuiRenderer implements Disposable {
 
   private class KeyListener extends KeyTypedAdapter {
@@ -65,7 +66,6 @@ public class GuiRenderer implements Disposable {
     }
   }
 
-  SpriteBatch spriteBatch;
   Stage stage;
 
   TextField chat;
@@ -88,8 +88,7 @@ public class GuiRenderer implements Disposable {
   private boolean blocksMenuEnabled;
 
   public GuiRenderer() {
-    spriteBatch = new SpriteBatch();
-    stage = new Stage(new ScreenViewport(), spriteBatch);
+    stage = new Stage(new ScreenViewport(), batch);
     Cubes.getClient().inputChain.hud = stage;
 
     keyListener = new KeyListener();
@@ -186,12 +185,12 @@ public class GuiRenderer implements Disposable {
     stage.act();
     stage.draw();
 
-    spriteBatch.begin();
+    batch.begin();
     float crosshairSize = Math.min(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) / 40;
-    spriteBatch.draw(crosshair, (Gdx.graphics.getWidth() / 2) - crosshairSize, (Gdx.graphics.getHeight() / 2) - crosshairSize, crosshairSize * 2, crosshairSize * 2);
+    batch.draw(crosshair, (Gdx.graphics.getWidth() / 2) - crosshairSize, (Gdx.graphics.getHeight() / 2) - crosshairSize, crosshairSize * 2, crosshairSize * 2);
     renderHotbar();
     if (isBlocksMenuEnabled()) renderBlockMenu();
-    spriteBatch.end();
+    batch.end();
   }
 
   public boolean isDebugEnabled() {
@@ -254,7 +253,7 @@ public class GuiRenderer implements Disposable {
   @Override
   public void dispose() {
     stage.dispose();
-    spriteBatch.dispose();
+    batch.dispose();
   }
 
   public boolean noCursorCatching() {
@@ -267,14 +266,14 @@ public class GuiRenderer implements Disposable {
     for (int i = 0; i < 10; i++) {
       int minX = startWidth + (i * hotbarSlot.getWidth());
       if (i == player.getSelectedSlot()) {
-        spriteBatch.draw(hotbarSelected, minX, 0);
+        batch.draw(hotbarSelected, minX, 0);
       } else {
-        spriteBatch.draw(hotbarSlot, minX, 0);
+        batch.draw(hotbarSlot, minX, 0);
       }
       Block block = player.getHotbar(i);
       if (block != null) {
         TextureRegion side = block.getTextureHandler(null).getSide(BlockFace.posX);
-        spriteBatch.draw(side, minX + 8, 8);
+        batch.draw(side, minX + 8, 8);
       }
     }
   }
@@ -287,11 +286,11 @@ public class GuiRenderer implements Disposable {
       int minY = startHeight + ((5 - y) * hotbarSlot.getHeight());
       for (int x = 0; x < 10; x++, i++) {
         int minX = startWidth + (x * hotbarSlot.getWidth());
-        spriteBatch.draw(hotbarSlot, minX, minY);
+        batch.draw(hotbarSlot, minX, minY);
         Block block = blocks[x][y];
         if (block == null) continue;
         TextureRegion side = block.getTextureHandler(null).getSide(BlockFace.posX);
-        spriteBatch.draw(side, minX + 8, minY + 8);
+        batch.draw(side, minX + 8, minY + 8);
       }
     }
   }
