@@ -5,30 +5,62 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 import ethanjones.cubes.graphics.gui.Fonts;
 import ethanjones.cubes.graphics.gui.Gui;
+import ethanjones.cubes.graphics.gui.element.event.GuiEvent;
+import ethanjones.cubes.graphics.gui.element.event.TypeGuiEventListener;
+import ethanjones.cubes.graphics.gui.element.event.mouse.MouseDownEvent;
+import ethanjones.cubes.graphics.gui.element.event.mouse.MouseUpEvent;
 
-public class GuiButton extends SimpleGuiElement {
+public class GuiButton extends ResizableGuiElement {
 
-  public static interface ButtonListener {
+  public static class ButtonDownEvent extends GuiEvent {
 
-    public void buttonDown();
+    public final GuiButton guiButton;
 
-    public void buttonUp();
+    public ButtonDownEvent(GuiButton guiButton) {
+      this.guiButton = guiButton;
+    }
+  }
 
+  public static class ButtonUpEvent extends GuiEvent {
+
+    public final GuiButton guiButton;
+
+    public ButtonUpEvent(GuiButton guiButton) {
+      this.guiButton = guiButton;
+    }
   }
 
   protected String text;
   protected BitmapFont font;
-  protected ButtonListener buttonListener;
   protected boolean down = false;
 
   public GuiButton(String text) {
-    this(text, null);
-  }
-
-  public GuiButton(String text, ButtonListener buttonListener) {
     this.text = text;
     this.font = Fonts.Default;
-    this.buttonListener = buttonListener;
+
+    final GuiButton guiButton = this;
+    addEventListener(new TypeGuiEventListener<MouseDownEvent>(MouseDownEvent.class) {
+      @Override
+      public boolean onTypeEvent(MouseDownEvent event) {
+        if (!down) {
+          fireEvent(new ButtonDownEvent(guiButton));
+          down = true;
+          return true;
+        }
+        return false;
+      }
+    });
+    addEventListener(new TypeGuiEventListener<MouseUpEvent>(MouseUpEvent.class) {
+      @Override
+      public boolean onTypeEvent(MouseUpEvent event) {
+        if (down) {
+          fireEvent(new ButtonUpEvent(guiButton));
+          down = false;
+          return true;
+        }
+        return false;
+      }
+    });
   }
 
   @Override
@@ -41,42 +73,12 @@ public class GuiButton extends SimpleGuiElement {
     Fonts.draw(text, font, x.get(), y.get(), width.get(), height.get());
   }
 
-  public ButtonListener getButtonListener() {
-    return buttonListener;
-  }
-
-  public void setButtonListener(ButtonListener buttonListener) {
-    this.buttonListener = buttonListener;
-  }
-
   public String getText() {
     return text;
   }
 
   public void setText(String text) {
     this.text = text;
-  }
-
-  @Override
-  public boolean onButtonDown(int x, int y, int button) {
-    if (x >= this.x.get() && x <= (this.x.get() + this.width.get())) {
-      if (y >= this.y.get() && y <= (this.y.get() + this.height.get())) {
-        if (buttonListener != null) buttonListener.buttonDown();
-        down = true;
-        return true;
-      }
-    }
-    return false;
-  }
-
-  @Override
-  public boolean onButtonUp(int x, int y, int button) {
-    if (down) {
-      if (buttonListener != null) buttonListener.buttonUp();
-      down = false;
-      return true;
-    }
-    return false;
   }
 
   public BitmapFont getFont() {

@@ -13,44 +13,30 @@ public abstract class DynamicValue {
     }
   };
 
+  private static DynamicValue gdxWidth = new DynamicValue() {
+    @Override
+    public int get() {
+      return Gdx.graphics.getWidth();
+    }
+  };
+
+  private static DynamicValue gdxHeight = new DynamicValue() {
+    @Override
+    public int get() {
+      return Gdx.graphics.getHeight();
+    }
+  };
+
   public static DynamicValue zero() {
     return zero;
   }
 
-  public static DynamicValue divideWidth(final int d) {
-    return new DynamicValue() {
-      @Override
-      public int get() {
-        return Gdx.graphics.getWidth() / d;
-      }
-    };
+  public static DynamicValue gdxWidth() {
+    return gdxWidth;
   }
 
-  public static DynamicValue divideHeight(final int d) {
-    return new DynamicValue() {
-      @Override
-      public int get() {
-        return Gdx.graphics.getHeight() / d;
-      }
-    };
-  }
-
-  public static DynamicValue divideMultiplyWidth(final int d, final int m) {
-    return new DynamicValue() {
-      @Override
-      public int get() {
-        return (Gdx.graphics.getWidth() / d) * m;
-      }
-    };
-  }
-
-  public static DynamicValue divideMultiplyHeight(final int d, final int m) {
-    return new DynamicValue() {
-      @Override
-      public int get() {
-        return (Gdx.graphics.getHeight() / d) * m;
-      }
-    };
+  public static DynamicValue gdxHeight() {
+    return gdxHeight;
   }
 
   public static DynamicValue value(final int i) {
@@ -58,6 +44,42 @@ public abstract class DynamicValue {
       @Override
       public int get() {
         return i;
+      }
+    };
+  }
+
+  public static DynamicValue add(final DynamicValue value1, final DynamicValue value2) {
+    return new DynamicValue() {
+      @Override
+      public int get() {
+        return value1.get() + value2.get();
+      }
+    };
+  }
+
+  public static DynamicValue minus(final DynamicValue value1, final DynamicValue value2) {
+    return new DynamicValue() {
+      @Override
+      public int get() {
+        return value1.get() - value2.get();
+      }
+    };
+  }
+
+  public static DynamicValue divide(final DynamicValue value1, final DynamicValue value2) {
+    return new DynamicValue() {
+      @Override
+      public int get() {
+        return value1.get() / value2.get();
+      }
+    };
+  }
+
+  public static DynamicValue multiply(final DynamicValue value1, final DynamicValue value2) {
+    return new DynamicValue() {
+      @Override
+      public int get() {
+        return value1.get() * value2.get();
       }
     };
   }

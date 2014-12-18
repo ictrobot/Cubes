@@ -17,6 +17,8 @@ import ethanjones.cubes.side.server.command.CommandSender;
 
 public class Player extends LivingEntity implements CommandSender {
 
+  public static final int HOTBAR_SIZE = 10;
+
   public final String username;
   public final ClientIdentifier clientIdentifier;
 
@@ -27,7 +29,7 @@ public class Player extends LivingEntity implements CommandSender {
     super(20);
     this.username = username;
     this.clientIdentifier = clientIdentifier;
-    this.hotbar = new Block[10];
+    this.hotbar = new Block[HOTBAR_SIZE];
     this.hotbar[0] = Blocks.grass;
   }
 
@@ -35,7 +37,7 @@ public class Player extends LivingEntity implements CommandSender {
     super(camera.position, camera.direction, 20);
     this.username = Settings.getStringSettingValue(Settings.USERNAME);
     this.clientIdentifier = null;
-    this.hotbar = new Block[10];
+    this.hotbar = new Block[HOTBAR_SIZE];
     this.hotbar[0] = Blocks.grass;
   }
 
@@ -67,7 +69,7 @@ public class Player extends LivingEntity implements CommandSender {
   }
 
   public void setHotbarNoUpdate(Block[] blocks, int i) {
-    for (int x = 0; x < 10; x++) {
+    for (int x = 0; x < HOTBAR_SIZE; x++) {
       this.hotbar[x] = blocks[x];
     }
     selectedSlot = i;

@@ -5,22 +5,31 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 import ethanjones.cubes.graphics.gui.Fonts;
 
-public class GuiString extends TypeGuiElement<String> {
+public class GuiString extends ResizableGuiElement {
 
-  protected BitmapFont font;
+  private String string;
+  private BitmapFont font;
 
-  public GuiString(String s) {
-    this(s, Fonts.Default);
+  public GuiString(String string) {
+    this(string, Fonts.Default);
   }
 
-  public GuiString(String s, BitmapFont font) {
-    super(s);
+  public GuiString(String string, BitmapFont font) {
+    this.string = string;
     this.font = font;
   }
 
   @Override
   public void render(Batch batch) {
-    Fonts.draw(t, font, x.get(), y.get(), width.get(), height.get());
+    Fonts.draw(string, font, x.get(), y.get(), width.get(), height.get());
+  }
+
+  public String getString() {
+    return string;
+  }
+
+  public void setString(String string) {
+    this.string = string;
   }
 
   public BitmapFont getFont() {
