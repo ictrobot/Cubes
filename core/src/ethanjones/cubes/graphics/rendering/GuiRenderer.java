@@ -253,7 +253,6 @@ public class GuiRenderer implements Disposable {
   @Override
   public void dispose() {
     stage.dispose();
-    batch.dispose();
   }
 
   public boolean noCursorCatching() {
