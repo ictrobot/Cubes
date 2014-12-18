@@ -2,16 +2,12 @@ package ethanjones.cubes.graphics.gui.element;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 
 import ethanjones.cubes.graphics.gui.Fonts;
 
 public class GuiString extends TypeGuiElement<String> {
 
   protected BitmapFont font;
-  private boolean multiline = false;
-  private int align = Align.left;
 
   public GuiString(String s) {
     this(s, Fonts.Default);
@@ -24,36 +20,14 @@ public class GuiString extends TypeGuiElement<String> {
 
   @Override
   public void render(Batch batch) {
-    if (multiline) {
-      font.drawMultiLine(batch, t, x.get(), y.get(), 0, getHAlignment());
-    } else {
-      font.draw(batch, t, x.get(), y.get());
-    }
+    Fonts.draw(t, font, x.get(), y.get(), width.get(), height.get());
   }
 
-  public boolean isMultiline() {
-    return multiline;
+  public BitmapFont getFont() {
+    return font;
   }
 
-  public void setMultiline(boolean multiline) {
-    this.multiline = multiline;
-  }
-
-  public int getAlign() {
-    return align;
-  }
-
-  public HAlignment getHAlignment() {
-    if ((align & Align.left) != 0) {
-      return HAlignment.LEFT;
-    } else if ((align & Align.right) != 0) {
-      return HAlignment.RIGHT;
-    } else {
-      return HAlignment.CENTER;
-    }
-  }
-
-  public void setAlign(int align) {
-    this.align = align;
+  public void setFont(BitmapFont font) {
+    this.font = font;
   }
 }

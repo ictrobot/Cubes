@@ -3,6 +3,7 @@ package ethanjones.cubes.graphics.gui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeBitmapFontData;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
@@ -91,5 +92,18 @@ public class Fonts {
     Size6.updateScale();
     Size7.updateScale();
     Size8.updateScale();
+  }
+
+  public static void draw(String string, BitmapFont font, int x, int y, int width, int height) {
+    TextBounds bounds = font.getBounds(string);
+    int midX = x + (width / 2);
+    int midY = y + (height / 2);
+    float drawX = midX - (bounds.width / 2);
+    float drawY = midY + (bounds.height / 2);
+    if (string.contains("\n")) {
+      font.drawMultiLine(Gui.batch, string, drawX, drawY);
+    } else {
+      font.draw(Gui.batch, string, drawX, drawY);
+    }
   }
 }

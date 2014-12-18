@@ -38,7 +38,7 @@ public class GuiButton extends SimpleGuiElement {
     } else {
       Gui.buttonUp.draw(batch, x.get(), y.get(), width.get(), height.get());
     }
-    font.draw(batch, text, x.get(), y.get());
+    Fonts.draw(text, font, x.get(), y.get(), width.get(), height.get());
   }
 
   public ButtonListener getButtonListener() {
