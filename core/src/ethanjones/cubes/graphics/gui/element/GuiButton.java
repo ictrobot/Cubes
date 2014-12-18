@@ -61,7 +61,7 @@ public class GuiButton extends SimpleGuiElement {
   public boolean onButtonDown(int x, int y, int button) {
     if (x >= this.x.get() && x <= (this.x.get() + this.width.get())) {
       if (y >= this.y.get() && y <= (this.y.get() + this.height.get())) {
-        buttonListener.buttonDown();
+        if (buttonListener != null) buttonListener.buttonDown();
         down = true;
         return true;
       }
@@ -71,15 +71,11 @@ public class GuiButton extends SimpleGuiElement {
 
   @Override
   public boolean onButtonUp(int x, int y, int button) {
-    //if (x >= this.x && x <= (this.x + this.width)) {
-    //  if (y >= this.y && y <= (this.y + this.height)) {
     if (down) {
-      buttonListener.buttonUp();
+      if (buttonListener != null) buttonListener.buttonUp();
       down = false;
       return true;
     }
-    //  }
-    //}
     return false;
   }
 
