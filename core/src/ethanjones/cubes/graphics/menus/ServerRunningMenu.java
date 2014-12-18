@@ -1,4 +1,4 @@
-package ethanjones.cubes.graphics.menu;
+package ethanjones.cubes.graphics.menus;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Event;
@@ -10,6 +10,7 @@ import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.server.ServerNetworkingParameter;
+import ethanjones.cubes.side.server.integrated.IntegratedServer;
 import ethanjones.cubes.side.server.integrated.ServerOnlyServer;
 
 public class ServerRunningMenu extends InfoMenu {

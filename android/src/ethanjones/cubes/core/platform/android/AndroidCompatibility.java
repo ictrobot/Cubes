@@ -12,8 +12,8 @@ import ethanjones.cubes.core.mod.ModLoader;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.system.Branding;
-import ethanjones.cubes.graphics.gui.Menu;
-import ethanjones.cubes.graphics.gui.MenuManager;
+import ethanjones.cubes.graphics.menu.Menu;
+import ethanjones.cubes.graphics.menu.MenuManager;
 import ethanjones.cubes.side.common.Cubes;
 
 public class AndroidCompatibility extends Compatibility {

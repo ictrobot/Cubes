@@ -2,7 +2,7 @@ package ethanjones.cubes.core.platform;
 
 import com.badlogic.gdx.ApplicationListener;
 
-import ethanjones.cubes.graphics.gui.Menu;
+import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.server.CubesServer;
 

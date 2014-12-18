@@ -1,25 +1,28 @@
-package ethanjones.cubes.graphics.menu;
+package ethanjones.cubes.graphics.menus;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import java.util.ArrayList;
 import java.util.Map;
 
-import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.platform.Adapter;
+import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.settings.SettingGroup;
 import ethanjones.cubes.core.settings.Settings;
-import ethanjones.cubes.core.settings.SettingsSaveEvent;
 import ethanjones.cubes.core.settings.VisualSettingManager;
 import ethanjones.cubes.core.system.CubesException;
-import ethanjones.cubes.graphics.gui.Gui;
-import ethanjones.cubes.graphics.gui.MenuTools;
-import ethanjones.cubes.graphics.gui.StageMenu;
+import ethanjones.cubes.graphics.menu.Menu;
+import ethanjones.cubes.graphics.menu.MenuTools;
 
-public class SettingsMenu extends StageMenu implements VisualSettingManager {
+public class SettingsMenu extends Menu implements VisualSettingManager {
+
+  public static class SaveEvent extends Event {
+
+  }
 
   private static class ListObject {
 
@@ -32,7 +35,6 @@ public class SettingsMenu extends StageMenu implements VisualSettingManager {
       if (!(actor instanceof Layout)) throw new CubesException("Settings actor must implement Layout");
     }
   }
-
   static final Value CELL_PADDING = new Value() {
     @Override
     public float get(Actor context) {
@@ -52,7 +54,7 @@ public class SettingsMenu extends StageMenu implements VisualSettingManager {
       return (Gdx.graphics.getHeight() / 10) - (CELL_PADDING.get(context) * 2);
     }
   };
-
+  static SaveEvent saveEvent = new SaveEvent();
   private final SettingGroup settingGroup;
   Label title;
   ScrollPane scrollPane;
@@ -67,12 +69,12 @@ public class SettingsMenu extends StageMenu implements VisualSettingManager {
   public SettingsMenu(SettingGroup settingGroup) {
     this.settingGroup = settingGroup;
 
-    title = new Label(Localization.get("menu.settings.title"), Gui.skin.get("title", Label.LabelStyle.class));
+    title = new Label(Localization.get("menu.settings.title"), skin.get("title", Label.LabelStyle.class));
 
-    table = new Table(Gui.skin);
+    table = new Table(skin);
 
     for (Map.Entry<String, SettingGroup> entry : settingGroup.getChildGroups().entrySet()) {
-      Label name = new Label(Settings.getLocalisedSettingGroupName(entry.getKey()), Gui.skin);
+      Label name = new Label(Settings.getLocalisedSettingGroupName(entry.getKey()), skin);
       name.setAlignment(Align.left, Align.left);
 
       Actor actor = entry.getValue().getActor(this);
@@ -81,7 +83,7 @@ public class SettingsMenu extends StageMenu implements VisualSettingManager {
     }
 
     for (String str : settingGroup.getChildren()) {
-      Label name = new Label(Settings.getLocalisedSettingGroupName(str), Gui.skin);
+      Label name = new Label(Settings.getLocalisedSettingGroupName(str), skin);
       name.setAlignment(Align.left, Align.left);
 
       Actor actor = Settings.getSetting(str).getActor(this);
@@ -89,14 +91,10 @@ public class SettingsMenu extends StageMenu implements VisualSettingManager {
       listObjects.add(new ListObject(name, actor));
     }
 
-    scrollPane = new ScrollPane(table, Gui.skin);
+    scrollPane = new ScrollPane(table, skin);
     scrollPane.setScrollingDisabled(true, false);
 
     back = MenuTools.getBackButton(this);
-
-    stage.addActor(title);
-    stage.addActor(scrollPane);
-    stage.addActor(back);
   }
 
   @Override
@@ -125,9 +123,17 @@ public class SettingsMenu extends StageMenu implements VisualSettingManager {
   public void hide() {
     super.hide();
     for (ListObject listObject : listObjects) {
-      listObject.actor.fire(new SettingsSaveEvent());
+      saveEvent.reset();
+      listObject.actor.fire(saveEvent);
     }
     Settings.write();
+  }
+
+  @Override
+  public void addActors() {
+    stage.addActor(title);
+    stage.addActor(scrollPane);
+    stage.addActor(back);
   }
 
   @Override

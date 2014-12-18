@@ -1,4 +1,4 @@
-package ethanjones.cubes.graphics.menu;
+package ethanjones.cubes.graphics.menus;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
@@ -7,12 +7,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 
-import ethanjones.cubes.graphics.gui.Fonts;
-import ethanjones.cubes.graphics.gui.Gui;
-import ethanjones.cubes.graphics.gui.MenuTools;
-import ethanjones.cubes.graphics.gui.StageMenu;
+import ethanjones.cubes.graphics.menu.Fonts;
+import ethanjones.cubes.graphics.menu.Menu;
+import ethanjones.cubes.graphics.menu.MenuTools;
 
-public class InfoMenu extends StageMenu {
+public class InfoMenu extends Menu {
 
   protected Label text;
   protected TextButton button;
@@ -21,19 +20,14 @@ public class InfoMenu extends StageMenu {
     super();
     text = new Label(labelText, new LabelStyle(Fonts.Size2, Color.WHITE));
     text.setAlignment(Align.center, Align.center);
-    button = new TextButton(buttonText, Gui.skin);
-    stage.addActor(button);
+    button = new TextButton(buttonText, skin);
   }
 
   public InfoMenu(String labelText, boolean back) {
     super();
     text = new Label(labelText, new LabelStyle(Fonts.Size2, Color.WHITE));
     text.setAlignment(Align.center, Align.center);
-    stage.addActor(text);
-    if (back) {
-      button = MenuTools.getBackButton(this);
-      stage.addActor(button);
-    }
+    if (back) button = MenuTools.getBackButton(this);
   }
 
   @Override
@@ -48,6 +42,12 @@ public class InfoMenu extends StageMenu {
       text.layout();
       text.setBounds(0, 0, width, height);
     }
+  }
+
+  @Override
+  public void addActors() {
+    stage.addActor(text);
+    if (button != null) stage.addActor(button);
   }
 
   public boolean addButtonListener(EventListener listener) {

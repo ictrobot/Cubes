@@ -1,4 +1,4 @@
-package ethanjones.cubes.graphics.menu;
+package ethanjones.cubes.graphics.menus;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
 

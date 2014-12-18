@@ -1,4 +1,4 @@
-package ethanjones.cubes.graphics.gui;
+package ethanjones.cubes.graphics.menu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -7,8 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
-import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.platform.Adapter;
+import ethanjones.cubes.core.localization.Localization;
 
 public class MenuTools {
 
@@ -98,7 +98,7 @@ public class MenuTools {
   }
 
   public static TextButton getBackButton(final Menu menu) {
-    TextButton textButton = new TextButton(Localization.get("menu.general.back"), Gui.skin);
+    TextButton textButton = new TextButton(Localization.get("menu.general.back"), Menu.skin);
     textButton.addListener(new ChangeListener() {
       @Override
       public void changed(ChangeEvent event, Actor actor) {

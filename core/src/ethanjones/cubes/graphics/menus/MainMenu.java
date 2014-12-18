@@ -1,4 +1,4 @@
-package ethanjones.cubes.graphics.menu;
+package ethanjones.cubes.graphics.menus;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -15,10 +15,12 @@ import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.graphics.assets.Assets;
-import ethanjones.cubes.graphics.gui.Gui;
-import ethanjones.cubes.graphics.gui.StageMenu;
+import ethanjones.cubes.graphics.menu.Menu;
+import ethanjones.cubes.networking.client.ClientNetworking;
+import ethanjones.cubes.networking.client.ClientNetworkingParameter;
+import ethanjones.cubes.networking.client.PingResult;
 
-public class MainMenu extends StageMenu {
+public class MainMenu extends Menu {
 
   private static Value cellHeight = new Value() {
     @Override
@@ -45,35 +47,35 @@ public class MainMenu extends StageMenu {
     logo = new Image(new TextureRegionDrawable(Assets.getTextureRegion("core:logo.png")), Scaling.fillY, Align.center);
     buttons = new Table();
     buttons.defaults().height(cellHeight).width(cellWidth).pad(5).fillX().fillY();
-    buttons.add(singleplayer = new TextButton(Localization.get("menu.main.singleplayer"), Gui.skin)).row();
+    buttons.add(singleplayer = new TextButton(Localization.get("menu.main.singleplayer"), skin)).row();
     singleplayer.addListener(new ChangeListener() {
       @Override
       public void changed(ChangeEvent event, Actor actor) {
         Adapter.setMenu(new SingleplayerLoadingMenu());
       }
     });
-    buttons.add(multiplayer = new TextButton(Localization.get("menu.main.multiplayer"), Gui.skin)).row();
+    buttons.add(multiplayer = new TextButton(Localization.get("menu.main.multiplayer"), skin)).row();
     multiplayer.addListener(new ChangeListener() {
       @Override
       public void changed(ChangeEvent event, Actor actor) {
         Adapter.setMenu(new MultiplayerConnectMenu());
       }
     });
-    buttons.add(serveronly = new TextButton(Localization.get("menu.main.serveronly"), Gui.skin)).row();
+    buttons.add(serveronly = new TextButton(Localization.get("menu.main.serveronly"), skin)).row();
     serveronly.addListener(new ChangeListener() {
       @Override
       public void changed(ChangeEvent event, Actor actor) {
         Adapter.setMenu(new ServerSetupMenu());
       }
     });
-    buttons.add(settings = new TextButton(Localization.get("menu.main.settings"), Gui.skin)).row();
+    buttons.add(settings = new TextButton(Localization.get("menu.main.settings"), skin)).row();
     settings.addListener(new ChangeListener() {
       @Override
       public void changed(ChangeEvent event, Actor actor) {
         Adapter.setMenu(new SettingsMenu());
       }
     });
-    buttons.add(quit = new TextButton(Localization.get("menu.main.quit"), Gui.skin)).row();
+    buttons.add(quit = new TextButton(Localization.get("menu.main.quit"), skin)).row();
     quit.addListener(new ChangeListener() {
       @Override
       public void changed(ChangeEvent event, Actor actor) {
@@ -81,9 +83,6 @@ public class MainMenu extends StageMenu {
         Adapter.quit();
       }
     });
-
-    stage.addActor(logo);
-    stage.addActor(buttons);
   }
 
   @Override
@@ -93,5 +92,11 @@ public class MainMenu extends StageMenu {
     buttons.setBounds(0, 0, width, height / 6 * 5);
     buttons.align(Align.top);
     buttons.layout();
+  }
+
+  @Override
+  public void addActors() {
+    stage.addActor(logo);
+    stage.addActor(buttons);
   }
 }

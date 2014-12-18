@@ -3,7 +3,7 @@ package ethanjones.cubes.core.platform;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.core.system.Memory;
-import ethanjones.cubes.graphics.gui.Menu;
+import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.server.ServerNetworkingParameter;
 import ethanjones.cubes.side.Side;

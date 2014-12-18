@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
 import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.core.system.Memory;
-import ethanjones.cubes.graphics.gui.Fonts;
+import ethanjones.cubes.graphics.menu.Fonts;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.CoordinateConverter;
 
