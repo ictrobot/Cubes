@@ -1,4 +1,4 @@
-package ethanjones.cubes.graphics.rendering;
+package ethanjones.cubes.graphics.hud;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -39,7 +39,7 @@ import ethanjones.cubes.side.common.Cubes;
 
 import static ethanjones.cubes.graphics.gui.Gui.batch;
 
-public class GuiRenderer implements Disposable {
+public class HudRenderer implements Disposable {
 
   private class KeyListener extends KeyTypedAdapter {
 
@@ -87,7 +87,7 @@ public class GuiRenderer implements Disposable {
   private boolean debugEnabled;
   private boolean blocksMenuEnabled;
 
-  public GuiRenderer() {
+  public HudRenderer() {
     stage = new Stage(new ScreenViewport(), batch);
     Cubes.getClient().inputChain.hud = stage;
 

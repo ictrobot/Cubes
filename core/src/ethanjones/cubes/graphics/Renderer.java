@@ -1,37 +1,40 @@
-package ethanjones.cubes.graphics.rendering;
+package ethanjones.cubes.graphics;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
 
+import ethanjones.cubes.graphics.hud.HudRenderer;
+import ethanjones.cubes.graphics.world.WorldRenderer;
+
 public class Renderer {
 
   public WorldRenderer worldRenderer;
-  public GuiRenderer guiRenderer;
+  public HudRenderer hudRenderer;
 
   public Renderer() {
     worldRenderer = new WorldRenderer();
-    guiRenderer = new GuiRenderer();
+    hudRenderer = new HudRenderer();
   }
 
   public void render() {
     Gdx.gl20.glDisable(GL20.GL_BLEND);
 
     worldRenderer.render();
-    guiRenderer.render();
+    hudRenderer.render();
   }
 
   public void dispose() {
     GLProfiler.disable();
     worldRenderer.dispose();
-    guiRenderer.dispose();
+    hudRenderer.dispose();
   }
 
   public void resize() {
-    guiRenderer.resize();
+    hudRenderer.resize();
   }
 
   public boolean noCursorCatching() {
-    return guiRenderer.noCursorCatching();
+    return hudRenderer.noCursorCatching();
   }
 }

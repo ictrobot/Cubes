@@ -11,7 +11,7 @@ import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.entity.living.player.Player;
-import ethanjones.cubes.graphics.rendering.Renderer;
+import ethanjones.cubes.graphics.Renderer;
 import ethanjones.cubes.input.InputChain;
 import ethanjones.cubes.input.keyboard.KeyboardHelper;
 import ethanjones.cubes.networking.NetworkingManager;
@@ -56,7 +56,7 @@ public class CubesClient extends Cubes implements ApplicationListener {
     }
     super.render();
     inputChain.beforeRender();
-    if (renderer.guiRenderer.isDebugEnabled()) ClientDebug.update();
+    if (renderer.hudRenderer.isDebugEnabled()) ClientDebug.update();
     renderer.render();
     inputChain.afterRender();
     player.update();

@@ -1,4 +1,4 @@
-package ethanjones.cubes.graphics.rendering;
+package ethanjones.cubes.graphics.world;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
