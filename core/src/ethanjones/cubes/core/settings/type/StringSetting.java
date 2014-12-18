@@ -8,8 +8,8 @@ import ethanjones.data.DataGroup;
 
 import ethanjones.cubes.core.settings.Setting;
 import ethanjones.cubes.core.settings.VisualSettingManager;
+import ethanjones.cubes.core.settings.SettingsSaveEvent;
 import ethanjones.cubes.graphics.gui.Gui;
-import ethanjones.cubes.graphics.menu.SettingsMenu;
 
 public class StringSetting extends Setting {
 
@@ -33,7 +33,7 @@ public class StringSetting extends Setting {
     textField.addListener(new EventListener() {
       @Override
       public boolean handle(Event event) {
-        if (!(event instanceof SettingsMenu.SaveEvent)) return false;
+        if (!(event instanceof SettingsSaveEvent)) return false;
         set(textField.getText());
         return true;
       }

@@ -2,7 +2,6 @@ package ethanjones.cubes.graphics.menu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
@@ -13,6 +12,7 @@ import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.settings.SettingGroup;
 import ethanjones.cubes.core.settings.Settings;
+import ethanjones.cubes.core.settings.SettingsSaveEvent;
 import ethanjones.cubes.core.settings.VisualSettingManager;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.graphics.gui.Gui;
@@ -20,10 +20,6 @@ import ethanjones.cubes.graphics.gui.MenuTools;
 import ethanjones.cubes.graphics.gui.StageMenu;
 
 public class SettingsMenu extends StageMenu implements VisualSettingManager {
-
-  public static class SaveEvent extends Event {
-
-  }
 
   private static class ListObject {
 
@@ -56,7 +52,6 @@ public class SettingsMenu extends StageMenu implements VisualSettingManager {
       return (Gdx.graphics.getHeight() / 10) - (CELL_PADDING.get(context) * 2);
     }
   };
-  static SaveEvent saveEvent = new SaveEvent();
 
   private final SettingGroup settingGroup;
   Label title;
@@ -130,8 +125,7 @@ public class SettingsMenu extends StageMenu implements VisualSettingManager {
   public void hide() {
     super.hide();
     for (ListObject listObject : listObjects) {
-      saveEvent.reset();
-      listObject.actor.fire(saveEvent);
+      listObject.actor.fire(new SettingsSaveEvent());
     }
     Settings.write();
   }

@@ -7,10 +7,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import ethanjones.data.DataGroup;
 
 import ethanjones.cubes.core.settings.Setting;
+import ethanjones.cubes.core.settings.SettingsSaveEvent;
 import ethanjones.cubes.core.settings.VisualSettingManager;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.graphics.gui.Gui;
-import ethanjones.cubes.graphics.menu.SettingsMenu;
 
 public class IntegerSetting extends Setting {
 
@@ -77,7 +77,7 @@ public class IntegerSetting extends Setting {
     textField.addListener(new EventListener() {
       @Override
       public boolean handle(Event event) {
-        if (!(event instanceof SettingsMenu.SaveEvent)) return false;
+        if (!(event instanceof SettingsSaveEvent)) return false;
         try {
           int n = Integer.parseInt(textField.getText());
           if (hasRange && (n < rangeStart || n > rangeEnd)) {
@@ -104,7 +104,7 @@ public class IntegerSetting extends Setting {
     slider.addListener(new EventListener() {
       @Override
       public boolean handle(Event event) {
-        if (!(event instanceof SettingsMenu.SaveEvent)) return false;
+        if (!(event instanceof SettingsSaveEvent)) return false;
         int n = (int) slider.getValue();
         if (n < rangeStart || n > rangeEnd) {
           slider.setValue(i);
