@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.13+'
+        classpath 'com.android.tools.build:gradle:1.0.0'
         classpath 'com.jakewharton.sdkmanager:gradle-plugin:0.12.0'
     }
 }
@@ -50,7 +50,7 @@ allprojects {
 
     ext {
         appName = 'Cubes'
-        gdxVersion = '1.5.0'
+        gdxVersion = '1.5.1-SNAPSHOT'
         androidBuildToolsVersion = '21.1.0'
         androidSdkVersion = 21
         dataVersion = '1.0'
