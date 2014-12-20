@@ -57,7 +57,7 @@ public class BlockManager implements DataParser<DataGroup> {
 
   public void generateDefault() {
     if (integerToBlock.size() > 0) return;
-    int i = 0;
+    int i = 1;
     for (Block block : blockList) {
       integerToBlock.put(i, block);
       blockToInteger.put(block, i);
