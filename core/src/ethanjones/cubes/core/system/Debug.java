@@ -49,11 +49,19 @@ public class Debug {
     if (FileLogWriter.file != null) Log.debug("Log file:           " + FileLogWriter.file.getAbsolutePath());
   }
 
+  public static synchronized void lowMemory() {
+    Log.warning("Low Memory! " + Compatibility.get().getFreeMemory() + "MB Free!");
+  }
+
+  public static synchronized void criticalMemory() {
+    crash(new OutOfMemoryError("Detected"));
+  }
+
   public static synchronized void crash(Throwable throwable) {
     if (crashed.get()) System.exit(2);
     try {
       if (throwable instanceof OutOfMemoryError) {
-        Log.error("Out of Memory CRASH!");
+        Log.error("Out of Memory CRASH");
       } else {
         Log.error("CRASH");
       }

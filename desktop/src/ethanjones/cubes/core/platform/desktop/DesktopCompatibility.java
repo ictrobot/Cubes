@@ -12,6 +12,11 @@ import ethanjones.cubes.graphics.assets.AssetFinder;
 
 public abstract class DesktopCompatibility extends Compatibility {
 
+  protected static void setup() {
+    DesktopSecurityManager.setup();
+    DesktopMemoryChecker.setup();
+  }
+
   public final OS os;
   private final String[] arg;
   protected DesktopModLoader modLoader;

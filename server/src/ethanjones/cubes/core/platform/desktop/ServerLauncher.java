@@ -13,7 +13,7 @@ public class ServerLauncher implements DesktopLauncher {
   }
 
   private void start() {
-    DesktopSecurityManager.setup();
+    DesktopCompatibility.setup();
     new ServerCompatibility(this, arg).startCubes();
   }
 }
