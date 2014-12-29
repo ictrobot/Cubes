@@ -42,8 +42,6 @@ public class Debug {
     Log.debug("OS Name:            " + System.getProperty("os.name"));
     Log.debug("OS Architecture:    " + System.getProperty("os.arch"));
     Log.debug("OS Version:         " + System.getProperty("os.version"));
-    Memory.update();
-    Log.debug("Maximum Memory:     " + Memory.max + Memory.unit);
     Log.debug("libGDX version      " + Version.VERSION);
     Log.debug("User Home:          " + System.getProperty("user.home"));
     Log.debug("Working Directory:  " + System.getProperty("user.dir"));

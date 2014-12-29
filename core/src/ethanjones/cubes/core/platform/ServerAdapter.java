@@ -2,7 +2,6 @@ package ethanjones.cubes.core.platform;
 
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.Debug;
-import ethanjones.cubes.core.system.Memory;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.server.ServerNetworkingParameter;
@@ -42,7 +41,6 @@ public class ServerAdapter implements AdapterInterface {
   public void render() {
     try {
       Compatibility.get().render();
-      Memory.update();
       cubesServer.render();
     } catch (Exception e) {
       Debug.crash(e);

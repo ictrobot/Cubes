@@ -5,8 +5,8 @@ import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
+import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.system.Branding;
-import ethanjones.cubes.core.system.Memory;
 import ethanjones.cubes.graphics.menu.Fonts;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.CoordinateConverter;
@@ -48,7 +48,7 @@ public class ClientDebug {
       str = "HASH: " + str + lineSeparator;
     }
 
-    debugString = Branding.DEBUG + lineSeparator + str + "FPS:" + fps.current + " AFPS:" + fps.average + " MS:" + String.format("%01d", loop.current) + " AMS:" + String.format("%01d", loop.average) + lineSeparator + "RAM T:" + Memory.max + "MB F:" + Memory.totalFree + "MB U:" + Memory.used + "MB" + lineSeparator + lineSeparator + "P X:" + String.format("%.2f", p.x) + " Y:" + String.format("%.2f", p.y) + " Z:" + String.format("%.2f", p.z) + lineSeparator + "A X:" + CoordinateConverter.area(p.x) + " Y:" + CoordinateConverter.area(p.y) + " Z:" + CoordinateConverter.area(p.z) + lineSeparator + "D X:" + String.format("%02f", Cubes.getClient().player.angle.x) + " Y:" + String.format("%02f", Cubes.getClient().player.angle.y) + " Z:" + String.format("%02f", Cubes.getClient().player.angle.z) + lineSeparator + lineSeparator + "C:" + GLProfiler.calls + lineSeparator + "DC:" + GLProfiler.drawCalls + lineSeparator + "S:" + GLProfiler.shaderSwitches + lineSeparator + "T:" + GLProfiler.textureBindings + lineSeparator + "V:" + GLProfiler.vertexCount.latest + lineSeparator;
+    debugString = Branding.DEBUG + lineSeparator + str + "FPS:" + fps.current + " AFPS:" + fps.average + " MS:" + String.format("%01d", loop.current) + " AMS:" + String.format("%01d", loop.average) + lineSeparator + "RAM F:" + Compatibility.get().getFreeMemory() + "MB" + lineSeparator + lineSeparator + "P X:" + String.format("%.2f", p.x) + " Y:" + String.format("%.2f", p.y) + " Z:" + String.format("%.2f", p.z) + lineSeparator + "A X:" + CoordinateConverter.area(p.x) + " Y:" + CoordinateConverter.area(p.y) + " Z:" + CoordinateConverter.area(p.z) + lineSeparator + "D X:" + String.format("%02f", Cubes.getClient().player.angle.x) + " Y:" + String.format("%02f", Cubes.getClient().player.angle.y) + " Z:" + String.format("%02f", Cubes.getClient().player.angle.z) + lineSeparator + lineSeparator + "C:" + GLProfiler.calls + lineSeparator + "DC:" + GLProfiler.drawCalls + lineSeparator + "S:" + GLProfiler.shaderSwitches + lineSeparator + "T:" + GLProfiler.textureBindings + lineSeparator + "V:" + GLProfiler.vertexCount.latest + lineSeparator;
 
     GLProfiler.calls = 0;
     GLProfiler.drawCalls = 0;

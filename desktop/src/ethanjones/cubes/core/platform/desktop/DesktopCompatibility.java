@@ -59,6 +59,12 @@ public abstract class DesktopCompatibility extends Compatibility {
   }
 
   @Override
+  public void logEnvironment() {
+    Runtime runtime = Runtime.getRuntime();
+    Log.debug("Maximum Memory:     " + (int) (runtime.maxMemory() / 1048576) + "MB");
+  }
+
+  @Override
   public boolean isTouchScreen() {
     return false;
   }
@@ -66,5 +72,14 @@ public abstract class DesktopCompatibility extends Compatibility {
   @Override
   public ModLoader getModLoader() {
     return modLoader;
+  }
+
+  @Override
+  public int getFreeMemory() {
+    Runtime runtime = Runtime.getRuntime();
+    int max = (int) (runtime.maxMemory() / 1048576); //1024 * 1024. Divide to get MB
+    int allocated = (int) (runtime.totalMemory() / 1048576);
+    int free = (int) (runtime.freeMemory() / 1048576);
+    return free + (max - allocated);
   }
 }

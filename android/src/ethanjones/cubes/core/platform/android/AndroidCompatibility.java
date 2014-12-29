@@ -1,5 +1,8 @@
 package ethanjones.cubes.core.platform.android;
 
+import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.ActivityManager.MemoryInfo;
 import android.os.Build;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
@@ -19,13 +22,19 @@ import ethanjones.cubes.side.common.Cubes;
 public class AndroidCompatibility extends Compatibility {
 
   public AndroidLauncher androidLauncher;
-  private AndroidModLoader modLoader;
+  protected AndroidModLoader modLoader;
   protected boolean back = false;
+
+  protected ActivityManager activityManager;
+  protected MemoryInfo memoryInfo;
 
   protected AndroidCompatibility(AndroidLauncher androidLauncher) {
     super(androidLauncher, Application.ApplicationType.Android);
     this.androidLauncher = androidLauncher;
     modLoader = new AndroidModLoader(this);
+
+    activityManager = (ActivityManager) androidLauncher.getSystemService(Activity.ACTIVITY_SERVICE);
+    memoryInfo = new MemoryInfo();
   }
 
   @Override
@@ -50,6 +59,8 @@ public class AndroidCompatibility extends Compatibility {
     Log.debug("Brand:              " + Build.BRAND);
     Log.debug("Model:              " + Build.MODEL);
     Log.debug("Product:            " + Build.PRODUCT);
+    activityManager.getMemoryInfo(memoryInfo);
+    Log.debug("System Memory:      " + (int) (memoryInfo.totalMem / 1048576) + "MB");
   }
 
   @Override
@@ -85,5 +96,11 @@ public class AndroidCompatibility extends Compatibility {
       if (prev == null) return;
       Adapter.setMenu(prev);
     }
+  }
+
+  @Override
+  public int getFreeMemory() {
+    activityManager.getMemoryInfo(memoryInfo);
+    return (int) (memoryInfo.availMem / 1048576);
   }
 }

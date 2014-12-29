@@ -7,7 +7,6 @@ import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.core.system.Debug;
-import ethanjones.cubes.core.system.Memory;
 import ethanjones.cubes.graphics.menu.Fonts;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menu.MenuManager;
@@ -121,7 +120,6 @@ public class ClientAdapter implements AdapterInterface {
   public void render() {
     try {
       Compatibility.get().render();
-      Memory.update();
       Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
       Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
       if (menu != null || (Cubes.getClient() != null && Cubes.getClient().renderer.noCursorCatching())) {

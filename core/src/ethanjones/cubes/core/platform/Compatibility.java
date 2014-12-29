@@ -102,4 +102,6 @@ public abstract class Compatibility {
   public void render() {
 
   }
+
+  public abstract int getFreeMemory();
 }
