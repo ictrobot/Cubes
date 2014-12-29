@@ -157,9 +157,13 @@ def String getMavenRepo() {
 }
 
 def boolean hasGit() {
-    def proc = "git rev-parse --short HEAD".execute()
-    proc.waitFor()
-    return proc.exitValue() == 0;
+    try {
+        def proc = "git rev-parse --short HEAD".execute()
+        proc.waitFor()
+        return proc.exitValue() == 0;
+    } catch (Throwable t) {
+        return false
+    }
 }
 
 def Process shell(String str) {
