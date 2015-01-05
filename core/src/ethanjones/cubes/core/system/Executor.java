@@ -3,9 +3,9 @@ package ethanjones.cubes.core.system;
 import java.util.ArrayList;
 import java.util.concurrent.*;
 
-import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
+import ethanjones.cubes.side.common.Cubes;
 
 public class Executor {
 
@@ -19,15 +19,18 @@ public class Executor {
   private static class CallableWrapper<T> implements Callable<T> {
 
     private final Side side;
+    private final Cubes cubes;
     private final Callable<T> callable;
 
     public CallableWrapper(Callable<T> callable) {
       this.side = Sided.getSide();
+      this.cubes = getCubes(side);
       this.callable = callable;
     }
 
     @Override
     public T call() throws Exception {
+      if (shouldReturn(cubes)) return null;
       try {
         Sided.setSide(side);
         T t = callable.call();
@@ -43,15 +46,18 @@ public class Executor {
   private static class RunnableWrapper implements Runnable {
 
     private final Side side;
+    private final Cubes cubes;
     private final Runnable runnable;
 
     public RunnableWrapper(Runnable runnable) {
       this.side = Sided.getSide();
+      this.cubes = getCubes(side);
       this.runnable = runnable;
     }
 
     @Override
     public void run() {
+      if (shouldReturn(cubes)) return;
       try {
         Sided.setSide(side);
         runnable.run();
@@ -139,6 +145,21 @@ public class Executor {
       running = true;
       executor.prestartAllCoreThreads();
     }
+  }
+
+  private static Cubes getCubes(Side side) {
+    switch (side) {
+      case Client:
+        return Cubes.getClient();
+      case Server:
+        return Cubes.getServer();
+      default:
+        return null;
+    }
+  }
+
+  private static boolean shouldReturn(Cubes cubes) {
+    return cubes != null && !cubes.isRunning();
   }
 
 }

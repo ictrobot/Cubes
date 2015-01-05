@@ -102,7 +102,7 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
   }
 
   protected boolean shouldReturn() {
-    if (state.canRun()) {
+    if (state.isRunning()) {
       return false;
     } else {
       if (state.isStopping()) {
@@ -158,5 +158,9 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
 
   public Thread getThread() {
     return thread;
+  }
+
+  public boolean isRunning() {
+    return state.isRunning();
   }
 }

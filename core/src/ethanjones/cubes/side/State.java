@@ -36,7 +36,7 @@ public final class State {
     return stopped.get();
   }
 
-  public synchronized boolean canRun() {
+  public synchronized boolean isRunning() {
     return setup.get() && !stopping.get() && !stopped.get();
   }
 }
