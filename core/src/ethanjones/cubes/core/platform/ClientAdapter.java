@@ -107,7 +107,7 @@ public class ClientAdapter implements AdapterInterface {
     try {
       Gdx.graphics.setTitle(Branding.DEBUG);
       thread = Thread.currentThread();
-      thread.setName(Side.Client.name());
+      thread.setName(getSide().name());
       Cubes.setup(this);
       setMenu(new MainMenu());
       Log.info(Localization.get("client.client_loaded"));

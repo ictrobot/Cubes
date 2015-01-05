@@ -25,7 +25,7 @@ public class ServerAdapter implements AdapterInterface {
   public void create() {
     try {
       thread = Thread.currentThread();
-      thread.setName(Side.Client.name());
+      thread.setName(getSide().name());
       Cubes.setup(this);
       NetworkingManager.serverPreInit(new ServerNetworkingParameter());
       cubesServer = new DedicatedServer();
