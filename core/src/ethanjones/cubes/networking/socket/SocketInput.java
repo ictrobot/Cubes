@@ -79,7 +79,7 @@ public class SocketInput extends SocketIO {
         } else {
           packet.read(dataInputStream);
         }
-        socketMonitor.getNetworking().received(socketMonitor, packet);
+        packetQueue.add(packet);
       } catch (IOException e) {
         socketMonitor.getNetworking().disconnected(socketMonitor, e);
         return;

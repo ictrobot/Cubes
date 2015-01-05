@@ -58,8 +58,6 @@ public abstract class Networking {
 
   public abstract void disconnected(SocketMonitor socketMonitor, Exception e);
 
-  public abstract void received(SocketMonitor socketMonitor, Packet packet);
-
   public abstract void processPackets();
 
 }

@@ -20,8 +20,6 @@ public class SocketOutput extends SocketIO {
   private final OutputStream socketOutputStream;
   private final DataOutputStream dataOutputStream;
 
-  private final PacketQueue packetQueue;
-
   private final Deflater deflater;
   private final ByteArrayOutputStream byteArrayOutputStream;
   private final DataOutputStream byteDataOutputStream;
@@ -37,8 +35,6 @@ public class SocketOutput extends SocketIO {
       }
     };
 
-    this.packetQueue = new PacketQueue();
-
     this.deflater = new Deflater(COMPRESSION_LEVEL, COMPRESSION_NOWRAP);
     this.byteArrayOutputStream = new ByteArrayOutputStream(16384); //can't be closed
     this.byteDataOutputStream = new DataOutputStream(byteArrayOutputStream);
@@ -49,11 +45,7 @@ public class SocketOutput extends SocketIO {
     Sided.setSide(socketMonitor.getSide());
     while (socketMonitor.running.get()) {
       try {
-        if (packetQueue.isEmpty()) {
-          packetQueue.waitForPacket();
-        }
-
-        Packet packet = packetQueue.getPacket();
+        Packet packet = packetQueue.waitAndGet();
         if (packet == null) continue;
 
         Class<? extends Packet> packetClass = packet.getClass();

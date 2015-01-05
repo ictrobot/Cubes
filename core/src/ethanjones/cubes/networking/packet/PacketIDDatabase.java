@@ -70,7 +70,7 @@ public class PacketIDDatabase {
       PacketID confirming = new PacketID();
       confirming.id = packetID.id;
       confirming.c = packetID.c;
-      packetID.getSocketMonitor().getSocketOutput().getPacketQueue().addPacket(confirming);
+      packetID.getSocketMonitor().getSocketOutput().getPacketQueue().add(confirming);
     }
     synchronized (lock) {
       states.put(c, State.Confirmed);
@@ -96,7 +96,7 @@ public class PacketIDDatabase {
     synchronized (lock) {
       packetID.id = classInt.get(packetClass);
     }
-    socketMonitor.getSocketOutput().getPacketQueue().addPacket(packetID);
+    socketMonitor.getSocketOutput().getPacketQueue().add(packetID);
   }
 
   public void allocate(Class<? extends Packet> packetClass) {

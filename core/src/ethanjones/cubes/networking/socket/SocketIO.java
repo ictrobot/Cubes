@@ -2,13 +2,17 @@ package ethanjones.cubes.networking.socket;
 
 import com.badlogic.gdx.utils.Disposable;
 
+import ethanjones.cubes.networking.packet.PacketQueue;
+
 public abstract class SocketIO implements Runnable, Disposable {
 
   protected final SocketMonitor socketMonitor;
+  protected final PacketQueue packetQueue;
   private Thread thread;
 
   public SocketIO(SocketMonitor socketMonitor) {
     this.socketMonitor = socketMonitor;
+    this.packetQueue = new PacketQueue();
   }
 
   public Thread start(String name) {
@@ -24,4 +28,7 @@ public abstract class SocketIO implements Runnable, Disposable {
     return thread;
   }
 
+  public PacketQueue getPacketQueue() {
+    return packetQueue;
+  }
 }

@@ -6,8 +6,7 @@ import com.badlogic.gdx.utils.Array;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.networking.Networking;
 import ethanjones.cubes.networking.packet.Packet;
-import ethanjones.cubes.networking.packet.PacketBuffer;
-import ethanjones.cubes.networking.packet.PacketIDDatabase;
+import ethanjones.cubes.networking.packet.PacketQueue;
 import ethanjones.cubes.networking.socket.SocketMonitor;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.common.Cubes;
@@ -15,14 +14,12 @@ import ethanjones.cubes.side.common.Cubes;
 public class ServerNetworking extends Networking {
 
   private final ServerNetworkingParameter serverNetworkingParameter;
-  private PacketBuffer packetBuffer;
   private Array<SocketMonitor> sockets;
   private ServerSocketMonitor serverSocketMonitor;
 
   public ServerNetworking(ServerNetworkingParameter serverNetworkingParameter) {
     super();
     this.serverNetworkingParameter = serverNetworkingParameter;
-    this.packetBuffer = new PacketBuffer();
     sockets = new Array<SocketMonitor>();
   }
 
@@ -60,20 +57,14 @@ public class ServerNetworking extends Networking {
       Log.warning("Cannot send " + packet.toString() + " as " + getNetworkingState().name());
       return;
     }
-    clientIdentifier.getSocketMonitor().getSocketOutput().getPacketQueue().addPacket(packet);
+    clientIdentifier.getSocketMonitor().getSocketOutput().getPacketQueue().add(packet);
   }
 
   @Override
   public synchronized void disconnected(SocketMonitor socketMonitor, Exception e) {
     if (getNetworkingState() == NetworkingState.Stopping) return;
     Log.info("Disconnected from " + socketMonitor.getSocket().getRemoteAddress(), e);
-    packetBuffer.removeFromSender(socketMonitor);
     Cubes.getServer().removeClient(socketMonitor);
-  }
-
-  @Override
-  public void received(SocketMonitor socketMonitor, Packet packet) {
-    packetBuffer.addPacket(packet);
   }
 
   protected synchronized void accepted(Socket socket) {
@@ -82,6 +73,12 @@ public class ServerNetworking extends Networking {
   }
 
   public void processPackets() {
-    packetBuffer.process();
+    for (SocketMonitor socketMonitor : sockets) {
+      Packet packet = null;
+      PacketQueue packetQueue = socketMonitor.getSocketInput().getPacketQueue();
+      while ((packet = packetQueue.get()) != null) {
+        packet.handlePacket();
+      }
+    }
   }
 }

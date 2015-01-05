@@ -1,84 +1,30 @@
 package ethanjones.cubes.networking.packet;
 
-import com.badlogic.gdx.utils.Array;
+import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class PacketQueue {
 
-  private Object sync;
-  private Array<Packet> high;
-  private Array<Packet> medium;
-  private Array<Packet> low;
+  private PriorityBlockingQueue<Packet> queue;
 
   public PacketQueue() {
-    sync = new Object();
-    high = new Array<Packet>();
-    medium = new Array<Packet>();
-    low = new Array<Packet>();
+    queue = new PriorityBlockingQueue<Packet>(16, PacketComparator.instance);
   }
 
-  public void addPacket(Packet packet) {
-    if (!packet.shouldSend()) return;
-    Array<Packet> array = getArray(packet.getPacketPriority());
-    synchronized (array) {
-      array.add(packet);
-    }
-    synchronized (sync) {
-      sync.notifyAll();
-    }
+  public synchronized void add(Packet packet) {
+    if (packet == null || !packet.shouldSend()) return;
+    queue.add(packet);
   }
 
-  private Array<Packet> getArray(PacketPriority priority) {
-    switch (priority) {
-      case High:
-        return high;
-      case Medium:
-        return medium;
-      default:
-        return low;
-    }
+  public synchronized Packet get() {
+    return queue.poll();
   }
 
-  public Packet getPacket() {
-    Packet packet;
-
-    if ((packet = getPacket(PacketPriority.High)) != null) return packet;
-    if ((packet = getPacket(PacketPriority.Medium)) != null) return packet;
-    if ((packet = getPacket(PacketPriority.Low)) != null) return packet;
-    return null;
-  }
-
-  private Packet getPacket(PacketPriority priority) {
-    Array<Packet> array = getArray(priority);
-    if (array.size <= 0) return null;
-    Packet packet;
-    synchronized (array) {
-      packet = array.removeIndex(0);
-    }
-    if (packet.shouldSend()) return packet;
-    return getPacket(priority);
-  }
-
-  public void waitForPacket() {
+  public synchronized Packet waitAndGet() {
     try {
-      synchronized (sync) {
-        sync.wait();
-      }
-    } catch (Exception e) {
-      waitForPacket();
-    }
-  }
-
-  public boolean isEmpty() {
-    return size() == 0;
-  }
-
-  public int size() {
-    synchronized (high) {
-      synchronized (medium) {
-        synchronized (low) {
-          return high.size + medium.size + low.size;
-        }
-      }
+      return queue.poll(1, TimeUnit.SECONDS);
+    } catch (InterruptedException e) {
+      return null;
     }
   }
 }

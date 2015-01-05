@@ -9,7 +9,7 @@ import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.networking.Networking;
 import ethanjones.cubes.networking.packet.Packet;
-import ethanjones.cubes.networking.packet.PacketBuffer;
+import ethanjones.cubes.networking.packet.PacketQueue;
 import ethanjones.cubes.networking.packets.PacketConnect;
 import ethanjones.cubes.networking.socket.SocketMonitor;
 import ethanjones.cubes.side.Side;
@@ -33,13 +33,11 @@ public class ClientNetworking extends Networking {
   }
 
   private final ClientNetworkingParameter clientNetworkingParameter;
-  private PacketBuffer packetBuffer;
   private SocketMonitor socketMonitor;
   private Socket socket;
 
   public ClientNetworking(ClientNetworkingParameter clientNetworkingParameter) {
     this.clientNetworkingParameter = clientNetworkingParameter;
-    this.packetBuffer = new PacketBuffer();
   }
 
   public synchronized void preInit() throws Exception {
@@ -84,7 +82,7 @@ public class ClientNetworking extends Networking {
       Log.warning("Cannot send " + packet.toString() + " as " + getNetworkingState().name());
       return;
     }
-    socketMonitor.getSocketOutput().getPacketQueue().addPacket(packet);
+    socketMonitor.getSocketOutput().getPacketQueue().add(packet);
   }
 
   @Override
@@ -94,11 +92,11 @@ public class ClientNetworking extends Networking {
     stop();
   }
 
-  public void received(SocketMonitor socketMonitor, Packet packet) {
-    packetBuffer.addPacket(packet);
-  }
-
   public void processPackets() {
-    packetBuffer.process();
+    Packet packet = null;
+    PacketQueue packetQueue = socketMonitor.getSocketInput().getPacketQueue();
+    while ((packet = packetQueue.get()) != null) {
+      packet.handlePacket();
+    }
   }
 }
