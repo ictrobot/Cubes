@@ -2,10 +2,12 @@ package ethanjones.cubes.core.platform;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.Branding;
+import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.graphics.menu.Fonts;
 import ethanjones.cubes.graphics.menu.Menu;
@@ -22,6 +24,10 @@ public class ClientAdapter implements AdapterInterface {
   private Menu menu;
   private IntegratedServer cubesServer;
   private CubesClient cubesClient;
+  private Thread thread;
+
+  private AtomicBoolean setupClient = new AtomicBoolean(false);
+  private AtomicBoolean setupMenu = new AtomicBoolean(false);
 
   public ClientAdapter() {
     Adapter.setInterface(this);
@@ -33,11 +39,11 @@ public class ClientAdapter implements AdapterInterface {
     if (cubesClient != null) {
       this.cubesClient = cubesClient;
       Log.debug("Client set");
-      cubesClient.create();
-      cubesClient.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+      setupClient.set(true);
     } else {
       this.cubesClient = null;
       Log.debug("Client set to null");
+      setupClient.set(false);
     }
   }
 
@@ -69,12 +75,11 @@ public class ClientAdapter implements AdapterInterface {
     if (menu != null) {
       Log.debug("Menu set to " + menu.getClass().getSimpleName());
       MenuManager.setMenu(menu);
-      menu.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-      menu.show();
+      setupMenu.set(true);
     } else {
       Log.debug("Menu set to null");
+      setupMenu.set(true);
     }
-
   }
 
   @Override
@@ -96,7 +101,8 @@ public class ClientAdapter implements AdapterInterface {
   public void create() {
     try {
       Gdx.graphics.setTitle(Branding.DEBUG);
-      Thread.currentThread().setName(Side.Client.name());
+      thread = Thread.currentThread();
+      thread.setName(Side.Client.name());
       Cubes.setup(this);
       setMenu(new MainMenu());
       Log.info(Localization.get("client.client_loaded"));
@@ -119,20 +125,33 @@ public class ClientAdapter implements AdapterInterface {
   @Override
   public void render() {
     try {
+      if (cubesClient == null && menu == null) { //Nothing to render
+        Debug.crash(new CubesException("CubesClient and Menu both null"));
+      }
       Compatibility.get().render();
       Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
       Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-      if (menu != null || (Cubes.getClient() != null && Cubes.getClient().renderer.noCursorCatching())) {
-        Gdx.input.setCursorCatched(false);
-      } else {
-        Gdx.input.setCursorCatched(true);
-      }
       if (cubesClient != null) {
+        if (setupClient.getAndSet(false)) {
+          cubesClient.create();
+          cubesClient.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        }
         cubesClient.render();
       } else {
         MenuManager.renderBackground();
       }
-      if (menu != null) menu.render(); //Render menu over client
+      if (menu != null) {
+        if (setupMenu.getAndSet(false)) {
+          menu.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+          menu.show();
+        }
+        menu.render(); //Render menu over client
+      }
+      if (menu != null || (cubesClient != null && cubesClient.renderer != null && cubesClient.renderer.noCursorCatching())) {
+        Gdx.input.setCursorCatched(false);
+      } else {
+        Gdx.input.setCursorCatched(true);
+      }
     } catch (Exception e) {
       Debug.crash(e);
     }
@@ -158,22 +177,11 @@ public class ClientAdapter implements AdapterInterface {
 
   @Override
   public void dispose() {
-    try {
-      Log.debug("Disposing adapter");
-      if (menu != null) {
-        menu.hide();
-      }
-      if (cubesClient != null) cubesClient.stop();
-      if (cubesServer != null) {
-        cubesServer.dispose();
-        try {
-          cubesServer.getThread().join(1000); //Wait for 1 second
-          if (cubesServer.getThread().isAlive()) Log.error("Failed to stop server thread");
-        } catch (InterruptedException e) {
-        }
-      }
-    } catch (Exception e) {
-      Debug.crash(e);
-    }
+    Adapter.dispose();
+  }
+
+  @Override
+  public Thread getThread() {
+    return thread;
   }
 }

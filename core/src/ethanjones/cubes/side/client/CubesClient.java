@@ -32,6 +32,7 @@ public class CubesClient extends Cubes implements ApplicationListener {
 
   @Override
   public void create() {
+    if (state.isSetup()) return;
     super.create();
     NetworkingManager.clientInit();
 
@@ -45,11 +46,13 @@ public class CubesClient extends Cubes implements ApplicationListener {
     world = new WorldClient();
 
     ModManager.postModEvent(new StartingClientEvent());
+
+    state.setup();
   }
 
   @Override
   public void render() {
-    if (stopped) return;
+    if (shouldReturn()) return;
     if (KeyboardHelper.isKeyDown(Input.Keys.ESCAPE)) {
       Adapter.gotoMainMenu();
       return;
@@ -60,12 +63,11 @@ public class CubesClient extends Cubes implements ApplicationListener {
     renderer.render();
     inputChain.afterRender();
     player.update();
-    checkStop();
   }
 
   @Override
   public void stop() {
-    if (stopped) return;
+    if (state.hasStopped() || !state.isSetup()) return;
     ModManager.postModEvent(new StoppingClientEvent());
     super.stop();
     renderer.dispose();
@@ -73,7 +75,13 @@ public class CubesClient extends Cubes implements ApplicationListener {
   }
 
   @Override
-  public void tick() {
+  public void time(int interval) {
+    if (shouldReturn()) return;
+    super.time(interval);
+  }
+
+  @Override
+  protected void tick() {
     super.tick();
     inputChain.cameraController.tick();
     ClientDebug.tick();
@@ -81,6 +89,7 @@ public class CubesClient extends Cubes implements ApplicationListener {
 
   @Override
   public void resize(int width, int height) {
+    if (shouldReturn()) return;
     renderer.resize();
   }
 

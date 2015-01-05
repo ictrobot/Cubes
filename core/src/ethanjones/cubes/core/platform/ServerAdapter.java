@@ -1,5 +1,6 @@
 package ethanjones.cubes.core.platform;
 
+import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.graphics.menu.Menu;
@@ -14,6 +15,7 @@ import ethanjones.cubes.side.server.dedicated.DedicatedServer;
 public class ServerAdapter implements AdapterInterface {
 
   private DedicatedServer cubesServer;
+  private Thread thread;
 
   public ServerAdapter() {
     Adapter.setInterface(this);
@@ -22,11 +24,13 @@ public class ServerAdapter implements AdapterInterface {
   @Override
   public void create() {
     try {
-      Thread.currentThread().setName(Side.Server.name());
+      thread = Thread.currentThread();
+      thread.setName(Side.Client.name());
       Cubes.setup(this);
       NetworkingManager.serverPreInit(new ServerNetworkingParameter());
       cubesServer = new DedicatedServer();
       cubesServer.create();
+      Log.info(Localization.get("server.server_loaded"));
     } catch (Exception e) {
       Debug.crash(e);
     }
@@ -59,27 +63,27 @@ public class ServerAdapter implements AdapterInterface {
 
   @Override
   public void dispose() {
-    try {
-      Log.debug("Disposing adapter");
-      cubesServer.stop();
-    } catch (Exception e) {
-      Debug.crash(e);
-    }
+    Adapter.dispose();
+  }
+
+  @Override
+  public Thread getThread() {
+    return thread;
   }
 
   @Override
   public void setClient(CubesClient cubesClient) throws UnsupportedOperationException {
-    throw new UnsupportedOperationException("Cannot set client");
+    //throw new UnsupportedOperationException("Cannot set client");
   }
 
   @Override
   public void setServer(CubesServer cubesServer) throws UnsupportedOperationException {
-    throw new UnsupportedOperationException("Cannot set server");
+    //throw new UnsupportedOperationException("Cannot set server");
   }
 
   @Override
   public void setMenu(Menu menu) throws UnsupportedOperationException {
-    throw new UnsupportedOperationException("Cannot set menu");
+    //throw new UnsupportedOperationException("Cannot set menu");
   }
 
   @Override

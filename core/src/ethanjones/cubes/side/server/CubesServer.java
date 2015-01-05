@@ -1,6 +1,7 @@
 package ethanjones.cubes.side.server;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.core.localization.Localization;
@@ -9,6 +10,7 @@ import ethanjones.cubes.core.mod.ModManager;
 import ethanjones.cubes.core.mod.event.StartingServerEvent;
 import ethanjones.cubes.core.mod.event.StoppingServerEvent;
 import ethanjones.cubes.core.platform.Adapter;
+import ethanjones.cubes.core.system.Executor;
 import ethanjones.cubes.core.timing.TimeHandler;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.server.ClientIdentifier;
@@ -28,6 +30,7 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
 
   @Override
   public void create() {
+    if (state.isSetup()) return;
     super.create();
     CommandManager.reset();
     NetworkingManager.serverInit();
@@ -38,30 +41,29 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
 
     ModManager.postModEvent(new StartingServerEvent());
 
-    Log.info(Localization.get("server.server_loaded"));
+    state.setup();
   }
 
   @Override
-  public void stop() {
-    if (stopped) return;
+  public void render() {
+    if (shouldReturn()) return;
+    super.render();
+    for (ClientIdentifier clientIdentifier : getAllClients()) {
+      clientIdentifier.getPlayerManager().update();
+    }
+  }
+
+  @Override
+  protected void stop() {
+    if (state.hasStopped() || !state.isSetup()) return;
     ModManager.postModEvent(new StoppingServerEvent());
     super.stop();
     if (isDedicated()) Adapter.quit();
   }
 
   @Override
-  public void render() {
-    if (stopped) return;
-    super.render();
-
-    for (ClientIdentifier clientIdentifier : getAllClients()) {
-      clientIdentifier.getPlayerManager().update();
-    }
-    checkStop();
-  }
-
-  @Override
   public void time(int interval) {
+    if (shouldReturn()) return;
     super.time(interval);
     if (interval != 250) return;
     world.setBlock(Blocks.dirt, (int) (Math.random() * 16), (int) (8 + (Math.random() * 7)), (int) (Math.random() * 16));

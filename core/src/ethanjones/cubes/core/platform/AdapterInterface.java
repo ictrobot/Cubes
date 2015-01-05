@@ -19,4 +19,9 @@ public interface AdapterInterface extends ApplicationListener {
   public CubesServer getServer();
 
   public Menu getMenu();
+
+  //Call Adapter.dispose()
+  public void dispose();
+
+  public Thread getThread();
 }

@@ -2,7 +2,7 @@ package ethanjones.cubes.core.system;
 
 import com.badlogic.gdx.Version;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.logging.LogLevel;
@@ -29,7 +29,7 @@ public class Debug {
     }
   }
 
-  private static AtomicBoolean crashed = new AtomicBoolean(false);
+  private static final AtomicInteger crashed = new AtomicInteger(0);
 
   public static void printProperties() {
     if (Branding.VERSION_HASH != null && !Branding.VERSION_HASH.isEmpty()) {
@@ -57,13 +57,37 @@ public class Debug {
     crash(new OutOfMemoryError("Detected"));
   }
 
-  public static synchronized void crash(Throwable throwable) {
-    if (crashed.get()) System.exit(2);
-    try {
-      if (throwable instanceof OutOfMemoryError) {
-        Log.error("Out of Memory CRASH");
+  public static void crash(Throwable throwable) {
+    synchronized (Debug.class) {
+      if (crashed.getAndIncrement() == 0) {
+        //Primary Crash
+        logCrash(throwable);
+        try {
+          Adapter.dispose();
+        } catch (Exception e) {
+        }
+        if (Compatibility.get().handleCrash(throwable)) {
+          errorExit();
+        }
       } else {
-        Log.error("CRASH");
+        //Secondary Crash
+        if (crashed.get() > 10) {
+          Log.error("Over 10 crashes");
+          errorExit();
+        } else {
+          logCrash(throwable);
+        }
+      }
+    }
+  }
+
+  private static synchronized void logCrash(Throwable throwable) {
+    final int crashedNum = crashed.get();
+    try {
+      if (crashedNum == 1) {
+        Log.error(throwable.getClass().getSimpleName() + " CRASH");
+      } else {
+        Log.error(throwable.getClass().getSimpleName() + " CRASH " + crashedNum);
       }
     } catch (Exception e) {
 
@@ -73,25 +97,16 @@ public class Debug {
     } catch (Exception e) {
       throwable.printStackTrace();
     }
-    try {
-      printMods(LogLevel.error);
-    } catch (Exception e) {
+    if (crashedNum == 1) {
+      try {
+        printMods(LogLevel.error);
+      } catch (Exception e) {
 
+      }
     }
-
-    //Logging of crash finished, can now exit
-    crashed.set(true);
-
-    try {
-      Adapter.getInterface().dispose();
-    } catch (Exception e) {
-
-    }
-
-    errorExit();
   }
 
-  public static synchronized void printMods(LogLevel logLevel) {
+  private static synchronized void printMods(LogLevel logLevel) {
     if (ModManager.getMods().size() > 0) {
       Log.log(logLevel, "Mods:");
       for (ModInstance javaModInstance : ModManager.getMods()) {

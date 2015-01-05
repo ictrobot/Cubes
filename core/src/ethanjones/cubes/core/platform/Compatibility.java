@@ -104,4 +104,8 @@ public abstract class Compatibility {
   }
 
   public abstract int getFreeMemory();
+
+  public boolean handleCrash(Throwable throwable) {
+    return true;
+  }
 }

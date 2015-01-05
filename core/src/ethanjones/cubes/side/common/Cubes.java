@@ -6,12 +6,11 @@ import ethanjones.cubes.block.BlockManager;
 import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.core.messaging.Message;
-import ethanjones.cubes.core.messaging.MessageManager;
 import ethanjones.cubes.core.mod.ModManager;
 import ethanjones.cubes.core.mod.event.InitializationEvent;
 import ethanjones.cubes.core.mod.event.PostInitializationEvent;
 import ethanjones.cubes.core.mod.event.PreInitializationEvent;
+import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.AdapterInterface;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.settings.Settings;
@@ -21,11 +20,10 @@ import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.core.timing.TimeHandler;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.networking.NetworkingManager;
-import ethanjones.cubes.side.ControlMessage;
-import ethanjones.cubes.side.ControlMessage.Status;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.SimpleApplication;
+import ethanjones.cubes.side.State;
 import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.server.CubesServer;
 import ethanjones.cubes.world.World;
@@ -82,7 +80,7 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
   private final Side side;
   public World world;
   public Thread thread;
-  protected boolean stopped;
+  protected State state = new State();
 
   public Cubes(Side side) {
     this.side = side;
@@ -91,7 +89,6 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
   @Override
   public void create() {
     thread = Thread.currentThread();
-    stopped = false;
     Sided.setup(side);
     Compatibility.get().init(side);
     Sided.getEventBus().register(this);
@@ -104,37 +101,47 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
     Sided.getTiming().update();
   }
 
-  @Override
-  public void dispose() {
-    ControlMessage controlMessage = new ControlMessage();
-    controlMessage.status = Status.Stop;
-    MessageManager.sendMessage(controlMessage, this);
+  protected boolean shouldReturn() {
+    if (state.canRun()) {
+      return false;
+    } else {
+      if (state.isStopping()) {
+        stop();
+      } else if (!state.isSetup()) {
+        Log.error("Cubes" + side.name() + " is not setup");
+      }
+      return true;
+    }
   }
 
-  protected boolean checkStop() {
-    if (!MessageManager.hasMessages(this)) return false;
-    for (Message message : MessageManager.getMessages(this)) {
-      if (message instanceof ControlMessage) {
-        if (((ControlMessage) message).status == Status.Stop) {
-          stop();
-          if (message.from == null) return true;
-          ControlMessage controlMessage = new ControlMessage();
-          controlMessage.status = Status.Stopped;
-          controlMessage.from = this;
-          MessageManager.sendMessage(controlMessage, message.from);
-          return true;
-        }
-      }
+  @Override
+  public void dispose() {
+    if (!state.canDispose()) return;
+    state.stopping();
+    if (state.isSetup() && Thread.currentThread() == thread) {
+      stop();
     }
-    return false;
   }
 
   protected void stop() {
-    write();
-    stopped = true;
-    NetworkingManager.getNetworking(side).stop();
-    world.dispose();
-    Sided.reset(side);
+    if (Thread.currentThread() != thread) return;
+    synchronized (this) {
+      write();
+      NetworkingManager.getNetworking(side).stop();
+      world.dispose();
+      Sided.reset(side);
+      state.stopped();
+    }
+    if (!Compatibility.get().isServer()) {
+      switch (side) {
+        case Client:
+          Adapter.setClient(null);
+          break;
+        case Server:
+          Adapter.setServer(null);
+          break;
+      }
+    }
   }
 
   public void write() {
@@ -145,7 +152,11 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
     if (interval == tickMS) tick();
   }
 
-  public void tick() {
+  protected void tick() {
     NetworkingManager.getNetworking(side).update();
+  }
+
+  public Thread getThread() {
+    return thread;
   }
 }

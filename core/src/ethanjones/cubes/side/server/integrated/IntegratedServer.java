@@ -1,6 +1,8 @@
 package ethanjones.cubes.side.server.integrated;
 
+import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.system.Debug;
+import ethanjones.cubes.core.system.Executor;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.CubesServer;
@@ -24,7 +26,7 @@ public abstract class IntegratedServer extends CubesServer implements Runnable {
     try {
       create();
 
-      while (!stopped) {
+      while (!state.hasStopped()) {
         long l = System.currentTimeMillis() / Cubes.tickMS;
         render(); //render calls stop
         while ((System.currentTimeMillis() / Cubes.tickMS) == l) { //Only run once every "tickMS"
@@ -45,10 +47,6 @@ public abstract class IntegratedServer extends CubesServer implements Runnable {
     thread.setName(Side.Server.name());
     thread.setUncaughtExceptionHandler(Debug.UncaughtExceptionHandler.instance);
     thread.start();
-    return thread;
-  }
-
-  public Thread getThread() {
     return thread;
   }
 }

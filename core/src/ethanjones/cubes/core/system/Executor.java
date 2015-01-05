@@ -3,10 +3,18 @@ package ethanjones.cubes.core.system;
 import java.util.ArrayList;
 import java.util.concurrent.*;
 
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 
 public class Executor {
+
+  private static class ExecutorException extends RuntimeException {
+
+    public ExecutorException(Exception e) {
+      super("Exception thrown in executor thread", e);
+    }
+  }
 
   private static class CallableWrapper<T> implements Callable<T> {
 
@@ -20,10 +28,15 @@ public class Executor {
 
     @Override
     public T call() throws Exception {
-      Sided.setSide(side);
-      T t = callable.call();
-      Sided.setSide(null);
-      return t;
+      try {
+        Sided.setSide(side);
+        T t = callable.call();
+        Sided.setSide(null);
+        return t;
+      } catch (Exception e) {
+        Debug.crash(new ExecutorException(e));
+        return null;
+      }
     }
   }
 
@@ -39,9 +52,13 @@ public class Executor {
 
     @Override
     public void run() {
-      Sided.setSide(side);
-      runnable.run();
-      Sided.setSide(null);
+      try {
+        Sided.setSide(side);
+        runnable.run();
+        Sided.setSide(null);
+      } catch (Exception e) {
+        Debug.crash(new ExecutorException(e));
+      }
     }
   }
 
