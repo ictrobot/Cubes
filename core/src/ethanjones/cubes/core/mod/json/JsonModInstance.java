@@ -13,6 +13,7 @@ import ethanjones.cubes.core.mod.ModState;
 import ethanjones.cubes.core.mod.event.ModEvent;
 import ethanjones.cubes.core.mod.event.PostInitializationEvent;
 import ethanjones.cubes.core.mod.event.PreInitializationEvent;
+import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.graphics.assets.AssetManager;
 
@@ -51,7 +52,7 @@ public class JsonModInstance extends ModInstance {
         blockParameter.register(this);
       }
     } else if (modEvent instanceof PostInitializationEvent) {
-      if (Compatibility.get().isServer()) return;
+      if (Adapter.isDedicatedServer()) return;
       for (JsonBlockParameter blockParameter : blockParameters) {
         blockParameter.loadGraphics();
       }

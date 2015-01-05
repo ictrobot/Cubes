@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.Compatibility;
 
 public class Assets {
@@ -81,7 +82,7 @@ public class Assets {
   }
 
   private static PackedTextureSheet getPackedTextureSheet(AssetType assetType) {
-    if (Compatibility.get().isServer()) return null;
+    if (Adapter.isDedicatedServer()) return null;
     TexturePacker texturePacker = new TexturePacker(2048, 2048, 0);
     for (Map.Entry<String, AssetManager> entry : assetManagers.entrySet()) {
       ArrayList<Asset> assets = entry.getValue().getAssets(assetType.name() + "/");

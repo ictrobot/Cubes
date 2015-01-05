@@ -6,6 +6,7 @@ import com.badlogic.gdx.files.FileHandle;
 
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.mod.ModLoader;
+import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.graphics.assets.AssetFinder;
@@ -40,7 +41,7 @@ public abstract class DesktopCompatibility extends Compatibility {
   }
 
   public FileHandle getBaseFolder() {
-    if (isServer()) return getWorkingFolder();
+    if (Adapter.isDedicatedServer()) return getWorkingFolder();
     FileHandle homeDir = Gdx.files.absolute(System.getProperty("user.home"));
     switch (os) {
       case Windows:

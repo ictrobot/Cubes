@@ -13,10 +13,6 @@ public class ServerCompatibility extends DesktopCompatibility {
     super(serverLauncher, Application.ApplicationType.HeadlessDesktop, arg);
   }
 
-  public boolean isServer() {
-    return true;
-  }
-
   @Override
   protected void run(ApplicationListener applicationListener) {
     new HeadlessApplication(applicationListener);

@@ -73,7 +73,7 @@ public abstract class Compatibility {
     Thread.currentThread().setUncaughtExceptionHandler(UncaughtExceptionHandler.instance);
 
     try {
-      if (isServer()) {
+      if (applicationType == ApplicationType.HeadlessDesktop) {
         run(new ServerAdapter());
       } else {
         run(new ClientAdapter());
@@ -89,10 +89,6 @@ public abstract class Compatibility {
         }
       }
     }
-  }
-
-  public boolean isServer() {
-    return false;
   }
 
   protected abstract void run(ApplicationListener applicationListener);

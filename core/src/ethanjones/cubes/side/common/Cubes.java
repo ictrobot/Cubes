@@ -60,7 +60,7 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
     ModManager.postModEvent(new InitializationEvent());
 
     Assets.init();
-    if (!Compatibility.get().isServer()) Blocks.loadGraphics();
+    if (!Adapter.isDedicatedServer()) Blocks.loadGraphics();
     Localization.load();
     Settings.print();
     ModManager.postModEvent(new PostInitializationEvent());
@@ -132,7 +132,7 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
       Sided.reset(side);
       state.stopped();
     }
-    if (!Compatibility.get().isServer()) {
+    if (!Adapter.isDedicatedServer()) {
       switch (side) {
         case Client:
           Adapter.setClient(null);

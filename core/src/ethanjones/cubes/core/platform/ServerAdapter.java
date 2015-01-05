@@ -100,4 +100,9 @@ public class ServerAdapter implements AdapterInterface {
   public Menu getMenu() {
     return null;
   }
+
+  @Override
+  public Side getSide() {
+    return Side.Server;
+  }
 }

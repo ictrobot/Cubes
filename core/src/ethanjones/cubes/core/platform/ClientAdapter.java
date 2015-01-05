@@ -98,6 +98,11 @@ public class ClientAdapter implements AdapterInterface {
   }
 
   @Override
+  public Side getSide() {
+    return Side.Client;
+  }
+
+  @Override
   public void create() {
     try {
       Gdx.graphics.setTitle(Branding.DEBUG);

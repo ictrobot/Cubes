@@ -27,7 +27,7 @@ public class CubesClient extends Cubes implements ApplicationListener {
 
   public CubesClient() {
     super(Side.Client);
-    if (Compatibility.get().isServer()) throw new CubesException("Cannot run client on server");
+    if (Adapter.isDedicatedServer()) throw new CubesException("Cannot run client on server");
   }
 
   @Override

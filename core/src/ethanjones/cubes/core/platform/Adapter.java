@@ -7,6 +7,7 @@ import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menus.MainMenu;
 import ethanjones.cubes.graphics.menus.WaitingMenu;
+import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.server.CubesServer;
 
@@ -42,6 +43,10 @@ public class Adapter {
     return adapter.getMenu();
   }
 
+  public static boolean isDedicatedServer() {
+    return adapter.getSide() == Side.Server;
+  }
+
   public static void dispose() {
     Log.debug("Disposing adapter");
     final Menu menu = adapter.getMenu();
@@ -59,7 +64,7 @@ public class Adapter {
    * Will exit if server
    */
   public static void gotoMainMenu() {
-    if (Compatibility.get().isServer()) quit();
+    if (isDedicatedServer()) quit();
     if (adapter.getMenu() instanceof WaitingMenu || adapter.getMenu() instanceof MainMenu) return;
 
     adapter.setMenu(new WaitingMenu(new Runnable() {
@@ -78,7 +83,7 @@ public class Adapter {
     final CubesServer cubesServer = adapter.getServer();
     final Thread currentThread = Thread.currentThread();
 
-    if (!Compatibility.get().isServer()) {
+    if (!isDedicatedServer()) {
       if (Adapter.getInterface().getThread() == currentThread) {
         stopFromClientThread(cubesClient, cubesServer);
       } else if (cubesServer != null && cubesServer.getThread() == currentThread) {
