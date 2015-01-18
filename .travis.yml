@@ -4,6 +4,7 @@ jdk:
 - oraclejdk7
 - openjdk7
 before_install:
+- openssl aes-256-cbc -K $encrypted_ac4a152066f4_key -iv $encrypted_ac4a152066f4_iv -in ssh.zip.enc -out ssh.zip -d
 - mv ssh/* ~/.ssh/
 - ls ~/.ssh/
 install:
