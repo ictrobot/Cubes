@@ -10,6 +10,7 @@ public class CubesException extends RuntimeException {
     }
     return (CubesException) e;
   }
+
   private final String c;
 
   public CubesException(String arg0) {

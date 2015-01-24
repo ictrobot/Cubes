@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.networking.socket.SocketMonitor;
 import ethanjones.cubes.side.server.CubesServer;
@@ -29,6 +28,15 @@ public class DedicatedServer extends CubesServer {
   @Override
   public boolean isDedicated() {
     return true;
+  }
+
+  @Override
+  public List<ClientIdentifier> getAllClients() {
+    synchronized (clients) {
+      List<ClientIdentifier> list = new ArrayList<ClientIdentifier>(clients.size());
+      list.addAll(clients.values());
+      return list;
+    }
   }
 
   @Override
@@ -61,15 +69,6 @@ public class DedicatedServer extends CubesServer {
   public void removeClient(SocketMonitor socketMonitor) {
     synchronized (clients) {
       clients.remove(socketMonitor);
-    }
-  }
-
-  @Override
-  public List<ClientIdentifier> getAllClients() {
-    synchronized (clients) {
-      List<ClientIdentifier> list = new ArrayList<ClientIdentifier>(clients.size());
-      list.addAll(clients.values());
-      return list;
     }
   }
 }

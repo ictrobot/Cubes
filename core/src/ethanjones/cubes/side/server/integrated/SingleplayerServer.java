@@ -16,6 +16,13 @@ public class SingleplayerServer extends IntegratedServer {
   }
 
   @Override
+  public List<ClientIdentifier> getAllClients() {
+    List<ClientIdentifier> list = new ArrayList<ClientIdentifier>(1);
+    list.add(singleplayerClientIdentifier);
+    return list;
+  }
+
+  @Override
   public ClientIdentifier getClient(SocketMonitor socketMonitor) {
     return singleplayerClientIdentifier;
   }
@@ -34,13 +41,6 @@ public class SingleplayerServer extends IntegratedServer {
   @Override
   public void removeClient(SocketMonitor socketMonitor) {
 
-  }
-
-  @Override
-  public List<ClientIdentifier> getAllClients() {
-    List<ClientIdentifier> list = new ArrayList<ClientIdentifier>(1);
-    list.add(singleplayerClientIdentifier);
-    return list;
   }
   
 }

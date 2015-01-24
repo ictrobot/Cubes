@@ -41,6 +41,12 @@ public class Pools {
     }
   }
 
+  private static <T> Pool<T> pool(Class<T> c) {
+    synchronized (pools) {
+      return pools.get(c);
+    }
+  }
+
   public static <T> void free(Class<T> c, T obj) {
     Pool<T> pool = pool(c);
     if (pool == null) return;
@@ -55,6 +61,18 @@ public class Pools {
     synchronized (pool) {
       pool.free(obj);
     }
+  }
+
+  private static Pool pool(Object object) {
+    Class<?> c = object.getClass();
+    synchronized (pools) {
+      while (c != null && !c.equals(Object.class)) {
+        Pool pool = pools.get(c);
+        if (pool != null) return pool;
+        c = c.getSuperclass();
+      }
+    }
+    return null;
   }
 
   //Individual types
@@ -87,24 +105,6 @@ public class Pools {
     if (pool == null) return;
     synchronized (pool) {
       pool.free(obj);
-    }
-  }
-
-  private static Pool pool(Object object) {
-    Class<?> c = object.getClass();
-    synchronized (pools) {
-      while (c != null && !c.equals(Object.class)) {
-        Pool pool = pools.get(c);
-        if (pool != null) return pool;
-        c = c.getSuperclass();
-      }
-    }
-    return null;
-  }
-
-  private static <T> Pool<T> pool(Class<T> c) {
-    synchronized (pools) {
-      return pools.get(c);
     }
   }
   

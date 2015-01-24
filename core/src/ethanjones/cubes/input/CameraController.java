@@ -19,14 +19,13 @@ public class CameraController extends InputAdapter {
   private final Camera camera;
   private final IntIntMap keys = new IntIntMap();
   private final Vector3 tmp = new Vector3();
+  public Touchpad touchpad; //movement on android
   private int STRAFE_LEFT = Input.Keys.A;
   private int STRAFE_RIGHT = Input.Keys.D;
   private int FORWARD = Input.Keys.W;
   private int BACKWARD = Input.Keys.S;
   private float speed = 5;
   private float degreesPerPixel = 0.5f;
-  public Touchpad touchpad; //movement on android
-
   private Vector3 prevPosition = new Vector3();
   private Vector3 prevDirection = new Vector3();
 

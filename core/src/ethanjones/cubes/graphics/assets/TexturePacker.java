@@ -47,6 +47,7 @@ public class TexturePacker {
       rect = new PackRectangle();
     }
   }
+
   Pixmap pixmap;
   int padding;
   Node root;

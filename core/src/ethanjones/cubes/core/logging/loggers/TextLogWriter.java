@@ -28,6 +28,13 @@ public abstract class TextLogWriter implements LogWriter {
     println(getString(level, throwable));
   }
 
+  private String getString(LogLevel level, Throwable throwable) {
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new PrintWriter(sw);
+    throwable.printStackTrace(pw);
+    return sw.toString();
+  }
+
   protected abstract void println(String string);
 
   private synchronized String getString(LogLevel level, String message) {
@@ -40,12 +47,5 @@ public abstract class TextLogWriter implements LogWriter {
     stringBuilder.append("] ");
     stringBuilder.append(message);
     return stringBuilder.toString();
-  }
-
-  private String getString(LogLevel level, Throwable throwable) {
-    StringWriter sw = new StringWriter();
-    PrintWriter pw = new PrintWriter(sw);
-    throwable.printStackTrace(pw);
-    return sw.toString();
   }
 }

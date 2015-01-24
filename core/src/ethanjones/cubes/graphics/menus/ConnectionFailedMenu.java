@@ -9,15 +9,15 @@ import ethanjones.cubes.core.platform.Adapter;
 
 public class ConnectionFailedMenu extends InfoMenu {
 
-  private static String getString(Exception e) {
-    if (e.getCause() == null) return System.lineSeparator() + e.getClass().getSimpleName();
-    return System.lineSeparator() + e.getClass().getSimpleName() + System.lineSeparator() + e.getCause();
-  }
-
   private boolean firstRender = true;
 
   public ConnectionFailedMenu(Exception e) {
     super(Localization.get("menu.connection_failed.failed_exception") + getString(e), Localization.get("menu.general.return_main_menu"));
+  }
+
+  private static String getString(Exception e) {
+    if (e.getCause() == null) return System.lineSeparator() + e.getClass().getSimpleName();
+    return System.lineSeparator() + e.getClass().getSimpleName() + System.lineSeparator() + e.getCause();
   }
 
   public ConnectionFailedMenu() {

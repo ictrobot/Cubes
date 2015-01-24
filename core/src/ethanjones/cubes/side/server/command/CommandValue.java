@@ -6,10 +6,6 @@ import ethanjones.cubes.side.common.Cubes;
 
 public abstract class CommandValue<T> {
 
-  public abstract T getArgument(String string) throws CommandParsingException;
-
-  public abstract String toString();
-
   //Localise exceptions, strings, help messages and everything command related
   public static final CommandValue<Float> coordinate = new CommandValue<Float>() {
     @Override
@@ -26,7 +22,6 @@ public abstract class CommandValue<T> {
       return Localization.get("command.common.value.coordinate.string");
     }
   };
-
   public static final CommandValue<Integer> blockCoordinate = new CommandValue<Integer>() {
     @Override
     public Integer getArgument(String string) throws CommandParsingException {
@@ -42,7 +37,6 @@ public abstract class CommandValue<T> {
       return Localization.get("command.common.value.blockCoordinate.string");
     }
   };
-
   public static final CommandValue<ClientIdentifier> clientIdentifier = new CommandValue<ClientIdentifier>() {
     @Override
     public ClientIdentifier getArgument(String string) throws CommandParsingException {
@@ -56,7 +50,6 @@ public abstract class CommandValue<T> {
       return Localization.get("command.common.value.clientIdentifier.string");
     }
   };
-
   public static final CommandValue<CommandBuilder> command = new CommandValue<CommandBuilder>() {
     @Override
     public CommandBuilder getArgument(String string) throws CommandParsingException {
@@ -70,5 +63,9 @@ public abstract class CommandValue<T> {
       return Localization.get("command.common.value.command.string");
     }
   };
+
+  public abstract T getArgument(String string) throws CommandParsingException;
+
+  public abstract String toString();
 
 }

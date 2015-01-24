@@ -16,18 +16,6 @@ public class Adapter {
 
   private static AdapterInterface adapter;
 
-  public static void setInterface(AdapterInterface adapterInterface) {
-    if (adapter == null && adapterInterface != null) adapter = adapterInterface;
-  }
-
-  public static AdapterInterface getInterface() {
-    return adapter;
-  }
-
-  public static void quit() {
-    Gdx.app.exit();
-  }
-
   public static void setClient(CubesClient cubesClient) throws UnsupportedOperationException {
     adapter.setClient(cubesClient);
   }
@@ -36,16 +24,12 @@ public class Adapter {
     adapter.setServer(cubesServer);
   }
 
-  public static void setMenu(Menu menu) throws UnsupportedOperationException {
-    adapter.setMenu(menu);
-  }
-
   public static Menu getMenu() {
     return adapter.getMenu();
   }
 
-  public static boolean isDedicatedServer() {
-    return adapter.getSide() == Side.Server;
+  public static void setMenu(Menu menu) throws UnsupportedOperationException {
+    adapter.setMenu(menu);
   }
 
   public static void dispose() {
@@ -59,24 +43,6 @@ public class Adapter {
     } catch (Exception e) {
       Debug.crash(e);
     }
-    stop();
-  }
-
-  /**
-   * Will exit if server
-   */
-  public static void gotoMainMenu() {
-    if (isDedicatedServer()) quit();
-    if (adapter.getMenu() instanceof RunnableMenu || adapter.getMenu() instanceof MainMenu) return;
-
-    adapter.setMenu(new RunnableMenu(new Runnable() {
-      @Override
-      public void run() {
-        if (adapter.getClient() == null && adapter.getServer() == null) {
-          adapter.setMenu(new MainMenu());
-        }
-      }
-    }));
     stop();
   }
 
@@ -100,6 +66,18 @@ public class Adapter {
         stopFromOtherThread(cubesClient, cubesServer);
       }
     }
+  }
+
+  public static boolean isDedicatedServer() {
+    return adapter.getSide() == Side.Server;
+  }
+
+  public static AdapterInterface getInterface() {
+    return adapter;
+  }
+
+  public static void setInterface(AdapterInterface adapterInterface) {
+    if (adapter == null && adapterInterface != null) adapter = adapterInterface;
   }
 
   private static void stopFromClientThread(final CubesClient cubesClient, final CubesServer cubesServer) {
@@ -183,5 +161,27 @@ public class Adapter {
     for (StackTraceElement stackTraceElement : stackTrace) {
       Log.error("  " + stackTraceElement.toString());
     }
+  }
+
+  /**
+   * Will exit if server
+   */
+  public static void gotoMainMenu() {
+    if (isDedicatedServer()) quit();
+    if (adapter.getMenu() instanceof RunnableMenu || adapter.getMenu() instanceof MainMenu) return;
+
+    adapter.setMenu(new RunnableMenu(new Runnable() {
+      @Override
+      public void run() {
+        if (adapter.getClient() == null && adapter.getServer() == null) {
+          adapter.setMenu(new MainMenu());
+        }
+      }
+    }));
+    stop();
+  }
+
+  public static void quit() {
+    Gdx.app.exit();
   }
 }

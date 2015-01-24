@@ -1,16 +1,12 @@
 package ethanjones.cubes.side.server;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import ethanjones.cubes.block.Blocks;
-import ethanjones.cubes.core.localization.Localization;
-import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.mod.ModManager;
 import ethanjones.cubes.core.mod.event.StartingServerEvent;
 import ethanjones.cubes.core.mod.event.StoppingServerEvent;
 import ethanjones.cubes.core.platform.Adapter;
-import ethanjones.cubes.core.system.Executor;
 import ethanjones.cubes.core.timing.TimeHandler;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.server.ClientIdentifier;
@@ -71,6 +67,8 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
 
   public abstract boolean isDedicated();
 
+  public abstract List<ClientIdentifier> getAllClients();
+
   public abstract ClientIdentifier getClient(SocketMonitor socketMonitor);
 
   public abstract ClientIdentifier getClient(String username);
@@ -78,6 +76,4 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
   public abstract void addClient(ClientIdentifier clientIdentifier);
 
   public abstract void removeClient(SocketMonitor socketMonitor);
-
-  public abstract List<ClientIdentifier> getAllClients();
 }

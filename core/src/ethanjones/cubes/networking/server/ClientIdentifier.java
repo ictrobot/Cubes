@@ -7,8 +7,8 @@ import ethanjones.cubes.side.server.PlayerManager;
 
 public class ClientIdentifier {
 
-  private SocketMonitor socketMonitor;
   private final PlayerManager playerManager;
+  private SocketMonitor socketMonitor;
   private Player player;
 
   public ClientIdentifier(SocketMonitor socketMonitor, PacketConnect packetConnect) {

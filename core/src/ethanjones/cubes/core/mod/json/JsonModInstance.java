@@ -14,15 +14,13 @@ import ethanjones.cubes.core.mod.event.ModEvent;
 import ethanjones.cubes.core.mod.event.PostInitializationEvent;
 import ethanjones.cubes.core.mod.event.PreInitializationEvent;
 import ethanjones.cubes.core.platform.Adapter;
-import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.graphics.assets.AssetManager;
 
 public class JsonModInstance extends ModInstance {
   
   private final List<FileHandle> jsonFiles;
-  private List<ModState> modStates;
-
   public List<JsonBlockParameter> blockParameters = new ArrayList<JsonBlockParameter>();
+  private List<ModState> modStates;
 
   public JsonModInstance(String name, FileHandle file, AssetManager assetManager, List<FileHandle> jsonFiles) {
     super(name, file, assetManager);

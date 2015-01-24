@@ -12,6 +12,15 @@ public class ServerOnlyServer extends IntegratedServer {
   private final HashMap<SocketMonitor, ClientIdentifier> clients = new HashMap<SocketMonitor, ClientIdentifier>();
 
   @Override
+  public List<ClientIdentifier> getAllClients() {
+    synchronized (clients) {
+      List<ClientIdentifier> list = new ArrayList<ClientIdentifier>(clients.size());
+      list.addAll(clients.values());
+      return list;
+    }
+  }
+
+  @Override
   public ClientIdentifier getClient(SocketMonitor socketMonitor) {
     synchronized (clients) {
       return clients.get(socketMonitor);
@@ -41,15 +50,6 @@ public class ServerOnlyServer extends IntegratedServer {
   public void removeClient(SocketMonitor socketMonitor) {
     synchronized (clients) {
       clients.remove(socketMonitor);
-    }
-  }
-
-  @Override
-  public List<ClientIdentifier> getAllClients() {
-    synchronized (clients) {
-      List<ClientIdentifier> list = new ArrayList<ClientIdentifier>(clients.size());
-      list.addAll(clients.values());
-      return list;
     }
   }
 

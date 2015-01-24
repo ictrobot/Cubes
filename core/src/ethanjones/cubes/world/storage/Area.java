@@ -64,6 +64,14 @@ public class Area {
     }
   }
 
+  public boolean isBlank() {
+    return blocks == null;
+  }
+
+  public int getRef(int x, int y, int z) {
+    return x + z * SIZE_BLOCKS + y * SIZE_BLOCKS_SQUARED;
+  }
+
   public BlockData getBlockData(int x, int y, int z) {
     if (isBlank()) return null;
     synchronized (this) {
@@ -71,14 +79,18 @@ public class Area {
     }
   }
 
-  public int getRef(int x, int y, int z) {
-    return x + z * SIZE_BLOCKS + y * SIZE_BLOCKS_SQUARED;
-  }
-
   public void unload() {
     if (areaRenderer != null) Pools.free(AreaRenderer.class, areaRenderer);
     removeArrays();
     //blocks = null;
+  }
+
+  private void removeArrays() {
+    synchronized (this) {
+      blocks = null;
+      blockData = null;
+      visible = null;
+    }
   }
 
   public int[] toIntArray() {
@@ -144,14 +156,10 @@ public class Area {
     }
   }
 
-  private void updateSurrounding(int x, int y, int z, int ref) {
-    update(x, y, z, ref);
-    if (y < MAX_BLOCK_INDEX) update(x + 1, y, z, ref + MAX_X_OFFSET);
-    if (x > 0) update(x - 1, y, z, ref + MIN_X_OFFSET);
-    if (y < MAX_BLOCK_INDEX) update(x, y + 1, z, ref + MAX_Y_OFFSET);
-    if (y > 0) update(x, y - 1, z, ref + MIN_Y_OFFSET);
-    if (y < MAX_BLOCK_INDEX) update(x, y, z + 1, ref + MAX_Z_OFFSET);
-    if (z > 0) update(x, y, z - 1, ref + MIN_Z_OFFSET);
+  public void checkArrays() {
+    synchronized (this) {
+      if (isBlank()) setupArrays();
+    }
   }
 
   private void update(int x, int y, int z, int i) {
@@ -218,6 +226,14 @@ public class Area {
     }
   }
 
+  private void setupArrays() {
+    synchronized (this) {
+      blocks = new int[SIZE_BLOCKS_CUBED];
+      blockData = new BlockData[SIZE_BLOCKS_CUBED];
+      visible = new boolean[SIZE_BLOCKS_CUBED];
+    }
+  }
+
   public void setBlock(Block block, int x, int y, int z) {
     checkArrays();
     int ref = getRef(x, y, z);
@@ -234,29 +250,13 @@ public class Area {
     new BlockChangedEvent(new BlockReference().setFromBlockCoordinates(x + minBlockX, y + minBlockY, z + minBlockZ), Sided.getBlockManager().toBlock(b)).post();
   }
 
-  public void checkArrays() {
-    synchronized (this) {
-      if (isBlank()) setupArrays();
-    }
-  }
-
-  private void setupArrays() {
-    synchronized (this) {
-      blocks = new int[SIZE_BLOCKS_CUBED];
-      blockData = new BlockData[SIZE_BLOCKS_CUBED];
-      visible = new boolean[SIZE_BLOCKS_CUBED];
-    }
-  }
-
-  private void removeArrays() {
-    synchronized (this) {
-      blocks = null;
-      blockData = null;
-      visible = null;
-    }
-  }
-
-  public boolean isBlank() {
-    return blocks == null;
+  private void updateSurrounding(int x, int y, int z, int ref) {
+    update(x, y, z, ref);
+    if (y < MAX_BLOCK_INDEX) update(x + 1, y, z, ref + MAX_X_OFFSET);
+    if (x > 0) update(x - 1, y, z, ref + MIN_X_OFFSET);
+    if (y < MAX_BLOCK_INDEX) update(x, y + 1, z, ref + MAX_Y_OFFSET);
+    if (y > 0) update(x, y - 1, z, ref + MIN_Y_OFFSET);
+    if (y < MAX_BLOCK_INDEX) update(x, y, z + 1, ref + MAX_Z_OFFSET);
+    if (z > 0) update(x, y, z - 1, ref + MIN_Z_OFFSET);
   }
 }

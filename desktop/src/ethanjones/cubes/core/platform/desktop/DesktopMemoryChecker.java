@@ -7,12 +7,15 @@ import ethanjones.cubes.core.system.Debug;
 
 public final class DesktopMemoryChecker extends Thread {
 
+  private static final int criticalMemoryThreshold = 50;
+  private static final int lowMemoryThreshold = 100;
+
+  public static void setup() {
+    new DesktopMemoryChecker().start();
+  }
   private final SoftReference<Object> outOfMemoryChecker = new SoftReference<Object>(new Integer[1024]);
   private WeakReference<Object> gcChecker = getGcChecker();
   private Runtime runtime = Runtime.getRuntime();
-
-  private static final int criticalMemoryThreshold = 50;
-  private static final int lowMemoryThreshold = 100;
 
   public DesktopMemoryChecker() {
     setDaemon(true);
@@ -52,9 +55,5 @@ public final class DesktopMemoryChecker extends Thread {
 
   private WeakReference<Object> getGcChecker() {
     return new WeakReference<Object>(new Integer[1024]);
-  }
-
-  public static void setup() {
-    new DesktopMemoryChecker().start();
   }
 }

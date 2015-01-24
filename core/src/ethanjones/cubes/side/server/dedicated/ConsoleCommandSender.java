@@ -14,29 +14,6 @@ import ethanjones.cubes.side.server.command.CommandSender;
 
 public class ConsoleCommandSender implements CommandSender {
 
-  ThreadedReader threadedReader = new ThreadedReader();
-
-  protected ConsoleCommandSender() {
-    threadedReader.start();
-  }
-
-  @Override
-  public void print(String string) {
-    Log.info("[" + Localization.get("server.console_capitals") + "] " + string);
-  }
-
-  @Override
-  public CommandPermission getPermissionLevel() {
-    return CommandPermission.All;
-  }
-
-  protected void update() {
-    String string = threadedReader.getLine();
-    if (string != null) {
-      CommandManager.run(string, this);
-    }
-  }
-
   private static class ThreadedReader extends Thread {
 
     final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -66,6 +43,28 @@ public class ConsoleCommandSender implements CommandSender {
         if (list.size() > 0) return list.remove(0);
       }
       return null;
+    }
+  }
+  ThreadedReader threadedReader = new ThreadedReader();
+
+  protected ConsoleCommandSender() {
+    threadedReader.start();
+  }
+
+  @Override
+  public void print(String string) {
+    Log.info("[" + Localization.get("server.console_capitals") + "] " + string);
+  }
+
+  @Override
+  public CommandPermission getPermissionLevel() {
+    return CommandPermission.All;
+  }
+
+  protected void update() {
+    String string = threadedReader.getLine();
+    if (string != null) {
+      CommandManager.run(string, this);
     }
   }
 

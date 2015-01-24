@@ -15,10 +15,10 @@ import ethanjones.cubes.side.Sided;
 public class ServerSocketMonitor implements Runnable, Disposable {
 
   protected final AtomicBoolean running;
+  private final ServerNetworking serverNetworking;
   private ServerSocket serverSocket;
   private Thread thread;
   private int port;
-  private final ServerNetworking serverNetworking;
 
   public ServerSocketMonitor(int port, ServerNetworking serverNetworking) {
     this.port = port;

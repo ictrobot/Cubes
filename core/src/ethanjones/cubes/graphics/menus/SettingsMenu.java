@@ -9,8 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import java.util.ArrayList;
 import java.util.Map;
 
-import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.localization.Localization;
+import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.settings.SettingGroup;
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.core.settings.VisualSettingManager;
@@ -35,6 +35,7 @@ public class SettingsMenu extends Menu implements VisualSettingManager {
       if (!(actor instanceof Layout)) throw new CubesException("Settings actor must implement Layout");
     }
   }
+
   static final Value CELL_PADDING = new Value() {
     @Override
     public float get(Actor context) {

@@ -16,9 +16,6 @@ import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.graphics.menu.Menu;
-import ethanjones.cubes.networking.client.ClientNetworking;
-import ethanjones.cubes.networking.client.ClientNetworkingParameter;
-import ethanjones.cubes.networking.client.PingResult;
 
 public class MainMenu extends Menu {
 

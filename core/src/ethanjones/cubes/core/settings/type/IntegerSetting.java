@@ -17,6 +17,7 @@ public class IntegerSetting extends Setting {
   public static enum Type {
     TextField, Slider
   }
+
   private int i;
   private boolean hasRange;
   private Type type;

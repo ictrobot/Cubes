@@ -20,6 +20,13 @@ public class InputChain implements Disposable {
     return inputMultiplexer;
   }
 
+  public static void showMenu(Menu menu) {
+    inputMultiplexer.addProcessor(0, menu.stage);
+  }
+
+  public static void hideMenu(Menu menu) {
+    inputMultiplexer.removeProcessor(menu.stage);
+  }
   public Stage hud;
   public CameraController cameraController;
 
@@ -43,13 +50,5 @@ public class InputChain implements Disposable {
     inputMultiplexer.removeProcessor(hud);
     inputMultiplexer.removeProcessor(KeyboardHelper.inputProcessor);
     inputMultiplexer.removeProcessor(cameraController);
-  }
-
-  public static void showMenu(Menu menu) {
-    inputMultiplexer.addProcessor(0, menu.stage);
-  }
-
-  public static void hideMenu(Menu menu) {
-    inputMultiplexer.removeProcessor(menu.stage);
   }
 }

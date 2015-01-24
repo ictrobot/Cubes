@@ -168,6 +168,35 @@ public class GuiRenderer implements Disposable {
     }
   }
 
+  public boolean isDebugEnabled() {
+    return debugEnabled;
+  }
+
+  public boolean isChatEnabled() {
+    return chatEnabled;
+  }
+
+  public boolean isBlocksMenuEnabled() {
+    return blocksMenuEnabled;
+  }
+
+  public void setBlocksMenuEnabled(boolean blocksMenuEnabled) {
+    this.blocksMenuEnabled = blocksMenuEnabled;
+  }
+
+  public void setChatEnabled(boolean chatEnabled) {
+    this.chatEnabled = chatEnabled;
+  }
+
+  public void setDebugEnabled(boolean debugEnabled) {
+    if (debugEnabled) {
+      GLProfiler.disable();
+    } else {
+      GLProfiler.enable();
+    }
+    this.debugEnabled = debugEnabled;
+  }
+
   public void render() {
     stage.getRoot().removeActor(debug);
     if (isDebugEnabled()) {
@@ -193,33 +222,39 @@ public class GuiRenderer implements Disposable {
     if (isBlocksMenuEnabled()) renderBlockMenu();
   }
 
-  public boolean isDebugEnabled() {
-    return debugEnabled;
-  }
-
-  public boolean isChatEnabled() {
-    return chatEnabled;
-  }
-
-  public boolean isBlocksMenuEnabled() {
-    return blocksMenuEnabled;
-  }
-
-  public void setChatEnabled(boolean chatEnabled) {
-    this.chatEnabled = chatEnabled;
-  }
-
-  public void setDebugEnabled(boolean debugEnabled) {
-    if (debugEnabled) {
-      GLProfiler.disable();
-    } else {
-      GLProfiler.enable();
+  public void renderHotbar() {
+    Player player = Cubes.getClient().player;
+    int startWidth = (Gdx.graphics.getWidth() / 2) - (hotbarSlot.getWidth() * 5);
+    for (int i = 0; i < 10; i++) {
+      int minX = startWidth + (i * hotbarSlot.getWidth());
+      if (i == player.getSelectedSlot()) {
+        spriteBatch.draw(hotbarSelected, minX, 0);
+      } else {
+        spriteBatch.draw(hotbarSlot, minX, 0);
+      }
+      Block block = player.getHotbar(i);
+      if (block != null) {
+        TextureRegion side = block.getTextureHandler(null).getSide(BlockFace.posX);
+        spriteBatch.draw(side, minX + 8, 8);
+      }
     }
-    this.debugEnabled = debugEnabled;
   }
 
-  public void setBlocksMenuEnabled(boolean blocksMenuEnabled) {
-    this.blocksMenuEnabled = blocksMenuEnabled;
+  public void renderBlockMenu() {
+    int i = 0;
+    int startWidth = (Gdx.graphics.getWidth() / 2) - (hotbarSlot.getWidth() * 5);
+    int startHeight = (Gdx.graphics.getHeight() / 2) - (hotbarSlot.getHeight() * 3);
+    for (int y = 0; y < 6; y++) {
+      int minY = startHeight + ((5 - y) * hotbarSlot.getHeight());
+      for (int x = 0; x < 10; x++, i++) {
+        int minX = startWidth + (x * hotbarSlot.getWidth());
+        spriteBatch.draw(hotbarSlot, minX, minY);
+        Block block = blocks[x][y];
+        if (block == null) continue;
+        TextureRegion side = block.getTextureHandler(null).getSide(BlockFace.posX);
+        spriteBatch.draw(side, minX + 8, minY + 8);
+      }
+    }
   }
 
   public void resize() {
@@ -256,41 +291,6 @@ public class GuiRenderer implements Disposable {
 
   public boolean noCursorCatching() {
     return chatEnabled || blocksMenuEnabled;
-  }
-
-  public void renderHotbar() {
-    Player player = Cubes.getClient().player;
-    int startWidth = (Gdx.graphics.getWidth() / 2) - (hotbarSlot.getWidth() * 5);
-    for (int i = 0; i < 10; i++) {
-      int minX = startWidth + (i * hotbarSlot.getWidth());
-      if (i == player.getSelectedSlot()) {
-        spriteBatch.draw(hotbarSelected, minX, 0);
-      } else {
-        spriteBatch.draw(hotbarSlot, minX, 0);
-      }
-      Block block = player.getHotbar(i);
-      if (block != null) {
-        TextureRegion side = block.getTextureHandler(null).getSide(BlockFace.posX);
-        spriteBatch.draw(side, minX + 8, 8);
-      }
-    }
-  }
-
-  public void renderBlockMenu() {
-    int i = 0;
-    int startWidth = (Gdx.graphics.getWidth() / 2) - (hotbarSlot.getWidth() * 5);
-    int startHeight = (Gdx.graphics.getHeight() / 2) - (hotbarSlot.getHeight() * 3);
-    for (int y = 0; y < 6; y++) {
-      int minY = startHeight + ((5 - y) * hotbarSlot.getHeight());
-      for (int x = 0; x < 10; x++, i++) {
-        int minX = startWidth + (x * hotbarSlot.getWidth());
-        spriteBatch.draw(hotbarSlot, minX, minY);
-        Block block = blocks[x][y];
-        if (block == null) continue;
-        TextureRegion side = block.getTextureHandler(null).getSide(BlockFace.posX);
-        spriteBatch.draw(side, minX + 8, minY + 8);
-      }
-    }
   }
 
   public void touch(int screenX, int screenY, int pointer, int button) {

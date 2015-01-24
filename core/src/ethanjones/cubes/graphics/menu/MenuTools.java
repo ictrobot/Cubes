@@ -7,8 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
-import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.localization.Localization;
+import ethanjones.cubes.core.platform.Adapter;
 
 public class MenuTools {
 

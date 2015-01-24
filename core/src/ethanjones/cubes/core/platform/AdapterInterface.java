@@ -9,17 +9,17 @@ import ethanjones.cubes.side.server.CubesServer;
 
 public interface AdapterInterface extends ApplicationListener {
 
-  public void setClient(CubesClient cubesClient) throws UnsupportedOperationException;
-
-  public void setServer(CubesServer cubesServer) throws UnsupportedOperationException;
-
-  public void setMenu(Menu menu) throws UnsupportedOperationException;
-
   public CubesClient getClient();
+
+  public void setClient(CubesClient cubesClient) throws UnsupportedOperationException;
 
   public CubesServer getServer();
 
+  public void setServer(CubesServer cubesServer) throws UnsupportedOperationException;
+
   public Menu getMenu();
+
+  public void setMenu(Menu menu) throws UnsupportedOperationException;
 
   public Side getSide();
 

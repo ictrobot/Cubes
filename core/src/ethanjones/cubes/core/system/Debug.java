@@ -106,6 +106,10 @@ public class Debug {
     }
   }
 
+  protected static void errorExit() {
+    System.exit(1);
+  }
+
   private static synchronized void printMods(LogLevel logLevel) {
     if (ModManager.getMods().size() > 0) {
       Log.log(logLevel, "Mods:");
@@ -123,9 +127,5 @@ public class Debug {
     } else {
       Log.log(logLevel, "No Mods");
     }
-  }
-
-  protected static void errorExit() {
-    System.exit(1);
   }
 }

@@ -48,18 +48,18 @@ public class PacketArea extends Packet {
   }
 
   @Override
+  public boolean shouldSend() {
+    if (playerManager == null) return true;
+    return playerManager.shouldSendArea(areaX, areaY, areaZ);
+  }
+
+  @Override
   public void handlePacket() {
     if (Sided.getSide() != Side.Client) return;
     areaReference.setFromAreaCoordinates(areaX, areaY, areaZ);
     Area a = new Area(areaX, areaY, areaZ);
     a.fromIntArray(area);
     Cubes.getClient().world.setAreaInternal(areaReference, a);
-  }
-
-  @Override
-  public boolean shouldSend() {
-    if (playerManager == null) return true;
-    return playerManager.shouldSendArea(areaX, areaY, areaZ);
   }
 
   @Override

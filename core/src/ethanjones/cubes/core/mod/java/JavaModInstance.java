@@ -64,11 +64,11 @@ public class JavaModInstance<T> extends ModInstance {
     modStates.add(modState);
   }
 
-  public T getMod() {
-    return mod;
-  }
-
   public List<ModState> getModStates() {
     return Collections.unmodifiableList(modStates);
+  }
+
+  public T getMod() {
+    return mod;
   }
 }

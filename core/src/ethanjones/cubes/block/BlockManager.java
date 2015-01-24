@@ -10,10 +10,10 @@ import ethanjones.cubes.core.logging.Log;
 
 public class BlockManager implements DataParser<DataGroup> {
 
-  private static volatile boolean canRegister = false;
   private static final ArrayList<Block> blockList = new ArrayList<Block>();
   private static final List<Block> unmodifiableBlockList = Collections.unmodifiableList(blockList);
   private static final HashMap<String, Block> idToBlock = new HashMap<String, Block>();
+  private static volatile boolean canRegister = false;
 
   public static void register(Block block) {
     if (block == null) return;

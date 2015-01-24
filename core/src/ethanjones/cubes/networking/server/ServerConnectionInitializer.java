@@ -19,6 +19,31 @@ import static ethanjones.cubes.networking.client.ClientConnectionInitializer.ext
 
 public class ServerConnectionInitializer {
 
+  private static class Checker implements Callable<Object> {
+
+    private final Socket javaSocket;
+    private final NetJavaSocketImpl gdxSocket;
+
+    private Checker(Socket javaSocket, NetJavaSocketImpl gdxSocket) {
+      this.javaSocket = javaSocket;
+      this.gdxSocket = gdxSocket;
+    }
+
+    @Override
+    public Object call() throws Exception {
+      try {
+        initialConnect(javaSocket, gdxSocket);
+      } catch (Exception e) {
+        if (e instanceof SocketTimeoutException) {
+          throw new IOException("Client did not respond in time", e);
+        } else {
+          throw e;
+        }
+      }
+      return null;
+    }
+  }
+
   public static void check(com.badlogic.gdx.net.Socket gdxSocket) throws Exception {
     Socket javaSocket = extractJavaSocket(gdxSocket);
     NetJavaSocketImpl netJavaSocketImpl = (NetJavaSocketImpl) gdxSocket;
@@ -61,31 +86,6 @@ public class ServerConnectionInitializer {
     }
     dataOutputStream.flush();
     gdxSocket.dispose();
-  }
-
-  private static class Checker implements Callable<Object> {
-
-    private final Socket javaSocket;
-    private final NetJavaSocketImpl gdxSocket;
-
-    private Checker(Socket javaSocket, NetJavaSocketImpl gdxSocket) {
-      this.javaSocket = javaSocket;
-      this.gdxSocket = gdxSocket;
-    }
-
-    @Override
-    public Object call() throws Exception {
-      try {
-        initialConnect(javaSocket, gdxSocket);
-      } catch (Exception e) {
-        if (e instanceof SocketTimeoutException) {
-          throw new IOException("Client did not respond in time", e);
-        } else {
-          throw e;
-        }
-      }
-      return null;
-    }
   }
   
 }

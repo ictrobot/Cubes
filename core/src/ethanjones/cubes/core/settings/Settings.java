@@ -62,6 +62,22 @@ public class Settings {
     return true;
   }
 
+  public static boolean write() {
+    FileHandle fileHandle = Compatibility.get().getBaseFolder().child("settings.data");
+    DataGroup dataGroup = new DataGroup();
+    for (Map.Entry<String, Setting> entry : settings.entrySet()) {
+      dataGroup.setGroup(entry.getKey(), entry.getValue().write());
+    }
+    try {
+      DataTools.write(dataGroup, fileHandle.file());
+    } catch (Exception e) {
+      Log.error("Failed to write settings", e);
+      fileHandle.delete();
+      return false;
+    }
+    return true;
+  }
+
   public static void print() {
     for (Map.Entry<String, Setting> entry : settings.entrySet()) {
       Log.debug("Setting \"" + getLocalisedSettingName(entry.getKey()) + "\" = \"" + entry.getValue() + "\"");
@@ -100,22 +116,6 @@ public class Settings {
 
   public static StringSetting getStringSetting(String notLocalised) {
     return (StringSetting) getSetting(notLocalised);
-  }
-
-  public static boolean write() {
-    FileHandle fileHandle = Compatibility.get().getBaseFolder().child("settings.data");
-    DataGroup dataGroup = new DataGroup();
-    for (Map.Entry<String, Setting> entry : settings.entrySet()) {
-      dataGroup.setGroup(entry.getKey(), entry.getValue().write());
-    }
-    try {
-      DataTools.write(dataGroup, fileHandle.file());
-    } catch (Exception e) {
-      Log.error("Failed to write settings", e);
-      fileHandle.delete();
-      return false;
-    }
-    return true;
   }
 
   public static String getLocalisedSettingGroupName(String notLocalised) {

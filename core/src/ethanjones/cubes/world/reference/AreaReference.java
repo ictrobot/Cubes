@@ -29,14 +29,6 @@ public class AreaReference implements Pool.Poolable, Cloneable {
     return this;
   }
 
-  public AreaReference setFromAreaReference(AreaReference areaReference) {
-    this.areaX = areaReference.areaX;
-    this.areaY = areaReference.areaY;
-    this.areaZ = areaReference.areaZ;
-    this.hashCode = areaReference.hashCode;
-    return this;
-  }
-
   public AreaReference setFromBlockCoordinates(int blockX, int blockY, int blockZ) {
     this.areaX = CoordinateConverter.area(blockX);
     this.areaY = CoordinateConverter.area(blockY);
@@ -90,6 +82,14 @@ public class AreaReference implements Pool.Poolable, Cloneable {
 
   public AreaReference clone() {
     return new AreaReference().setFromAreaReference(this);
+  }
+
+  public AreaReference setFromAreaReference(AreaReference areaReference) {
+    this.areaX = areaReference.areaX;
+    this.areaY = areaReference.areaY;
+    this.areaZ = areaReference.areaZ;
+    this.hashCode = areaReference.hashCode;
+    return this;
   }
 
   @Override

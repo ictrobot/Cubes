@@ -16,11 +16,6 @@ public class AndroidLauncher extends AndroidApplication implements Launcher {
   }
 
   @Override
-  public void onBackPressed() {
-    ((AndroidCompatibility) Compatibility.get()).back = true;
-  }
-
-  @Override
   public void onTrimMemory(int level) {
     super.onTrimMemory(level);
     if (level == TRIM_MEMORY_RUNNING_MODERATE || level == TRIM_MEMORY_RUNNING_LOW) {
@@ -28,5 +23,10 @@ public class AndroidLauncher extends AndroidApplication implements Launcher {
     } else if (level == TRIM_MEMORY_RUNNING_CRITICAL) {
       Debug.criticalMemory();
     }
+  }
+
+  @Override
+  public void onBackPressed() {
+    ((AndroidCompatibility) Compatibility.get()).back = true;
   }
 }

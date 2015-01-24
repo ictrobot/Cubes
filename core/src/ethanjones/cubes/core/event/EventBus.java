@@ -36,17 +36,6 @@ public class EventBus {
     return this;
   }
 
-  public <E extends Event> E post(E event) {
-    if (event == null) return null;
-    if (event.isThreaded()) {
-      Executor.execute(new EventCallable(this, event));
-      return null; //Still being called
-    } else {
-      EventCallable.run(this, event);
-      return event;
-    }
-  }
-
   public List<EventWrapper> getList(Class<? extends Event> eventClass) {
     synchronized (this) {
       List<EventWrapper> eventHandlers = data.get(eventClass);
@@ -55,6 +44,17 @@ public class EventBus {
         data.put(eventClass, eventHandlers);
       }
       return eventHandlers;
+    }
+  }
+
+  public <E extends Event> E post(E event) {
+    if (event == null) return null;
+    if (event.isThreaded()) {
+      Executor.execute(new EventCallable(this, event));
+      return null; //Still being called
+    } else {
+      EventCallable.run(this, event);
+      return event;
     }
   }
 

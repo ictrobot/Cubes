@@ -67,11 +67,6 @@ public class ServerNetworking extends Networking {
     Cubes.getServer().removeClient(socketMonitor);
   }
 
-  protected synchronized void accepted(Socket socket) {
-    sockets.add(new SocketMonitor(socket, this, Side.Server));
-    Log.info("Successfully connected to " + socket.getRemoteAddress());
-  }
-
   public void processPackets() {
     for (SocketMonitor socketMonitor : sockets) {
       Packet packet = null;
@@ -80,5 +75,10 @@ public class ServerNetworking extends Networking {
         packet.handlePacket();
       }
     }
+  }
+
+  protected synchronized void accepted(Socket socket) {
+    sockets.add(new SocketMonitor(socket, this, Side.Server));
+    Log.info("Successfully connected to " + socket.getRemoteAddress());
   }
 }

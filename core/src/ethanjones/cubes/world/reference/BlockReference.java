@@ -19,14 +19,6 @@ public class BlockReference implements Pool.Poolable {
     return this;
   }
 
-  public BlockReference setFromBlockReference(BlockReference blockReference) {
-    this.blockX = blockReference.blockX;
-    this.blockY = blockReference.blockY;
-    this.blockZ = blockReference.blockZ;
-    this.hashCode = blockReference.hashCode;
-    return this;
-  }
-
   public BlockReference setFromPosition(float x, float y, float z) {
     this.blockX = CoordinateConverter.block(x);
     this.blockY = CoordinateConverter.block(y);
@@ -59,6 +51,14 @@ public class BlockReference implements Pool.Poolable {
 
   public BlockReference clone() {
     return new BlockReference().setFromBlockReference(this);
+  }
+
+  public BlockReference setFromBlockReference(BlockReference blockReference) {
+    this.blockX = blockReference.blockX;
+    this.blockY = blockReference.blockY;
+    this.blockZ = blockReference.blockZ;
+    this.hashCode = blockReference.hashCode;
+    return this;
   }
 
   public String toString() {

@@ -32,6 +32,20 @@ public class ClientDebug {
 
   }
 
+  public static class Average {
+
+    public int current;
+    public long total;
+    public int num;
+    public int average;
+
+    public void add(int i) {
+      current = i;
+      total += i;
+      num++;
+      average = (int) (total / num);
+    }
+  }
   private static final String lineSeparator = System.getProperty("line.separator");
   static Average fps = new Average();
   static Average loop = new Average();
@@ -58,20 +72,5 @@ public class ClientDebug {
 
   public static void tick() {
     fps.add(Gdx.graphics.getFramesPerSecond());
-  }
-
-  public static class Average {
-
-    public int current;
-    public long total;
-    public int num;
-    public int average;
-
-    public void add(int i) {
-      current = i;
-      total += i;
-      num++;
-      average = (int) (total / num);
-    }
   }
 }

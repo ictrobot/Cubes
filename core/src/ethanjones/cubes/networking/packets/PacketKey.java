@@ -5,7 +5,6 @@ import java.io.DataOutputStream;
 
 import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.side.common.Cubes;
-import ethanjones.cubes.side.server.CubesServer;
 
 public class PacketKey extends Packet {
 

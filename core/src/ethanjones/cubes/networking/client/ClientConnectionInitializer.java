@@ -54,6 +54,25 @@ public class ClientConnectionInitializer {
     javaSocket.setSoTimeout(0);
   }
 
+  public static Socket extractJavaSocket(com.badlogic.gdx.net.Socket gdxSocket) throws IOException {
+    if (gdxSocket instanceof NetJavaSocketImpl) {
+      try {
+        Field f = NetJavaSocketImpl.class.getDeclaredField("socket");
+        f.setAccessible(true);
+        Socket javaSocket = (java.net.Socket) f.get(gdxSocket);
+        if (javaSocket != null) {
+          return javaSocket;
+        } else {
+          throw new NullPointerException();
+        }
+      } catch (Exception e) {
+        throw new IOException("Failed to get java socket", e);
+      }
+    } else {
+      throw new IOException("libGDX socket is not a " + NetJavaSocketImpl.class.getSimpleName());
+    }
+  }
+
   public static PingResult ping(com.badlogic.gdx.net.Socket gdxSocket) throws Exception {
     Socket javaSocket = extractJavaSocket(gdxSocket);
     DataOutputStream dataOutputStream = new DataOutputStream(javaSocket.getOutputStream());
@@ -83,25 +102,6 @@ public class ClientConnectionInitializer {
       } else {
         throw e;
       }
-    }
-  }
-
-  public static Socket extractJavaSocket(com.badlogic.gdx.net.Socket gdxSocket) throws IOException {
-    if (gdxSocket instanceof NetJavaSocketImpl) {
-      try {
-        Field f = NetJavaSocketImpl.class.getDeclaredField("socket");
-        f.setAccessible(true);
-        Socket javaSocket = (java.net.Socket) f.get(gdxSocket);
-        if (javaSocket != null) {
-          return javaSocket;
-        } else {
-          throw new NullPointerException();
-        }
-      } catch (Exception e) {
-        throw new IOException("Failed to get java socket", e);
-      }
-    } else {
-      throw new IOException("libGDX socket is not a " + NetJavaSocketImpl.class.getSimpleName());
     }
   }
 }

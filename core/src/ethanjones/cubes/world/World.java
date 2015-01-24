@@ -23,6 +23,29 @@ public abstract class World implements Disposable {
     requested = new ArrayList<AreaReference>();
   }
 
+  public boolean setAreaInternal(AreaReference areaReference, Area area) {
+    synchronized (map) {
+      map.put(areaReference.clone(), area);
+    }
+    return true;
+  }
+
+  public Block getBlock(int x, int y, int z) {
+    Area area = getArea(CoordinateConverter.area(x), CoordinateConverter.area(y), CoordinateConverter.area(z));
+    return area == null ? null : area.getBlock(x - area.minBlockX, y - area.minBlockY, z - area.minBlockZ);
+  }
+
+  public Area getArea(int areaX, int areaY, int areaZ) {
+    AreaReference areaReference = Pools.obtainAreaReference().setFromAreaCoordinates(areaX, areaY, areaZ);
+    Area area = getArea(areaReference);
+    Pools.free(AreaReference.class, areaReference);
+    return area;
+  }
+
+  public Area getArea(AreaReference areaReference) {
+    return getAreaInternal(areaReference, true);
+  }
+
   public Area getAreaInternal(AreaReference areaReference, boolean request) {
     Area area;
     synchronized (map) {
@@ -34,13 +57,6 @@ public abstract class World implements Disposable {
       requestArea(areaReference);
     }
     return null;
-  }
-
-  public boolean setAreaInternal(AreaReference areaReference, Area area) {
-    synchronized (map) {
-      map.put(areaReference.clone(), area);
-    }
-    return true;
   }
 
   public void requestArea(AreaReference areaReference) {
@@ -56,25 +72,9 @@ public abstract class World implements Disposable {
 
   protected abstract void requestAreaInternal(AreaReference areaReference);
 
-  public Block getBlock(int x, int y, int z) {
-    Area area = getArea(CoordinateConverter.area(x), CoordinateConverter.area(y), CoordinateConverter.area(z));
-    return area == null ? null : area.getBlock(x - area.minBlockX, y - area.minBlockY, z - area.minBlockZ);
-  }
-
   public void setBlock(Block block, int x, int y, int z) {
     Area area = getArea(CoordinateConverter.area(x), CoordinateConverter.area(y), CoordinateConverter.area(z));
     if (area != null) area.setBlock(block, x - area.minBlockX, y - area.minBlockY, z - area.minBlockZ);
-  }
-
-  public Area getArea(int areaX, int areaY, int areaZ) {
-    AreaReference areaReference = Pools.obtainAreaReference().setFromAreaCoordinates(areaX, areaY, areaZ);
-    Area area = getArea(areaReference);
-    Pools.free(AreaReference.class, areaReference);
-    return area;
-  }
-
-  public Area getArea(AreaReference areaReference) {
-    return getAreaInternal(areaReference, true);
   }
 
   public TerrainGenerator getTerrainGenerator() {

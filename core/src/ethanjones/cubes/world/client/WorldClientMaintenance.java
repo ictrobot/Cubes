@@ -10,8 +10,8 @@ import ethanjones.cubes.world.storage.Area;
 
 public class WorldClientMaintenance implements Runnable {
 
-  private final WorldClient worldClient;
   private static final int AREA_LOAD_RADIUS = 10;
+  private final WorldClient worldClient;
 
   public WorldClientMaintenance(WorldClient worldClient) {
     this.worldClient = worldClient;

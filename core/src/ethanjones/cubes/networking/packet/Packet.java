@@ -29,20 +29,20 @@ public abstract class Packet {
 
   public abstract void handlePacket();
 
-  public void setPacketPriority(PacketPriority packetPriority) {
-    this.packetPriority = packetPriority;
-  }
-
   public PacketPriority getPacketPriority() {
     return packetPriority;
   }
 
-  public void setSocketMonitor(SocketMonitor socketMonitor) {
-    this.socketMonitor = socketMonitor;
+  public void setPacketPriority(PacketPriority packetPriority) {
+    this.packetPriority = packetPriority;
   }
 
   public SocketMonitor getSocketMonitor() {
     return socketMonitor;
+  }
+
+  public void setSocketMonitor(SocketMonitor socketMonitor) {
+    this.socketMonitor = socketMonitor;
   }
 
   public boolean shouldCompress() {

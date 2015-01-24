@@ -19,14 +19,6 @@ public class CommandBuilder {
     this(null, base, null);
   }
 
-  private CommandBuilder(CommandBuilder parent, String commandString) {
-    this(parent, commandString, null);
-  }
-
-  private CommandBuilder(CommandBuilder parent, CommandValue commandValue) {
-    this(parent, null, commandValue);
-  }
-
   private CommandBuilder(CommandBuilder parent, String commandString, CommandValue commandValue) {
     this.parent = parent;
     this.children = new ArrayList<CommandBuilder>();
@@ -34,6 +26,23 @@ public class CommandBuilder {
     this.commandString = commandString;
     this.commandValue = commandValue;
     this.commandPermission = parent != null ? parent.getCommandPermission() : CommandPermission.Basic; //inherit command permission
+  }
+
+  public CommandPermission getCommandPermission() {
+    return commandPermission;
+  }
+
+  public CommandBuilder setCommandPermission(CommandPermission commandPermission) {
+    this.commandPermission = commandPermission;
+    return this;
+  }
+
+  private CommandBuilder(CommandBuilder parent, String commandString) {
+    this(parent, commandString, null);
+  }
+
+  private CommandBuilder(CommandBuilder parent, CommandValue commandValue) {
+    this(parent, null, commandValue);
   }
 
   public CommandBuilder getParent() {
@@ -48,17 +57,12 @@ public class CommandBuilder {
     return commandString;
   }
 
-  public CommandBuilder setHelpText(String helpText) {
-    this.helpText = helpText;
-    return this;
-  }
-
   public String getHelpText() {
     return helpText;
   }
 
-  public CommandBuilder setCommandListener(CommandListener commandListener) {
-    this.commandListener = commandListener;
+  public CommandBuilder setHelpText(String helpText) {
+    this.helpText = helpText;
     return this;
   }
 
@@ -66,13 +70,9 @@ public class CommandBuilder {
     return commandListener;
   }
 
-  public CommandBuilder setCommandPermission(CommandPermission commandPermission) {
-    this.commandPermission = commandPermission;
+  public CommandBuilder setCommandListener(CommandListener commandListener) {
+    this.commandListener = commandListener;
     return this;
-  }
-
-  public CommandPermission getCommandPermission() {
-    return commandPermission;
   }
 
   public List<CommandBuilder> getChildren() {

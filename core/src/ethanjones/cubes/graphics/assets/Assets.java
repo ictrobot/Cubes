@@ -20,22 +20,22 @@ import ethanjones.cubes.core.platform.Compatibility;
 public class Assets {
 
   public static final String CORE = "core";
-  protected static HashMap<String, AssetManager> assetManagers = new HashMap<String, AssetManager>();
   public static PackedTextureSheet blockPackedTextureSheet;
   public static FileHandle assetsFolder = Compatibility.get().getBaseFolder().child("assets");
+  protected static HashMap<String, AssetManager> assetManagers = new HashMap<String, AssetManager>();
 
   public static AssetManager getCoreAssetManager() {
     return getAssetManager(CORE);
+  }
+
+  public static AssetManager getAssetManager(String name) {
+    return assetManagers.get(name);
   }
 
   public static List<AssetManager> getAssetManagers() {
     List<AssetManager> list = new ArrayList<AssetManager>();
     list.addAll(assetManagers.values());
     return list;
-  }
-
-  public static AssetManager getAssetManager(String name) {
-    return assetManagers.get(name);
   }
 
   public static TextureRegion getTextureRegion(String assetName) {

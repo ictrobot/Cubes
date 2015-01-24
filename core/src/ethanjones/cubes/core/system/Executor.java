@@ -67,16 +67,32 @@ public class Executor {
       }
     }
   }
-
+  private final static Object sync = new Object();
   private static boolean running = false;
   private static ScheduledThreadPoolExecutor executor;
   private static ArrayList<ScheduledFuture> scheduled = new ArrayList<ScheduledFuture>();
-  private final static Object sync = new Object();
 
   public static synchronized <T> Future<T> execute(Callable<T> callable) {
     synchronized (sync) {
       if (!running) start();
       return executor.submit(new CallableWrapper<T>(callable));
+    }
+  }
+
+  private static synchronized void start() {
+    synchronized (sync) {
+      executor = new ScheduledThreadPoolExecutor(4, new ThreadFactory() {
+        int threads = 0;
+
+        public Thread newThread(Runnable r) {
+          Thread t = new Thread(r);
+          t.setName("Executor-" + threads++);
+          t.setDaemon(true);
+          return t;
+        }
+      });
+      running = true;
+      executor.prestartAllCoreThreads();
     }
   }
 
@@ -127,23 +143,6 @@ public class Executor {
     synchronized (sync) {
       executor.shutdownNow();
       running = false;
-    }
-  }
-
-  private static synchronized void start() {
-    synchronized (sync) {
-      executor = new ScheduledThreadPoolExecutor(4, new ThreadFactory() {
-        int threads = 0;
-
-        public Thread newThread(Runnable r) {
-          Thread t = new Thread(r);
-          t.setName("Executor-" + threads++);
-          t.setDaemon(true);
-          return t;
-        }
-      });
-      running = true;
-      executor.prestartAllCoreThreads();
     }
   }
 

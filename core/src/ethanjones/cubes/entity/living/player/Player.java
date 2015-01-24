@@ -51,26 +51,14 @@ public class Player extends LivingEntity implements CommandSender {
     return selectedSlot;
   }
 
-  public void setHotbar(Block block) {
-    hotbar[selectedSlot] = block;
-    updateHotbar();
-  }
-
-  public void setHotbar(int i, Block block) {
-    hotbar[i] = block;
-    updateHotbar();
-  }
-
   public void setSelectedSlot(int i) {
     selectedSlot = i;
     updateHotbar();
   }
 
-  public void setHotbarNoUpdate(Block[] blocks, int i) {
-    for (int x = 0; x < 10; x++) {
-      this.hotbar[x] = blocks[x];
-    }
-    selectedSlot = i;
+  public void setHotbar(Block block) {
+    hotbar[selectedSlot] = block;
+    updateHotbar();
   }
 
   private void updateHotbar() {
@@ -82,6 +70,18 @@ public class Player extends LivingEntity implements CommandSender {
     } else {
       NetworkingManager.sendPacketToClient(packetHotbar, clientIdentifier);
     }
+  }
+
+  public void setHotbar(int i, Block block) {
+    hotbar[i] = block;
+    updateHotbar();
+  }
+
+  public void setHotbarNoUpdate(Block[] blocks, int i) {
+    for (int x = 0; x < 10; x++) {
+      this.hotbar[x] = blocks[x];
+    }
+    selectedSlot = i;
   }
 
   @Override

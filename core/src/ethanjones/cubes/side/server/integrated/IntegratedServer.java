@@ -1,8 +1,6 @@
 package ethanjones.cubes.side.server.integrated;
 
-import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.system.Debug;
-import ethanjones.cubes.core.system.Executor;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.CubesServer;
@@ -10,16 +8,6 @@ import ethanjones.cubes.side.server.CubesServer;
 public abstract class IntegratedServer extends CubesServer implements Runnable {
 
   private Thread thread = null;
-
-  @Override
-  public void create() {
-    super.create();
-  }
-
-  @Override
-  public boolean isDedicated() {
-    return false;
-  }
 
   @Override
   public void run() {
@@ -39,6 +27,16 @@ public abstract class IntegratedServer extends CubesServer implements Runnable {
     } catch (Exception e) {
       Debug.crash(e);
     }
+  }
+
+  @Override
+  public void create() {
+    super.create();
+  }
+
+  @Override
+  public boolean isDedicated() {
+    return false;
   }
 
   public Thread start() {

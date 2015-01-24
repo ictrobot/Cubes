@@ -4,7 +4,6 @@ import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.SocketHints;
 
 import ethanjones.cubes.networking.packet.Packet;
-import ethanjones.cubes.networking.packet.PacketIDDatabase;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.networking.socket.SocketMonitor;
 

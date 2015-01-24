@@ -8,7 +8,6 @@ import ethanjones.cubes.core.mod.ModManager;
 import ethanjones.cubes.core.mod.event.StartingClientEvent;
 import ethanjones.cubes.core.mod.event.StoppingClientEvent;
 import ethanjones.cubes.core.platform.Adapter;
-import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.graphics.rendering.Renderer;

@@ -181,12 +181,6 @@ public class PlayerManager {
     }
   }
 
-  public boolean buttonDownRecent(int button) {
-    synchronized (buttons) {
-      return recentButtons.contains(button);
-    }
-  }
-
   public boolean buttonUp(int button) {
     synchronized (buttons) {
       return !buttons.contains(button);
@@ -236,6 +230,12 @@ public class PlayerManager {
     }
     synchronized (keys) {
       recentKeys.clear();
+    }
+  }
+
+  public boolean buttonDownRecent(int button) {
+    synchronized (buttons) {
+      return recentButtons.contains(button);
     }
   }
 }

@@ -104,6 +104,15 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
     Sided.getTiming().update();
   }
 
+  @Override
+  public void dispose() {
+    if (!state.canDispose()) return;
+    state.stopping();
+    if (state.isSetup() && Thread.currentThread() == thread) {
+      stop();
+    }
+  }
+
   protected boolean shouldReturn() {
     if (state.isRunning()) {
       return false;
@@ -114,15 +123,6 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
         Log.error("Cubes" + side.name() + " is not setup");
       }
       return true;
-    }
-  }
-
-  @Override
-  public void dispose() {
-    if (!state.canDispose()) return;
-    state.stopping();
-    if (state.isSetup() && Thread.currentThread() == thread) {
-      stop();
     }
   }
 

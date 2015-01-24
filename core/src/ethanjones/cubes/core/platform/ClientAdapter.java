@@ -35,6 +35,18 @@ public class ClientAdapter implements AdapterInterface {
   }
 
   @Override
+  public void create() {
+    try {
+      Gdx.graphics.setTitle(Branding.DEBUG);
+      thread = Thread.currentThread();
+      thread.setName(getSide().name());
+      Cubes.setup(this);
+      setMenu(new MainMenu());
+      Log.info(Localization.get("client.client_loaded"));
+    } catch (Exception e) {
+      Debug.crash(e);
+    }
+  }  @Override
   public void setClient(CubesClient cubesClient) throws UnsupportedOperationException {
     //CubesSecurity.checkSetCubes();
     if (cubesClient != null) {
@@ -49,6 +61,15 @@ public class ClientAdapter implements AdapterInterface {
   }
 
   @Override
+  public void resize(int width, int height) {
+    try {
+      Graphics.resize();
+      if (menu != null) menu.resize(width, height);
+      if (cubesClient != null) cubesClient.resize(width, height);
+    } catch (Exception e) {
+      Debug.crash(e);
+    }
+  }  @Override
   public void setServer(CubesServer cubesServer) throws UnsupportedOperationException {
     //CubesSecurity.checkSetCubes();
     if (cubesServer != null) {
@@ -62,70 +83,6 @@ public class ClientAdapter implements AdapterInterface {
     } else {
       this.cubesServer = null;
       Log.debug("Server set to null");
-    }
-  }
-
-  @Override
-  public void setMenu(Menu menu) {
-    //CubesSecurity.checkSetMenu();
-    Menu old = this.menu;
-    if (old != null) {
-      old.save();
-      InputChain.hideMenu(old);
-    }
-    this.menu = menu;
-    if (menu != null) {
-      Log.debug("Menu set to " + menu.getClass().getSimpleName());
-      MenuManager.setMenu(menu);
-      setupMenu.set(true);
-    } else {
-      Log.debug("Menu set to null");
-      setupMenu.set(true);
-    }
-  }
-
-  @Override
-  public CubesClient getClient() {
-    return cubesClient;
-  }
-
-  @Override
-  public CubesServer getServer() {
-    return cubesServer;
-  }
-
-  @Override
-  public Menu getMenu() {
-    return menu;
-  }
-
-  @Override
-  public Side getSide() {
-    return Side.Client;
-  }
-
-  @Override
-  public void create() {
-    try {
-      Gdx.graphics.setTitle(Branding.DEBUG);
-      thread = Thread.currentThread();
-      thread.setName(getSide().name());
-      Cubes.setup(this);
-      setMenu(new MainMenu());
-      Log.info(Localization.get("client.client_loaded"));
-    } catch (Exception e) {
-      Debug.crash(e);
-    }
-  }
-
-  @Override
-  public void resize(int width, int height) {
-    try {
-      Graphics.resize();
-      if (menu != null) menu.resize(width, height);
-      if (cubesClient != null) cubesClient.resize(width, height);
-    } catch (Exception e) {
-      Debug.crash(e);
     }
   }
 
@@ -162,6 +119,23 @@ public class ClientAdapter implements AdapterInterface {
     } catch (Exception e) {
       Debug.crash(e);
     }
+  }  @Override
+  public void setMenu(Menu menu) {
+    //CubesSecurity.checkSetMenu();
+    Menu old = this.menu;
+    if (old != null) {
+      old.save();
+      InputChain.hideMenu(old);
+    }
+    this.menu = menu;
+    if (menu != null) {
+      Log.debug("Menu set to " + menu.getClass().getSimpleName());
+      MenuManager.setMenu(menu);
+      setupMenu.set(true);
+    } else {
+      Log.debug("Menu set to null");
+      setupMenu.set(true);
+    }
   }
 
   @Override
@@ -171,6 +145,9 @@ public class ClientAdapter implements AdapterInterface {
     } catch (Exception e) {
       Debug.crash(e);
     }
+  }  @Override
+  public CubesClient getClient() {
+    return cubesClient;
   }
 
   @Override
@@ -180,7 +157,30 @@ public class ClientAdapter implements AdapterInterface {
     } catch (Exception e) {
       Debug.crash(e);
     }
+  }  @Override
+  public CubesServer getServer() {
+    return cubesServer;
   }
+
+  @Override
+  public Menu getMenu() {
+    return menu;
+  }
+
+  @Override
+  public Side getSide() {
+    return Side.Client;
+  }
+
+
+
+
+
+
+
+
+
+
 
   @Override
   public void dispose() {

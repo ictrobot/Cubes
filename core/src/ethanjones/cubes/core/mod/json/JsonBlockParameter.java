@@ -2,7 +2,6 @@ package ethanjones.cubes.core.mod.json;
 
 import ethanjones.cubes.block.BlockManager;
 import ethanjones.cubes.block.json.JsonBlock;
-import ethanjones.cubes.side.Sided;
 
 public class JsonBlockParameter {
 

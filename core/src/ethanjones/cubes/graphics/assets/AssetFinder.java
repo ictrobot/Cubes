@@ -43,13 +43,6 @@ public class AssetFinder {
     return assetManager;
   }
 
-  public static void extractCoreAssets() {
-    AssetManager assetManager = new AssetManager(Assets.CORE);
-    URL jar = AssetFinder.class.getProtectionDomain().getCodeSource().getLocation();
-    extractAssets(jar, assetManager);
-    addAssetManager(assetManager);
-  }
-
   private static void extractAssets(URL jar, AssetManager assetManager) {
     String assets = "assets";
     try {
@@ -74,5 +67,12 @@ public class AssetFinder {
 
   private static void addAssetManager(AssetManager assetManager) {
     Assets.assetManagers.put(assetManager.getName(), assetManager);
+  }
+
+  public static void extractCoreAssets() {
+    AssetManager assetManager = new AssetManager(Assets.CORE);
+    URL jar = AssetFinder.class.getProtectionDomain().getCodeSource().getLocation();
+    extractAssets(jar, assetManager);
+    addAssetManager(assetManager);
   }
 }
