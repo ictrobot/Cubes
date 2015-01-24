@@ -10,7 +10,7 @@ import ethanjones.cubes.core.logging.LogWriter;
 
 public abstract class TextLogWriter implements LogWriter {
 
-  private final static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yy HH:mm:ss");
+  private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yy HH:mm:ss");
 
   @Override
   public void log(LogLevel level, String message) {
@@ -23,13 +23,6 @@ public abstract class TextLogWriter implements LogWriter {
     println(getString(level, throwable));
   }
 
-  private static String getString(LogLevel level, Throwable throwable) {
-    StringWriter sw = new StringWriter();
-    PrintWriter pw = new PrintWriter(sw);
-    throwable.printStackTrace(pw);
-    return sw.toString();
-  }
-
   @Override
   public void log(LogLevel level, Throwable throwable) {
     println(getString(level, throwable));
@@ -37,7 +30,7 @@ public abstract class TextLogWriter implements LogWriter {
 
   protected abstract void println(String string);
 
-  private static String getString(LogLevel level, String message) {
+  private synchronized String getString(LogLevel level, String message) {
     StringBuilder stringBuilder = new StringBuilder();
     stringBuilder.append(dateFormat.format(new Date()));
     stringBuilder.append(" [");
@@ -47,5 +40,12 @@ public abstract class TextLogWriter implements LogWriter {
     stringBuilder.append("] ");
     stringBuilder.append(message);
     return stringBuilder.toString();
+  }
+
+  private String getString(LogLevel level, Throwable throwable) {
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new PrintWriter(sw);
+    throwable.printStackTrace(pw);
+    return sw.toString();
   }
 }
