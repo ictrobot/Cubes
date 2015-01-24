@@ -26,11 +26,6 @@ public abstract class Networking {
   }
 
   private volatile NetworkingState networkingState;
-  private PacketIDDatabase packetIDDatabase;
-
-  public Networking() {
-    this.packetIDDatabase = new PacketIDDatabase();
-  }
 
   public NetworkingState getNetworkingState() {
     return networkingState;
