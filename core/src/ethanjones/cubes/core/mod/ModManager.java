@@ -144,15 +144,23 @@ public class ModManager {
   }
 
   private static void writeToFile(FileHandle file, ZipInputStream zipInputStream) throws Exception {
-    file.parent().mkdirs();
-    file.file().createNewFile();
-    FileOutputStream fileOutputStream = new FileOutputStream(file.file());
-    int len = 0;
-    byte[] buffer = new byte[2048];
-    while ((len = zipInputStream.read(buffer)) > 0) {
-      fileOutputStream.write(buffer, 0, len);
+    FileOutputStream fileOutputStream = null;
+    try {
+      file.parent().mkdirs();
+      file.file().createNewFile();
+      fileOutputStream = new FileOutputStream(file.file());
+      int len = 0;
+      byte[] buffer = new byte[2048];
+      while ((len = zipInputStream.read(buffer)) > 0) {
+        fileOutputStream.write(buffer, 0, len);
+      }
+    } catch (Exception e) {
+      throw e;
+    } finally {
+      if (fileOutputStream != null) {
+        fileOutputStream.close();
+      }
     }
-    fileOutputStream.close();
   }
 
   public synchronized static List<ModInstance> getMods() {
