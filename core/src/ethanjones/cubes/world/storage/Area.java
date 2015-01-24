@@ -156,6 +156,11 @@ public class Area {
 
   private void update(int x, int y, int z, int i) {
     synchronized (this) {
+      if (blocks[i] == 0) {
+        visible[i] = false;
+        return;
+      }
+
       if (x < SIZE_BLOCKS - 1) {
         if (blocks[i + MAX_X_OFFSET] == 0) {
           visible[i] = true;
