@@ -9,7 +9,7 @@ import ethanjones.cubes.core.mod.ModLoader;
 
 public class DesktopModLoader implements ModLoader {
 
-  public class ExternalJarLoader extends URLClassLoader {
+  public static class ExternalJarLoader extends URLClassLoader {
 
     public ExternalJarLoader(FileHandle fileHandle) throws IOException {
       super(new URL[]{fileHandle.file().toURI().toURL()});
