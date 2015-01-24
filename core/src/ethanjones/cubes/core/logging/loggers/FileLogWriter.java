@@ -15,7 +15,7 @@ public class FileLogWriter extends TextLogWriter {
     try {
       file.createNewFile();
       fileOutputStream = new FileOutputStream(file);
-      printStream = new PrintStream(fileOutputStream);
+      printStream = new PrintStream(fileOutputStream, true, "UTF-8");
     } catch (Exception e) {
       e.printStackTrace();
     }
