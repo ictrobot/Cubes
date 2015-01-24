@@ -7,6 +7,7 @@ import java.security.CodeSource;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.side.common.Cubes;
 
 public class AssetFinder {
@@ -67,7 +68,7 @@ public class AssetFinder {
         zip.close();
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      Log.error("Failed to extract assets", e);
     }
   }
 

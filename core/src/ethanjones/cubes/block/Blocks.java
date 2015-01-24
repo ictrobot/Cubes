@@ -7,6 +7,7 @@ import ethanjones.cubes.block.basic.BlockBedrock;
 import ethanjones.cubes.block.basic.BlockDirt;
 import ethanjones.cubes.block.basic.BlockGrass;
 import ethanjones.cubes.block.basic.BlockStone;
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.util.Register;
 
 public class Blocks {
@@ -36,7 +37,7 @@ public class Blocks {
           }
         }
       } catch (Exception e) {
-        e.printStackTrace();
+        Log.error("Failed to init block", e);
       }
     }
   }
