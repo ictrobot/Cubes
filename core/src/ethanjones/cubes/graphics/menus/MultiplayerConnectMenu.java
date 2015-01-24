@@ -36,6 +36,12 @@ public class MultiplayerConnectMenu extends Menu {
         Adapter.setMenu(new MultiplayerLoadingMenu(address.getText().isEmpty() ? "localhost" : address.getText(), port.getText().isEmpty() ? 24842 : Integer.parseInt(port.getText())));
       }
     });
+
+    stage.addActor(title);
+    stage.addActor(address);
+    stage.addActor(port);
+    stage.addActor(connect);
+    stage.addActor(back);
   }
 
   @Override
@@ -45,14 +51,5 @@ public class MultiplayerConnectMenu extends Menu {
     MenuTools.arrange(width / 4, height / 4, width / 2, height / 2, MenuTools.Direction.Above, connect, port, address);
     MenuTools.copyPosAndSize(connect, back);
     back.setY(0);
-  }
-
-  @Override
-  public void addActors() {
-    stage.addActor(title);
-    stage.addActor(address);
-    stage.addActor(port);
-    stage.addActor(connect);
-    stage.addActor(back);
   }
 }

@@ -19,20 +19,18 @@ import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.storage.Area;
 
+import static ethanjones.cubes.graphics.Graphics.modelBatch;
+
 public class WorldRenderer implements Disposable {
 
   public Environment environment;
   public PerspectiveCamera camera;
-
-  private ModelBatch modelBatch;
 
   static {
     Pools.registerType(AreaRenderer.class, new AreaRendererPool());
   }
 
   public WorldRenderer() {
-    modelBatch = new ModelBatch();
-
     environment = new Environment();
     environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
     environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.9f, -0.8f));
@@ -83,6 +81,6 @@ public class WorldRenderer implements Disposable {
 
   @Override
   public void dispose() {
-    modelBatch.dispose();
+
   }
 }

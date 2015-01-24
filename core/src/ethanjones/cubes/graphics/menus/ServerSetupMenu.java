@@ -34,6 +34,11 @@ public class ServerSetupMenu extends Menu {
         Adapter.setMenu(new ServerRunningMenu(port.getText().isEmpty() ? Settings.getIntegerSettingValue(Settings.NETWORKING_PORT) : Integer.parseInt(port.getText())));
       }
     });
+
+    stage.addActor(title);
+    stage.addActor(port);
+    stage.addActor(start);
+    stage.addActor(back);
   }
 
   @Override
@@ -43,13 +48,5 @@ public class ServerSetupMenu extends Menu {
     MenuTools.arrange(width / 4, height / 2, width / 2, height / 4, MenuTools.Direction.Above, start, port);
     MenuTools.copyPosAndSize(start, back);
     back.setY(0);
-  }
-
-  @Override
-  public void addActors() {
-    stage.addActor(title);
-    stage.addActor(port);
-    stage.addActor(start);
-    stage.addActor(back);
   }
 }

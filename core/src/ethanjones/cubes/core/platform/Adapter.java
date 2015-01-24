@@ -6,7 +6,8 @@ import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menus.MainMenu;
-import ethanjones.cubes.graphics.menus.WaitingMenu;
+import ethanjones.cubes.graphics.menus.RunnableMenu;
+import ethanjones.cubes.input.InputChain;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.server.CubesServer;
@@ -52,7 +53,8 @@ public class Adapter {
     final Menu menu = adapter.getMenu();
     try {
       if (menu != null) {
-        menu.hide();
+        menu.save();
+        InputChain.hideMenu(menu);
       }
     } catch (Exception e) {
       Debug.crash(e);
@@ -65,9 +67,9 @@ public class Adapter {
    */
   public static void gotoMainMenu() {
     if (isDedicatedServer()) quit();
-    if (adapter.getMenu() instanceof WaitingMenu || adapter.getMenu() instanceof MainMenu) return;
+    if (adapter.getMenu() instanceof RunnableMenu || adapter.getMenu() instanceof MainMenu) return;
 
-    adapter.setMenu(new WaitingMenu(new Runnable() {
+    adapter.setMenu(new RunnableMenu(new Runnable() {
       @Override
       public void run() {
         if (adapter.getClient() == null && adapter.getServer() == null) {

@@ -5,6 +5,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Disposable;
 
+import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.input.keyboard.KeyboardHelper;
 
 public class InputChain implements Disposable {
@@ -42,5 +43,13 @@ public class InputChain implements Disposable {
     inputMultiplexer.removeProcessor(hud);
     inputMultiplexer.removeProcessor(KeyboardHelper.inputProcessor);
     inputMultiplexer.removeProcessor(cameraController);
+  }
+
+  public static void showMenu(Menu menu) {
+    inputMultiplexer.addProcessor(0, menu.stage);
+  }
+
+  public static void hideMenu(Menu menu) {
+    inputMultiplexer.removeProcessor(menu.stage);
   }
 }

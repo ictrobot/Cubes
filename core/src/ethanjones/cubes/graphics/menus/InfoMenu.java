@@ -21,13 +21,21 @@ public class InfoMenu extends Menu {
     text = new Label(labelText, new LabelStyle(Fonts.Size2, Color.WHITE));
     text.setAlignment(Align.center, Align.center);
     button = new TextButton(buttonText, skin);
+
+    stage.addActor(text);
+    stage.addActor(button);
   }
 
   public InfoMenu(String labelText, boolean back) {
     super();
     text = new Label(labelText, new LabelStyle(Fonts.Size2, Color.WHITE));
     text.setAlignment(Align.center, Align.center);
-    if (back) button = MenuTools.getBackButton(this);
+    stage.addActor(text);
+
+    if (back) {
+      button = MenuTools.getBackButton(this);
+      stage.addActor(button);
+    }
   }
 
   @Override
@@ -42,12 +50,6 @@ public class InfoMenu extends Menu {
       text.layout();
       text.setBounds(0, 0, width, height);
     }
-  }
-
-  @Override
-  public void addActors() {
-    stage.addActor(text);
-    if (button != null) stage.addActor(button);
   }
 
   public boolean addButtonListener(EventListener listener) {

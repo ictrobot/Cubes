@@ -95,6 +95,10 @@ public class SettingsMenu extends Menu implements VisualSettingManager {
     scrollPane.setScrollingDisabled(true, false);
 
     back = MenuTools.getBackButton(this);
+
+    stage.addActor(title);
+    stage.addActor(scrollPane);
+    stage.addActor(back);
   }
 
   @Override
@@ -120,20 +124,12 @@ public class SettingsMenu extends Menu implements VisualSettingManager {
     back.setBounds(width / 4, 0, width / 2, height / 6);
   }
 
-  public void hide() {
-    super.hide();
+  public void save() {
     for (ListObject listObject : listObjects) {
       saveEvent.reset();
       listObject.actor.fire(saveEvent);
     }
     Settings.write();
-  }
-
-  @Override
-  public void addActors() {
-    stage.addActor(title);
-    stage.addActor(scrollPane);
-    stage.addActor(back);
   }
 
   @Override

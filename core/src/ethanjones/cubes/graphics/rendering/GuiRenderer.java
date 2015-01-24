@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -18,7 +17,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +35,8 @@ import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.client.ClientDebug;
 import ethanjones.cubes.side.common.Cubes;
 
+import static ethanjones.cubes.graphics.Graphics.screenViewport;
+import static ethanjones.cubes.graphics.Graphics.spriteBatch;
 import static ethanjones.cubes.graphics.menu.Menu.skin;
 
 public class GuiRenderer implements Disposable {
@@ -66,7 +66,6 @@ public class GuiRenderer implements Disposable {
     }
   }
 
-  SpriteBatch spriteBatch;
   Stage stage;
 
   TextField chat;
@@ -89,8 +88,7 @@ public class GuiRenderer implements Disposable {
   private boolean blocksMenuEnabled;
 
   public GuiRenderer() {
-    spriteBatch = new SpriteBatch();
-    stage = new Stage(new ScreenViewport(), spriteBatch);
+    stage = new Stage(screenViewport, spriteBatch);
     Cubes.getClient().inputChain.hud = stage;
 
     keyListener = new KeyListener();
@@ -191,8 +189,8 @@ public class GuiRenderer implements Disposable {
     float crosshairSize = Math.min(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) / 40;
     spriteBatch.draw(crosshair, (Gdx.graphics.getWidth() / 2) - crosshairSize, (Gdx.graphics.getHeight() / 2) - crosshairSize, crosshairSize * 2, crosshairSize * 2);
     renderHotbar();
-    if (isBlocksMenuEnabled()) renderBlockMenu();
     spriteBatch.end();
+    if (isBlocksMenuEnabled()) renderBlockMenu();
   }
 
   public boolean isDebugEnabled() {
@@ -225,7 +223,6 @@ public class GuiRenderer implements Disposable {
   }
 
   public void resize() {
-    stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
     debug.setBounds(0, 0, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight());
     debug.setAlignment(Align.topLeft, Align.topLeft);
     chat.setBounds(0, 0, Gdx.graphics.getWidth(), chat.getStyle().font.getBounds("ABC123").height * 1.5f);
@@ -255,7 +252,6 @@ public class GuiRenderer implements Disposable {
   @Override
   public void dispose() {
     stage.dispose();
-    spriteBatch.dispose();
   }
 
   public boolean noCursorCatching() {

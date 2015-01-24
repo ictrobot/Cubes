@@ -1,7 +1,6 @@
 package ethanjones.cubes.graphics.menu;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
@@ -13,12 +12,13 @@ import ethanjones.cubes.block.BlockManager;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.graphics.world.BlockTextureHandler;
 
+import static ethanjones.cubes.graphics.Graphics.spriteBatch;
+
 public class MenuManager {
 
   private static Menu menu;
   private static Array<Menu> menus = new Array<Menu>();
   private static TextureRegion texture;
-  private static SpriteBatch spriteBatch;
   private static boolean disableBackground = false;
 
   public static void setMenu(Menu menu) {
@@ -26,6 +26,9 @@ public class MenuManager {
     if (i == -1) {
       menus.add(menu);
     } else if (i + 1 < menus.size) {
+      for (int j = i + 1; j < menus.size; j++) {
+        menus.get(j).save();
+      }
       menus.removeRange(i + 1, menus.size - 1);
     }
     MenuManager.menu = menu;
@@ -59,9 +62,6 @@ public class MenuManager {
         disableBackground = true;
         return;
       }
-    }
-    if (spriteBatch == null) {
-      spriteBatch = new SpriteBatch();
     }
     spriteBatch.begin();
     int width = texture.getRegionWidth();

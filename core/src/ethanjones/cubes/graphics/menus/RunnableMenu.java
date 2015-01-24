@@ -2,11 +2,11 @@ package ethanjones.cubes.graphics.menus;
 
 import ethanjones.cubes.core.localization.Localization;
 
-public class WaitingMenu extends InfoMenu {
+public class RunnableMenu extends InfoMenu {
 
   private final Runnable runnable;
 
-  public WaitingMenu(Runnable runnable) {
+  public RunnableMenu(Runnable runnable) {
     super(Localization.get("menu.general.waiting"), false);
     this.runnable = runnable;
   }

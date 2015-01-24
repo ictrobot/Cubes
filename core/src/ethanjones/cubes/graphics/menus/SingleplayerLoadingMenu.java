@@ -31,7 +31,6 @@ public class SingleplayerLoadingMenu extends InfoMenu {
       Adapter.setMenu(new ConnectionFailedMenu(e));
       Adapter.setClient(null);
       Adapter.setServer(null);
-      return;
     }
   }
 }

@@ -9,10 +9,11 @@ import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.Debug;
-import ethanjones.cubes.graphics.menu.Fonts;
+import ethanjones.cubes.graphics.Graphics;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menu.MenuManager;
 import ethanjones.cubes.graphics.menus.MainMenu;
+import ethanjones.cubes.input.InputChain;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.common.Cubes;
@@ -69,7 +70,8 @@ public class ClientAdapter implements AdapterInterface {
     //CubesSecurity.checkSetMenu();
     Menu old = this.menu;
     if (old != null) {
-      old.hide();
+      old.save();
+      InputChain.hideMenu(old);
     }
     this.menu = menu;
     if (menu != null) {
@@ -119,7 +121,7 @@ public class ClientAdapter implements AdapterInterface {
   @Override
   public void resize(int width, int height) {
     try {
-      Fonts.resize();
+      Graphics.resize();
       if (menu != null) menu.resize(width, height);
       if (cubesClient != null) cubesClient.resize(width, height);
     } catch (Exception e) {
@@ -148,7 +150,7 @@ public class ClientAdapter implements AdapterInterface {
       if (menu != null) {
         if (setupMenu.getAndSet(false)) {
           menu.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-          menu.show();
+          InputChain.showMenu(menu);
         }
         menu.render(); //Render menu over client
       }

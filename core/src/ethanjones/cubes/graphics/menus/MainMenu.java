@@ -83,6 +83,9 @@ public class MainMenu extends Menu {
         Adapter.quit();
       }
     });
+
+    stage.addActor(logo);
+    stage.addActor(buttons);
   }
 
   @Override
@@ -92,11 +95,5 @@ public class MainMenu extends Menu {
     buttons.setBounds(0, 0, width, height / 6 * 5);
     buttons.align(Align.top);
     buttons.layout();
-  }
-
-  @Override
-  public void addActors() {
-    stage.addActor(logo);
-    stage.addActor(buttons);
   }
 }

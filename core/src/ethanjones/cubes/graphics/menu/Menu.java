@@ -3,23 +3,20 @@ package ethanjones.cubes.graphics.menu;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad.TouchpadStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import ethanjones.cubes.graphics.assets.Assets;
-import ethanjones.cubes.input.InputChain;
 
-public abstract class Menu {
+import static ethanjones.cubes.graphics.Graphics.screenViewport;
+import static ethanjones.cubes.graphics.Graphics.spriteBatch;
+
+public class Menu {
 
   public static final Skin skin;
-  protected static Stage stage;
-  private static SpriteBatch spriteBatch;
-  private static ScreenViewport viewport;
 
   static {
     skin = new Skin();
@@ -39,24 +36,16 @@ public abstract class Menu {
     skin.add("default", new ScrollPane.ScrollPaneStyle());
 
     skin.add("default", new TouchpadStyle(new TextureRegionDrawable(Assets.getTextureRegion("core:hud/TouchpadBackground.png")), new TextureRegionDrawable(Assets.getTextureRegion("core:hud/TouchpadKnob.png"))));
-
-    spriteBatch = new SpriteBatch();
-    viewport = new ScreenViewport();
-
-    stage = new Stage(viewport, spriteBatch);
   }
 
-  public static void staticDispose() {
-    spriteBatch.dispose();
-    stage.dispose();
-  }
+  public Stage stage;
 
   public Menu() {
-
+    stage = new Stage(screenViewport, spriteBatch);
   }
 
   public void resize(int width, int height) {
-    viewport.update(width, height, true);
+
   }
 
   public void render() {
@@ -64,18 +53,11 @@ public abstract class Menu {
     stage.draw();
   }
 
-  public void hide() {
-    InputChain.getInputMultiplexer().removeProcessor(stage);
-    stage.clear();
+  public void save() {
+
   }
 
-  public void show() {
-    InputChain.getInputMultiplexer().addProcessor(0, stage);
-    addActors();
+  public void dispose() {
+    stage.dispose();
   }
-
-  /**
-   * Have to add actors to the stage here
-   */
-  public abstract void addActors();
 }
