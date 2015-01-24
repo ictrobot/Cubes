@@ -43,9 +43,9 @@ public class GuiRenderer implements Disposable {
 
   private class KeyListener extends KeyTypedAdapter {
 
-    final int debug = Keys.F1;
-    final int chat = Keys.F2;
-    final int blocksMenu = Keys.E;
+    static final int debug = Keys.F1;
+    static final int chat = Keys.F2;
+    static final int blocksMenu = Keys.E;
 
     @Override
     public void keyDown(int keycode) {
