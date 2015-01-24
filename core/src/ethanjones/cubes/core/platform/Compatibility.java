@@ -27,6 +27,7 @@ public abstract class Compatibility {
   private final Application.ApplicationType applicationType;
 
   protected Compatibility(Launcher launcher, Application.ApplicationType applicationType) {
+    if (compatibility != null) throw new IllegalStateException();
     this.launcher = launcher;
     this.applicationType = applicationType;
   }
