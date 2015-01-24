@@ -109,15 +109,16 @@ public class Debug {
   private static synchronized void printMods(LogLevel logLevel) {
     if (ModManager.getMods().size() > 0) {
       Log.log(logLevel, "Mods:");
-      for (ModInstance javaModInstance : ModManager.getMods()) {
-        String str = javaModInstance.getName();
-        List<ModState> modStates = javaModInstance.getModStates();
-        if (modStates.size() > 0) str = str + " - ";
+      for (ModInstance modInstance : ModManager.getMods()) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(modInstance.getName());
+        List<ModState> modStates = modInstance.getModStates();
+        if (modStates.size() > 0) builder.append(" - ");
         for (int i = 0; i < modStates.size(); i++) {
-          str = str + modStates.get(i).name();
-          if (i != modStates.size() - 1) str = str + " > ";
+          builder.append(modStates.get(i).name());
+          if (i != modStates.size() - 1) builder.append(" > ");
         }
-        Log.log(logLevel, str);
+        Log.log(logLevel, builder.toString());
       }
     } else {
       Log.log(logLevel, "No Mods");

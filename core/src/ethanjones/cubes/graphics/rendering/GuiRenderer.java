@@ -242,11 +242,11 @@ public class GuiRenderer implements Disposable {
 
   public void print(String string) {
     chatStrings.add(0, string);
-    String str = "";
+    StringBuilder builder = new StringBuilder();
     for (int i = Math.min(4, chatStrings.size() - 1); i >= 0; i--) {
-      str = str + chatStrings.get(i) + "\n";
+      builder.append(chatStrings.get(i)).append("\n");
     }
-    chatLog.setText(str);
+    chatLog.setText(builder.toString());
   }
 
   @Override

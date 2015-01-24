@@ -16,11 +16,12 @@ public class PingResult {
     if (failure) {
       return exception.getClass().getSimpleName() + ": " + (exception.getMessage() != null ? exception.getMessage() : "");
     } else {
-      String str = ping + "ms v" + serverMajor + "." + serverMinor + "." + serverPoint + "." + serverBuild + " " + serverHash + " [";
+      StringBuilder builder = new StringBuilder(ping + "ms v" + serverMajor + "." + serverMinor + "." + serverPoint + "." + serverBuild + " " + serverHash + " [");
       for (String player : players) {
-        str = str + player + ", ";
+        builder.append(player).append(" ");
       }
-      return str + "]";
+      builder.append("]");
+      return builder.toString();
     }
   }
 }

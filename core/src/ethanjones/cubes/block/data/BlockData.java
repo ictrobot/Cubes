@@ -34,12 +34,12 @@ public class BlockData {
   }
 
   public String toString() {
-    String str = "[";
+    StringBuilder builder = new StringBuilder();
     for (int i = 0; i < data.length; i++) {
       Attribute attribute = blockAttributes.attributes.get(i);
-      str += attribute.getName() + "=" + attribute.getAttribute(data[i]).toString();
-      if (i != data.length - 1) str += ", ";
+      builder.append(attribute.getName()).append("=").append(attribute.getAttribute(data[i]).toString());
+      if (i != data.length - 1) builder.append(", ");
     }
-    return str + "]";
+    return builder.toString();
   }
 }
