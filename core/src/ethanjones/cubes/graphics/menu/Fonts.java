@@ -58,15 +58,17 @@ public class Fonts {
 
     }
   }
-  public static final StaticBitmapFont Size1 = new StaticBitmapFont(1);
-  public static final StaticBitmapFont Size2 = new StaticBitmapFont(2);
-  public static final StaticBitmapFont Size3 = new StaticBitmapFont(3);
-  public static final StaticBitmapFont Size4 = new StaticBitmapFont(4);
-  public static final StaticBitmapFont Size5 = new StaticBitmapFont(5);
-  public static final StaticBitmapFont Size6 = new StaticBitmapFont(6);
-  public static final StaticBitmapFont Size7 = new StaticBitmapFont(7);
-  public static final StaticBitmapFont Size8 = new StaticBitmapFont(8);
+
+  public static final StaticBitmapFont Size1;
+  public static final StaticBitmapFont Size2;
+  public static final StaticBitmapFont Size3;
+  public static final StaticBitmapFont Size4;
+  public static final StaticBitmapFont Size5;
+  public static final StaticBitmapFont Size6;
+  public static final StaticBitmapFont Size7;
+  public static final StaticBitmapFont Size8;
   private static FreeTypeBitmapFontData data;
+
   static {
     Log.debug("Generating font");
     FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Assets.getAsset("core:font/font.ttf").getFileHandle());
@@ -74,6 +76,15 @@ public class Fonts {
     parameter.size = 10;
     data = generator.generateData(parameter);
     generator.dispose();
+
+    Size1 = new StaticBitmapFont(1);
+    Size2 = new StaticBitmapFont(2);
+    Size3 = new StaticBitmapFont(3);
+    Size4 = new StaticBitmapFont(4);
+    Size5 = new StaticBitmapFont(5);
+    Size6 = new StaticBitmapFont(6);
+    Size7 = new StaticBitmapFont(7);
+    Size8 = new StaticBitmapFont(8);
     Log.debug("Font generated");
   }
 
