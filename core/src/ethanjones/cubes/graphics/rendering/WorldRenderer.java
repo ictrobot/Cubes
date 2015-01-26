@@ -15,6 +15,7 @@ import ethanjones.cubes.graphics.world.AreaRendererPool;
 import ethanjones.cubes.input.CameraController;
 import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.storage.Area;
 
@@ -54,18 +55,22 @@ public class WorldRenderer implements Disposable {
     int renderDistance = Settings.getIntegerSettingValue(Settings.GRAPHICS_VIEW_DISTANCE);
 
     AreaReference pos = Pools.obtainAreaReference().setFromPositionVector3(Cubes.getClient().player.position);
+    int yPos = CoordinateConverter.area(Cubes.getClient().player.position.y);
     for (int areaX = pos.areaX - renderDistance; areaX <= pos.areaX + renderDistance; areaX++) {
-      for (int areaY = Math.max(pos.areaY - renderDistance, 0); areaY <= pos.areaY + renderDistance; areaY++) {
-        for (int areaZ = pos.areaZ - renderDistance; areaZ <= pos.areaZ + renderDistance; areaZ++) {
-          Area area = CubesClient.getClient().world.getArea(areaX, areaY, areaZ);
-          if (area == null) continue;
-          if (!area.isBlank() && areaInFrustum(area, camera.frustum)) {
-            if (area.areaRenderer == null) {
-              Pools.obtain(AreaRenderer.class).set(area);
+      for (int areaZ = pos.areaZ - renderDistance; areaZ <= pos.areaZ + renderDistance; areaZ++) {
+        Area area = CubesClient.getClient().world.getArea(areaX, areaZ);
+        if (area == null) continue;
+        if (area.isBlank()) continue;
+        if (!areaInFrustum(area, camera.frustum)) continue;
+        for (int ySection = Math.max(yPos - renderDistance, 0); ySection <= yPos + renderDistance; ySection++) {
+          if ((((ySection + 1) * Area.SIZE_BLOCKS) - 1) > area.maxY) break;
+          if (areaInFrustum(area, ySection, camera.frustum)) {
+            if (area.areaRenderer[ySection] == null) {
+              Pools.obtain(AreaRenderer.class).set(area, ySection);
             }
-            modelBatch.render(area.areaRenderer, environment);
-          } else if (area.areaRenderer != null) {
-            Pools.free(AreaRenderer.class, area.areaRenderer);
+            modelBatch.render(area.areaRenderer[ySection], environment);
+          } else if (area.areaRenderer[ySection] != null) {
+            Pools.free(AreaRenderer.class, area.areaRenderer[ySection]);
           }
         }
       }
@@ -75,7 +80,11 @@ public class WorldRenderer implements Disposable {
   }
 
   public boolean areaInFrustum(Area area, Frustum frustum) {
-    return frustum.boundsInFrustum(area.cenBlockX, area.cenBlockY, area.cenBlockZ, Area.HALF_SIZE_BLOCKS + 0.5f, Area.HALF_SIZE_BLOCKS + 0.5f, Area.HALF_SIZE_BLOCKS + 0.5f);
+    return frustum.boundsInFrustum(area.minBlockX + Area.HALF_SIZE_BLOCKS, Area.MAX_Y / 2f, area.minBlockZ + Area.HALF_SIZE_BLOCKS, Area.HALF_SIZE_BLOCKS, Area.MAX_Y / 2f, Area.HALF_SIZE_BLOCKS);
+  }
+
+  public boolean areaInFrustum(Area area, int ySection, Frustum frustum) {
+    return frustum.boundsInFrustum(area.minBlockX + Area.HALF_SIZE_BLOCKS, (ySection * Area.SIZE_BLOCKS) + Area.HALF_SIZE_BLOCKS, area.minBlockZ + Area.HALF_SIZE_BLOCKS, Area.HALF_SIZE_BLOCKS, Area.HALF_SIZE_BLOCKS, Area.HALF_SIZE_BLOCKS);
   }
 
   @Override

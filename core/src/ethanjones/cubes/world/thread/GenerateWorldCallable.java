@@ -19,7 +19,7 @@ public class GenerateWorldCallable implements Callable<Area> {
 
   @Override
   public Area call() throws Exception {
-    Area area = new Area(areaReference.areaX, areaReference.areaY, areaReference.areaZ);
+    Area area = new Area(areaReference.areaX, areaReference.areaZ);
     world.getTerrainGenerator().generate(area);
     new GenerationEvent(area, areaReference).post();
     area.updateAll();

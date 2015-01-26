@@ -57,12 +57,9 @@ public class PlayerManager {
     synchronized (playerArea) {
       for (int areaX = playerArea.areaX - renderDistance; areaX <= playerArea.areaX + renderDistance; areaX++) {
         check.areaX = areaX;
-        for (int areaY = Math.max(playerArea.areaY - renderDistance, 0); areaY <= playerArea.areaY + renderDistance; areaY++) {
-          check.areaY = areaY;
-          for (int areaZ = playerArea.areaZ - renderDistance; areaZ <= playerArea.areaZ + renderDistance; areaZ++) {
-            check.areaZ = areaZ;
-            sendAndRequestArea(check);
-          }
+        for (int areaZ = playerArea.areaZ - renderDistance; areaZ <= playerArea.areaZ + renderDistance; areaZ++) {
+          check.areaZ = areaZ;
+          sendAndRequestArea(check);
         }
       }
     }
@@ -84,13 +81,10 @@ public class PlayerManager {
       AreaReference check = new AreaReference();
       for (int areaX = n.areaX - renderDistance; areaX <= n.areaX + renderDistance; areaX++) {
         check.areaX = areaX;
-        for (int areaY = Math.max(n.areaY - renderDistance, 0); areaY <= n.areaY + renderDistance; areaY++) {
-          check.areaY = areaY;
-          for (int areaZ = n.areaZ - renderDistance; areaZ <= n.areaZ + renderDistance; areaZ++) {
-            check.areaZ = areaZ;
-            if (Math.abs(areaX - o.areaX) > renderDistance || Math.abs(areaY - o.areaY) > renderDistance || Math.abs(areaZ - o.areaZ) > renderDistance) {
-              sendAndRequestArea(check);
-            }
+        for (int areaZ = n.areaZ - renderDistance; areaZ <= n.areaZ + renderDistance; areaZ++) {
+          check.areaZ = areaZ;
+          if (Math.abs(areaX - o.areaX) > renderDistance || Math.abs(areaZ - o.areaZ) > renderDistance) {
+            sendAndRequestArea(check);
           }
         }
       }
@@ -109,7 +103,6 @@ public class PlayerManager {
     BlockReference blockReference = blockEvent.getBlockReference();
     synchronized (playerArea) {
       if (Math.abs(CoordinateConverter.area(blockReference.blockX) - playerArea.areaX) > renderDistance) return;
-      if (Math.abs(CoordinateConverter.area(blockReference.blockY) - playerArea.areaY) > renderDistance) return;
       if (Math.abs(CoordinateConverter.area(blockReference.blockZ) - playerArea.areaZ) > renderDistance) return;
     }
     PacketBlockChanged packet = new PacketBlockChanged();
@@ -120,9 +113,9 @@ public class PlayerManager {
     NetworkingManager.sendPacketToClient(packet, client);
   }
 
-  public boolean shouldSendArea(int areaX, int areaY, int areaZ) {
+  public boolean shouldSendArea(int areaX, int areaZ) {
     synchronized (playerArea) {
-      if (Math.abs(areaX - playerArea.areaX) <= renderDistance && Math.abs(areaY - playerArea.areaY) <= renderDistance && Math.abs(areaZ - playerArea.areaZ) <= renderDistance) {
+      if (Math.abs(areaX - playerArea.areaX) <= renderDistance && Math.abs(areaZ - playerArea.areaZ) <= renderDistance) {
         return true;
       }
       return false;

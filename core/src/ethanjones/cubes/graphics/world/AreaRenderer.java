@@ -54,6 +54,7 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
   Vector3 offset = new Vector3();
   private int numVertices = 0;
   private Area area;
+  private int ySection;
 
   protected AreaRenderer() {
     mesh = new Mesh(true, vertices.length, indices.length, vertexAttributes);
@@ -82,17 +83,15 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
   public int calculateVertices(float[] vertices) {
     if (area == null) return 0;
 
-    Area maxX = Cubes.getClient().world.getArea(area.x + 1, area.y, area.z);
-    Area minX = Cubes.getClient().world.getArea(area.x - 1, area.y, area.z);
-    Area maxY = Cubes.getClient().world.getArea(area.x, area.y + 1, area.z);
-    Area minY = Cubes.getClient().world.getArea(area.x, area.y - 1, area.z);
-    Area maxZ = Cubes.getClient().world.getArea(area.x, area.y, area.z + 1);
-    Area minZ = Cubes.getClient().world.getArea(area.x, area.y, area.z - 1);
+    Area maxX = Cubes.getClient().world.getArea(area.areaX + 1, area.areaZ);
+    Area minX = Cubes.getClient().world.getArea(area.areaX - 1, area.areaZ);
+    Area maxZ = Cubes.getClient().world.getArea(area.areaX, area.areaZ + 1);
+    Area minZ = Cubes.getClient().world.getArea(area.areaX, area.areaZ - 1);
 
-    int i = 0;
+    int i = ySection * SIZE_BLOCKS_CUBED;
     int vertexOffset = 0;
     synchronized (area) {
-      for (int y = 0; y < SIZE_BLOCKS; y++) {
+      for (int y = ySection * SIZE_BLOCKS; y < (ySection + 1) * SIZE_BLOCKS; y++) {
         for (int z = 0; z < SIZE_BLOCKS; z++) {
           for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
             int blockInt = area.blocks[i];
@@ -114,18 +113,18 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
               } else if (minX == null || minX.getBlock(MAX_AREA, y, z) == null) {
                 vertexOffset = createMinX(offset, textureHandler.getSide(BlockFace.negX), x, y, z, vertices, vertexOffset);
               }
-              if (y < SIZE_BLOCKS - 1) {
+              if (y < area.maxY) {
                 if (area.blocks[i + MAX_Y_OFFSET] == 0) {
                   vertexOffset = createMaxY(offset, textureHandler.getSide(BlockFace.posY), x, y, z, vertices, vertexOffset);
                 }
-              } else if (maxY == null || maxY.getBlock(x, MIN_AREA, z) == null) {
+              } else {
                 vertexOffset = createMaxY(offset, textureHandler.getSide(BlockFace.posY), x, y, z, vertices, vertexOffset);
               }
               if (y > 0) {
                 if (area.blocks[i + MIN_Y_OFFSET] == 0) {
                   vertexOffset = createMinY(offset, textureHandler.getSide(BlockFace.negY), x, y, z, vertices, vertexOffset);
                 }
-              } else if (minY == null || minY.getBlock(x, MAX_AREA, z) == null) {
+              } else {
                 vertexOffset = createMinY(offset, textureHandler.getSide(BlockFace.negY), x, y, z, vertices, vertexOffset);
               }
               if (z < SIZE_BLOCKS - 1) {
@@ -157,16 +156,17 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
 
   @Override
   public void reset() {
-    if (area != null) area.areaRenderer = null;
+    if (area != null) area.areaRenderer[ySection] = null;
     area = null;
     refresh = true;
   }
 
-  public AreaRenderer set(Area area) {
+  public AreaRenderer set(Area area, int ySection) {
     this.area = area;
-    this.area.areaRenderer = this;
+    this.ySection = ySection;
+    this.area.areaRenderer[ySection] = this;
     this.refresh = true;
-    this.offset.set(area.minBlockX, area.minBlockY, area.minBlockZ);
+    this.offset.set(area.minBlockX, ySection * SIZE_BLOCKS, area.minBlockZ);
     return this;
   }
 }
