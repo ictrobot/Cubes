@@ -22,6 +22,7 @@ public class GenerateWorldCallable implements Callable<Area> {
     Area area = new Area(areaReference.areaX, areaReference.areaY, areaReference.areaZ);
     world.getTerrainGenerator().generate(area);
     new GenerationEvent(area, areaReference).post();
+    area.updateAll();
     world.setAreaInternal(areaReference, area);
     return area;
   }

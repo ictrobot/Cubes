@@ -38,7 +38,6 @@ public class Area {
   public AreaRenderer areaRenderer; //Always null on server
 
   public int[] blocks; //0 = null, positive = visible, negative = invisible
-  public boolean[] visible;
 
   public Area(int x, int y, int z) {
     this.x = x;
@@ -58,7 +57,7 @@ public class Area {
   public Block getBlock(int x, int y, int z) {
     if (isBlank()) return null;
     synchronized (this) {
-      return Sided.getBlockManager().toBlock(blocks[getRef(x, y, z)]);
+      return Sided.getBlockManager().toBlock(Math.abs(blocks[getRef(x, y, z)]));
     }
   }
 
@@ -79,7 +78,6 @@ public class Area {
   private void removeArrays() {
     synchronized (this) {
       blocks = null;
-      visible = null;
     }
   }
 
@@ -93,18 +91,10 @@ public class Area {
     synchronized (this) {
       if (data.length == 0) {
         removeArrays();
-        return;
-      } else {
-        checkArrays();
+      } else if (data.length == SIZE_BLOCKS_CUBED) {
         this.blocks = data;
-      }
-      int i = 0;
-      for (int y = 0; y < SIZE_BLOCKS; y++) {
-        for (int z = 0; z < SIZE_BLOCKS; z++) {
-          for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
-            update(x, y, z, i);
-          }
-        }
+      } else {
+        throw new IllegalArgumentException();
       }
     }
   }
@@ -118,71 +108,71 @@ public class Area {
   private void update(int x, int y, int z, int i) {
     synchronized (this) {
       if (blocks[i] == 0) {
-        visible[i] = false;
         return;
       }
 
+      int block = Math.abs(blocks[i]);
       if (x < SIZE_BLOCKS - 1) {
         if (blocks[i + MAX_X_OFFSET] == 0) {
-          visible[i] = true;
+          blocks[i] = block;
           return;
         }
       } else {
-        visible[i] = true;
+        blocks[i] = block;
         return;
       }
       if (x > 0) {
         if (blocks[i + MIN_X_OFFSET] == 0) {
-          visible[i] = true;
+          blocks[i] = block;
           return;
         }
       } else {
-        visible[i] = true;
+        blocks[i] = block;
         return;
       }
       if (y < SIZE_BLOCKS - 1) {
         if (blocks[i + MAX_Y_OFFSET] == 0) {
-          visible[i] = true;
+          blocks[i] = block;
           return;
         }
       } else {
-        visible[i] = true;
+        blocks[i] = block;
         return;
       }
       if (y > 0) {
         if (blocks[i + MIN_Y_OFFSET] == 0) {
-          visible[i] = true;
+          blocks[i] = block;
           return;
         }
       } else {
-        visible[i] = true;
+        blocks[i] = block;
         return;
       }
       if (z < SIZE_BLOCKS - 1) {
         if (blocks[i + MAX_Z_OFFSET] == 0) {
-          visible[i] = true;
+          blocks[i] = block;
           return;
         }
       } else {
-        visible[i] = true;
+        blocks[i] = block;
         return;
       }
       if (z > 0) {
         if (blocks[i + MIN_Z_OFFSET] == 0) {
-          visible[i] = true;
-          //return;
+          blocks[i] = block;
+          return;
         }
       } else {
-        visible[i] = true;
-        //return;
+        blocks[i] = block;
+        return;
       }
+      blocks[i] = -block;
     }
   }
 
   private void setupArrays() {
     synchronized (this) {
       blocks = new int[SIZE_BLOCKS_CUBED];
-      visible = new boolean[SIZE_BLOCKS_CUBED];
     }
   }
 
@@ -209,5 +199,17 @@ public class Area {
     if (y > 0) update(x, y - 1, z, ref + MIN_Y_OFFSET);
     if (y < MAX_BLOCK_INDEX) update(x, y, z + 1, ref + MAX_Z_OFFSET);
     if (z > 0) update(x, y, z - 1, ref + MIN_Z_OFFSET);
+  }
+
+  public void updateAll() {
+    if (isBlank()) return;
+    int i = 0;
+    for (int y = 0; y < SIZE_BLOCKS; y++) {
+      for (int z = 0; z < SIZE_BLOCKS; z++) {
+        for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
+          update(x, y, z, i);
+        }
+      }
+    }
   }
 }
