@@ -218,8 +218,8 @@ public class GuiRenderer implements Disposable {
     float crosshairSize = Math.min(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) / 40;
     spriteBatch.draw(crosshair, (Gdx.graphics.getWidth() / 2) - crosshairSize, (Gdx.graphics.getHeight() / 2) - crosshairSize, crosshairSize * 2, crosshairSize * 2);
     renderHotbar();
-    spriteBatch.end();
     if (isBlocksMenuEnabled()) renderBlockMenu();
+    spriteBatch.end();
   }
 
   public void renderHotbar() {
