@@ -98,7 +98,7 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
             if (area.visible[i]) {
               Block block = Sided.getBlockManager().toBlock(area.blocks[i]);
               if (block == null) continue;
-              BlockTextureHandler textureHandler = block.getTextureHandler(area.blockData[i]);
+              BlockTextureHandler textureHandler = block.getTextureHandler();
               if (x < SIZE_BLOCKS - 1) {
                 if (area.blocks[i + MAX_X_OFFSET] == 0) {
                   vertexOffset = createMaxX(offset, textureHandler.getSide(BlockFace.posX), x, y, z, vertices, vertexOffset);

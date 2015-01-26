@@ -234,7 +234,7 @@ public class GuiRenderer implements Disposable {
       }
       Block block = player.getHotbar(i);
       if (block != null) {
-        TextureRegion side = block.getTextureHandler(null).getSide(BlockFace.posX);
+        TextureRegion side = block.getTextureHandler().getSide(BlockFace.posX);
         spriteBatch.draw(side, minX + 8, 8);
       }
     }
@@ -251,7 +251,7 @@ public class GuiRenderer implements Disposable {
         spriteBatch.draw(hotbarSlot, minX, minY);
         Block block = blocks[x][y];
         if (block == null) continue;
-        TextureRegion side = block.getTextureHandler(null).getSide(BlockFace.posX);
+        TextureRegion side = block.getTextureHandler().getSide(BlockFace.posX);
         spriteBatch.draw(side, minX + 8, minY + 8);
       }
     }

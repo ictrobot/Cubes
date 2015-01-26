@@ -2,8 +2,6 @@ package ethanjones.cubes.block;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-import ethanjones.cubes.block.data.BlockAttributes;
-import ethanjones.cubes.block.data.BlockData;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.graphics.assets.Assets;
@@ -14,12 +12,10 @@ public abstract class Block {
   protected String id;
 
   protected BlockTextureHandler textureHandler;
-  protected BlockAttributes blockAttributes;
 
   public Block(String id) {
     if (!id.contains(":")) throw new IllegalArgumentException(id + " is not in the correct format");
     this.id = id;
-    this.blockAttributes = null;
   }
 
   public void loadGraphics() {
@@ -34,15 +30,11 @@ public abstract class Block {
     textureHandler = new BlockTextureHandler(textureRegion);
   }
 
-  public BlockTextureHandler getTextureHandler(BlockData blockData) {
+  public BlockTextureHandler getTextureHandler() {
     return textureHandler;
   }
 
-  public BlockData getBlockData() {
-    return blockAttributes == null ? null : new BlockData(blockAttributes);
-  }
-
-  public String getName(BlockData blockData) {
+  public String getName() {
     return Localization.get("block." + id.replaceFirst(":", "."));
   }
 }

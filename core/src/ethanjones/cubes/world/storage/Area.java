@@ -1,7 +1,6 @@
 package ethanjones.cubes.world.storage;
 
 import ethanjones.cubes.block.Block;
-import ethanjones.cubes.block.data.BlockData;
 import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
 import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.graphics.world.AreaRenderer;
@@ -39,7 +38,6 @@ public class Area {
   public AreaRenderer areaRenderer; //Always null on server
 
   public int[] blocks; //0 = null, positive = visible, negative = invisible
-  public BlockData[] blockData;
   public boolean[] visible;
 
   public Area(int x, int y, int z) {
@@ -72,13 +70,6 @@ public class Area {
     return x + z * SIZE_BLOCKS + y * SIZE_BLOCKS_SQUARED;
   }
 
-  public BlockData getBlockData(int x, int y, int z) {
-    if (isBlank()) return null;
-    synchronized (this) {
-      return blockData[getRef(x, y, z)];
-    }
-  }
-
   public void unload() {
     if (areaRenderer != null) Pools.free(AreaRenderer.class, areaRenderer);
     removeArrays();
@@ -88,35 +79,13 @@ public class Area {
   private void removeArrays() {
     synchronized (this) {
       blocks = null;
-      blockData = null;
       visible = null;
     }
   }
 
   public int[] toIntArray() {
     synchronized (this) {
-      if (isBlank()) {
-        return new int[0];
-      }
-      int size = 0;
-      for (int i = 0; i < SIZE_BLOCKS_CUBED; i++) {
-        size++;
-        if (blockData[i] != null) size += blockData[i].data.length;
-      }
-      int[] data = new int[size];
-      int offset = 0;
-      for (int i = 0; i < SIZE_BLOCKS_CUBED; i++) { //Includes blocks and blockData
-        BlockData d = blockData[i];
-        if (d == null) {
-          data[offset++] = blocks[i];
-        } else {
-          data[offset++] = -blocks[i];
-          for (int z : d.data) {
-            data[offset++] = z;
-          }
-        }
-      }
-      return data;
+      return blocks == null ? new int[0] : blocks;
     }
   }
 
@@ -125,26 +94,10 @@ public class Area {
       if (data.length == 0) {
         removeArrays();
         return;
+      } else {
+        checkArrays();
+        this.blocks = data;
       }
-      checkArrays();
-      int offset = 0;
-      for (int i = 0; i < SIZE_BLOCKS_CUBED; i++) {
-        int v = data[offset++];
-        if (v == 0) {
-          blocks[i] = 0;
-          blockData[i] = null;
-        } else if (v > 0) {
-          blocks[i] = v;
-          blockData[i] = null;
-        } else {
-          blocks[i] = -v;
-          BlockData d = Sided.getBlockManager().toBlock(-v).getBlockData();
-          for (int z = 0; z < d.data.length; z++) {
-            d.data[z] = data[offset++];
-          }
-        }
-      }
-
       int i = 0;
       for (int y = 0; y < SIZE_BLOCKS; y++) {
         for (int z = 0; z < SIZE_BLOCKS; z++) {
@@ -229,7 +182,6 @@ public class Area {
   private void setupArrays() {
     synchronized (this) {
       blocks = new int[SIZE_BLOCKS_CUBED];
-      blockData = new BlockData[SIZE_BLOCKS_CUBED];
       visible = new boolean[SIZE_BLOCKS_CUBED];
     }
   }
@@ -241,7 +193,6 @@ public class Area {
     synchronized (this) {
       b = blocks[ref];
       blocks[ref] = Sided.getBlockManager().toInt(block);
-      blockData[ref] = block == null ? null : block.getBlockData();
     }
 
     updateSurrounding(x, y, z, ref);
