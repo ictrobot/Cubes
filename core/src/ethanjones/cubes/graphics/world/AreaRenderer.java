@@ -90,9 +90,6 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
     Area maxZ = Cubes.getClient().world.getArea(area.areaX, area.areaZ + 1);
     Area minZ = Cubes.getClient().world.getArea(area.areaX, area.areaZ - 1);
 
-    if (ySection == 1) {
-      Log.error("Hi");
-    }
     int i = ySection * SIZE_BLOCKS_CUBED;
     int vertexOffset = 0;
     synchronized (area) {
