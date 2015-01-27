@@ -64,17 +64,13 @@ public class Area {
   }
 
   public void unload() {
-    if (areaRenderer != null) {
-      for (AreaRenderer renderer : areaRenderer) {
-        if (renderer != null) Pools.free(AreaRenderer.class, renderer);
-      }
-    }
     removeArrays();
   }
 
   private void removeArrays() {
     synchronized (this) {
       blocks = null;
+      free(areaRenderer);
       areaRenderer = null;
       maxY = 0;
     }
@@ -94,9 +90,12 @@ public class Area {
         this.blocks = data;
         this.maxY = (data.length / SIZE_BLOCKS_SQUARED);
 
-        AreaRenderer[] oldAreaRenderer = areaRenderer;
-        areaRenderer = new AreaRenderer[maxY / SIZE_BLOCKS];
-        if (oldAreaRenderer != null) System.arraycopy(oldAreaRenderer, 0, areaRenderer, 0, oldAreaRenderer.length);
+        free(areaRenderer); //don't copy, free
+        if (Sided.getSide() == Side.Client) {
+          areaRenderer = new AreaRenderer[maxY / SIZE_BLOCKS];
+        } else {
+          areaRenderer = null;
+        }
 
         this.maxY--;
       } else {
@@ -179,6 +178,7 @@ public class Area {
   private void setupArrays() {
     synchronized (this) {
       blocks = new int[SIZE_BLOCKS_SQUARED * SIZE_BLOCKS];
+      free(areaRenderer);
       if (Sided.getSide() == Side.Client) areaRenderer = new AreaRenderer[]{null};
       maxY = SIZE_BLOCKS - 1;
     }
@@ -258,6 +258,14 @@ public class Area {
       }
 
       maxY = height - 1;
+    }
+  }
+
+  private static void free(AreaRenderer[] areaRenderer) {
+    if (areaRenderer == null) return;
+    for (AreaRenderer renderer : areaRenderer) {
+      if (renderer == null) continue;
+      Pools.free(AreaRenderer.class, renderer);
     }
   }
 }
