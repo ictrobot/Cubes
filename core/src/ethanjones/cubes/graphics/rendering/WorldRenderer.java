@@ -59,9 +59,11 @@ public class WorldRenderer implements Disposable {
     for (int areaX = pos.areaX - renderDistance; areaX <= pos.areaX + renderDistance; areaX++) {
       for (int areaZ = pos.areaZ - renderDistance; areaZ <= pos.areaZ + renderDistance; areaZ++) {
         Area area = CubesClient.getClient().world.getArea(areaX, areaZ);
-        if (area == null) continue;
-        if (area.isBlank()) continue;
-        if (!areaInFrustum(area, camera.frustum)) continue;
+        if (area == null || area.isBlank()) continue;
+        if (!areaInFrustum(area, camera.frustum)) {
+          AreaRenderer.free(area.areaRenderer);
+          continue;
+        }
         for (int ySection = Math.max(yPos - renderDistance, 0); ySection <= yPos + renderDistance; ySection++) {
           if ((((ySection + 1) * Area.SIZE_BLOCKS) - 1) > area.maxY) break;
           if (areaInFrustum(area, ySection, camera.frustum)) {
@@ -70,7 +72,7 @@ public class WorldRenderer implements Disposable {
             }
             modelBatch.render(area.areaRenderer[ySection], environment);
           } else if (area.areaRenderer[ySection] != null) {
-            Pools.free(AreaRenderer.class, area.areaRenderer[ySection]);
+            AreaRenderer.free(area.areaRenderer[ySection]);
           }
         }
       }

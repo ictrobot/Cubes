@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
 
 import ethanjones.cubes.block.Block;
+import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.side.Sided;
@@ -168,5 +169,17 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
     this.refresh = true;
     this.offset.set(area.minBlockX, ySection * SIZE_BLOCKS, area.minBlockZ);
     return this;
+  }
+
+  public static void free(AreaRenderer areaRenderer) {
+    if (areaRenderer != null) Pools.free(AreaRenderer.class, areaRenderer);
+  }
+
+  public static void free(AreaRenderer[] areaRenderer) {
+    if (areaRenderer == null) return;
+    for (AreaRenderer renderer : areaRenderer) {
+      if (renderer == null) continue;
+      Pools.free(AreaRenderer.class, renderer);
+    }
   }
 }

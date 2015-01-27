@@ -2,7 +2,6 @@ package ethanjones.cubes.world.storage;
 
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
-import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.graphics.world.AreaRenderer;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
@@ -70,7 +69,7 @@ public class Area {
   private void removeArrays() {
     synchronized (this) {
       blocks = null;
-      free(areaRenderer);
+      AreaRenderer.free(areaRenderer);
       areaRenderer = null;
       maxY = 0;
     }
@@ -90,7 +89,7 @@ public class Area {
         this.blocks = data;
         this.maxY = (data.length / SIZE_BLOCKS_SQUARED);
 
-        free(areaRenderer); //don't copy, free
+        AreaRenderer.free(areaRenderer); //don't copy, free
         if (Sided.getSide() == Side.Client) {
           areaRenderer = new AreaRenderer[maxY / SIZE_BLOCKS];
         } else {
@@ -178,7 +177,7 @@ public class Area {
   private void setupArrays() {
     synchronized (this) {
       blocks = new int[SIZE_BLOCKS_SQUARED * SIZE_BLOCKS];
-      free(areaRenderer);
+      AreaRenderer.free(areaRenderer);
       if (Sided.getSide() == Side.Client) areaRenderer = new AreaRenderer[]{null};
       maxY = SIZE_BLOCKS - 1;
     }
@@ -258,14 +257,6 @@ public class Area {
       }
 
       maxY = height - 1;
-    }
-  }
-
-  private static void free(AreaRenderer[] areaRenderer) {
-    if (areaRenderer == null) return;
-    for (AreaRenderer renderer : areaRenderer) {
-      if (renderer == null) continue;
-      Pools.free(AreaRenderer.class, renderer);
     }
   }
 }
