@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
 
 import ethanjones.cubes.block.Block;
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.graphics.assets.Assets;
@@ -89,6 +90,9 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
     Area maxZ = Cubes.getClient().world.getArea(area.areaX, area.areaZ + 1);
     Area minZ = Cubes.getClient().world.getArea(area.areaX, area.areaZ - 1);
 
+    if (ySection == 1) {
+      Log.error("Hi");
+    }
     int i = ySection * SIZE_BLOCKS_CUBED;
     int vertexOffset = 0;
     synchronized (area) {
@@ -167,7 +171,7 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
     this.ySection = ySection;
     this.area.areaRenderer[ySection] = this;
     this.refresh = true;
-    this.offset.set(area.minBlockX, ySection * SIZE_BLOCKS, area.minBlockZ);
+    this.offset.set(area.minBlockX, 0, area.minBlockZ);
     return this;
   }
 

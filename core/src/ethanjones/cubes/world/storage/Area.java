@@ -233,30 +233,30 @@ public class Area {
 
   public void expand(int height) {
     synchronized (this) {
-      height = (int) Math.ceil(height / SIZE_BLOCKS); //Round up to multiple of SIZE_BLOCKS
-      if (height <= (maxY + 1)) return;
+      if (height <= maxY) return;
       if (height > MAX_Y) return;
 
+      height = (int) Math.ceil((height + 1) / (float) SIZE_BLOCKS); //Round up to multiple of SIZE_BLOCKS
       int oldMaxY = maxY;
 
       int[] oldBlocks = blocks;
-      blocks = new int[SIZE_BLOCKS * height];
+      blocks = new int[SIZE_BLOCKS_CUBED * height];
       System.arraycopy(oldBlocks, 0, blocks, 0, oldBlocks.length);
 
+      AreaRenderer.free(areaRenderer);
       if (Sided.getSide() == Side.Client) {
-        AreaRenderer[] oldAreaRenderer = areaRenderer;
-        areaRenderer = new AreaRenderer[height / SIZE_BLOCKS];
-        System.arraycopy(oldAreaRenderer, 0, areaRenderer, 0, oldAreaRenderer.length);
+        areaRenderer = new AreaRenderer[height];
+      } else {
+        areaRenderer = null;
       }
 
-      int i = oldMaxY * SIZE_BLOCKS;
-      for (int z = 0; z < SIZE_BLOCKS; z++) {
+      maxY = (height * SIZE_BLOCKS) - 1;
+      int i = oldMaxY * SIZE_BLOCKS_SQUARED;
+      for (int z = 0; z < SIZE_BLOCKS; z++) { //update previous top
         for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
-          updateSurrounding(x, oldMaxY, z, i); //update previous top
+          updateSurrounding(x, oldMaxY, z, i);
         }
       }
-
-      maxY = height - 1;
     }
   }
 }
