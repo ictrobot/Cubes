@@ -14,9 +14,7 @@ import ethanjones.cubes.world.storage.Area;
 
 public class PacketArea extends Packet {
 
-  public int areaX;
-  public int areaZ;
-  public int[] area;
+  public Area area;
   public PlayerManager playerManager;
 
   public PacketArea() {
@@ -25,36 +23,23 @@ public class PacketArea extends Packet {
 
   @Override
   public void write(DataOutputStream dataOutputStream) throws Exception {
-    dataOutputStream.writeInt(areaX);
-    dataOutputStream.writeInt(areaZ);
-    dataOutputStream.writeInt(area.length);
-    for (int i = 0; i < area.length; i++) {
-      dataOutputStream.writeInt(area[i]);
-    }
+    area.write(dataOutputStream);
   }
 
   @Override
   public void read(DataInputStream dataInputStream) throws Exception {
-    areaX = dataInputStream.readInt();
-    areaZ = dataInputStream.readInt();
-    area = new int[dataInputStream.readInt()];
-    for (int i = 0; i < area.length; i++) {
-      area[i] = dataInputStream.readInt();
-    }
+    area = Area.read(dataInputStream);
   }
 
   @Override
   public boolean shouldSend() {
-    if (playerManager == null) return true;
-    return playerManager.shouldSendArea(areaX, areaZ);
+    return playerManager == null || playerManager.shouldSendArea(area.areaX, area.areaZ);
   }
 
   @Override
   public void handlePacket() {
     if (Sided.getSide() != Side.Client) return;
-    Area a = new Area(areaX, areaZ);
-    a.fromIntArray(area);
-    Cubes.getClient().world.setAreaInternal(new AreaReference().setFromArea(a), a);
+    Cubes.getClient().world.setAreaInternal(new AreaReference().setFromArea(area), area);
   }
 
   @Override

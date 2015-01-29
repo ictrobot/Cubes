@@ -1,5 +1,9 @@
 package ethanjones.cubes.world.storage;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
 import ethanjones.cubes.core.system.CubesException;
@@ -31,6 +35,7 @@ public class Area {
   public AreaRenderer[] areaRenderer; //Always null on server
   public int[] blocks; //0 = null, positive = visible, negative = invisible
   public int maxY;
+  private int height;
 
   private boolean unloaded;
 
@@ -43,6 +48,7 @@ public class Area {
     areaRenderer = null;
     blocks = null;
     maxY = 0;
+    height = 0;
     unloaded = false;
   }
 
@@ -80,35 +86,7 @@ public class Area {
       AreaRenderer.free(areaRenderer);
       areaRenderer = null;
       maxY = 0;
-    }
-  }
-
-  public int[] toIntArray() {
-    synchronized (this) {
-      return blocks == null ? new int[0] : blocks;
-    }
-  }
-
-  public void fromIntArray(int[] data) {
-    synchronized (this) {
-      if (unloaded) throw new CubesException("Area has been unloaded");
-      if (data.length == 0) {
-        removeArrays();
-      } else if (data.length % SIZE_BLOCKS_SQUARED == 0) {
-        this.blocks = data;
-        this.maxY = (data.length / SIZE_BLOCKS_SQUARED);
-
-        AreaRenderer.free(areaRenderer); //don't copy, free
-        if (Sided.getSide() == Side.Client) {
-          areaRenderer = new AreaRenderer[maxY / SIZE_BLOCKS];
-        } else {
-          areaRenderer = null;
-        }
-
-        this.maxY--;
-      } else {
-        throw new IllegalArgumentException();
-      }
+      height = 0;
     }
   }
 
@@ -190,6 +168,7 @@ public class Area {
       AreaRenderer.free(areaRenderer);
       if (Sided.getSide() == Side.Client) areaRenderer = new AreaRenderer[]{null};
       maxY = SIZE_BLOCKS - 1;
+      height = 1;
     }
   }
 
@@ -244,10 +223,12 @@ public class Area {
   public void expand(int height) {
     synchronized (this) {
       if (unloaded) throw new CubesException("Area has been unloaded");
+      if (isBlank()) return;
       if (height <= maxY) return;
       if (height > MAX_Y) return;
 
       height = (int) Math.ceil((height + 1) / (float) SIZE_BLOCKS); //Round up to multiple of SIZE_BLOCKS
+      this.height = height;
       int oldMaxY = maxY;
 
       int[] oldBlocks = blocks;
@@ -269,5 +250,83 @@ public class Area {
         }
       }
     }
+  }
+
+  public void shrink() {
+    synchronized (this) {
+      if (unloaded) throw new CubesException("Area has been unloaded");
+      if (isBlank()) return;
+      int y = maxY;
+      int i = blocks.length - 1;
+      int maxUsedY = -1;
+      while (y >= 0 && maxUsedY == -1) {
+        for (int b = 0; b < SIZE_BLOCKS_SQUARED; b++) {
+          if (blocks[i] != 0) {
+            maxUsedY = y;
+            break;
+          }
+          i--;
+        }
+        y--;
+      }
+      int usedHeight = (int) Math.ceil((maxUsedY + 1) / (float) SIZE_BLOCKS);
+      if (usedHeight == height) return;
+      if (usedHeight == 0) {
+        removeArrays();
+        return;
+      }
+
+      int[] oldBlocks = blocks;
+      blocks = new int[SIZE_BLOCKS_CUBED * usedHeight];
+      System.arraycopy(oldBlocks, 0, blocks, 0, blocks.length);
+
+      AreaRenderer.free(areaRenderer);
+      if (Sided.getSide() == Side.Client) {
+        areaRenderer = new AreaRenderer[usedHeight];
+      } else {
+        areaRenderer = null;
+      }
+
+      maxY = (usedHeight * SIZE_BLOCKS) - 1;
+      i = maxY * SIZE_BLOCKS_SQUARED;
+      for (int z = 0; z < SIZE_BLOCKS; z++) {
+        for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
+          updateSurrounding(x, maxY, z, i); //update new top
+        }
+      }
+    }
+  }
+
+  public void write(DataOutputStream dataOutputStream) throws IOException {
+    synchronized (this) {
+      shrink();
+      dataOutputStream.writeInt(areaX);
+      dataOutputStream.writeInt(areaZ);
+      if (isBlank()) {
+        dataOutputStream.writeInt(0);
+        return;
+      }
+
+      dataOutputStream.writeInt(height);
+      for (int block : blocks) {
+        dataOutputStream.writeInt(block);
+      }
+    }
+  }
+
+  public static Area read(DataInputStream dataInputStream) throws IOException {
+    int areaX = dataInputStream.readInt();
+    int areaZ = dataInputStream.readInt();
+    Area area = new Area(areaX, areaZ);
+
+    int height = dataInputStream.readInt();
+    if (height == 0) return area;
+
+    area.setupArrays();
+    area.expand((height * SIZE_BLOCKS) - 1);
+    for (int i = 0; i < area.blocks.length; i++) {
+      area.blocks[i] = dataInputStream.readInt();
+    }
+    return area;
   }
 }

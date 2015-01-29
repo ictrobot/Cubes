@@ -33,10 +33,8 @@ public class SendWorldCallable implements Callable {
   public Object call() throws Exception {
     Area area = generateWorldCallable != null ? generateWorldCallable.call() : this.area;
     PacketArea packetArea = new PacketArea();
-    packetArea.areaX = area.areaX;
-    packetArea.areaZ = area.areaZ;
+    packetArea.area = area;
     packetArea.playerManager = playerManager;
-    packetArea.area = area.toIntArray();
     NetworkingManager.sendPacketToClient(packetArea, clientIdentifier);
     return area;
   }
