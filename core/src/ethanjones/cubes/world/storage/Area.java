@@ -2,6 +2,7 @@ package ethanjones.cubes.world.storage;
 
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
+import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.graphics.world.AreaRenderer;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
@@ -31,6 +32,8 @@ public class Area {
   public int[] blocks; //0 = null, positive = visible, negative = invisible
   public int maxY;
 
+  private boolean unloaded;
+
   public Area(int areaX, int areaZ) {
     this.areaX = areaX;
     this.areaZ = areaZ;
@@ -40,6 +43,7 @@ public class Area {
     areaRenderer = null;
     blocks = null;
     maxY = 0;
+    unloaded = false;
   }
 
   public Block getBlock(int x, int y, int z) {
@@ -63,11 +67,15 @@ public class Area {
   }
 
   public void unload() {
-    removeArrays();
+    synchronized (this) {
+      removeArrays();
+      unloaded = true;
+    }
   }
 
   private void removeArrays() {
     synchronized (this) {
+      if (unloaded) throw new CubesException("Area has been unloaded");
       blocks = null;
       AreaRenderer.free(areaRenderer);
       areaRenderer = null;
@@ -83,6 +91,7 @@ public class Area {
 
   public void fromIntArray(int[] data) {
     synchronized (this) {
+      if (unloaded) throw new CubesException("Area has been unloaded");
       if (data.length == 0) {
         removeArrays();
       } else if (data.length % SIZE_BLOCKS_SQUARED == 0) {
@@ -176,6 +185,7 @@ public class Area {
 
   private void setupArrays() {
     synchronized (this) {
+      if (unloaded) throw new CubesException("Area has been unloaded");
       blocks = new int[SIZE_BLOCKS_SQUARED * SIZE_BLOCKS];
       AreaRenderer.free(areaRenderer);
       if (Sided.getSide() == Side.Client) areaRenderer = new AreaRenderer[]{null};
@@ -233,6 +243,7 @@ public class Area {
 
   public void expand(int height) {
     synchronized (this) {
+      if (unloaded) throw new CubesException("Area has been unloaded");
       if (height <= maxY) return;
       if (height > MAX_Y) return;
 

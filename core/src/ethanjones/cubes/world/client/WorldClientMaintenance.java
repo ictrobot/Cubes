@@ -29,6 +29,7 @@ public class WorldClientMaintenance implements Runnable {
         int x = Math.abs(area.areaX - playerArea.areaX);
         int z = Math.abs(area.areaZ - playerArea.areaZ);
         if (x < 0 || x > AREA_LOAD_RADIUS || z < 0 || z > AREA_LOAD_RADIUS) {
+          area.unload();
           iterator.remove();
         }
       }
