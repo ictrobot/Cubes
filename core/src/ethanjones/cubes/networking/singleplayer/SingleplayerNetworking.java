@@ -1,6 +1,7 @@
 package ethanjones.cubes.networking.singleplayer;
 
 import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.system.Executor;
 import ethanjones.cubes.networking.Networking;
 import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.networking.packet.PacketQueue;
@@ -41,12 +42,16 @@ public class SingleplayerNetworking extends Networking {
 
   @Override
   public void sendPacketToServer(Packet packet) throws UnsupportedOperationException {
-    toServer.add(packet);
+    send(packet, toServer);
   }
 
   @Override
   public void sendPacketToClient(Packet packet, ClientIdentifier clientIdentifier) throws UnsupportedOperationException {
-    toClient.add(packet);
+    send(packet, toClient);
+  }
+
+  private void send(Packet packet, PacketQueue packetQueue) {
+    Executor.execute(new IOClonePacketRunnable(packet, packetQueue));
   }
 
   @Override
