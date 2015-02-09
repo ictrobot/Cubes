@@ -10,7 +10,8 @@ install:
 - sudo apt-get update
 - sudo apt-get install lib32stdc++6 lib32z1 unzip sshfs
 before_script:
-- mount.sh
+- chmod +x mount
+- ./mount
 - chmod +x gradlew
 script:
 - "./gradlew travis"
