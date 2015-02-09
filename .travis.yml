@@ -4,14 +4,11 @@ jdk:
 - oraclejdk7
 - openjdk7
 before_install:
-- openssl aes-256-cbc -K $encrypted_65bd786e7d9d_key -iv $encrypted_65bd786e7d9d_iv -in travis.zip.enc -out travis.zip -d
 - true
 install:
 - sudo apt-get update
-- sudo apt-get install lib32stdc++6 lib32z1 unzip sshfs
+- sudo apt-get install lib32stdc++6 lib32z1
 before_script:
-- chmod +x mount
-- ./mount
 - chmod +x gradlew
 script:
 - "./gradlew travis"
