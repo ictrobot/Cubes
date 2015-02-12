@@ -24,15 +24,12 @@ task properites() {
     project.getBuildDir().mkdir();
     File propsFile = new File(project.getBuildDir(), '/core.properties')
     propsFile.delete();
-    props.setProperty('gdxVersion', gdxVersion.toString())
-    props.setProperty('androidBuildToolsVersion', androidBuildToolsVersion.toString())
-    props.setProperty('androidSdkVersion', androidSdkVersion.toString())
-    props.setProperty('dataVersion', dataVersion.toString())
-    props.setProperty('buildMajor', buildProperties.major.toString())
-    props.setProperty('buildMinor', buildProperties.minor.toString())
-    props.setProperty('buildPoint', buildProperties.point.toString())
-    props.setProperty('buildVersion', buildProperties.version.toString())
-    props.setProperty('buildNumber', buildProperties.build.toString())
+    props.setProperty('LIBGDX', gdxVersion.toString())
+    props.setProperty('ANDROID_BUILD_TOOLS', androidBuildToolsVersion.toString())
+    props.setProperty('ANDROID_SDK', androidSdkVersion.toString())
+    props.setProperty('DATA', dataVersion.toString())
+    props.setProperty('VERSION', buildProperties.version.toString())
+    props.setProperty('BUILD', build.toString())
     props.store(propsFile.newWriter(), null)
 }
 
@@ -77,6 +74,10 @@ publishing {
     repositories {
         maven {
             url getMavenRepo()
+            credentials {
+                username localProperties.MAVEN_REPO_USERNAME
+                password localProperties.MAVEN_REPO_PASSWORD
+            }
         }
     }
 }

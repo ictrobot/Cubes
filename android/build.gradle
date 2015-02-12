@@ -15,10 +15,10 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file(localProperties.CUBES_KEYSTORE_FILE)
-            storePassword localProperties.CUBES_KEYSTORE_PASSWORD
-            keyAlias localProperties.CUBES_KEY_ALIAS
-            keyPassword localProperties.CUBES_KEY_PASSWORD
+            storeFile file(localProperties.ANDROID_KEYSTORE_FILE)
+            storePassword localProperties.ANDROID_KEYSTORE_PASSWORD
+            keyAlias localProperties.ANDROID_KEYSTORE_KEY_ALIAS
+            keyPassword localProperties.ANDROID_KEYSTORE_KEY_PASSWORD
         }
     }
     buildTypes {
@@ -124,24 +124,22 @@ idea {
 
 publishing {
     publications {
-        debug(MavenPublication) {
-            artifact 'build/outputs/apk/android-debug.apk'
+        android(MavenPublication) {
             groupId 'ethanjones.cubes'
-            artifactId 'android-debug'
+            artifactId 'android'
             version getMavenVersionString()
-        }
-        release(MavenPublication) {
-            artifact 'build/outputs/apk/android-release.apk'
-            groupId 'ethanjones.cubes'
-            artifactId 'android-release'
-            version getMavenVersionString()
+            artifact(new File(project.getBuildDir(), '/outputs/apk/android-debug.apk'))
         }
     }
     repositories {
         maven {
             url getMavenRepo()
+            credentials {
+                username localProperties.MAVEN_REPO_USERNAME
+                password localProperties.MAVEN_REPO_PASSWORD
+            }
         }
     }
 }
 
-publish.dependsOn(['assembleDebug', 'assembleRelease'])
+publish.dependsOn(['assembleDebug'])

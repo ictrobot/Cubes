@@ -34,11 +34,13 @@ ext {
             localProperties.load(reader)
         }
     }
-    if (localProperties.CUBES_KEYSTORE_FILE == null) localProperties.CUBES_KEYSTORE_FILE = "keystore"
-    if (localProperties.CUBES_KEYSTORE_PASSWORD == null) localProperties.CUBES_KEYSTORE_PASSWORD = "password"
-    if (localProperties.CUBES_KEY_ALIAS == null) localProperties.CUBES_KEY_ALIAS = "android"
-    if (localProperties.CUBES_KEY_PASSWORD == null) localProperties.CUBES_KEY_PASSWORD = "password"
-    if (localProperties.CUBES_MAVEN_REPO == null) localProperties.CUBES_MAVEN_REPO = getRootProject().getProjectDir().absolutePath + "/repo/"
+    if (localProperties.ANDROID_KEYSTORE_FILE == null) localProperties.CUBES_KEYSTORE_FILE = "keystore"
+    if (localProperties.ANDROID_KEYSTORE_PASSWORD == null) localProperties.CUBES_KEYSTORE_PASSWORD = "password"
+    if (localProperties.ANDROID_KEYSTORE_KEY_ALIAS == null) localProperties.CUBES_KEY_ALIAS = "android"
+    if (localProperties.ANDROID_KEYSTORE_KEY_PASSWORD == null) localProperties.CUBES_KEY_PASSWORD = "password"
+    if (localProperties.MAVEN_REPO_PATH == null) localProperties.MAVEN_REPO_PATH = getRootProject().getProjectDir().absolutePath + "/repo/"
+    if (localProperties.MAVEN_REPO_USERNAME == null) localProperties.MAVEN_REPO_USERNAME = ""
+    if (localProperties.MAVEN_REPO_PASSWORD == null) localProperties.MAVEN_REPO_PASSWORD = ""
 }
 
 allprojects {
@@ -53,7 +55,7 @@ allprojects {
         gdxVersion = '1.5.3'
         androidBuildToolsVersion = '21.1.0'
         androidSdkVersion = 21
-        dataVersion = '1.0'
+        dataVersion = '1.1'
         buildProperties = getRootProject().buildProperties
         build = getRootProject().build
         localProperties = getRootProject().localProperties
@@ -65,8 +67,8 @@ allprojects {
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
-        maven { url "https://raw.githubusercontent.com/ictrobot/mvn-repo/master/snapshots" }
-        maven { url "https://raw.githubusercontent.com/ictrobot/mvn-repo/master/releases" }
+        maven { url "http://ictrobot.no-ip.org/repository/snapshots/" }
+        maven { url "http://ictrobot.no-ip.org/repository/releases/" }
     }
 }
 
@@ -147,7 +149,7 @@ def String getMavenVersionString() {
 }
 
 def String getMavenRepo() {
-    def str = localProperties.CUBES_MAVEN_REPO + "/"
+    def str = localProperties.MAVEN_REPO_PATH
     if (isRelease) {
         str = str + "releases"
     } else {
