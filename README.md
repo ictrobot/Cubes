@@ -15,13 +15,15 @@ To customize the build, make a file called 'build.properties' in this folder and
 
 To build signed android artifacts:
 ```
-CUBES_KEYSTORE_FILE=[Keystore file]
-CUBES_KEYSTORE_PASSWORD=[Keystore password]
-CUBES_KEY_ALIAS=[Key alias]
-CUBES_KEY_PASSWORD=[Key password]
+ANDROID_KEYSTORE_FILE=[Keystore file]
+ANDROID_KEYSTORE_PASSWORD=[Keystore password]
+ANDROID_KEYSTORE_KEY_ALIAS=[Key alias]
+ANDROID_KEYSTORE_KEY_PASSWORD=[Key password]
 ```
 
-To specify where the maven repo is:
+To specify maven repo path and authentication:
 ```
-CUBES_MAVEN_REPO=[Path here]
+MAVEN_REPO_PATH=[Path]
+MAVEN_REPO_USERNAME=[Username]
+MAVEN_REPO_PASSWORD=[Password]
 ```
