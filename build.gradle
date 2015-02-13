@@ -132,11 +132,7 @@ tasks.eclipse.doLast {
     delete ".project"
 }
 
-task ci(dependsOn: ['core:publish', 'server:dist', 'client:dist', 'android:assembleDebug', 'android:assembleRelease']) << {
-
-}
-
-task travis(dependsOn: ['core:jar', 'server:dist', 'client:dist', 'android:assembleDebug']) {
+task travis(dependsOn: ['core:publish', 'server:publish', 'client:publish', 'android:publish']) {
 
 }
 
