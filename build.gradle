@@ -34,10 +34,10 @@ ext {
             localProperties.load(reader)
         }
     }
-    if (localProperties.ANDROID_KEYSTORE_FILE == null) localProperties.CUBES_KEYSTORE_FILE = "keystore"
-    if (localProperties.ANDROID_KEYSTORE_PASSWORD == null) localProperties.CUBES_KEYSTORE_PASSWORD = "password"
-    if (localProperties.ANDROID_KEYSTORE_KEY_ALIAS == null) localProperties.CUBES_KEY_ALIAS = "android"
-    if (localProperties.ANDROID_KEYSTORE_KEY_PASSWORD == null) localProperties.CUBES_KEY_PASSWORD = "password"
+    if (localProperties.ANDROID_KEYSTORE_FILE == null) localProperties.ANDROID_KEYSTORE_FILE = "keystore"
+    if (localProperties.ANDROID_KEYSTORE_PASSWORD == null) localProperties.ANDROID_KEYSTORE_PASSWORD = "password"
+    if (localProperties.ANDROID_KEYSTORE_KEY_ALIAS == null) localProperties.ANDROID_KEYSTORE_KEY_ALIAS = "android"
+    if (localProperties.ANDROID_KEYSTORE_KEY_PASSWORD == null) localProperties.ANDROID_KEYSTORE_KEY_PASSWORD = "password"
     if (localProperties.MAVEN_REPO_PATH == null) localProperties.MAVEN_REPO_PATH = getRootProject().getProjectDir().absolutePath + "/repo/"
     if (localProperties.MAVEN_REPO_USERNAME == null) localProperties.MAVEN_REPO_USERNAME = ""
     if (localProperties.MAVEN_REPO_PASSWORD == null) localProperties.MAVEN_REPO_PASSWORD = ""
