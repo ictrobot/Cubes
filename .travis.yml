@@ -2,6 +2,9 @@ language: java
 jdk:
 - oraclejdk7
 before_install:
+- git fetch --unshallow
+- git checkout -qf $TRAVIS_COMMIT
+- echo $TRAVIS_COMMIT
 - openssl aes-256-cbc -K $encrypted_65bd786e7d9d_key -iv $encrypted_65bd786e7d9d_iv -in build.properties.enc -out build.properties -d
 install:
 - sudo apt-get update
