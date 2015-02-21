@@ -43,7 +43,7 @@ publishing {
             artifact(new File(project.getBuildDir(), '/core.properties')) {
                 classifier "properties"
             }
-            groupId 'ethanjones.cubes'
+            groupId 'ethanjones.ethanjones.cubes'
             artifactId 'core'
             version getMavenVersionString()
 

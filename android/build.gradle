@@ -65,7 +65,7 @@ task copyAndroidNatives() {
 
 task run(type: Exec) {
     def adb = "$System.env.ANDROID_HOME/platform-tools/adb"
-    commandLine "$adb", 'shell', 'am', 'start', '-n', 'ethanjones.cubes.core.platform.android/ethanjones.cubes.core.platform.android.AndroidLauncher'
+    commandLine "$adb", 'shell', 'am', 'start', '-n', 'ethanjones.cubes.platform.android/ethanjones.cubes.platform.android.AndroidLauncher'
 }
 
 // sets up the Android Eclipse project, using the old Ant based build.
@@ -125,7 +125,7 @@ idea {
 publishing {
     publications {
         android(MavenPublication) {
-            groupId 'ethanjones.cubes'
+            groupId 'ethanjones.ethanjones.cubes'
             artifactId 'android'
             version getMavenVersionString()
             artifact(new File(project.getBuildDir(), '/outputs/apk/android-debug.apk'))
