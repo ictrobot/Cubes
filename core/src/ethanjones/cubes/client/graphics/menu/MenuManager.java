@@ -9,7 +9,7 @@ import java.util.List;
 
 import ethanjones.cubes.common.block.Block;
 import ethanjones.cubes.common.block.BlockManager;
-import ethanjones.cubes.common.core.util.BlockFace;
+import ethanjones.cubes.common.block.BlockFace;
 import ethanjones.cubes.client.graphics.world.BlockTextureHandler;
 
 import static ethanjones.cubes.client.graphics.Graphics.spriteBatch;

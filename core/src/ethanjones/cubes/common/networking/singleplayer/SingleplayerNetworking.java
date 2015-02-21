@@ -1,7 +1,7 @@
 package ethanjones.cubes.common.networking.singleplayer;
 
-import ethanjones.cubes.common.core.logging.Log;
-import ethanjones.cubes.common.core.system.Executor;
+import ethanjones.cubes.common.logging.Log;
+import ethanjones.cubes.common.util.Executor;
 import ethanjones.cubes.common.networking.Networking;
 import ethanjones.cubes.common.networking.packet.Packet;
 import ethanjones.cubes.common.networking.packet.PacketQueue;

@@ -5,7 +5,7 @@ import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-import ethanjones.cubes.common.core.logging.Log;
+import ethanjones.cubes.common.logging.Log;
 import ethanjones.cubes.platform.Adapter;
 import ethanjones.cubes.common.networking.Networking;
 import ethanjones.cubes.common.networking.packet.Packet;

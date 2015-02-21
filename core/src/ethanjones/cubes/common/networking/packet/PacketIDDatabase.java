@@ -2,7 +2,7 @@ package ethanjones.cubes.common.networking.packet;
 
 import java.util.HashMap;
 
-import ethanjones.cubes.common.core.system.CubesException;
+import ethanjones.cubes.common.CubesException;
 import ethanjones.cubes.common.networking.packets.PacketID;
 import ethanjones.cubes.common.networking.socket.SocketMonitor;
 import ethanjones.cubes.common.Side;

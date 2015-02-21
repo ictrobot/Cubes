@@ -4,7 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
-import ethanjones.cubes.common.core.localization.Localization;
+import ethanjones.cubes.common.localization.Localization;
 import ethanjones.cubes.platform.Adapter;
 
 public class ConnectionFailedMenu extends InfoMenu {

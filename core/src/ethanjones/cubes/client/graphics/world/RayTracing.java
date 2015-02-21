@@ -2,7 +2,7 @@ package ethanjones.cubes.client.graphics.world;
 
 import com.badlogic.gdx.math.Vector3;
 
-import ethanjones.cubes.common.core.util.BlockFace;
+import ethanjones.cubes.common.block.BlockFace;
 import ethanjones.cubes.common.world.World;
 import ethanjones.cubes.common.world.reference.BlockReference;
 

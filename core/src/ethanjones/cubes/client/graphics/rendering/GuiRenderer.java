@@ -21,9 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ethanjones.cubes.common.block.Block;
-import ethanjones.cubes.common.core.localization.Localization;
+import ethanjones.cubes.common.localization.Localization;
 import ethanjones.cubes.platform.Compatibility;
-import ethanjones.cubes.common.core.util.BlockFace;
+import ethanjones.cubes.common.block.BlockFace;
 import ethanjones.cubes.common.entity.living.player.Player;
 import ethanjones.cubes.client.graphics.assets.Assets;
 import ethanjones.cubes.client.graphics.menu.Fonts;

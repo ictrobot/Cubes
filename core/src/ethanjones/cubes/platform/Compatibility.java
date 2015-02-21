@@ -6,10 +6,10 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
-import ethanjones.cubes.common.core.logging.Log;
-import ethanjones.cubes.common.core.mod.ModLoader;
-import ethanjones.cubes.common.core.system.CubesException;
-import ethanjones.cubes.common.core.system.Debug.UncaughtExceptionHandler;
+import ethanjones.cubes.common.logging.Log;
+import ethanjones.cubes.common.mod.ModLoader;
+import ethanjones.cubes.common.CubesException;
+import ethanjones.cubes.common.Debug.UncaughtExceptionHandler;
 import ethanjones.cubes.client.graphics.assets.AssetFinder;
 import ethanjones.cubes.client.graphics.assets.Assets;
 import ethanjones.cubes.common.Side;

@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Vector3;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
-import ethanjones.cubes.common.core.util.VectorUtil;
+import ethanjones.cubes.common.util.Vectors;
 import ethanjones.cubes.common.networking.packet.Packet;
 import ethanjones.cubes.common.Side;
 import ethanjones.cubes.common.Sided;
@@ -17,14 +17,14 @@ public class PacketPlayerInfo extends Packet {
 
   @Override
   public void write(DataOutputStream dataOutputStream) throws Exception {
-    VectorUtil.writeVector3(angle, dataOutputStream);
-    VectorUtil.writeVector3(position, dataOutputStream);
+    Vectors.writeVector3(angle, dataOutputStream);
+    Vectors.writeVector3(position, dataOutputStream);
   }
 
   @Override
   public void read(DataInputStream dataInputStream) throws Exception {
-    angle = VectorUtil.readVector3(dataInputStream);
-    position = VectorUtil.readVector3(dataInputStream);
+    angle = Vectors.readVector3(dataInputStream);
+    position = Vectors.readVector3(dataInputStream);
   }
 
   @Override

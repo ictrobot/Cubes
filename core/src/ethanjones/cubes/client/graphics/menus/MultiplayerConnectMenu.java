@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
-import ethanjones.cubes.common.core.localization.Localization;
+import ethanjones.cubes.common.localization.Localization;
 import ethanjones.cubes.platform.Adapter;
 import ethanjones.cubes.client.graphics.menu.Menu;
 import ethanjones.cubes.client.graphics.menu.MenuTools;

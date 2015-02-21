@@ -4,11 +4,11 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
-import ethanjones.cubes.common.core.logging.Log;
-import ethanjones.cubes.common.core.mod.ModLoader;
+import ethanjones.cubes.common.logging.Log;
+import ethanjones.cubes.common.mod.ModLoader;
 import ethanjones.cubes.platform.Adapter;
 import ethanjones.cubes.platform.Compatibility;
-import ethanjones.cubes.common.core.system.Branding;
+import ethanjones.cubes.common.Branding;
 import ethanjones.cubes.client.graphics.assets.AssetFinder;
 
 public abstract class DesktopCompatibility extends Compatibility {

@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Camera;
 
 import ethanjones.cubes.common.block.Block;
 import ethanjones.cubes.common.block.Blocks;
-import ethanjones.cubes.common.core.settings.Settings;
+import ethanjones.cubes.common.settings.Settings;
 import ethanjones.cubes.common.entity.living.LivingEntity;
 import ethanjones.cubes.common.networking.NetworkingManager;
 import ethanjones.cubes.common.networking.packets.PacketChat;

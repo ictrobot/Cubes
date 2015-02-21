@@ -1,10 +1,8 @@
 package ethanjones.cubes.common;
 
 import ethanjones.cubes.common.block.BlockManager;
-import ethanjones.cubes.common.core.event.EventBus;
-import ethanjones.cubes.common.core.system.CubesException;
-import ethanjones.cubes.common.core.system.CubesSecurity;
-import ethanjones.cubes.common.core.timing.Timing;
+import ethanjones.cubes.common.event.EventBus;
+import ethanjones.cubes.common.timing.Timing;
 import ethanjones.cubes.common.networking.Networking;
 import ethanjones.cubes.common.networking.NetworkingManager;
 
@@ -76,8 +74,6 @@ public class Sided {
   }
 
   public static void setup(Side side) {
-    CubesSecurity.checkSidedSetup();
-
     if (side == null || getData(side) != null) return;
 
     sideLocal.set(side);
@@ -104,8 +100,6 @@ public class Sided {
   }
 
   public static void reset(Side side) {
-    CubesSecurity.checkSidedReset();
-
     if (side == null) return;
 
     switch (side) {

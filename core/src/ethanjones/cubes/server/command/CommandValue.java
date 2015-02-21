@@ -1,6 +1,6 @@
 package ethanjones.cubes.server.command;
 
-import ethanjones.cubes.common.core.localization.Localization;
+import ethanjones.cubes.common.localization.Localization;
 import ethanjones.cubes.common.networking.server.ClientIdentifier;
 import ethanjones.cubes.Cubes;
 

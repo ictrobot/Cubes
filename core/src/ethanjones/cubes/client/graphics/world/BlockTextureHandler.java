@@ -3,8 +3,8 @@ package ethanjones.cubes.client.graphics.world;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import java.util.Arrays;
 
-import ethanjones.cubes.common.core.system.CubesException;
-import ethanjones.cubes.common.core.util.BlockFace;
+import ethanjones.cubes.common.CubesException;
+import ethanjones.cubes.common.block.BlockFace;
 import ethanjones.cubes.client.graphics.assets.Assets;
 
 public class BlockTextureHandler {

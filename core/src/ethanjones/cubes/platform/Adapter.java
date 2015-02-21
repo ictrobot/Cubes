@@ -2,8 +2,8 @@ package ethanjones.cubes.platform;
 
 import com.badlogic.gdx.Gdx;
 
-import ethanjones.cubes.common.core.logging.Log;
-import ethanjones.cubes.common.core.system.Debug;
+import ethanjones.cubes.common.logging.Log;
+import ethanjones.cubes.common.Debug;
 import ethanjones.cubes.client.graphics.menu.Menu;
 import ethanjones.cubes.client.graphics.menus.MainMenu;
 import ethanjones.cubes.client.graphics.menus.RunnableMenu;

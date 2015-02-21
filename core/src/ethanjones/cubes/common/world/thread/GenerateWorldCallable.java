@@ -2,7 +2,7 @@ package ethanjones.cubes.common.world.thread;
 
 import java.util.concurrent.Callable;
 
-import ethanjones.cubes.common.core.event.world.generation.GenerationEvent;
+import ethanjones.cubes.common.event.world.generation.GenerationEvent;
 import ethanjones.cubes.common.world.reference.AreaReference;
 import ethanjones.cubes.common.world.server.WorldServer;
 import ethanjones.cubes.common.world.storage.Area;

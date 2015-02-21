@@ -3,7 +3,7 @@ package ethanjones.cubes.common.world.client;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import ethanjones.cubes.common.core.system.Pools;
+import ethanjones.cubes.common.util.Pools;
 import ethanjones.cubes.Cubes;
 import ethanjones.cubes.common.world.reference.AreaReference;
 import ethanjones.cubes.common.world.storage.Area;

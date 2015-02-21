@@ -7,7 +7,7 @@ import java.security.CodeSource;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import ethanjones.cubes.common.core.logging.Log;
+import ethanjones.cubes.common.logging.Log;
 import ethanjones.cubes.Cubes;
 
 public class AssetFinder {

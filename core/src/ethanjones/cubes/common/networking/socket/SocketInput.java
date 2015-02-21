@@ -3,7 +3,7 @@ package ethanjones.cubes.common.networking.socket;
 import java.io.*;
 import java.util.zip.Inflater;
 
-import ethanjones.cubes.common.core.logging.Log;
+import ethanjones.cubes.common.logging.Log;
 import ethanjones.cubes.common.networking.packet.Packet;
 import ethanjones.cubes.common.Side;
 import ethanjones.cubes.common.Sided;

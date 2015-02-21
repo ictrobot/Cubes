@@ -13,8 +13,8 @@ import com.badlogic.gdx.utils.Pool;
 
 import ethanjones.cubes.common.block.Block;
 
-import ethanjones.cubes.common.core.system.Pools;
-import ethanjones.cubes.common.core.util.BlockFace;
+import ethanjones.cubes.common.util.Pools;
+import ethanjones.cubes.common.block.BlockFace;
 import ethanjones.cubes.client.graphics.assets.Assets;
 import ethanjones.cubes.common.Sided;
 import ethanjones.cubes.Cubes;

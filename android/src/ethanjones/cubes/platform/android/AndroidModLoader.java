@@ -4,7 +4,7 @@ import android.content.Context;
 import com.badlogic.gdx.files.FileHandle;
 import dalvik.system.DexClassLoader;
 
-import ethanjones.cubes.common.core.mod.ModLoader;
+import ethanjones.cubes.common.mod.ModLoader;
 
 public class AndroidModLoader implements ModLoader {
 

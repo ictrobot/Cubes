@@ -5,8 +5,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import ethanjones.cubes.common.block.Block;
-import ethanjones.cubes.common.core.event.world.block.BlockChangedEvent;
-import ethanjones.cubes.common.core.system.CubesException;
+import ethanjones.cubes.common.event.world.block.BlockChangedEvent;
+import ethanjones.cubes.common.CubesException;
 import ethanjones.cubes.client.graphics.world.AreaRenderer;
 import ethanjones.cubes.common.Side;
 import ethanjones.cubes.common.Sided;

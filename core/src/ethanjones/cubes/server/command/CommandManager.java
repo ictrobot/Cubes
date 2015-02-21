@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import ethanjones.cubes.common.core.localization.Localization;
-import ethanjones.cubes.common.core.logging.Log;
+import ethanjones.cubes.common.localization.Localization;
+import ethanjones.cubes.common.logging.Log;
 
 public class CommandManager {
 

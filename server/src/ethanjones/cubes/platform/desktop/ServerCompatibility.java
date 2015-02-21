@@ -5,7 +5,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.files.FileHandle;
 
-import ethanjones.cubes.common.core.system.Branding;
+import ethanjones.cubes.common.Branding;
 
 public class ServerCompatibility extends DesktopCompatibility {
 

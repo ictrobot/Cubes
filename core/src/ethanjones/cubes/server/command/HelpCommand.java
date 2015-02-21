@@ -3,7 +3,7 @@ package ethanjones.cubes.server.command;
 import java.util.List;
 import java.util.Map.Entry;
 
-import ethanjones.cubes.common.core.localization.Localization;
+import ethanjones.cubes.common.localization.Localization;
 
 public class HelpCommand {
 

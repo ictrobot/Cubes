@@ -2,8 +2,8 @@ package ethanjones.cubes.common.block;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-import ethanjones.cubes.common.core.localization.Localization;
-import ethanjones.cubes.common.core.system.CubesException;
+import ethanjones.cubes.common.localization.Localization;
+import ethanjones.cubes.common.CubesException;
 import ethanjones.cubes.client.graphics.assets.Assets;
 import ethanjones.cubes.client.graphics.world.BlockTextureHandler;
 

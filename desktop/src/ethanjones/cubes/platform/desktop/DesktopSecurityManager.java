@@ -2,8 +2,8 @@ package ethanjones.cubes.platform.desktop;
 
 import java.security.Permission;
 
-import ethanjones.cubes.common.core.logging.Log;
-import ethanjones.cubes.common.core.logging.LogLevel;
+import ethanjones.cubes.common.logging.Log;
+import ethanjones.cubes.common.logging.LogLevel;
 
 public class DesktopSecurityManager extends SecurityManager {
 
@@ -25,7 +25,7 @@ public class DesktopSecurityManager extends SecurityManager {
     if (perm.getName().startsWith("exitVM.")) {
       if (getClassContext().length < 5) throw new SecurityException();
       String c = getClassContext()[4].getName();
-      if (c.startsWith("com.badlogic.gdx.backends.lwjgl.Lwjgl") || c.equals("ethanjones.cubes.Cubes") || c.equals("ethanjones.cubes.common.core.system.Debug")) {
+      if (c.startsWith("com.badlogic.gdx.backends.lwjgl.Lwjgl") || c.equals("ethanjones.cubes.Cubes") || c.equals("ethanjones.cubes.common.Debug")) {
         Log.debug("Allowing class \"" + c + "\" to exit");
         stackTrace(LogLevel.debug);
       } else {

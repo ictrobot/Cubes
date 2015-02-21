@@ -1,7 +1,7 @@
 package ethanjones.cubes.common.block.basic;
 
 import ethanjones.cubes.common.block.Block;
-import ethanjones.cubes.common.core.util.BlockFace;
+import ethanjones.cubes.common.block.BlockFace;
 
 public class BlockGrass extends Block {
 

@@ -1,6 +1,6 @@
 package ethanjones.cubes.common.networking.server;
 
-import ethanjones.cubes.common.core.settings.Settings;
+import ethanjones.cubes.common.settings.Settings;
 
 public class ServerNetworkingParameter {
 

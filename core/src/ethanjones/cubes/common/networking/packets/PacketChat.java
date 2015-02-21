@@ -3,8 +3,8 @@ package ethanjones.cubes.common.networking.packets;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
-import ethanjones.cubes.common.core.localization.Localization;
-import ethanjones.cubes.common.core.logging.Log;
+import ethanjones.cubes.common.localization.Localization;
+import ethanjones.cubes.common.logging.Log;
 import ethanjones.cubes.common.entity.living.player.Player;
 import ethanjones.cubes.common.networking.NetworkingManager;
 import ethanjones.cubes.common.networking.packet.Packet;

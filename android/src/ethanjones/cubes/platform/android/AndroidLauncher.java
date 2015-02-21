@@ -5,7 +5,7 @@ import com.badlogic.gdx.backends.android.AndroidApplication;
 
 import ethanjones.cubes.platform.Compatibility;
 import ethanjones.cubes.platform.Launcher;
-import ethanjones.cubes.common.core.system.Debug;
+import ethanjones.cubes.common.Debug;
 
 public class AndroidLauncher extends AndroidApplication implements Launcher {
 

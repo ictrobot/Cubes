@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
 import ethanjones.cubes.platform.Compatibility;
-import ethanjones.cubes.common.core.system.Branding;
+import ethanjones.cubes.common.Branding;
 import ethanjones.cubes.client.graphics.menu.Fonts;
 import ethanjones.cubes.Cubes;
 import ethanjones.cubes.common.world.CoordinateConverter;

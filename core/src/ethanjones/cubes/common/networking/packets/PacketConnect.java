@@ -2,7 +2,7 @@ package ethanjones.cubes.common.networking.packets;
 
 import ethanjones.data.DataGroup;
 
-import ethanjones.cubes.common.core.settings.Settings;
+import ethanjones.cubes.common.settings.Settings;
 import ethanjones.cubes.common.networking.packet.DataPacket;
 import ethanjones.cubes.common.networking.packet.PacketPriority;
 import ethanjones.cubes.common.networking.server.ClientIdentifier;

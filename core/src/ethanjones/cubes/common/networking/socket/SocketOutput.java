@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.zip.Deflater;
 
-import ethanjones.cubes.common.core.logging.Log;
+import ethanjones.cubes.common.logging.Log;
 import ethanjones.cubes.common.networking.packet.Packet;
 import ethanjones.cubes.common.networking.packet.PacketQueue;
 import ethanjones.cubes.common.Side;

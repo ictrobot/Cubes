@@ -5,7 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
-import ethanjones.cubes.common.core.system.Debug;
+import ethanjones.cubes.common.Debug;
 import ethanjones.cubes.common.networking.packet.Packet;
 import ethanjones.cubes.common.networking.packet.PacketQueue;
 import ethanjones.cubes.common.Side;

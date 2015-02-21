@@ -3,7 +3,7 @@ package ethanjones.cubes.server.command;
 import com.badlogic.gdx.math.Vector3;
 import java.util.List;
 
-import ethanjones.cubes.common.core.localization.Localization;
+import ethanjones.cubes.common.localization.Localization;
 import ethanjones.cubes.common.entity.living.player.Player;
 import ethanjones.cubes.common.networking.NetworkingManager;
 import ethanjones.cubes.common.networking.packets.PacketPlayerInfo;
