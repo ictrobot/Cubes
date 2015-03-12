@@ -1,21 +1,21 @@
 package ethanjones.cubes.networking.packet;
 
+import ethanjones.data.Data;
 import ethanjones.data.DataGroup;
-import ethanjones.data.DataTools;
-import ethanjones.data.other.DataParser;
+import ethanjones.data.DataParser;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
-public abstract class DataPacket extends Packet implements DataParser<DataGroup> {
+public abstract class DataPacket extends Packet implements DataParser {
 
   @Override
   public void write(DataOutputStream dataOutputStream) throws Exception {
-    DataTools.write(write(), dataOutputStream);
+    Data.output(write(), dataOutputStream);
   }
 
   @Override
   public void read(DataInputStream dataInputStream) throws Exception {
-    read((DataGroup) DataTools.read(dataInputStream));
+    read((DataGroup) Data.input(dataInputStream));
   }
 
   @Override

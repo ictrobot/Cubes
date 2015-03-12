@@ -17,14 +17,14 @@ public class PacketPlayerInfo extends Packet {
 
   @Override
   public void write(DataOutputStream dataOutputStream) throws Exception {
-    VectorUtil.writeVector3(angle, dataOutputStream);
-    VectorUtil.writeVector3(position, dataOutputStream);
+    VectorUtil.stream(angle, dataOutputStream);
+    VectorUtil.stream(position, dataOutputStream);
   }
 
   @Override
   public void read(DataInputStream dataInputStream) throws Exception {
-    angle = VectorUtil.readVector3(dataInputStream);
-    position = VectorUtil.readVector3(dataInputStream);
+    angle = VectorUtil.stream(dataInputStream);
+    position = VectorUtil.stream(dataInputStream);
   }
 
   @Override

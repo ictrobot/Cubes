@@ -22,7 +22,7 @@ public class PacketConnected extends DataPacket {
   @Override
   public DataGroup write() {
     DataGroup dataGroup = new DataGroup();
-    dataGroup.setGroup("blockManager", blockManager);
+    dataGroup.put("blockManager", blockManager);
     return dataGroup;
   }
 

@@ -33,9 +33,9 @@ public class LivingEntity extends Entity {
   @Override
   public DataGroup write() {
     DataGroup data = super.write();
-    data.setInteger("health", health);
-    data.setInteger("maxHealth", maxHealth);
-    data.setInteger("regenerationSpeed", regenerationSpeed);
+    data.put("health", health);
+    data.put("maxHealth", maxHealth);
+    data.put("regenerationSpeed", regenerationSpeed);
     return data;
   }
 

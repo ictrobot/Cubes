@@ -50,7 +50,7 @@ public class BooleanSetting extends Setting {
   @Override
   public DataGroup write() {
     DataGroup dataGroup = new DataGroup();
-    dataGroup.setBoolean("data", b);
+    dataGroup.put("data", b);
     return dataGroup;
   }
 

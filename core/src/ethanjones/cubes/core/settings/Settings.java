@@ -3,7 +3,6 @@ package ethanjones.cubes.core.settings;
 import com.badlogic.gdx.files.FileHandle;
 import ethanjones.data.Data;
 import ethanjones.data.DataGroup;
-import ethanjones.data.DataTools;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,12 +47,12 @@ public class Settings {
     FileHandle fileHandle = Compatibility.get().getBaseFolder().child("settings.data");
     DataGroup dataGroup;
     try {
-      dataGroup = (DataGroup) DataTools.read(fileHandle.file());
+      dataGroup = (DataGroup) Data.input(fileHandle.file());
     } catch (Exception e) {
       Log.error("Failed to read settings", e);
       return false;
     }
-    for (Map.Entry<String, Data> entry : dataGroup.getEntrySet()) {
+    for (Map.Entry<String, Object> entry : dataGroup.entrySet()) {
       Setting setting = settings.get(entry.getKey());
       if (setting != null && entry.getValue() instanceof DataGroup) {
         setting.read((DataGroup) entry.getValue());
@@ -66,10 +65,10 @@ public class Settings {
     FileHandle fileHandle = Compatibility.get().getBaseFolder().child("settings.data");
     DataGroup dataGroup = new DataGroup();
     for (Map.Entry<String, Setting> entry : settings.entrySet()) {
-      dataGroup.setGroup(entry.getKey(), entry.getValue().write());
+      dataGroup.put(entry.getKey(), entry.getValue().write());
     }
     try {
-      DataTools.write(dataGroup, fileHandle.file());
+      Data.output(dataGroup, fileHandle.file());
     } catch (Exception e) {
       Log.error("Failed to write settings", e);
       fileHandle.delete();

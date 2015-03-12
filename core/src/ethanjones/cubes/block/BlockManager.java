@@ -2,13 +2,12 @@ package ethanjones.cubes.block;
 
 import ethanjones.data.Data;
 import ethanjones.data.DataGroup;
-import ethanjones.data.basic.DataInteger;
-import ethanjones.data.other.DataParser;
+import ethanjones.data.DataParser;
 import java.util.*;
 
 import ethanjones.cubes.core.logging.Log;
 
-public class BlockManager implements DataParser<DataGroup> {
+public class BlockManager implements DataParser {
 
   private static final ArrayList<Block> blockList = new ArrayList<Block>();
   private static final List<Block> unmodifiableBlockList = Collections.unmodifiableList(blockList);
@@ -84,7 +83,7 @@ public class BlockManager implements DataParser<DataGroup> {
     synchronized (this) {
       DataGroup dataGroup = new DataGroup();
       for (Map.Entry<Block, Integer> entry : blockToInteger.entrySet()) {
-        dataGroup.setInteger(entry.getKey().id, entry.getValue());
+        dataGroup.put(entry.getKey().id, entry.getValue());
       }
       return dataGroup;
     }
@@ -95,9 +94,9 @@ public class BlockManager implements DataParser<DataGroup> {
     if (integerToBlock.size() > 0) return;
     synchronized (this) {
       synchronized (BlockManager.class) {
-        for (Map.Entry<String, Data> entry : data.getEntrySet()) {
+        for (Map.Entry<String, Object> entry : data.entrySet()) {
           Block block = idToBlock.get(entry.getKey());
-          int i = ((DataInteger) entry.getValue()).get();
+          int i = (int) entry.getValue();
           integerToBlock.put(i, block);
           blockToInteger.put(block, i);
         }

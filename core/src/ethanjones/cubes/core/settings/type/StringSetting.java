@@ -53,7 +53,7 @@ public class StringSetting extends Setting {
   @Override
   public DataGroup write() {
     DataGroup dataGroup = new DataGroup();
-    dataGroup.setString("data", s);
+    dataGroup.put("data", s);
     return dataGroup;
   }
 

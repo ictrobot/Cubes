@@ -25,8 +25,8 @@ public class PacketConnect extends DataPacket {
   @Override
   public DataGroup write() {
     DataGroup dataGroup = new DataGroup();
-    dataGroup.setString("username", username);
-    dataGroup.setInteger("renderDistance", renderDistance);
+    dataGroup.put("username", username);
+    dataGroup.put("renderDistance", renderDistance);
     return dataGroup;
   }
 

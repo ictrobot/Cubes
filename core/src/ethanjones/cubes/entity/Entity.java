@@ -2,11 +2,11 @@ package ethanjones.cubes.entity;
 
 import com.badlogic.gdx.math.Vector3;
 import ethanjones.data.DataGroup;
-import ethanjones.data.other.DataParser;
+import ethanjones.data.DataParser;
 
 import ethanjones.cubes.core.util.VectorUtil;
 
-public class Entity implements DataParser<DataGroup> {
+public class Entity implements DataParser {
 
   //FIXME
 
@@ -29,14 +29,14 @@ public class Entity implements DataParser<DataGroup> {
   @Override
   public DataGroup write() {
     DataGroup dataGroup = new DataGroup();
-    dataGroup.setList("position", VectorUtil.dataFromVector3(position));
-    dataGroup.setList("angle", VectorUtil.dataFromVector3(angle));
+    dataGroup.put("pos", VectorUtil.array(position));
+    dataGroup.put("ang", VectorUtil.array(angle));
     return dataGroup;
   }
 
   @Override
   public void read(DataGroup data) {
-    this.position.set(VectorUtil.vector3FromData(data.getList("position")));
-    this.angle.set(VectorUtil.vector3FromData(data.getList("angle")));
+    this.position.set(VectorUtil.array(data.getArray("position", Float.class)));
+    this.angle.set(VectorUtil.array(data.getArray("angle", Float.class)));
   }
 }

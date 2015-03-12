@@ -126,7 +126,7 @@ public class IntegerSetting extends Setting {
   @Override
   public DataGroup write() {
     DataGroup dataGroup = new DataGroup();
-    dataGroup.setInteger("data", i);
+    dataGroup.put("data", i);
     return dataGroup;
   }
 
