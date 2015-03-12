@@ -1,6 +1,6 @@
 package ethanjones.cubes.server.integrated;
 
-import ethanjones.cubes.common.Debug;
+import ethanjones.cubes.common.core.system.Debug;
 import ethanjones.cubes.common.Side;
 import ethanjones.cubes.Cubes;
 import ethanjones.cubes.server.CubesServer;

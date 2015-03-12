@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import ethanjones.cubes.common.block.Block;
-import ethanjones.cubes.common.util.Pools;
+import ethanjones.cubes.common.core.system.Pools;
 import ethanjones.cubes.common.world.generator.TerrainGenerator;
 import ethanjones.cubes.common.world.reference.AreaReference;
 import ethanjones.cubes.common.world.storage.Area;

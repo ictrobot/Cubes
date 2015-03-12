@@ -4,11 +4,11 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 
-import ethanjones.cubes.common.mod.ModManager;
-import ethanjones.cubes.common.mod.event.StartingClientEvent;
-import ethanjones.cubes.common.mod.event.StoppingClientEvent;
+import ethanjones.cubes.common.core.mod.ModManager;
+import ethanjones.cubes.common.core.mod.event.StartingClientEvent;
+import ethanjones.cubes.common.core.mod.event.StoppingClientEvent;
 import ethanjones.cubes.platform.Adapter;
-import ethanjones.cubes.common.CubesException;
+import ethanjones.cubes.common.core.system.CubesException;
 import ethanjones.cubes.common.entity.living.player.Player;
 import ethanjones.cubes.client.graphics.rendering.Renderer;
 import ethanjones.cubes.client.input.InputChain;

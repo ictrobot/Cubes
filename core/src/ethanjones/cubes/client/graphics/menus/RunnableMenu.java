@@ -1,6 +1,6 @@
 package ethanjones.cubes.client.graphics.menus;
 
-import ethanjones.cubes.common.localization.Localization;
+import ethanjones.cubes.common.core.localization.Localization;
 
 public class RunnableMenu extends InfoMenu {
 

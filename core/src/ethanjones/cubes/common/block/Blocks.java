@@ -7,8 +7,8 @@ import ethanjones.cubes.common.block.basic.BlockBedrock;
 import ethanjones.cubes.common.block.basic.BlockDirt;
 import ethanjones.cubes.common.block.basic.BlockGrass;
 import ethanjones.cubes.common.block.basic.BlockStone;
-import ethanjones.cubes.common.logging.Log;
-import ethanjones.cubes.common.util.Register;
+import ethanjones.cubes.common.core.logging.Log;
+import ethanjones.cubes.common.core.util.Register;
 
 public class Blocks {
 

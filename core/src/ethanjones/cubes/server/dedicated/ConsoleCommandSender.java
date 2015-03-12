@@ -5,9 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-import ethanjones.cubes.common.localization.Localization;
-import ethanjones.cubes.common.logging.Log;
-import ethanjones.cubes.common.Debug;
+import ethanjones.cubes.common.core.localization.Localization;
+import ethanjones.cubes.common.core.logging.Log;
+import ethanjones.cubes.common.core.system.Debug;
 import ethanjones.cubes.server.command.CommandManager;
 import ethanjones.cubes.server.command.CommandPermission;
 import ethanjones.cubes.server.command.CommandSender;

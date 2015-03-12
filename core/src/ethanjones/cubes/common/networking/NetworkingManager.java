@@ -1,6 +1,6 @@
 package ethanjones.cubes.common.networking;
 
-import ethanjones.cubes.common.logging.Log;
+import ethanjones.cubes.common.core.logging.Log;
 import ethanjones.cubes.common.networking.client.ClientNetworking;
 import ethanjones.cubes.common.networking.client.ClientNetworkingParameter;
 import ethanjones.cubes.common.networking.packet.Packet;

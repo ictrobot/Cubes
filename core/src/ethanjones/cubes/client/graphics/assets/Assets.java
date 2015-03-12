@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ethanjones.cubes.common.logging.Log;
+import ethanjones.cubes.common.core.logging.Log;
 import ethanjones.cubes.platform.Adapter;
 import ethanjones.cubes.platform.Compatibility;
 

@@ -4,11 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import ethanjones.cubes.common.localization.Localization;
-import ethanjones.cubes.common.logging.Log;
-import ethanjones.cubes.common.Branding;
-import ethanjones.cubes.common.CubesException;
-import ethanjones.cubes.common.Debug;
+import ethanjones.cubes.common.core.localization.Localization;
+import ethanjones.cubes.common.core.logging.Log;
+import ethanjones.cubes.common.core.system.Branding;
+import ethanjones.cubes.common.core.system.CubesException;
+import ethanjones.cubes.common.core.system.Debug;
 import ethanjones.cubes.client.graphics.Graphics;
 import ethanjones.cubes.client.graphics.menu.Menu;
 import ethanjones.cubes.client.graphics.menu.MenuManager;

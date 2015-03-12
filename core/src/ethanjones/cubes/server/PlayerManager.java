@@ -4,9 +4,9 @@ import com.badlogic.gdx.Input.Buttons;
 import java.util.ArrayList;
 
 import ethanjones.cubes.common.block.Block;
-import ethanjones.cubes.common.event.EventHandler;
-import ethanjones.cubes.common.event.world.block.BlockEvent;
-import ethanjones.cubes.common.util.Executor;
+import ethanjones.cubes.common.core.event.EventHandler;
+import ethanjones.cubes.common.core.event.world.block.BlockEvent;
+import ethanjones.cubes.common.core.system.Executor;
 import ethanjones.cubes.client.graphics.world.RayTracing;
 import ethanjones.cubes.common.networking.NetworkingManager;
 import ethanjones.cubes.common.networking.packets.*;

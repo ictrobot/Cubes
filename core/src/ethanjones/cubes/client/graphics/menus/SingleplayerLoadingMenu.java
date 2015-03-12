@@ -1,7 +1,7 @@
 package ethanjones.cubes.client.graphics.menus;
 
-import ethanjones.cubes.common.localization.Localization;
-import ethanjones.cubes.common.logging.Log;
+import ethanjones.cubes.common.core.localization.Localization;
+import ethanjones.cubes.common.core.logging.Log;
 import ethanjones.cubes.platform.Adapter;
 import ethanjones.cubes.common.networking.NetworkingManager;
 import ethanjones.cubes.client.CubesClient;

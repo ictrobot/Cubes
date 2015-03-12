@@ -2,7 +2,7 @@ package ethanjones.cubes.server.command;
 
 import java.util.List;
 
-import ethanjones.cubes.common.localization.Localization;
+import ethanjones.cubes.common.core.localization.Localization;
 import ethanjones.cubes.Cubes;
 
 public class StopCommand {

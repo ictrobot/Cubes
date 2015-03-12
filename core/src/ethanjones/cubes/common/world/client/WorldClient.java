@@ -3,7 +3,7 @@ package ethanjones.cubes.common.world.client;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import ethanjones.cubes.common.util.Executor;
+import ethanjones.cubes.common.core.system.Executor;
 import ethanjones.cubes.common.world.World;
 import ethanjones.cubes.common.world.reference.AreaReference;
 

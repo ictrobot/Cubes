@@ -9,12 +9,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import java.util.ArrayList;
 import java.util.Map;
 
-import ethanjones.cubes.common.localization.Localization;
+import ethanjones.cubes.common.core.localization.Localization;
 import ethanjones.cubes.platform.Adapter;
-import ethanjones.cubes.common.settings.SettingGroup;
-import ethanjones.cubes.common.settings.Settings;
-import ethanjones.cubes.common.settings.VisualSettingManager;
-import ethanjones.cubes.common.CubesException;
+import ethanjones.cubes.common.core.settings.SettingGroup;
+import ethanjones.cubes.common.core.settings.Settings;
+import ethanjones.cubes.common.core.settings.VisualSettingManager;
+import ethanjones.cubes.common.core.system.CubesException;
 import ethanjones.cubes.client.graphics.menu.Menu;
 import ethanjones.cubes.client.graphics.menu.MenuTools;
 

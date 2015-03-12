@@ -6,7 +6,7 @@ import ethanjones.data.basic.DataInteger;
 import ethanjones.data.other.DataParser;
 import java.util.*;
 
-import ethanjones.cubes.common.logging.Log;
+import ethanjones.cubes.common.core.logging.Log;
 
 public class BlockManager implements DataParser<DataGroup> {
 

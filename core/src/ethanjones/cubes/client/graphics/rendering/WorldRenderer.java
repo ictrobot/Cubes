@@ -8,8 +8,8 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.utils.Disposable;
 
-import ethanjones.cubes.common.settings.Settings;
-import ethanjones.cubes.common.util.Pools;
+import ethanjones.cubes.common.core.settings.Settings;
+import ethanjones.cubes.common.core.system.Pools;
 import ethanjones.cubes.client.graphics.world.AreaRenderer;
 import ethanjones.cubes.client.graphics.world.AreaRendererPool;
 import ethanjones.cubes.client.input.CameraController;

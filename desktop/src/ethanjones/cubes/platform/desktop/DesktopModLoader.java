@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import ethanjones.cubes.common.mod.ModLoader;
+import ethanjones.cubes.common.core.mod.ModLoader;
 
 public class DesktopModLoader implements ModLoader {
 

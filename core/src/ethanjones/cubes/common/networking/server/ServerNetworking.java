@@ -3,7 +3,7 @@ package ethanjones.cubes.common.networking.server;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.utils.Array;
 
-import ethanjones.cubes.common.logging.Log;
+import ethanjones.cubes.common.core.logging.Log;
 import ethanjones.cubes.common.networking.Networking;
 import ethanjones.cubes.common.networking.packet.Packet;
 import ethanjones.cubes.common.networking.packet.PacketQueue;

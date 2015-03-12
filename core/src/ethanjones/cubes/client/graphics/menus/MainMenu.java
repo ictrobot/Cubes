@@ -11,8 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Scaling;
 
-import ethanjones.cubes.common.localization.Localization;
-import ethanjones.cubes.common.logging.Log;
+import ethanjones.cubes.common.core.localization.Localization;
+import ethanjones.cubes.common.core.logging.Log;
 import ethanjones.cubes.platform.Adapter;
 import ethanjones.cubes.client.graphics.assets.Assets;
 import ethanjones.cubes.client.graphics.menu.Menu;

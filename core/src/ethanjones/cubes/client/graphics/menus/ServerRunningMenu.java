@@ -5,8 +5,8 @@ import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
-import ethanjones.cubes.common.localization.Localization;
-import ethanjones.cubes.common.logging.Log;
+import ethanjones.cubes.common.core.localization.Localization;
+import ethanjones.cubes.common.core.logging.Log;
 import ethanjones.cubes.platform.Adapter;
 import ethanjones.cubes.common.networking.NetworkingManager;
 import ethanjones.cubes.common.networking.server.ServerNetworkingParameter;

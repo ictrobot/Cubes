@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeBitmapFontData;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
-import ethanjones.cubes.common.logging.Log;
+import ethanjones.cubes.common.core.logging.Log;
 import ethanjones.cubes.client.graphics.assets.Assets;
 
 public class Fonts {

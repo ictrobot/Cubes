@@ -8,8 +8,8 @@ import java.lang.reflect.Field;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
-import ethanjones.cubes.common.logging.Log;
-import ethanjones.cubes.common.Branding;
+import ethanjones.cubes.common.core.logging.Log;
+import ethanjones.cubes.common.core.system.Branding;
 
 public class ClientConnectionInitializer {
 

@@ -1,8 +1,8 @@
 package ethanjones.cubes.platform;
 
-import ethanjones.cubes.common.localization.Localization;
-import ethanjones.cubes.common.logging.Log;
-import ethanjones.cubes.common.Debug;
+import ethanjones.cubes.common.core.localization.Localization;
+import ethanjones.cubes.common.core.logging.Log;
+import ethanjones.cubes.common.core.system.Debug;
 import ethanjones.cubes.client.graphics.menu.Menu;
 import ethanjones.cubes.common.networking.NetworkingManager;
 import ethanjones.cubes.common.networking.server.ServerNetworkingParameter;
