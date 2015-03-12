@@ -16,7 +16,6 @@ public class Fonts {
 
     public CopyBitmapFontData(BitmapFontData base) {
       super();
-      this.imagePath = base.imagePath;
       this.imagePaths = base.imagePaths;
       this.fontFile = base.fontFile;
       this.flipped = base.flipped;
