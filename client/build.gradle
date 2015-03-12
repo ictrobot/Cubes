@@ -3,7 +3,7 @@ apply plugin: "java"
 sourceCompatibility = 1.7
 sourceSets.main.java.srcDirs = ["src/"]
 
-project.ext.mainClassName = "ethanjones.cubes.platform.desktop.ClientLauncher"
+project.ext.mainClassName = "ethanjones.cubes.core.platform.desktop.ClientLauncher"
 project.ext.assetsDir = new File("../assets");
 
 task dist(dependsOn: classes, type: Jar) {
@@ -53,7 +53,7 @@ publishing {
     publications {
         jar(MavenPublication) {
             artifact dist
-            groupId 'ethanjones.ethanjones.cubes'
+            groupId 'ethanjones.cubes'
             artifactId 'client'
             version getMavenVersionString()
         }
