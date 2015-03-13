@@ -10,6 +10,7 @@ public class ServerLauncher implements DesktopLauncher {
     DesktopCompatibility.setup();
     new ServerCompatibility(this, arg).startCubes();
   }
+
   private final String[] arg;
 
   private ServerLauncher(String[] arg) {

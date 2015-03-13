@@ -27,6 +27,7 @@ public class InputChain implements Disposable {
   public static void hideMenu(Menu menu) {
     inputMultiplexer.removeProcessor(menu.stage);
   }
+
   public Stage hud;
   public CameraController cameraController;
 

@@ -1,6 +1,5 @@
 package ethanjones.cubes.block;
 
-import ethanjones.data.Data;
 import ethanjones.data.DataGroup;
 import ethanjones.data.DataParser;
 import java.util.*;

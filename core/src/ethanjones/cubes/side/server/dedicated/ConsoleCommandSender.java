@@ -45,6 +45,7 @@ public class ConsoleCommandSender implements CommandSender {
       return null;
     }
   }
+
   ThreadedReader threadedReader = new ThreadedReader();
 
   protected ConsoleCommandSender() {

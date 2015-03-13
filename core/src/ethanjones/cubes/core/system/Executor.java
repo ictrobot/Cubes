@@ -67,6 +67,7 @@ public class Executor {
       }
     }
   }
+
   private final static Object sync = new Object();
   private static boolean running = false;
   private static ScheduledThreadPoolExecutor executor;

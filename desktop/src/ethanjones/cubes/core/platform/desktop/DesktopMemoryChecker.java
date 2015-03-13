@@ -13,6 +13,7 @@ public final class DesktopMemoryChecker extends Thread {
   public static void setup() {
     new DesktopMemoryChecker().start();
   }
+
   private final SoftReference<Object> outOfMemoryChecker = new SoftReference<Object>(new Integer[1024]);
   private WeakReference<Object> gcChecker = getGcChecker();
   private Runtime runtime = Runtime.getRuntime();

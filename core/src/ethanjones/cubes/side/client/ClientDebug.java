@@ -46,6 +46,7 @@ public class ClientDebug {
       average = (int) (total / num);
     }
   }
+
   private static final String lineSeparator = System.getProperty("line.separator");
   static Average fps = new Average();
   static Average loop = new Average();

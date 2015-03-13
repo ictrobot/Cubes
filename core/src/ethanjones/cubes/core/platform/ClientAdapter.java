@@ -46,7 +46,9 @@ public class ClientAdapter implements AdapterInterface {
     } catch (Exception e) {
       Debug.crash(e);
     }
-  }  @Override
+  }
+
+  @Override
   public void setClient(CubesClient cubesClient) throws UnsupportedOperationException {
     //CubesSecurity.checkSetCubes();
     if (cubesClient != null) {
@@ -69,7 +71,9 @@ public class ClientAdapter implements AdapterInterface {
     } catch (Exception e) {
       Debug.crash(e);
     }
-  }  @Override
+  }
+
+  @Override
   public void setServer(CubesServer cubesServer) throws UnsupportedOperationException {
     //CubesSecurity.checkSetCubes();
     if (cubesServer != null) {
@@ -119,7 +123,9 @@ public class ClientAdapter implements AdapterInterface {
     } catch (Exception e) {
       Debug.crash(e);
     }
-  }  @Override
+  }
+
+  @Override
   public void setMenu(Menu menu) {
     //CubesSecurity.checkSetMenu();
     Menu old = this.menu;
@@ -145,7 +151,9 @@ public class ClientAdapter implements AdapterInterface {
     } catch (Exception e) {
       Debug.crash(e);
     }
-  }  @Override
+  }
+
+  @Override
   public CubesClient getClient() {
     return cubesClient;
   }
@@ -157,7 +165,9 @@ public class ClientAdapter implements AdapterInterface {
     } catch (Exception e) {
       Debug.crash(e);
     }
-  }  @Override
+  }
+
+  @Override
   public CubesServer getServer() {
     return cubesServer;
   }
@@ -171,16 +181,6 @@ public class ClientAdapter implements AdapterInterface {
   public Side getSide() {
     return Side.Client;
   }
-
-
-
-
-
-
-
-
-
-
 
   @Override
   public void dispose() {

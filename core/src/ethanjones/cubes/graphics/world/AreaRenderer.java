@@ -12,7 +12,6 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
 
 import ethanjones.cubes.block.Block;
-import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.graphics.assets.Assets;
