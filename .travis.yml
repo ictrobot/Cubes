@@ -12,7 +12,7 @@ install:
 before_script:
 - chmod +x gradlew
 script:
-- "./gradlew travis --debug"
+- "./gradlew travis --info"
 after_success:
 - true
 after_failure:
