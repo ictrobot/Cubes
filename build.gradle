@@ -16,7 +16,8 @@ ext {
         println "VERSION: " + buildProperties.version
     }
 
-    build = null;
+    build = "";
+    hash = "";
     if (hasGit()) {
         build = shell("git rev-list HEAD --count").text.trim()
         hash = shell("git rev-parse HEAD").text.trim()

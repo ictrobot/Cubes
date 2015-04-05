@@ -28,7 +28,7 @@ android {
     }
     defaultConfig {
         versionName buildProperties.version
-        versionCode build != null ? build.toInteger() : 1
+        versionCode build != null && !build.isEmpty() ? build.toInteger() : 1
         minSdkVersion 16
         targetSdkVersion androidSdkVersion
     }

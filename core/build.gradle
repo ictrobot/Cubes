@@ -19,7 +19,7 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 
 jar.archiveName = "core.jar"
 
-task properites() {
+task properitesFile() {
     Properties props = new Properties()
     project.getBuildDir().mkdir();
     File propsFile = new File(project.getBuildDir(), '/core.properties')
@@ -30,6 +30,7 @@ task properites() {
     props.setProperty('DATA', dataVersion.toString())
     props.setProperty('VERSION', buildProperties.version.toString())
     props.setProperty('BUILD', build.toString())
+    props.setProperty('HASH', hash.toString())
     props.store(propsFile.newWriter(), null)
 }
 
@@ -82,4 +83,4 @@ publishing {
     }
 }
 
-publish.dependsOn(['properites'])
+publish.dependsOn(['properitesFile'])
