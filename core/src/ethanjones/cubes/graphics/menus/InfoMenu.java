@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.utils.Align;
 
 import ethanjones.cubes.graphics.menu.Fonts;
 import ethanjones.cubes.graphics.menu.Menu;
@@ -18,7 +18,7 @@ public class InfoMenu extends Menu {
 
   public InfoMenu(String labelText, String buttonText) {
     super();
-    text = new Label(labelText, new LabelStyle(Fonts.Size2, Color.WHITE));
+    text = new Label(labelText, new LabelStyle(Fonts.Size4, Color.WHITE));
     text.setAlignment(Align.center, Align.center);
     button = new TextButton(buttonText, skin);
 
@@ -28,7 +28,7 @@ public class InfoMenu extends Menu {
 
   public InfoMenu(String labelText, boolean back) {
     super();
-    text = new Label(labelText, new LabelStyle(Fonts.Size2, Color.WHITE));
+    text = new Label(labelText, new LabelStyle(Fonts.Size4, Color.WHITE));
     text.setAlignment(Align.center, Align.center);
     stage.addActor(text);
 

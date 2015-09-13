@@ -5,7 +5,6 @@ import com.badlogic.gdx.backends.android.AndroidApplication;
 
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.platform.Launcher;
-import ethanjones.cubes.core.system.Debug;
 
 public class AndroidLauncher extends AndroidApplication implements Launcher {
 
@@ -18,11 +17,11 @@ public class AndroidLauncher extends AndroidApplication implements Launcher {
   @Override
   public void onTrimMemory(int level) {
     super.onTrimMemory(level);
-    if (level == TRIM_MEMORY_RUNNING_MODERATE || level == TRIM_MEMORY_RUNNING_LOW) {
-      Debug.lowMemory();
-    } else if (level == TRIM_MEMORY_RUNNING_CRITICAL) {
-      Debug.criticalMemory();
-    }
+    //if (level == TRIM_MEMORY_RUNNING_MODERATE || level == TRIM_MEMORY_RUNNING_LOW) {
+    //  Debug.lowMemory();
+    //} else if (level == TRIM_MEMORY_RUNNING_CRITICAL) {
+    //  Debug.criticalMemory();
+    //}
   }
 
   @Override

@@ -107,6 +107,7 @@ public class Debug {
   }
 
   protected static void errorExit() {
+    System.out.flush();
     System.exit(1);
   }
 

@@ -21,6 +21,5 @@ public class Graphics {
 
   public static void resize() {
     screenViewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
-    Fonts.resize();
   }
 }

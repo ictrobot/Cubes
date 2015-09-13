@@ -13,9 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import java.util.ArrayList;
 import java.util.List;
@@ -97,7 +97,7 @@ public class GuiRenderer implements Disposable {
 
     TextField.TextFieldStyle defaultStyle = skin.get("default", TextField.TextFieldStyle.class);
     TextField.TextFieldStyle chatStyle = new TextField.TextFieldStyle(defaultStyle);
-    chatStyle.font = Fonts.Size2;
+    chatStyle.font = Fonts.Size4;
     chatStyle.background = new TextureRegionDrawable(Assets.getTextureRegion("core:hud/ChatBackground.png"));
 
     chat = new TextField("", chatStyle);
@@ -114,7 +114,7 @@ public class GuiRenderer implements Disposable {
         }
       }
     });
-    chatLog = new Label("", new LabelStyle(Fonts.Size2, Color.WHITE));
+    chatLog = new Label("", new LabelStyle(Fonts.Size4, Color.WHITE));
     chatLog.setAlignment(Align.bottomLeft, Align.left);
 
     if (Compatibility.get().isTouchScreen()) {
@@ -260,8 +260,8 @@ public class GuiRenderer implements Disposable {
   public void resize() {
     debug.setBounds(0, 0, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight());
     debug.setAlignment(Align.topLeft, Align.topLeft);
-    chat.setBounds(0, 0, Gdx.graphics.getWidth(), chat.getStyle().font.getBounds("ABC123").height * 1.5f);
-    chatLog.setBounds(0, chat.getHeight(), Gdx.graphics.getWidth(), chatLog.getStyle().font.getBounds("ABC123").height * 5);
+    chat.setBounds(0, 0, Gdx.graphics.getWidth(), chat.getStyle().font.getLineHeight() * 1.5f);
+    chatLog.setBounds(0, chat.getHeight(), Gdx.graphics.getWidth(), chatLog.getStyle().font.getLineHeight() * 5);
 
     if (touchpad != null) {
       touchpad.setBounds(Gdx.graphics.getWidth() / 3 * 2, 0, Gdx.graphics.getWidth() / 3, Gdx.graphics.getWidth() / 3);

@@ -18,7 +18,7 @@ public class ClientDebug {
     static final LabelStyle style = new LabelStyle();
 
     static {
-      style.font = Fonts.Size1;
+      style.font = Fonts.Size3;
     }
 
     public DebugLabel() {
