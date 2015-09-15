@@ -31,7 +31,7 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
     CommandManager.reset();
     NetworkingManager.serverInit();
 
-    world = new WorldServer(new BasicTerrainGenerator());
+    world = new WorldServer(new ethanjones.cubes.world.generator.smooth.SmoothWorld(1));
 
     Sided.getTiming().addHandler(this, 250);
 

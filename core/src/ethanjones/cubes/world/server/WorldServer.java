@@ -7,7 +7,7 @@ import ethanjones.cubes.core.system.Executor;
 import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.generator.TerrainGenerator;
 import ethanjones.cubes.world.reference.AreaReference;
-import ethanjones.cubes.world.thread.GenerateWorldCallable;
+import ethanjones.cubes.world.thread.ThreadedWorld;
 
 public class WorldServer extends World {
 
@@ -19,7 +19,7 @@ public class WorldServer extends World {
   }
 
   public void requestAreaInternal(AreaReference areaReference) {
-    Executor.execute(new GenerateWorldCallable(areaReference, this));
+    Executor.execute(new ThreadedWorld.GenerateCallable(areaReference, this));
   }
 
   @Override

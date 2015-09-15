@@ -12,8 +12,12 @@ import ethanjones.cubes.networking.packets.PacketHotbar;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
+import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.command.CommandPermission;
 import ethanjones.cubes.side.server.command.CommandSender;
+import ethanjones.cubes.world.World;
+import ethanjones.cubes.world.reference.BlockReference;
+import ethanjones.cubes.world.server.WorldServer;
 
 public class Player extends LivingEntity implements CommandSender {
 
@@ -29,6 +33,10 @@ public class Player extends LivingEntity implements CommandSender {
     this.clientIdentifier = clientIdentifier;
     this.hotbar = new Block[10];
     this.hotbar[0] = Blocks.grass;
+
+    //WorldServer world = (WorldServer) Cubes.getServer().world;
+    //BlockReference spawn = world.getTerrainGenerator().spawnPoint(world);
+    //this.position.set(spawn.blockX + 0.5f, spawn.blockY, spawn.blockZ + 0.5f);
   }
 
   public Player(Camera camera) {

@@ -38,6 +38,7 @@ public class Area {
   private int height;
 
   private boolean unloaded;
+  private boolean features;
 
   public Area(int areaX, int areaZ) {
     this.areaX = areaX;
@@ -50,6 +51,7 @@ public class Area {
     maxY = 0;
     height = 0;
     unloaded = false;
+    features = false;
   }
 
   public Block getBlock(int x, int y, int z) {
@@ -194,17 +196,17 @@ public class Area {
         areaRenderer[y / SIZE_BLOCKS].refresh = true;
       }
 
-      new BlockChangedEvent(new BlockReference().setFromBlockCoordinates(x + minBlockX, y, z + minBlockZ), Sided.getBlockManager().toBlock(b)).post();
+      new BlockChangedEvent(new BlockReference().setFromBlockCoordinates(x + minBlockX, y, z + minBlockZ), Sided.getBlockManager().toBlock(b), block).post();
     }
   }
 
   private void updateSurrounding(int x, int y, int z, int ref) {
     update(x, y, z, ref);
-    if (y < SIZE_BLOCKS - 1) update(x + 1, y, z, ref + MAX_X_OFFSET);
+    if (x < SIZE_BLOCKS - 1) update(x + 1, y, z, ref + MAX_X_OFFSET);
     if (x > 0) update(x - 1, y, z, ref + MIN_X_OFFSET);
     if (y < maxY) update(x, y + 1, z, ref + MAX_Y_OFFSET);
     if (y > 0) update(x, y - 1, z, ref + MIN_Y_OFFSET);
-    if (y < SIZE_BLOCKS - 1) update(x, y, z + 1, ref + MAX_Z_OFFSET);
+    if (z < SIZE_BLOCKS - 1) update(x, y, z + 1, ref + MAX_Z_OFFSET);
     if (z > 0) update(x, y, z - 1, ref + MIN_Z_OFFSET);
   }
 
@@ -250,6 +252,14 @@ public class Area {
         }
       }
     }
+  }
+
+  public boolean features() {
+    return features;
+  }
+
+  public void setFeatures() {
+    features = true;
   }
 
   public void shrink() {

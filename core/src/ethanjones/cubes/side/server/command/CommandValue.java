@@ -6,7 +6,6 @@ import ethanjones.cubes.side.common.Cubes;
 
 public abstract class CommandValue<T> {
 
-  //Localise exceptions, strings, help messages and everything command related
   public static final CommandValue<Float> coordinate = new CommandValue<Float>() {
     @Override
     public Float getArgument(String string) throws CommandParsingException {

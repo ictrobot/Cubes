@@ -3,8 +3,10 @@ package ethanjones.cubes.side.server;
 import com.badlogic.gdx.Input.Buttons;
 import java.util.ArrayList;
 
+import com.badlogic.gdx.math.Vector3;
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.event.EventHandler;
+import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
 import ethanjones.cubes.core.event.world.block.BlockEvent;
 import ethanjones.cubes.core.system.Executor;
 import ethanjones.cubes.graphics.world.RayTracing;
@@ -18,8 +20,7 @@ import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.server.WorldServer;
 import ethanjones.cubes.world.storage.Area;
-import ethanjones.cubes.world.thread.GenerateWorldCallable;
-import ethanjones.cubes.world.thread.SendWorldCallable;
+import ethanjones.cubes.world.thread.ThreadedWorld;
 
 public class PlayerManager {
 
@@ -47,7 +48,7 @@ public class PlayerManager {
 
     PacketConnected packetConnected = new PacketConnected();
     packetConnected.blockManager = Sided.getBlockManager().write();
-    NetworkingManager.sendPacketToClient(packetConnected, clientIdentifier);
+    NetworkingManager.sendPacketToClient(packetConnected, client);
 
     initialLoadAreas();
   }
@@ -59,19 +60,14 @@ public class PlayerManager {
         check.areaX = areaX;
         for (int areaZ = playerArea.areaZ - renderDistance; areaZ <= playerArea.areaZ + renderDistance; areaZ++) {
           check.areaZ = areaZ;
-          sendAndRequestArea(check);
+          sendArea(check);
         }
       }
     }
   }
 
-  private void sendAndRequestArea(AreaReference areaReference) {
-    Area area = server.world.getAreaInternal(areaReference, false);
-    if (area == null) {
-      Executor.execute(new SendWorldCallable(new GenerateWorldCallable(areaReference.clone(), (WorldServer) server.world), client, this));
-    } else {
-      Executor.execute(new SendWorldCallable(server.world.getAreaInternal(areaReference, false), client, this));
-    }
+  private void sendArea(AreaReference areaReference) {
+    Executor.execute(new ThreadedWorld.SendCallable(areaReference.clone(), (WorldServer) server.world, client, this));
   }
 
   public void handlePacket(PacketPlayerInfo packetPlayerInfo) {
@@ -84,7 +80,7 @@ public class PlayerManager {
         for (int areaZ = n.areaZ - renderDistance; areaZ <= n.areaZ + renderDistance; areaZ++) {
           check.areaZ = areaZ;
           if (Math.abs(areaX - o.areaX) > renderDistance || Math.abs(areaZ - o.areaZ) > renderDistance) {
-            sendAndRequestArea(check);
+            sendArea(check);
           }
         }
       }
@@ -99,7 +95,7 @@ public class PlayerManager {
   }
 
   @EventHandler
-  public void blockChanged(BlockEvent blockEvent) {
+  public void blockChanged(BlockChangedEvent blockEvent) {
     BlockReference blockReference = blockEvent.getBlockReference();
     synchronized (playerArea) {
       if (Math.abs(CoordinateConverter.area(blockReference.blockX) - playerArea.areaX) > renderDistance) return;
@@ -109,7 +105,7 @@ public class PlayerManager {
     packet.x = blockReference.blockX;
     packet.y = blockReference.blockY;
     packet.z = blockReference.blockZ;
-    packet.block = Sided.getBlockManager().toInt(server.world.getBlock(packet.x, packet.y, packet.z));
+    packet.block = Sided.getBlockManager().toInt(blockEvent.getNewBlock());
     NetworkingManager.sendPacketToClient(packet, client);
   }
 

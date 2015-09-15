@@ -7,7 +7,7 @@ import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.graphics.world.BlockTextureHandler;
 
-public abstract class Block {
+public class Block {
 
   protected String id;
 
