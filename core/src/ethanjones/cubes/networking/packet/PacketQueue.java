@@ -11,16 +11,16 @@ public class PacketQueue {
     queue = new PriorityBlockingQueue<Packet>(16, PacketComparator.instance);
   }
 
-  public synchronized void add(Packet packet) {
+  public void add(Packet packet) {
     if (packet == null || !packet.shouldSend()) return;
     queue.add(packet);
   }
 
-  public synchronized Packet get() {
+  public Packet get() {
     return queue.poll();
   }
 
-  public synchronized Packet waitAndGet() {
+  public Packet waitAndGet() {
     try {
       return queue.poll(1, TimeUnit.SECONDS);
     } catch (InterruptedException e) {

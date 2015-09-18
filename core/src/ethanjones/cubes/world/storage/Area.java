@@ -1,16 +1,19 @@
 package ethanjones.cubes.world.storage;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
 import ethanjones.cubes.core.system.CubesException;
+import ethanjones.cubes.core.system.Executor;
+import ethanjones.cubes.core.util.Lock;
 import ethanjones.cubes.graphics.world.AreaRenderer;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.world.reference.BlockReference;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Area {
 
@@ -27,18 +30,20 @@ public class Area {
   public static final int MAX_Z_OFFSET = SIZE_BLOCKS;
   public static final int MIN_Z_OFFSET = -MAX_Z_OFFSET;
 
+  public final Lock lock = new Lock();
+  public final AtomicReference<Object> features;
+
   public final int areaX;
   public final int areaZ;
   public final int minBlockX;
   public final int minBlockZ;
 
-  public AreaRenderer[] areaRenderer; //Always null on server
-  public int[] blocks; //0 = null, positive = visible, negative = invisible
-  public int maxY;
-  private int height;
+  public volatile AreaRenderer[] areaRenderer; //Always null on server
+  public volatile int[] blocks; //0 = null, positive = visible, negative = invisible
+  public volatile int maxY;
+  private volatile int height;
 
-  private boolean unloaded;
-  private boolean features;
+  private volatile boolean unloaded;
 
   public Area(int areaX, int areaZ) {
     this.areaX = areaX;
@@ -51,156 +56,166 @@ public class Area {
     maxY = 0;
     height = 0;
     unloaded = false;
-    features = false;
+    features = new AtomicReference<Object>();
   }
 
   public Block getBlock(int x, int y, int z) {
-    synchronized (this) {
-      if (isBlank()) return null;
-      if (y > maxY || y < 0) {
-        return null;
-      }
-      return Sided.getBlockManager().toBlock(Math.abs(blocks[getRef(x, y, z)]));
+    lock.readLock();
+
+    if (isBlank() || y > maxY || y < 0) {
+      lock.readUnlock();
+      return null;
     }
+    int b = blocks[getRef(x, y, z)];
+
+    return lock.readUnlock(Sided.getBlockManager().toBlock(Math.abs(b)));
   }
 
   public boolean isBlank() {
-    synchronized (this) {
-      return blocks == null;
-    }
-  }
-
-  public int getRef(int x, int y, int z) {
-    return x + z * SIZE_BLOCKS + y * SIZE_BLOCKS_SQUARED;
+    lock.readLock();
+    return lock.readUnlock(blocks == null);
   }
 
   public void unload() {
-    synchronized (this) {
-      removeArrays();
-      unloaded = true;
-    }
+    lock.writeLock();
+
+    removeArrays();
+    unloaded = true;
+
+    lock.writeUnlock();
+  }
+
+  public boolean isUnloaded() {
+    lock.readLock();
+    return lock.readUnlock(unloaded);
   }
 
   private void removeArrays() {
-    synchronized (this) {
-      if (unloaded) throw new CubesException("Area has been unloaded");
-      blocks = null;
-      AreaRenderer.free(areaRenderer);
-      areaRenderer = null;
-      maxY = 0;
-      height = 0;
+    lock.writeLock();
+
+    if (unloaded) {
+      lock.writeUnlock();
+      throw new CubesException("Area has been unloaded");
     }
+    blocks = null;
+    AreaRenderer.free(areaRenderer);
+    areaRenderer = null;
+    maxY = 0;
+    height = 0;
+
+    lock.writeUnlock();
   }
 
-  public void checkArrays() {
-    synchronized (this) {
-      if (isBlank()) setupArrays();
-    }
-  }
-
+  //Should already be write locked
   private void update(int x, int y, int z, int i) {
-    synchronized (this) {
-      if (blocks[i] == 0) {
-        return;
-      }
-
-      int block = Math.abs(blocks[i]);
-      if (x < SIZE_BLOCKS - 1) {
-        if (blocks[i + MAX_X_OFFSET] == 0) {
-          blocks[i] = block;
-          return;
-        }
-      } else {
-        blocks[i] = block;
-        return;
-      }
-      if (x > 0) {
-        if (blocks[i + MIN_X_OFFSET] == 0) {
-          blocks[i] = block;
-          return;
-        }
-      } else {
-        blocks[i] = block;
-        return;
-      }
-      if (y < maxY) {
-        if (blocks[i + MAX_Y_OFFSET] == 0) {
-          blocks[i] = block;
-          return;
-        }
-      } else {
-        blocks[i] = block;
-        return;
-      }
-      if (y > 0) {
-        if (blocks[i + MIN_Y_OFFSET] == 0) {
-          blocks[i] = block;
-          return;
-        }
-      } else {
-        blocks[i] = block;
-        return;
-      }
-      if (z < SIZE_BLOCKS - 1) {
-        if (blocks[i + MAX_Z_OFFSET] == 0) {
-          blocks[i] = block;
-          return;
-        }
-      } else {
-        blocks[i] = block;
-        return;
-      }
-      if (z > 0) {
-        if (blocks[i + MIN_Z_OFFSET] == 0) {
-          blocks[i] = block;
-          return;
-        }
-      } else {
-        blocks[i] = block;
-        return;
-      }
-      blocks[i] = -block;
+    if (blocks[i] == 0) {
+      return;
     }
+
+    int block = Math.abs(blocks[i]);
+    if (x < SIZE_BLOCKS - 1) {
+      if (blocks[i + MAX_X_OFFSET] == 0) {
+        blocks[i] = block;
+        return;
+      }
+    } else {
+      blocks[i] = block;
+      return;
+    }
+    if (x > 0) {
+      if (blocks[i + MIN_X_OFFSET] == 0) {
+        blocks[i] = block;
+        return;
+      }
+    } else {
+      blocks[i] = block;
+      return;
+    }
+    if (y < maxY) {
+      if (blocks[i + MAX_Y_OFFSET] == 0) {
+        blocks[i] = block;
+        return;
+      }
+    } else {
+      blocks[i] = block;
+      return;
+    }
+    if (y > 0) {
+      if (blocks[i + MIN_Y_OFFSET] == 0) {
+        blocks[i] = block;
+        return;
+      }
+    } else {
+      blocks[i] = block;
+      return;
+    }
+    if (z < SIZE_BLOCKS - 1) {
+      if (blocks[i + MAX_Z_OFFSET] == 0) {
+        blocks[i] = block;
+        return;
+      }
+    } else {
+      blocks[i] = block;
+      return;
+    }
+    if (z > 0) {
+      if (blocks[i + MIN_Z_OFFSET] == 0) {
+        blocks[i] = block;
+        return;
+      }
+    } else {
+      blocks[i] = block;
+      return;
+    }
+    blocks[i] = -block;
   }
 
-  private void setupArrays() {
-    synchronized (this) {
-      if (unloaded) throw new CubesException("Area has been unloaded");
+  public void setupArrays() {
+    lock.writeLock();
+
+    if (unloaded) {
+      lock.writeUnlock();
+      throw new CubesException("Area has been unloaded");
+    }
+    if (isBlank()) {
       blocks = new int[SIZE_BLOCKS_SQUARED * SIZE_BLOCKS];
       AreaRenderer.free(areaRenderer);
       if (Sided.getSide() == Side.Client) areaRenderer = new AreaRenderer[]{null};
       maxY = SIZE_BLOCKS - 1;
       height = 1;
     }
+
+    lock.writeUnlock();
   }
 
   public void setBlock(Block block, int x, int y, int z) {
-    synchronized (this) {
-      if (isBlank()) {
-        if (block == null) {
-          return;
-        } else {
-          checkArrays();
-        }
-      }
-      if (y < 0) return;
-      if (y > maxY) expand(y);
+    if (block == null) return;
+    if (y < 0) return;
 
-      int ref = getRef(x, y, z);
-      int b;
-      b = blocks[ref];
-      blocks[ref] = Sided.getBlockManager().toInt(block);
+    lock.writeLock();
+    setupArrays();
 
-      updateSurrounding(x, y, z, ref);
-      if (Sided.getSide() == Side.Client && areaRenderer[y / SIZE_BLOCKS] != null) {
-        areaRenderer[y / SIZE_BLOCKS].refresh = true;
-      }
+    if (y > maxY) expand(y);
 
-      new BlockChangedEvent(new BlockReference().setFromBlockCoordinates(x + minBlockX, y, z + minBlockZ), Sided.getBlockManager().toBlock(b), block).post();
+    int ref = getRef(x, y, z);
+    int b;
+    b = blocks[ref];
+    blocks[ref] = Sided.getBlockManager().toInt(block);
+
+    updateSurrounding(x, y, z, ref);
+    if (Sided.getSide() == Side.Client && areaRenderer[y / SIZE_BLOCKS] != null) {
+      areaRenderer[y / SIZE_BLOCKS].refresh = true;
     }
+
+    lock.writeUnlock();
+
+    //Must be after lock released to prevent dead locks
+    new BlockChangedEvent(new BlockReference().setFromBlockCoordinates(x + minBlockX, y, z + minBlockZ), Sided.getBlockManager().toBlock(b), block).post();
   }
 
   private void updateSurrounding(int x, int y, int z, int ref) {
+    lock.writeLock();
+
     update(x, y, z, ref);
     if (x < SIZE_BLOCKS - 1) update(x + 1, y, z, ref + MAX_X_OFFSET);
     if (x > 0) update(x - 1, y, z, ref + MIN_X_OFFSET);
@@ -208,120 +223,161 @@ public class Area {
     if (y > 0) update(x, y - 1, z, ref + MIN_Y_OFFSET);
     if (z < SIZE_BLOCKS - 1) update(x, y, z + 1, ref + MAX_Z_OFFSET);
     if (z > 0) update(x, y, z - 1, ref + MIN_Z_OFFSET);
+
+    lock.writeUnlock();
   }
 
   public void updateAll() {
-    if (isBlank()) return;
-    int i = 0;
-    for (int y = 0; y < maxY; y++) {
-      for (int z = 0; z < SIZE_BLOCKS; z++) {
-        for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
-          update(x, y, z, i);
+    lock.writeLock();
+
+    if (!isBlank()) {
+      int i = 0;
+      for (int y = 0; y < maxY; y++) {
+        for (int z = 0; z < SIZE_BLOCKS; z++) {
+          for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
+            update(x, y, z, i);
+          }
         }
       }
     }
+
+    lock.writeUnlock();
   }
 
   public void expand(int height) {
-    synchronized (this) {
-      if (unloaded) throw new CubesException("Area has been unloaded");
-      if (isBlank()) return;
-      if (height <= maxY) return;
-      if (height > MAX_Y) return;
+    lock.writeLock();
 
-      height = (int) Math.ceil((height + 1) / (float) SIZE_BLOCKS); //Round up to multiple of SIZE_BLOCKS
-      this.height = height;
-      int oldMaxY = maxY;
+    if (unloaded) {
+      lock.writeUnlock();
+      throw new CubesException("Area has been unloaded");
+    }
+    if (isBlank() || height <= maxY || height > MAX_Y) {
+      lock.writeUnlock();
+      return;
+    }
 
-      int[] oldBlocks = blocks;
-      blocks = new int[SIZE_BLOCKS_CUBED * height];
-      System.arraycopy(oldBlocks, 0, blocks, 0, oldBlocks.length);
+    height = (int) Math.ceil((height + 1) / (float) SIZE_BLOCKS); //Round up to multiple of SIZE_BLOCKS
+    this.height = height;
+    int oldMaxY = maxY;
 
-      AreaRenderer.free(areaRenderer);
-      if (Sided.getSide() == Side.Client) {
-        areaRenderer = new AreaRenderer[height];
-      } else {
-        areaRenderer = null;
-      }
+    int[] oldBlocks = blocks;
+    blocks = new int[SIZE_BLOCKS_CUBED * height];
+    System.arraycopy(oldBlocks, 0, blocks, 0, oldBlocks.length);
 
-      maxY = (height * SIZE_BLOCKS) - 1;
-      int i = oldMaxY * SIZE_BLOCKS_SQUARED;
-      for (int z = 0; z < SIZE_BLOCKS; z++) { //update previous top
-        for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
-          updateSurrounding(x, oldMaxY, z, i);
-        }
+    AreaRenderer.free(areaRenderer);
+    if (Sided.getSide() == Side.Client) {
+      areaRenderer = new AreaRenderer[height];
+    } else {
+      areaRenderer = null;
+    }
+
+    maxY = (height * SIZE_BLOCKS) - 1;
+    int i = oldMaxY * SIZE_BLOCKS_SQUARED;
+    for (int z = 0; z < SIZE_BLOCKS; z++) { //update previous top
+      for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
+        updateSurrounding(x, oldMaxY, z, i);
       }
     }
+
+    lock.writeUnlock();
   }
 
   public boolean features() {
-    return features;
-  }
-
-  public void setFeatures() {
-    features = true;
+    return features.get() != null;
   }
 
   public void shrink() {
-    synchronized (this) {
-      if (unloaded) throw new CubesException("Area has been unloaded");
-      if (isBlank()) return;
-      int y = maxY;
-      int i = blocks.length - 1;
-      int maxUsedY = -1;
-      while (y >= 0 && maxUsedY == -1) {
-        for (int b = 0; b < SIZE_BLOCKS_SQUARED; b++) {
-          if (blocks[i] != 0) {
-            maxUsedY = y;
-            break;
-          }
-          i--;
-        }
-        y--;
-      }
-      int usedHeight = (int) Math.ceil((maxUsedY + 1) / (float) SIZE_BLOCKS);
-      if (usedHeight == height) return;
-      if (usedHeight == 0) {
-        removeArrays();
-        return;
-      }
+    lock.writeLock();
 
-      int[] oldBlocks = blocks;
-      blocks = new int[SIZE_BLOCKS_CUBED * usedHeight];
-      System.arraycopy(oldBlocks, 0, blocks, 0, blocks.length);
+    if (unloaded) {
+      lock.writeUnlock();
+      throw new CubesException("Area has been unloaded");
+    }
+    if (isBlank()) {
+      lock.writeUnlock();
+      return;
+    }
 
-      AreaRenderer.free(areaRenderer);
-      if (Sided.getSide() == Side.Client) {
-        areaRenderer = new AreaRenderer[usedHeight];
-      } else {
-        areaRenderer = null;
-      }
+    int usedHeight = usedHeight();
+    if (usedHeight == height) {
+      lock.writeUnlock();
+      return;
+    }
+    if (usedHeight == 0) {
+      removeArrays();
+      lock.writeUnlock();
+      return;
+    }
 
-      maxY = (usedHeight * SIZE_BLOCKS) - 1;
-      i = maxY * SIZE_BLOCKS_SQUARED;
-      for (int z = 0; z < SIZE_BLOCKS; z++) {
-        for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
-          updateSurrounding(x, maxY, z, i); //update new top
-        }
+    int[] oldBlocks = blocks;
+    blocks = new int[SIZE_BLOCKS_CUBED * usedHeight];
+    System.arraycopy(oldBlocks, 0, blocks, 0, blocks.length);
+
+    AreaRenderer.free(areaRenderer);
+    if (Sided.getSide() == Side.Client) {
+      areaRenderer = new AreaRenderer[usedHeight];
+    } else {
+      areaRenderer = null;
+    }
+
+    maxY = (usedHeight * SIZE_BLOCKS) - 1;
+    int i = maxY * SIZE_BLOCKS_SQUARED;
+    for (int z = 0; z < SIZE_BLOCKS; z++) {
+      for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
+        updateSurrounding(x, maxY, z, i); //update new top
       }
     }
+
+    lock.writeUnlock();
+  }
+
+  //Should be read or write locked
+  private int usedHeight() {
+    int y = maxY;
+    int i = blocks.length - 1;
+    int maxUsedY = -1;
+    while (y >= 0 && maxUsedY == -1) {
+      for (int b = 0; b < SIZE_BLOCKS_SQUARED; b++) {
+        if (blocks[i] != 0) {
+          maxUsedY = y;
+          break;
+        }
+        i--;
+      }
+      y--;
+    }
+    return (int) Math.ceil((maxUsedY + 1) / (float) SIZE_BLOCKS);
   }
 
   public void write(DataOutputStream dataOutputStream) throws IOException {
-    synchronized (this) {
-      shrink();
-      dataOutputStream.writeInt(areaX);
-      dataOutputStream.writeInt(areaZ);
-      if (isBlank()) {
-        dataOutputStream.writeInt(0);
-        return;
-      }
-
-      dataOutputStream.writeInt(height);
-      for (int block : blocks) {
-        dataOutputStream.writeInt(block);
-      }
+    lock.readLock();
+    dataOutputStream.writeInt(areaX);
+    dataOutputStream.writeInt(areaZ);
+    if (isBlank()) {
+      dataOutputStream.writeInt(0);
+      lock.readUnlock();
+      return;
     }
+
+    int usedHeight = usedHeight();
+    dataOutputStream.writeInt(features() ? usedHeight : -usedHeight);
+    for (int i = 0; i < (SIZE_BLOCKS_CUBED * usedHeight); i++) {
+      dataOutputStream.writeInt(blocks[i]);
+    }
+
+    if (usedHeight != height) {
+      Executor.execute(new Runnable() {
+        @Override
+        public void run() {
+          lock.writeLock();
+          if (!unloaded)
+            shrink();
+          lock.writeUnlock();
+        }
+      });
+    }
+
+    lock.readUnlock();
   }
 
   public static Area read(DataInputStream dataInputStream) throws IOException {
@@ -332,11 +388,21 @@ public class Area {
     int height = dataInputStream.readInt();
     if (height == 0) return area;
 
+    if (height > 0) { //if features
+      area.features.set(Boolean.TRUE);
+    } else {
+      height = -height;
+    }
+
     area.setupArrays();
     area.expand((height * SIZE_BLOCKS) - 1);
     for (int i = 0; i < area.blocks.length; i++) {
       area.blocks[i] = dataInputStream.readInt();
     }
     return area;
+  }
+
+  public static int getRef(int x, int y, int z) {
+    return x + z * SIZE_BLOCKS + y * SIZE_BLOCKS_SQUARED;
   }
 }

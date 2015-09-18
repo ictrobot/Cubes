@@ -91,7 +91,8 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
 
     int i = ySection * SIZE_BLOCKS_CUBED;
     int vertexOffset = 0;
-    synchronized (area) {
+    area.lock.readLock();
+
       for (int y = ySection * SIZE_BLOCKS; y < (ySection + 1) * SIZE_BLOCKS; y++) {
         for (int z = 0; z < SIZE_BLOCKS; z++) {
           for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
@@ -146,8 +147,7 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
           }
         }
       }
-    }
-    return vertexOffset / VERTEX_SIZE;
+    return area.lock.readUnlock(vertexOffset / VERTEX_SIZE);
   }
 
   @Override

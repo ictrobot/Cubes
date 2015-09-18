@@ -1,52 +1,37 @@
 package ethanjones.cubes.block;
 
+import ethanjones.cubes.core.system.CubesException;
 import ethanjones.data.DataGroup;
 import ethanjones.data.DataParser;
 import java.util.*;
 
-import ethanjones.cubes.core.logging.Log;
-
 public class BlockManager implements DataParser {
 
-  private static final ArrayList<Block> blockList = new ArrayList<Block>();
-  private static final List<Block> unmodifiableBlockList = Collections.unmodifiableList(blockList);
-  private static final HashMap<String, Block> idToBlock = new HashMap<String, Block>();
-  private static volatile boolean canRegister = false;
+  private static List<Block> blockList = new ArrayList<Block>();
+  private static Map<String, Block> idToBlock = new HashMap<String, Block>();
 
   public static void register(Block block) {
     if (block == null) return;
-    if (!canRegister) {
-      Log.error("Tried to register \"" + block.id + "\" after postInit");
-      return;
-    }
-
-    synchronized (BlockManager.class) {
-      blockList.add(block);
-      idToBlock.put(block.id, block);
-    }
+    blockList.add(block);
+    idToBlock.put(block.id, block);
   }
 
   public static Block toBlock(String id) {
     if (id == null || id.isEmpty()) return null;
-    synchronized (BlockManager.class) {
-      return idToBlock.get(id);
-    }
+    return idToBlock.get(id);
   }
 
   public static List<Block> getBlocks() {
-    return unmodifiableBlockList;
+    return blockList;
   }
 
-  public static void preInit() {
-    if (blockList.size() == 0) canRegister = true;
+  public static void blocksLoaded() {
+    idToBlock = Collections.unmodifiableMap(idToBlock);
+    blockList = Collections.unmodifiableList(blockList);
   }
 
-  public static void postInit() {
-    canRegister = false;
-  }
-
-  private volatile HashMap<Integer, Block> integerToBlock;
-  private volatile HashMap<Block, Integer> blockToInteger;
+  private Map<Integer, Block> integerToBlock;
+  private Map<Block, Integer> blockToInteger;
 
   public BlockManager() {
     integerToBlock = new HashMap<Integer, Block>();
@@ -55,51 +40,53 @@ public class BlockManager implements DataParser {
 
   public void generateDefault() {
     if (integerToBlock.size() > 0) return;
+
     int i = 1;
     for (Block block : blockList) {
       integerToBlock.put(i, block);
       blockToInteger.put(block, i);
       i++;
     }
+
+    unmodifiable();
   }
 
   public int toInt(Block block) {
     if (block == null) return 0;
-    synchronized (this) {
-      return blockToInteger.get(block);
-    }
+    return blockToInteger.get(block);
   }
 
   public Block toBlock(int i) {
     if (i == 0) return null;
-    synchronized (this) {
-      return integerToBlock.get(i);
-    }
+    return integerToBlock.get(i);
   }
 
   @Override
   public DataGroup write() {
-    synchronized (this) {
       DataGroup dataGroup = new DataGroup();
       for (Map.Entry<Block, Integer> entry : blockToInteger.entrySet()) {
         dataGroup.put(entry.getKey().id, entry.getValue());
       }
       return dataGroup;
-    }
   }
 
   @Override
   public void read(DataGroup data) {
     if (integerToBlock.size() > 0) return;
-    synchronized (this) {
-      synchronized (BlockManager.class) {
-        for (Map.Entry<String, Object> entry : data.entrySet()) {
-          Block block = idToBlock.get(entry.getKey());
-          int i = (int) entry.getValue();
-          integerToBlock.put(i, block);
-          blockToInteger.put(block, i);
-        }
-      }
+
+    for (Map.Entry<String, Object> entry : data.entrySet()) {
+      Block block = idToBlock.get(entry.getKey());
+      if (block == null) throw new CubesException("No such block: " + entry.getKey());
+      int i = (int) entry.getValue();
+      integerToBlock.put(i, block);
+      blockToInteger.put(block, i);
     }
+
+    unmodifiable();
+  }
+
+  private void unmodifiable() {
+    integerToBlock = Collections.unmodifiableMap(integerToBlock);
+    blockToInteger = Collections.unmodifiableMap(blockToInteger);
   }
 }

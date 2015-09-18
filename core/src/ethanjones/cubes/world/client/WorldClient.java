@@ -1,34 +1,58 @@
 package ethanjones.cubes.world.client;
 
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 
-import ethanjones.cubes.core.system.Executor;
+import ethanjones.cubes.core.settings.Settings;
+import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.reference.AreaReference;
+import ethanjones.cubes.world.reference.multi.MultiAreaReference;
+import ethanjones.cubes.world.storage.Area;
 
 public class WorldClient extends World {
 
-  Future maintenanceFuture;
+  private ArrayList<Area> removed = new ArrayList<Area>();
+  private AreaReference playerArea = new AreaReference();
+  private final int renderDistance = Settings.getIntegerSettingValue(Settings.GRAPHICS_VIEW_DISTANCE) + 3; //keep 3 extra
 
   public WorldClient() {
     super(null);
-    maintenanceFuture = Executor.scheduleAtFixedRate(new WorldClientMaintenance(this), 10, 10, TimeUnit.SECONDS);
   }
 
   @Override
-  public void requestArea(AreaReference areaReference) {
+  public void tick() {
+    super.tick();
 
-  }
+    playerArea.setFromPositionVector3(Cubes.getClient().player.position);
+    removed.clear();
 
-  @Override
-  protected void requestAreaInternal(AreaReference areaReference) {
+    lock.writeLock();
+    Iterator<Map.Entry<AreaReference, Area>> iterator = map.entrySet().iterator();
+    while (iterator.hasNext()) {
+      Map.Entry<AreaReference, Area> entry = iterator.next();
+      Area area = entry.getValue();
+      if (Math.abs(area.areaX - playerArea.areaX) > renderDistance || Math.abs(area.areaZ - playerArea.areaZ) > renderDistance) {
+        removed.add(area);
+        iterator.remove();
+      }
+    }
+    lock.writeUnlock();
 
+    for (Area area : removed) {
+      area.unload();
+    }
   }
 
   @Override
   public void dispose() {
     super.dispose();
-    maintenanceFuture.cancel(false);
+  }
+
+  //TODO implement below
+  @Override
+  public void requestRegion(MultiAreaReference references) {
+
   }
 }

@@ -14,15 +14,21 @@ public class SingleplayerNetworking extends Networking {
 
   PacketQueue toServer;
   PacketQueue toClient;
+  PacketCloneThread cloneToServer;
+  PacketCloneThread cloneToClient;
   
   public SingleplayerNetworking() {
     toServer = new PacketQueue();
     toClient = new PacketQueue();
+    cloneToServer = new PacketCloneThread(toServer, Side.Server);
+    cloneToClient = new PacketCloneThread(toClient, Side.Client);
   }
 
   @Override
   public void preInit() throws Exception {
     setNetworkingState(NetworkingState.Starting);
+    cloneToServer.start();
+    cloneToClient.start();
   }
 
   @Override
@@ -38,20 +44,23 @@ public class SingleplayerNetworking extends Networking {
   @Override
   public void stop() {
     setNetworkingState(NetworkingState.Stopping);
+    cloneToClient.running.set(false);
+    cloneToServer.running.set(false);
+    setNetworkingState(NetworkingState.Stopping);
   }
 
   @Override
   public void sendPacketToServer(Packet packet) throws UnsupportedOperationException {
-    send(packet, toServer);
+    send(packet, cloneToServer);
   }
 
   @Override
   public void sendPacketToClient(Packet packet, ClientIdentifier clientIdentifier) throws UnsupportedOperationException {
-    send(packet, toClient);
+    send(packet, cloneToClient);
   }
 
-  private void send(Packet packet, PacketQueue packetQueue) {
-    Executor.execute(new IOClonePacketRunnable(packet, packetQueue));
+  private void send(Packet packet, PacketCloneThread cloneThread) {
+    cloneThread.input.add(packet);
   }
 
   @Override

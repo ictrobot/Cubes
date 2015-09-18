@@ -33,13 +33,13 @@ public class PacketArea extends Packet {
 
   @Override
   public boolean shouldSend() {
-    return playerManager == null || playerManager.shouldSendArea(area.areaX, area.areaZ);
+    return !area.isUnloaded() && (playerManager == null || playerManager.shouldSendArea(area.areaX, area.areaZ));
   }
 
   @Override
   public void handlePacket() {
     if (Sided.getSide() != Side.Client) return;
-    Cubes.getClient().world.setAreaInternal(new AreaReference().setFromArea(area), area);
+    Cubes.getClient().world.setAreaInternal(area);
   }
 
   @Override

@@ -52,6 +52,18 @@ public class AreaReference implements Pool.Poolable, Cloneable {
     return this;
   }
 
+  public AreaReference offset(int areaX, int areaZ) {
+    this.areaX += areaX;
+    this.areaZ += areaZ;
+    this.hashCode = 0;
+    return this;
+  }
+
+  public AreaReference modified() {
+    this.hashCode = 0;
+    return this;
+  }
+
   @Override
   public int hashCode() {
     if (hashCode == 0) updateHashCode();
@@ -80,7 +92,7 @@ public class AreaReference implements Pool.Poolable, Cloneable {
   public AreaReference setFromAreaReference(AreaReference areaReference) {
     this.areaX = areaReference.areaX;
     this.areaZ = areaReference.areaZ;
-    this.hashCode = areaReference.hashCode;
+    this.hashCode = 0; //areaReference.hashCode; don't copy hashcode in case its invalid
     return this;
   }
 

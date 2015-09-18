@@ -50,7 +50,6 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
     Compatibility.get().init(null);
     Compatibility.get().logEnvironment();
 
-    BlockManager.preInit();
     Blocks.init();
 
     Assets.preInit();
@@ -65,7 +64,7 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
     Localization.load();
     Settings.print();
     ModManager.postModEvent(new PostInitializationEvent());
-    BlockManager.postInit();
+    BlockManager.blocksLoaded();
 
     if (!Adapter.isDedicatedServer()) Graphics.init();
 
@@ -156,6 +155,7 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
   }
 
   protected void tick() {
+    world.tick();
     NetworkingManager.getNetworking(side).update();
   }
 

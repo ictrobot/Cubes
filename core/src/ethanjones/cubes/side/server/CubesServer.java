@@ -33,7 +33,7 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
 
     world = new WorldServer(new ethanjones.cubes.world.generator.smooth.SmoothWorld(1));
 
-    Sided.getTiming().addHandler(this, 250);
+    //Sided.getTiming().addHandler(this, 250);
 
     ModManager.postModEvent(new StartingServerEvent());
 
@@ -61,8 +61,8 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
   public void time(int interval) {
     if (shouldReturn()) return;
     super.time(interval);
-    if (interval != 250) return;
-    world.setBlock(Blocks.dirt, (int) (Math.random() * 16), (int) (8 + (Math.random() * 7)), (int) (Math.random() * 16));
+    //if (interval != 250) return;
+    //world.setBlock(Blocks.dirt, (int) (Math.random() * 16), (int) (8 + (Math.random() * 7)), (int) (Math.random() * 16));
   }
 
   public abstract boolean isDedicated();

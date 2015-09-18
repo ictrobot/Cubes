@@ -7,18 +7,18 @@ import ethanjones.cubes.core.system.CubesSecurity;
 import ethanjones.cubes.core.timing.Timing;
 import ethanjones.cubes.networking.Networking;
 import ethanjones.cubes.networking.NetworkingManager;
+import ethanjones.cubes.side.common.Cubes;
 
 public class Sided {
 
-  private static class Data {
-
+  private static class SidedData {
     EventBus eventBus;
     Timing timing;
     BlockManager blockManager;
   }
 
-  private static Data clientData;
-  private static Data serverData;
+  private static SidedData clientData;
+  private static SidedData serverData;
   private static ThreadLocal<Side> sideLocal = new ThreadLocal<Side>();
   private static ThreadLocal<Boolean> mainLocal = new ThreadLocal<Boolean>() {
     @Override
@@ -31,13 +31,13 @@ public class Sided {
     return getData().eventBus;
   }
 
-  private static Data getData() {
+  private static SidedData getData() {
     Side side = getSide();
     if (side == null) {
       throw new CubesException("Sided objects cannot be accessed from thread: " + Thread.currentThread().getName());
     }
-    Data data = getData(side);
-    if (data == null) throw new CubesException("Sided objects have not been setup yet");
+    SidedData data = getData(side);
+    if (data == null) throw new CubesException("Sided objects are not setup");
     return data;
   }
 
@@ -53,7 +53,7 @@ public class Sided {
     sideLocal.set(side);
   }
 
-  private static Data getData(Side side) {
+  private static SidedData getData(Side side) {
     switch (side) {
       case Client:
         return clientData;
@@ -83,7 +83,7 @@ public class Sided {
     sideLocal.set(side);
     mainLocal.set(true);
 
-    Data data = new Data();
+    SidedData data = new SidedData();
     switch (side) {
       case Client:
         clientData = data;

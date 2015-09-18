@@ -18,8 +18,8 @@ public class Pools {
     registerType(BlockReference.class, new BlockReferencePool());
   }
 
-  public static void registerType(Class c, Pool pool) {
-    Object obj = pool.obtain();
+  public static <T> void registerType(Class<? extends T> c, Pool<T> pool) {
+    T obj = pool.obtain();
     Class<?> objClass = obj.getClass();
     pool.free(obj);
     if (objClass.equals(c)) {

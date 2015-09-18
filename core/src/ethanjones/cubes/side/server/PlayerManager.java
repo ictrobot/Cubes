@@ -1,14 +1,10 @@
 package ethanjones.cubes.side.server;
 
 import com.badlogic.gdx.Input.Buttons;
-import java.util.ArrayList;
-
-import com.badlogic.gdx.math.Vector3;
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.event.EventHandler;
 import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
-import ethanjones.cubes.core.event.world.block.BlockEvent;
-import ethanjones.cubes.core.system.Executor;
+import ethanjones.cubes.core.event.world.generation.AreaGeneratedEvent;
 import ethanjones.cubes.graphics.world.RayTracing;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.*;
@@ -18,9 +14,11 @@ import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
-import ethanjones.cubes.world.server.WorldServer;
+import ethanjones.cubes.world.reference.multi.AreaReferenceSet;
+import ethanjones.cubes.world.reference.multi.WorldRegion;
 import ethanjones.cubes.world.storage.Area;
-import ethanjones.cubes.world.thread.ThreadedWorld;
+
+import java.util.ArrayList;
 
 public class PlayerManager {
 
@@ -55,49 +53,49 @@ public class PlayerManager {
 
   private void initialLoadAreas() {
     AreaReference check = new AreaReference();
-    synchronized (playerArea) {
+    synchronized (this) {
       for (int areaX = playerArea.areaX - renderDistance; areaX <= playerArea.areaX + renderDistance; areaX++) {
         check.areaX = areaX;
         for (int areaZ = playerArea.areaZ - renderDistance; areaZ <= playerArea.areaZ + renderDistance; areaZ++) {
           check.areaZ = areaZ;
-          sendArea(check);
+          check.modified();
+          Area area = server.world.getArea(check, false); //don't request individually, request in a batch
+          if (area != null) sendArea(area);
         }
       }
+      server.world.requestRegion(new WorldRegion(playerArea, renderDistance));
     }
-  }
-
-  private void sendArea(AreaReference areaReference) {
-    Executor.execute(new ThreadedWorld.SendCallable(areaReference.clone(), (WorldServer) server.world, client, this));
   }
 
   public void handlePacket(PacketPlayerInfo packetPlayerInfo) {
-    AreaReference n = new AreaReference().setFromPositionVector3(packetPlayerInfo.position);
-    AreaReference o = new AreaReference().setFromPositionVector3(client.getPlayer().position);
-    if (!n.equals(o)) {
-      AreaReference check = new AreaReference();
-      for (int areaX = n.areaX - renderDistance; areaX <= n.areaX + renderDistance; areaX++) {
-        check.areaX = areaX;
-        for (int areaZ = n.areaZ - renderDistance; areaZ <= n.areaZ + renderDistance; areaZ++) {
-          check.areaZ = areaZ;
-          if (Math.abs(areaX - o.areaX) > renderDistance || Math.abs(areaZ - o.areaZ) > renderDistance) {
-            sendArea(check);
-          }
+    synchronized (this) {
+      AreaReference newRef = new AreaReference().setFromPositionVector3(packetPlayerInfo.position);
+      AreaReference oldRef = new AreaReference().setFromPositionVector3(client.getPlayer().position);
+      if (!newRef.equals(oldRef)) {
+        WorldRegion newRegion = new WorldRegion(newRef, renderDistance);
+        WorldRegion oldRegion = new WorldRegion(oldRef, renderDistance);
+        AreaReferenceSet difference = new AreaReferenceSet();
+        difference.addAll(newRegion.getAreaReferences());
+        difference.removeAll(oldRegion.getAreaReferences());
+
+        for (AreaReference areaReference : difference) {
+          Area area = server.world.getArea(areaReference, false); //don't request individually, request in a batch
+          if (area != null) sendArea(area);
         }
+
+        server.world.requestRegion(difference);
+        playerArea.setFromAreaReference(newRef);
       }
-    }
-    if (!client.getPlayer().position.equals(packetPlayerInfo.position)) {
+
       client.getPlayer().position.set(packetPlayerInfo.position);
-      synchronized (playerArea) {
-        playerArea.setFromPositionVector3(client.getPlayer().position);
-      }
+      client.getPlayer().angle.set(packetPlayerInfo.angle);
     }
-    client.getPlayer().angle.set(packetPlayerInfo.angle);
   }
 
   @EventHandler
-  public void blockChanged(BlockChangedEvent blockEvent) {
-    BlockReference blockReference = blockEvent.getBlockReference();
-    synchronized (playerArea) {
+  public void blockChanged(BlockChangedEvent event) {
+    BlockReference blockReference = event.getBlockReference();
+    synchronized (this) {
       if (Math.abs(CoordinateConverter.area(blockReference.blockX) - playerArea.areaX) > renderDistance) return;
       if (Math.abs(CoordinateConverter.area(blockReference.blockZ) - playerArea.areaZ) > renderDistance) return;
     }
@@ -105,16 +103,32 @@ public class PlayerManager {
     packet.x = blockReference.blockX;
     packet.y = blockReference.blockY;
     packet.z = blockReference.blockZ;
-    packet.block = Sided.getBlockManager().toInt(blockEvent.getNewBlock());
+    packet.block = Sided.getBlockManager().toInt(event.getNewBlock());
     NetworkingManager.sendPacketToClient(packet, client);
   }
 
+  @EventHandler
+  public void areaSet(AreaGeneratedEvent event) {
+    Area area = event.getArea();
+    synchronized (this) {
+      if (Math.abs(area.areaX - playerArea.areaX) > renderDistance) return;
+      if (Math.abs(area.areaZ - playerArea.areaZ) > renderDistance) return;
+    }
+    sendArea(area);
+  }
+
   public boolean shouldSendArea(int areaX, int areaZ) {
-    synchronized (playerArea) {
-      if (Math.abs(areaX - playerArea.areaX) <= renderDistance && Math.abs(areaZ - playerArea.areaZ) <= renderDistance) {
-        return true;
-      }
-      return false;
+    synchronized (this) {
+      return !(Math.abs(areaX - playerArea.areaX) > renderDistance || Math.abs(areaZ - playerArea.areaZ) > renderDistance);
+    }
+  }
+
+  public void sendArea(Area area) {
+    synchronized (this) {
+      PacketArea packet = new PacketArea();
+      packet.area = area;
+      packet.playerManager = this;
+      NetworkingManager.sendPacketToClient(packet, client);
     }
   }
 

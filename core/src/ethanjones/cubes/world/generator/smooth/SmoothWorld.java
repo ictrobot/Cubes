@@ -6,7 +6,6 @@ import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.server.WorldServer;
 import ethanjones.cubes.world.storage.Area;
-import ethanjones.cubes.world.thread.ThreadedWorld;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -86,8 +85,7 @@ public class SmoothWorld extends TerrainGenerator {
 
   @Override
   public BlockReference spawnPoint(WorldServer world) {
-    Area a = ThreadedWorld.generate(new AreaReference().setFromAreaCoordinates(0,0), world);
-    return new BlockReference().setFromBlockCoordinates(0, getSurfaceHeight(a, 0, 0) + 1, 0);
+    return new BlockReference().setFromBlockCoordinates(0, getSurfaceHeight(0, 0) + 1, 0);
   }
 
   public void genTree(Area area, WorldServer world, int x, int z, Random r) {
@@ -160,8 +158,12 @@ public class SmoothWorld extends TerrainGenerator {
   }
 
   public int getSurfaceHeight(Area area, int x, int z) {
-    double h = height.eval(area.minBlockX + x,area.minBlockZ + z) * 60;
-    double hv = Math.sqrt(heightVariation.eval(area.minBlockX + x, area.minBlockZ + z) + 1);
+    return getSurfaceHeight(area.minBlockX + x, area.minBlockZ + z);
+  }
+
+  public int getSurfaceHeight(int x, int z) {
+    double h = height.eval(x,z) * 60;
+    double hv = Math.sqrt(heightVariation.eval(x, z) + 1);
     return (int) Math.pow(h, hv);
   }
 

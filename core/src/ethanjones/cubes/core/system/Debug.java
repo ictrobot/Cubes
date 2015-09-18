@@ -54,7 +54,7 @@ public class Debug {
   }
 
   public static synchronized void criticalMemory() {
-    crash(new OutOfMemoryError("Detected"));
+    crash(new OutOfMemoryError("Detected! " + Compatibility.get().getFreeMemory() + "MB Free!"));
   }
 
   public static void crash(Throwable throwable) {
@@ -128,5 +128,14 @@ public class Debug {
     } else {
       Log.log(logLevel, "No Mods");
     }
+  }
+
+  public static boolean stackContain(Class<?> c) {
+    StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+    String name = c.getName();
+    for (StackTraceElement stackTraceElement : stackTrace) {
+      if (stackTraceElement.getClassName().equals(name)) return true;
+    }
+    return false;
   }
 }
