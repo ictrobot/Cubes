@@ -30,8 +30,6 @@ public class WorldGenerationThread implements Runnable {
 
         AreaReference generate = task.generateQueue.poll();
         while (generate != null) {
-          if (generate.areaX == 4 && generate.areaZ == -2)
-            System.out.println("G");
           WorldTasks.generate(generate, task.world);
 
           generate = task.generateQueue.poll();
