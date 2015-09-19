@@ -14,7 +14,7 @@ public class BlockChangedEvent extends BlockEvent {
     this.newBlock = newBlock;
   }
 
-  public Block getOldBlock(){
+  public Block getOldBlock() {
     return oldBlock;
   }
 

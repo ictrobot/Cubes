@@ -1,9 +1,9 @@
 package ethanjones.cubes.side.server.command;
 
-import java.util.List;
-
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.side.common.Cubes;
+
+import java.util.List;
 
 public class StopCommand {
 

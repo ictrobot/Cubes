@@ -3,8 +3,6 @@ package ethanjones.cubes.world.thread;
 import ethanjones.cubes.core.event.world.generation.AreaGeneratedEvent;
 import ethanjones.cubes.core.event.world.generation.FeaturesEvent;
 import ethanjones.cubes.core.event.world.generation.GenerationEvent;
-import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.ThreadPool;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.world.reference.AreaReference;

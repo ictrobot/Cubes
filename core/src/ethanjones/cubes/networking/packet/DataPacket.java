@@ -3,6 +3,7 @@ package ethanjones.cubes.networking.packet;
 import ethanjones.data.Data;
 import ethanjones.data.DataGroup;
 import ethanjones.data.DataParser;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 

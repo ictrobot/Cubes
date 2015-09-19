@@ -1,16 +1,16 @@
 package ethanjones.cubes.networking.socket;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.zip.Deflater;
-
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.networking.packet.PacketQueue;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
+
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.zip.Deflater;
 
 public class SocketOutput extends SocketIO {
 

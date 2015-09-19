@@ -1,6 +1,7 @@
 package ethanjones.cubes.core.timing;
 
 import com.badlogic.gdx.utils.Disposable;
+
 import java.util.ArrayList;
 
 public class Timing implements Disposable {

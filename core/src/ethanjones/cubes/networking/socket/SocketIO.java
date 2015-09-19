@@ -1,8 +1,8 @@
 package ethanjones.cubes.networking.socket;
 
-import com.badlogic.gdx.utils.Disposable;
-
 import ethanjones.cubes.networking.packet.PacketQueue;
+
+import com.badlogic.gdx.utils.Disposable;
 
 public abstract class SocketIO implements Runnable, Disposable {
 

@@ -3,6 +3,7 @@ package ethanjones.cubes.block;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.data.DataGroup;
 import ethanjones.data.DataParser;
+
 import java.util.*;
 
 public class BlockManager implements DataParser {
@@ -63,11 +64,11 @@ public class BlockManager implements DataParser {
 
   @Override
   public DataGroup write() {
-      DataGroup dataGroup = new DataGroup();
-      for (Map.Entry<Block, Integer> entry : blockToInteger.entrySet()) {
-        dataGroup.put(entry.getKey().id, entry.getValue());
-      }
-      return dataGroup;
+    DataGroup dataGroup = new DataGroup();
+    for (Map.Entry<Block, Integer> entry : blockToInteger.entrySet()) {
+      dataGroup.put(entry.getKey().id, entry.getValue());
+    }
+    return dataGroup;
   }
 
   @Override

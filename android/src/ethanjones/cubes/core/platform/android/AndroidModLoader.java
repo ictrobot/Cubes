@@ -1,10 +1,10 @@
 package ethanjones.cubes.core.platform.android;
 
+import ethanjones.cubes.core.mod.ModLoader;
+
 import android.content.Context;
 import com.badlogic.gdx.files.FileHandle;
 import dalvik.system.DexClassLoader;
-
-import ethanjones.cubes.core.mod.ModLoader;
 
 public class AndroidModLoader implements ModLoader {
 

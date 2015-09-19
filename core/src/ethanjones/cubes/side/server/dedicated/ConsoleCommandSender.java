@@ -1,16 +1,16 @@
 package ethanjones.cubes.side.server.dedicated;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.side.server.command.CommandManager;
 import ethanjones.cubes.side.server.command.CommandPermission;
 import ethanjones.cubes.side.server.command.CommandSender;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 public class ConsoleCommandSender implements CommandSender {
 

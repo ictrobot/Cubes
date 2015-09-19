@@ -1,8 +1,5 @@
 package ethanjones.cubes.networking.server;
 
-import com.badlogic.gdx.net.Socket;
-import com.badlogic.gdx.utils.Array;
-
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.networking.Networking;
 import ethanjones.cubes.networking.packet.Packet;
@@ -10,6 +7,9 @@ import ethanjones.cubes.networking.packet.PacketQueue;
 import ethanjones.cubes.networking.socket.SocketMonitor;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.common.Cubes;
+
+import com.badlogic.gdx.net.Socket;
+import com.badlogic.gdx.utils.Array;
 
 public class ServerNetworking extends Networking {
 

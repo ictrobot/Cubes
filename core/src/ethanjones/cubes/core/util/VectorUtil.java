@@ -1,6 +1,7 @@
 package ethanjones.cubes.core.util;
 
 import com.badlogic.gdx.math.Vector3;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;

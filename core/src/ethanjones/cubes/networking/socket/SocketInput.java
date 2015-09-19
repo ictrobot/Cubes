@@ -1,12 +1,12 @@
 package ethanjones.cubes.networking.socket;
 
-import java.io.*;
-import java.util.zip.Inflater;
-
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
+
+import java.io.*;
+import java.util.zip.Inflater;
 
 public class SocketInput extends SocketIO {
 

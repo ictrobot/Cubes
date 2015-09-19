@@ -1,5 +1,11 @@
 package ethanjones.cubes.input;
 
+import ethanjones.cubes.networking.NetworkingManager;
+import ethanjones.cubes.networking.packets.PacketButton;
+import ethanjones.cubes.networking.packets.PacketKey;
+import ethanjones.cubes.networking.packets.PacketPlayerInfo;
+import ethanjones.cubes.side.common.Cubes;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
@@ -7,12 +13,6 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.utils.IntIntMap;
-
-import ethanjones.cubes.networking.NetworkingManager;
-import ethanjones.cubes.networking.packets.PacketButton;
-import ethanjones.cubes.networking.packets.PacketKey;
-import ethanjones.cubes.networking.packets.PacketPlayerInfo;
-import ethanjones.cubes.side.common.Cubes;
 
 public class CameraController extends InputAdapter {
 

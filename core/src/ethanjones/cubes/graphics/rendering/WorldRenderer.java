@@ -1,13 +1,5 @@
 package ethanjones.cubes.graphics.rendering;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.math.Frustum;
-import com.badlogic.gdx.utils.Disposable;
-
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.graphics.world.AreaRenderer;
@@ -18,6 +10,14 @@ import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.storage.Area;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.math.Frustum;
+import com.badlogic.gdx.utils.Disposable;
 
 import static ethanjones.cubes.graphics.Graphics.modelBatch;
 

@@ -1,11 +1,11 @@
 package ethanjones.cubes.side.server.command;
 
+import ethanjones.cubes.core.localization.Localization;
+import ethanjones.cubes.core.logging.Log;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-
-import ethanjones.cubes.core.localization.Localization;
-import ethanjones.cubes.core.logging.Log;
 
 public class CommandManager {
 

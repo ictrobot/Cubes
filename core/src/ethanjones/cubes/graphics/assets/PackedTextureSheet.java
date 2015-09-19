@@ -1,6 +1,7 @@
 package ethanjones.cubes.graphics.assets;
 
 import com.badlogic.gdx.graphics.g3d.Material;
+
 import java.util.HashMap;
 
 public class PackedTextureSheet {

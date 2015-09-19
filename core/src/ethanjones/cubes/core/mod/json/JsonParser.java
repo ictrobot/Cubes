@@ -1,10 +1,10 @@
 package ethanjones.cubes.core.mod.json;
 
-import com.badlogic.gdx.utils.JsonValue;
-import com.badlogic.gdx.utils.JsonValue.ValueType;
-
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.util.BlockFace;
+
+import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.JsonValue.ValueType;
 
 public class JsonParser {
 

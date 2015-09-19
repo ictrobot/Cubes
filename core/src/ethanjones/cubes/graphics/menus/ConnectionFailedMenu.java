@@ -1,11 +1,11 @@
 package ethanjones.cubes.graphics.menus;
 
+import ethanjones.cubes.core.localization.Localization;
+import ethanjones.cubes.core.platform.Adapter;
+
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-
-import ethanjones.cubes.core.localization.Localization;
-import ethanjones.cubes.core.platform.Adapter;
 
 public class ConnectionFailedMenu extends InfoMenu {
 

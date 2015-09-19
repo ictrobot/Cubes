@@ -1,14 +1,14 @@
 package ethanjones.cubes.networking.packets;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 
 public class PacketHotbar extends Packet {
 

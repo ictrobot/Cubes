@@ -1,19 +1,20 @@
 package ethanjones.cubes.core.mod.java;
 
-import com.badlogic.gdx.files.FileHandle;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.mod.ModEventHandler;
 import ethanjones.cubes.core.mod.ModInstance;
 import ethanjones.cubes.core.mod.ModState;
 import ethanjones.cubes.core.mod.event.ModEvent;
 import ethanjones.cubes.graphics.assets.AssetManager;
+
+import com.badlogic.gdx.files.FileHandle;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 public class JavaModInstance<T> extends ModInstance {
 

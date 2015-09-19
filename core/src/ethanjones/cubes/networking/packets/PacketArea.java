@@ -1,16 +1,15 @@
 package ethanjones.cubes.networking.packets;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-
 import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.networking.packet.PacketPriority;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.PlayerManager;
-import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.storage.Area;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 
 public class PacketArea extends Packet {
 

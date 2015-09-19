@@ -1,9 +1,9 @@
 package ethanjones.cubes.core.platform.desktop;
 
-import java.security.Permission;
-
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.logging.LogLevel;
+
+import java.security.Permission;
 
 public class DesktopSecurityManager extends SecurityManager {
 

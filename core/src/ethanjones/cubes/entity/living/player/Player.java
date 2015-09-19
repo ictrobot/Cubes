@@ -1,7 +1,5 @@
 package ethanjones.cubes.entity.living.player;
 
-import com.badlogic.gdx.graphics.Camera;
-
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.core.settings.Settings;
@@ -12,12 +10,10 @@ import ethanjones.cubes.networking.packets.PacketHotbar;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
-import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.command.CommandPermission;
 import ethanjones.cubes.side.server.command.CommandSender;
-import ethanjones.cubes.world.World;
-import ethanjones.cubes.world.reference.BlockReference;
-import ethanjones.cubes.world.server.WorldServer;
+
+import com.badlogic.gdx.graphics.Camera;
 
 public class Player extends LivingEntity implements CommandSender {
 

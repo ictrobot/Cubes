@@ -1,5 +1,14 @@
 package ethanjones.cubes.core.platform.android;
 
+import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.mod.ModLoader;
+import ethanjones.cubes.core.platform.Adapter;
+import ethanjones.cubes.core.platform.Compatibility;
+import ethanjones.cubes.core.system.Branding;
+import ethanjones.cubes.graphics.menu.Menu;
+import ethanjones.cubes.graphics.menu.MenuManager;
+import ethanjones.cubes.side.common.Cubes;
+
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.MemoryInfo;
@@ -9,15 +18,6 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.files.FileHandle;
-
-import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.core.mod.ModLoader;
-import ethanjones.cubes.core.platform.Adapter;
-import ethanjones.cubes.core.platform.Compatibility;
-import ethanjones.cubes.core.system.Branding;
-import ethanjones.cubes.graphics.menu.Menu;
-import ethanjones.cubes.graphics.menu.MenuManager;
-import ethanjones.cubes.side.common.Cubes;
 
 public class AndroidCompatibility extends Compatibility {
 

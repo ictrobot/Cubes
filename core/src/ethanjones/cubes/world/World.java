@@ -1,11 +1,5 @@
 package ethanjones.cubes.world;
 
-import com.badlogic.gdx.utils.Disposable;
-
-import java.util.HashMap;
-import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.event.world.generation.AreaGeneratedEvent;
 import ethanjones.cubes.core.logging.Log;
@@ -14,8 +8,14 @@ import ethanjones.cubes.core.util.Lock;
 import ethanjones.cubes.world.generator.TerrainGenerator;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
-import ethanjones.cubes.world.storage.Area;
 import ethanjones.cubes.world.reference.multi.WorldRegion;
+import ethanjones.cubes.world.storage.Area;
+
+import com.badlogic.gdx.utils.Disposable;
+
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class World implements Disposable {
 
@@ -104,10 +104,10 @@ public abstract class World implements Disposable {
 
     disposed.set(true);
 
-      for (Entry<AreaReference, Area> entry : map.entrySet()) {
-        entry.getValue().unload();
-      }
-      map.clear();
+    for (Entry<AreaReference, Area> entry : map.entrySet()) {
+      entry.getValue().unload();
+    }
+    map.clear();
 
     lock.writeUnlock();
   }

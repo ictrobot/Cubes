@@ -1,10 +1,10 @@
 package ethanjones.cubes.graphics.world;
 
-import com.badlogic.gdx.math.Vector3;
-
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.reference.BlockReference;
+
+import com.badlogic.gdx.math.Vector3;
 
 import static java.lang.Math.floor;
 import static java.lang.Math.signum;

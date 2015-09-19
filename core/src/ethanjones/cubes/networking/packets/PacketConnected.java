@@ -1,10 +1,9 @@
 package ethanjones.cubes.networking.packets;
 
-import ethanjones.data.DataGroup;
-
 import ethanjones.cubes.networking.packet.DataPacket;
 import ethanjones.cubes.networking.packet.PacketPriority;
 import ethanjones.cubes.side.Sided;
+import ethanjones.data.DataGroup;
 
 public class PacketConnected extends DataPacket {
 

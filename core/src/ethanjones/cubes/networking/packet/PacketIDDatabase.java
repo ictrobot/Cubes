@@ -1,12 +1,12 @@
 package ethanjones.cubes.networking.packet;
 
-import java.util.HashMap;
-
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.networking.packets.PacketID;
 import ethanjones.cubes.networking.socket.SocketMonitor;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
+
+import java.util.HashMap;
 
 public class PacketIDDatabase {
 

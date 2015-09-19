@@ -1,10 +1,5 @@
 package ethanjones.cubes.networking.client;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Net.Protocol;
-import com.badlogic.gdx.net.Socket;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.networking.Networking;
@@ -13,6 +8,11 @@ import ethanjones.cubes.networking.packet.PacketQueue;
 import ethanjones.cubes.networking.packets.PacketConnect;
 import ethanjones.cubes.networking.socket.SocketMonitor;
 import ethanjones.cubes.side.Side;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Net.Protocol;
+import com.badlogic.gdx.net.Socket;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class ClientNetworking extends Networking {
 

@@ -1,10 +1,10 @@
 package ethanjones.cubes.core.platform.android;
 
-import android.os.Bundle;
-import com.badlogic.gdx.backends.android.AndroidApplication;
-
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.platform.Launcher;
+
+import android.os.Bundle;
+import com.badlogic.gdx.backends.android.AndroidApplication;
 
 public class AndroidLauncher extends AndroidApplication implements Launcher {
 

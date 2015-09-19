@@ -1,8 +1,5 @@
 package ethanjones.cubes.side.server;
 
-import java.util.List;
-
-import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.core.mod.ModManager;
 import ethanjones.cubes.core.mod.event.StartingServerEvent;
 import ethanjones.cubes.core.mod.event.StoppingServerEvent;
@@ -12,11 +9,11 @@ import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.networking.socket.SocketMonitor;
 import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.command.CommandManager;
-import ethanjones.cubes.world.generator.BasicTerrainGenerator;
 import ethanjones.cubes.world.server.WorldServer;
+
+import java.util.List;
 
 public abstract class CubesServer extends Cubes implements TimeHandler {
 

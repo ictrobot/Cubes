@@ -1,6 +1,13 @@
 package ethanjones.cubes.networking.server;
 
+import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.system.Branding;
+import ethanjones.cubes.core.system.Executor;
+import ethanjones.cubes.side.Sided;
+import ethanjones.cubes.side.common.Cubes;
+
 import com.badlogic.gdx.net.NetJavaSocketImpl;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -8,12 +15,6 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.List;
 import java.util.concurrent.Callable;
-
-import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.core.system.Branding;
-import ethanjones.cubes.core.system.Executor;
-import ethanjones.cubes.side.Sided;
-import ethanjones.cubes.side.common.Cubes;
 
 import static ethanjones.cubes.networking.client.ClientConnectionInitializer.extractJavaSocket;
 

@@ -2,7 +2,6 @@ package ethanjones.cubes.world.generator.smooth;
 
 import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.world.generator.TerrainGenerator;
-import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.server.WorldServer;
 import ethanjones.cubes.world.storage.Area;
@@ -25,11 +24,11 @@ public class SmoothWorld extends TerrainGenerator {
 
   public SmoothWorld(long baseSeed) {
     this.baseSeed = baseSeed;
-    temperature     = new Feature(baseSeed + 1, 4, 1);
-    rainfall        = new Feature(baseSeed + 2, 4, 1);
-    height          = new Feature(baseSeed + 3, 4, 1);
+    temperature = new Feature(baseSeed + 1, 4, 1);
+    rainfall = new Feature(baseSeed + 2, 4, 1);
+    height = new Feature(baseSeed + 3, 4, 1);
     heightVariation = new Feature(baseSeed + 4, 4, 2);
-    trees           = new Feature(baseSeed + 5, 1, 3);
+    trees = new Feature(baseSeed + 5, 1, 3);
   }
 
   public static void main(String[] args) throws IOException {
@@ -39,7 +38,7 @@ public class SmoothWorld extends TerrainGenerator {
       for (int x = 0; x < 4096; x++) {
         double value = smoothWorld.height.eval(x, y);
         int c = (int) (255 * value);
-        image.setRGB(x, y, new Color(c,c,c).getRGB());
+        image.setRGB(x, y, new Color(c, c, c).getRGB());
       }
     }
     ImageIO.write(image, "png", new File("noise.png"));
@@ -162,7 +161,7 @@ public class SmoothWorld extends TerrainGenerator {
   }
 
   public int getSurfaceHeight(int x, int z) {
-    double h = height.eval(x,z) * 60;
+    double h = height.eval(x, z) * 60;
     double hv = Math.sqrt(heightVariation.eval(x, z) + 1);
     return (int) Math.pow(h, hv);
   }

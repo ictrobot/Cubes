@@ -1,15 +1,15 @@
 package ethanjones.cubes.graphics.menus;
 
+import ethanjones.cubes.core.localization.Localization;
+import ethanjones.cubes.core.platform.Adapter;
+import ethanjones.cubes.graphics.menu.Menu;
+import ethanjones.cubes.graphics.menu.MenuTools;
+
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-
-import ethanjones.cubes.core.localization.Localization;
-import ethanjones.cubes.core.platform.Adapter;
-import ethanjones.cubes.graphics.menu.Menu;
-import ethanjones.cubes.graphics.menu.MenuTools;
 
 public class MultiplayerConnectMenu extends Menu {
 

@@ -1,14 +1,12 @@
 package ethanjones.cubes.graphics.menu;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeBitmapFontData;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
-
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.graphics.assets.Assets;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
 public class Fonts {
 
@@ -55,13 +53,13 @@ public class Fonts {
     Size7 = FONTS[6];
     Size8 = FONTS[7];
     Size9 = FONTS[8];
-    Size10= FONTS[9];
-    Size11= FONTS[10];
-    Size12= FONTS[11];
-    Size13= FONTS[12];
-    Size14= FONTS[13];
-    Size15= FONTS[14];
-    Size16= FONTS[15];
+    Size10 = FONTS[9];
+    Size11 = FONTS[10];
+    Size12 = FONTS[11];
+    Size13 = FONTS[12];
+    Size14 = FONTS[13];
+    Size15 = FONTS[14];
+    Size16 = FONTS[15];
 
     Log.debug("Font generated");
   }

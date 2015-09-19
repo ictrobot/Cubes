@@ -1,11 +1,12 @@
 package ethanjones.cubes.core.platform.desktop;
 
+import ethanjones.cubes.core.mod.ModLoader;
+
 import com.badlogic.gdx.files.FileHandle;
+
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
-
-import ethanjones.cubes.core.mod.ModLoader;
 
 public class DesktopModLoader implements ModLoader {
 

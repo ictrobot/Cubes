@@ -1,13 +1,13 @@
 package ethanjones.cubes.graphics.menus;
 
-import com.badlogic.gdx.utils.GdxRuntimeException;
-
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.client.ClientNetworkingParameter;
 import ethanjones.cubes.side.client.CubesClient;
+
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class MultiplayerLoadingMenu extends InfoMenu {
 

@@ -1,6 +1,5 @@
 package ethanjones.cubes.side.server;
 
-import com.badlogic.gdx.Input.Buttons;
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.event.EventHandler;
 import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
@@ -17,6 +16,8 @@ import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.reference.multi.AreaReferenceSet;
 import ethanjones.cubes.world.reference.multi.WorldRegion;
 import ethanjones.cubes.world.storage.Area;
+
+import com.badlogic.gdx.Input.Buttons;
 
 import java.util.ArrayList;
 

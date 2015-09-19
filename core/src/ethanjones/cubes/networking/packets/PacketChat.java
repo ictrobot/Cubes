@@ -1,8 +1,5 @@
 package ethanjones.cubes.networking.packets;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.entity.living.player.Player;
@@ -12,6 +9,9 @@ import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.command.CommandManager;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 
 public class PacketChat extends Packet {
 

@@ -1,9 +1,9 @@
 package ethanjones.cubes.networking.packet;
 
+import ethanjones.cubes.networking.socket.SocketMonitor;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-
-import ethanjones.cubes.networking.socket.SocketMonitor;
 
 public abstract class Packet {
 

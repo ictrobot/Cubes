@@ -1,11 +1,11 @@
 package ethanjones.cubes.core.system;
 
-import java.util.ArrayList;
-import java.util.concurrent.*;
-
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
+
+import java.util.ArrayList;
+import java.util.concurrent.*;
 
 public class Executor {
 

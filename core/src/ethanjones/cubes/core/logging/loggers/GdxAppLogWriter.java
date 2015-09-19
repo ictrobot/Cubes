@@ -1,10 +1,10 @@
 package ethanjones.cubes.core.logging.loggers;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
-
 import ethanjones.cubes.core.logging.LogLevel;
 import ethanjones.cubes.core.logging.LogWriter;
+
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 
 public class GdxAppLogWriter implements LogWriter {
 

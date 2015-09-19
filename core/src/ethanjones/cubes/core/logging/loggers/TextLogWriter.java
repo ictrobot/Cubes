@@ -1,12 +1,12 @@
 package ethanjones.cubes.core.logging.loggers;
 
+import ethanjones.cubes.core.logging.LogLevel;
+import ethanjones.cubes.core.logging.LogWriter;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import ethanjones.cubes.core.logging.LogLevel;
-import ethanjones.cubes.core.logging.LogWriter;
 
 public abstract class TextLogWriter implements LogWriter {
 

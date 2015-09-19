@@ -1,15 +1,15 @@
 package ethanjones.cubes.world.client;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
-
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
 import ethanjones.cubes.world.storage.Area;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 
 public class WorldClient extends World {
 

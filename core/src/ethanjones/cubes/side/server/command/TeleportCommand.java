@@ -1,13 +1,14 @@
 package ethanjones.cubes.side.server.command;
 
-import com.badlogic.gdx.math.Vector3;
-import java.util.List;
-
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketPlayerInfo;
 import ethanjones.cubes.networking.server.ClientIdentifier;
+
+import com.badlogic.gdx.math.Vector3;
+
+import java.util.List;
 
 public class TeleportCommand {
 

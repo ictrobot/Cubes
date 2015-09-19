@@ -1,6 +1,7 @@
 package ethanjones.cubes.graphics.assets;
 
 import com.badlogic.gdx.graphics.Pixmap;
+
 import java.util.HashMap;
 import java.util.Map;
 

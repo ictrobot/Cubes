@@ -1,10 +1,10 @@
 package ethanjones.cubes.entity;
 
-import com.badlogic.gdx.math.Vector3;
+import ethanjones.cubes.core.util.VectorUtil;
 import ethanjones.data.DataGroup;
 import ethanjones.data.DataParser;
 
-import ethanjones.cubes.core.util.VectorUtil;
+import com.badlogic.gdx.math.Vector3;
 
 public class Entity implements DataParser {
 

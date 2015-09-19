@@ -5,8 +5,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-import ethanjones.cubes.graphics.menu.Fonts;
-
 public class Graphics {
 
   public static SpriteBatch spriteBatch;

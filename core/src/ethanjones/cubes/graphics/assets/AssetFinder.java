@@ -1,14 +1,15 @@
 package ethanjones.cubes.graphics.assets;
 
+import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.side.common.Cubes;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+
 import java.net.URL;
 import java.security.CodeSource;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
-import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.side.common.Cubes;
 
 public class AssetFinder {
 

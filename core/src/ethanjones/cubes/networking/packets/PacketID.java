@@ -1,10 +1,10 @@
 package ethanjones.cubes.networking.packets;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-
 import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.networking.packet.PacketPriority;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 
 public class PacketID extends Packet {
 

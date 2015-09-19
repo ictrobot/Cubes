@@ -1,8 +1,8 @@
 package ethanjones.cubes.core.event;
 
-import java.lang.reflect.Method;
-
 import ethanjones.cubes.core.logging.Log;
+
+import java.lang.reflect.Method;
 
 class EventWrapper {
 

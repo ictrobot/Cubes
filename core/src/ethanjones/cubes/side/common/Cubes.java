@@ -1,7 +1,5 @@
 package ethanjones.cubes.side.common;
 
-import com.badlogic.gdx.Gdx;
-
 import ethanjones.cubes.block.BlockManager;
 import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.core.localization.Localization;
@@ -28,6 +26,8 @@ import ethanjones.cubes.side.State;
 import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.server.CubesServer;
 import ethanjones.cubes.world.World;
+
+import com.badlogic.gdx.Gdx;
 
 public abstract class Cubes implements SimpleApplication, TimeHandler {
 

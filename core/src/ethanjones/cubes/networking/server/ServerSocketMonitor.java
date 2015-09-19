@@ -1,16 +1,17 @@
 package ethanjones.cubes.networking.server;
 
+import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.networking.Networking;
+import ethanjones.cubes.side.Side;
+import ethanjones.cubes.side.Sided;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.utils.Disposable;
-import java.util.concurrent.atomic.AtomicBoolean;
 
-import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.networking.Networking;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ServerSocketMonitor implements Runnable, Disposable {
 

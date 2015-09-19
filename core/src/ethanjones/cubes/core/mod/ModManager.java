@@ -1,14 +1,5 @@
 package ethanjones.cubes.core.mod;
 
-import com.badlogic.gdx.files.FileHandle;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Properties;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.mod.ModLoader.ModType;
 import ethanjones.cubes.core.mod.event.ModEvent;
@@ -19,6 +10,16 @@ import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.graphics.assets.AssetFinder;
 import ethanjones.cubes.graphics.assets.AssetManager;
 import ethanjones.cubes.graphics.assets.Assets;
+
+import com.badlogic.gdx.files.FileHandle;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Properties;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 public class ModManager {
 

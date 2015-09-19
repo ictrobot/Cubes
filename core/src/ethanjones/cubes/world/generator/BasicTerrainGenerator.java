@@ -33,6 +33,6 @@ public class BasicTerrainGenerator extends TerrainGenerator {
 
   @Override
   public BlockReference spawnPoint(WorldServer world) {
-    return new BlockReference().setFromBlockCoordinates(0,5,0);
+    return new BlockReference().setFromBlockCoordinates(0, 5, 0);
   }
 }

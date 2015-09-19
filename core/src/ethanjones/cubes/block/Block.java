@@ -1,11 +1,11 @@
 package ethanjones.cubes.block;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.graphics.world.BlockTextureHandler;
+
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Block {
 

@@ -1,12 +1,13 @@
 package ethanjones.cubes.core.system;
 
+import ethanjones.cubes.core.logging.Log;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-
-import ethanjones.cubes.core.logging.Log;
 
 public class Branding {
 

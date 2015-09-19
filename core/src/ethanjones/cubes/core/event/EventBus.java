@@ -1,13 +1,13 @@
 package ethanjones.cubes.core.event;
 
+import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.system.CubesException;
+import ethanjones.cubes.core.system.Executor;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.core.system.CubesException;
-import ethanjones.cubes.core.system.Executor;
 
 public class EventBus {
 

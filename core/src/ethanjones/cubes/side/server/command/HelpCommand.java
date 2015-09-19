@@ -1,9 +1,9 @@
 package ethanjones.cubes.side.server.command;
 
+import ethanjones.cubes.core.localization.Localization;
+
 import java.util.List;
 import java.util.Map.Entry;
-
-import ethanjones.cubes.core.localization.Localization;
 
 public class HelpCommand {
 

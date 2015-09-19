@@ -1,9 +1,9 @@
 package ethanjones.cubes.core.platform.desktop;
 
+import ethanjones.cubes.core.system.Debug;
+
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
-
-import ethanjones.cubes.core.system.Debug;
 
 public final class DesktopMemoryChecker extends Thread {
 

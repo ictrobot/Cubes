@@ -1,15 +1,16 @@
 package ethanjones.cubes.networking.client;
 
+import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.system.Branding;
+
 import com.badlogic.gdx.net.NetJavaSocketImpl;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-
-import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.core.system.Branding;
 
 public class ClientConnectionInitializer {
 

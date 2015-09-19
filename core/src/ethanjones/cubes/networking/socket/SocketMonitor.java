@@ -1,12 +1,13 @@
 package ethanjones.cubes.networking.socket;
 
-import com.badlogic.gdx.net.Socket;
-import com.badlogic.gdx.utils.Disposable;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import ethanjones.cubes.networking.Networking;
 import ethanjones.cubes.networking.packet.PacketIDDatabase;
 import ethanjones.cubes.side.Side;
+
+import com.badlogic.gdx.net.Socket;
+import com.badlogic.gdx.utils.Disposable;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SocketMonitor implements Disposable {
 

@@ -1,12 +1,12 @@
 package ethanjones.cubes.input;
 
+import ethanjones.cubes.graphics.menu.Menu;
+import ethanjones.cubes.input.keyboard.KeyboardHelper;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Disposable;
-
-import ethanjones.cubes.graphics.menu.Menu;
-import ethanjones.cubes.input.keyboard.KeyboardHelper;
 
 public class InputChain implements Disposable {
 

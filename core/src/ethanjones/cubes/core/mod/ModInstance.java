@@ -1,10 +1,11 @@
 package ethanjones.cubes.core.mod;
 
-import com.badlogic.gdx.files.FileHandle;
-import java.util.List;
-
 import ethanjones.cubes.core.mod.event.ModEvent;
 import ethanjones.cubes.graphics.assets.AssetManager;
+
+import com.badlogic.gdx.files.FileHandle;
+
+import java.util.List;
 
 public abstract class ModInstance {
 

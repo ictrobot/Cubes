@@ -1,9 +1,9 @@
 package ethanjones.cubes.entity.living;
 
-import com.badlogic.gdx.math.Vector3;
+import ethanjones.cubes.entity.Entity;
 import ethanjones.data.DataGroup;
 
-import ethanjones.cubes.entity.Entity;
+import com.badlogic.gdx.math.Vector3;
 
 public class LivingEntity extends Entity {
 

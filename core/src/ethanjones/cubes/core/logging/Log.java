@@ -1,13 +1,14 @@
 package ethanjones.cubes.core.logging;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
-import java.io.File;
-
 import ethanjones.cubes.core.logging.loggers.FileLogWriter;
 import ethanjones.cubes.core.logging.loggers.GdxAppLogWriter;
 import ethanjones.cubes.core.logging.loggers.SysOutLogWriter;
 import ethanjones.cubes.core.platform.Compatibility;
+
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
+
+import java.io.File;
 
 public class Log {
 

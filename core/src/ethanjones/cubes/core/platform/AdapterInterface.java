@@ -1,11 +1,11 @@
 package ethanjones.cubes.core.platform;
 
-import com.badlogic.gdx.ApplicationListener;
-
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.server.CubesServer;
+
+import com.badlogic.gdx.ApplicationListener;
 
 public interface AdapterInterface extends ApplicationListener {
 

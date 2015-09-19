@@ -1,9 +1,5 @@
 package ethanjones.cubes.core.system;
 
-import com.badlogic.gdx.Version;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.logging.LogLevel;
 import ethanjones.cubes.core.logging.loggers.FileLogWriter;
@@ -12,6 +8,11 @@ import ethanjones.cubes.core.mod.ModManager;
 import ethanjones.cubes.core.mod.ModState;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.Compatibility;
+
+import com.badlogic.gdx.Version;
+
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Debug {
 

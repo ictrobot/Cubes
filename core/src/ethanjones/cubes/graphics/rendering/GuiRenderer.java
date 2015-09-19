@@ -1,5 +1,20 @@
 package ethanjones.cubes.graphics.rendering;
 
+import ethanjones.cubes.block.Block;
+import ethanjones.cubes.core.localization.Localization;
+import ethanjones.cubes.core.platform.Compatibility;
+import ethanjones.cubes.core.util.BlockFace;
+import ethanjones.cubes.entity.living.player.Player;
+import ethanjones.cubes.graphics.assets.Assets;
+import ethanjones.cubes.graphics.menu.Fonts;
+import ethanjones.cubes.input.keyboard.KeyTypedAdapter;
+import ethanjones.cubes.input.keyboard.KeyboardHelper;
+import ethanjones.cubes.networking.NetworkingManager;
+import ethanjones.cubes.networking.packets.PacketChat;
+import ethanjones.cubes.side.Sided;
+import ethanjones.cubes.side.client.ClientDebug;
+import ethanjones.cubes.side.common.Cubes;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
@@ -17,23 +32,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import ethanjones.cubes.block.Block;
-import ethanjones.cubes.core.localization.Localization;
-import ethanjones.cubes.core.platform.Compatibility;
-import ethanjones.cubes.core.util.BlockFace;
-import ethanjones.cubes.entity.living.player.Player;
-import ethanjones.cubes.graphics.assets.Assets;
-import ethanjones.cubes.graphics.menu.Fonts;
-import ethanjones.cubes.input.keyboard.KeyTypedAdapter;
-import ethanjones.cubes.input.keyboard.KeyboardHelper;
-import ethanjones.cubes.networking.NetworkingManager;
-import ethanjones.cubes.networking.packets.PacketChat;
-import ethanjones.cubes.side.Sided;
-import ethanjones.cubes.side.client.ClientDebug;
-import ethanjones.cubes.side.common.Cubes;
 
 import static ethanjones.cubes.graphics.Graphics.screenViewport;
 import static ethanjones.cubes.graphics.Graphics.spriteBatch;

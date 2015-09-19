@@ -1,11 +1,5 @@
 package ethanjones.cubes.core.platform;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Application.ApplicationType;
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
-
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.mod.ModLoader;
 import ethanjones.cubes.core.system.CubesException;
@@ -14,6 +8,12 @@ import ethanjones.cubes.graphics.assets.AssetFinder;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
+
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 
 public abstract class Compatibility {
 

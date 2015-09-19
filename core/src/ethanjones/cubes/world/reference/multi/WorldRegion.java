@@ -2,12 +2,10 @@ package ethanjones.cubes.world.reference.multi;
 
 import ethanjones.cubes.world.reference.AreaReference;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class WorldRegion implements MultiAreaReference{
+public class WorldRegion implements MultiAreaReference {
   public final int minAreaX;
   public final int maxAreaX;
   public final int minAreaZ;

@@ -7,7 +7,6 @@ import ethanjones.cubes.core.system.CubesSecurity;
 import ethanjones.cubes.core.timing.Timing;
 import ethanjones.cubes.networking.Networking;
 import ethanjones.cubes.networking.NetworkingManager;
-import ethanjones.cubes.side.common.Cubes;
 
 public class Sided {
 

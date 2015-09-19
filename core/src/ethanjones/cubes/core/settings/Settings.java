@@ -1,17 +1,18 @@
 package ethanjones.cubes.core.settings;
 
-import com.badlogic.gdx.files.FileHandle;
-import ethanjones.data.Data;
-import ethanjones.data.DataGroup;
-import java.util.HashMap;
-import java.util.Map;
-
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.settings.type.BooleanSetting;
 import ethanjones.cubes.core.settings.type.IntegerSetting;
 import ethanjones.cubes.core.settings.type.StringSetting;
+import ethanjones.data.Data;
+import ethanjones.data.DataGroup;
+
+import com.badlogic.gdx.files.FileHandle;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Settings {
 

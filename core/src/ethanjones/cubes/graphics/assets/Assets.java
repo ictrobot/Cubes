@@ -1,5 +1,9 @@
 package ethanjones.cubes.graphics.assets;
 
+import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.platform.Adapter;
+import ethanjones.cubes.core.platform.Compatibility;
+
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
@@ -8,14 +12,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.core.platform.Adapter;
-import ethanjones.cubes.core.platform.Compatibility;
 
 public class Assets {
 

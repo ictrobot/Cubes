@@ -1,15 +1,15 @@
 package ethanjones.cubes.core.localization;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Scanner;
-
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.graphics.assets.Asset;
 import ethanjones.cubes.graphics.assets.AssetManager;
 import ethanjones.cubes.graphics.assets.AssetType;
 import ethanjones.cubes.graphics.assets.Assets;
+
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Scanner;
 
 public class Localization {
 

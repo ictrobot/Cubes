@@ -1,12 +1,11 @@
 package ethanjones.cubes.networking.packets;
 
-import ethanjones.data.DataGroup;
-
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.networking.packet.DataPacket;
 import ethanjones.cubes.networking.packet.PacketPriority;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.data.DataGroup;
 
 public class PacketConnect extends DataPacket {
 

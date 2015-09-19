@@ -1,12 +1,5 @@
 package ethanjones.cubes.core.mod.json;
 
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.mod.ModInstance;
 import ethanjones.cubes.core.mod.ModState;
@@ -15,6 +8,14 @@ import ethanjones.cubes.core.mod.event.PostInitializationEvent;
 import ethanjones.cubes.core.mod.event.PreInitializationEvent;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.graphics.assets.AssetManager;
+
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class JsonModInstance extends ModInstance {
   

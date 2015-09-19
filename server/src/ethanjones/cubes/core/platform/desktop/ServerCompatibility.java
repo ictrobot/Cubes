@@ -1,11 +1,11 @@
 package ethanjones.cubes.core.platform.desktop;
 
+import ethanjones.cubes.core.system.Branding;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.files.FileHandle;
-
-import ethanjones.cubes.core.system.Branding;
 
 public class ServerCompatibility extends DesktopCompatibility {
 

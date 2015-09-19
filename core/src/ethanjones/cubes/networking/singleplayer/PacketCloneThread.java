@@ -1,16 +1,16 @@
 package ethanjones.cubes.networking.singleplayer;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.networking.packet.PacketQueue;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PacketCloneThread extends Thread {
 

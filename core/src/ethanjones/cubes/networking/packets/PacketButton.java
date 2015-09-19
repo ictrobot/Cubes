@@ -1,10 +1,10 @@
 package ethanjones.cubes.networking.packets;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-
 import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.side.common.Cubes;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 
 public class PacketButton extends Packet {
 

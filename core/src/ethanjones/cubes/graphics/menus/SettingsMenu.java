@@ -1,14 +1,5 @@
 package ethanjones.cubes.graphics.menus;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.scenes.scene2d.utils.Layout;
-import java.util.ArrayList;
-import java.util.Map;
-
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.settings.SettingGroup;
@@ -17,6 +8,16 @@ import ethanjones.cubes.core.settings.VisualSettingManager;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menu.MenuTools;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.Layout;
+import com.badlogic.gdx.utils.Align;
+
+import java.util.ArrayList;
+import java.util.Map;
 
 public class SettingsMenu extends Menu implements VisualSettingManager {
 
