@@ -9,12 +9,14 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CountDownLatch;
 
 public class WorldGenerationTask {
 
   public final WorldServer world;
   public final MultiAreaReference references;
   public final ConcurrentLinkedQueue<AreaReference> generateQueue = new ConcurrentLinkedQueue<AreaReference>();
+  public final CountDownLatch generationComplete = new CountDownLatch(WorldTasks.GENERATION_THREADS);
   public final ConcurrentLinkedQueue<AreaReference> featuresQueue = new ConcurrentLinkedQueue<AreaReference>();
 
   public WorldGenerationTask(WorldServer world, MultiAreaReference references) {

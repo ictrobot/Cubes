@@ -14,8 +14,10 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class WorldTasks {
 
+  public static final int GENERATION_THREADS = 8;
+
   private static final WorldGenerationThread gen = new WorldGenerationThread();
-  private static final ThreadPool threadPool = new ThreadPool("WorldGeneration", gen, 1).setSide(Side.Server).setDaemon(true).start();
+  private static final ThreadPool threadPool = new ThreadPool("WorldGeneration", gen, GENERATION_THREADS).setSide(Side.Server).setDaemon(true).start();
 
   public static void request(WorldServer worldServer, MultiAreaReference references) {
     gen.queue.add(new WorldGenerationTask(worldServer, references));

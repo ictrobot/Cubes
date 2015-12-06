@@ -35,6 +35,13 @@ public class WorldGenerationThread implements Runnable {
           generate = task.generateQueue.poll();
         }
 
+        task.generationComplete.countDown();
+        try {
+          task.generationComplete.await();
+        } catch (InterruptedException e) {
+          return;
+        }
+
         AreaReference features = task.featuresQueue.poll();
         while (features != null) {
           WorldTasks.features(features, task.world);

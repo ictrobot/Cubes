@@ -15,7 +15,7 @@ public abstract class TerrainGenerator {
 
   public abstract BlockReference spawnPoint(WorldServer world);
 
-  protected void set(Area area, Block block, int x, int y, int z) {
+  public static void set(Area area, Block block, int x, int y, int z) {
     int ref = Area.getRef(x, y, z);
 
     area.lock.writeLock();
@@ -25,7 +25,7 @@ public abstract class TerrainGenerator {
     area.lock.writeUnlock();
   }
 
-  protected void set(WorldServer world, Block block, int x, int y, int z) {
+  public static void set(WorldServer world, Block block, int x, int y, int z) {
     AreaReference areaReference = new AreaReference().setFromBlockCoordinates(x, z);
     world.lock.readLock();
     Area area = world.getArea(areaReference, false);
