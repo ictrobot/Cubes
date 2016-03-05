@@ -1,6 +1,6 @@
 ![Cubes](/assets/assets/logo.png)
 =============
-<a href="https://travis-ci.org/ictrobot/Cubes"><img src="https://travis-ci.org/ictrobot/Cubes.svg?branch=master" alt="Build status" align="right"></a>
+<a href="https://ictrobot.duckdns.org/jenkins/job/Cubes/"><img src="https://ictrobot.duckdns.org/jenkins/buildStatus/icon?job=Cubes" alt="Build status" align="right"></a>
 Summer project started in 2014 by Ethan Jones.
 
 [***License***](/LICENSE)
