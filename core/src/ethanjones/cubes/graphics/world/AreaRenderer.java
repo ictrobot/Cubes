@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.RenderableProvider;
+import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
@@ -51,6 +52,7 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
   }
 
   public Mesh mesh;
+  public MeshPart meshPart;
   public boolean refresh = true;
   Vector3 offset = new Vector3();
   private int numVertices = 0;
@@ -59,6 +61,10 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
 
   protected AreaRenderer() {
     mesh = new Mesh(true, vertices.length, indices.length, vertexAttributes);
+    meshPart = new MeshPart();
+    meshPart.mesh = mesh;
+    meshPart.primitiveType = GL20.GL_TRIANGLES;
+    meshPart.offset = 0;
     mesh.setIndices(indices);
   }
 
@@ -70,14 +76,14 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
       numVertices = numVerts / 4 * 6;
       mesh.setVertices(vertices, 0, numVerts * VERTEX_SIZE);
       refresh = false;
+      meshPart.size = numVertices;
+      meshPart.update();
     }
     if (numVertices <= 0) return;
+
     Renderable renderable = pool.obtain();
     renderable.material = Assets.blockPackedTextureSheet.getMaterial();
-    renderable.mesh = mesh;
-    renderable.meshPartOffset = 0;
-    renderable.meshPartSize = numVertices;
-    renderable.primitiveType = GL20.GL_TRIANGLES;
+    renderable.meshPart.set(meshPart);
     renderables.add(renderable);
   }
 
