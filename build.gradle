@@ -67,8 +67,8 @@ allprojects {
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
-        maven { url "http://ictrobot.duckdns.org/maven/snapshots/" }
-        maven { url "http://ictrobot.duckdns.org/maven/releases/" }
+        maven { url "http://ethanjones.me/maven/snapshots/" }
+        maven { url "http://ethanjones.me/maven/releases/" }
     }
 }
 

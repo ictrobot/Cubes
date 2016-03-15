@@ -1,3 +1,4 @@
+new File(project.getBuildDir(), '/jar-extra/').mkdirs()
 apply plugin: "java"
 sourceCompatibility = 1.7
 compileJava {
@@ -6,6 +7,7 @@ compileJava {
 }
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 sourceSets.main.java.srcDirs = ["src/"]
+sourceSets.main.resources.srcDirs = [new File(project.getBuildDir(), '/jar-extra/')]
 eclipse.project {
     name = appName + "-core"
 }
@@ -21,8 +23,7 @@ jar.archiveName = "core.jar"
 
 task properitesFile() {
     Properties props = new Properties()
-    project.getBuildDir().mkdir();
-    File propsFile = new File(project.getBuildDir(), '/core.properties')
+    File propsFile = new File(project.getBuildDir(), '/jar-extra/core.properties')
     propsFile.delete();
     props.setProperty('LIBGDX', gdxVersion.toString())
     props.setProperty('ANDROID_BUILD_TOOLS', androidBuildToolsVersion.toString())
@@ -34,6 +35,11 @@ task properitesFile() {
     props.store(propsFile.newWriter(), null)
 }
 
+task copyLicenseFile(type: Copy) {
+    from getRootProject().file('LICENSE')
+    into new File(getBuildDir(), '/jar-extra/')
+}
+
 publishing {
     publications {
         jar(MavenPublication) {
@@ -41,7 +47,7 @@ publishing {
             artifact tasks.sourcesJar {
                 classifier = 'sources'
             }
-            artifact(new File(project.getBuildDir(), '/core.properties')) {
+            artifact(new File(project.getBuildDir(), '/resources/core.properties')) {
                 classifier "properties"
             }
             groupId 'ethanjones.cubes'
@@ -87,3 +93,5 @@ publishing {
 }
 
 publish.dependsOn(['properitesFile'])
+
+jar.dependsOn(['properitesFile', 'copyLicenseFile'])
