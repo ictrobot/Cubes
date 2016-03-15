@@ -47,7 +47,7 @@ publishing {
             artifact tasks.sourcesJar {
                 classifier = 'sources'
             }
-            artifact(new File(project.getBuildDir(), '/resources/core.properties')) {
+            artifact(new File(project.getBuildDir(), '/jar-extra/core.properties')) {
                 classifier "properties"
             }
             groupId 'ethanjones.cubes'
