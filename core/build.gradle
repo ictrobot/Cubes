@@ -64,10 +64,10 @@ publishing {
                 libgdxReleases.appendNode('url', 'https://oss.sonatype.org/content/repositories/releases/')
                 def dataSnapshots = repositories.appendNode('repository')
                 dataSnapshots.appendNode('id', 'dataSnapshots')
-                dataSnapshots.appendNode('url', 'http://ictrobot.duckdns.org/maven/snapshots/')
+                dataSnapshots.appendNode('url', 'http://ethanjones.me/maven/snapshots/')
                 def dataReleases = repositories.appendNode('repository')
                 dataReleases.appendNode('id', 'dataReleases')
-                dataReleases.appendNode('url', 'http://ictrobot.duckdns.org/maven/releases/')
+                dataReleases.appendNode('url', 'http://ethanjones.me/maven/releases/')
 
                 def dependencies = asNode().appendNode('dependencies')
                 def dependencyLibgdx = dependencies.appendNode('dependency')
