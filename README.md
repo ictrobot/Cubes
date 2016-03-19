@@ -1,6 +1,5 @@
 ![Cubes](/assets/assets/logo.png)
 =============
-<a href="https://ictrobot.duckdns.org/jenkins/job/Cubes/"><img src="https://ictrobot.duckdns.org/jenkins/buildStatus/icon?job=Cubes" alt="Build status" align="right"></a>
 Summer project started in 2014 by Ethan Jones.
 
 [***License***](/LICENSE)
