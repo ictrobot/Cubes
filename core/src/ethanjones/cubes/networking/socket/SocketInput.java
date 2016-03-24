@@ -17,7 +17,7 @@ public class SocketInput extends SocketIO {
 
   private final Inflater inflater;
   private final ByteArrayOutputStream byteArrayOutputStream;
-  private final byte[] compressedBuffer = new byte[1024]; //just a buffer;
+  private final byte[] compressedBuffer = new byte[1024];
   private final byte[] inflateBuffer = new byte[1024];
 
   public SocketInput(SocketMonitor socketMonitor) {
@@ -61,16 +61,27 @@ public class SocketInput extends SocketIO {
           int compressedLength = dataInputStream.readInt();
           int uncompressedLength = dataInputStream.readInt();
           //Read in compressed version
+          inflater.reset();
+          int inflater_length;
           int offset = 0;
-          while (offset < compressedLength) {
-            offset += dataInputStream.read(compressedBuffer, offset, compressedLength - offset);
+          int input_length = dataInputStream.read(compressedBuffer, 0, Math.min(compressedLength, compressedBuffer.length));
+          offset += input_length;
+          inflater.setInput(compressedBuffer, 0, input_length);
+          while (true) {
+            inflater_length = inflater.inflate(inflateBuffer, 0, inflateBuffer.length);
+            if (inflater_length > 0) {
+              byteArrayOutputStream.write(inflateBuffer, 0, inflater_length);
+            } else {
+              if (offset < compressedLength) {
+                input_length = dataInputStream.read(compressedBuffer, 0, Math.min(compressedLength - offset, compressedBuffer.length));
+                offset += input_length;
+                inflater.setInput(compressedBuffer, 0, input_length);
+              } else {
+                break;
+              }
+            }
           }
-          //Inflate
-          inflater.setInput(compressedBuffer, 0, compressedLength);
-          int length;
-          while ((length = inflater.inflate(inflateBuffer, 0, inflateBuffer.length)) > 0) {
-            byteArrayOutputStream.write(inflateBuffer, 0, length);
-          }
+          // uncompressed
           byte[] uncompressed = byteArrayOutputStream.toByteArray();
           if (uncompressed.length != uncompressedLength) {
             Log.error("Uncompressed length should be " + uncompressedLength + " but is " + uncompressed.length + " [" + inflater.needsInput() + "," + inflater.needsDictionary() + "]");
