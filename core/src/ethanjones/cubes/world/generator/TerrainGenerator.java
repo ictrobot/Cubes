@@ -34,6 +34,8 @@ public abstract class TerrainGenerator {
       throw new IllegalStateException(areaReference.toString());
     }
     world.lock.readUnlock();
-    area.setBlock(block, x - area.minBlockX, y, z - area.minBlockZ);
+
+    set(area, block, x - area.minBlockX, y, z - area.minBlockZ);
+    //area.setBlock(block, x - area.minBlockX, y, z - area.minBlockZ);
   }
 }
