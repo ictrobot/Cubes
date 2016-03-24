@@ -103,4 +103,5 @@ pip-log.txt
 .DS_Store
 assets/log.txt
 hs_err_pid*.log
+replay_pid*.log
 log.txt
