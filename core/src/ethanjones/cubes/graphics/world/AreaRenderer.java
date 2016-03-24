@@ -77,7 +77,7 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
       mesh.setVertices(vertices, 0, numVerts * VERTEX_SIZE);
       refresh = false;
       meshPart.size = numVertices;
-      meshPart.update();
+      if (numVertices > 0) meshPart.update();
     }
     if (numVertices <= 0) return;
 
