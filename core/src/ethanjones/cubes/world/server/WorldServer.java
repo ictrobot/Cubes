@@ -9,6 +9,7 @@ public class WorldServer extends World {
 
   public WorldServer(TerrainGenerator terrainGenerator) {
     super(terrainGenerator);
+    spawnpoint.setFromBlockReference(terrainGenerator.spawnPoint(this));
   }
 
   @Override

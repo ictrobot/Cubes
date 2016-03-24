@@ -1,5 +1,6 @@
 package ethanjones.cubes.networking.singleplayer;
 
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.networking.packet.PacketQueue;
@@ -11,6 +12,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static ethanjones.cubes.networking.Networking.NETWORKING_DEBUG;
 
 public class PacketCloneThread extends Thread {
 
@@ -40,11 +43,13 @@ public class PacketCloneThread extends Thread {
         Sided.setSide(sideIn);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         packet.write(new DataOutputStream(byteArrayOutputStream));
+        if (NETWORKING_DEBUG) Log.debug(sideIn + " send " + packet.toString());
 
         Sided.setSide(sideOut);
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
         Packet n = packet.getClass().newInstance();
         n.read(new DataInputStream(byteArrayInputStream));
+        if (NETWORKING_DEBUG) Log.debug(sideOut + " recieve " + packet.toString());
 
         output.add(n);
       } catch (Exception e) {

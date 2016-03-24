@@ -8,6 +8,8 @@ import ethanjones.cubes.side.Sided;
 import java.io.*;
 import java.util.zip.Inflater;
 
+import static ethanjones.cubes.networking.Networking.NETWORKING_DEBUG;
+
 public class SocketInput extends SocketIO {
 
   private final InputStream socketInputStream;
@@ -79,6 +81,7 @@ public class SocketInput extends SocketIO {
         } else {
           packet.read(dataInputStream);
         }
+        if (NETWORKING_DEBUG) Log.debug(socketMonitor.getSide() + " receive " + packet.toString());
         packetQueue.add(packet);
       } catch (IOException e) {
         socketMonitor.getNetworking().disconnected(socketMonitor, e);

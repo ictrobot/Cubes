@@ -14,7 +14,7 @@ public class Entity implements DataParser {
   public final Vector3 angle;
 
   public Entity() {
-    this(new Vector3(), new Vector3(0, 0.5f, 0));
+    this(new Vector3(), new Vector3(1f, 0, 0));
   }
 
   public Entity(Vector3 position, Vector3 angle) {

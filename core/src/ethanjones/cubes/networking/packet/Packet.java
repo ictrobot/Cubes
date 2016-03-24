@@ -48,4 +48,8 @@ public abstract class Packet {
   public boolean shouldCompress() {
     return false;
   }
+
+  public String toString() {
+    return this.getClass().getSimpleName();
+  }
 }

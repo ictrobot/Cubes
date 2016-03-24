@@ -1,5 +1,6 @@
 package ethanjones.cubes.networking.packets;
 
+import ethanjones.cubes.block.BlockManager;
 import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
@@ -33,5 +34,10 @@ public class PacketBlockChanged extends Packet {
   @Override
   public void handlePacket() {
     Cubes.getClient().world.setBlock(Sided.getBlockManager().toBlock(block), x, y, z);
+  }
+
+  @Override
+  public String toString() {
+    return super.toString() + " " + x + "," + y + "," + z + " " + block;
   }
 }

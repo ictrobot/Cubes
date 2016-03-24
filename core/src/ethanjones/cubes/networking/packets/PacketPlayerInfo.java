@@ -1,6 +1,7 @@
 package ethanjones.cubes.networking.packets;
 
 import ethanjones.cubes.core.util.VectorUtil;
+import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
@@ -12,6 +13,14 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
 public class PacketPlayerInfo extends Packet {
+
+  public PacketPlayerInfo() {
+  }
+
+  public PacketPlayerInfo(Player player) {
+    this.angle = player.angle.cpy();
+    this.position = player.position.cpy();
+  }
 
   public Vector3 angle;
   public Vector3 position;
@@ -36,5 +45,10 @@ public class PacketPlayerInfo extends Packet {
       Cubes.getClient().player.angle.set(angle);
       Cubes.getClient().player.position.set(position);
     }
+  }
+
+  @Override
+  public String toString() {
+    return super.toString() + " " + position.toString() + " " + angle.toString();
   }
 }

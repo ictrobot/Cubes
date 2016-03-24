@@ -3,6 +3,9 @@ package ethanjones.cubes.networking.packets;
 import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.side.common.Cubes;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
@@ -29,5 +32,10 @@ public class PacketKey extends Packet {
   @Override
   public void handlePacket() {
     Cubes.getServer().getClient(getSocketMonitor()).getPlayerManager().handlePacket(this);
+  }
+
+  @Override
+  public String toString() {
+    return super.toString() + " " + Input.Keys.toString(key) + (action == KEY_DOWN ? " down" : (action == KEY_UP ? " up" : " " + action));
   }
 }

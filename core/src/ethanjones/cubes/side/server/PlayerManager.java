@@ -49,6 +49,10 @@ public class PlayerManager {
     packetConnected.blockManager = Sided.getBlockManager().write();
     NetworkingManager.sendPacketToClient(packetConnected, client);
 
+    BlockReference spawn = server.world.spawnpoint;
+    clientIdentifier.getPlayer().position.set(spawn.blockX, spawn.blockY + 2f, spawn.blockZ);
+    NetworkingManager.sendPacketToClient(new PacketPlayerInfo(clientIdentifier.getPlayer()), client);
+
     initialLoadAreas();
   }
 

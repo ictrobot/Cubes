@@ -1,5 +1,7 @@
 package ethanjones.cubes.input;
 
+import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketButton;
 import ethanjones.cubes.networking.packets.PacketKey;
@@ -139,13 +141,11 @@ public class CameraController extends InputAdapter {
   }
 
   public void tick() {
-    if (!Cubes.getClient().player.position.equals(prevPosition) || !Cubes.getClient().player.angle.equals(prevDirection)) {
-      PacketPlayerInfo packetPlayerInfo = new PacketPlayerInfo();
-      packetPlayerInfo.angle = Cubes.getClient().player.angle;
-      packetPlayerInfo.position = Cubes.getClient().player.position;
-      NetworkingManager.sendPacketToServer(packetPlayerInfo);
-      prevPosition.set(Cubes.getClient().player.position);
-      prevDirection.set(Cubes.getClient().player.angle);
+    Player player = Cubes.getClient().player;
+    if (!player.position.equals(prevPosition) || !player.angle.equals(prevDirection)) {
+      NetworkingManager.sendPacketToServer(new PacketPlayerInfo(player));
+      prevPosition.set(player.position);
+      prevDirection.set(player.angle);
     }
   }
 }

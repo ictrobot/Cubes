@@ -29,10 +29,6 @@ public class Player extends LivingEntity implements CommandSender {
     this.clientIdentifier = clientIdentifier;
     this.hotbar = new Block[10];
     this.hotbar[0] = Blocks.grass;
-
-    //WorldServer world = (WorldServer) Cubes.getServer().world;
-    //BlockReference spawn = world.getTerrainGenerator().spawnPoint(world);
-    //this.position.set(spawn.blockX + 0.5f, spawn.blockY, spawn.blockZ + 0.5f);
   }
 
   public Player(Camera camera) {

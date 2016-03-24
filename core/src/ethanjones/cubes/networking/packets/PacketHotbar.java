@@ -9,6 +9,7 @@ import ethanjones.cubes.side.common.Cubes;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.util.Arrays;
 
 public class PacketHotbar extends Packet {
 
@@ -42,5 +43,10 @@ public class PacketHotbar extends Packet {
       return;
     }
     player.setHotbarNoUpdate(blocks, selected);
+  }
+
+  @Override
+  public String toString() {
+    return super.toString() + " " + selected + " " + Arrays.toString(blocks);
   }
 }

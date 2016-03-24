@@ -7,8 +7,10 @@ import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.core.util.Lock;
 import ethanjones.cubes.world.generator.TerrainGenerator;
 import ethanjones.cubes.world.reference.AreaReference;
+import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
 import ethanjones.cubes.world.reference.multi.WorldRegion;
+import ethanjones.cubes.world.server.WorldServer;
 import ethanjones.cubes.world.storage.Area;
 
 import com.badlogic.gdx.utils.Disposable;
@@ -23,6 +25,7 @@ public abstract class World implements Disposable {
   public final HashMap<AreaReference, Area> map;
   public final TerrainGenerator terrainGenerator;
   public final AtomicBoolean disposed = new AtomicBoolean(false);
+  public final BlockReference spawnpoint = new BlockReference();
 
   public World(TerrainGenerator terrainGenerator) {
     this.terrainGenerator = terrainGenerator;

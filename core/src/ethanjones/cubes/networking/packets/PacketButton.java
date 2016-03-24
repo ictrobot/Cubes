@@ -3,8 +3,12 @@ package ethanjones.cubes.networking.packets;
 import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.side.common.Cubes;
 
+import com.badlogic.gdx.Input;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+
+import static com.badlogic.gdx.Input.Buttons.*;
 
 public class PacketButton extends Packet {
 
@@ -29,5 +33,27 @@ public class PacketButton extends Packet {
   @Override
   public void handlePacket() {
     Cubes.getServer().getClient(getSocketMonitor()).getPlayerManager().handlePacket(this);
+  }
+
+  @Override
+  public String toString() {
+    return super.toString() + " " + buttonName() + (action == BUTTON_DOWN ? " down" : (action == BUTTON_UP ? " up" : " " + action));
+  }
+
+  public String buttonName() {
+    switch (button) {
+      case LEFT:
+        return "left";
+      case RIGHT:
+        return "right";
+      case MIDDLE:
+        return "middle";
+      case BACK:
+        return "back";
+      case FORWARD:
+        return "forward";
+      default:
+        return "" + button;
+    }
   }
 }

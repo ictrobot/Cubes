@@ -9,6 +9,8 @@ import com.badlogic.gdx.net.SocketHints;
 
 public abstract class Networking {
 
+  public static final boolean NETWORKING_DEBUG = true;
+
   public static enum NetworkingState {
     Starting, Running, Stopping
   }

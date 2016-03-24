@@ -18,13 +18,12 @@ public class TeleportCommand {
       @Override
       public void onCommand(CommandBuilder builder, List<CommandArgument> arguments, CommandSender sender) {
         if (sender instanceof Player) {
+          Player player = (Player) sender;
           float x = (Float) arguments.get(1).get();
           float y = (Float) arguments.get(2).get();
           float z = (Float) arguments.get(3).get();
-          PacketPlayerInfo packetPlayerInfo = new PacketPlayerInfo();
-          packetPlayerInfo.angle = ((Player) sender).angle;
-          packetPlayerInfo.position = new Vector3().set(x, y, z);
-          NetworkingManager.sendPacketToClient(packetPlayerInfo, ((Player) sender).clientIdentifier);
+          player.position.set(x, y, z);
+          NetworkingManager.sendPacketToClient(new PacketPlayerInfo(player), player.clientIdentifier);
         } else {
           sender.print(Localization.get("command.common.onlyPlayer"));
         }

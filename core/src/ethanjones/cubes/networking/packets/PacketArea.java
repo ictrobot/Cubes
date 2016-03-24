@@ -45,4 +45,9 @@ public class PacketArea extends Packet {
   public boolean shouldCompress() {
     return true;
   }
+
+  @Override
+  public String toString() {
+    return super.toString() + " " + area.areaX + "," + area.areaZ;
+  }
 }

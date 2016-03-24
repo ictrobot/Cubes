@@ -43,4 +43,9 @@ public class PacketChat extends Packet {
       Cubes.getClient().renderer.guiRenderer.print(msg);
     }
   }
+
+  @Override
+  public String toString() {
+    return super.toString() + " " + msg;
+  }
 }

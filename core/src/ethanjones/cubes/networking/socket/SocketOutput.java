@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.zip.Deflater;
 
+import static ethanjones.cubes.networking.Networking.NETWORKING_DEBUG;
+
 public class SocketOutput extends SocketIO {
 
   public static final int COMPRESSION_LEVEL = Deflater.BEST_COMPRESSION;
@@ -92,7 +94,7 @@ public class SocketOutput extends SocketIO {
         } else {
           packet.write(dataOutputStream);
         }
-
+        if (NETWORKING_DEBUG) Log.debug(socketMonitor.getSide() + " send " + packet.toString());
       } catch (IOException e) {
         socketMonitor.getNetworking().disconnected(socketMonitor, e);
         return;

@@ -28,4 +28,9 @@ public class PacketMovementSpeed extends Packet {
       Cubes.getClient().inputChain.cameraController.setSpeed(speed);
     }
   }
+
+  @Override
+  public String toString() {
+    return super.toString() + " " + speed;
+  }
 }

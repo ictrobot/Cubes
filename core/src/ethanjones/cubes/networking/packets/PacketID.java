@@ -32,4 +32,9 @@ public class PacketID extends Packet {
   public void handlePacket() {
     //Should process here...
   }
+
+  @Override
+  public String toString() {
+    return super.toString() + " " + c + " " + id;
+  }
 }

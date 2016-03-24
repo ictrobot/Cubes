@@ -34,4 +34,9 @@ public class PacketConnect extends DataPacket {
     username = dataGroup.getString("username");
     renderDistance = dataGroup.getInteger("renderDistance");
   }
+
+  @Override
+  public String toString() {
+    return super.toString() + " " + username + " " + renderDistance;
+  }
 }

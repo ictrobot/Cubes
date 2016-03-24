@@ -30,4 +30,8 @@ public class PacketConnected extends DataPacket {
     blockManager = dataGroup.getGroup("blockManager");
   }
 
+  @Override
+  public String toString() {
+    return super.toString();
+  }
 }
