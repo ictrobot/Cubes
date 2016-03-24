@@ -44,6 +44,8 @@ public class ClientAdapter implements AdapterInterface {
       Cubes.setup(this);
       setMenu(new MainMenu());
       Log.info(Localization.get("client.client_loaded"));
+    } catch (StopLoopException e) {
+      Log.debug(e);
     } catch (Exception e) {
       Debug.crash(e);
     }
@@ -69,6 +71,8 @@ public class ClientAdapter implements AdapterInterface {
       Graphics.resize();
       if (menu != null) menu.resize(width, height);
       if (cubesClient != null) cubesClient.resize(width, height);
+    } catch (StopLoopException e) {
+      Log.debug(e);
     } catch (Exception e) {
       Debug.crash(e);
     }
@@ -121,6 +125,8 @@ public class ClientAdapter implements AdapterInterface {
       } else {
         Gdx.input.setCursorCatched(true);
       }
+    } catch (StopLoopException e) {
+      Log.debug(e);
     } catch (Exception e) {
       Debug.crash(e);
     }
@@ -149,6 +155,8 @@ public class ClientAdapter implements AdapterInterface {
   public void pause() {
     try {
       if (cubesClient != null) cubesClient.pause();
+    } catch (StopLoopException e) {
+      Log.debug(e);
     } catch (Exception e) {
       Debug.crash(e);
     }
@@ -163,6 +171,8 @@ public class ClientAdapter implements AdapterInterface {
   public void resume() {
     try {
       if (cubesClient != null) cubesClient.resume();
+    } catch (StopLoopException e) {
+      Log.debug(e);
     } catch (Exception e) {
       Debug.crash(e);
     }

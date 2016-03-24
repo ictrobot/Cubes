@@ -65,7 +65,9 @@ public class ClientNetworking extends Networking {
 
   @Override
   public synchronized void update() {
-    if (getNetworkingState() != NetworkingState.Running) Adapter.gotoMainMenu();
+    if (getNetworkingState() != NetworkingState.Running) {
+      Adapter.gotoMainMenu();
+    }
   }
 
   @Override

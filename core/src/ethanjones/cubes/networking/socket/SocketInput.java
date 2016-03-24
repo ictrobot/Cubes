@@ -84,7 +84,9 @@ public class SocketInput extends SocketIO {
           // uncompressed
           byte[] uncompressed = byteArrayOutputStream.toByteArray();
           if (uncompressed.length != uncompressedLength) {
-            Log.error("Uncompressed length should be " + uncompressedLength + " but is " + uncompressed.length + " [" + inflater.needsInput() + "," + inflater.needsDictionary() + "]");
+            String msg = "Uncompressed length should be " + uncompressedLength + " but is " + uncompressed.length + " [" + inflater.needsInput() + "," + inflater.needsDictionary() + "]";
+            Log.error(msg);
+            socketMonitor.getNetworking().disconnected(socketMonitor, new IOException(msg));
             return;
           }
           //Packet read in

@@ -59,6 +59,7 @@ public class Adapter {
       } else {
         stopFromOtherThread(cubesClient, cubesServer);
       }
+      throw new StopLoopException();
     } else {
       if (Adapter.getInterface().getThread() == currentThread) {
         stopFromServerThread(cubesClient, cubesServer);
