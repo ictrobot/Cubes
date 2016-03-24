@@ -1,5 +1,7 @@
 package ethanjones.cubes.core.platform.desktop;
 
+import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.system.Debug;
 
 import java.lang.ref.SoftReference;
@@ -7,8 +9,8 @@ import java.lang.ref.WeakReference;
 
 public final class DesktopMemoryChecker extends Thread {
 
-  private static final int criticalMemoryThreshold = 50;
-  private static final int lowMemoryThreshold = 100;
+  private static final int criticalMemoryThreshold = 25;
+  private static final int lowMemoryThreshold = 50;
 
   public static void setup() {
     new DesktopMemoryChecker().start();
@@ -28,10 +30,11 @@ public final class DesktopMemoryChecker extends Thread {
   public void run() {
     while (true) {
       if (outOfMemoryChecker.get() == null) {
-        Debug.criticalMemory();
+        Debug.lowMemory();
+        if (Compatibility.get().getFreeMemory() <= criticalMemoryThreshold) Debug.criticalMemory();
       }
       if (gcChecker.get() == null) { //GC has just run
-        int free = getFree();
+        int free = Compatibility.get().getFreeMemory();
         if (free <= criticalMemoryThreshold) {
           Debug.criticalMemory();
         } else if (free <= lowMemoryThreshold) {
@@ -40,7 +43,7 @@ public final class DesktopMemoryChecker extends Thread {
         gcChecker = getGcChecker();
       }
       try {
-        Thread.sleep(5);
+        Thread.sleep(50);
       } catch (InterruptedException e) {
 
       }
