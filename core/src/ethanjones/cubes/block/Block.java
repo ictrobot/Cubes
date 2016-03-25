@@ -37,4 +37,9 @@ public class Block {
   public String getName() {
     return Localization.get("block." + id.replaceFirst(":", "."));
   }
+
+  @Override
+  public String toString() {
+    return id;
+  }
 }
