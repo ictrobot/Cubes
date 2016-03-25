@@ -20,14 +20,14 @@ public class Menu {
 
   static {
     skin = new Skin();
-    skin.add("default", Fonts.Size6, BitmapFont.class);
+    skin.add("default", Fonts.FontMenu, BitmapFont.class);
     skin.add("default", new Label.LabelStyle(skin.getFont("default"), Color.WHITE));
-    skin.add("title", new Label.LabelStyle(Fonts.Size14, Color.WHITE));
+    skin.add("title", new Label.LabelStyle(Fonts.FontTitle, Color.WHITE));
 
     NinePatch buttonDown = new NinePatch(Assets.getTextureRegion("core:hud/ButtonDown.png"), 8, 8, 8, 8);
     NinePatch buttonUp = new NinePatch(Assets.getTextureRegion("core:hud/ButtonUp.png"), 8, 8, 8, 8);
     skin.add("default", new TextButton.TextButtonStyle(new NinePatchDrawable(buttonUp), new NinePatchDrawable(buttonDown), null, skin.getFont("default")));
-    skin.add("tiny", new TextButton.TextButtonStyle(new NinePatchDrawable(buttonUp), new NinePatchDrawable(buttonDown), null, Fonts.Size4));
+    skin.add("tiny", new TextButton.TextButtonStyle(new NinePatchDrawable(buttonUp), new NinePatchDrawable(buttonDown), null, Fonts.FontHUD));
 
     skin.add("default", new TextField.TextFieldStyle(skin.getFont("default"), Color.BLACK, new TextureRegionDrawable(Assets.getTextureRegion("core:hud/TextFieldCursor.png")), new TextureRegionDrawable(Assets.getTextureRegion("core:hud/TextFieldSelection.png")), new NinePatchDrawable(new NinePatch(Assets.getTextureRegion("core:hud/TextFieldBackground.png"), 8, 8, 8, 8))));
 

@@ -98,7 +98,7 @@ public class GuiRenderer implements Disposable {
 
     TextField.TextFieldStyle defaultStyle = skin.get("default", TextField.TextFieldStyle.class);
     TextField.TextFieldStyle chatStyle = new TextField.TextFieldStyle(defaultStyle);
-    chatStyle.font = Fonts.Size4;
+    chatStyle.font = Fonts.FontHUD;
     chatStyle.background = new TextureRegionDrawable(Assets.getTextureRegion("core:hud/ChatBackground.png"));
 
     chat = new TextField("", chatStyle);
@@ -115,7 +115,7 @@ public class GuiRenderer implements Disposable {
         }
       }
     });
-    chatLog = new Label("", new LabelStyle(Fonts.Size4, Color.WHITE));
+    chatLog = new Label("", new LabelStyle(Fonts.FontHUD, Color.WHITE));
     chatLog.setAlignment(Align.bottomLeft, Align.left);
 
     if (Compatibility.get().isTouchScreen()) {
@@ -259,7 +259,7 @@ public class GuiRenderer implements Disposable {
   }
 
   public void resize() {
-    debug.setBounds(0, 0, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight());
+    debug.setBounds(5, 5, Gdx.graphics.getWidth() - 5, Gdx.graphics.getHeight() - 5);
     debug.setAlignment(Align.topLeft, Align.topLeft);
     chat.setBounds(0, 0, Gdx.graphics.getWidth(), chat.getStyle().font.getLineHeight() * 1.5f);
     chatLog.setBounds(0, chat.getHeight(), Gdx.graphics.getWidth(), chatLog.getStyle().font.getLineHeight() * 5);

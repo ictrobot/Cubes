@@ -18,7 +18,7 @@ public class ClientDebug {
     static final LabelStyle style = new LabelStyle();
 
     static {
-      style.font = Fonts.Size3;
+      style.font = Fonts.FontDebug;
     }
 
     public DebugLabel() {
@@ -63,7 +63,11 @@ public class ClientDebug {
       str = "HASH: " + str + lineSeparator;
     }
 
-    debugString = Branding.DEBUG + lineSeparator + str + "FPS:" + fps.current + " AFPS:" + fps.average + " MS:" + String.format("%01d", loop.current) + " AMS:" + String.format("%01d", loop.average) + lineSeparator + "RAM F:" + Compatibility.get().getFreeMemory() + "MB" + lineSeparator + lineSeparator + "P X:" + String.format("%.2f", p.x) + " Y:" + String.format("%.2f", p.y) + " Z:" + String.format("%.2f", p.z) + lineSeparator + "A X:" + CoordinateConverter.area(p.x) + " Z:" + CoordinateConverter.area(p.z) + lineSeparator + "D X:" + String.format("%02f", Cubes.getClient().player.angle.x) + " Y:" + String.format("%02f", Cubes.getClient().player.angle.y) + " Z:" + String.format("%02f", Cubes.getClient().player.angle.z) + lineSeparator + lineSeparator + "C:" + GLProfiler.calls + lineSeparator + "DC:" + GLProfiler.drawCalls + lineSeparator + "S:" + GLProfiler.shaderSwitches + lineSeparator + "T:" + GLProfiler.textureBindings + lineSeparator + "V:" + GLProfiler.vertexCount.latest + lineSeparator;
+    String performance = "FPS:" + fps.current + " AVG:" + fps.average + " MS:" + String.format("%01d", loop.current) + " AVG:" + String.format("%01d", loop.average) + " MEM:" + Compatibility.get().getFreeMemory() + "MB";
+    String position = "POS X:" + String.format("%.2f", p.x) + "(" + CoordinateConverter.area(p.x) + ")" + " Y:" + String.format("%.2f", p.y) + " Z:" + String.format("%.2f", p.z) + "(" + CoordinateConverter.area(p.z) + ")";
+    String direction = "DIR X:" + String.format("%.2f", Cubes.getClient().player.angle.x) + " Y:" + String.format("%.2f", Cubes.getClient().player.angle.y) + " Z:" + String.format("%.2f", Cubes.getClient().player.angle.z);
+
+    debugString = Branding.DEBUG + lineSeparator + performance + lineSeparator + position + lineSeparator + direction;
 
     GLProfiler.calls = 0;
     GLProfiler.drawCalls = 0;
