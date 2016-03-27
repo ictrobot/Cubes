@@ -170,32 +170,12 @@ public class Area {
     blocks[i] = -block;
   }
 
-  public void setupArrays() {
-    lock.writeLock();
-
-    if (unloaded) {
-      lock.writeUnlock();
-      throw new CubesException("Area has been unloaded");
-    }
-    if (isBlank()) {
-      blocks = new int[SIZE_BLOCKS_SQUARED * SIZE_BLOCKS];
-      AreaRenderer.free(areaRenderer);
-      if (Sided.getSide() == Side.Client) areaRenderer = new AreaRenderer[]{null};
-      maxY = SIZE_BLOCKS - 1;
-      height = 1;
-    }
-
-    lock.writeUnlock();
-  }
-
   public void setBlock(Block block, int x, int y, int z) {
     if (block == null) return;
     if (y < 0) return;
 
     lock.writeLock();
-    setupArrays();
-
-    if (y > maxY) expand(y);
+    setupArrays(y);
 
     int ref = getRef(x, y, z);
     int b;
@@ -244,7 +224,27 @@ public class Area {
     lock.writeUnlock();
   }
 
-  public void expand(int height) {
+  public void setupArrays(int y) {
+    lock.writeLock();
+
+    if (unloaded) {
+      lock.writeUnlock();
+      throw new CubesException("Area has been unloaded");
+    }
+    if (isBlank()) {
+      height = (int) Math.ceil((y + 1) / (float) SIZE_BLOCKS);
+      blocks = new int[SIZE_BLOCKS_CUBED * height];
+      AreaRenderer.free(areaRenderer);
+      if (Sided.getSide() == Side.Client) areaRenderer = new AreaRenderer[height];
+      maxY = (height * SIZE_BLOCKS) - 1;
+    } else if (y > maxY) {
+      expand(y);
+    }
+
+    lock.writeUnlock();
+  }
+
+  private void expand(int height) {
     lock.writeLock();
 
     if (unloaded) {
@@ -394,8 +394,7 @@ public class Area {
       height = -height;
     }
 
-    area.setupArrays();
-    area.expand((height * SIZE_BLOCKS) - 1);
+    area.setupArrays((height * SIZE_BLOCKS) - 1);
     for (int i = 0; i < area.blocks.length; i++) {
       area.blocks[i] = dataInputStream.readInt();
     }

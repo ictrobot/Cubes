@@ -19,8 +19,7 @@ public abstract class TerrainGenerator {
     int ref = Area.getRef(x, y, z);
 
     area.lock.writeLock();
-    area.setupArrays();
-    if (y > area.maxY) area.expand(y);
+    area.setupArrays(y);
     area.blocks[ref] = Sided.getBlockManager().toInt(block);
     area.lock.writeUnlock();
   }
