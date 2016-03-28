@@ -5,6 +5,7 @@ import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.Executor;
 import ethanjones.cubes.core.util.Lock;
+import ethanjones.cubes.graphics.world.AreaRenderStatus;
 import ethanjones.cubes.graphics.world.AreaRenderer;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
@@ -41,7 +42,9 @@ public class Area {
   public volatile AreaRenderer[] areaRenderer; //Always null on server
   public volatile int[] blocks; //0 = null, positive = visible, negative = invisible
   public volatile int maxY;
-  private volatile int height;
+  public volatile int height;
+
+  public int[] renderStatus = new int[0];
 
   private volatile boolean unloaded;
 
@@ -235,7 +238,10 @@ public class Area {
       height = (int) Math.ceil((y + 1) / (float) SIZE_BLOCKS);
       blocks = new int[SIZE_BLOCKS_CUBED * height];
       AreaRenderer.free(areaRenderer);
-      if (Sided.getSide() == Side.Client) areaRenderer = new AreaRenderer[height];
+      if (Sided.getSide() == Side.Client) {
+        areaRenderer = new AreaRenderer[height];
+        renderStatus = AreaRenderStatus.create(height);
+      }
       maxY = (height * SIZE_BLOCKS) - 1;
     } else if (y > maxY) {
       expand(y);
@@ -267,6 +273,9 @@ public class Area {
     AreaRenderer.free(areaRenderer);
     if (Sided.getSide() == Side.Client) {
       areaRenderer = new AreaRenderer[height];
+      if (renderStatus.length < height) {
+        renderStatus = AreaRenderStatus.create(height);
+      }
     } else {
       areaRenderer = null;
     }

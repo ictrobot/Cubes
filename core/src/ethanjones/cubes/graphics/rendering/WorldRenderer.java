@@ -1,7 +1,10 @@
 package ethanjones.cubes.graphics.rendering;
 
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.settings.Settings;
+import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.core.system.Pools;
+import ethanjones.cubes.graphics.world.AreaRenderStatus;
 import ethanjones.cubes.graphics.world.AreaRenderer;
 import ethanjones.cubes.graphics.world.AreaRendererPool;
 import ethanjones.cubes.input.CameraController;
@@ -65,8 +68,8 @@ public class WorldRenderer implements Disposable {
           continue;
         }
         for (int ySection = Math.max(yPos - renderDistance, 0); ySection <= yPos + renderDistance; ySection++) {
-          if ((((ySection + 1) * Area.SIZE_BLOCKS) - 1) > area.maxY) break;
-          if (areaInFrustum(area, ySection, camera.frustum)) {
+          if (ySection >= area.height) break;
+          if (areaInFrustum(area, ySection, camera.frustum) && shouldRender(area, ySection)) {
             if (area.areaRenderer[ySection] == null) {
               Pools.obtain(AreaRenderer.class).set(area, ySection);
             }
@@ -87,6 +90,36 @@ public class WorldRenderer implements Disposable {
 
   public boolean areaInFrustum(Area area, int ySection, Frustum frustum) {
     return frustum.boundsInFrustum(area.minBlockX + Area.HALF_SIZE_BLOCKS, (ySection * Area.SIZE_BLOCKS) + Area.HALF_SIZE_BLOCKS, area.minBlockZ + Area.HALF_SIZE_BLOCKS, Area.HALF_SIZE_BLOCKS, Area.HALF_SIZE_BLOCKS, Area.HALF_SIZE_BLOCKS);
+  }
+
+  public boolean shouldRender(Area area, int ySection) {
+    int status = area.renderStatus[ySection];
+    if (status == AreaRenderStatus.UNKNOWN) status = AreaRenderStatus.update(area, ySection);
+    if (status == AreaRenderStatus.EMPTY) return false;
+    if (status == AreaRenderStatus.COMPLETE) {
+      if (ySection > 0 && (area.renderStatus[ySection - 1] & AreaRenderStatus.COMPLETE_MAX_Y) != AreaRenderStatus.COMPLETE_MAX_Y)
+        return true;
+      if (ySection < area.renderStatus.length - 1 && (area.renderStatus[ySection + 1] & AreaRenderStatus.COMPLETE_MIN_Y) != AreaRenderStatus.COMPLETE_MIN_Y)
+        return true;
+      Area maxX = Cubes.getClient().world.getArea(area.areaX + 1, area.areaZ);
+      if (maxX != null && !maxX.isBlank())
+        if (maxX.renderStatus.length < ySection - 1 || (maxX.renderStatus[ySection] & AreaRenderStatus.COMPLETE_MIN_X) != AreaRenderStatus.COMPLETE_MIN_X)
+          return true;
+      Area minX = Cubes.getClient().world.getArea(area.areaX - 1, area.areaZ);
+      if (minX != null && !minX.isBlank())
+        if (minX.renderStatus.length < ySection - 1 || (minX.renderStatus[ySection] & AreaRenderStatus.COMPLETE_MAX_X) != AreaRenderStatus.COMPLETE_MAX_X)
+          return true;
+      Area maxZ = Cubes.getClient().world.getArea(area.areaX, area.areaZ + 1);
+      if (maxZ != null && !maxZ.isBlank())
+        if (maxZ.renderStatus.length < ySection - 1 || (maxZ.renderStatus[ySection] & AreaRenderStatus.COMPLETE_MIN_Z) != AreaRenderStatus.COMPLETE_MIN_Z)
+          return true;
+      Area minZ = Cubes.getClient().world.getArea(area.areaX, area.areaZ - 1);
+      if (minZ != null && !minZ.isBlank())
+        if (minZ.renderStatus.length < ySection - 1 || (minZ.renderStatus[ySection] & AreaRenderStatus.COMPLETE_MAX_Z) != AreaRenderStatus.COMPLETE_MAX_Z)
+          return true;
+      return false;
+    }
+    return true;
   }
 
   @Override
