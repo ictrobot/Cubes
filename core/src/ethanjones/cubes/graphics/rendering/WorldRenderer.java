@@ -126,7 +126,7 @@ public class WorldRenderer implements Disposable {
     return true;
   }
 
-  public Area fastGet(WorldClient worldClient, int x, int z) {
+  private Area fastGet(WorldClient worldClient, int x, int z) {
     fastGet.setFromAreaCoordinates(x, z);
     return worldClient.map.get(fastGet);
   }
