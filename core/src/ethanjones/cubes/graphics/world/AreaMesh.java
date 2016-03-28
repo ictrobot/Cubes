@@ -39,7 +39,7 @@ public class AreaMesh implements Pool.Poolable {
   public int vertexCount;
 
   public AreaMesh() {
-    mesh = new Mesh(true, vertices.length, indices.length, vertexAttributes);
+    mesh = new Mesh(true, vertices.length / VERTEX_SIZE, indices.length, vertexAttributes);
     meshPart = new MeshPart();
     meshPart.mesh = mesh;
     meshPart.primitiveType = GL20.GL_TRIANGLES;
