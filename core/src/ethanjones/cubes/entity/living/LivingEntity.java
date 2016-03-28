@@ -11,15 +11,15 @@ public class LivingEntity extends Entity {
   public int maxHealth;
   public int regenerationSpeed;
 
-  public LivingEntity(int maxHealth) {
-    super();
+  public LivingEntity(String type, int maxHealth) {
+    super(type);
     this.health = maxHealth;
     this.maxHealth = maxHealth;
     this.regenerationSpeed = 0;
   }
 
-  public LivingEntity(Vector3 position, Vector3 angle, int maxHealth) {
-    super(position, angle);
+  public LivingEntity(String type, Vector3 position, Vector3 angle, int maxHealth) {
+    super(type, position, angle);
     this.health = maxHealth;
     this.maxHealth = maxHealth;
     this.regenerationSpeed = 0;

@@ -2,6 +2,7 @@ package ethanjones.cubes.graphics.rendering;
 
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.core.system.Pools;
+import ethanjones.cubes.entity.Entity;
 import ethanjones.cubes.graphics.world.AreaMesh;
 import ethanjones.cubes.graphics.world.AreaRenderStatus;
 import ethanjones.cubes.graphics.world.AreaRenderer;
@@ -16,6 +17,7 @@ import ethanjones.cubes.world.storage.Area;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Frustum;
@@ -94,6 +96,11 @@ public class WorldRenderer implements Disposable {
           }
         }
       }
+    }
+    modelBatch.end();
+    modelBatch.begin(camera);
+    for (Entity entity : world.entities.values()) {
+      if (entity instanceof RenderableProvider) modelBatch.render(((RenderableProvider) entity), environment);
     }
     world.lock.readUnlock();
     modelBatch.end();

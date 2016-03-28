@@ -55,7 +55,7 @@ allprojects {
         gdxVersion = '1.9.1'
         androidBuildToolsVersion = '23.0.1'
         androidSdkVersion = 21
-        dataVersion = '2.1'
+        dataVersion = '2.2'
         buildProperties = getRootProject().buildProperties
         build = getRootProject().build
         localProperties = getRootProject().localProperties

@@ -1,14 +1,17 @@
 package ethanjones.cubes.side.server;
 
+import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.core.mod.ModManager;
 import ethanjones.cubes.core.mod.event.StartingServerEvent;
 import ethanjones.cubes.core.mod.event.StoppingServerEvent;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.timing.TimeHandler;
+import ethanjones.cubes.entity.ItemEntity;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.networking.socket.SocketMonitor;
 import ethanjones.cubes.side.Side;
+import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.command.CommandManager;
 import ethanjones.cubes.world.server.WorldServer;
@@ -35,6 +38,11 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
     ModManager.postModEvent(new StartingServerEvent());
 
     state.setup();
+
+    ItemEntity entity = new ItemEntity();
+    entity.position.set(world.spawnpoint.blockX + 0.5f, world.spawnpoint.blockY, world.spawnpoint.blockZ + 0.5f);
+    entity.block = Sided.getBlockManager().toInt(Blocks.grass);
+    world.addEntity(entity);
   }
 
   @Override

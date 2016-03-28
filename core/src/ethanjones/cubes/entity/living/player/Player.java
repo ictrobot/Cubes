@@ -3,6 +3,7 @@ package ethanjones.cubes.entity.living.player;
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.core.settings.Settings;
+import ethanjones.cubes.entity.Entity;
 import ethanjones.cubes.entity.living.LivingEntity;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketChat;
@@ -24,7 +25,7 @@ public class Player extends LivingEntity implements CommandSender {
   private int selectedSlot;
 
   public Player(String username, ClientIdentifier clientIdentifier) {
-    super(20);
+    super("core:player", 20);
     this.username = username;
     this.clientIdentifier = clientIdentifier;
     this.hotbar = new Block[10];
@@ -32,7 +33,7 @@ public class Player extends LivingEntity implements CommandSender {
   }
 
   public Player(Camera camera) {
-    super(camera.position, camera.direction, 20);
+    super("core:player", camera.position, camera.direction, 20);
     this.username = Settings.getStringSettingValue(Settings.USERNAME);
     this.clientIdentifier = null;
     this.hotbar = new Block[10];
