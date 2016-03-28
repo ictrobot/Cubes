@@ -1,6 +1,7 @@
 package ethanjones.cubes.graphics.world;
 
 import ethanjones.cubes.block.Block;
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.graphics.assets.Assets;
@@ -31,11 +32,14 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
 
   public static final int MIN_AREA = 0;
   public static final int MAX_AREA = SIZE_BLOCKS - 1;
+  public static final int MAX_REFRESH_PER_FRAME = 8;
 
   public static final int VERTEX_SIZE = 8; //3 for position, 3 for normal, 2 for texture coordinates;
 
   private static short[] indices;
   private static float vertices[];
+
+  private static int refreshedThisFrame = 0;
 
   static {
     int len = SIZE_BLOCKS_CUBED * 6 * 2; // 6 / 3
@@ -74,12 +78,17 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
   public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
     if (area == null) return;
     if (refresh) {
-      int numVerts = calculateVertices(vertices);
-      numVertices = numVerts / 4 * 6;
-      mesh.setVertices(vertices, 0, numVerts * VERTEX_SIZE);
-      refresh = false;
-      meshPart.size = numVertices;
-      if (numVertices > 0) meshPart.update();
+      if (refreshedThisFrame < MAX_REFRESH_PER_FRAME) {
+        refreshedThisFrame++;
+        int numVerts = calculateVertices(vertices);
+        numVertices = numVerts / 4 * 6;
+        mesh.setVertices(vertices, 0, numVerts * VERTEX_SIZE);
+        refresh = false;
+        meshPart.size = numVertices;
+        if (numVertices > 0) meshPart.update();
+      } else {
+        return;
+      }
     }
     if (numVertices <= 0) return;
 
@@ -193,5 +202,9 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
       if (renderer == null) continue;
       Pools.free(AreaRenderer.class, renderer);
     }
+  }
+
+  public static void newFrame() {
+    refreshedThisFrame = 0;
   }
 }

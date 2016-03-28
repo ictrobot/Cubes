@@ -55,6 +55,7 @@ public class WorldRenderer implements Disposable {
   }
 
   public void render() {
+    AreaRenderer.newFrame();
     modelBatch.begin(camera);
 
     int renderDistance = Settings.getIntegerSettingValue(Settings.GRAPHICS_VIEW_DISTANCE);
