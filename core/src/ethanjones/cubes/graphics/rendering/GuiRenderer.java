@@ -76,7 +76,6 @@ public class GuiRenderer implements Disposable {
   TextButton debugButton;
   TextButton chatButton;
   TextButton blockSelectorButton;
-  ClientDebug.DebugLabel debug;
   KeyListener keyListener;
 
   Texture crosshair;
@@ -94,7 +93,6 @@ public class GuiRenderer implements Disposable {
 
     keyListener = new KeyListener();
     KeyboardHelper.addKeyTypedListener(keyListener);
-    debug = new ClientDebug.DebugLabel();
 
     TextField.TextFieldStyle defaultStyle = skin.get("default", TextField.TextFieldStyle.class);
     TextField.TextFieldStyle chatStyle = new TextField.TextFieldStyle(defaultStyle);
@@ -199,10 +197,6 @@ public class GuiRenderer implements Disposable {
   }
 
   public void render() {
-    stage.getRoot().removeActor(debug);
-    if (isDebugEnabled()) {
-      stage.getRoot().addActor(debug);
-    }
     stage.getRoot().removeActor(chat);
     stage.getRoot().removeActor(chatLog);
     if (isChatEnabled()) {
@@ -216,6 +210,9 @@ public class GuiRenderer implements Disposable {
     stage.draw();
 
     spriteBatch.begin();
+    if (debugEnabled) {
+      Fonts.FontDebug.draw(spriteBatch, ClientDebug.getDebugString(), 5f, Gdx.graphics.getHeight() - 5);
+    }
     float crosshairSize = Math.min(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) / 40;
     spriteBatch.draw(crosshair, (Gdx.graphics.getWidth() / 2) - crosshairSize, (Gdx.graphics.getHeight() / 2) - crosshairSize, crosshairSize * 2, crosshairSize * 2);
     renderHotbar();
@@ -259,8 +256,6 @@ public class GuiRenderer implements Disposable {
   }
 
   public void resize() {
-    debug.setBounds(5, 5, Gdx.graphics.getWidth() - 5, Gdx.graphics.getHeight() - 5);
-    debug.setAlignment(Align.topLeft, Align.topLeft);
     chat.setBounds(0, 0, Gdx.graphics.getWidth(), chat.getStyle().font.getLineHeight() * 1.5f);
     chatLog.setBounds(0, chat.getHeight(), Gdx.graphics.getWidth(), chatLog.getStyle().font.getLineHeight() * 5);
 

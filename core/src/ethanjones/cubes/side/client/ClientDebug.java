@@ -2,35 +2,14 @@ package ethanjones.cubes.side.client;
 
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.system.Branding;
-import ethanjones.cubes.graphics.menu.Fonts;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.CoordinateConverter;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
 public class ClientDebug {
-
-  public static class DebugLabel extends Label {
-
-    static final LabelStyle style = new LabelStyle();
-
-    static {
-      style.font = Fonts.FontDebug;
-    }
-
-    public DebugLabel() {
-      super(debugString, style);
-    }
-
-    public void validate() {
-      setText(debugString);
-      super.validate();
-    }
-
-  }
 
   public static class Average {
 
@@ -73,6 +52,10 @@ public class ClientDebug {
     GLProfiler.drawCalls = 0;
     GLProfiler.shaderSwitches = 0;
     GLProfiler.textureBindings = 0;
+  }
+
+  public static String getDebugString() {
+    return debugString;
   }
 
   public static void tick() {
