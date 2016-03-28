@@ -1,12 +1,10 @@
 package ethanjones.cubes.graphics.rendering;
 
-import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.settings.Settings;
-import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.core.system.Pools;
+import ethanjones.cubes.graphics.world.AreaMesh;
 import ethanjones.cubes.graphics.world.AreaRenderStatus;
 import ethanjones.cubes.graphics.world.AreaRenderer;
-import ethanjones.cubes.graphics.world.AreaRendererPool;
 import ethanjones.cubes.input.CameraController;
 import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.common.Cubes;
@@ -22,6 +20,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.Pool;
 
 import static ethanjones.cubes.graphics.Graphics.modelBatch;
 
@@ -32,7 +31,18 @@ public class WorldRenderer implements Disposable {
   private AreaReference fastGet = new AreaReference();
 
   static {
-    Pools.registerType(AreaRenderer.class, new AreaRendererPool());
+    Pools.registerType(AreaRenderer.class, new Pool<AreaRenderer>() {
+      @Override
+      protected AreaRenderer newObject() {
+        return new AreaRenderer();
+      }
+    });
+    Pools.registerType(AreaMesh.class, new Pool<AreaMesh>() {
+      @Override
+      protected AreaMesh newObject() {
+        return new AreaMesh();
+      }
+    });
   }
 
   public WorldRenderer() {
