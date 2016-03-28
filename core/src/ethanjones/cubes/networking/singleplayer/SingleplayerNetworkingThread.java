@@ -29,6 +29,8 @@ public class SingleplayerNetworkingThread extends Thread {
     this.sideIn = sideOut == Side.Client ? Side.Server : Side.Client;
     this.sideOut = sideOut;
     setName("SingleplayerNetworkingThread-" + sideIn.name() + "To" + sideOut.name());
+    this.setDaemon(true);
+    this.setPriority(Thread.NORM_PRIORITY - 1);
   }
 
   @Override
