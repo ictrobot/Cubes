@@ -6,6 +6,8 @@ import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.world.client.WorldClient;
+import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.storage.Area;
 
 import com.badlogic.gdx.graphics.GL20;
@@ -90,10 +92,14 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
   public int calculateVertices(float[] vertices) {
     if (area == null) return 0;
 
-    Area maxX = Cubes.getClient().world.getArea(area.areaX + 1, area.areaZ);
-    Area minX = Cubes.getClient().world.getArea(area.areaX - 1, area.areaZ);
-    Area maxZ = Cubes.getClient().world.getArea(area.areaX, area.areaZ + 1);
-    Area minZ = Cubes.getClient().world.getArea(area.areaX, area.areaZ - 1);
+    WorldClient worldClient = (WorldClient) Cubes.getClient().world;
+    worldClient.lock.readLock();
+    AreaReference areaReference = new AreaReference();
+    Area maxX = worldClient.map.get(areaReference.setFromAreaCoordinates(area.areaX + 1, area.areaZ));
+    Area minX = worldClient.map.get(areaReference.setFromAreaCoordinates(area.areaX - 1, area.areaZ));
+    Area maxZ = worldClient.map.get(areaReference.setFromAreaCoordinates(area.areaX, area.areaZ + 1));
+    Area minZ = worldClient.map.get(areaReference.setFromAreaCoordinates(area.areaX, area.areaZ - 1));
+    worldClient.lock.readUnlock();
 
     int i = ySection * SIZE_BLOCKS_CUBED;
     int vertexOffset = 0;
