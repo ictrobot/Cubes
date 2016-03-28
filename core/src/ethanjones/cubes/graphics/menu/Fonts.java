@@ -22,7 +22,9 @@ public class Fonts {
     Log.debug("Generating font");
     FreeTypeFontGenerator.setMaxTextureSize(2048);
     generator = new FreeTypeFontGenerator(Assets.getAsset("core:font/font.ttf").getFileHandle());
-    base = (int) Gdx.graphics.getPpiX() / 96;
+    float f = Gdx.graphics.getPpiX() / 96;
+    if (f > 1) f -= (f - 1) * 0.4f;
+    base = (int) f;
 
     FontTitle = getFont(64);
     FontMenu = getFont(42);
