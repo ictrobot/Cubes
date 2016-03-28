@@ -84,7 +84,7 @@ public class Assets {
 
   private static PackedTextureSheet getPackedTextureSheet(AssetType assetType) {
     if (Adapter.isDedicatedServer()) return null;
-    TexturePacker texturePacker = new TexturePacker(2048, 2048, 0);
+    TexturePacker texturePacker = new TexturePacker(2048, 2048, 1, true);
     for (Map.Entry<String, AssetManager> entry : assetManagers.entrySet()) {
       ArrayList<Asset> assets = entry.getValue().getAssets(assetType.name() + "/");
       for (Asset asset : assets) {
@@ -98,10 +98,10 @@ public class Assets {
     }
     FileHandle fileHandle = assetsFolder.child("packed");
     fileHandle.mkdirs();
-    fileHandle = fileHandle.child(assetType.name() + ".cim");
+    fileHandle = fileHandle.child(assetType.name() + ".png");
 
     try {
-      PixmapIO.writeCIM(fileHandle, texturePacker.getPixmap());
+      PixmapIO.writePNG(fileHandle, texturePacker.getPixmap());
     } catch (GdxRuntimeException e) {
       Log.error("Failed to write packed image", e);
     }

@@ -51,12 +51,14 @@ public class TexturePacker {
 
   Pixmap pixmap;
   int padding;
+  boolean duplicateBorder;
   Node root;
   Map<String, PackRectangle> rectangles;
 
-  public TexturePacker(int width, int height, int padding) {
+  public TexturePacker(int width, int height, int padding, boolean duplicateBorder) {
     this.pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
     this.padding = padding;
+    this.duplicateBorder = duplicateBorder;
     this.root = new Node(0, 0, width, height, null, null, null);
     this.rectangles = new HashMap<String, PackRectangle>();
   }
@@ -80,6 +82,27 @@ public class TexturePacker {
     rect.y += borderPixels;
     rectangles.put(name, rect);
     pixmap.drawPixmap(image, rect.x, rect.y);
+
+    if (duplicateBorder) {
+      pixmap.drawPixmap(image, rect.x, rect.y - 1, 0, 0, image.getWidth(), 1);
+      pixmap.drawPixmap(image, rect.x, rect.y + image.getHeight(), 0, image.getHeight() - 1, image.getWidth(), 1);
+      pixmap.drawPixmap(image, rect.x - 1, rect.y, 0, 0, 1, image.getHeight());
+      pixmap.drawPixmap(image, rect.x + image.getWidth(), rect.y, image.getWidth() - 1, 0, 1, image.getHeight());
+
+      pixmap.drawPixel(rect.x - 1, rect.y - 1, image.getPixel(0, 0));
+      pixmap.drawPixel(rect.x + image.getWidth(), rect.y - 1, image.getPixel(image.getWidth() - 1, 0));
+      pixmap.drawPixel(rect.x - 1, rect.y + image.getHeight(), image.getPixel(0, image.getHeight() - 1));
+      pixmap.drawPixel(rect.x + image.getWidth(), rect.y + image.getHeight(), image.getPixel(image.getWidth() - 1, image.getHeight() - 1));
+
+      //pixmap.drawPixmap(image, rect.x - 1, rect.y, rect.x, rect.y + rect.height, 0, 0, 1, image.getHeight(), null);
+      //pixmap.drawPixmap(image, rect.x + rect.width, rect.y, rect.x + rect.width + 1, rect.y + rect.height, image.getWidth() - 1, 0);
+
+      //pixmap.drawPixmap(image, rect.x - 1, rect.y - 1, rect.x, rect.y, 0, 0);
+      //pixmap.drawPixmap(image, rect.x + rect.width, rect.y - 1, rect.x + rect.width + 1, rect.y, image.getWidth() - 1, 0);
+
+      //pixmap.drawPixmap(image, rect.x - 1, rect.y + rect.height, rect.x, rect.y + rect.height + 1, 0, image.getHeight() - 1);
+      //pixmap.drawPixmap(image, rect.x + rect.width, rect.y + rect.height, rect.x + rect.width + 1, rect.y + rect.height + 1  image.getWidth() - 1, image.getHeight() - 1);
+    }
 
     return true;
   }
