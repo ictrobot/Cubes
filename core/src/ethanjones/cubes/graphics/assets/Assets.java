@@ -98,10 +98,10 @@ public class Assets {
     }
     FileHandle fileHandle = assetsFolder.child("packed");
     fileHandle.mkdirs();
-    fileHandle = fileHandle.child(assetType.name() + ".png");
+    fileHandle = fileHandle.child(assetType.name() + ".cim");
 
     try {
-      PixmapIO.writePNG(fileHandle, texturePacker.getPixmap());
+      PixmapIO.writeCIM(fileHandle, texturePacker.getPixmap());
     } catch (GdxRuntimeException e) {
       Log.error("Failed to write packed image", e);
     }
