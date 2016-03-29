@@ -6,10 +6,12 @@ import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.entity.living.player.Player;
+import ethanjones.cubes.entity.living.player.PlayerInventory;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.graphics.menu.Fonts;
 import ethanjones.cubes.input.keyboard.KeyTypedAdapter;
 import ethanjones.cubes.input.keyboard.KeyboardHelper;
+import ethanjones.cubes.item.ItemStack;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketChat;
 import ethanjones.cubes.side.Sided;
@@ -20,6 +22,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -55,16 +59,16 @@ public class GuiRenderer implements Disposable {
       if (keycode == chat) setChatEnabled(!isChatEnabled());
       if (keycode == blocksMenu) setBlocksMenuEnabled(!isBlocksMenuEnabled());
 
-      if (keycode == Keys.NUM_1) Cubes.getClient().player.setSelectedSlot(0);
-      if (keycode == Keys.NUM_2) Cubes.getClient().player.setSelectedSlot(1);
-      if (keycode == Keys.NUM_3) Cubes.getClient().player.setSelectedSlot(2);
-      if (keycode == Keys.NUM_4) Cubes.getClient().player.setSelectedSlot(3);
-      if (keycode == Keys.NUM_5) Cubes.getClient().player.setSelectedSlot(4);
-      if (keycode == Keys.NUM_6) Cubes.getClient().player.setSelectedSlot(5);
-      if (keycode == Keys.NUM_7) Cubes.getClient().player.setSelectedSlot(6);
-      if (keycode == Keys.NUM_8) Cubes.getClient().player.setSelectedSlot(7);
-      if (keycode == Keys.NUM_9) Cubes.getClient().player.setSelectedSlot(8);
-      if (keycode == Keys.NUM_0) Cubes.getClient().player.setSelectedSlot(9);
+      if (keycode == Keys.NUM_1) Cubes.getClient().player.getInventory().hotbarSelected = 0;
+      if (keycode == Keys.NUM_2) Cubes.getClient().player.getInventory().hotbarSelected = 1;
+      if (keycode == Keys.NUM_3) Cubes.getClient().player.getInventory().hotbarSelected = 2;
+      if (keycode == Keys.NUM_4) Cubes.getClient().player.getInventory().hotbarSelected = 3;
+      if (keycode == Keys.NUM_5) Cubes.getClient().player.getInventory().hotbarSelected = 4;
+      if (keycode == Keys.NUM_6) Cubes.getClient().player.getInventory().hotbarSelected = 5;
+      if (keycode == Keys.NUM_7) Cubes.getClient().player.getInventory().hotbarSelected = 6;
+      if (keycode == Keys.NUM_8) Cubes.getClient().player.getInventory().hotbarSelected = 7;
+      if (keycode == Keys.NUM_9) Cubes.getClient().player.getInventory().hotbarSelected = 8;
+      if (keycode == Keys.NUM_0) Cubes.getClient().player.getInventory().hotbarSelected = 9;
     }
   }
 
@@ -222,19 +226,25 @@ public class GuiRenderer implements Disposable {
   }
 
   public void renderHotbar() {
-    Player player = Cubes.getClient().player;
+    PlayerInventory inv = Cubes.getClient().player.getInventory();
     int startWidth = (Gdx.graphics.getWidth() / 2) - (hotbarSlot.getWidth() * 5);
     for (int i = 0; i < 10; i++) {
       int minX = startWidth + (i * hotbarSlot.getWidth());
-      if (i == player.getSelectedSlot()) {
+      if (i == inv.hotbarSelected) {
         spriteBatch.draw(hotbarSelected, minX, 0);
       } else {
         spriteBatch.draw(hotbarSlot, minX, 0);
       }
-      Block block = player.getHotbar(i);
-      if (block != null) {
-        TextureRegion side = block.getTextureHandler().getSide(BlockFace.posX);
-        spriteBatch.draw(side, minX + 8, 8);
+      ItemStack itemStack = inv.itemStacks[i];
+      if (itemStack != null) {
+        TextureRegion texture = itemStack.item.getTextureRegion();
+        spriteBatch.draw(texture, minX + 8, 8);
+
+        BitmapFontCache cache = Fonts.FontSmallHUD.getCache();
+        cache.clear();
+        GlyphLayout layout = cache.addText(itemStack.count + "", minX + 8, 8, 32, Align.right, false);
+        cache.translate(0, layout.height);
+        cache.draw(spriteBatch);
       }
     }
   }
@@ -303,7 +313,7 @@ public class GuiRenderer implements Disposable {
         int slotX = x / hotbarSlot.getWidth();
         int slotY = y / hotbarSlot.getHeight();
         if (slotX >= blocks.length || slotY >= blocks[0].length) return;
-        Cubes.getClient().player.setHotbar(blocks[slotX][slotY]);
+        //Cubes.getClient().player.setHotbar(blocks[slotX][slotY]);
       }
     }
   }

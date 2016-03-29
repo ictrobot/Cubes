@@ -2,6 +2,7 @@ package ethanjones.cubes.input;
 
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.entity.living.player.Player;
+import ethanjones.cubes.item.ItemStack;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketButton;
 import ethanjones.cubes.networking.packets.PacketKey;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.utils.IntIntMap;
 
@@ -67,6 +69,9 @@ public class CameraController extends InputAdapter {
     packetButton.action = PacketButton.BUTTON_DOWN;
     packetButton.button = button;
     NetworkingManager.sendPacketToServer(packetButton);
+
+    ItemStack itemStack = Cubes.getClient().player.getInventory().selectedItemStack();
+    itemStack.item.onButtonPress(button, itemStack, Cubes.getClient().player);
     return true;
   }
 

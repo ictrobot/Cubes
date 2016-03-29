@@ -13,6 +13,7 @@ public class Fonts {
   public static final BitmapFont FontTitle;
   public static final BitmapFont FontMenu;
   public static final BitmapFont FontHUD;
+  public static final BitmapFont FontSmallHUD;
   public static final BitmapFont FontDebug;
 
   private static final FreeTypeFontGenerator generator;
@@ -29,6 +30,7 @@ public class Fonts {
     FontTitle = getFont(64);
     FontMenu = getFont(42);
     FontHUD = getFont(32);
+    FontSmallHUD = getFont(20);
     FontDebug = getFont(32);
 
     Log.debug("Font generated");

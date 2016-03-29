@@ -2,6 +2,7 @@ package ethanjones.cubes.item;
 
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.system.CubesException;
+import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.graphics.assets.Assets;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -35,5 +36,8 @@ public class Item {
 
   public String getName() {
     return Localization.get("item." + id.replaceFirst(":", "."));
+  }
+
+  public void onButtonPress(int button, ItemStack itemStack, Player player) {
   }
 }

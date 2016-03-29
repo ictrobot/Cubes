@@ -5,6 +5,7 @@ import ethanjones.cubes.core.event.EventHandler;
 import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
 import ethanjones.cubes.core.event.world.generation.AreaGeneratedEvent;
 import ethanjones.cubes.graphics.world.RayTracing;
+import ethanjones.cubes.item.ItemStack;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.*;
 import ethanjones.cubes.networking.server.ClientIdentifier;
@@ -203,37 +204,12 @@ public class PlayerManager {
         server.world.setBlock(null, blockReference.blockX, blockReference.blockY, blockReference.blockZ);
       }
     }
-    if (buttonDownRecent(Buttons.RIGHT)) {
-      Block block = client.getPlayer().getHotbarSelected();
-      if (block != null) {
-        RayTracing.BlockIntersection blockIntersection = RayTracing.getBlockIntersection(client.getPlayer().position, client.getPlayer().angle, server.world);
-        if (blockIntersection != null) {
-          BlockReference blockReference = blockIntersection.getBlockReference();
-          switch (blockIntersection.getBlockFace()) {
-            case posX:
-              blockReference.blockX++;
-              break;
-            case negX:
-              blockReference.blockX--;
-              break;
-            case posY:
-              blockReference.blockY++;
-              break;
-            case negY:
-              blockReference.blockY--;
-              break;
-            case posZ:
-              blockReference.blockZ++;
-              break;
-            case negZ:
-              blockReference.blockZ--;
-              break;
-          }
-          server.world.setBlock(block, blockReference.blockX, blockReference.blockY, blockReference.blockZ);
-        }
-      }
-    }
     synchronized (buttons) {
+      for (Integer recentButton : recentButtons) {
+        ItemStack itemStack = client.getPlayer().getInventory().selectedItemStack();
+        itemStack.item.onButtonPress(recentButton, itemStack, client.getPlayer());
+      }
+
       recentButtons.clear();
     }
     synchronized (keys) {
