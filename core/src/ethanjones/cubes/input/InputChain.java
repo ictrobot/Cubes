@@ -1,10 +1,18 @@
 package ethanjones.cubes.input;
 
+import ethanjones.cubes.block.Block;
+import ethanjones.cubes.core.event.entity.living.player.PlayerMovementEvent;
+import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.input.keyboard.KeyboardHelper;
+import ethanjones.cubes.side.Sided;
+import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.world.CoordinateConverter;
+import ethanjones.cubes.world.World;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Disposable;
 
@@ -40,6 +48,29 @@ public class InputChain implements Disposable {
 
   public void beforeRender() {
     cameraController.update();
+    playerGravity();
+  }
+
+  private void playerGravity() {
+    World world = Cubes.getClient().world;
+    Player player = Cubes.getClient().player;
+    Vector3 pos = player.position.cpy();
+
+    if (world.getArea(CoordinateConverter.area(pos.x), CoordinateConverter.area(pos.z)) == null)
+      return;
+    float f = pos.y - player.height;
+    int y = CoordinateConverter.block(f - 0.01f);
+    Block b = world.getBlock(CoordinateConverter.block(pos.x), y, CoordinateConverter.block(pos.z));
+    if (b == null || f > y + 1.01f) {
+      pos.y -= Math.max(4f * Gdx.graphics.getRawDeltaTime(), f - (y + 1));
+    } else {
+      pos.y = y + 1 + player.height;
+    }
+    if (!pos.equals(player.position)) {
+      if (!new PlayerMovementEvent(pos.cpy()).post().isCanceled()) {
+        player.position.set(pos);
+      }
+    }
   }
 
   public void afterRender() {

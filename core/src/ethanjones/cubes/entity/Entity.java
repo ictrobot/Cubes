@@ -45,18 +45,23 @@ public class Entity implements DataParser, Disposable {
    * @return true to be removed
    */
   public boolean update() {
-    if (Sided.getSide() == Side.Client) {
+    if (Sided.getSide() == Side.Server) {
       World world = Sided.getCubes().world;
       if (world.getArea(CoordinateConverter.area(position.x), CoordinateConverter.area(position.z)) == null)
         return false;
       float f = position.y - height;
-      int y = (int) (f - 0.01f);
-      Block b = world.getBlock((int) position.x, y, (int) position.z);
+      int y = CoordinateConverter.block(f - 0.01f);
+      Block b = world.getBlock(CoordinateConverter.block(position.x), y, CoordinateConverter.block(position.z));
       if (b == null || f > y + 1.01f) {
         position.y -= Math.max(0.1f, f - (y + 1));
+        world.syncEntity(uuid);
       } else {
         if (motion.y < 0) motion.y = 0;
-        position.y = y + 1 + height;
+        float newY = y + 1 + height;
+        if (position.y != newY) {
+          position.y = y + 1 + height;
+          world.syncEntity(uuid);
+        }
       }
       if (!motion.isZero()) {
         float scl = Cubes.tickMS / 1000f * 4f;

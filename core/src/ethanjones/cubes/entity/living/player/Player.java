@@ -79,6 +79,7 @@ public class Player extends LivingEntity implements CommandSender {
       }
       previousPosition.set(position);
     }
-    return super.update();
+    return false;
+    //return super.update() gravity on client not server
   }
 }
