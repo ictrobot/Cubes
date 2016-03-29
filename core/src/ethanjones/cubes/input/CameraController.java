@@ -31,6 +31,7 @@ public class CameraController extends InputAdapter {
   private float degreesPerPixel = 0.5f;
   private Vector3 prevPosition = new Vector3();
   private Vector3 prevDirection = new Vector3();
+  public float jump;
 
   public CameraController(Camera camera) {
     this.camera = camera;
@@ -41,6 +42,7 @@ public class CameraController extends InputAdapter {
 
   @Override
   public boolean keyDown(int keycode) {
+    if (keycode == Input.Keys.SPACE && jump == 0) jump = 0.25f;
     keys.put(keycode, keycode);
 
     PacketKey packetKey = new PacketKey();
@@ -145,6 +147,14 @@ public class CameraController extends InputAdapter {
       if (!new PlayerMovementEvent(vector3).post().isCanceled()) {
         camera.position.add(tmp);
       }
+    }
+    if (deltaTime > 0f && jump > 0) {
+      float f = deltaTime * 6;
+      if (!new PlayerMovementEvent(camera.position.cpy().add(0, f, 0)).post().isCanceled()) {
+        camera.position.y += f;
+      }
+      jump -= deltaTime;
+      if (jump < 0) jump = 0;
     }
     camera.update(true);
   }
