@@ -302,26 +302,28 @@ public class GuiRenderer implements Disposable {
     return chatEnabled || blocksMenuEnabled;
   }
 
-  public void touch(int screenX, int screenY, int pointer, int button) {
+  public boolean touch(int screenX, int screenY, int pointer, int button) {
     if (isBlocksMenuEnabled()) {
       int startWidth = (Gdx.graphics.getWidth() / 2) - (hotbarSlot.getWidth() * 5);
       int startHeight = (Gdx.graphics.getHeight() / 2) - (hotbarSlot.getHeight() * 3);
       int x = screenX - startWidth;
       int y = screenY - startHeight;
-      if (x < 0 || y < 0) return;
+      if (x < 0 || y < 0) return false;
       int remX = x % hotbarSlot.getWidth();
       int remY = y % hotbarSlot.getHeight();
       if (remX >= 8 && remX <= 40 && remY >= 8 && remY <= 40) {
         int slotX = x / hotbarSlot.getWidth();
         int slotY = y / hotbarSlot.getHeight();
-        if (slotX >= blocks.length || slotY >= blocks[0].length) return;
+        if (slotX >= blocks.length || slotY >= blocks[0].length) return false;
 
         ItemBlock item = blocks[slotX][slotY].getItemBlock();
         ItemStack itemStack = new ItemStack(item, item.getStackCountMax());
         PlayerInventory inventory = Cubes.getClient().player.getInventory();
         inventory.itemStacks[inventory.hotbarSelected] = itemStack;
         inventory.sync();
+        return true;
       }
     }
+    return false;
   }
 }
