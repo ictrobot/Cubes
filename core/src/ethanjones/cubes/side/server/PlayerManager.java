@@ -52,11 +52,14 @@ public class PlayerManager {
 
     PacketConnected packetConnected = new PacketConnected();
     packetConnected.idManager = Sided.getIDManager().write();
+    packetConnected.player = client.getPlayer().uuid;
     NetworkingManager.sendPacketToClient(packetConnected, client);
 
     BlockReference spawn = server.world.spawnpoint;
-    clientIdentifier.getPlayer().position.set(spawn.blockX, spawn.blockY + 2f, spawn.blockZ);
+    clientIdentifier.getPlayer().position.set(spawn.blockX + 0.5f, spawn.blockY + 2f, spawn.blockZ + 0.5f);
     NetworkingManager.sendPacketToClient(new PacketPlayerInfo(clientIdentifier.getPlayer()), client);
+
+    clientIdentifier.getPlayer().addToWorld();
 
     initialLoadAreas();
   }
@@ -245,5 +248,9 @@ public class PlayerManager {
     synchronized (buttons) {
       return recentButtons.contains(button);
     }
+  }
+
+  public void disconnected(Exception e) {
+    Cubes.getServer().world.removeEntity(client.getPlayer().uuid);
   }
 }

@@ -121,23 +121,20 @@ public class CameraController extends InputAdapter {
 
   private void update(float forward, float backward, float left, float right) {
     float deltaTime = Gdx.graphics.getRawDeltaTime();
+    tmp.set(camera.direction.x, 0, camera.direction.z).nor();
     if (forward > 0) {
-      tmp.set(camera.direction);
       tmp.nor().scl(deltaTime * speed * forward);
       camera.position.add(tmp);
     }
     if (backward > 0) {
-      tmp.set(camera.direction);
       tmp.nor().scl(-deltaTime * speed * backward);
       camera.position.add(tmp);
     }
     if (left > 0) {
-      tmp.set(camera.direction);
       tmp.crs(camera.up).nor().scl(-deltaTime * speed * left);
       camera.position.add(tmp);
     }
     if (right > 0) {
-      tmp.set(camera.direction);
       tmp.crs(camera.up).nor().scl(deltaTime * speed * right);
       camera.position.add(tmp);
     }
