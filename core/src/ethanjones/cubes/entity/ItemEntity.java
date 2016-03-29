@@ -133,8 +133,8 @@ public class ItemEntity extends Entity implements RenderableProvider {
         cooldown--;
       } else {
         for (ClientIdentifier clientIdentifier : Cubes.getServer().getAllClients()) {
-          float distance2 = VectorUtil.distance2(this.position, clientIdentifier.getPlayer().position);
-          if (distance2 < 1.5f) {
+          float distance2 = VectorUtil.distance2(this.position, clientIdentifier.getPlayer().position.cpy().sub(0, clientIdentifier.getPlayer().height, 0));
+          if (distance2 < 1f) {
             InventoryHelper.addItemstack(clientIdentifier.getPlayer().getInventory(), itemStack);
             return true;
           }
