@@ -1,5 +1,6 @@
 package ethanjones.cubes.side.server;
 
+import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.event.EventHandler;
 import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
 import ethanjones.cubes.core.event.world.generation.AreaGeneratedEvent;
@@ -204,7 +205,14 @@ public class PlayerManager {
       RayTracing.BlockIntersection blockIntersection = RayTracing.getBlockIntersection(client.getPlayer().position, client.getPlayer().angle, server.world);
       if (blockIntersection != null) {
         BlockReference blockReference = blockIntersection.getBlockReference();
-        server.world.setBlock(null, blockReference.blockX, blockReference.blockY, blockReference.blockZ);
+        Block block = server.world.getBlock(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
+        if (block != null) {
+          server.world.setBlock(null, blockReference.blockX, blockReference.blockY, blockReference.blockZ);
+          ItemEntity itemEntity = new ItemEntity();
+          itemEntity.itemStack = new ItemStack(block.getItemBlock(), 1);
+          itemEntity.position.set(blockReference.blockX + 0.5f, blockReference.blockY, blockReference.blockZ + 0.5f);
+          Cubes.getServer().world.addEntity(itemEntity);
+        }
       }
     }
     if (keyDownRecent(Keys.Q)) {
