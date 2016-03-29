@@ -3,8 +3,11 @@ package ethanjones.cubes.side.server;
 import ethanjones.cubes.core.event.EventHandler;
 import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
 import ethanjones.cubes.core.event.world.generation.AreaGeneratedEvent;
+import ethanjones.cubes.entity.ItemEntity;
+import ethanjones.cubes.entity.living.player.PlayerInventory;
 import ethanjones.cubes.graphics.world.RayTracing;
 import ethanjones.cubes.item.ItemStack;
+import ethanjones.cubes.item.inv.InventoryHelper;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.*;
 import ethanjones.cubes.networking.server.ClientIdentifier;
@@ -17,6 +20,7 @@ import ethanjones.cubes.world.reference.multi.AreaReferenceSet;
 import ethanjones.cubes.world.reference.multi.WorldRegion;
 import ethanjones.cubes.world.storage.Area;
 
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Input.Buttons;
 
 import java.util.ArrayList;
@@ -201,6 +205,18 @@ public class PlayerManager {
       if (blockIntersection != null) {
         BlockReference blockReference = blockIntersection.getBlockReference();
         server.world.setBlock(null, blockReference.blockX, blockReference.blockY, blockReference.blockZ);
+      }
+    }
+    if (keyDownRecent(Keys.Q)) {
+      PlayerInventory inventory = client.getPlayer().getInventory();
+      ItemStack itemStack = InventoryHelper.reduceCount(inventory, inventory.hotbarSelected);
+      if (itemStack != null) {
+        ItemEntity itemEntity = new ItemEntity();
+        itemEntity.itemStack = itemStack;
+        itemEntity.position.set(client.getPlayer().position);
+        itemEntity.motion.set(client.getPlayer().angle);
+        itemEntity.cooldown = 3000 / Cubes.tickMS;
+        Cubes.getServer().world.addEntity(itemEntity);
       }
     }
     synchronized (buttons) {

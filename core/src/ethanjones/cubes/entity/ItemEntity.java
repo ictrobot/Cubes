@@ -1,5 +1,6 @@
 package ethanjones.cubes.entity;
 
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.core.util.VectorUtil;
 import ethanjones.cubes.graphics.assets.Assets;
@@ -49,6 +50,7 @@ public class ItemEntity extends Entity implements RenderableProvider {
   }
 
   public ItemStack itemStack;
+  public int cooldown;
 
   Mesh mesh;
   float[] vertices;
@@ -125,13 +127,17 @@ public class ItemEntity extends Entity implements RenderableProvider {
   }
 
   public boolean update() {
+    super.update();
     if (Sided.getSide() == Side.Server) {
-      for (ClientIdentifier clientIdentifier : Cubes.getServer().getAllClients()) {
-        float distance2 = VectorUtil.distance2(this.position, clientIdentifier.getPlayer().position);
-        if (distance2 < 1f) {
-          InventoryHelper.addItemstack(clientIdentifier.getPlayer().getInventory(), itemStack);
-          Cubes.getServer().world.removeEntity(uuid);
-          return true;
+      if (cooldown > 0) {
+        cooldown--;
+      } else {
+        for (ClientIdentifier clientIdentifier : Cubes.getServer().getAllClients()) {
+          float distance2 = VectorUtil.distance2(this.position, clientIdentifier.getPlayer().position);
+          if (distance2 < 1f) {
+            InventoryHelper.addItemstack(clientIdentifier.getPlayer().getInventory(), itemStack);
+            return true;
+          }
         }
       }
     }

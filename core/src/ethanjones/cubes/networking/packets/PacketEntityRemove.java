@@ -31,4 +31,9 @@ public class PacketEntityRemove extends DataPacket {
   public void read(DataGroup data) {
     uuid = (UUID) data.get("uuid");
   }
+
+  @Override
+  public String toString() {
+    return super.toString() + " " + uuid.toString();
+  }
 }

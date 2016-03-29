@@ -2,6 +2,9 @@ package ethanjones.cubes.entity;
 
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.core.util.VectorUtil;
+import ethanjones.cubes.side.Side;
+import ethanjones.cubes.side.Sided;
+import ethanjones.cubes.side.common.Cubes;
 import ethanjones.data.DataGroup;
 import ethanjones.data.DataParser;
 
@@ -15,6 +18,7 @@ public class Entity implements DataParser, Disposable {
   public UUID uuid;
   public final Vector3 position;
   public final Vector3 angle;
+  public final Vector3 motion;
   public final String id;
 
   public Entity(String id) {
@@ -29,6 +33,7 @@ public class Entity implements DataParser, Disposable {
     this.uuid = uuid;
     this.id = id;
     this.position = position;
+    this.motion = new Vector3();
     this.angle = angle;
   }
 
@@ -36,6 +41,15 @@ public class Entity implements DataParser, Disposable {
    * @return true to be removed
    */
   public boolean update() {
+    if (Sided.getSide() == Side.Server) {
+      if (!motion.isZero()) {
+        float scl = Cubes.tickMS / 1000f * 4f;
+        position.add(motion.x * scl, motion.y * scl, motion.z * scl);
+        motion.scl(0.9f);
+        if (motion.len() < 0.01f) motion.set(0f, 0f, 0f);
+        Cubes.getServer().world.syncEntity(uuid);
+      }
+    }
     return false;
   }
 
@@ -73,5 +87,10 @@ public class Entity implements DataParser, Disposable {
   @Override
   public void dispose() {
 
+  }
+
+  @Override
+  public String toString() {
+    return id + " " + uuid.toString();
   }
 }

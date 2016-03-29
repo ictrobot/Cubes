@@ -28,4 +28,9 @@ public class PacketEntityAdd extends DataPacket {
   public void read(DataGroup data) {
     entity = Entity.readType(data);
   }
+
+  @Override
+  public String toString() {
+    return super.toString() + " " + entity.toString();
+  }
 }

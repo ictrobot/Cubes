@@ -62,4 +62,13 @@ public class WorldServer extends World {
     NetworkingManager.sendPacketToAllClients(packet);
     lock.writeUnlock();
   }
+
+  @Override
+  public void syncEntity(UUID uuid) {
+    Entity entity = getEntity(uuid);
+    if (entity == null) return;
+    PacketEntityUpdate packet = new PacketEntityUpdate();
+    packet.data = entity.write();
+    NetworkingManager.sendPacketToAllClients(packet);
+  }
 }

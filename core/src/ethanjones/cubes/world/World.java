@@ -98,12 +98,18 @@ public abstract class World implements Disposable {
   }
 
   public void tick() {
-    lock.readLock();
+    lock.writeLock();
     Iterator<Entry<UUID, Entity>> iterator = entities.entrySet().iterator();
     while (iterator.hasNext()) {
-      if (iterator.next().getValue().update()) iterator.remove();
+      Entry<UUID, Entity> entry = iterator.next();
+      if (entry.getValue().update()) {
+        entry.getValue().dispose();
+        UUID uuid = entry.getKey();
+        iterator.remove();
+        removeEntity(uuid);
+      }
     }
-    lock.readUnlock();
+    lock.writeUnlock();
   }
 
   public TerrainGenerator getTerrainGenerator() {
@@ -128,6 +134,11 @@ public abstract class World implements Disposable {
     lock.writeUnlock();
   }
 
+  public Entity getEntity(UUID uuid) {
+    lock.readLock();
+    return lock.readUnlock(entities.get(uuid));
+  }
+
   public void addEntity(Entity entity) {
     lock.writeLock();
     entities.put(entity.uuid, entity);
@@ -146,5 +157,9 @@ public abstract class World implements Disposable {
     UUID uuid = (UUID) data.get("uuid");
     entities.get(uuid).read(data);
     lock.writeUnlock();
+  }
+
+  public void syncEntity(UUID uuid) {
+
   }
 }
