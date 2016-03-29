@@ -1,7 +1,6 @@
 package ethanjones.cubes.world.server;
 
 import ethanjones.cubes.entity.Entity;
-import ethanjones.cubes.networking.Networking;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketEntityAdd;
 import ethanjones.cubes.networking.packets.PacketEntityRemove;

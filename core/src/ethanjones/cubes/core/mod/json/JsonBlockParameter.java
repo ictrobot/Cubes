@@ -1,7 +1,7 @@
 package ethanjones.cubes.core.mod.json;
 
-import ethanjones.cubes.core.IDManager;
 import ethanjones.cubes.block.json.JsonBlock;
+import ethanjones.cubes.core.IDManager;
 
 public class JsonBlockParameter {
 

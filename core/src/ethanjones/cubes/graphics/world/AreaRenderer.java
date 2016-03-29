@@ -18,8 +18,8 @@ import com.badlogic.gdx.utils.Pool;
 
 import java.util.ArrayList;
 
+import static ethanjones.cubes.graphics.world.AreaMesh.SAFE_VERTICES;
 import static ethanjones.cubes.graphics.world.FaceVertices.*;
-import static ethanjones.cubes.graphics.world.AreaMesh.*;
 import static ethanjones.cubes.world.storage.Area.*;
 
 public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolable {

@@ -1,6 +1,5 @@
 package ethanjones.cubes.graphics.world;
 
-import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.world.storage.Area;
 
 import static ethanjones.cubes.world.storage.Area.SIZE_BLOCKS;

@@ -3,7 +3,6 @@ package ethanjones.cubes.networking.packets;
 import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.side.common.Cubes;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 
 import java.io.DataInputStream;

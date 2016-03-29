@@ -6,7 +6,6 @@ import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.util.Register;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 
 public class Blocks {
 

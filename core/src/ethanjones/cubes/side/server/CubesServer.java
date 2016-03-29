@@ -1,18 +1,14 @@
 package ethanjones.cubes.side.server;
 
-import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.core.mod.ModManager;
 import ethanjones.cubes.core.mod.event.StartingServerEvent;
 import ethanjones.cubes.core.mod.event.StoppingServerEvent;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.timing.TimeHandler;
-import ethanjones.cubes.entity.ItemEntity;
-import ethanjones.cubes.item.ItemStack;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.networking.socket.SocketMonitor;
 import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.command.CommandManager;
 import ethanjones.cubes.world.server.WorldServer;

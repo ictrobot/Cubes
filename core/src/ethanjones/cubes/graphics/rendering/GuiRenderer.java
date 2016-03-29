@@ -5,7 +5,6 @@ import ethanjones.cubes.core.IDManager;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.util.BlockFace;
-import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.entity.living.player.PlayerInventory;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.graphics.menu.Fonts;
@@ -13,10 +12,8 @@ import ethanjones.cubes.input.keyboard.KeyTypedAdapter;
 import ethanjones.cubes.input.keyboard.KeyboardHelper;
 import ethanjones.cubes.item.ItemBlock;
 import ethanjones.cubes.item.ItemStack;
-import ethanjones.cubes.item.inv.Inventory;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketChat;
-import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.client.ClientDebug;
 import ethanjones.cubes.side.common.Cubes;
 

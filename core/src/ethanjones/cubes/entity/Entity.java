@@ -2,7 +2,6 @@ package ethanjones.cubes.entity;
 
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.core.util.VectorUtil;
-import ethanjones.cubes.side.Sided;
 import ethanjones.data.DataGroup;
 import ethanjones.data.DataParser;
 

@@ -1,7 +1,7 @@
 package ethanjones.cubes.side.common;
 
-import ethanjones.cubes.core.IDManager;
 import ethanjones.cubes.block.Blocks;
+import ethanjones.cubes.core.IDManager;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.mod.ModManager;
