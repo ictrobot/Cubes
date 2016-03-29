@@ -1,5 +1,7 @@
 package ethanjones.cubes.side.client;
 
+import ethanjones.cubes.core.event.EventHandler;
+import ethanjones.cubes.core.event.entity.living.player.PlayerMovementEvent;
 import ethanjones.cubes.core.mod.ModManager;
 import ethanjones.cubes.core.mod.event.StartingClientEvent;
 import ethanjones.cubes.core.mod.event.StoppingClientEvent;
@@ -11,12 +13,16 @@ import ethanjones.cubes.input.InputChain;
 import ethanjones.cubes.input.keyboard.KeyboardHelper;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.side.Side;
+import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.world.CoordinateConverter;
+import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.client.WorldClient;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Vector3;
 
 public class CubesClient extends Cubes implements ApplicationListener {
 
@@ -56,8 +62,8 @@ public class CubesClient extends Cubes implements ApplicationListener {
       Adapter.gotoMainMenu();
       return;
     }
-    super.render();
     inputChain.beforeRender();
+    super.render();
     if (renderer.guiRenderer.isDebugEnabled()) ClientDebug.update();
     renderer.render();
     inputChain.afterRender();
@@ -80,8 +86,8 @@ public class CubesClient extends Cubes implements ApplicationListener {
 
   @Override
   protected void tick() {
-    inputChain.cameraController.tick();
     super.tick();
+    inputChain.cameraController.tick();
     ClientDebug.tick();
   }
 
@@ -99,5 +105,15 @@ public class CubesClient extends Cubes implements ApplicationListener {
   @Override
   public void resume() {
 
+  }
+
+  @EventHandler
+  public void preventNoclip(PlayerMovementEvent event) {
+    Vector3 position = event.newPosition;
+    if (world.getArea(CoordinateConverter.area(position.x), CoordinateConverter.area(position.z)) != null) {
+      if (world.getBlock((int) position.x, (int) (position.y - player.height), (int) position.z) != null) {
+        event.setCanceled(true);
+      }
+    }
   }
 }

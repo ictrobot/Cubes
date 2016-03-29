@@ -1,5 +1,6 @@
 package ethanjones.cubes.input;
 
+import ethanjones.cubes.core.event.entity.living.player.PlayerMovementEvent;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.item.ItemStack;
 import ethanjones.cubes.networking.NetworkingManager;
@@ -122,21 +123,28 @@ public class CameraController extends InputAdapter {
   private void update(float forward, float backward, float left, float right) {
     float deltaTime = Gdx.graphics.getRawDeltaTime();
     tmp.set(camera.direction.x, 0, camera.direction.z).nor();
+    boolean move = false;
     if (forward > 0) {
       tmp.nor().scl(deltaTime * speed * forward);
-      camera.position.add(tmp);
+      move = true;
     }
     if (backward > 0) {
       tmp.nor().scl(-deltaTime * speed * backward);
-      camera.position.add(tmp);
+      move = true;
     }
     if (left > 0) {
       tmp.crs(camera.up).nor().scl(-deltaTime * speed * left);
-      camera.position.add(tmp);
+      move = true;
     }
     if (right > 0) {
       tmp.crs(camera.up).nor().scl(deltaTime * speed * right);
-      camera.position.add(tmp);
+      move = true;
+    }
+    if (move) {
+      Vector3 vector3 = new Vector3(camera.position).add(tmp);
+      if (!new PlayerMovementEvent(vector3).post().isCanceled()) {
+        camera.position.add(tmp);
+      }
     }
     camera.update(true);
   }
