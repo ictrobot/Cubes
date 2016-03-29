@@ -57,7 +57,7 @@ public class AreaMesh implements Pool.Poolable {
 
   public Renderable renderable(Pool<Renderable> pool) {
     Renderable renderable = pool.obtain();
-    renderable.material = Assets.blockPackedTextureSheet.getMaterial();
+    renderable.material = Assets.packedTextureSheet.getMaterial();
     renderable.meshPart.set(meshPart);
     return renderable;
   }

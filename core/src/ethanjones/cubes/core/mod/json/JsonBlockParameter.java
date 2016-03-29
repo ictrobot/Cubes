@@ -1,6 +1,6 @@
 package ethanjones.cubes.core.mod.json;
 
-import ethanjones.cubes.block.BlockManager;
+import ethanjones.cubes.core.IDManager;
 import ethanjones.cubes.block.json.JsonBlock;
 
 public class JsonBlockParameter {
@@ -21,6 +21,6 @@ public class JsonBlockParameter {
   }
 
   public void register(JsonModInstance jsonModInstance) {
-    BlockManager.register(jsonBlock);
+    IDManager.register(jsonBlock);
   }
 }

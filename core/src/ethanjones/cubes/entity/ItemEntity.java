@@ -61,7 +61,7 @@ public class ItemEntity extends Entity implements RenderableProvider {
       mesh.setIndices(indices);
       int vertexOffset = 0;
       vertices = new float[AreaMesh.VERTEX_SIZE * 4 * 6];
-      BlockTextureHandler textureHandler = Sided.getBlockManager().toBlock(block).getTextureHandler();
+      BlockTextureHandler textureHandler = Sided.getIDManager().toBlock(block).getTextureHandler();
       Vector3 offset = new Vector3(-0.5f, 0f, -0.5f);
       vertexOffset = FaceVertices.createMaxX(offset, textureHandler.getSide(BlockFace.posX), 0, 0, 0, vertices, vertexOffset);
       vertexOffset = FaceVertices.createMaxY(offset, textureHandler.getSide(BlockFace.posY), 0, 0, 0, vertices, vertexOffset);
@@ -79,7 +79,7 @@ public class ItemEntity extends Entity implements RenderableProvider {
     renderable.meshPart.offset = 0;
     renderable.meshPart.size = 6 * 6;
     renderable.meshPart.mesh = mesh;
-    renderable.material = Assets.blockPackedTextureSheet.getMaterial();
+    renderable.material = Assets.packedTextureSheet.getMaterial();
     renderables.add(renderable);
   }
 

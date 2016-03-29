@@ -21,7 +21,7 @@ import java.util.Map;
 public class Assets {
 
   public static final String CORE = "core";
-  public static PackedTextureSheet blockPackedTextureSheet;
+  public static PackedTextureSheet packedTextureSheet;
   public static FileHandle assetsFolder = Compatibility.get().getBaseFolder().child("assets");
   protected static HashMap<String, AssetManager> assetManagers = new HashMap<String, AssetManager>();
 
@@ -79,7 +79,7 @@ public class Assets {
   }
 
   public static void init() {
-    blockPackedTextureSheet = getPackedTextureSheet(AssetType.block);
+    packedTextureSheet = getPackedTextureSheet(AssetType.block);
   }
 
   private static PackedTextureSheet getPackedTextureSheet(AssetType assetType) {
@@ -120,8 +120,8 @@ public class Assets {
     return packedTextureSheet;
   }
 
-  public static TextureRegion getBlockTexture(String name) {
-    PackedTexture packedTexture = blockPackedTextureSheet.getPackedTextures().get(name);
+  public static TextureRegion getPackedTexture(String name) {
+    PackedTexture packedTexture = packedTextureSheet.getPackedTextures().get(name);
     return packedTexture == null ? null : packedTexture.textureRegion;
   }
 }

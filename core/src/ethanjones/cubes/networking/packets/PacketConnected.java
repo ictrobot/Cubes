@@ -7,7 +7,7 @@ import ethanjones.data.DataGroup;
 
 public class PacketConnected extends DataPacket {
 
-  public DataGroup blockManager;
+  public DataGroup idManager;
 
   public PacketConnected() {
     setPacketPriority(PacketPriority.High);
@@ -15,19 +15,19 @@ public class PacketConnected extends DataPacket {
 
   @Override
   public void handlePacket() {
-    Sided.getBlockManager().read(blockManager);
+    Sided.getIDManager().read(idManager);
   }
 
   @Override
   public DataGroup write() {
     DataGroup dataGroup = new DataGroup();
-    dataGroup.put("blockManager", blockManager);
+    dataGroup.put("idManager", idManager);
     return dataGroup;
   }
 
   @Override
   public void read(DataGroup dataGroup) {
-    blockManager = dataGroup.getGroup("blockManager");
+    idManager = dataGroup.getGroup("idManager");
   }
 
   @Override

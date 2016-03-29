@@ -1,6 +1,7 @@
 package ethanjones.cubes.block;
 
 import ethanjones.cubes.block.basic.BlockGrass;
+import ethanjones.cubes.core.IDManager;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.util.Register;
 
@@ -42,7 +43,7 @@ public class Blocks {
 
           f.set(null, block);
           blocks.add(block);
-          BlockManager.register(block);
+          IDManager.register(block);
         }
       } catch (Exception e) {
         Log.error("Failed to init block", e);

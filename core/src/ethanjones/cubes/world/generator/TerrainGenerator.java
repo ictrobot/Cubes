@@ -20,7 +20,7 @@ public abstract class TerrainGenerator {
 
     area.lock.writeLock();
     area.setupArrays(y);
-    area.blocks[ref] = Sided.getBlockManager().toInt(block);
+    area.blocks[ref] = Sided.getIDManager().toInt(block);
     area.lock.writeUnlock();
   }
 

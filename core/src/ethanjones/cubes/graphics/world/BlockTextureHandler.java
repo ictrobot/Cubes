@@ -26,7 +26,7 @@ public class BlockTextureHandler {
   }
 
   public BlockTextureHandler setSide(BlockFace blockFace, String name) {
-    TextureRegion textureRegion = Assets.getBlockTexture(name);
+    TextureRegion textureRegion = Assets.getPackedTexture(name);
     if (textureRegion == null) {
       throw new CubesException("No block texture with name \"" + name + "\"");
     }

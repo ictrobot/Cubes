@@ -71,7 +71,7 @@ public class Area {
     }
     int b = blocks[getRef(x, y, z)];
 
-    return lock.readUnlock(Sided.getBlockManager().toBlock(Math.abs(b)));
+    return lock.readUnlock(Sided.getIDManager().toBlock(Math.abs(b)));
   }
 
   public boolean isBlank() {
@@ -183,7 +183,7 @@ public class Area {
     int ref = getRef(x, y, z);
     int b;
     b = blocks[ref];
-    blocks[ref] = Sided.getBlockManager().toInt(block);
+    blocks[ref] = Sided.getIDManager().toInt(block);
 
     updateSurrounding(x, y, z, ref);
     if (Sided.getSide() == Side.Client && areaRenderer[y / SIZE_BLOCKS] != null) {
@@ -193,7 +193,7 @@ public class Area {
     lock.writeUnlock();
 
     //Must be after lock released to prevent dead locks
-    new BlockChangedEvent(new BlockReference().setFromBlockCoordinates(x + minBlockX, y, z + minBlockZ), Sided.getBlockManager().toBlock(b), block).post();
+    new BlockChangedEvent(new BlockReference().setFromBlockCoordinates(x + minBlockX, y, z + minBlockZ), Sided.getIDManager().toBlock(b), block).post();
   }
 
   private void updateSurrounding(int x, int y, int z, int ref) {

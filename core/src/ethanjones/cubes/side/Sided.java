@@ -1,6 +1,6 @@
 package ethanjones.cubes.side;
 
-import ethanjones.cubes.block.BlockManager;
+import ethanjones.cubes.core.IDManager;
 import ethanjones.cubes.core.event.EventBus;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.CubesSecurity;
@@ -13,7 +13,7 @@ public class Sided {
   private static class SidedData {
     EventBus eventBus;
     Timing timing;
-    BlockManager blockManager;
+    IDManager idManager;
   }
 
   private static SidedData clientData;
@@ -66,8 +66,8 @@ public class Sided {
     return getData().timing;
   }
 
-  public static BlockManager getBlockManager() {
-    return getData().blockManager;
+  public static IDManager getIDManager() {
+    return getData().idManager;
   }
 
   public static Networking getNetworking() {
@@ -94,8 +94,8 @@ public class Sided {
 
     data.eventBus = new EventBus();
     data.timing = new Timing();
-    data.blockManager = new BlockManager();
-    if (side == Side.Server) data.blockManager.generateDefault(); //TODO Need to store with world
+    data.idManager = new IDManager();
+    if (side == Side.Server) data.idManager.generateDefault(); //TODO Need to store with world
   }
 
   public static boolean isSetup(Side side) {

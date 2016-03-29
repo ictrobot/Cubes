@@ -1,6 +1,6 @@
 package ethanjones.cubes.side.common;
 
-import ethanjones.cubes.block.BlockManager;
+import ethanjones.cubes.core.IDManager;
 import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
@@ -65,7 +65,7 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
     Localization.load();
     Settings.print();
     ModManager.postModEvent(new PostInitializationEvent());
-    BlockManager.loaded();
+    IDManager.loaded();
     EntityManager.loaded();
 
     if (!Adapter.isDedicatedServer()) Graphics.init();

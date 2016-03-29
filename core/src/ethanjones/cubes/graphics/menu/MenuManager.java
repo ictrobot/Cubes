@@ -1,7 +1,7 @@
 package ethanjones.cubes.graphics.menu;
 
 import ethanjones.cubes.block.Block;
-import ethanjones.cubes.block.BlockManager;
+import ethanjones.cubes.core.IDManager;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.graphics.world.BlockTextureHandler;
 
@@ -45,7 +45,7 @@ public class MenuManager {
     if (disableBackground) return;
     if (texture == null) {
       List<Block> blocks = new ArrayList<Block>();
-      blocks.addAll(BlockManager.getBlocks());
+      blocks.addAll(IDManager.getBlocks());
       while (texture == null && blocks.size() > 0) {
         int index = MathUtils.random(0, blocks.size() - 1);
         Block block = blocks.get(index);

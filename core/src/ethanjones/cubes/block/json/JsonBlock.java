@@ -20,9 +20,9 @@ public class JsonBlock extends Block {
   public void loadGraphics() {
     try {
       if (jsonBlockParameter.singleTexture != null) {
-        textureHandler = new BlockTextureHandler(Assets.getBlockTexture(jsonBlockParameter.singleTexture));
+        textureHandler = new BlockTextureHandler(Assets.getPackedTexture(jsonBlockParameter.singleTexture));
       } else if (jsonBlockParameter.textures != null) {
-        textureHandler = new BlockTextureHandler(Assets.getBlockTexture(jsonBlockParameter.textures[0]));
+        textureHandler = new BlockTextureHandler(Assets.getPackedTexture(jsonBlockParameter.textures[0]));
       } else {
         super.loadGraphics();
       }

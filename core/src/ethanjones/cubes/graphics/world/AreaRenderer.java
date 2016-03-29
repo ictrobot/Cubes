@@ -1,7 +1,6 @@
 package ethanjones.cubes.graphics.world;
 
 import ethanjones.cubes.block.Block;
-import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.side.Sided;
@@ -78,7 +77,7 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
         for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
           int blockInt = area.blocks[i];
           if (blockInt > 0) {
-            Block block = Sided.getBlockManager().toBlock(blockInt);
+            Block block = Sided.getIDManager().toBlock(blockInt);
             if (block == null) continue;
             BlockTextureHandler textureHandler = block.getTextureHandler();
             if (x < SIZE_BLOCKS - 1) {

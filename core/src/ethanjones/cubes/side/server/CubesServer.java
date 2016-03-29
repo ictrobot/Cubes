@@ -41,7 +41,7 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
 
     ItemEntity entity = new ItemEntity();
     entity.position.set(world.spawnpoint.blockX + 0.5f, world.spawnpoint.blockY, world.spawnpoint.blockZ + 0.5f);
-    entity.block = Sided.getBlockManager().toInt(Blocks.grass);
+    entity.block = Sided.getIDManager().toInt(Blocks.grass);
     world.addEntity(entity);
   }
 

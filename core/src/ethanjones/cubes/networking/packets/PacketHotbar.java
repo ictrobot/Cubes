@@ -19,7 +19,7 @@ public class PacketHotbar extends Packet {
   @Override
   public void write(DataOutputStream dataOutputStream) throws Exception {
     for (int i = 0; i < 10; i++) {
-      dataOutputStream.writeInt(Sided.getBlockManager().toInt(blocks[i]));
+      dataOutputStream.writeInt(Sided.getIDManager().toInt(blocks[i]));
     }
     dataOutputStream.writeInt(selected);
   }
@@ -27,7 +27,7 @@ public class PacketHotbar extends Packet {
   @Override
   public void read(DataInputStream dataInputStream) throws Exception {
     for (int i = 0; i < 10; i++) {
-      blocks[i] = Sided.getBlockManager().toBlock(dataInputStream.readInt());
+      blocks[i] = Sided.getIDManager().toBlock(dataInputStream.readInt());
     }
     selected = dataInputStream.readInt();
   }

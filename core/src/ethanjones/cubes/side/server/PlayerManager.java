@@ -46,7 +46,7 @@ public class PlayerManager {
     Sided.getEventBus().register(this);
 
     PacketConnected packetConnected = new PacketConnected();
-    packetConnected.blockManager = Sided.getBlockManager().write();
+    packetConnected.idManager = Sided.getIDManager().write();
     NetworkingManager.sendPacketToClient(packetConnected, client);
 
     BlockReference spawn = server.world.spawnpoint;
@@ -108,7 +108,7 @@ public class PlayerManager {
     packet.x = blockReference.blockX;
     packet.y = blockReference.blockY;
     packet.z = blockReference.blockZ;
-    packet.block = Sided.getBlockManager().toInt(event.getNewBlock());
+    packet.block = Sided.getIDManager().toInt(event.getNewBlock());
     NetworkingManager.sendPacketToClient(packet, client);
   }
 

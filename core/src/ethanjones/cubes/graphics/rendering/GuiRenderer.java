@@ -1,6 +1,7 @@
 package ethanjones.cubes.graphics.rendering;
 
 import ethanjones.cubes.block.Block;
+import ethanjones.cubes.core.IDManager;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.util.BlockFace;
@@ -157,7 +158,7 @@ public class GuiRenderer implements Disposable {
 
     blocks = new Block[10][6];
     int i = 0;
-    List<Block> list = Sided.getBlockManager().getBlocks();
+    List<Block> list = IDManager.getBlocks();
     for (int y = 0; y < 6; y++) {
       for (int x = 0; x < 10; x++, i++) {
         if (i >= list.size()) break;
