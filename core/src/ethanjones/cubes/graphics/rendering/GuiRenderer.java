@@ -313,8 +313,12 @@ public class GuiRenderer implements Disposable {
         int slotY = y / hotbarSlot.getHeight();
         if (slotX >= blocks.length || slotY >= blocks[0].length) return false;
 
-        ItemBlock item = blocks[slotX][slotY].getItemBlock();
-        ItemStack itemStack = new ItemStack(item, item.getStackCountMax());
+        Block block = blocks[slotX][slotY];
+        ItemStack itemStack = null;
+        if (block != null) {
+          ItemBlock item = block.getItemBlock();
+          itemStack = new ItemStack(item, item.getStackCountMax());
+        }
         PlayerInventory inventory = Cubes.getClient().player.getInventory();
         inventory.itemStacks[inventory.hotbarSelected] = itemStack;
         inventory.sync();
