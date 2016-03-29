@@ -10,6 +10,8 @@ import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.reference.BlockReference;
 
+import com.badlogic.gdx.Input;
+
 public class ItemBlock extends Item {
   public final Block block;
 
@@ -24,7 +26,7 @@ public class ItemBlock extends Item {
 
   @Override
   public void onButtonPress(int button, ItemStack itemStack, Player player, int stack) {
-    if (Sided.getSide() == Side.Server) {
+    if (Sided.getSide() == Side.Server && button == Input.Buttons.RIGHT) {
       RayTracing.BlockIntersection blockIntersection = RayTracing.getBlockIntersection(player.position, player.angle, Cubes.getServer().world);
       if (blockIntersection != null) {
         BlockReference blockReference = blockIntersection.getBlockReference();
