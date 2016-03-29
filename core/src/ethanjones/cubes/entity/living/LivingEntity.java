@@ -25,8 +25,8 @@ public class LivingEntity extends Entity {
     this.regenerationSpeed = 0;
   }
 
-  public void update() {
-    super.update();
+  public boolean update() {
+    return super.update();
     //TODO regeneration
   }
 

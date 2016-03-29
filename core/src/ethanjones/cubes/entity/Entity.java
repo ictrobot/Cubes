@@ -33,8 +33,11 @@ public class Entity implements DataParser, Disposable {
     this.angle = angle;
   }
 
-  public void update() {
-
+  /**
+   * @return true to be removed
+   */
+  public boolean update() {
+    return false;
   }
 
   @Override

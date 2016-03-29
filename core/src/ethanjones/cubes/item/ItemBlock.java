@@ -3,15 +3,15 @@ package ethanjones.cubes.item;
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.entity.living.player.Player;
-import ethanjones.cubes.entity.living.player.PlayerInventory;
 import ethanjones.cubes.graphics.world.RayTracing;
+import ethanjones.cubes.item.inv.InventoryHelper;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.reference.BlockReference;
 
 public class ItemBlock extends Item {
-  private final Block block;
+  public final Block block;
 
   public ItemBlock(Block block) {
     super(block.id);
@@ -50,13 +50,7 @@ public class ItemBlock extends Item {
         }
         Cubes.getServer().world.setBlock(block, blockReference.blockX, blockReference.blockY, blockReference.blockZ);
 
-        PlayerInventory inventory = player.getInventory();
-        if (inventory.itemStacks[stack].count > 1) {
-          inventory.itemStacks[stack].count--;
-        } else {
-          inventory.itemStacks[stack] = null;
-        }
-        inventory.sync();
+        InventoryHelper.reduceCount(player.getInventory(), stack);
       }
     }
   }

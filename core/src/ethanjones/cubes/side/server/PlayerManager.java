@@ -18,6 +18,7 @@ import ethanjones.cubes.world.reference.multi.AreaReferenceSet;
 import ethanjones.cubes.world.reference.multi.WorldRegion;
 import ethanjones.cubes.world.storage.Area;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Buttons;
 
 import java.util.ArrayList;

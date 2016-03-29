@@ -7,6 +7,7 @@ import ethanjones.cubes.core.mod.event.StoppingServerEvent;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.timing.TimeHandler;
 import ethanjones.cubes.entity.ItemEntity;
+import ethanjones.cubes.item.ItemStack;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.networking.socket.SocketMonitor;
@@ -38,11 +39,6 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
     ModManager.postModEvent(new StartingServerEvent());
 
     state.setup();
-
-    ItemEntity entity = new ItemEntity();
-    entity.position.set(world.spawnpoint.blockX + 0.5f, world.spawnpoint.blockY, world.spawnpoint.blockZ + 0.5f);
-    entity.block = Sided.getIDManager().toInt(Blocks.grass);
-    world.addEntity(entity);
   }
 
   @Override

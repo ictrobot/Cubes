@@ -17,6 +17,7 @@ import ethanjones.data.DataGroup;
 import com.badlogic.gdx.utils.Disposable;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -97,7 +98,12 @@ public abstract class World implements Disposable {
   }
 
   public void tick() {
-
+    lock.readLock();
+    Iterator<Entry<UUID, Entity>> iterator = entities.entrySet().iterator();
+    while (iterator.hasNext()) {
+      if (iterator.next().getValue().update()) iterator.remove();
+    }
+    lock.readUnlock();
   }
 
   public TerrainGenerator getTerrainGenerator() {

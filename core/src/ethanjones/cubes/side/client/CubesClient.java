@@ -61,7 +61,6 @@ public class CubesClient extends Cubes implements ApplicationListener {
     if (renderer.guiRenderer.isDebugEnabled()) ClientDebug.update();
     renderer.render();
     inputChain.afterRender();
-    player.update();
   }
 
   @Override
@@ -83,6 +82,7 @@ public class CubesClient extends Cubes implements ApplicationListener {
   protected void tick() {
     super.tick();
     inputChain.cameraController.tick();
+    player.update();
     ClientDebug.tick();
   }
 

@@ -2,7 +2,6 @@ package ethanjones.cubes.entity.living.player;
 
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.entity.living.LivingEntity;
-import ethanjones.cubes.item.inv.Inventory;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketChat;
 import ethanjones.cubes.networking.server.ClientIdentifier;
