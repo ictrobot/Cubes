@@ -72,7 +72,7 @@ public class Player extends LivingEntity implements CommandSender {
     if (Sided.getSide() == Side.Server) {
       World world = Sided.getCubes().world;
       if (world.getArea(CoordinateConverter.area(position.x), CoordinateConverter.area(position.z)) != null) {
-        if (world.getBlock((int) position.x, (int) (position.y - height), (int) position.z) != null) {
+        if (world.getBlock(CoordinateConverter.block(position.x), CoordinateConverter.block(position.y - height), CoordinateConverter.block(position.z)) != null) {
           position.set(previousPosition);
           world.syncEntity(uuid);
         }
