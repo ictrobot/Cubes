@@ -26,7 +26,7 @@ public class BlockManager implements DataParser {
     return blockList;
   }
 
-  public static void blocksLoaded() {
+  public static void loaded() {
     idToBlock = Collections.unmodifiableMap(idToBlock);
     blockList = Collections.unmodifiableList(blockList);
   }

@@ -16,6 +16,7 @@ import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.core.timing.TimeHandler;
+import ethanjones.cubes.entity.EntityManager;
 import ethanjones.cubes.graphics.Graphics;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.networking.NetworkingManager;
@@ -64,7 +65,8 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
     Localization.load();
     Settings.print();
     ModManager.postModEvent(new PostInitializationEvent());
-    BlockManager.blocksLoaded();
+    BlockManager.loaded();
+    EntityManager.loaded();
 
     if (!Adapter.isDedicatedServer()) Graphics.init();
 
