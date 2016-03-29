@@ -23,6 +23,7 @@ public class Player extends LivingEntity implements CommandSender {
     this.username = username;
     this.clientIdentifier = clientIdentifier;
     this.inventory = new PlayerInventory(this);
+    this.height = 1.5f;
   }
 
   public Player(Camera camera) {
@@ -30,6 +31,7 @@ public class Player extends LivingEntity implements CommandSender {
     this.username = Settings.getStringSettingValue(Settings.USERNAME);
     this.clientIdentifier = null;
     this.inventory = new PlayerInventory(this);
+    this.height = 1.5f;
   }
 
   public PlayerInventory getInventory() {

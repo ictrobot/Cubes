@@ -1,5 +1,6 @@
 package ethanjones.cubes.entity;
 
+import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.core.util.VectorUtil;
 import ethanjones.cubes.side.Side;
@@ -16,6 +17,7 @@ import java.util.UUID;
 public class Entity implements DataParser, Disposable {
 
   public UUID uuid;
+  public float height = 0.001f;
   public final Vector3 position;
   public final Vector3 angle;
   public final Vector3 motion;
@@ -42,9 +44,19 @@ public class Entity implements DataParser, Disposable {
    */
   public boolean update() {
     if (Sided.getSide() == Side.Server) {
+      float f = position.y - height;
+      Block b = Cubes.getServer().world.getBlock((int) position.x, (int) f, (int) position.z);
+      if (f % 1 != 0 || b == null) {
+        motion.y -= 0.15f;
+      }
       if (!motion.isZero()) {
         float scl = Cubes.tickMS / 1000f * 4f;
-        position.add(motion.x * scl, motion.y * scl, motion.z * scl);
+        if (f % 1 == 0 && b != null) {
+          position.add(motion.x * scl, 0, motion.z * scl);
+        } else {
+          position.add(motion.x * scl, motion.y * scl, motion.z * scl);
+          if (b != null && position.y < ((int) f) + 1) position.y = ((int) f) + 1;
+        }
         motion.scl(0.9f);
         if (motion.len() < 0.01f) motion.set(0f, 0f, 0f);
         Cubes.getServer().world.syncEntity(uuid);
