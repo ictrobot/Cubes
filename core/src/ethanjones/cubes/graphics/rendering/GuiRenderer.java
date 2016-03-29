@@ -58,16 +58,21 @@ public class GuiRenderer implements Disposable {
       if (keycode == chat) setChatEnabled(!isChatEnabled());
       if (keycode == blocksMenu) setBlocksMenuEnabled(!isBlocksMenuEnabled());
 
-      if (keycode == Keys.NUM_1) Cubes.getClient().player.getInventory().hotbarSelected = 0;
-      if (keycode == Keys.NUM_2) Cubes.getClient().player.getInventory().hotbarSelected = 1;
-      if (keycode == Keys.NUM_3) Cubes.getClient().player.getInventory().hotbarSelected = 2;
-      if (keycode == Keys.NUM_4) Cubes.getClient().player.getInventory().hotbarSelected = 3;
-      if (keycode == Keys.NUM_5) Cubes.getClient().player.getInventory().hotbarSelected = 4;
-      if (keycode == Keys.NUM_6) Cubes.getClient().player.getInventory().hotbarSelected = 5;
-      if (keycode == Keys.NUM_7) Cubes.getClient().player.getInventory().hotbarSelected = 6;
-      if (keycode == Keys.NUM_8) Cubes.getClient().player.getInventory().hotbarSelected = 7;
-      if (keycode == Keys.NUM_9) Cubes.getClient().player.getInventory().hotbarSelected = 8;
-      if (keycode == Keys.NUM_0) Cubes.getClient().player.getInventory().hotbarSelected = 9;
+      int selected = -1;
+      if (keycode == Keys.NUM_1) selected = 0;
+      if (keycode == Keys.NUM_2) selected = 1;
+      if (keycode == Keys.NUM_3) selected = 2;
+      if (keycode == Keys.NUM_4) selected = 3;
+      if (keycode == Keys.NUM_5) selected = 4;
+      if (keycode == Keys.NUM_6) selected = 5;
+      if (keycode == Keys.NUM_7) selected = 6;
+      if (keycode == Keys.NUM_8) selected = 7;
+      if (keycode == Keys.NUM_9) selected = 8;
+      if (keycode == Keys.NUM_0) selected = 9;
+      if (selected != -1) {
+        Cubes.getClient().player.getInventory().hotbarSelected = selected;
+        Cubes.getClient().player.getInventory().sync();
+      }
     }
   }
 
