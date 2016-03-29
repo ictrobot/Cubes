@@ -207,7 +207,8 @@ public class PlayerManager {
     synchronized (buttons) {
       for (Integer recentButton : recentButtons) {
         ItemStack itemStack = client.getPlayer().getInventory().selectedItemStack();
-        itemStack.item.onButtonPress(recentButton, itemStack, client.getPlayer());
+        if (itemStack != null)
+          itemStack.item.onButtonPress(recentButton, itemStack, client.getPlayer(), client.getPlayer().getInventory().hotbarSelected);
       }
 
       recentButtons.clear();

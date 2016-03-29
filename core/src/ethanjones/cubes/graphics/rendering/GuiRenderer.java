@@ -11,7 +11,9 @@ import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.graphics.menu.Fonts;
 import ethanjones.cubes.input.keyboard.KeyTypedAdapter;
 import ethanjones.cubes.input.keyboard.KeyboardHelper;
+import ethanjones.cubes.item.ItemBlock;
 import ethanjones.cubes.item.ItemStack;
+import ethanjones.cubes.item.inv.Inventory;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketChat;
 import ethanjones.cubes.side.Sided;
@@ -313,7 +315,12 @@ public class GuiRenderer implements Disposable {
         int slotX = x / hotbarSlot.getWidth();
         int slotY = y / hotbarSlot.getHeight();
         if (slotX >= blocks.length || slotY >= blocks[0].length) return;
-        //Cubes.getClient().player.setHotbar(blocks[slotX][slotY]);
+
+        ItemBlock item = blocks[slotX][slotY].getItemBlock();
+        ItemStack itemStack = new ItemStack(item, item.getStackCountMax());
+        PlayerInventory inventory = Cubes.getClient().player.getInventory();
+        inventory.itemStacks[inventory.hotbarSelected] = itemStack;
+        inventory.sync();
       }
     }
   }

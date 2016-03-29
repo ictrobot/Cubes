@@ -71,7 +71,8 @@ public class CameraController extends InputAdapter {
     NetworkingManager.sendPacketToServer(packetButton);
 
     ItemStack itemStack = Cubes.getClient().player.getInventory().selectedItemStack();
-    itemStack.item.onButtonPress(button, itemStack, Cubes.getClient().player);
+    if (itemStack != null)
+      itemStack.item.onButtonPress(button, itemStack, Cubes.getClient().player, Cubes.getClient().player.getInventory().hotbarSelected);
     return true;
   }
 

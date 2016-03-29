@@ -1,20 +1,36 @@
 package ethanjones.cubes.entity.living.player;
 
-import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.item.ItemStack;
 import ethanjones.cubes.item.inv.Inventory;
+import ethanjones.cubes.networking.NetworkingManager;
+import ethanjones.cubes.networking.packets.PacketPlayerInventory;
+import ethanjones.cubes.side.Side;
+import ethanjones.cubes.side.Sided;
 import ethanjones.data.DataGroup;
 
 public class PlayerInventory extends Inventory {
   public int hotbarSelected;
+  public Player player;
 
-  public PlayerInventory() {
+  public PlayerInventory(Player player) {
     super(40);
-    hotbarSelected = 0;
+    this.hotbarSelected = 0;
+    this.player = player;
   }
 
   public ItemStack selectedItemStack() {
     return itemStacks[hotbarSelected];
+  }
+
+  @Override
+  public void sync() {
+    PacketPlayerInventory packet = new PacketPlayerInventory();
+    packet.inv = write();
+    if (Sided.getSide() == Side.Client) {
+      NetworkingManager.sendPacketToServer(packet);
+    } else {
+      NetworkingManager.sendPacketToClient(packet, player.clientIdentifier);
+    }
   }
 
   @Override

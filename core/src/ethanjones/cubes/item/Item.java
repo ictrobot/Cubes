@@ -38,6 +38,10 @@ public class Item {
     return Localization.get("item." + id.replaceFirst(":", "."));
   }
 
-  public void onButtonPress(int button, ItemStack itemStack, Player player) {
+  public void onButtonPress(int button, ItemStack itemStack, Player player, int stack) {
+  }
+
+  public int getStackCountMax() {
+    return 64;
   }
 }

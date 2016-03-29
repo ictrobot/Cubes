@@ -3,6 +3,7 @@ package ethanjones.cubes.item;
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.entity.living.player.Player;
+import ethanjones.cubes.entity.living.player.PlayerInventory;
 import ethanjones.cubes.graphics.world.RayTracing;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
@@ -22,7 +23,7 @@ public class ItemBlock extends Item {
   }
 
   @Override
-  public void onButtonPress(int button, ItemStack itemStack, Player player) {
+  public void onButtonPress(int button, ItemStack itemStack, Player player, int stack) {
     if (Sided.getSide() == Side.Server) {
       RayTracing.BlockIntersection blockIntersection = RayTracing.getBlockIntersection(player.position, player.angle, Cubes.getServer().world);
       if (blockIntersection != null) {
@@ -48,6 +49,14 @@ public class ItemBlock extends Item {
             break;
         }
         Cubes.getServer().world.setBlock(block, blockReference.blockX, blockReference.blockY, blockReference.blockZ);
+
+        PlayerInventory inventory = player.getInventory();
+        if (inventory.itemStacks[stack].count > 1) {
+          inventory.itemStacks[stack].count--;
+        } else {
+          inventory.itemStacks[stack] = null;
+        }
+        inventory.sync();
       }
     }
   }

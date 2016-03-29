@@ -8,9 +8,8 @@ public class Inventory implements DataParser {
   public ItemStack[] itemStacks;
 
   public Inventory() {
-  }
 
-  ;
+  }
 
   public Inventory(int size) {
     itemStacks = new ItemStack[size];
@@ -27,7 +26,7 @@ public class Inventory implements DataParser {
         groups[i] = itemStacks[i].write();
       }
     }
-    dataGroup.put("itemstacks", itemStacks);
+    dataGroup.put("itemstacks", groups);
     return dataGroup;
   }
 
@@ -42,5 +41,9 @@ public class Inventory implements DataParser {
         itemStacks[i].read(d);
       }
     }
+  }
+
+  public void sync() {
+
   }
 }

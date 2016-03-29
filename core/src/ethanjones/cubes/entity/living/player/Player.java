@@ -23,14 +23,14 @@ public class Player extends LivingEntity implements CommandSender {
     super("core:player", 20);
     this.username = username;
     this.clientIdentifier = clientIdentifier;
-    this.inventory = new PlayerInventory();
+    this.inventory = new PlayerInventory(this);
   }
 
   public Player(Camera camera) {
     super("core:player", camera.position, camera.direction, 20);
     this.username = Settings.getStringSettingValue(Settings.USERNAME);
     this.clientIdentifier = null;
-    this.inventory = new PlayerInventory();
+    this.inventory = new PlayerInventory(this);
   }
 
   public PlayerInventory getInventory() {
