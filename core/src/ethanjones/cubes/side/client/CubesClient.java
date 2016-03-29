@@ -62,8 +62,8 @@ public class CubesClient extends Cubes implements ApplicationListener {
       Adapter.gotoMainMenu();
       return;
     }
-    inputChain.beforeRender();
     super.render();
+    inputChain.beforeRender();
     if (renderer.guiRenderer.isDebugEnabled()) ClientDebug.update();
     renderer.render();
     inputChain.afterRender();

@@ -7,6 +7,7 @@ import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.CoordinateConverter;
+import ethanjones.cubes.world.World;
 import ethanjones.data.DataGroup;
 import ethanjones.data.DataParser;
 
@@ -44,25 +45,25 @@ public class Entity implements DataParser, Disposable {
    * @return true to be removed
    */
   public boolean update() {
-    if (Sided.getSide() == Side.Server) {
-      if (Cubes.getServer().world.getArea(CoordinateConverter.area(position.x), CoordinateConverter.area(position.z)) == null)
+    if (Sided.getSide() == Side.Client) {
+      World world = Sided.getCubes().world;
+      if (world.getArea(CoordinateConverter.area(position.x), CoordinateConverter.area(position.z)) == null)
         return false;
       float f = position.y - height;
-      Block a = Cubes.getServer().world.getBlock((int) position.x, (int) f, (int) position.z);
-      Block b = Cubes.getServer().world.getBlock((int) position.x, (int) f - 1, (int) position.z);
-      if (a != null) {
-        position.y = (int) f + 1;
+      int y = (int) (f - 0.01f);
+      Block b = world.getBlock((int) position.x, y, (int) position.z);
+      if (b == null || f > y + 1.01f) {
+        position.y -= Math.max(0.1f, f - (y + 1));
+      } else {
         if (motion.y < 0) motion.y = 0;
-        Cubes.getServer().world.syncEntity(uuid);
-      } else if (b == null) {
-        motion.y -= 0.2f;
+        position.y = y + 1 + height;
       }
       if (!motion.isZero()) {
         float scl = Cubes.tickMS / 1000f * 4f;
         position.add(motion.x * scl, motion.y * scl, motion.z * scl);
         motion.scl(0.9f);
-        if (motion.len() < 0.01f) motion.set(0f, 0f, 0f);
-        Cubes.getServer().world.syncEntity(uuid);
+        if (motion.len2() < 0.01f) motion.set(0f, 0f, 0f);
+        world.syncEntity(uuid);
       }
     }
     return false;
@@ -74,6 +75,7 @@ public class Entity implements DataParser, Disposable {
     dataGroup.put("id", id);
     dataGroup.put("uuid", uuid);
     dataGroup.put("pos", VectorUtil.array(position));
+    dataGroup.put("motion", VectorUtil.array(motion));
     dataGroup.put("ang", VectorUtil.array(angle));
     return dataGroup;
   }
@@ -81,6 +83,7 @@ public class Entity implements DataParser, Disposable {
   @Override
   public void read(DataGroup data) {
     this.position.set(VectorUtil.array(data.getArray("pos", Float.class)));
+    this.motion.set(VectorUtil.array(data.getArray("motion", Float.class)));
     this.angle.set(VectorUtil.array(data.getArray("ang", Float.class)));
     this.uuid = (UUID) data.get("uuid");
     if (!this.id.equals(data.getString("id")))
