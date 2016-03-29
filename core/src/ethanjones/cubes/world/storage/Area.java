@@ -174,7 +174,6 @@ public class Area {
   }
 
   public void setBlock(Block block, int x, int y, int z) {
-    if (block == null) return;
     if (y < 0) return;
 
     lock.writeLock();
