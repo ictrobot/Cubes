@@ -61,7 +61,6 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
     ModManager.postModEvent(new InitializationEvent());
 
     Assets.init();
-    if (!Adapter.isDedicatedServer()) Blocks.loadGraphics();
     Localization.load();
     Settings.print();
     ModManager.postModEvent(new PostInitializationEvent());

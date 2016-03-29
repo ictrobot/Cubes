@@ -1,5 +1,10 @@
 package ethanjones.cubes.graphics;
 
+import ethanjones.cubes.block.Block;
+import ethanjones.cubes.core.IDManager;
+import ethanjones.cubes.item.Item;
+import ethanjones.cubes.item.ItemBlock;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -15,6 +20,16 @@ public class Graphics {
     spriteBatch = new SpriteBatch();
     modelBatch = new ModelBatch();
     screenViewport = new ScreenViewport();
+
+    for (Block block : IDManager.getBlocks()) {
+      block.loadGraphics();
+    }
+    for (ItemBlock itemBlock : IDManager.getItemBlocks()) {
+      itemBlock.loadGraphics();
+    }
+    for (Item item : IDManager.getItems()) {
+      item.loadGraphics();
+    }
   }
 
   public static void resize() {

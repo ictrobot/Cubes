@@ -23,8 +23,6 @@ public class Blocks {
   @Register("core:leaves")
   public static Block leaves;
 
-  private static ArrayList<Block> blocks = new ArrayList<Block>();
-
   public static void init() {
     for (Field f : Blocks.class.getFields()) {
       try {
@@ -42,18 +40,11 @@ public class Blocks {
           }
 
           f.set(null, block);
-          blocks.add(block);
           IDManager.register(block);
         }
       } catch (Exception e) {
         Log.error("Failed to init block", e);
       }
-    }
-  }
-
-  public static void loadGraphics() {
-    for (Block f : blocks) {
-      f.loadGraphics();
     }
   }
 }
