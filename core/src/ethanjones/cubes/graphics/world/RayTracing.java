@@ -2,9 +2,18 @@ package ethanjones.cubes.graphics.world;
 
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.world.World;
+import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
+import ethanjones.cubes.world.storage.Area;
 
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.math.collision.Ray;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 import static java.lang.Math.floor;
 import static java.lang.Math.signum;
@@ -15,10 +24,12 @@ public class RayTracing {
 
     private final BlockReference blockReference;
     private final BlockFace blockFace;
+    private final Vector3 intersection;
 
-    public BlockIntersection(BlockReference blockReference, BlockFace blockFace) {
+    public BlockIntersection(BlockReference blockReference, BlockFace blockFace, Vector3 intersection) {
       this.blockReference = blockReference;
       this.blockFace = blockFace;
+      this.intersection = intersection;
     }
 
     public BlockReference getBlockReference() {
@@ -28,92 +39,105 @@ public class RayTracing {
     public BlockFace getBlockFace() {
       return blockFace;
     }
+
+    public Vector3 getIntersection() {
+      return intersection;
+    }
   }
 
   public static BlockIntersection getBlockIntersection(Vector3 origin, Vector3 direction, World world) {
-    return raycast(origin, direction, 6, world);
+    return intersection(origin, direction, 6, world);
   }
 
-  /**
-   * https://github.com/kpreid/cubes/blob/c5e61fa22cb7f9ba03cd9f22e5327d738ec93969/world.js#L317
-   */
-  private static BlockIntersection raycast(Vector3 origin, Vector3 direction, int radius, World world) {
-    if (direction.x == 0 && direction.y == 0 && direction.z == 0) return null;
+  private static AreaReference fastGet = new AreaReference();
 
-    int x = (int) floor(origin.x);
-    int y = (int) floor(origin.y);
-    int z = (int) floor(origin.z);
+  public static BlockIntersection intersection(Vector3 origin, Vector3 direction, int radius, World world) {
+    List<BlockReference> blocks = getSortedBlockList(origin, direction, radius, world);
 
-    float dx = direction.x;
-    float dy = direction.y;
-    float dz = direction.z;
+    Ray ray = new Ray(origin, direction);
+    BoundingBox boundingBox = new BoundingBox();
+    Vector3 intersection = new Vector3();
 
-    float stepX = signum(dx);
-    float stepY = signum(dy);
-    float stepZ = signum(dz);
+    for (BlockReference b : blocks) {
+      boundingBox.min.set(b.blockX, b.blockY, b.blockZ);
+      boundingBox.max.set(b.blockX + 1, b.blockY + 1, b.blockZ + 1);
 
-    float tMaxX = intbound(origin.x, direction.x);
-    float tMaxY = intbound(origin.y, direction.y);
-    float tMaxZ = intbound(origin.z, direction.z);
-
-    float tDeltaX = stepX / direction.x;
-    float tDeltaY = stepY / direction.y;
-    float tDeltaZ = stepZ / direction.z;
-
-    BlockFace face = BlockFace.posY; //current block face?
-
-    //radius /= Math.sqrt(direction.x * direction.x + direction.y * direction.y + direction.z * direction.z);
-    //no effect since direction is normalised
-
-    while (true) {
-      if (world.getBlock(x, y, z) != null) {
-        return new BlockIntersection(new BlockReference().setFromBlockCoordinates(x, y, z), face);
-      }
-
-      if (tMaxX < tMaxY) {
-        if (tMaxX < tMaxZ) {          // tMaxX < tMaxY && tMaxX < tMaxZ
-          if (tMaxX > radius) break;
-          x += stepX;
-          tMaxX += tDeltaX;
-          face = getFace(-stepX, 0, 0);
-        } else {                      // tMaxX < tMaxY && tMaxX > tMaxZ
-          if (tMaxZ > radius) break;
-          z += stepZ;
-          tMaxZ += tDeltaZ;
-          face = getFace(0, 0, -stepZ);
-        }
-      } else {
-        if (tMaxY < tMaxZ) {          // tMaxX > tMaxY && tMaxY < tMaxZ
-          if (tMaxY > radius) break;
-          y += stepY;
-          tMaxY += tDeltaY;
-          face = getFace(0, -stepY, 0);
-        } else {                      // tMaxX > tMaxY && tMaxY > tMaxZ
-          if (tMaxZ > radius) break;
-          z += stepZ;
-          tMaxZ += tDeltaZ;
-          face = getFace(0, 0, -stepZ);
-        }
+      if (Intersector.intersectRayBounds(ray, boundingBox, intersection)) {
+        BlockFace blockFace = getBlockFace(b, intersection);
+        return new BlockIntersection(b, blockFace, intersection);
       }
     }
     return null;
   }
 
-  private static BlockFace getFace(float x, float y, float z) {
-    if (x > 0 && y == 0 && z == 0) return BlockFace.posX;
-    if (x < 0 && y == 0 && z == 0) return BlockFace.negX;
-
-    if (x == 0 && y > 0 && z == 0) return BlockFace.posY;
-    if (x == 0 && y < 0 && z == 0) return BlockFace.negY;
-
-    if (x == 0 && y == 0 && z > 0) return BlockFace.posZ;
-    if (x == 0 && y == 0 && z < 0) return BlockFace.negZ;
-
+  private static BlockFace getBlockFace(BlockReference b, Vector3 i) {
+    i.sub(b.blockX, b.blockY, b.blockZ);
+    if (i.x == 1f) return BlockFace.posX;
+    if (i.x == 0f) return BlockFace.negX;
+    if (i.y == 1f) return BlockFace.posY;
+    if (i.y == 0f) return BlockFace.negY;
+    if (i.z == 1f) return BlockFace.posZ;
+    if (i.z == 0f) return BlockFace.negZ;
     return null;
   }
 
-  private static float intbound(float s, float ds) {
-    if (ds < 0) return intbound(-s, -ds);
-    return (1 - (s % 1)) / ds;
+  private static List<BlockReference> getSortedBlockList(final Vector3 origin, Vector3 direction, int radius, World world) {
+    int initialX = (int) floor(origin.x);
+    int initialY = (int) floor(origin.y);
+    int initialZ = (int) floor(origin.z);
+
+    int stepX = (int) signum(direction.x);
+    int stepY = (int) signum(direction.y);
+    int stepZ = (int) signum(direction.z);
+
+    List<BlockReference> list = new ArrayList<BlockReference>();
+
+    world.lock.readLock();
+    Area area = null;
+    for (int nX = 0; nX <= (stepX != 0 ? radius : 0); nX++) {
+      for (int nY = 0; nY <= (stepY != 0 ? radius : 0); nY++) {
+        for (int nZ = 0; nZ <= (stepZ != 0 ? radius : 0); nZ++) {
+          int x = initialX + (nX * stepX);
+          int y = initialY + (nY * stepY);
+          int z = initialZ + (nZ * stepZ);
+
+          Area fastGet = fastGet(world, x, z);
+          if (fastGet != area) {
+            if (area != null) area.lock.readUnlock();
+            area = fastGet;
+            if (area != null) area.lock.readLock();
+          }
+          if (area != null && area.blocks[Area.getRef(x - area.minBlockX, y, z - area.minBlockZ)] != 0) {
+            list.add(new BlockReference().setFromBlockCoordinates(x, y, z));
+          }
+        }
+      }
+    }
+    if (area != null) area.lock.readUnlock();
+    world.lock.readUnlock();
+
+    list.sort(new Comparator<BlockReference>() {
+      @Override
+      public int compare(BlockReference o1, BlockReference o2) {
+        float d1 = distance2(o1);
+        float d2 = distance2(o2);
+        float dst = d1 - d2;
+        return dst < 0 ? -1 : (dst > 0 ? 1 : 0);
+      }
+
+      public float distance2(BlockReference b) {
+        float dx = b.blockX - origin.x;
+        float dy = b.blockY - origin.y;
+        float dz = b.blockZ - origin.z;
+        return (dx * dx) + (dy * dy) + (dz * dz);
+      }
+    });
+
+    return list;
+  }
+
+  private static Area fastGet(World world, int blockX, int blockZ) {
+    fastGet.setFromBlockCoordinates(blockX, blockZ);
+    return world.map.get(fastGet);
   }
 }
