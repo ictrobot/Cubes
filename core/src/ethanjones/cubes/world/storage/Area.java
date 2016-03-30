@@ -247,16 +247,34 @@ public class Area {
     }
 
     if (Sided.getSide() == Side.Client) {
+      renderStatus[section] = AreaRenderStatus.UNKNOWN;
       if (areaRenderer[section] != null) areaRenderer[section].refresh = true;
 
-      if (y > 0 && y % SIZE_BLOCKS == 0 && areaRenderer[section - 1] != null) areaRenderer[section - 1].refresh = true;
-      if (y < maxY && y % SIZE_BLOCKS == (SIZE_BLOCKS - 1) && areaRenderer[section + 1] != null)
-        areaRenderer[section + 1].refresh = true;
+      if (y > 0 && y % SIZE_BLOCKS == 0) {
+        renderStatus[section - 1] = AreaRenderStatus.UNKNOWN;
+        if (areaRenderer[section - 1] != null) areaRenderer[section - 1].refresh = true;
+      }
+      if (y < maxY && y % SIZE_BLOCKS == (SIZE_BLOCKS - 1)) {
+        renderStatus[section + 1] = AreaRenderStatus.UNKNOWN;
+        if (areaRenderer[section + 1] != null) areaRenderer[section + 1].refresh = true;
+      }
 
-      if (negX != null && negX.areaRenderer[section] != null) negX.areaRenderer[section].refresh = true;
-      if (posX != null && posX.areaRenderer[section] != null) posX.areaRenderer[section].refresh = true;
-      if (negZ != null && negZ.areaRenderer[section] != null) negZ.areaRenderer[section].refresh = true;
-      if (posZ != null && posZ.areaRenderer[section] != null) posZ.areaRenderer[section].refresh = true;
+      if (negX != null && negX.areaRenderer[section] != null) {
+        negX.renderStatus[section] = AreaRenderStatus.UNKNOWN;
+        negX.areaRenderer[section].refresh = true;
+      }
+      if (posX != null && posX.areaRenderer[section] != null) {
+        posX.renderStatus[section] = AreaRenderStatus.UNKNOWN;
+        posX.areaRenderer[section].refresh = true;
+      }
+      if (negZ != null && negZ.areaRenderer[section] != null) {
+        negZ.renderStatus[section] = AreaRenderStatus.UNKNOWN;
+        negZ.areaRenderer[section].refresh = true;
+      }
+      if (posZ != null && posZ.areaRenderer[section] != null) {
+        posZ.renderStatus[section] = AreaRenderStatus.UNKNOWN;
+        posZ.areaRenderer[section].refresh = true;
+      }
     }
   }
 
