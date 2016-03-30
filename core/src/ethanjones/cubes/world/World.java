@@ -57,7 +57,11 @@ public abstract class World implements Disposable {
       map.notifyAll();
     }
 
-    if (old != null) old.unload();
+    if (old != null) {
+      old.world = null;
+      old.unload();
+    }
+    area.world = this;
     return area;
   }
 

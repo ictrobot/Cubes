@@ -9,6 +9,8 @@ import ethanjones.cubes.graphics.world.AreaRenderStatus;
 import ethanjones.cubes.graphics.world.AreaRenderer;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
+import ethanjones.cubes.world.World;
+import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
 
 import java.io.DataInputStream;
@@ -47,6 +49,9 @@ public class Area {
   public int[] renderStatus = new int[0];
 
   private volatile boolean unloaded;
+
+  public World world;
+  private AreaReference tempReference = new AreaReference();
 
   public Area(int areaX, int areaZ) {
     this.areaX = areaX;
@@ -184,15 +189,75 @@ public class Area {
     b = blocks[ref];
     blocks[ref] = Sided.getIDManager().toInt(block);
 
-    updateSurrounding(x, y, z, ref);
-    if (Sided.getSide() == Side.Client && areaRenderer[y / SIZE_BLOCKS] != null) {
-      areaRenderer[y / SIZE_BLOCKS].refresh = true;
-    }
+    doUpdates(x, y, z, ref);
 
     lock.writeUnlock();
 
     //Must be after lock released to prevent dead locks
     new BlockChangedEvent(new BlockReference().setFromBlockCoordinates(x + minBlockX, y, z + minBlockZ), Sided.getIDManager().toBlock(b), block).post();
+  }
+
+  public void doUpdates(int x, int y, int z, int ref) {
+    updateSurrounding(x, y, z, ref);
+
+    int section = y / SIZE_BLOCKS;
+
+    Area negX = null;
+    Area posX = null;
+    Area negZ = null;
+    Area posZ = null;
+
+    if (world != null && (x == 0 || x == SIZE_BLOCKS - 1 || z == 0 || z == SIZE_BLOCKS - 1)) {
+      world.lock.readLock();
+      if (x == 0) {
+        tempReference.setFromAreaCoordinates(areaX - 1, areaZ);
+        negX = world.getArea(tempReference, false);
+        if (negX != null) {
+          negX.lock.writeLock();
+          negX.update(SIZE_BLOCKS - 1, y, z, getRef(SIZE_BLOCKS - 1, y, z));
+          negX.lock.writeUnlock();
+        }
+      } else if (x == SIZE_BLOCKS - 1) {
+        tempReference.setFromAreaCoordinates(areaX + 1, areaZ);
+        posX = world.getArea(tempReference, false);
+        if (posX != null) {
+          posX.lock.writeLock();
+          posX.update(SIZE_BLOCKS + 1, y, z, getRef(SIZE_BLOCKS + 1, y, z));
+          posX.lock.writeUnlock();
+        }
+      }
+      if (z == 0) {
+        tempReference.setFromAreaCoordinates(areaX, areaZ - 1);
+        negZ = world.getArea(tempReference, false);
+        if (negZ != null) {
+          negZ.lock.writeLock();
+          negZ.update(x, y, SIZE_BLOCKS - 1, getRef(x, y, SIZE_BLOCKS - 1));
+          negZ.lock.writeUnlock();
+        }
+      } else if (z == SIZE_BLOCKS - 1) {
+        tempReference.setFromAreaCoordinates(areaX, areaZ + 1);
+        posZ = world.getArea(tempReference, false);
+        if (posZ != null) {
+          posZ.lock.writeLock();
+          posZ.update(x, y, SIZE_BLOCKS + 1, getRef(x, y, SIZE_BLOCKS + 1));
+          posZ.lock.writeUnlock();
+        }
+      }
+      world.lock.readUnlock();
+    }
+
+    if (Sided.getSide() == Side.Client) {
+      if (areaRenderer[section] != null) areaRenderer[section].refresh = true;
+
+      if (y > 0 && y % SIZE_BLOCKS == 0 && areaRenderer[section - 1] != null) areaRenderer[section - 1].refresh = true;
+      if (y < maxY && y % SIZE_BLOCKS == (SIZE_BLOCKS - 1) && areaRenderer[section + 1] != null)
+        areaRenderer[section + 1].refresh = true;
+
+      if (negX != null && negX.areaRenderer[section] != null) negX.areaRenderer[section].refresh = true;
+      if (posX != null && posX.areaRenderer[section] != null) posX.areaRenderer[section].refresh = true;
+      if (negZ != null && negZ.areaRenderer[section] != null) negZ.areaRenderer[section].refresh = true;
+      if (posZ != null && posZ.areaRenderer[section] != null) posZ.areaRenderer[section].refresh = true;
+    }
   }
 
   private void updateSurrounding(int x, int y, int z, int ref) {
