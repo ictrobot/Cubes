@@ -88,8 +88,6 @@ public class WorldRenderer implements Disposable {
           continue;
         }
         for (int ySection = Math.max(yPos - renderDistance, 0); ySection <= yPos + renderDistance; ySection++) {
-          if (areaX == -1 && areaZ == -1 && ySection == 2)
-            Log.debug("DEBUG");
           if (ySection >= area.height) break;
           if (areaInFrustum(area, ySection, camera.frustum) && shouldRender(world, area, ySection)) {
             if (area.areaRenderer[ySection] == null) {
