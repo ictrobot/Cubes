@@ -1,6 +1,7 @@
 package ethanjones.cubes.graphics.world;
 
 import ethanjones.cubes.core.util.BlockFace;
+import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
@@ -93,6 +94,8 @@ public class RayTracing {
     List<BlockReference> list = new ArrayList<BlockReference>();
 
     world.lock.readLock();
+    int currentAreaX = Integer.MIN_VALUE;
+    int currentAreaZ = Integer.MIN_VALUE;
     Area area = null;
     for (int nX = 0; nX <= (stepX != 0 ? radius : 0); nX++) {
       for (int nY = 0; nY <= (stepY != 0 ? radius : 0); nY++) {
@@ -101,12 +104,19 @@ public class RayTracing {
           int y = initialY + (nY * stepY);
           int z = initialZ + (nZ * stepZ);
 
-          Area fastGet = fastGet(world, x, z);
-          if (fastGet != area) {
+          int areaX = CoordinateConverter.area(x);
+          int areaZ = CoordinateConverter.area(z);
+
+          if (areaX != currentAreaX || areaZ != currentAreaZ) {
+            currentAreaX = areaX;
+            currentAreaZ = areaZ;
+
+            Area fastGet = fastGet(world, currentAreaX, currentAreaZ);
             if (area != null) area.lock.readUnlock();
             area = fastGet;
             if (area != null) area.lock.readLock();
           }
+
           if (area != null && area.blocks[Area.getRef(x - area.minBlockX, y, z - area.minBlockZ)] != 0) {
             list.add(new BlockReference().setFromBlockCoordinates(x, y, z));
           }
@@ -136,8 +146,8 @@ public class RayTracing {
     return list;
   }
 
-  private static Area fastGet(World world, int blockX, int blockZ) {
-    fastGet.setFromBlockCoordinates(blockX, blockZ);
+  private static Area fastGet(World world, int x, int z) {
+    fastGet.setFromAreaCoordinates(x, z);
     return world.map.get(fastGet);
   }
 }
