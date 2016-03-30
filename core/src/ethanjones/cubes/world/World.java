@@ -155,7 +155,12 @@ public abstract class World implements Disposable {
   public void updateEntity(DataGroup data) {
     lock.writeLock();
     UUID uuid = (UUID) data.get("uuid");
-    entities.get(uuid).read(data);
+    Entity entity = entities.get(uuid);
+    if (entity != null) {
+      entity.read(data);
+    } else {
+      Log.warning("No entity with uuid " + uuid.toString());
+    }
     lock.writeUnlock();
   }
 
