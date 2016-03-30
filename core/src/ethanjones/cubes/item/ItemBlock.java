@@ -28,32 +28,31 @@ public class ItemBlock extends Item {
   public void onButtonPress(int button, ItemStack itemStack, Player player, int stack) {
     if (Sided.getSide() == Side.Server && button == Input.Buttons.RIGHT) {
       RayTracing.BlockIntersection blockIntersection = RayTracing.getBlockIntersection(player.position, player.angle, Cubes.getServer().world);
-      if (blockIntersection != null) {
-        BlockReference blockReference = blockIntersection.getBlockReference();
-        switch (blockIntersection.getBlockFace()) {
-          case posX:
-            blockReference.blockX++;
-            break;
-          case negX:
-            blockReference.blockX--;
-            break;
-          case posY:
-            blockReference.blockY++;
-            break;
-          case negY:
-            blockReference.blockY--;
-            break;
-          case posZ:
-            blockReference.blockZ++;
-            break;
-          case negZ:
-            blockReference.blockZ--;
-            break;
-        }
-        Cubes.getServer().world.setBlock(block, blockReference.blockX, blockReference.blockY, blockReference.blockZ);
-
-        InventoryHelper.reduceCount(player.getInventory(), stack);
+      if (blockIntersection == null || blockIntersection.getBlockFace() == null) return;
+      BlockReference blockReference = blockIntersection.getBlockReference();
+      switch (blockIntersection.getBlockFace()) {
+        case posX:
+          blockReference.blockX++;
+          break;
+        case negX:
+          blockReference.blockX--;
+          break;
+        case posY:
+          blockReference.blockY++;
+          break;
+        case negY:
+          blockReference.blockY--;
+          break;
+        case posZ:
+          blockReference.blockZ++;
+          break;
+        case negZ:
+          blockReference.blockZ--;
+          break;
       }
+      Cubes.getServer().world.setBlock(block, blockReference.blockX, blockReference.blockY, blockReference.blockZ);
+
+      InventoryHelper.reduceCount(player.getInventory(), stack);
     }
   }
 }
