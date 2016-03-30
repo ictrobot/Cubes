@@ -51,12 +51,13 @@ public class RayTracing {
   }
 
   private static AreaReference fastGet = new AreaReference();
+  private static BoundingBox boundingBox = new BoundingBox();
+  private static Ray ray = new Ray();
 
   public static BlockIntersection intersection(Vector3 origin, Vector3 direction, int radius, World world) {
     List<BlockReference> blocks = getSortedBlockList(origin, direction, radius, world);
 
-    Ray ray = new Ray(origin, direction);
-    BoundingBox boundingBox = new BoundingBox();
+    ray.set(origin, direction);
     Vector3 intersection = new Vector3();
 
     for (BlockReference b : blocks) {
