@@ -8,6 +8,7 @@ import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.entity.living.player.PlayerInventory;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.graphics.menu.Fonts;
+import ethanjones.cubes.input.CameraController;
 import ethanjones.cubes.input.keyboard.KeyTypedAdapter;
 import ethanjones.cubes.input.keyboard.KeyboardHelper;
 import ethanjones.cubes.item.ItemBlock;
@@ -25,13 +26,10 @@ import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
@@ -73,6 +71,33 @@ public class GuiRenderer implements Disposable {
         Cubes.getClient().player.getInventory().hotbarSelected = selected;
         Cubes.getClient().player.getInventory().sync();
       }
+    }
+  }
+
+  private static class JumpTouchpad extends Touchpad {
+
+    private final float radius;
+    private final Circle bounds = new Circle();
+
+    public JumpTouchpad(float deadzoneRadius, Skin skin) {
+      super(deadzoneRadius, skin);
+      this.radius = deadzoneRadius;
+      this.addListener(new InputListener() {
+        @Override
+        public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+          if (bounds.contains(x, y)) {
+            CameraController controller = Cubes.getClient().inputChain.cameraController;
+            if (controller.jump == 0) controller.jump = CameraController.JUMP_RESET;
+            return true;
+          }
+          return false;
+        }
+      });
+    }
+
+    public void layout() {
+      bounds.set(getWidth() / 2, getHeight() / 2, radius);
+      super.layout();
     }
   }
 
@@ -126,7 +151,7 @@ public class GuiRenderer implements Disposable {
     chatLog.setAlignment(Align.bottomLeft, Align.left);
 
     if (Compatibility.get().isTouchScreen()) {
-      touchpad = new Touchpad(10f, skin);
+      touchpad = new JumpTouchpad(50, skin);
 
       Cubes.getClient().inputChain.cameraController.touchpad = touchpad;
 

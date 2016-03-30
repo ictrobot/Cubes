@@ -20,6 +20,8 @@ import com.badlogic.gdx.utils.IntIntMap;
 
 public class CameraController extends InputAdapter {
 
+  public static final float JUMP_RESET = 0.25f;
+
   private final Camera camera;
   private final IntIntMap keys = new IntIntMap();
   private final Vector3 tmp = new Vector3();
@@ -43,7 +45,7 @@ public class CameraController extends InputAdapter {
 
   @Override
   public boolean keyDown(int keycode) {
-    if (keycode == Input.Keys.SPACE && jump == 0) jump = 0.25f;
+    if (keycode == Input.Keys.SPACE && jump == 0) jump = JUMP_RESET;
     keys.put(keycode, keycode);
 
     PacketKey packetKey = new PacketKey();
