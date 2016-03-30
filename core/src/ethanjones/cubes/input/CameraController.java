@@ -1,6 +1,7 @@
 package ethanjones.cubes.input;
 
 import ethanjones.cubes.core.event.entity.living.player.PlayerMovementEvent;
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.item.ItemStack;
 import ethanjones.cubes.networking.NetworkingManager;
@@ -124,29 +125,21 @@ public class CameraController extends InputAdapter {
 
   private void update(float forward, float backward, float left, float right) {
     float deltaTime = Gdx.graphics.getRawDeltaTime();
-    tmp.set(camera.direction.x, 0, camera.direction.z).nor();
-    boolean move = false;
     if (forward > 0) {
-      tmp.nor().scl(deltaTime * speed * forward);
-      move = true;
+      tmp.set(camera.direction.x, 0, camera.direction.z).nor().nor().scl(deltaTime * speed * forward);
+      tryMove();
     }
     if (backward > 0) {
-      tmp.nor().scl(-deltaTime * speed * backward);
-      move = true;
+      tmp.set(camera.direction.x, 0, camera.direction.z).nor().scl(-deltaTime * speed * backward);
+      tryMove();
     }
     if (left > 0) {
-      tmp.crs(camera.up).nor().scl(-deltaTime * speed * left);
-      move = true;
+      tmp.set(camera.direction.x, 0, camera.direction.z).crs(camera.up).nor().scl(-deltaTime * speed * left);
+      tryMove();
     }
     if (right > 0) {
-      tmp.crs(camera.up).nor().scl(deltaTime * speed * right);
-      move = true;
-    }
-    if (move) {
-      Vector3 vector3 = new Vector3(camera.position).add(tmp);
-      if (!new PlayerMovementEvent(vector3).post().isCanceled()) {
-        camera.position.add(tmp);
-      }
+      tmp.set(camera.direction.x, 0, camera.direction.z).crs(camera.up).nor().scl(deltaTime * speed * right);
+      tryMove();
     }
     if (deltaTime > 0f && jump > 0) {
       float f = deltaTime * 6;
@@ -157,6 +150,13 @@ public class CameraController extends InputAdapter {
       if (jump < 0) jump = 0;
     }
     camera.update(true);
+  }
+
+  private void tryMove() {
+    Vector3 vector3 = new Vector3(camera.position).add(tmp);
+    if (!new PlayerMovementEvent(vector3).post().isCanceled()) {
+      camera.position.add(tmp);
+    }
   }
 
   public void tick() {
