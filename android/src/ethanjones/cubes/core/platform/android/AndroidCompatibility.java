@@ -7,6 +7,7 @@ import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menu.MenuManager;
+import ethanjones.cubes.graphics.world.AreaRenderer;
 import ethanjones.cubes.side.common.Cubes;
 
 import android.app.Activity;
@@ -35,6 +36,8 @@ public class AndroidCompatibility extends Compatibility {
 
     activityManager = (ActivityManager) androidLauncher.getSystemService(Activity.ACTIVITY_SERVICE);
     memoryInfo = new MemoryInfo();
+
+    AreaRenderer.MAX_REFRESH_PER_FRAME = 2;
   }
 
   @Override

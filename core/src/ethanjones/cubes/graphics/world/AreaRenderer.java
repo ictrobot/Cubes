@@ -26,7 +26,7 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
 
   public static final int MIN_AREA = 0;
   public static final int MAX_AREA = SIZE_BLOCKS - 1;
-  public static final int MAX_REFRESH_PER_FRAME = 8;
+  public static int MAX_REFRESH_PER_FRAME = 8;
 
   private static int refreshedThisFrame = 0;
 
