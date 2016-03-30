@@ -21,9 +21,12 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.RenderableProvider;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
+
+import java.util.Random;
 
 public class ItemEntity extends Entity implements RenderableProvider {
   static short[] blockIndices;
@@ -57,6 +60,7 @@ public class ItemEntity extends Entity implements RenderableProvider {
 
   public ItemEntity() {
     super("core:item");
+    this.motion.set(MathUtils.random(1f) - 0.5f, 0, MathUtils.random(1f) - 0.5f);
   }
 
   @Override
