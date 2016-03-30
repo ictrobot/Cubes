@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -127,7 +128,7 @@ public class RayTracing {
     if (area != null) area.lock.readUnlock();
     world.lock.readUnlock();
 
-    list.sort(new Comparator<BlockReference>() {
+    Collections.sort(list, new Comparator<BlockReference>() {
       @Override
       public int compare(BlockReference o1, BlockReference o2) {
         float d1 = distance2(o1);
