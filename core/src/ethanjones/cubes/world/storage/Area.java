@@ -43,6 +43,7 @@ public class Area {
 
   public volatile AreaRenderer[] areaRenderer; //Always null on server
   public volatile int[] blocks; //0 = null, positive = visible, negative = invisible
+  public volatile int[] heightmap = new int[SIZE_BLOCKS_SQUARED];
   public volatile int maxY;
   public volatile int height;
 
@@ -191,6 +192,10 @@ public class Area {
 
     doUpdates(x, y, z, ref);
 
+    int hmRef = x + z * SIZE_BLOCKS;
+    if (y > heightmap[hmRef] && block != null) heightmap[hmRef] = y;
+    if (y == heightmap[hmRef] && block == null) calculateHeight(x, z);
+
     lock.writeUnlock();
 
     //Must be after lock released to prevent dead locks
@@ -332,6 +337,42 @@ public class Area {
     lock.writeUnlock();
   }
 
+  public void rebuildHeightmap() {
+    lock.writeLock();
+    for (int x = 0; x < SIZE_BLOCKS; x++) {
+      forLoop:
+      for (int z = 0; z < SIZE_BLOCKS; z++) {
+        int column = x + z * SIZE_BLOCKS;
+        int y = maxY;
+        while (y >= 0) {
+          if (blocks[column + y * SIZE_BLOCKS_SQUARED] != 0) {
+            heightmap[column] = y;
+            continue forLoop;
+          }
+          y--;
+        }
+        heightmap[column] = -1;
+      }
+    }
+    lock.writeUnlock();
+  }
+
+  public void calculateHeight(int x, int z) {
+    lock.writeLock();
+    int column = x + z * SIZE_BLOCKS;
+    int y = maxY;
+    while (y >= 0) {
+      if (blocks[column + y * SIZE_BLOCKS_SQUARED] != 0) {
+        heightmap[column] = y;
+        lock.writeUnlock();
+        return;
+      }
+      y--;
+    }
+    heightmap[column] = -1;
+    lock.writeUnlock();
+  }
+
   private void expand(int height) {
     lock.writeLock();
 
@@ -449,6 +490,9 @@ public class Area {
       lock.readUnlock();
       return;
     }
+    for (int i = 0; i < SIZE_BLOCKS_SQUARED; i++) {
+      dataOutputStream.writeInt(heightmap[i]);
+    }
 
     int usedHeight = usedHeight();
     dataOutputStream.writeInt(features() ? usedHeight : -usedHeight);
@@ -476,6 +520,10 @@ public class Area {
     int areaZ = dataInputStream.readInt();
     Area area = new Area(areaX, areaZ);
 
+    for (int i = 0; i < SIZE_BLOCKS_SQUARED; i++) {
+      area.heightmap[i] = dataInputStream.readInt();
+    }
+
     int height = dataInputStream.readInt();
     if (height == 0) return area;
 
@@ -494,5 +542,9 @@ public class Area {
 
   public static int getRef(int x, int y, int z) {
     return x + z * SIZE_BLOCKS + y * SIZE_BLOCKS_SQUARED;
+  }
+
+  public static int getHeightMapRef(int x, int z) {
+    return x + z * SIZE_BLOCKS;
   }
 }
