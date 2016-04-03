@@ -8,6 +8,7 @@ import ethanjones.cubes.item.ItemBlock;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class Graphics {
@@ -18,7 +19,7 @@ public class Graphics {
 
   public static void init() {
     spriteBatch = new SpriteBatch();
-    modelBatch = new ModelBatch();
+    modelBatch = new ModelBatch(new DefaultShaderProvider(Gdx.files.internal("shaders/world.vertex.glsl"), Gdx.files.internal("shaders/world.fragment.glsl")));
     screenViewport = new ScreenViewport();
 
     for (Block block : IDManager.getBlocks()) {
