@@ -43,6 +43,7 @@ public class Area {
 
   public volatile AreaRenderer[] areaRenderer; //Always null on server
   public volatile int[] blocks; //0 = null, positive = visible, negative = invisible
+  public volatile byte[] light; // most significant 4 bits are sunlight. the least significant are lights
   public volatile int[] heightmap = new int[SIZE_BLOCKS_SQUARED];
   public volatile int maxY;
   public volatile int height;
@@ -80,6 +81,38 @@ public class Area {
     return lock.readUnlock(Sided.getIDManager().toBlock(Math.abs(b)));
   }
 
+  // Get the bits XXXX0000
+  public int getSunlight(int x, int y, int z) {
+    lock.readLock();
+    int r = (light[getRef(x, y, z)] >> 4) & 0xF;
+    lock.readUnlock();
+    return r;
+  }
+
+  // Get the bits 0000XXXX
+  public int getLight(int x, int y, int z) {
+    lock.readLock();
+    int r = (light[getRef(x, y, z)]) & 0xF;
+    lock.readUnlock();
+    return r;
+  }
+
+  // Set the bits XXXX0000
+  public void setSunlight(int x, int y, int z, int l) {
+    lock.writeLock();
+    int ref = getRef(x, y, z);
+    light[ref] = (byte) ((light[ref] & 0xF) | (l << 4));
+    lock.writeUnlock();
+  }
+
+  // Set the bits 0000XXXX
+  public void setLight(int x, int y, int z, int l) {
+    lock.writeLock();
+    int ref = getRef(x, y, z);
+    light[ref] = (byte) ((light[ref] & 0xF0) | l);
+    lock.writeUnlock();
+  }
+
   public boolean isBlank() {
     lock.readLock();
     return lock.readUnlock(blocks == null);
@@ -107,6 +140,7 @@ public class Area {
       throw new CubesException("Area has been unloaded");
     }
     blocks = null;
+    light = null;
     AreaRenderer.free(areaRenderer);
     areaRenderer = null;
     maxY = 0;
@@ -324,6 +358,7 @@ public class Area {
     if (isBlank()) {
       height = (int) Math.ceil((y + 1) / (float) SIZE_BLOCKS);
       blocks = new int[SIZE_BLOCKS_CUBED * height];
+      light = new byte[SIZE_BLOCKS_CUBED * height];
       AreaRenderer.free(areaRenderer);
       if (Sided.getSide() == Side.Client) {
         areaRenderer = new AreaRenderer[height];
@@ -393,6 +428,10 @@ public class Area {
     blocks = new int[SIZE_BLOCKS_CUBED * height];
     System.arraycopy(oldBlocks, 0, blocks, 0, oldBlocks.length);
 
+    byte[] oldLight = light;
+    light = new byte[SIZE_BLOCKS_CUBED * height];
+    System.arraycopy(oldLight, 0, light, 0, oldLight.length);
+
     AreaRenderer.free(areaRenderer);
     if (Sided.getSide() == Side.Client) {
       areaRenderer = new AreaRenderer[height];
@@ -445,9 +484,14 @@ public class Area {
     blocks = new int[SIZE_BLOCKS_CUBED * usedHeight];
     System.arraycopy(oldBlocks, 0, blocks, 0, blocks.length);
 
+    byte[] oldLight = light;
+    light = new byte[SIZE_BLOCKS_CUBED * usedHeight];
+    System.arraycopy(oldLight, 0, light, 0, light.length);
+
     AreaRenderer.free(areaRenderer);
     if (Sided.getSide() == Side.Client) {
       areaRenderer = new AreaRenderer[usedHeight];
+      renderStatus = AreaRenderStatus.create(usedHeight);
     } else {
       areaRenderer = null;
     }
@@ -499,6 +543,9 @@ public class Area {
     for (int i = 0; i < (SIZE_BLOCKS_CUBED * usedHeight); i++) {
       dataOutputStream.writeInt(blocks[i]);
     }
+    for (int i = 0; i < (SIZE_BLOCKS_CUBED * usedHeight); i++) {
+      dataOutputStream.writeByte(light[i]);
+    }
 
     if (usedHeight != height) {
       Executor.execute(new Runnable() {
@@ -536,6 +583,9 @@ public class Area {
     area.setupArrays((height * SIZE_BLOCKS) - 1);
     for (int i = 0; i < area.blocks.length; i++) {
       area.blocks[i] = dataInputStream.readInt();
+    }
+    for (int i = 0; i < area.light.length; i++) {
+      area.light[i] = dataInputStream.readByte();
     }
     return area;
   }
