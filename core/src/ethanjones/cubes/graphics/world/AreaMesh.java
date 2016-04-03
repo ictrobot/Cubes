@@ -11,10 +11,10 @@ import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.utils.Pool;
 
 public class AreaMesh implements Pool.Poolable {
-  public static final VertexAttributes vertexAttributes = MeshBuilder.createAttributes(VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates);
-  public static final int VERTEX_SIZE = 8; //3 for position, 3 for normal, 2 for texture coordinates;
+  public static final VertexAttributes vertexAttributes = MeshBuilder.createAttributes(VertexAttributes.Usage.Position | VertexAttributes.Usage.TextureCoordinates);
+  public static final int VERTEX_SIZE = 5; //3 for position, 2 for texture coordinates;
 
-  public static final int MAX_VERTICES = 65528;
+  public static final int MAX_VERTICES = ((65536 / VERTEX_SIZE) - 1) * VERTEX_SIZE;
   public static final int SAFE_VERTICES = MAX_VERTICES - (6 * 4 * VERTEX_SIZE);
 
   protected static short[] indices;
