@@ -12,8 +12,6 @@ public class LightNode {
   public LightNode() {
   }
 
-  ;
-
   public LightNode(Area area, int x, int y, int z, int l) {
     this.area = area;
     this.x = x;
