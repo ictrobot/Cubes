@@ -21,6 +21,8 @@ public class Blocks {
   public static Block wood;
   @Register("core:leaves")
   public static Block leaves;
+  @Register("core:light")
+  public static Block light;
 
   public static void init() {
     for (Field f : Blocks.class.getFields()) {
