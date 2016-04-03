@@ -1,6 +1,5 @@
 package ethanjones.cubes.graphics.rendering;
 
-import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.entity.Entity;
@@ -31,7 +30,7 @@ import static ethanjones.cubes.graphics.Graphics.modelBatch;
 
 public class WorldRenderer implements Disposable {
 
-  public Environment environment;
+  //public Environment environment;
   public PerspectiveCamera camera;
   private AreaReference fastGet = new AreaReference();
 
@@ -51,9 +50,9 @@ public class WorldRenderer implements Disposable {
   }
 
   public WorldRenderer() {
-    environment = new Environment();
-    environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
-    environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.9f, -0.8f));
+    //environment = new Environment();
+    //environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
+    //environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.9f, -0.8f));
 
     camera = new PerspectiveCamera(Settings.getIntegerSettingValue(Settings.GRAPHICS_FOV), Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) {
       @Override
@@ -93,7 +92,7 @@ public class WorldRenderer implements Disposable {
             if (area.areaRenderer[ySection] == null) {
               Pools.obtain(AreaRenderer.class).set(area, ySection);
             }
-            modelBatch.render(area.areaRenderer[ySection], environment);
+            modelBatch.render(area.areaRenderer[ySection]);
           } else if (area.areaRenderer[ySection] != null) {
             AreaRenderer.free(area.areaRenderer[ySection]);
           }
@@ -101,7 +100,7 @@ public class WorldRenderer implements Disposable {
       }
     }
     for (Entity entity : world.entities.values()) {
-      if (entity instanceof RenderableProvider) modelBatch.render(((RenderableProvider) entity), environment);
+      if (entity instanceof RenderableProvider) modelBatch.render(((RenderableProvider) entity));
     }
     Renderable selected = SelectedBlock.draw();
     if (selected != null) modelBatch.render(selected);
