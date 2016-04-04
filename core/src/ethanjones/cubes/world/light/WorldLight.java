@@ -12,7 +12,7 @@ import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.storage.Area;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.ArrayDeque;
 
 import static ethanjones.cubes.world.storage.Area.*;
 
@@ -22,6 +22,7 @@ public class WorldLight {
   public static final byte FULL_LIGHT = (byte) 0xFF;
 
   public static void addLight(int blockX, int blockY, int blockZ, int l) {
+    long ms = System.currentTimeMillis();
     World world = Sided.getCubes().world;
 
     Area area = world.getArea(CoordinateConverter.area(blockX), CoordinateConverter.area(blockZ));
@@ -29,15 +30,16 @@ public class WorldLight {
       int x = blockX - area.minBlockX;
       int y = blockY;
       int z = blockZ - area.minBlockZ;
-      LinkedList<LightNode> lightQueue = new LinkedList<LightNode>();
+      ArrayDeque<LightNode> lightQueue = new ArrayDeque<LightNode>();
 
       area.setLight(x, y, z, l);
       lightQueue.add(new LightNode(area, x, y, z, l));
       propagateAdd(lightQueue, world);
     }
+    Log.debug("Light add: " + (System.currentTimeMillis() - ms) + "ms");
   }
 
-  private static void propagateAdd(LinkedList<LightNode> lightQueue, World world) {
+  private static void propagateAdd(ArrayDeque<LightNode> lightQueue, World world) {
     boolean isClient = Sided.getSide() == Side.Client;
     ArrayList<Area> used = new ArrayList<Area>();
     boolean first = true;
@@ -124,6 +126,7 @@ public class WorldLight {
   }
 
   public static void removeLight(int blockX, int blockY, int blockZ) {
+    long ms = System.currentTimeMillis();
     World world = Sided.getCubes().world;
 
     Area area = world.getArea(CoordinateConverter.area(blockX), CoordinateConverter.area(blockZ));
@@ -131,8 +134,8 @@ public class WorldLight {
       int x = blockX - area.minBlockX;
       int y = blockY;
       int z = blockZ - area.minBlockZ;
-      LinkedList<LightNode> removeQueue = new LinkedList<LightNode>();
-      LinkedList<LightNode> addQueue = new LinkedList<LightNode>();
+      ArrayDeque<LightNode> removeQueue = new ArrayDeque<LightNode>();
+      ArrayDeque<LightNode> addQueue = new ArrayDeque<LightNode>();
 
       int prev = area.getLight(x, y, z);
       area.setLight(x, y, z, 0);
@@ -140,9 +143,10 @@ public class WorldLight {
       propagateRemove(removeQueue, addQueue, world);
       propagateAdd(addQueue, world);
     }
+    Log.debug("Light remove: " + (System.currentTimeMillis() - ms) + "ms");
   }
 
-  private static void propagateRemove(LinkedList<LightNode> removeQueue, LinkedList<LightNode> addQueue, World world) {
+  private static void propagateRemove(ArrayDeque<LightNode> removeQueue, ArrayDeque<LightNode> addQueue, World world) {
     boolean isClient = Sided.getSide() == Side.Client;
     ArrayList<Area> used = new ArrayList<Area>();
     boolean first = true;
