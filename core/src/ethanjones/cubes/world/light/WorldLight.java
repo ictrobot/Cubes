@@ -13,6 +13,8 @@ import ethanjones.cubes.world.storage.Area;
 
 import java.util.ArrayList;
 import java.util.ArrayDeque;
+import java.util.HashSet;
+import java.util.Set;
 
 import static ethanjones.cubes.world.storage.Area.*;
 
@@ -40,8 +42,12 @@ public class WorldLight {
   }
 
   private static void propagateAdd(ArrayDeque<LightNode> lightQueue, World world) {
+    if (lightQueue.isEmpty()) return;
     boolean isClient = Sided.getSide() == Side.Client;
-    ArrayList<Area> used = new ArrayList<Area>();
+    HashSet<Area> used = new HashSet<Area>();
+    Area initial = lightQueue.getFirst().area;
+    initial.lock.writeLock();
+
     boolean first = true;
 
     while (!lightQueue.isEmpty()) {
@@ -51,11 +57,6 @@ public class WorldLight {
       int y = n.y;
       int z = n.z;
       int l = n.l;
-
-      if (!used.contains(area)) {
-        area.lock.writeLock();
-        used.add(area);
-      }
 
       setLight(area, x, y, z, l);
       if (isClient) area.updateRender(y / SIZE_BLOCKS);
@@ -70,7 +71,11 @@ public class WorldLight {
         }
       } else {
         Area a = world.getArea(area.areaX - 1, area.areaZ);
-        if (getLight(a, MAX, y, z) + 2 <= l) {
+        if (a.getLight(MAX, y, z) + 2 <= l) {
+          if (!used.contains(a)) {
+            a.lock.writeLock();
+            used.add(a);
+          }
           lightQueue.add(new LightNode(a, MAX, y, z, l - 1));
         }
       }
@@ -81,7 +86,11 @@ public class WorldLight {
         }
       } else {
         Area a = world.getArea(area.areaX + 1, area.areaZ);
-        if (getLight(a, 0, y, z) + 2 <= l) {
+        if (a.getLight(0, y, z) + 2 <= l) {
+          if (!used.contains(a)) {
+            a.lock.writeLock();
+            used.add(a);
+          }
           lightQueue.add(new LightNode(a, 0, y, z, l - 1));
         }
       }
@@ -92,7 +101,11 @@ public class WorldLight {
         }
       } else {
         Area a = world.getArea(area.areaX, area.areaZ - 1);
-        if (getLight(a, x, y, MAX) + 2 <= l) {
+        if (a.getLight(x, y, MAX) + 2 <= l) {
+          if (!used.contains(a)) {
+            a.lock.writeLock();
+            used.add(a);
+          }
           lightQueue.add(new LightNode(a, x, y, MAX, l - 1));
         }
       }
@@ -103,7 +116,11 @@ public class WorldLight {
         }
       } else {
         Area a = world.getArea(area.areaX, area.areaZ + 1);
-        if (getLight(a, x, y, 0) + 2 <= l) {
+        if (a.getLight(x, y, 0) + 2 <= l) {
+          if (!used.contains(a)) {
+            a.lock.writeLock();
+            used.add(a);
+          }
           lightQueue.add(new LightNode(a, x, y, 0, l - 1));
         }
       }
@@ -147,6 +164,7 @@ public class WorldLight {
   }
 
   private static void propagateRemove(ArrayDeque<LightNode> removeQueue, ArrayDeque<LightNode> addQueue, World world) {
+    if (removeQueue.isEmpty()) return;
     boolean isClient = Sided.getSide() == Side.Client;
     ArrayList<Area> used = new ArrayList<Area>();
     boolean first = true;
