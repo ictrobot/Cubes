@@ -24,6 +24,7 @@ uniform mat4 u_worldTrans;
 uniform float u_opacity;
 varying float v_opacity;
 
+uniform float u_sunlight;
 attribute float a_voxellight;
 varying float v_voxellight;
 
@@ -38,5 +39,9 @@ void main() {
 	vec3 normal = normalize(u_normalMatrix * a_normal);
 	v_normal = normal;
 
-	v_voxellight = a_voxellight;
+	int int_voxellight = int(a_voxellight);
+	int int_blocklight = int_voxellight & 0xF;
+	int int_sunlight = (int_voxellight >> 4) & 0xF;
+	float light = max(float(int_blocklight), float(int_sunlight) * u_sunlight) / 15;
+	v_voxellight = 0.2 + (light * 0.8);
 }

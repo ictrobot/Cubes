@@ -31,8 +31,5 @@ void main() {
 
   gl_FragColor.a = diffuse.a * v_opacity;
 
-  int voxellight = int(v_voxellight);
-  float light = 0.25 + ((voxellight & 0xF) / 20.0);
-
-  gl_FragColor.rgb = diffuse.rgb * light;
+  gl_FragColor.rgb = diffuse.rgb * v_voxellight;
 }
