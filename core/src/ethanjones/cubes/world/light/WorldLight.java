@@ -102,7 +102,7 @@ public class WorldLight {
       // pos Y
       if (y < area.maxY) {
         if (area.getLight(x, y + 1, z) + 2 <= l) {
-          lightQueue.add(new LightNode(area, x, y - 1, z, l - 1));
+          lightQueue.add(new LightNode(area, x, y + 1, z, l - 1));
         }
       }
     }
