@@ -24,6 +24,9 @@ uniform mat4 u_worldTrans;
 uniform float u_opacity;
 varying float v_opacity;
 
+attribute float a_voxellight;
+varying float v_voxellight;
+
 void main() {
 	v_diffuseUV = u_diffuseUVTransform.xy + a_texCoord0 * u_diffuseUVTransform.zw;
 
@@ -34,4 +37,6 @@ void main() {
 
 	vec3 normal = normalize(u_normalMatrix * a_normal);
 	v_normal = normal;
+
+	v_voxellight = a_voxellight;
 }
