@@ -44,6 +44,10 @@ public class Block {
     return Localization.get("block." + id.replaceFirst(":", "."));
   }
 
+  public int getLightLevel() {
+    return 0;
+  }
+
   @Override
   public String toString() {
     return id;

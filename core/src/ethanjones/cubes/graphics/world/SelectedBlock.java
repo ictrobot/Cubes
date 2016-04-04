@@ -1,6 +1,5 @@
 package ethanjones.cubes.graphics.world;
 
-import ethanjones.cubes.graphics.assets.Asset;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.reference.BlockReference;
@@ -12,6 +11,8 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.math.Vector3;
+
+import static ethanjones.cubes.world.light.WorldLight.FULL_LIGHT;
 
 public class SelectedBlock {
   static short[] blockIndices;
@@ -48,12 +49,12 @@ public class SelectedBlock {
       mesh.setIndices(blockIndices);
       int vertexOffset = 0;
       vertices = new float[AreaMesh.VERTEX_SIZE * 4 * 6];
-      vertexOffset = FaceVertices.createMaxX(Vector3.Zero, textureRegion, 0, 0, 0, vertices, vertexOffset);
-      vertexOffset = FaceVertices.createMaxY(Vector3.Zero, textureRegion, 0, 0, 0, vertices, vertexOffset);
-      vertexOffset = FaceVertices.createMaxZ(Vector3.Zero, textureRegion, 0, 0, 0, vertices, vertexOffset);
-      vertexOffset = FaceVertices.createMinX(Vector3.Zero, textureRegion, 0, 0, 0, vertices, vertexOffset);
-      vertexOffset = FaceVertices.createMinY(Vector3.Zero, textureRegion, 0, 0, 0, vertices, vertexOffset);
-      vertexOffset = FaceVertices.createMinZ(Vector3.Zero, textureRegion, 0, 0, 0, vertices, vertexOffset);
+      vertexOffset = FaceVertices.createMaxX(Vector3.Zero, textureRegion, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+      vertexOffset = FaceVertices.createMaxY(Vector3.Zero, textureRegion, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+      vertexOffset = FaceVertices.createMaxZ(Vector3.Zero, textureRegion, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+      vertexOffset = FaceVertices.createMinX(Vector3.Zero, textureRegion, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+      vertexOffset = FaceVertices.createMinY(Vector3.Zero, textureRegion, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+      vertexOffset = FaceVertices.createMinZ(Vector3.Zero, textureRegion, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
       mesh.setVertices(vertices);
     }
     float f = 1f / 64f;

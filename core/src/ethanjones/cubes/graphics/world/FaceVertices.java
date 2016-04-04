@@ -1,5 +1,7 @@
 package ethanjones.cubes.graphics.world;
 
+import ethanjones.cubes.core.logging.Log;
+
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 
@@ -13,165 +15,189 @@ public class FaceVertices {
    * vertices[vertexOffset++] = texture region v
    */
 
-  public static int createMaxY(Vector3 offset, TextureRegion region, int x, int y, int z, float[] vertices, int vertexOffset) {
+  public static int createMaxY(Vector3 offset, TextureRegion region, int x, int y, int z, int light, float[] vertices, int vertexOffset) {
     vertices[vertexOffset++] = offset.x + x;
     vertices[vertexOffset++] = offset.y + y + 1;
     vertices[vertexOffset++] = offset.z + z + 1;
     vertices[vertexOffset++] = region.getU2();
     vertices[vertexOffset++] = region.getV2();
+    vertices[vertexOffset++] = light;
 
     vertices[vertexOffset++] = offset.x + x + 1;
     vertices[vertexOffset++] = offset.y + y + 1;
     vertices[vertexOffset++] = offset.z + z + 1;
     vertices[vertexOffset++] = region.getU2();
     vertices[vertexOffset++] = region.getV();
+    vertices[vertexOffset++] = light;
 
     vertices[vertexOffset++] = offset.x + x + 1;
     vertices[vertexOffset++] = offset.y + y + 1;
     vertices[vertexOffset++] = offset.z + z;
     vertices[vertexOffset++] = region.getU();
     vertices[vertexOffset++] = region.getV();
+    vertices[vertexOffset++] = light;
 
     vertices[vertexOffset++] = offset.x + x;
     vertices[vertexOffset++] = offset.y + y + 1;
     vertices[vertexOffset++] = offset.z + z;
     vertices[vertexOffset++] = region.getU();
     vertices[vertexOffset++] = region.getV2();
+    vertices[vertexOffset++] = light;
     return vertexOffset;
   }
 
-  public static int createMinY(Vector3 offset, TextureRegion region, int x, int y, int z, float[] vertices, int vertexOffset) {
+  public static int createMinY(Vector3 offset, TextureRegion region, int x, int y, int z, int light, float[] vertices, int vertexOffset) {
     vertices[vertexOffset++] = offset.x + x + 1;
     vertices[vertexOffset++] = offset.y + y;
     vertices[vertexOffset++] = offset.z + z;
     vertices[vertexOffset++] = region.getU2();
     vertices[vertexOffset++] = region.getV();
+    vertices[vertexOffset++] = light;
 
     vertices[vertexOffset++] = offset.x + x + 1;
     vertices[vertexOffset++] = offset.y + y;
     vertices[vertexOffset++] = offset.z + z + 1;
     vertices[vertexOffset++] = region.getU();
     vertices[vertexOffset++] = region.getV();
+    vertices[vertexOffset++] = light;
 
     vertices[vertexOffset++] = offset.x + x;
     vertices[vertexOffset++] = offset.y + y;
     vertices[vertexOffset++] = offset.z + z + 1;
     vertices[vertexOffset++] = region.getU();
     vertices[vertexOffset++] = region.getV2();
+    vertices[vertexOffset++] = light;
 
     vertices[vertexOffset++] = offset.x + x;
     vertices[vertexOffset++] = offset.y + y;
     vertices[vertexOffset++] = offset.z + z;
     vertices[vertexOffset++] = region.getU2();
     vertices[vertexOffset++] = region.getV2();
+    vertices[vertexOffset++] = light;
     return vertexOffset;
   }
 
-  public static int createMinX(Vector3 offset, TextureRegion region, int x, int y, int z, float[] vertices, int vertexOffset) {
+  public static int createMinX(Vector3 offset, TextureRegion region, int x, int y, int z, int light, float[] vertices, int vertexOffset) {
     vertices[vertexOffset++] = offset.x + x;
     vertices[vertexOffset++] = offset.y + y;
     vertices[vertexOffset++] = offset.z + z + 1;
     vertices[vertexOffset++] = region.getU();
     vertices[vertexOffset++] = region.getV2();
+    vertices[vertexOffset++] = light;
 
     vertices[vertexOffset++] = offset.x + x;
     vertices[vertexOffset++] = offset.y + y + 1;
     vertices[vertexOffset++] = offset.z + z + 1;
     vertices[vertexOffset++] = region.getU();
     vertices[vertexOffset++] = region.getV();
+    vertices[vertexOffset++] = light;
 
     vertices[vertexOffset++] = offset.x + x;
     vertices[vertexOffset++] = offset.y + y + 1;
     vertices[vertexOffset++] = offset.z + z;
     vertices[vertexOffset++] = region.getU2();
     vertices[vertexOffset++] = region.getV();
+    vertices[vertexOffset++] = light;
 
     vertices[vertexOffset++] = offset.x + x;
     vertices[vertexOffset++] = offset.y + y;
     vertices[vertexOffset++] = offset.z + z;
     vertices[vertexOffset++] = region.getU2();
     vertices[vertexOffset++] = region.getV2();
+    vertices[vertexOffset++] = light;
     return vertexOffset;
   }
 
-  public static int createMaxX(Vector3 offset, TextureRegion region, int x, int y, int z, float[] vertices, int vertexOffset) {
+  public static int createMaxX(Vector3 offset, TextureRegion region, int x, int y, int z, int light, float[] vertices, int vertexOffset) {
     vertices[vertexOffset++] = offset.x + x + 1;
     vertices[vertexOffset++] = offset.y + y + 1;
     vertices[vertexOffset++] = offset.z + z;
     vertices[vertexOffset++] = region.getU2();
     vertices[vertexOffset++] = region.getV();
+    vertices[vertexOffset++] = light;
 
     vertices[vertexOffset++] = offset.x + x + 1;
     vertices[vertexOffset++] = offset.y + y + 1;
     vertices[vertexOffset++] = offset.z + z + 1;
     vertices[vertexOffset++] = region.getU();
     vertices[vertexOffset++] = region.getV();
+    vertices[vertexOffset++] = light;
 
     vertices[vertexOffset++] = offset.x + x + 1;
     vertices[vertexOffset++] = offset.y + y;
     vertices[vertexOffset++] = offset.z + z + 1;
     vertices[vertexOffset++] = region.getU();
     vertices[vertexOffset++] = region.getV2();
+    vertices[vertexOffset++] = light;
 
     vertices[vertexOffset++] = offset.x + x + 1;
     vertices[vertexOffset++] = offset.y + y;
     vertices[vertexOffset++] = offset.z + z;
     vertices[vertexOffset++] = region.getU2();
     vertices[vertexOffset++] = region.getV2();
+    vertices[vertexOffset++] = light;
     return vertexOffset;
   }
 
-  public static int createMinZ(Vector3 offset, TextureRegion region, int x, int y, int z, float[] vertices, int vertexOffset) {
+  public static int createMinZ(Vector3 offset, TextureRegion region, int x, int y, int z, int light, float[] vertices, int vertexOffset) {
     vertices[vertexOffset++] = offset.x + x;
     vertices[vertexOffset++] = offset.y + y + 1;
     vertices[vertexOffset++] = offset.z + z;
     vertices[vertexOffset++] = region.getU2();
     vertices[vertexOffset++] = region.getV();
+    vertices[vertexOffset++] = light;
 
     vertices[vertexOffset++] = offset.x + x + 1;
     vertices[vertexOffset++] = offset.y + y + 1;
     vertices[vertexOffset++] = offset.z + z;
     vertices[vertexOffset++] = region.getU();
     vertices[vertexOffset++] = region.getV();
+    vertices[vertexOffset++] = light;
 
     vertices[vertexOffset++] = offset.x + x + 1;
     vertices[vertexOffset++] = offset.y + y;
     vertices[vertexOffset++] = offset.z + z;
     vertices[vertexOffset++] = region.getU();
     vertices[vertexOffset++] = region.getV2();
+    vertices[vertexOffset++] = light;
 
     vertices[vertexOffset++] = offset.x + x;
     vertices[vertexOffset++] = offset.y + y;
     vertices[vertexOffset++] = offset.z + z;
     vertices[vertexOffset++] = region.getU2();
     vertices[vertexOffset++] = region.getV2();
+    vertices[vertexOffset++] = light;
     return vertexOffset;
   }
 
-  public static int createMaxZ(Vector3 offset, TextureRegion region, int x, int y, int z, float[] vertices, int vertexOffset) {
+  public static int createMaxZ(Vector3 offset, TextureRegion region, int x, int y, int z, int light, float[] vertices, int vertexOffset) {
     vertices[vertexOffset++] = offset.x + x + 1;
     vertices[vertexOffset++] = offset.y + y;
     vertices[vertexOffset++] = offset.z + z + 1;
     vertices[vertexOffset++] = region.getU2();
     vertices[vertexOffset++] = region.getV2();
+    vertices[vertexOffset++] = light;
 
     vertices[vertexOffset++] = offset.x + x + 1;
     vertices[vertexOffset++] = offset.y + y + 1;
     vertices[vertexOffset++] = offset.z + z + 1;
     vertices[vertexOffset++] = region.getU2();
     vertices[vertexOffset++] = region.getV();
+    vertices[vertexOffset++] = light;
 
     vertices[vertexOffset++] = offset.x + x;
     vertices[vertexOffset++] = offset.y + y + 1;
     vertices[vertexOffset++] = offset.z + z + 1;
     vertices[vertexOffset++] = region.getU();
     vertices[vertexOffset++] = region.getV();
+    vertices[vertexOffset++] = light;
 
     vertices[vertexOffset++] = offset.x + x;
     vertices[vertexOffset++] = offset.y + y;
     vertices[vertexOffset++] = offset.z + z + 1;
     vertices[vertexOffset++] = region.getU();
     vertices[vertexOffset++] = region.getV2();
+    vertices[vertexOffset++] = light;
     return vertexOffset;
   }
 

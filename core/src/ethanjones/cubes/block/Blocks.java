@@ -1,6 +1,7 @@
 package ethanjones.cubes.block;
 
 import ethanjones.cubes.block.basic.BlockGrass;
+import ethanjones.cubes.block.basic.BlockLight;
 import ethanjones.cubes.core.IDManager;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.util.Register;
@@ -22,7 +23,7 @@ public class Blocks {
   @Register("core:leaves")
   public static Block leaves;
   @Register("core:light")
-  public static Block light;
+  public static BlockLight light;
 
   public static void init() {
     for (Field f : Blocks.class.getFields()) {

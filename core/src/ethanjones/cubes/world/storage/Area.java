@@ -331,6 +331,11 @@ public class Area {
     lock.writeUnlock();
   }
 
+  public void updateRender(int section) {
+    renderStatus[section] = AreaRenderStatus.UNKNOWN;
+    if (areaRenderer[section] != null) areaRenderer[section].refresh = true;
+  }
+
   public void updateAll() {
     lock.writeLock();
 

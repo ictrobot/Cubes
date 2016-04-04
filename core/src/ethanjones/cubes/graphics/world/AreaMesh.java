@@ -4,25 +4,31 @@ import ethanjones.cubes.graphics.assets.Assets;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Pool;
 
 public class AreaMesh implements Pool.Poolable {
-  public static final VertexAttributes vertexAttributes = MeshBuilder.createAttributes(VertexAttributes.Usage.Position | VertexAttributes.Usage.TextureCoordinates);
-  public static final int VERTEX_SIZE = 5; //3 for position, 2 for texture coordinates;
+  public static final VertexAttribute positionAttribute = new VertexAttribute(VertexAttributes.Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE);
+  public static final VertexAttribute textureAttribute = new VertexAttribute(VertexAttributes.Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0");
+  public static final VertexAttribute lightAttribute = new VertexAttribute(VertexAttributes.Usage.Generic, 1, "a_voxellight");
+  public static final VertexAttributes vertexAttributes = new VertexAttributes(positionAttribute, textureAttribute, lightAttribute);
+  public static final int VERTEX_SIZE = 6; //3 for position, 2 for texture coordinates 1 for light
 
-  public static final int MAX_VERTICES = ((65536 / VERTEX_SIZE) - 1) * VERTEX_SIZE;
+  public static final int MAX_VERTICES = 65532;
   public static final int SAFE_VERTICES = MAX_VERTICES - (6 * 4 * VERTEX_SIZE);
+  public static final int MAX_INDICES = MAX_VERTICES / 4 * 6;
 
   protected static short[] indices;
   protected static float[] vertices;
 
   static {
     vertices = new float[MAX_VERTICES];
-    indices = new short[MAX_VERTICES / 4 * 6];
+    indices = new short[MAX_INDICES];
     short j = 0;
     for (int i = 0; i < indices.length; i += 6, j += 4) {
       indices[i + 0] = (short) (j + 0);
@@ -39,7 +45,7 @@ public class AreaMesh implements Pool.Poolable {
   public int vertexCount;
 
   public AreaMesh() {
-    mesh = new Mesh(true, vertices.length / VERTEX_SIZE, indices.length, vertexAttributes);
+    mesh = new Mesh(true, MAX_VERTICES, MAX_INDICES, vertexAttributes);
     meshPart = new MeshPart();
     meshPart.mesh = mesh;
     meshPart.primitiveType = GL20.GL_TRIANGLES;

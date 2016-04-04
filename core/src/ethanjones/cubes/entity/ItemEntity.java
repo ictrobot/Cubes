@@ -1,6 +1,5 @@
 package ethanjones.cubes.entity;
 
-import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.core.util.VectorUtil;
 import ethanjones.cubes.graphics.assets.Assets;
@@ -26,7 +25,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 
-import java.util.Random;
+import static ethanjones.cubes.world.light.WorldLight.FULL_LIGHT;
 
 public class ItemEntity extends Entity implements RenderableProvider {
   static short[] blockIndices;
@@ -87,12 +86,12 @@ public class ItemEntity extends Entity implements RenderableProvider {
         vertices = new float[AreaMesh.VERTEX_SIZE * 4 * 6];
         BlockTextureHandler textureHandler = ((ItemBlock) itemStack.item).block.getTextureHandler();
         Vector3 offset = new Vector3(-0.5f, 0f, -0.5f);
-        vertexOffset = FaceVertices.createMaxX(offset, textureHandler.getSide(BlockFace.posX), 0, 0, 0, vertices, vertexOffset);
-        vertexOffset = FaceVertices.createMaxY(offset, textureHandler.getSide(BlockFace.posY), 0, 0, 0, vertices, vertexOffset);
-        vertexOffset = FaceVertices.createMaxZ(offset, textureHandler.getSide(BlockFace.posZ), 0, 0, 0, vertices, vertexOffset);
-        vertexOffset = FaceVertices.createMinX(offset, textureHandler.getSide(BlockFace.negX), 0, 0, 0, vertices, vertexOffset);
-        vertexOffset = FaceVertices.createMinY(offset, textureHandler.getSide(BlockFace.negY), 0, 0, 0, vertices, vertexOffset);
-        vertexOffset = FaceVertices.createMinZ(offset, textureHandler.getSide(BlockFace.negZ), 0, 0, 0, vertices, vertexOffset);
+        vertexOffset = FaceVertices.createMaxX(offset, textureHandler.getSide(BlockFace.posX), 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+        vertexOffset = FaceVertices.createMaxY(offset, textureHandler.getSide(BlockFace.posY), 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+        vertexOffset = FaceVertices.createMaxZ(offset, textureHandler.getSide(BlockFace.posZ), 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+        vertexOffset = FaceVertices.createMinX(offset, textureHandler.getSide(BlockFace.negX), 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+        vertexOffset = FaceVertices.createMinY(offset, textureHandler.getSide(BlockFace.negY), 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+        vertexOffset = FaceVertices.createMinZ(offset, textureHandler.getSide(BlockFace.negZ), 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
         mesh.setVertices(vertices);
       } else {
         mesh = new Mesh(false, 4, 6, AreaMesh.vertexAttributes);
@@ -100,7 +99,7 @@ public class ItemEntity extends Entity implements RenderableProvider {
         vertices = new float[AreaMesh.VERTEX_SIZE * 4];
         TextureRegion textureRegion = itemStack.item.getTextureRegion();
         Vector3 offset = new Vector3(-0.5f, 0f, 0);
-        FaceVertices.createMinZ(offset, textureRegion, 0, 0, 0, vertices, 0);
+        FaceVertices.createMinZ(offset, textureRegion, 0, 0, 0, FULL_LIGHT, vertices, 0);
         mesh.setVertices(vertices);
       }
     }

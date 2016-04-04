@@ -8,6 +8,7 @@ import ethanjones.cubes.item.inv.InventoryHelper;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.world.light.WorldLight;
 import ethanjones.cubes.world.reference.BlockReference;
 
 import com.badlogic.gdx.Input;
