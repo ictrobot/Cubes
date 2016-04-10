@@ -19,6 +19,12 @@ public class WorldLight {
 
   public static final byte FULL_LIGHT = (byte) 0xFF;
 
+  public static void spreadLight(int x, int y, int z) {
+    Area area = Sided.getCubes().world.getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
+    int l = area.getLight(x - area.minBlockX, y, z - area.minBlockZ);
+    addLight(x, y, z, l);
+  }
+
   public static void addLight(int x, int y, int z, int l) {
     long ms = System.currentTimeMillis();
 
@@ -203,9 +209,14 @@ public class WorldLight {
       Block oldBlock = event.getOldBlock();
       Block newBlock = event.getNewBlock();
 
-      if (oldBlock != null && oldBlock.getLightLevel() > 0) {
-        WorldLight.removeLight(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
+      if (oldBlock != null) {
+        if (oldBlock.getLightLevel() > 0) {
+          WorldLight.removeLight(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
+        } else {
+          WorldLight.spreadLight(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
+        }
       }
+      //TODO remove light if solid block is placed
       if (newBlock != null && newBlock.getLightLevel() > 0) {
         WorldLight.addLight(blockReference.blockX, blockReference.blockY, blockReference.blockZ, event.getNewBlock().getLightLevel());
       }
