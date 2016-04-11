@@ -2,6 +2,7 @@ package ethanjones.cubes.world.reference;
 
 import ethanjones.cubes.world.CoordinateConverter;
 
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Pool;
 
 public class BlockReference implements Pool.Poolable {
@@ -23,6 +24,27 @@ public class BlockReference implements Pool.Poolable {
     this.blockX = CoordinateConverter.block(x);
     this.blockY = CoordinateConverter.block(y);
     this.blockZ = CoordinateConverter.block(z);
+    this.hashCode = 0;
+    return this;
+  }
+
+  public BlockReference setFromVector3(Vector3 vector3) {
+    this.blockX = CoordinateConverter.block(vector3.x);
+    this.blockY = CoordinateConverter.block(vector3.y);
+    this.blockZ = CoordinateConverter.block(vector3.z);
+    this.hashCode = 0;
+    return this;
+  }
+
+  public BlockReference offset(int blockX, int blockY, int blockZ) {
+    this.blockX += blockX;
+    this.blockY += blockY;
+    this.blockZ += blockZ;
+    this.hashCode = 0;
+    return this;
+  }
+
+  public BlockReference modified() {
     this.hashCode = 0;
     return this;
   }

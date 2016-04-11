@@ -51,6 +51,11 @@ public class ItemBlock extends Item {
           blockReference.blockZ--;
           break;
       }
+      // check block would not be in player
+      if (blockReference.equals(new BlockReference().setFromVector3(player.position))) return;
+      if (blockReference.equals(new BlockReference().setFromVector3(player.position.cpy().sub(0, player.height, 0))))
+        return;
+
       Cubes.getServer().world.setBlock(block, blockReference.blockX, blockReference.blockY, blockReference.blockZ);
 
       InventoryHelper.reduceCount(player.getInventory(), stack);
