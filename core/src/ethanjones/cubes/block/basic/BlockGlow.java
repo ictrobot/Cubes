@@ -2,9 +2,9 @@ package ethanjones.cubes.block.basic;
 
 import ethanjones.cubes.block.Block;
 
-public class BlockLight extends Block {
-  public BlockLight() {
-    super("core:light");
+public class BlockGlow extends Block {
+  public BlockGlow() {
+    super("core:glow");
   }
 
   @Override
