@@ -43,7 +43,6 @@ public class WorldLight {
 
   private static void propagateAdd(ArrayDeque<LightNode> lightQueue, WorldSection w) {
     if (lightQueue.isEmpty()) return;
-    boolean first = true;
 
     while (!lightQueue.isEmpty()) {
       LightNode n = lightQueue.pop();
@@ -52,8 +51,7 @@ public class WorldLight {
       int z = n.z;
       int l = n.l;
 
-      if (l <= 1 || (!first && !w.transparent(x, y, z))) continue;
-      first = false;
+      if (l <= 1) continue;
 
       tryPropagateAdd(lightQueue, w, x - 1, y, z, l);
       tryPropagateAdd(lightQueue, w, x + 1, y, z, l);
@@ -69,6 +67,7 @@ public class WorldLight {
     int dZ = CoordinateConverter.area(z) - w.initialAreaZ;
     Area a = w.areas[dX + 1][dZ + 1];
     int ref = getRef(x - a.minBlockX, y, z - a.minBlockZ);
+    if (!transparent(a, ref)) return;
     if ((a.light[ref] & 0xF) + 2 <= l) {
       a.light[ref] = (byte) ((a.light[ref] & 0xF0) | (l - 1));
       lightQueue.add(new LightNode(x, y, z, l - 1));
@@ -96,7 +95,6 @@ public class WorldLight {
 
   private static void propagateRemove(ArrayDeque<LightNode> removeQueue, ArrayDeque<LightNode> addQueue, WorldSection w) {
     if (removeQueue.isEmpty()) return;
-    boolean first = true;
 
     while (!removeQueue.isEmpty()) {
       LightNode n = removeQueue.pop();
@@ -105,8 +103,7 @@ public class WorldLight {
       int z = n.z;
       int l = n.l;
 
-      if (l <= 1 || (!first && !w.transparent(x, y, z))) continue;
-      first = false;
+      if (l <= 1) continue;
 
       tryPropagateRemove(removeQueue, addQueue, w, x - 1, y, z, l);
       tryPropagateRemove(removeQueue, addQueue, w, x + 1, y, z, l);
@@ -122,6 +119,7 @@ public class WorldLight {
     int dZ = CoordinateConverter.area(z) - w.initialAreaZ;
     Area a = w.areas[dX + 1][dZ + 1];
     int ref = getRef(x - a.minBlockX, y, z - a.minBlockZ);
+    if (!transparent(a, ref)) return;
     int p = a.light[ref] & 0xF;
     if (p != 0 && p < l) {
       a.light[ref] = (byte) (a.light[ref] & 0xF0); // same as ((a.light[ref] & 0xF0) | 0)
@@ -129,6 +127,10 @@ public class WorldLight {
     } else if (p >= l) {
       addQueue.add(new LightNode(x, y, z, p));
     }
+  }
+
+  private static boolean transparent(Area a, int ref) {
+    return a.blocks[ref] == 0;
   }
 
   private static class WorldSection {
@@ -171,12 +173,6 @@ public class WorldLight {
 //      int ref = getRef(x - a.minBlockX, y, z - a.minBlockZ);
 //      a.light[ref] = (byte) ((a.light[ref] & 0xF0) | l);
 //    }
-
-    private boolean transparent(int x, int y, int z) {
-      Area a = getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
-      int ref = getRef(x - a.minBlockX, y, z - a.minBlockZ);
-      return a.blocks[ref] == 0;
-    }
 
     private int maxY(int x, int z) {
       return getArea(CoordinateConverter.area(x), CoordinateConverter.area(z)).maxY;

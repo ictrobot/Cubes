@@ -91,6 +91,7 @@ public class Area {
 
   // Get the bits 0000XXXX
   public int getLight(int x, int y, int z) {
+    if (y > maxY) return 0; //FIXME ???
     lock.readLock();
     int r = (light[getRef(x, y, z)]) & 0xF;
     lock.readUnlock();
