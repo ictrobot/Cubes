@@ -25,6 +25,7 @@ uniform float u_opacity;
 varying float v_opacity;
 
 uniform float u_sunlight;
+uniform float u_lightoverride;
 attribute float a_voxellight;
 varying float v_voxellight;
 
@@ -40,6 +41,9 @@ void main() {
 	v_normal = normal;
 
 	int int_voxellight = int(a_voxellight);
+	if (u_lightoverride != -1) {
+	  int_voxellight = int(u_lightoverride);
+	}
 	int int_blocklight = int_voxellight & 0xF;
 	int int_sunlight = (int_voxellight >> 4) & 0xF;
 	float light = max(float(int_blocklight), float(int_sunlight) * u_sunlight) / 15;

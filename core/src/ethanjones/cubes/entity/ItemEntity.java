@@ -13,6 +13,8 @@ import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.world.CoordinateConverter;
+import ethanjones.cubes.world.light.LightNode;
 import ethanjones.data.DataGroup;
 
 import com.badlogic.gdx.graphics.GL20;
@@ -112,6 +114,11 @@ public class ItemEntity extends Entity implements RenderableProvider {
     renderable.meshPart.size = 6 * 6;
     renderable.meshPart.mesh = mesh;
     renderable.material = Assets.packedTextureSheet.getMaterial();
+
+    LightNode lightNode = new LightNode(CoordinateConverter.block(position.x), CoordinateConverter.block(position.y), CoordinateConverter.block(position.z), 0);
+    lightNode.l = Cubes.getClient().world.getLightRaw(lightNode.x, lightNode.y, lightNode.z);
+
+    renderable.userData = lightNode;
     renderables.add(renderable);
   }
 
