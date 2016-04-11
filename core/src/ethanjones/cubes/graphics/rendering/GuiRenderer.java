@@ -48,12 +48,14 @@ public class GuiRenderer implements Disposable {
 
     static final int debug = Keys.F1;
     static final int chat = Keys.F2;
+    static final int hideGUI = Keys.F3;
     static final int blocksMenu = Keys.E;
 
     @Override
     public void keyDown(int keycode) {
       if (keycode == debug) setDebugEnabled(!isDebugEnabled());
       if (keycode == chat) setChatEnabled(!isChatEnabled());
+      if (keycode == hideGUI) setHideGuiEnabled(!isHideGuiEnabled());
       if (keycode == blocksMenu) setBlocksMenuEnabled(!isBlocksMenuEnabled());
 
       int selected = -1;
@@ -119,6 +121,7 @@ public class GuiRenderer implements Disposable {
 
   private boolean chatEnabled;
   private boolean debugEnabled;
+  private boolean hideGuiEnabled;
   private boolean blocksMenuEnabled;
 
   public GuiRenderer() {
@@ -209,6 +212,10 @@ public class GuiRenderer implements Disposable {
     return chatEnabled;
   }
 
+  public boolean isHideGuiEnabled() {
+    return hideGuiEnabled;
+  }
+
   public boolean isBlocksMenuEnabled() {
     return blocksMenuEnabled;
   }
@@ -219,6 +226,10 @@ public class GuiRenderer implements Disposable {
 
   public void setChatEnabled(boolean chatEnabled) {
     this.chatEnabled = chatEnabled;
+  }
+
+  public void setHideGuiEnabled(boolean hideGuiEnabled) {
+    this.hideGuiEnabled = hideGuiEnabled;
   }
 
   public void setDebugEnabled(boolean debugEnabled) {
@@ -248,8 +259,10 @@ public class GuiRenderer implements Disposable {
       Fonts.FontDebug.draw(spriteBatch, ClientDebug.getDebugString(), 5f, Gdx.graphics.getHeight() - 5);
     }
     float crosshairSize = Math.min(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) / 40;
-    spriteBatch.draw(crosshair, (Gdx.graphics.getWidth() / 2) - crosshairSize, (Gdx.graphics.getHeight() / 2) - crosshairSize, crosshairSize * 2, crosshairSize * 2);
-    renderHotbar();
+    if (!isHideGuiEnabled()) {
+      spriteBatch.draw(crosshair, (Gdx.graphics.getWidth() / 2) - crosshairSize, (Gdx.graphics.getHeight() / 2) - crosshairSize, crosshairSize * 2, crosshairSize * 2);
+      renderHotbar();
+    }
     if (isBlocksMenuEnabled()) renderBlockMenu();
     spriteBatch.end();
   }
@@ -326,7 +339,7 @@ public class GuiRenderer implements Disposable {
   }
 
   public boolean noCursorCatching() {
-    return chatEnabled || blocksMenuEnabled;
+    return chatEnabled || blocksMenuEnabled || hideGuiEnabled;
   }
 
   public boolean touch(int screenX, int screenY, int pointer, int button) {
