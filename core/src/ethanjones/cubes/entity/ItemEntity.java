@@ -25,7 +25,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 
-import static ethanjones.cubes.world.light.WorldLight.FULL_LIGHT;
+import static ethanjones.cubes.world.light.BlockLight.FULL_LIGHT;
 
 public class ItemEntity extends Entity implements RenderableProvider {
   static short[] blockIndices;

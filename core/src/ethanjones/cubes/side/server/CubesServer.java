@@ -1,7 +1,5 @@
 package ethanjones.cubes.side.server;
 
-import ethanjones.cubes.core.event.EventHandler;
-import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
 import ethanjones.cubes.core.mod.ModManager;
 import ethanjones.cubes.core.mod.event.StartingServerEvent;
 import ethanjones.cubes.core.mod.event.StoppingServerEvent;
@@ -13,8 +11,6 @@ import ethanjones.cubes.networking.socket.SocketMonitor;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.command.CommandManager;
-import ethanjones.cubes.world.light.WorldLight;
-import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.server.WorldServer;
 
 import java.util.List;

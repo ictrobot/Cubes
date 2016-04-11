@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.math.Vector3;
 
-import static ethanjones.cubes.world.light.WorldLight.FULL_LIGHT;
+import static ethanjones.cubes.world.light.BlockLight.FULL_LIGHT;
 
 public class SelectedBlock {
   static short[] blockIndices;

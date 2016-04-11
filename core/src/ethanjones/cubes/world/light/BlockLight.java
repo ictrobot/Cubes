@@ -15,7 +15,7 @@ import java.util.ArrayDeque;
 
 import static ethanjones.cubes.world.storage.Area.*;
 
-public class WorldLight {
+public class BlockLight {
 
   public static final byte FULL_LIGHT = (byte) 0xFF;
 
@@ -198,7 +198,7 @@ public class WorldLight {
     }
   }
 
-  public static class WorldLightHandler {
+  public static class BlockLightHandler {
     @EventHandler
     public void blockChanged(BlockChangedEvent event) {
       BlockReference blockReference = event.getBlockReference();
@@ -207,14 +207,14 @@ public class WorldLight {
 
       if (oldBlock != null) {
         if (oldBlock.getLightLevel() > 0) {
-          WorldLight.removeLight(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
+          BlockLight.removeLight(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
         } else {
-          WorldLight.spreadLight(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
+          BlockLight.spreadLight(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
         }
       }
       //TODO remove light if solid block is placed
       if (newBlock != null && newBlock.getLightLevel() > 0) {
-        WorldLight.addLight(blockReference.blockX, blockReference.blockY, blockReference.blockZ, event.getNewBlock().getLightLevel());
+        BlockLight.addLight(blockReference.blockX, blockReference.blockY, blockReference.blockZ, event.getNewBlock().getLightLevel());
       }
     }
   }

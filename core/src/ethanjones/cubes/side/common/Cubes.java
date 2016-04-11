@@ -27,7 +27,7 @@ import ethanjones.cubes.side.State;
 import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.server.CubesServer;
 import ethanjones.cubes.world.World;
-import ethanjones.cubes.world.light.WorldLight;
+import ethanjones.cubes.world.light.BlockLight;
 
 import com.badlogic.gdx.Gdx;
 
@@ -96,7 +96,7 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
     Sided.setup(side);
     Compatibility.get().init(side);
     Sided.getEventBus().register(this);
-    Sided.getEventBus().register(new WorldLight.WorldLightHandler());
+    Sided.getEventBus().register(new BlockLight.BlockLightHandler());
     Sided.getTiming().addHandler(this, tickMS);
   }
 
