@@ -3,8 +3,10 @@ package ethanjones.cubes.side.client;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.entity.living.player.Player;
+import ethanjones.cubes.graphics.world.RayTracing;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.CoordinateConverter;
+import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.storage.Area;
 
 import com.badlogic.gdx.Gdx;
@@ -47,7 +49,7 @@ public class ClientDebug {
     String performance = "FPS:" + fps.current + " AVG:" + fps.average + " MS:" + String.format("%01d", loop.current) + " AVG:" + String.format("%01d", loop.average) + " MEM:" + Compatibility.get().getFreeMemory() + "MB";
     String position = "POS X:" + String.format("%.2f", p.x) + "(" + CoordinateConverter.area(p.x) + ")" + " Y:" + String.format("%.2f", p.y) + " Z:" + String.format("%.2f", p.z) + "(" + CoordinateConverter.area(p.z) + ")";
     String direction = "DIR X:" + String.format("%.2f", Cubes.getClient().player.angle.x) + " Y:" + String.format("%.2f", Cubes.getClient().player.angle.y) + " Z:" + String.format("%.2f", Cubes.getClient().player.angle.z);
-    String light = "L:" + getLight();
+    String light = "L F:" + getFeetLight() + " T:" + getTargetLight();
     debugString = Branding.DEBUG + lineSeparator + performance + lineSeparator + position + lineSeparator + direction + lineSeparator + light;
 
     GLProfiler.calls = 0;
@@ -56,7 +58,7 @@ public class ClientDebug {
     GLProfiler.textureBindings = 0;
   }
 
-  private static int getLight() {
+  private static int getFeetLight() {
     Player player = Cubes.getClient().player;
     Area area = Cubes.getClient().world.getArea(CoordinateConverter.area(player.position.x), CoordinateConverter.area(player.position.z));
     if (area != null) {
@@ -64,6 +66,17 @@ public class ClientDebug {
       int y = CoordinateConverter.block(player.position.y - player.height - 0.01f);
       int z = CoordinateConverter.block(player.position.z);
       return area.getLight(x - area.minBlockX, y, z - area.minBlockZ);
+    }
+    return 0;
+  }
+
+  private static int getTargetLight() {
+    RayTracing.BlockIntersection blockIntersection = RayTracing.getBlockIntersection(Cubes.getClient().player.position, Cubes.getClient().player.angle, Cubes.getClient().world);
+    if (blockIntersection == null || blockIntersection.getBlockReference() == null) return 0;
+    BlockReference position = blockIntersection.getBlockReference();
+    Area area = Cubes.getClient().world.getArea(CoordinateConverter.area(position.blockX), CoordinateConverter.area(position.blockZ));
+    if (area != null) {
+      return area.getLight(position.blockX - area.minBlockX, position.blockY, position.blockZ - area.minBlockZ);
     }
     return 0;
   }
