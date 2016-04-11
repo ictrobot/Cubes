@@ -47,6 +47,19 @@ class LightWorldSection {
     return (a.light[Area.getRef(x - a.minBlockX, y, z - a.minBlockZ)] >> 4) & 0xF;
   }
 
+  protected int getLight(int x, int y, int z) {
+    Area a = getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
+    return a.light[Area.getRef(x - a.minBlockX, y, z - a.minBlockZ)] & 0xF;
+  }
+
+  protected boolean isLightSource(int x, int y, int z) {
+    Area a = getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
+    int b = a.blocks[Area.getRef(x, y, z)];
+    if (b == 0) return false;
+    if (b < 0) return Sided.getIDManager().toBlock(-b).getLightLevel() > 0;
+    return Sided.getIDManager().toBlock(b).getLightLevel() > 0;
+  }
+
   protected int maxY(int x, int z) {
     return getArea(CoordinateConverter.area(x), CoordinateConverter.area(z)).maxY;
   }

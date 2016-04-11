@@ -14,9 +14,30 @@ public class BlockLight {
   public static final byte FULL_LIGHT = (byte) 0xFF;
 
   public static void spreadLight(int x, int y, int z) {
+    long ms = System.currentTimeMillis();
+
     Area area = Sided.getCubes().world.getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
-    int l = area.getLight(x - area.minBlockX, y, z - area.minBlockZ);
-    addLight(x, y, z, l);
+    if (y > 0 && y <= area.maxY) {
+      ArrayDeque<LightNode> lightQueue = new ArrayDeque<LightNode>(1000);
+      LightWorldSection w = new LightWorldSection(area, y / SIZE_BLOCKS);
+
+      if (w.transparent(x + 1, y, z) || w.isLightSource(x + 1, y, z))
+        lightQueue.add(new LightNode(x + 1, y, z, w.getLight(x + 1, y, z)));
+      if (w.transparent(x - 1, y, z) || w.isLightSource(x - 1, y, z))
+        lightQueue.add(new LightNode(x - 1, y, z, w.getLight(x - 1, y, z)));
+      if (w.transparent(x, y + 1, z) || w.isLightSource(x, y + 1, z))
+        lightQueue.add(new LightNode(x, y + 1, z, w.getLight(x, y + 1, z)));
+      if (w.transparent(x, y - 1, z) || w.isLightSource(x, y - 1, z))
+        lightQueue.add(new LightNode(x, y - 1, z, w.getLight(x, y - 1, z)));
+      if (w.transparent(x, y, z + 1) || w.isLightSource(x, y, z + 1))
+        lightQueue.add(new LightNode(x, y, z + 1, w.getLight(x, y, z + 1)));
+      if (w.transparent(x, y, z - 1) || w.isLightSource(x, y, z - 1))
+        lightQueue.add(new LightNode(x, y, z - 1, w.getLight(x, y, z - 1)));
+
+      propagateAdd(lightQueue, w);
+      w.unlock();
+    }
+    Log.debug("Light spread: " + (System.currentTimeMillis() - ms) + "ms");
   }
 
   public static void addLight(int x, int y, int z, int l) {

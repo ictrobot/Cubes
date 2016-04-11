@@ -12,17 +12,12 @@ public class WorldLightHandler {
     Block oldBlock = event.getOldBlock();
     Block newBlock = event.getNewBlock();
 
-    if (oldBlock != null) {
-      if (oldBlock.getLightLevel() > 0) {
-        BlockLight.removeLight(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
-      } else {
-        BlockLight.spreadLight(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
-      }
-    }
-    //TODO remove light if solid block is placed
+    // Block light
+    BlockLight.removeLight(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
     if (newBlock != null && newBlock.getLightLevel() > 0) {
       BlockLight.addLight(blockReference.blockX, blockReference.blockY, blockReference.blockZ, event.getNewBlock().getLightLevel());
     }
+    BlockLight.spreadLight(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
     // Sunlight
     if (newBlock != null) {
       SunLight.removeSunlight(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
