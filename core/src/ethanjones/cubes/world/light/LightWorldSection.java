@@ -36,16 +36,16 @@ class LightWorldSection {
     }
   }
 
-//    protected int getLight(int x, int y, int z) {
-//      Area a = getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
-//      return (a.light[getRef(x - a.minBlockX, y, z - a.minBlockZ)]) & 0xF;
-//    }
-//
-//    protected void setLight(int x, int y, int z, int l) {
-//      Area a = getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
-//      int ref = getRef(x - a.minBlockX, y, z - a.minBlockZ);
-//      a.light[ref] = (byte) ((a.light[ref] & 0xF0) | l);
-//    }
+  protected boolean transparent(int x, int y, int z) {
+    Area a = getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
+    int ref = Area.getRef(x - a.minBlockX, y, z - a.minBlockZ);
+    return BlockLight.transparent(a, ref);
+  }
+
+  protected int getSunlight(int x, int y, int z) {
+    Area a = getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
+    return (a.light[Area.getRef(x - a.minBlockX, y, z - a.minBlockZ)] >> 4) & 0xF;
+  }
 
   protected int maxY(int x, int z) {
     return getArea(CoordinateConverter.area(x), CoordinateConverter.area(z)).maxY;

@@ -5,7 +5,7 @@ import ethanjones.cubes.core.event.EventHandler;
 import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
 import ethanjones.cubes.world.reference.BlockReference;
 
-public class BlockLightHandler {
+public class WorldLightHandler {
   @EventHandler
   public void blockChanged(BlockChangedEvent event) {
     BlockReference blockReference = event.getBlockReference();
@@ -22,6 +22,12 @@ public class BlockLightHandler {
     //TODO remove light if solid block is placed
     if (newBlock != null && newBlock.getLightLevel() > 0) {
       BlockLight.addLight(blockReference.blockX, blockReference.blockY, blockReference.blockZ, event.getNewBlock().getLightLevel());
+    }
+    // Sunlight
+    if (newBlock != null) {
+      SunLight.removeSunlight(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
+    } else {
+      SunLight.addSunlight(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
     }
   }
 }

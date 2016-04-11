@@ -1,5 +1,6 @@
 package ethanjones.cubes.world.light;
 
+import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.storage.Area;
 
@@ -34,11 +35,32 @@ public class SunLight {
         lightQueue.add(new LightNode(x + area.minBlockX, h, z + area.minBlockZ, max));
       }
     }
-    propagateSunlight(lightQueue, worldSection);
+    propagateAdd(lightQueue, worldSection);
     worldSection.unlock();
   }
 
-  private static void propagateSunlight(ArrayDeque<LightNode> lightQueue, LightWorldSection w) {
+  public static void addSunlight(int x, int y, int z) {
+    Area area = Sided.getCubes().world.getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
+    if (y > 0 && y <= area.maxY) {
+      ArrayDeque<LightNode> lightQueue = new ArrayDeque<LightNode>(1000);
+      LightWorldSection lightWorldSection = new LightWorldSection(area, y / SIZE_BLOCKS);
+      check(x, y, z, lightWorldSection, lightQueue);
+
+      propagateAdd(lightQueue, lightWorldSection);
+      lightWorldSection.unlock();
+    }
+  }
+
+  private static void check(int x, int y, int z, LightWorldSection w, ArrayDeque<LightNode> lightQueue) {
+    if (w.transparent(x + 1, y, z)) lightQueue.add(new LightNode(x + 1, y, z, w.getSunlight(x + 1, y, z)));
+    if (w.transparent(x - 1, y, z)) lightQueue.add(new LightNode(x - 1, y, z, w.getSunlight(x - 1, y, z)));
+    if (w.transparent(x, y + 1, z)) lightQueue.add(new LightNode(x, y + 1, z, w.getSunlight(x, y + 1, z)));
+    if (w.transparent(x, y - 1, z)) lightQueue.add(new LightNode(x, y - 1, z, w.getSunlight(x, y - 1, z)));
+    if (w.transparent(x, y, z + 1)) lightQueue.add(new LightNode(x, y, z + 1, w.getSunlight(x, y, z + 1)));
+    if (w.transparent(x, y, z - 1)) lightQueue.add(new LightNode(x, y, z - 1, w.getSunlight(x, y, z - 1)));
+  }
+
+  private static void propagateAdd(ArrayDeque<LightNode> lightQueue, LightWorldSection w) {
     if (lightQueue.isEmpty()) return;
 
     while (!lightQueue.isEmpty()) {
@@ -50,16 +72,16 @@ public class SunLight {
 
       if (l <= 1) continue;
 
-      tryPropagateSunlight(lightQueue, w, x - 1, y, z, l, l - 1);
-      tryPropagateSunlight(lightQueue, w, x + 1, y, z, l, l - 1);
-      tryPropagateSunlight(lightQueue, w, x, y, z - 1, l, l - 1);
-      tryPropagateSunlight(lightQueue, w, x, y, z + 1, l, l - 1);
-      if (y > 0) tryPropagateSunlight(lightQueue, w, x, y - 1, z, l, l - 1);
-      if (y < w.maxY(x, z)) tryPropagateSunlight(lightQueue, w, x, y + 1, z, l, l); // go down without loss in strength
+      tryPropagateAdd(lightQueue, w, x - 1, y, z, l, l - 1);
+      tryPropagateAdd(lightQueue, w, x + 1, y, z, l, l - 1);
+      tryPropagateAdd(lightQueue, w, x, y, z - 1, l, l - 1);
+      tryPropagateAdd(lightQueue, w, x, y, z + 1, l, l - 1);
+      if (y > 0) tryPropagateAdd(lightQueue, w, x, y - 1, z, l, l); // go down without loss in strength
+      if (y < w.maxY(x, z)) tryPropagateAdd(lightQueue, w, x, y + 1, z, l, l - 1);
     }
   }
 
-  private static void tryPropagateSunlight(ArrayDeque<LightNode> lightQueue, LightWorldSection w, int x, int y, int z, int l, int ln) {
+  private static void tryPropagateAdd(ArrayDeque<LightNode> lightQueue, LightWorldSection w, int x, int y, int z, int l, int ln) {
     int dX = CoordinateConverter.area(x) - w.initialAreaX;
     int dZ = CoordinateConverter.area(z) - w.initialAreaZ;
     Area a = w.areas[dX + 1][dZ + 1];
@@ -70,6 +92,59 @@ public class SunLight {
     if (i + 2 <= l) {
       a.light[ref] = (byte) ((a.light[ref] & 0xF) | (ln << 4));
       lightQueue.add(new LightNode(x, y, z, ln));
+    }
+  }
+
+  public static void removeSunlight(int x, int y, int z) {
+    Area area = Sided.getCubes().world.getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
+    if (y > 0 && y <= area.maxY) {
+      ArrayDeque<LightNode> removeQueue = new ArrayDeque<LightNode>(1000);
+      ArrayDeque<LightNode> addQueue = new ArrayDeque<LightNode>(1000);
+      LightWorldSection lightWorldSection = new LightWorldSection(area, y / SIZE_BLOCKS);
+
+      int prev = area.getSunlight(x - area.minBlockX, y, z - area.minBlockZ);
+      area.setSunlight(x - area.minBlockX, y, z - area.minBlockZ, 0);
+      removeQueue.add(new LightNode(x, y, z, prev));
+      propagateRemove(removeQueue, addQueue, lightWorldSection);
+      propagateAdd(addQueue, lightWorldSection);
+      lightWorldSection.unlock();
+    }
+  }
+
+  private static void propagateRemove(ArrayDeque<LightNode> removeQueue, ArrayDeque<LightNode> addQueue, LightWorldSection w) {
+    if (removeQueue.isEmpty()) return;
+
+    while (!removeQueue.isEmpty()) {
+      LightNode n = removeQueue.pop();
+      int x = n.x;
+      int y = n.y;
+      int z = n.z;
+      int l = n.l;
+
+      if (l <= 1) continue;
+
+      tryPropagateRemove(removeQueue, addQueue, w, x - 1, y, z, l);
+      tryPropagateRemove(removeQueue, addQueue, w, x + 1, y, z, l);
+      tryPropagateRemove(removeQueue, addQueue, w, x, y, z - 1, l);
+      tryPropagateRemove(removeQueue, addQueue, w, x, y, z + 1, l);
+      if (y > 0)
+        tryPropagateRemove(removeQueue, addQueue, w, x, y - 1, z, 16); //16 is higher than maximum light, therefore the sunlight is always removed
+      if (y < w.maxY(x, z)) tryPropagateRemove(removeQueue, addQueue, w, x, y + 1, z, l);
+    }
+  }
+
+  private static void tryPropagateRemove(ArrayDeque<LightNode> removeQueue, ArrayDeque<LightNode> addQueue, LightWorldSection w, int x, int y, int z, int l) {
+    int dX = CoordinateConverter.area(x) - w.initialAreaX;
+    int dZ = CoordinateConverter.area(z) - w.initialAreaZ;
+    Area a = w.areas[dX + 1][dZ + 1];
+    int ref = getRef(x - a.minBlockX, y, z - a.minBlockZ);
+    if (!transparent(a, ref)) return;
+    int p = ((a.light[ref] >> 4) & 0xF);
+    if (p != 0 && p < l) {
+      a.light[ref] = (byte) (a.light[ref] & 0xF); // same as ((a.light[ref] & 0xF0) | (0 << 4))
+      removeQueue.add(new LightNode(x, y, z, p));
+    } else if (p >= l) {
+      addQueue.add(new LightNode(x, y, z, p));
     }
   }
 }

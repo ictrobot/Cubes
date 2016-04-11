@@ -27,7 +27,7 @@ public class BlockLight {
       ArrayDeque<LightNode> lightQueue = new ArrayDeque<LightNode>(1000);
       LightWorldSection lightWorldSection = new LightWorldSection(area, y / SIZE_BLOCKS);
 
-      area.setLight(x, y, z, l);
+      area.setLight(x - area.minBlockX, y, z - area.minBlockZ, l);
       lightQueue.add(new LightNode(x, y, z, l));
       propagateAdd(lightQueue, lightWorldSection);
       lightWorldSection.unlock();
@@ -77,8 +77,8 @@ public class BlockLight {
       ArrayDeque<LightNode> addQueue = new ArrayDeque<LightNode>(1000);
       LightWorldSection lightWorldSection = new LightWorldSection(area, y / SIZE_BLOCKS);
 
-      int prev = area.getLight(x, y, z);
-      area.setLight(x, y, z, 0);
+      int prev = area.getLight(x - area.minBlockX, y, z - area.minBlockZ);
+      area.setLight(x - area.minBlockX, y, z - area.minBlockZ, 0);
       removeQueue.add(new LightNode(x, y, z, prev));
       propagateRemove(removeQueue, addQueue, lightWorldSection);
       propagateAdd(addQueue, lightWorldSection);
