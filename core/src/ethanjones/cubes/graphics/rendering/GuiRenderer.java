@@ -41,6 +41,7 @@ import java.util.List;
 import static ethanjones.cubes.graphics.Graphics.screenViewport;
 import static ethanjones.cubes.graphics.Graphics.spriteBatch;
 import static ethanjones.cubes.graphics.menu.Menu.skin;
+import static ethanjones.cubes.graphics.menu.Fonts.scaleFactor;
 
 public class GuiRenderer implements Disposable {
 
@@ -269,22 +270,26 @@ public class GuiRenderer implements Disposable {
 
   public void renderHotbar() {
     PlayerInventory inv = Cubes.getClient().player.getInventory();
-    int startWidth = (Gdx.graphics.getWidth() / 2) - (hotbarSlot.getWidth() * 5);
+    float itemSize = 32 * scaleFactor;
+    float hotbarSize = 48 * scaleFactor;
+    float itemOffset = 8 * scaleFactor;
+
+    float startWidth = (Gdx.graphics.getWidth() / 2) - (5 * hotbarSize);
     for (int i = 0; i < 10; i++) {
-      int minX = startWidth + (i * hotbarSlot.getWidth());
+      float minX = startWidth + (i * hotbarSize);
       if (i == inv.hotbarSelected) {
-        spriteBatch.draw(hotbarSelected, minX, 0);
+        spriteBatch.draw(hotbarSelected, minX, 0, hotbarSize, hotbarSize);
       } else {
-        spriteBatch.draw(hotbarSlot, minX, 0);
+        spriteBatch.draw(hotbarSlot, minX, 0, hotbarSize, hotbarSize);
       }
       ItemStack itemStack = inv.itemStacks[i];
       if (itemStack != null) {
         TextureRegion texture = itemStack.item.getTextureRegion();
-        spriteBatch.draw(texture, minX + 8, 8);
+        spriteBatch.draw(texture, minX + itemOffset, itemOffset, itemSize, itemSize);
 
         BitmapFontCache cache = Fonts.FontSmallHUD.getCache();
         cache.clear();
-        GlyphLayout layout = cache.addText(itemStack.count + "", minX + 8, 8, 32, Align.right, false);
+        GlyphLayout layout = cache.addText(itemStack.count + "", minX + itemOffset, itemOffset, itemSize, Align.right, false);
         cache.translate(0, layout.height);
         cache.draw(spriteBatch);
       }
@@ -292,18 +297,22 @@ public class GuiRenderer implements Disposable {
   }
 
   public void renderBlockMenu() {
+    float itemSize = 32 * scaleFactor;
+    float hotbarSize = 48 * scaleFactor;
+    float itemOffset = 8 * scaleFactor;
+
     int i = 0;
-    int startWidth = (Gdx.graphics.getWidth() / 2) - (hotbarSlot.getWidth() * 5);
-    int startHeight = (Gdx.graphics.getHeight() / 2) - (hotbarSlot.getHeight() * 3);
+    float startWidth = (Gdx.graphics.getWidth() / 2) - (5 * hotbarSize);
+    float startHeight = (Gdx.graphics.getHeight() / 2) - (3 * hotbarSize);
     for (int y = 0; y < 6; y++) {
-      int minY = startHeight + ((5 - y) * hotbarSlot.getHeight());
+      float minY = startHeight + ((5 - y) * hotbarSize);
       for (int x = 0; x < 10; x++, i++) {
-        int minX = startWidth + (x * hotbarSlot.getWidth());
-        spriteBatch.draw(hotbarSlot, minX, minY);
+        float minX = startWidth + (x * hotbarSize);
+        spriteBatch.draw(hotbarSlot, minX, minY, hotbarSize, hotbarSize);
         Block block = blocks[x][y];
         if (block == null) continue;
         TextureRegion side = block.getTextureHandler().getSide(BlockFace.posX);
-        spriteBatch.draw(side, minX + 8, minY + 8);
+        spriteBatch.draw(side, minX + itemOffset, minY + itemOffset, itemSize, itemSize);
       }
     }
   }
@@ -343,17 +352,21 @@ public class GuiRenderer implements Disposable {
   }
 
   public boolean touch(int screenX, int screenY, int pointer, int button) {
+    float itemSize = 32 * scaleFactor;
+    float hotbarSize = 48 * scaleFactor;
+    float itemOffset = 8 * scaleFactor;
+
     if (isBlocksMenuEnabled()) {
-      int startWidth = (Gdx.graphics.getWidth() / 2) - (hotbarSlot.getWidth() * 5);
-      int startHeight = (Gdx.graphics.getHeight() / 2) - (hotbarSlot.getHeight() * 3);
-      int x = screenX - startWidth;
-      int y = screenY - startHeight;
+      float startWidth = (Gdx.graphics.getWidth() / 2) - (hotbarSize * 5);
+      float startHeight = (Gdx.graphics.getHeight() / 2) - (hotbarSize * 3);
+      float x = screenX - startWidth;
+      float y = screenY - startHeight;
       if (x < 0 || y < 0) return false;
-      int remX = x % hotbarSlot.getWidth();
-      int remY = y % hotbarSlot.getHeight();
-      if (remX >= 8 && remX <= 40 && remY >= 8 && remY <= 40) {
-        int slotX = x / hotbarSlot.getWidth();
-        int slotY = y / hotbarSlot.getHeight();
+      float remX = x % hotbarSize;
+      float remY = y % hotbarSize;
+      if (remX >= itemOffset && remX <= itemSize + itemOffset && remY >= itemOffset && remY <= itemSize + itemOffset) {
+        int slotX = (int) (x / hotbarSize);
+        int slotY = (int) (y / hotbarSize);
         if (slotX >= blocks.length || slotY >= blocks[0].length) return false;
 
         Block block = blocks[slotX][slotY];

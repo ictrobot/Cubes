@@ -17,6 +17,7 @@ public class Fonts {
   public static final BitmapFont FontDebug;
 
   private static final FreeTypeFontGenerator generator;
+  public static final float scaleFactor;
   private static final int base;
 
   static {
@@ -26,6 +27,7 @@ public class Fonts {
     float f = Gdx.graphics.getPpiX() / 96;
     if (f > 1) f -= (f - 1) * 0.4f;
     base = (int) f;
+    scaleFactor = f;
 
     FontTitle = getFont(64);
     FontMenu = getFont(42);
