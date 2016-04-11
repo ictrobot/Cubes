@@ -44,9 +44,12 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
     if (refresh) {
       free(meshs);
       if (refreshedThisFrame < MAX_REFRESH_PER_FRAME) {
-        refreshedThisFrame++;
-        refresh = false;
-        calculateVertices();
+        if (calculateVertices()) {
+          refreshedThisFrame++;
+          refresh = false;
+        } else {
+          return;
+        }
       } else {
         return;
       }
@@ -57,8 +60,8 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
     }
   }
 
-  public void calculateVertices() {
-    if (area == null) return;
+  public boolean calculateVertices() {
+    if (area == null) return false;
     float[] vertices = AreaMesh.vertices;
 
     WorldClient worldClient = (WorldClient) Cubes.getClient().world;
@@ -69,6 +72,7 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
     Area maxZ = worldClient.map.get(areaReference.setFromAreaCoordinates(area.areaX, area.areaZ + 1));
     Area minZ = worldClient.map.get(areaReference.setFromAreaCoordinates(area.areaX, area.areaZ - 1));
     worldClient.lock.readUnlock();
+    if (maxX == null || minX == null || maxZ == null || minZ == null) return false;
 
     int i = ySection * SIZE_BLOCKS_CUBED;
     int vertexOffset = 0;
@@ -134,6 +138,7 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
     }
     if (vertexOffset > 0) save(vertexOffset);
     area.lock.readUnlock();
+    return true;
   }
 
   private void save(int vertexCount) {

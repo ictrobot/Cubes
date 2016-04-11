@@ -36,6 +36,7 @@ public class PlayerManager {
   private final ArrayList<Integer> recentKeys;
   private final ArrayList<Integer> recentButtons;
   private int renderDistance;
+  private int loadDistance;
 
   public PlayerManager(ClientIdentifier clientIdentifier, PacketConnect packetConnect) {
     this.server = Cubes.getServer();
@@ -47,6 +48,7 @@ public class PlayerManager {
     this.recentButtons = new ArrayList<Integer>();
 
     renderDistance = packetConnect.renderDistance;
+    loadDistance = renderDistance + 1;
 
     Sided.getEventBus().register(this);
 
@@ -68,16 +70,16 @@ public class PlayerManager {
   private void initialLoadAreas() {
     AreaReference check = new AreaReference();
     synchronized (this) {
-      for (int areaX = playerArea.areaX - renderDistance; areaX <= playerArea.areaX + renderDistance; areaX++) {
+      for (int areaX = playerArea.areaX - loadDistance; areaX <= playerArea.areaX + loadDistance; areaX++) {
         check.areaX = areaX;
-        for (int areaZ = playerArea.areaZ - renderDistance; areaZ <= playerArea.areaZ + renderDistance; areaZ++) {
+        for (int areaZ = playerArea.areaZ - loadDistance; areaZ <= playerArea.areaZ + loadDistance; areaZ++) {
           check.areaZ = areaZ;
           check.modified();
           Area area = server.world.getArea(check, false); //don't request individually, request in a batch
           if (area != null) sendArea(area);
         }
       }
-      server.world.requestRegion(new WorldRegion(playerArea, renderDistance));
+      server.world.requestRegion(new WorldRegion(playerArea, loadDistance));
     }
   }
 
@@ -86,8 +88,8 @@ public class PlayerManager {
       AreaReference newRef = new AreaReference().setFromPositionVector3(packetPlayerInfo.position);
       AreaReference oldRef = new AreaReference().setFromPositionVector3(client.getPlayer().position);
       if (!newRef.equals(oldRef)) {
-        WorldRegion newRegion = new WorldRegion(newRef, renderDistance);
-        WorldRegion oldRegion = new WorldRegion(oldRef, renderDistance);
+        WorldRegion newRegion = new WorldRegion(newRef, loadDistance);
+        WorldRegion oldRegion = new WorldRegion(oldRef, loadDistance);
         AreaReferenceSet difference = new AreaReferenceSet();
         difference.addAll(newRegion.getAreaReferences());
         difference.removeAll(oldRegion.getAreaReferences());
@@ -110,8 +112,8 @@ public class PlayerManager {
   public void blockChanged(BlockChangedEvent event) {
     BlockReference blockReference = event.getBlockReference();
     synchronized (this) {
-      if (Math.abs(CoordinateConverter.area(blockReference.blockX) - playerArea.areaX) > renderDistance) return;
-      if (Math.abs(CoordinateConverter.area(blockReference.blockZ) - playerArea.areaZ) > renderDistance) return;
+      if (Math.abs(CoordinateConverter.area(blockReference.blockX) - playerArea.areaX) > loadDistance) return;
+      if (Math.abs(CoordinateConverter.area(blockReference.blockZ) - playerArea.areaZ) > loadDistance) return;
     }
     PacketBlockChanged packet = new PacketBlockChanged();
     packet.x = blockReference.blockX;
@@ -125,15 +127,15 @@ public class PlayerManager {
   public void areaSet(AreaGeneratedEvent event) {
     Area area = event.getArea();
     synchronized (this) {
-      if (Math.abs(area.areaX - playerArea.areaX) > renderDistance) return;
-      if (Math.abs(area.areaZ - playerArea.areaZ) > renderDistance) return;
+      if (Math.abs(area.areaX - playerArea.areaX) > loadDistance) return;
+      if (Math.abs(area.areaZ - playerArea.areaZ) > loadDistance) return;
     }
     sendArea(area);
   }
 
   public boolean shouldSendArea(int areaX, int areaZ) {
     synchronized (this) {
-      return !(Math.abs(areaX - playerArea.areaX) > renderDistance || Math.abs(areaZ - playerArea.areaZ) > renderDistance);
+      return !(Math.abs(areaX - playerArea.areaX) > loadDistance || Math.abs(areaZ - playerArea.areaZ) > loadDistance);
     }
   }
 
