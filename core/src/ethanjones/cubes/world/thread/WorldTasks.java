@@ -5,6 +5,7 @@ import ethanjones.cubes.core.event.world.generation.FeaturesEvent;
 import ethanjones.cubes.core.event.world.generation.GenerationEvent;
 import ethanjones.cubes.core.system.ThreadPool;
 import ethanjones.cubes.side.Side;
+import ethanjones.cubes.world.light.SunLight;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
 import ethanjones.cubes.world.server.WorldServer;
@@ -47,6 +48,7 @@ public class WorldTasks {
       new FeaturesEvent(area, areaReference).post();
       area.updateAll();
       area.rebuildHeightmap();
+      SunLight.initialSunlight(area);
       new AreaGeneratedEvent(area, areaReference).post();
     }
   }

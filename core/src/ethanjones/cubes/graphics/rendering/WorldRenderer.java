@@ -3,6 +3,7 @@ package ethanjones.cubes.graphics.rendering;
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.entity.Entity;
+import ethanjones.cubes.graphics.shader.CustomShaderProvider;
 import ethanjones.cubes.graphics.world.AreaMesh;
 import ethanjones.cubes.graphics.world.AreaRenderStatus;
 import ethanjones.cubes.graphics.world.AreaRenderer;

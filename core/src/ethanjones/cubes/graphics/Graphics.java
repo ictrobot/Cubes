@@ -2,6 +2,7 @@ package ethanjones.cubes.graphics;
 
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.IDManager;
+import ethanjones.cubes.graphics.shader.CustomShaderProvider;
 import ethanjones.cubes.item.Item;
 import ethanjones.cubes.item.ItemBlock;
 
@@ -19,7 +20,7 @@ public class Graphics {
 
   public static void init() {
     spriteBatch = new SpriteBatch();
-    modelBatch = new ModelBatch(new DefaultShaderProvider(Gdx.files.internal("shaders/world.vertex.glsl"), Gdx.files.internal("shaders/world.fragment.glsl")));
+    modelBatch = new ModelBatch(new CustomShaderProvider());
     screenViewport = new ScreenViewport();
 
     for (Block block : IDManager.getBlocks()) {

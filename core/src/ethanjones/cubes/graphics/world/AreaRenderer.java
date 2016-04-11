@@ -6,6 +6,7 @@ import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.client.WorldClient;
+import ethanjones.cubes.world.light.SunLight;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.storage.Area;
 
@@ -15,6 +16,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
+import sun.security.provider.Sun;
 
 import java.util.ArrayList;
 
@@ -85,21 +87,21 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
                 vertexOffset = createMaxX(offset, textureHandler.getSide(BlockFace.posX), x, y, z, area.light[i + MAX_X_OFFSET], vertices, vertexOffset);
               }
             } else if (maxX == null || maxX.getBlock(MIN_AREA, y, z) == null) {
-              vertexOffset = createMaxX(offset, textureHandler.getSide(BlockFace.posX), x, y, z, (maxX == null ? 0 : maxX.getLight(MIN_AREA, y, z)), vertices, vertexOffset);
+              vertexOffset = createMaxX(offset, textureHandler.getSide(BlockFace.posX), x, y, z, (maxX == null ? 0 : maxX.getLightRaw(MIN_AREA, y, z)), vertices, vertexOffset);
             }
             if (x > 0) {
               if (area.blocks[i + MIN_X_OFFSET] == 0) {
                 vertexOffset = createMinX(offset, textureHandler.getSide(BlockFace.negX), x, y, z, area.light[i + MIN_X_OFFSET], vertices, vertexOffset);
               }
             } else if (minX == null || minX.getBlock(MAX_AREA, y, z) == null) {
-              vertexOffset = createMinX(offset, textureHandler.getSide(BlockFace.negX), x, y, z, (minX == null ? 0 : minX.getLight(MAX_AREA, y, z)), vertices, vertexOffset);
+              vertexOffset = createMinX(offset, textureHandler.getSide(BlockFace.negX), x, y, z, (minX == null ? 0 : minX.getLightRaw(MAX_AREA, y, z)), vertices, vertexOffset);
             }
             if (y < area.maxY) {
               if (area.blocks[i + MAX_Y_OFFSET] == 0) {
                 vertexOffset = createMaxY(offset, textureHandler.getSide(BlockFace.posY), x, y, z, area.light[i + MAX_Y_OFFSET], vertices, vertexOffset);
               }
             } else {
-              vertexOffset = createMaxY(offset, textureHandler.getSide(BlockFace.posY), x, y, z, 0, vertices, vertexOffset); //FIXME fix the light at the top and bottom of an area
+              vertexOffset = createMaxY(offset, textureHandler.getSide(BlockFace.posY), x, y, z, SunLight.MAX_SUNLIGHT, vertices, vertexOffset); //FIXME fix the light at the top and bottom of an area
             }
             if (y > 0) {
               if (area.blocks[i + MIN_Y_OFFSET] == 0) {
@@ -113,14 +115,14 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
                 vertexOffset = createMaxZ(offset, textureHandler.getSide(BlockFace.posZ), x, y, z, area.light[i + MAX_Z_OFFSET], vertices, vertexOffset);
               }
             } else if (maxZ == null || maxZ.getBlock(x, y, MIN_AREA) == null) {
-              vertexOffset = createMaxZ(offset, textureHandler.getSide(BlockFace.posZ), x, y, z, (maxZ == null ? 0 : maxZ.getLight(x, y, MIN_AREA)), vertices, vertexOffset);
+              vertexOffset = createMaxZ(offset, textureHandler.getSide(BlockFace.posZ), x, y, z, (maxZ == null ? 0 : maxZ.getLightRaw(x, y, MIN_AREA)), vertices, vertexOffset);
             }
             if (z > 0) {
               if (area.blocks[i + MIN_Z_OFFSET] == 0) {
                 vertexOffset = createMinZ(offset, textureHandler.getSide(BlockFace.negZ), x, y, z, area.light[i + MIN_Z_OFFSET], vertices, vertexOffset);
               }
             } else if (minZ == null || minZ.getBlock(x, y, MAX_AREA) == null) {
-              vertexOffset = createMinZ(offset, textureHandler.getSide(BlockFace.negZ), x, y, z, (minZ == null ? 0 : minZ.getLight(x, y, MAX_AREA)), vertices, vertexOffset);
+              vertexOffset = createMinZ(offset, textureHandler.getSide(BlockFace.negZ), x, y, z, (minZ == null ? 0 : minZ.getLightRaw(x, y, MAX_AREA)), vertices, vertexOffset);
             }
             if (vertexOffset >= SAFE_VERTICES) {
               save(vertexOffset);

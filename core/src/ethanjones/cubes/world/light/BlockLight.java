@@ -1,14 +1,8 @@
 package ethanjones.cubes.world.light;
 
-import ethanjones.cubes.block.Block;
-import ethanjones.cubes.core.event.EventHandler;
-import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
 import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.world.CoordinateConverter;
-import ethanjones.cubes.world.World;
-import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.storage.Area;
 
 import java.util.ArrayDeque;
@@ -31,17 +25,17 @@ public class BlockLight {
     Area area = Sided.getCubes().world.getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
     if (y > 0 && y <= area.maxY) {
       ArrayDeque<LightNode> lightQueue = new ArrayDeque<LightNode>(1000);
-      WorldSection worldSection = new WorldSection(area, y / SIZE_BLOCKS);
+      LightWorldSection lightWorldSection = new LightWorldSection(area, y / SIZE_BLOCKS);
 
       area.setLight(x, y, z, l);
       lightQueue.add(new LightNode(x, y, z, l));
-      propagateAdd(lightQueue, worldSection);
-      worldSection.unlock();
+      propagateAdd(lightQueue, lightWorldSection);
+      lightWorldSection.unlock();
     }
     Log.debug("Light add: " + (System.currentTimeMillis() - ms) + "ms");
   }
 
-  private static void propagateAdd(ArrayDeque<LightNode> lightQueue, WorldSection w) {
+  private static void propagateAdd(ArrayDeque<LightNode> lightQueue, LightWorldSection w) {
     if (lightQueue.isEmpty()) return;
 
     while (!lightQueue.isEmpty()) {
@@ -62,7 +56,7 @@ public class BlockLight {
     }
   }
 
-  private static void tryPropagateAdd(ArrayDeque<LightNode> lightQueue, WorldSection w, int x, int y, int z, int l) {
+  private static void tryPropagateAdd(ArrayDeque<LightNode> lightQueue, LightWorldSection w, int x, int y, int z, int l) {
     int dX = CoordinateConverter.area(x) - w.initialAreaX;
     int dZ = CoordinateConverter.area(z) - w.initialAreaZ;
     Area a = w.areas[dX + 1][dZ + 1];
@@ -81,19 +75,19 @@ public class BlockLight {
     if (y > 0 && y <= area.maxY) {
       ArrayDeque<LightNode> removeQueue = new ArrayDeque<LightNode>(1000);
       ArrayDeque<LightNode> addQueue = new ArrayDeque<LightNode>(1000);
-      WorldSection worldSection = new WorldSection(area, y / SIZE_BLOCKS);
+      LightWorldSection lightWorldSection = new LightWorldSection(area, y / SIZE_BLOCKS);
 
       int prev = area.getLight(x, y, z);
       area.setLight(x, y, z, 0);
       removeQueue.add(new LightNode(x, y, z, prev));
-      propagateRemove(removeQueue, addQueue, worldSection);
-      propagateAdd(addQueue, worldSection);
-      worldSection.unlock();
+      propagateRemove(removeQueue, addQueue, lightWorldSection);
+      propagateAdd(addQueue, lightWorldSection);
+      lightWorldSection.unlock();
     }
     Log.debug("Light remove: " + (System.currentTimeMillis() - ms) + "ms");
   }
 
-  private static void propagateRemove(ArrayDeque<LightNode> removeQueue, ArrayDeque<LightNode> addQueue, WorldSection w) {
+  private static void propagateRemove(ArrayDeque<LightNode> removeQueue, ArrayDeque<LightNode> addQueue, LightWorldSection w) {
     if (removeQueue.isEmpty()) return;
 
     while (!removeQueue.isEmpty()) {
@@ -114,7 +108,7 @@ public class BlockLight {
     }
   }
 
-  private static void tryPropagateRemove(ArrayDeque<LightNode> removeQueue, ArrayDeque<LightNode> addQueue, WorldSection w, int x, int y, int z, int l) {
+  private static void tryPropagateRemove(ArrayDeque<LightNode> removeQueue, ArrayDeque<LightNode> addQueue, LightWorldSection w, int x, int y, int z, int l) {
     int dX = CoordinateConverter.area(x) - w.initialAreaX;
     int dZ = CoordinateConverter.area(z) - w.initialAreaZ;
     Area a = w.areas[dX + 1][dZ + 1];
@@ -129,107 +123,8 @@ public class BlockLight {
     }
   }
 
-  private static boolean transparent(Area a, int ref) {
+  static boolean transparent(Area a, int ref) {
     return a.blocks[ref] == 0;
   }
 
-  private static class WorldSection {
-    public final int initialAreaX;
-    public final int initialAreaZ;
-    public final Area[][] areas = new Area[3][3];
-    private final World world;
-    private final int ySection;
-
-    private WorldSection(Area initial, int ySection) {
-      this.world = initial.world;
-      this.ySection = ySection;
-      initialAreaX = initial.areaX;
-      initialAreaZ = initial.areaZ;
-
-      areas[0][0] = world.getArea(initialAreaX - 1, initialAreaZ - 1);
-      areas[0][1] = world.getArea(initialAreaX - 1, initialAreaZ);
-      areas[0][2] = world.getArea(initialAreaX - 1, initialAreaZ + 1);
-      areas[1][0] = world.getArea(initialAreaX, initialAreaZ - 1);
-      areas[1][1] = initial;
-      areas[1][2] = world.getArea(initialAreaX, initialAreaZ + 1);
-      areas[2][0] = world.getArea(initialAreaX + 1, initialAreaZ - 1);
-      areas[2][1] = world.getArea(initialAreaX + 1, initialAreaZ);
-      areas[2][2] = world.getArea(initialAreaX + 1, initialAreaZ + 1);
-
-      for (Area[] areaArr : areas) {
-        for (Area area : areaArr) {
-          area.lock.writeLock();
-        }
-      }
-    }
-
-//    private int getLight(int x, int y, int z) {
-//      Area a = getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
-//      return (a.light[getRef(x - a.minBlockX, y, z - a.minBlockZ)]) & 0xF;
-//    }
-//
-//    private void setLight(int x, int y, int z, int l) {
-//      Area a = getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
-//      int ref = getRef(x - a.minBlockX, y, z - a.minBlockZ);
-//      a.light[ref] = (byte) ((a.light[ref] & 0xF0) | l);
-//    }
-
-    private int maxY(int x, int z) {
-      return getArea(CoordinateConverter.area(x), CoordinateConverter.area(z)).maxY;
-    }
-
-    private Area getArea(int areaX, int areaZ) {
-      int dX = areaX - initialAreaX;
-      int dZ = areaZ - initialAreaZ;
-      return areas[dX + 1][dZ + 1];
-    }
-
-    private void unlock() {
-      boolean isClient = Sided.getSide() == Side.Client;
-      for (Area[] areaArr : areas) {
-        for (Area area : areaArr) {
-          if (isClient && ySection - 1 < area.height) area.updateRender(ySection - 1);
-          if (isClient && ySection < area.height) area.updateRender(ySection);
-          if (isClient && ySection + 1 < area.height) area.updateRender(ySection + 1);
-
-          area.lock.writeUnlock();
-        }
-      }
-    }
-  }
-
-  public static class BlockLightHandler {
-    @EventHandler
-    public void blockChanged(BlockChangedEvent event) {
-      BlockReference blockReference = event.getBlockReference();
-      Block oldBlock = event.getOldBlock();
-      Block newBlock = event.getNewBlock();
-
-      if (oldBlock != null) {
-        if (oldBlock.getLightLevel() > 0) {
-          BlockLight.removeLight(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
-        } else {
-          BlockLight.spreadLight(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
-        }
-      }
-      //TODO remove light if solid block is placed
-      if (newBlock != null && newBlock.getLightLevel() > 0) {
-        BlockLight.addLight(blockReference.blockX, blockReference.blockY, blockReference.blockZ, event.getNewBlock().getLightLevel());
-      }
-    }
-  }
-
-  public static class LightNode {
-    public int x;
-    public int y;
-    public int z;
-    public int l;
-
-    public LightNode(int x, int y, int z, int l) {
-      this.x = x;
-      this.y = y;
-      this.z = z;
-      this.l = l;
-    }
-  }
 }

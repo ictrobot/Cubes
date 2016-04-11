@@ -53,6 +53,7 @@ public class PlayerManager {
     PacketConnected packetConnected = new PacketConnected();
     packetConnected.idManager = Sided.getIDManager().write();
     packetConnected.player = client.getPlayer().uuid;
+    packetConnected.worldTime = server.world.time;
     NetworkingManager.sendPacketToClient(packetConnected, client);
 
     BlockReference spawn = server.world.spawnpoint;

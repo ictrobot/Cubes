@@ -14,6 +14,7 @@ public class PacketConnected extends DataPacket {
 
   public DataGroup idManager;
   public UUID player;
+  public int worldTime;
 
   public PacketConnected() {
     setPacketPriority(PacketPriority.High);
@@ -26,6 +27,7 @@ public class PacketConnected extends DataPacket {
       Player player = Cubes.getClient().player;
       player.uuid = this.player;
       player.addToWorld();
+      Cubes.getClient().world.time = worldTime;
     }
   }
 
@@ -34,6 +36,7 @@ public class PacketConnected extends DataPacket {
     DataGroup dataGroup = new DataGroup();
     dataGroup.put("idManager", idManager);
     dataGroup.put("player", player);
+    dataGroup.put("worldTime", worldTime);
     return dataGroup;
   }
 
@@ -41,6 +44,7 @@ public class PacketConnected extends DataPacket {
   public void read(DataGroup dataGroup) {
     idManager = dataGroup.getGroup("idManager");
     player = (UUID) dataGroup.get("player");
+    worldTime = dataGroup.getInteger("worldTime");
   }
 
   @Override

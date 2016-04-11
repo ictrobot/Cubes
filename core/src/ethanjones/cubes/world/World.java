@@ -6,6 +6,7 @@ import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.core.util.Lock;
 import ethanjones.cubes.entity.Entity;
+import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.generator.TerrainGenerator;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
@@ -24,12 +25,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class World implements Disposable {
 
+  public static final int MAX_TIME = (1000 / Cubes.tickMS) * 60;
+
   public final Lock lock = new Lock();
   public final HashMap<AreaReference, Area> map;
   public final TerrainGenerator terrainGenerator;
   public final AtomicBoolean disposed = new AtomicBoolean(false);
   public final BlockReference spawnpoint = new BlockReference();
   public final HashMap<UUID, Entity> entities = new HashMap<UUID, Entity>();
+  public int time;
 
   public World(TerrainGenerator terrainGenerator) {
     this.terrainGenerator = terrainGenerator;
@@ -113,7 +117,17 @@ public abstract class World implements Disposable {
         removeEntity(uuid);
       }
     }
+    time++;
+    if (time >= MAX_TIME) time = 0;
     lock.writeUnlock();
+  }
+
+  public float getSunlight() {
+    lock.readLock();
+    int t = time < MAX_TIME / 2 ? time : MAX_TIME - time;
+    float f = ((float) t) / (((float) MAX_TIME) / 2f);
+    lock.readUnlock();
+    return f;
   }
 
   public TerrainGenerator getTerrainGenerator() {
