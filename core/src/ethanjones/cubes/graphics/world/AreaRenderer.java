@@ -87,43 +87,43 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
             if (block == null) continue;
             BlockTextureHandler textureHandler = block.getTextureHandler();
             if (x < SIZE_BLOCKS - 1) {
-              if (area.blocks[i + MAX_X_OFFSET] == 0) {
-                vertexOffset = createMaxX(offset, textureHandler.getSide(BlockFace.posX), x, y, z, area.light[i + MAX_X_OFFSET], vertices, vertexOffset);
+              if (area.blocks[i + MAX_X_OFFSET] == 0) { //light: byte is signed (-128 to 127) so & 0xFF to convert to 0-255
+                vertexOffset = createMaxX(offset, textureHandler.getSide(BlockFace.posX), x, y, z, area.light[i + MAX_X_OFFSET] & 0xFF, vertices, vertexOffset);
               }
             } else if (maxX == null || maxX.getBlock(MIN_AREA, y, z) == null) {
               vertexOffset = createMaxX(offset, textureHandler.getSide(BlockFace.posX), x, y, z, (maxX == null ? 0 : maxX.getLightRaw(MIN_AREA, y, z)), vertices, vertexOffset);
             }
             if (x > 0) {
               if (area.blocks[i + MIN_X_OFFSET] == 0) {
-                vertexOffset = createMinX(offset, textureHandler.getSide(BlockFace.negX), x, y, z, area.light[i + MIN_X_OFFSET], vertices, vertexOffset);
+                vertexOffset = createMinX(offset, textureHandler.getSide(BlockFace.negX), x, y, z, area.light[i + MIN_X_OFFSET] & 0xFF, vertices, vertexOffset);
               }
             } else if (minX == null || minX.getBlock(MAX_AREA, y, z) == null) {
               vertexOffset = createMinX(offset, textureHandler.getSide(BlockFace.negX), x, y, z, (minX == null ? 0 : minX.getLightRaw(MAX_AREA, y, z)), vertices, vertexOffset);
             }
             if (y < area.maxY) {
               if (area.blocks[i + MAX_Y_OFFSET] == 0) {
-                vertexOffset = createMaxY(offset, textureHandler.getSide(BlockFace.posY), x, y, z, area.light[i + MAX_Y_OFFSET], vertices, vertexOffset);
+                vertexOffset = createMaxY(offset, textureHandler.getSide(BlockFace.posY), x, y, z, area.light[i + MAX_Y_OFFSET] & 0xFF, vertices, vertexOffset);
               }
             } else {
               vertexOffset = createMaxY(offset, textureHandler.getSide(BlockFace.posY), x, y, z, SunLight.MAX_SUNLIGHT, vertices, vertexOffset); //FIXME fix the light at the top and bottom of an area
             }
             if (y > 0) {
               if (area.blocks[i + MIN_Y_OFFSET] == 0) {
-                vertexOffset = createMinY(offset, textureHandler.getSide(BlockFace.negY), x, y, z, area.light[i + MIN_Y_OFFSET], vertices, vertexOffset);
+                vertexOffset = createMinY(offset, textureHandler.getSide(BlockFace.negY), x, y, z, area.light[i + MIN_Y_OFFSET] & 0xFF, vertices, vertexOffset);
               }
             } else {
               vertexOffset = createMinY(offset, textureHandler.getSide(BlockFace.negY), x, y, z, 0, vertices, vertexOffset); //FIXME fix the light at the top and bottom of an area
             }
             if (z < SIZE_BLOCKS - 1) {
               if (area.blocks[i + MAX_Z_OFFSET] == 0) {
-                vertexOffset = createMaxZ(offset, textureHandler.getSide(BlockFace.posZ), x, y, z, area.light[i + MAX_Z_OFFSET], vertices, vertexOffset);
+                vertexOffset = createMaxZ(offset, textureHandler.getSide(BlockFace.posZ), x, y, z, area.light[i + MAX_Z_OFFSET] & 0xFF, vertices, vertexOffset);
               }
             } else if (maxZ == null || maxZ.getBlock(x, y, MIN_AREA) == null) {
               vertexOffset = createMaxZ(offset, textureHandler.getSide(BlockFace.posZ), x, y, z, (maxZ == null ? 0 : maxZ.getLightRaw(x, y, MIN_AREA)), vertices, vertexOffset);
             }
             if (z > 0) {
               if (area.blocks[i + MIN_Z_OFFSET] == 0) {
-                vertexOffset = createMinZ(offset, textureHandler.getSide(BlockFace.negZ), x, y, z, area.light[i + MIN_Z_OFFSET], vertices, vertexOffset);
+                vertexOffset = createMinZ(offset, textureHandler.getSide(BlockFace.negZ), x, y, z, area.light[i + MIN_Z_OFFSET] & 0xFF, vertices, vertexOffset);
               }
             } else if (minZ == null || minZ.getBlock(x, y, MAX_AREA) == null) {
               vertexOffset = createMinZ(offset, textureHandler.getSide(BlockFace.negZ), x, y, z, (minZ == null ? 0 : minZ.getLightRaw(x, y, MAX_AREA)), vertices, vertexOffset);

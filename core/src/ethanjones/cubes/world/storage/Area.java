@@ -116,7 +116,7 @@ public class Area {
   public int getLightRaw(int x, int y, int z) {
     if (y > maxY) return 0; //FIXME ???
     lock.readLock();
-    int r = light[getRef(x, y, z)];
+    int r = light[getRef(x, y, z)] & 0xFF; // byte is signed (-128 to 127) so & 0xFF to convert to 0-255
     lock.readUnlock();
     return r;
   }
