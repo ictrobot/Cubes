@@ -7,6 +7,7 @@ import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menu.MenuManager;
+import ethanjones.cubes.graphics.menus.MainMenu;
 import ethanjones.cubes.graphics.world.AreaRenderer;
 import ethanjones.cubes.side.common.Cubes;
 
@@ -91,10 +92,17 @@ public class AndroidCompatibility extends Compatibility {
     if (back) {
       back = false;
       Menu current = Adapter.getMenu();
+
+      if (current instanceof MainMenu) {
+        Adapter.quit();
+        return;
+      }
+
       if (Cubes.getClient() != null || Cubes.getServer() != null || current == null) {
         Adapter.gotoMainMenu();
         return;
       }
+
       Menu prev = MenuManager.getPrevious(current);
       if (prev == null) return;
       Adapter.setMenu(prev);
