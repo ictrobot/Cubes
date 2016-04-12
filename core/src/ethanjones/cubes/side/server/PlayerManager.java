@@ -253,7 +253,7 @@ public class PlayerManager {
     }
   }
 
-  public void disconnected(Exception e) {
+  public void disconnected() {
     Cubes.getServer().world.removeEntity(client.getPlayer().uuid);
   }
 }

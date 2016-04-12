@@ -4,13 +4,12 @@ import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.networking.socket.SocketMonitor;
 import ethanjones.cubes.side.server.CubesServer;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class DedicatedServer extends CubesServer {
 
   private final HashMap<SocketMonitor, ClientIdentifier> clients = new HashMap<SocketMonitor, ClientIdentifier>();
+  private final HashSet<ClientIdentifier> disconnected = new HashSet<ClientIdentifier>();
   private ConsoleCommandSender consoleCommandSender;
 
   @Override
@@ -23,6 +22,13 @@ public class DedicatedServer extends CubesServer {
   public void render() {
     super.render();
     consoleCommandSender.update();
+
+    Iterator<ClientIdentifier> iterator = disconnected.iterator();
+    while (iterator.hasNext()) {
+      ClientIdentifier next = iterator.next();
+      next.getPlayerManager().disconnected();
+      iterator.remove();
+    }
   }
 
   @Override
@@ -68,7 +74,8 @@ public class DedicatedServer extends CubesServer {
   @Override
   public void removeClient(SocketMonitor socketMonitor) {
     synchronized (clients) {
-      clients.remove(socketMonitor);
+      ClientIdentifier clientIdentifier = clients.get(socketMonitor);
+      if (clientIdentifier != null) disconnected.add(clientIdentifier);
     }
   }
 }
