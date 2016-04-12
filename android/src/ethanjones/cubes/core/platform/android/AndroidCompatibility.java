@@ -37,8 +37,6 @@ public class AndroidCompatibility extends Compatibility {
 
     activityManager = (ActivityManager) androidLauncher.getSystemService(Activity.ACTIVITY_SERVICE);
     memoryInfo = new MemoryInfo();
-
-    AreaRenderer.MAX_REFRESH_PER_FRAME = 2;
   }
 
   @Override
