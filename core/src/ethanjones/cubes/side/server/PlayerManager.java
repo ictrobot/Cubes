@@ -62,6 +62,10 @@ public class PlayerManager {
     clientIdentifier.getPlayer().position.set(spawn.blockX + 0.5f, spawn.blockY + 3f, spawn.blockZ + 0.5f);
     NetworkingManager.sendPacketToClient(new PacketPlayerInfo(clientIdentifier.getPlayer()), client);
 
+    PacketChat packetChat = new PacketChat(); //TODO server should log connecting and disconnecting messages
+    packetChat.msg = packetConnect.username + " joined the game";
+    NetworkingManager.sendPacketToAllClients(packetChat);
+
     clientIdentifier.getPlayer().addToWorld();
 
     initialLoadAreas();
@@ -255,5 +259,9 @@ public class PlayerManager {
 
   public void disconnected() {
     Cubes.getServer().world.removeEntity(client.getPlayer().uuid);
+
+    PacketChat packetChat = new PacketChat();
+    packetChat.msg = client.getPlayer().username + " disconnected";
+    NetworkingManager.sendPacketToAllClients(packetChat);
   }
 }
