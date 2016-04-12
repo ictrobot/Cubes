@@ -8,17 +8,20 @@ import java.util.*;
 public class ServerOnlyServer extends IntegratedServer {
 
   private final HashMap<SocketMonitor, ClientIdentifier> clients = new HashMap<SocketMonitor, ClientIdentifier>();
-  private final HashSet<ClientIdentifier> disconnected = new HashSet<ClientIdentifier>();
+  private final ArrayList<ClientIdentifier> disconnected = new ArrayList<ClientIdentifier>();
 
   @Override
   public void render() {
     super.render();
 
-    Iterator<ClientIdentifier> iterator = disconnected.iterator();
-    while (iterator.hasNext()) {
-      ClientIdentifier next = iterator.next();
-      next.getPlayerManager().disconnected();
-      iterator.remove();
+    synchronized (clients) {
+      Iterator<ClientIdentifier> iterator = disconnected.iterator();
+      while (iterator.hasNext()) {
+        ClientIdentifier next = iterator.next();
+        next.getPlayerManager().disconnected();
+        clients.remove(next.getSocketMonitor());
+        iterator.remove();
+      }
     }
   }
 
@@ -61,7 +64,7 @@ public class ServerOnlyServer extends IntegratedServer {
   public void removeClient(SocketMonitor socketMonitor) {
     synchronized (clients) {
       ClientIdentifier clientIdentifier = clients.get(socketMonitor);
-      if (clientIdentifier != null) disconnected.add(clientIdentifier);
+      if (clientIdentifier != null && !disconnected.contains(clientIdentifier)) disconnected.add(clientIdentifier);
     }
   }
 
