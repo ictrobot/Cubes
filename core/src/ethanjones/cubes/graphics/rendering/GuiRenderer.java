@@ -356,9 +356,10 @@ public class GuiRenderer implements Disposable {
     float hotbarSize = 48 * scaleFactor;
     float itemOffset = 8 * scaleFactor;
 
+    float startWidth = (Gdx.graphics.getWidth() / 2) - (hotbarSize * 5);
+    float startHeight = (Gdx.graphics.getHeight() / 2) - (hotbarSize * 3);
+
     if (isBlocksMenuEnabled()) {
-      float startWidth = (Gdx.graphics.getWidth() / 2) - (hotbarSize * 5);
-      float startHeight = (Gdx.graphics.getHeight() / 2) - (hotbarSize * 3);
       float x = screenX - startWidth;
       float y = screenY - startHeight;
       if (x < 0 || y < 0) return false;
@@ -380,6 +381,14 @@ public class GuiRenderer implements Disposable {
         inventory.sync();
         return true;
       }
+    }
+    if (screenX >= startWidth && screenX <= (startWidth + (hotbarSize * 10)) && screenY >= (Gdx.graphics.getHeight() - hotbarSize)) {
+      int slot = (int) ((screenX - startWidth) / hotbarSize);
+      if (slot >= 0 && slot <= 10) {
+        Cubes.getClient().player.getInventory().hotbarSelected = slot;
+        Cubes.getClient().player.getInventory().sync();
+      }
+      return true;
     }
     return false;
   }

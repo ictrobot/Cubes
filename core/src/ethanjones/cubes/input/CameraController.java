@@ -67,8 +67,6 @@ public class CameraController extends InputAdapter {
 
   @Override
   public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-    if (Cubes.getClient().renderer.guiRenderer.touch(screenX, screenY, pointer, button)) return true;
-
     PacketButton packetButton = new PacketButton();
     packetButton.action = PacketButton.BUTTON_DOWN;
     packetButton.button = button;
