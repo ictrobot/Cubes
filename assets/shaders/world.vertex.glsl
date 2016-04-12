@@ -40,14 +40,17 @@ void main() {
 	vec3 normal = normalize(u_normalMatrix * a_normal);
 	v_normal = normal;
 
-	int int_voxellight = int(a_voxellight);
-	if (u_lightoverride != -1.0) {
-	  int_voxellight = int(u_lightoverride);
-	}
+  float voxellight = a_voxellight;
+  if (u_lightoverride != -1.0) {
+    voxellight = u_lightoverride;
+  }
+
   #ifdef GL_ES
-  int int_sunlight = int_voxellight / 16;
-  int int_blocklight = int_voxellight - (int_sunlight * 16);
+  int int_sunlight = int(floor(voxellight / 16.0));
+  //int int_blocklight = int(voxellight) - (int_sunlight * 16);
+  int int_blocklight = int(mod(voxellight, 16.0));
   #else
+  int int_voxellight = int(voxellight);
   int int_sunlight = (int_voxellight >> 4) & 0xF;
 	int int_blocklight = int_voxellight & 0xF;
 	#endif
