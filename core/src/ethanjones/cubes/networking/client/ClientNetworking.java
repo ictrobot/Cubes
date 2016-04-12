@@ -16,7 +16,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class ClientNetworking extends Networking {
 
-  //Send packet when disconnecting and log better
+  //TODO: Send packet when disconnecting and log better
 
   public static PingResult ping(ClientNetworkingParameter clientNetworkingParameter) {
     Log.debug("Pinging Host:" + clientNetworkingParameter.host + " Port:" + clientNetworkingParameter.port);
@@ -51,7 +51,15 @@ public class ClientNetworking extends Networking {
       if (!(e.getCause() instanceof Exception)) throw e;
       throw (Exception) e.getCause();
     }
-    ClientConnectionInitializer.connect(socket);
+    try {
+      ClientConnectionInitializer.connect(socket);
+    } catch (Exception e) {
+      try {
+        socket.dispose();
+      } catch (Exception ignored) {
+      }
+      throw e;
+    }
     this.socket = socket;
     Log.info("Successfully connected");
   }
