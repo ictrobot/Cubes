@@ -2,6 +2,7 @@ package ethanjones.cubes.input;
 
 import ethanjones.cubes.core.event.entity.living.player.PlayerMovementEvent;
 import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.item.ItemStack;
 import ethanjones.cubes.networking.NetworkingManager;
@@ -67,6 +68,15 @@ public class CameraController extends InputAdapter {
 
   @Override
   public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+    if (Compatibility.get().isTouchScreen()) {
+      if (screenX < Gdx.graphics.getWidth() / 3) {
+        button = Input.Buttons.LEFT;
+      } else if (screenX > Gdx.graphics.getWidth() / 3 * 2) {
+        button = Input.Buttons.RIGHT;
+      } else {
+        return false;
+      }
+    }
     PacketButton packetButton = new PacketButton();
     packetButton.action = PacketButton.BUTTON_DOWN;
     packetButton.button = button;
@@ -80,6 +90,15 @@ public class CameraController extends InputAdapter {
 
   @Override
   public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+    if (Compatibility.get().isTouchScreen()) {
+      if (screenX < Gdx.graphics.getWidth() / 3) {
+        button = Input.Buttons.LEFT;
+      } else if (screenX > Gdx.graphics.getWidth() / 3 * 2) {
+        button = Input.Buttons.RIGHT;
+      } else {
+        return false;
+      }
+    }
     PacketButton packetButton = new PacketButton();
     packetButton.action = PacketButton.BUTTON_UP;
     packetButton.button = button;
