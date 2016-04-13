@@ -18,7 +18,7 @@ public class SingleplayerServer extends IntegratedServer {
   @Override
   public List<ClientIdentifier> getAllClients() {
     List<ClientIdentifier> list = new ArrayList<ClientIdentifier>(1);
-    list.add(singleplayerClientIdentifier);
+    if (singleplayerClientIdentifier != null) list.add(singleplayerClientIdentifier); // don't add if not yet created
     return list;
   }
 

@@ -3,7 +3,7 @@ package ethanjones.cubes.side.server.command;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.networking.NetworkingManager;
-import ethanjones.cubes.networking.packets.PacketPlayerInfo;
+import ethanjones.cubes.networking.packets.PacketPlayerMovement;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 
 import com.badlogic.gdx.math.Vector3;
@@ -23,7 +23,7 @@ public class TeleportCommand {
           float y = (Float) arguments.get(2).get();
           float z = (Float) arguments.get(3).get();
           player.position.set(x, y, z);
-          NetworkingManager.sendPacketToClient(new PacketPlayerInfo(player), player.clientIdentifier);
+          NetworkingManager.sendPacketToClient(new PacketPlayerMovement(player), player.clientIdentifier);
         } else {
           sender.print(Localization.get("command.common.onlyPlayer"));
         }
@@ -33,10 +33,10 @@ public class TeleportCommand {
       @Override
       public void onCommand(CommandBuilder builder, List<CommandArgument> arguments, CommandSender sender) {
         if (sender instanceof Player) {
-          PacketPlayerInfo packetPlayerInfo = new PacketPlayerInfo();
-          packetPlayerInfo.angle = ((Player) sender).angle;
-          packetPlayerInfo.position = new Vector3().set(((ClientIdentifier) arguments.get(1).get()).getPlayer().position);
-          NetworkingManager.sendPacketToClient(packetPlayerInfo, ((Player) sender).clientIdentifier);
+          PacketPlayerMovement packetPlayerMovement = new PacketPlayerMovement();
+          packetPlayerMovement.angle = ((Player) sender).angle;
+          packetPlayerMovement.position = new Vector3().set(((ClientIdentifier) arguments.get(1).get()).getPlayer().position);
+          NetworkingManager.sendPacketToClient(packetPlayerMovement, ((Player) sender).clientIdentifier);
         } else {
           sender.print(Localization.get("command.common.onlyPlayer"));
         }

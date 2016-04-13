@@ -1,8 +1,8 @@
 package ethanjones.cubes.entity.living.player;
 
-import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.entity.living.LivingEntity;
+import ethanjones.cubes.graphics.entity.PlayerRenderer;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketChat;
 import ethanjones.cubes.networking.server.ClientIdentifier;
@@ -15,16 +15,30 @@ import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.World;
 
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.g3d.Renderable;
+import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool;
 
-public class Player extends LivingEntity implements CommandSender {
+import java.util.UUID;
+
+public class Player extends LivingEntity implements CommandSender, RenderableProvider {
 
   public final String username;
   public final ClientIdentifier clientIdentifier;
 
   private final PlayerInventory inventory;
-  private int selectedSlot;
   private Vector3 previousPosition = new Vector3();
+
+  public Player(String username, UUID uuid) {
+    super("core:player", 20);
+    this.username = username;
+    this.uuid = uuid;
+    this.clientIdentifier = null;
+    this.inventory = new PlayerInventory(this);
+    this.height = 1.5f;
+  }
 
   public Player(String username, ClientIdentifier clientIdentifier) {
     super("core:player", 20);
@@ -81,5 +95,11 @@ public class Player extends LivingEntity implements CommandSender {
     }
     return false;
     //return super.update() gravity on client not server
+  }
+
+  @Override
+  public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
+    if (Sided.getSide() == Side.Server || this == Cubes.getClient().player) return;
+    PlayerRenderer.getRenderables(renderables, pool, this);
   }
 }

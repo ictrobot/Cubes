@@ -75,7 +75,7 @@ class LightWorldSection {
     for (Area[] areaArr : areas) {
       for (Area area : areaArr) {
         if (ySection != -1) {
-          if (isClient && ySection - 1 < area.height) area.updateRender(ySection - 1);
+          if (isClient && ySection - 1 < area.height && ySection != 0) area.updateRender(ySection - 1);
           if (isClient && ySection < area.height) area.updateRender(ySection);
           if (isClient && ySection + 1 < area.height) area.updateRender(ySection + 1);
         }

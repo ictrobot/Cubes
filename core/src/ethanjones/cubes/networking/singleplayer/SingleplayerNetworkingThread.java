@@ -24,7 +24,7 @@ public class SingleplayerNetworkingThread extends Thread {
   private final Side sideOut;
 
   public SingleplayerNetworkingThread(PacketQueue output, Side sideOut) {
-    this.input = new PacketQueue();
+    this.input = new PacketQueue(true);
     this.output = output;
     this.sideIn = sideOut == Side.Client ? Side.Server : Side.Client;
     this.sideOut = sideOut;

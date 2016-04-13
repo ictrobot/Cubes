@@ -17,8 +17,8 @@ public class SingleplayerNetworking extends Networking {
   SingleplayerNetworkingThread cloneToClient;
   
   public SingleplayerNetworking() {
-    toServer = new PacketQueue();
-    toClient = new PacketQueue();
+    toServer = new PacketQueue(false);
+    toClient = new PacketQueue(false);
     cloneToServer = new SingleplayerNetworkingThread(toServer, Side.Server);
     cloneToClient = new SingleplayerNetworkingThread(toClient, Side.Client);
   }

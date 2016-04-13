@@ -56,6 +56,16 @@ public class NetworkingManager {
     }
   }
 
+  public static void sendPacketToOtherClients(Packet packet, ClientIdentifier otherThan) {
+    if (serverNetworking != null && Cubes.getServer() != null) {
+      for (ClientIdentifier clientIdentifier : Cubes.getServer().getAllClients()) {
+        if (clientIdentifier != otherThan) serverNetworking.sendPacketToClient(packet, clientIdentifier);
+      }
+    } else {
+      Log.warning("Cannot send " + packet.toString() + " as networking not set up yet");
+    }
+  }
+
   public static void sendPacketToAllClients(Packet packet) {
     if (serverNetworking != null && Cubes.getServer() != null) {
       for (ClientIdentifier clientIdentifier : Cubes.getServer().getAllClients()) {

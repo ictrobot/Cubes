@@ -12,7 +12,7 @@ public abstract class SocketIO implements Runnable, Disposable {
 
   public SocketIO(SocketMonitor socketMonitor) {
     this.socketMonitor = socketMonitor;
-    this.packetQueue = new PacketQueue();
+    this.packetQueue = new PacketQueue(this instanceof SocketOutput);
   }
 
   public Thread start(String name) {

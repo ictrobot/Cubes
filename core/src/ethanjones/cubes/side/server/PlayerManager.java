@@ -59,12 +59,37 @@ public class PlayerManager {
     NetworkingManager.sendPacketToClient(packetConnected, client);
 
     BlockReference spawn = server.world.spawnpoint;
-    clientIdentifier.getPlayer().position.set(spawn.blockX + 0.5f, spawn.blockY + 3f, spawn.blockZ + 0.5f);
-    NetworkingManager.sendPacketToClient(new PacketPlayerInfo(clientIdentifier.getPlayer()), client);
+    client.getPlayer().position.set(spawn.blockX + 0.5f, spawn.blockY + 3f, spawn.blockZ + 0.5f);
+    NetworkingManager.sendPacketToClient(new PacketPlayerMovement(client.getPlayer()), client);
 
     PacketChat packetChat = new PacketChat(); //TODO server should log connecting and disconnecting messages
     packetChat.msg = packetConnect.username + " joined the game";
     NetworkingManager.sendPacketToAllClients(packetChat);
+
+    PacketOtherPlayerConnected packetOtherPlayerConnected = new PacketOtherPlayerConnected();
+    packetOtherPlayerConnected.username = packetConnect.username;
+    packetOtherPlayerConnected.uuid = client.getPlayer().uuid;
+    NetworkingManager.sendPacketToOtherClients(packetOtherPlayerConnected, client);
+
+    PacketOtherPlayerMovement packetOtherPlayerMovement = new PacketOtherPlayerMovement();
+    packetOtherPlayerMovement.uuid = client.getPlayer().uuid;
+    packetOtherPlayerMovement.position = client.getPlayer().position;
+    packetOtherPlayerMovement.angle = client.getPlayer().angle;
+    NetworkingManager.sendPacketToOtherClients(packetOtherPlayerMovement, client);
+
+    for (ClientIdentifier c : Cubes.getServer().getAllClients()) {
+      if (c == client || c == null) continue;
+      PacketOtherPlayerConnected popc = new PacketOtherPlayerConnected();
+      popc.username = c.getPlayer().username;
+      popc.uuid = c.getPlayer().uuid;
+      NetworkingManager.sendPacketToClient(popc, client);
+
+      PacketOtherPlayerMovement popm = new PacketOtherPlayerMovement();
+      popm.uuid = c.getPlayer().uuid;
+      popm.position = c.getPlayer().position;
+      popm.angle = c.getPlayer().angle;
+      NetworkingManager.sendPacketToClient(popm, client);
+    }
 
     clientIdentifier.getPlayer().addToWorld();
 
@@ -87,9 +112,9 @@ public class PlayerManager {
     }
   }
 
-  public void handlePacket(PacketPlayerInfo packetPlayerInfo) {
+  public void handlePacket(PacketPlayerMovement packetPlayerMovement) {
     synchronized (this) {
-      AreaReference newRef = new AreaReference().setFromPositionVector3(packetPlayerInfo.position);
+      AreaReference newRef = new AreaReference().setFromPositionVector3(packetPlayerMovement.position);
       AreaReference oldRef = new AreaReference().setFromPositionVector3(client.getPlayer().position);
       if (!newRef.equals(oldRef)) {
         WorldRegion newRegion = new WorldRegion(newRef, loadDistance);
@@ -107,8 +132,10 @@ public class PlayerManager {
         playerArea.setFromAreaReference(newRef);
       }
 
-      client.getPlayer().position.set(packetPlayerInfo.position);
-      client.getPlayer().angle.set(packetPlayerInfo.angle);
+      client.getPlayer().position.set(packetPlayerMovement.position);
+      client.getPlayer().angle.set(packetPlayerMovement.angle);
+
+      NetworkingManager.sendPacketToOtherClients(new PacketOtherPlayerMovement(client.getPlayer()), client);
     }
   }
 

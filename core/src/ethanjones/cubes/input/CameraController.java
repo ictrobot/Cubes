@@ -1,14 +1,13 @@
 package ethanjones.cubes.input;
 
 import ethanjones.cubes.core.event.entity.living.player.PlayerMovementEvent;
-import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.item.ItemStack;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketButton;
 import ethanjones.cubes.networking.packets.PacketKey;
-import ethanjones.cubes.networking.packets.PacketPlayerInfo;
+import ethanjones.cubes.networking.packets.PacketPlayerMovement;
 import ethanjones.cubes.side.common.Cubes;
 
 import com.badlogic.gdx.Gdx;
@@ -181,7 +180,7 @@ public class CameraController extends InputAdapter {
   public void tick() {
     Player player = Cubes.getClient().player;
     if (!player.position.equals(prevPosition) || !player.angle.equals(prevDirection)) {
-      NetworkingManager.sendPacketToServer(new PacketPlayerInfo(player));
+      NetworkingManager.sendPacketToServer(new PacketPlayerMovement(player));
       prevPosition.set(player.position);
       prevDirection.set(player.angle);
     }
