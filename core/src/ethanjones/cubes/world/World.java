@@ -76,17 +76,17 @@ public abstract class World implements Disposable {
 
   public int getLight(int x, int y, int z) {
     Area area = getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
-    return area == null ? 0 : area.getLight(x - area.minBlockX, y, z - area.minBlockZ);
+    return area == null || y < 0 || y > area.maxY ? 0 : area.getLight(x - area.minBlockX, y, z - area.minBlockZ);
   }
 
   public int getSunLight(int x, int y, int z) {
     Area area = getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
-    return area == null ? 0 : area.getSunlight(x - area.minBlockX, y, z - area.minBlockZ);
+    return area == null || y < 0 || y > area.maxY ? 0 : area.getSunlight(x - area.minBlockX, y, z - area.minBlockZ);
   }
 
   public int getLightRaw(int x, int y, int z) {
     Area area = getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
-    return area == null ? 0 : area.getLightRaw(x - area.minBlockX, y, z - area.minBlockZ);
+    return area == null || y < 0 || y > area.maxY ? 0 : area.getLightRaw(x - area.minBlockX, y, z - area.minBlockZ);
   }
 
   public Area getArea(int areaX, int areaZ) {
