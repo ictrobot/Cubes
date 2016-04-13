@@ -58,5 +58,5 @@ void main() {
 	#endif
 	float light = max(float(int_blocklight), float(int_sunlight) * u_sunlight) / 15.0;
 	v_voxellight = 0.2 + (light * 0.8);
-	v_voxellight = v_voxellight - (float(int_side) / 64.0);
+	v_voxellight = v_voxellight * (1f - (float(int_side) * 0.04));
 }
