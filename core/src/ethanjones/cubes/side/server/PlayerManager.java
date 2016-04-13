@@ -69,26 +69,18 @@ public class PlayerManager {
     PacketOtherPlayerConnected packetOtherPlayerConnected = new PacketOtherPlayerConnected();
     packetOtherPlayerConnected.username = packetConnect.username;
     packetOtherPlayerConnected.uuid = client.getPlayer().uuid;
+    packetOtherPlayerConnected.position = client.getPlayer().position;
+    packetOtherPlayerConnected.angle = client.getPlayer().angle;
     NetworkingManager.sendPacketToOtherClients(packetOtherPlayerConnected, client);
-
-    PacketOtherPlayerMovement packetOtherPlayerMovement = new PacketOtherPlayerMovement();
-    packetOtherPlayerMovement.uuid = client.getPlayer().uuid;
-    packetOtherPlayerMovement.position = client.getPlayer().position;
-    packetOtherPlayerMovement.angle = client.getPlayer().angle;
-    NetworkingManager.sendPacketToOtherClients(packetOtherPlayerMovement, client);
 
     for (ClientIdentifier c : Cubes.getServer().getAllClients()) {
       if (c == client || c == null) continue;
       PacketOtherPlayerConnected popc = new PacketOtherPlayerConnected();
       popc.username = c.getPlayer().username;
       popc.uuid = c.getPlayer().uuid;
+      popc.position = c.getPlayer().position;
+      popc.angle = c.getPlayer().angle;
       NetworkingManager.sendPacketToClient(popc, client);
-
-      PacketOtherPlayerMovement popm = new PacketOtherPlayerMovement();
-      popm.uuid = c.getPlayer().uuid;
-      popm.position = c.getPlayer().position;
-      popm.angle = c.getPlayer().angle;
-      NetworkingManager.sendPacketToClient(popm, client);
     }
 
     clientIdentifier.getPlayer().addToWorld();
