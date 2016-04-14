@@ -48,6 +48,10 @@ public class Block {
     return 0;
   }
 
+  public boolean isTransparent() {
+    return false;
+  }
+
   @Override
   public String toString() {
     return id;

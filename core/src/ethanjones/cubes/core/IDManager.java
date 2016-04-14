@@ -1,6 +1,8 @@
 package ethanjones.cubes.core;
 
 import ethanjones.cubes.block.Block;
+import ethanjones.cubes.block.Blocks;
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.item.Item;
 import ethanjones.cubes.item.ItemBlock;
@@ -61,6 +63,7 @@ public class IDManager implements DataParser {
   private Map<Block, Integer> blockToInteger;
   private Map<Integer, Item> integerToItem;
   private Map<Item, Integer> itemToInteger;
+  public TransparencyManager transparencyManager;
   private int nextFree;
 
   public IDManager() {
@@ -68,6 +71,7 @@ public class IDManager implements DataParser {
     blockToInteger = new HashMap<Block, Integer>();
     integerToItem = new HashMap<Integer, Item>();
     itemToInteger = new HashMap<Item, Integer>();
+    transparencyManager = new TransparencyManager();
   }
 
   public void generateDefault() {
@@ -161,5 +165,31 @@ public class IDManager implements DataParser {
     blockToInteger = Collections.unmodifiableMap(blockToInteger);
     integerToItem = Collections.unmodifiableMap(integerToItem);
     itemToInteger = Collections.unmodifiableMap(itemToInteger);
+    transparencyManager.setup(this);
+  }
+
+  public static class TransparencyManager {
+    private BitSet bitSet;
+    private boolean setup = false;
+
+    public TransparencyManager() {
+      bitSet = new BitSet(getBlocks().size());
+    }
+
+    public void setup(IDManager idManager) {
+      if (setup) return;
+      for (Map.Entry<Integer, Block> entry : idManager.integerToBlock.entrySet()) {
+        bitSet.set(entry.getKey(), entry.getValue().isTransparent());
+      }
+      setup = true;
+    }
+
+    public boolean isTransparent(int block) {
+      return block == 0 || (block < 0 ? bitSet.get(-block) : bitSet.get(block));
+    }
+
+    public boolean isTransparent(Block block) {
+      return block == null || block.isTransparent();
+    }
   }
 }

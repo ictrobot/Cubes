@@ -1,6 +1,7 @@
 package ethanjones.cubes.world.storage;
 
 import ethanjones.cubes.block.Block;
+import ethanjones.cubes.core.IDManager.TransparencyManager;
 import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.Executor;
@@ -53,7 +54,9 @@ public class Area {
   private volatile boolean unloaded;
 
   public World world;
+
   private AreaReference tempReference = new AreaReference();
+  private TransparencyManager transparency = Sided.getIDManager().transparencyManager;
 
   public Area(int areaX, int areaZ) {
     this.areaX = areaX;
@@ -165,7 +168,7 @@ public class Area {
 
     int block = Math.abs(blocks[i]);
     if (x < SIZE_BLOCKS - 1) {
-      if (blocks[i + MAX_X_OFFSET] == 0) {
+      if (transparency.isTransparent(blocks[i + MAX_X_OFFSET])) {
         blocks[i] = block;
         return;
       }
@@ -174,7 +177,7 @@ public class Area {
       return;
     }
     if (x > 0) {
-      if (blocks[i + MIN_X_OFFSET] == 0) {
+      if (transparency.isTransparent(blocks[i + MIN_X_OFFSET])) {
         blocks[i] = block;
         return;
       }
@@ -183,7 +186,7 @@ public class Area {
       return;
     }
     if (y < maxY) {
-      if (blocks[i + MAX_Y_OFFSET] == 0) {
+      if (transparency.isTransparent(blocks[i + MAX_Y_OFFSET])) {
         blocks[i] = block;
         return;
       }
@@ -192,7 +195,7 @@ public class Area {
       return;
     }
     if (y > 0) {
-      if (blocks[i + MIN_Y_OFFSET] == 0) {
+      if (transparency.isTransparent(blocks[i + MIN_Y_OFFSET])) {
         blocks[i] = block;
         return;
       }
@@ -201,7 +204,7 @@ public class Area {
       return;
     }
     if (z < SIZE_BLOCKS - 1) {
-      if (blocks[i + MAX_Z_OFFSET] == 0) {
+      if (transparency.isTransparent(blocks[i + MAX_Z_OFFSET])) {
         blocks[i] = block;
         return;
       }
@@ -210,7 +213,7 @@ public class Area {
       return;
     }
     if (z > 0) {
-      if (blocks[i + MIN_Z_OFFSET] == 0) {
+      if (transparency.isTransparent(blocks[i + MIN_Z_OFFSET])) {
         blocks[i] = block;
         return;
       }

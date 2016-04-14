@@ -1,6 +1,7 @@
 package ethanjones.cubes.graphics.world;
 
 import ethanjones.cubes.block.Block;
+import ethanjones.cubes.core.IDManager.TransparencyManager;
 import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.side.Sided;
@@ -16,7 +17,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
-import sun.security.provider.Sun;
 
 import java.util.ArrayList;
 
@@ -65,6 +65,7 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
     if (area == null) return false;
     float[] vertices = AreaMesh.vertices;
 
+    TransparencyManager tm = Sided.getIDManager().transparencyManager;
     WorldClient worldClient = (WorldClient) Cubes.getClient().world;
     worldClient.lock.readLock();
     AreaReference areaReference = new AreaReference();
@@ -88,45 +89,45 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
             if (block == null) continue;
             BlockTextureHandler textureHandler = block.getTextureHandler();
             if (x < SIZE_BLOCKS - 1) {
-              if (area.blocks[i + MAX_X_OFFSET] == 0) { //light: byte is signed (-128 to 127) so & 0xFF to convert to 0-255
+              if (tm.isTransparent(area.blocks[i + MAX_X_OFFSET])) { //light: byte is signed (-128 to 127) so & 0xFF to convert to 0-255
                 vertexOffset = createMaxX(offset, textureHandler.getSide(BlockFace.posX), x, y, z, area.light[i + MAX_X_OFFSET] & 0xFF, vertices, vertexOffset);
               }
-            } else if (maxX == null || maxX.getBlock(MIN_AREA, y, z) == null) {
+            } else if (maxX == null || tm.isTransparent(maxX.getBlock(MIN_AREA, y, z))) {
               vertexOffset = createMaxX(offset, textureHandler.getSide(BlockFace.posX), x, y, z, (maxX == null ? 0 : maxX.getLightRaw(MIN_AREA, y, z)), vertices, vertexOffset);
             }
             if (x > 0) {
-              if (area.blocks[i + MIN_X_OFFSET] == 0) {
+              if (tm.isTransparent(area.blocks[i + MIN_X_OFFSET])) {
                 vertexOffset = createMinX(offset, textureHandler.getSide(BlockFace.negX), x, y, z, area.light[i + MIN_X_OFFSET] & 0xFF, vertices, vertexOffset);
               }
-            } else if (minX == null || minX.getBlock(MAX_AREA, y, z) == null) {
+            } else if (minX == null || tm.isTransparent(minX.getBlock(MAX_AREA, y, z))) {
               vertexOffset = createMinX(offset, textureHandler.getSide(BlockFace.negX), x, y, z, (minX == null ? 0 : minX.getLightRaw(MAX_AREA, y, z)), vertices, vertexOffset);
             }
             if (y < area.maxY) {
-              if (area.blocks[i + MAX_Y_OFFSET] == 0) {
+              if (tm.isTransparent(area.blocks[i + MAX_Y_OFFSET])) {
                 vertexOffset = createMaxY(offset, textureHandler.getSide(BlockFace.posY), x, y, z, area.light[i + MAX_Y_OFFSET] & 0xFF, vertices, vertexOffset);
               }
             } else {
               vertexOffset = createMaxY(offset, textureHandler.getSide(BlockFace.posY), x, y, z, SunLight.MAX_SUNLIGHT, vertices, vertexOffset); //FIXME fix the light at the top and bottom of an area
             }
             if (y > 0) {
-              if (area.blocks[i + MIN_Y_OFFSET] == 0) {
+              if (tm.isTransparent(area.blocks[i + MIN_Y_OFFSET])) {
                 vertexOffset = createMinY(offset, textureHandler.getSide(BlockFace.negY), x, y, z, area.light[i + MIN_Y_OFFSET] & 0xFF, vertices, vertexOffset);
               }
             } else {
               vertexOffset = createMinY(offset, textureHandler.getSide(BlockFace.negY), x, y, z, 0, vertices, vertexOffset); //FIXME fix the light at the top and bottom of an area
             }
             if (z < SIZE_BLOCKS - 1) {
-              if (area.blocks[i + MAX_Z_OFFSET] == 0) {
+              if (tm.isTransparent(area.blocks[i + MAX_Z_OFFSET])) {
                 vertexOffset = createMaxZ(offset, textureHandler.getSide(BlockFace.posZ), x, y, z, area.light[i + MAX_Z_OFFSET] & 0xFF, vertices, vertexOffset);
               }
-            } else if (maxZ == null || maxZ.getBlock(x, y, MIN_AREA) == null) {
+            } else if (maxZ == null || tm.isTransparent(maxZ.getBlock(x, y, MIN_AREA))) {
               vertexOffset = createMaxZ(offset, textureHandler.getSide(BlockFace.posZ), x, y, z, (maxZ == null ? 0 : maxZ.getLightRaw(x, y, MIN_AREA)), vertices, vertexOffset);
             }
             if (z > 0) {
-              if (area.blocks[i + MIN_Z_OFFSET] == 0) {
+              if (tm.isTransparent(area.blocks[i + MIN_Z_OFFSET])) {
                 vertexOffset = createMinZ(offset, textureHandler.getSide(BlockFace.negZ), x, y, z, area.light[i + MIN_Z_OFFSET] & 0xFF, vertices, vertexOffset);
               }
-            } else if (minZ == null || minZ.getBlock(x, y, MAX_AREA) == null) {
+            } else if (minZ == null || tm.isTransparent(minZ.getBlock(x, y, MAX_AREA))) {
               vertexOffset = createMinZ(offset, textureHandler.getSide(BlockFace.negZ), x, y, z, (minZ == null ? 0 : minZ.getLightRaw(x, y, MAX_AREA)), vertices, vertexOffset);
             }
             if (vertexOffset >= SAFE_VERTICES) {

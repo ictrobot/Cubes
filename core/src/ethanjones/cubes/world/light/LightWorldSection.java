@@ -1,5 +1,6 @@
 package ethanjones.cubes.world.light;
 
+import ethanjones.cubes.core.IDManager.TransparencyManager;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.world.CoordinateConverter;
@@ -11,10 +12,12 @@ class LightWorldSection {
   public final int initialAreaZ;
   public final Area[][] areas = new Area[3][3];
   private final World world;
+  private final TransparencyManager transparency;
   private final int ySection;
 
   LightWorldSection(Area initial, int ySection) {
     this.world = initial.world;
+    this.transparency = Sided.getIDManager().transparencyManager;
     this.ySection = ySection;
     initialAreaX = initial.areaX;
     initialAreaZ = initial.areaZ;
@@ -39,7 +42,12 @@ class LightWorldSection {
   protected boolean transparent(int x, int y, int z) {
     Area a = getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
     int ref = Area.getRef(x - a.minBlockX, y, z - a.minBlockZ);
-    return BlockLight.transparent(a, ref);
+    return transparency.isTransparent(a.blocks[ref]);
+  }
+
+  protected boolean transparent(Area a, int ref) {
+    // simply using this class's reference to transparency for speed
+    return transparency.isTransparent(a.blocks[ref]);
   }
 
   protected int getSunlight(int x, int y, int z) {

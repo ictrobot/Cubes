@@ -2,6 +2,7 @@ package ethanjones.cubes.block;
 
 import ethanjones.cubes.block.basic.BlockGrass;
 import ethanjones.cubes.block.basic.BlockGlow;
+import ethanjones.cubes.block.basic.BlockTransparent;
 import ethanjones.cubes.core.IDManager;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.util.Register;
@@ -24,8 +25,8 @@ public class Blocks {
   public static Block leaves;
   @Register
   public static BlockGlow glow;
-  @Register("core:glass")
-  public static Block glass;
+  @Register
+  public static BlockTransparent glass;
 
   public static void init() {
     for (Field f : Blocks.class.getFields()) {

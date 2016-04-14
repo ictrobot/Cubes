@@ -82,7 +82,7 @@ public class BlockLight {
     int dZ = CoordinateConverter.area(z) - w.initialAreaZ;
     Area a = w.areas[dX + 1][dZ + 1];
     int ref = getRef(x - a.minBlockX, y, z - a.minBlockZ);
-    if (!transparent(a, ref)) return;
+    if (!w.transparent(a, ref)) return;
     if ((a.light[ref] & 0xF) + 2 <= l) {
       a.light[ref] = (byte) ((a.light[ref] & 0xF0) | (l - 1));
       lightQueue.add(new LightNode(x, y, z, l - 1));
@@ -134,7 +134,7 @@ public class BlockLight {
     int dZ = CoordinateConverter.area(z) - w.initialAreaZ;
     Area a = w.areas[dX + 1][dZ + 1];
     int ref = getRef(x - a.minBlockX, y, z - a.minBlockZ);
-    if (!transparent(a, ref)) return;
+    if (!w.transparent(a, ref)) return;
     int p = a.light[ref] & 0xF;
     if (p != 0 && p < l) {
       a.light[ref] = (byte) (a.light[ref] & 0xF0); // same as ((a.light[ref] & 0xF0) | 0)
@@ -142,10 +142,6 @@ public class BlockLight {
     } else if (p >= l) {
       addQueue.add(new LightNode(x, y, z, p));
     }
-  }
-
-  static boolean transparent(Area a, int ref) {
-    return a.blocks[ref] == 0;
   }
 
 }
