@@ -24,6 +24,8 @@ public class Blocks {
   public static Block leaves;
   @Register
   public static BlockGlow glow;
+  @Register("core:glass")
+  public static Block glass;
 
   public static void init() {
     for (Field f : Blocks.class.getFields()) {

@@ -30,6 +30,9 @@ void main() {
 	vec4 diffuse = texture2D(u_diffuseTexture, v_diffuseUV);
 
   gl_FragColor.a = diffuse.a * v_opacity;
+  if (gl_FragColor.a < 0.5) {
+    discard;
+  }
 
   gl_FragColor.rgb = diffuse.rgb * v_voxellight;
 }

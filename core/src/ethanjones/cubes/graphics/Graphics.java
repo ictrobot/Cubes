@@ -2,14 +2,13 @@ package ethanjones.cubes.graphics;
 
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.IDManager;
-import ethanjones.cubes.graphics.shader.CustomShaderProvider;
+import ethanjones.cubes.graphics.world.WorldShaderProvider;
 import ethanjones.cubes.item.Item;
 import ethanjones.cubes.item.ItemBlock;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class Graphics {
@@ -20,7 +19,7 @@ public class Graphics {
 
   public static void init() {
     spriteBatch = new SpriteBatch();
-    modelBatch = new ModelBatch(new CustomShaderProvider());
+    modelBatch = new ModelBatch(new WorldShaderProvider());
     screenViewport = new ScreenViewport();
 
     for (Block block : IDManager.getBlocks()) {

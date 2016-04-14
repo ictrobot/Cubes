@@ -1,8 +1,7 @@
-package ethanjones.cubes.graphics.shader;
+package ethanjones.cubes.graphics.world;
 
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.light.LightNode;
-import ethanjones.cubes.world.light.SunLight;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
@@ -12,13 +11,13 @@ import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 
-public class CustomShaderProvider extends DefaultShaderProvider {
+public class WorldShaderProvider extends DefaultShaderProvider {
 
   private static int u_sunlight;
   private static int u_lightoverride;
   private static boolean lightoverride = false;
 
-  public CustomShaderProvider() {
+  public WorldShaderProvider() {
     super(Gdx.files.internal("shaders/world.vertex.glsl"), Gdx.files.internal("shaders/world.fragment.glsl"));
   }
 
