@@ -15,12 +15,18 @@ import java.util.Random;
 
 public class SmoothWorld extends TerrainGenerator {
 
+  private static Random random = new Random();
+
   private final long baseSeed;
   private final Feature temperature;
   private final Feature rainfall;
   private final Feature height;
   private final Feature heightVariation;
   private final Feature trees;
+
+  public SmoothWorld() {
+    this(random.nextLong());
+  }
 
   public SmoothWorld(long baseSeed) {
     this.baseSeed = baseSeed;
