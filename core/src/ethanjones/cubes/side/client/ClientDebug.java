@@ -65,7 +65,7 @@ public class ClientDebug {
       int x = CoordinateConverter.block(player.position.x);
       int y = CoordinateConverter.block(player.position.y - player.height);
       int z = CoordinateConverter.block(player.position.z);
-      if (y > area.maxY) return 0;
+      if (y > area.maxY || y < 0) return 0;
       return area.getLight(x - area.minBlockX, y, z - area.minBlockZ);
     }
     return 0;
@@ -78,7 +78,7 @@ public class ClientDebug {
       int x = CoordinateConverter.block(player.position.x);
       int y = CoordinateConverter.block(player.position.y - player.height);
       int z = CoordinateConverter.block(player.position.z);
-      if (y > area.maxY) return 0;
+      if (y > area.maxY || y < 0) return 0;
       return area.getSunlight(x - area.minBlockX, y, z - area.minBlockZ);
     }
     return 0;

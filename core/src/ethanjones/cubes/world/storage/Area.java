@@ -162,7 +162,7 @@ public class Area {
 
   //Should already be write locked
   private void update(int x, int y, int z, int i) {
-    if (blocks[i] == 0) {
+    if (y > maxY || y < 0 || blocks[i] == 0) {
       return;
     }
 

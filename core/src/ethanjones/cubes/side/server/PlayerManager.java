@@ -23,6 +23,7 @@ import ethanjones.cubes.world.storage.Area;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.math.Vector3;
 
 import java.util.ArrayList;
 
@@ -58,9 +59,7 @@ public class PlayerManager {
     packetConnected.worldTime = server.world.time;
     NetworkingManager.sendPacketToClient(packetConnected, client);
 
-    BlockReference spawn = server.world.spawnpoint;
-    client.getPlayer().position.set(spawn.blockX + 0.5f, spawn.blockY + 3f, spawn.blockZ + 0.5f);
-    NetworkingManager.sendPacketToClient(new PacketPlayerMovement(client.getPlayer()), client);
+    teleportToSpawn();
 
     PacketChat packetChat = new PacketChat(); //TODO server should log connecting and disconnecting messages
     packetChat.msg = packetConnect.username + " joined the game";
@@ -104,9 +103,23 @@ public class PlayerManager {
     }
   }
 
+  private void teleportToSpawn() {
+    BlockReference spawn = server.world.spawnpoint;
+    if (spawn.blockY < 0)
+      throw new IllegalStateException("The spawn point y coordinate must be greater than 0. " + spawn.blockY + " < 0");
+    setPosition(spawn.asVector3().add(0.5f, 3f, 0.5f), null, false);
+  }
+
   public void handlePacket(PacketPlayerMovement packetPlayerMovement) {
+    setPosition(packetPlayerMovement.position, packetPlayerMovement.angle, true);
+  }
+
+  public void setPosition(Vector3 newPosition, Vector3 newAngle, boolean clientKnows) {
     synchronized (this) {
-      AreaReference newRef = new AreaReference().setFromPositionVector3(packetPlayerMovement.position);
+      if (newPosition == null) newPosition = client.getPlayer().position.cpy();
+      if (newAngle == null) newAngle = client.getPlayer().angle.cpy();
+
+      AreaReference newRef = new AreaReference().setFromPositionVector3(newPosition);
       AreaReference oldRef = new AreaReference().setFromPositionVector3(client.getPlayer().position);
       if (!newRef.equals(oldRef)) {
         WorldRegion newRegion = new WorldRegion(newRef, loadDistance);
@@ -124,9 +137,12 @@ public class PlayerManager {
         playerArea.setFromAreaReference(newRef);
       }
 
-      client.getPlayer().position.set(packetPlayerMovement.position);
-      client.getPlayer().angle.set(packetPlayerMovement.angle);
+      client.getPlayer().position.set(newPosition);
+      client.getPlayer().angle.set(newAngle);
 
+      if (client.getPlayer().position.y < -10f) teleportToSpawn();
+
+      if (!clientKnows) NetworkingManager.sendPacketToClient(new PacketPlayerMovement(client.getPlayer()), client);
       NetworkingManager.sendPacketToOtherClients(new PacketOtherPlayerMovement(client.getPlayer()), client);
     }
   }

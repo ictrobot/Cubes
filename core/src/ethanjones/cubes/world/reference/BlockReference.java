@@ -83,6 +83,10 @@ public class BlockReference implements Pool.Poolable {
     return this;
   }
 
+  public Vector3 asVector3() {
+    return new Vector3(blockX, blockY, blockZ);
+  }
+
   public String toString() {
     return blockX + "," + blockY + "," + blockZ;
   }
