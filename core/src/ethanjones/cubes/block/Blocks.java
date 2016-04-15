@@ -2,6 +2,7 @@ package ethanjones.cubes.block;
 
 import ethanjones.cubes.block.basic.BlockGrass;
 import ethanjones.cubes.block.basic.BlockGlow;
+import ethanjones.cubes.block.basic.BlockLog;
 import ethanjones.cubes.block.basic.BlockTransparent;
 import ethanjones.cubes.core.IDManager;
 import ethanjones.cubes.core.logging.Log;
@@ -19,10 +20,10 @@ public class Blocks {
   public static Block dirt;
   @Register
   public static BlockGrass grass;
-  @Register("core:wood")
-  public static Block wood;
+  @Register
+  public static BlockLog log;
   @Register("core:leaves")
-  public static Block leaves;
+  public static BlockTransparent leaves;
   @Register
   public static BlockGlow glow;
   @Register
@@ -33,15 +34,20 @@ public class Blocks {
       try {
         if (f.isAnnotationPresent(Register.class)) {
           if (f.get(null) != null) continue;
+          Register register = f.getAnnotation(Register.class);
           Class<?> type = f.getType();
           Block block;
 
           if (type == Block.class) {
-            Register register = f.getAnnotation(Register.class);
             block = new Block(register.value());
           } else {
-            Object o = type.newInstance();
-            block = (Block) o;
+            if (register.value().isEmpty()) {
+              Object o = type.newInstance();
+              block = (Block) o;
+            } else {
+              Object o = type.getConstructor(String.class).newInstance(register.value());
+              block = (Block) o;
+            }
           }
 
           f.set(null, block);

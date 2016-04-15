@@ -158,7 +158,7 @@ public class SmoothWorld extends TerrainGenerator {
     set(world, Blocks.leaves, x - 1, y + h + 2, z + 0);
 
     for (int i = 0; i < h + 2; i++) {
-      set(world, Blocks.wood, x, y + i, z);
+      set(world, Blocks.log, x, y + i, z);
     }
   }
 
