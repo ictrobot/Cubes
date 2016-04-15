@@ -11,6 +11,7 @@ import ethanjones.cubes.graphics.world.AreaRenderer;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.world.World;
+import ethanjones.cubes.world.light.SunLight;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
 
@@ -117,7 +118,7 @@ public class Area {
   }
 
   public int getLightRaw(int x, int y, int z) {
-    if (y > maxY) return 0; //FIXME ???
+    if (y > maxY) return SunLight.MAX_SUNLIGHT;
     lock.readLock();
     int r = light[getRef(x, y, z)] & 0xFF; // byte is signed (-128 to 127) so & 0xFF to convert to 0-255
     lock.readUnlock();

@@ -50,9 +50,8 @@ public class WorldClient extends World {
     super.dispose();
   }
 
-  //TODO implement below
   @Override
   public void requestRegion(MultiAreaReference references) {
-
+    // not needed, server sends needed areas automatically
   }
 }
