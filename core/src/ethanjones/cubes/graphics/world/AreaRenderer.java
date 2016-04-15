@@ -39,23 +39,31 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
   private int ySection;
   private ArrayList<AreaMesh> meshs = new ArrayList<AreaMesh>();
 
-  @Override
-  public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
-    if (area == null) return;
+  public boolean needsRefresh() {
+    return refresh;
+  }
+
+  public boolean update() {
     if (refresh) {
       free(meshs);
       if (refreshedThisFrame < MAX_REFRESH_PER_FRAME) {
         if (calculateVertices()) {
           refreshedThisFrame++;
           refresh = false;
+          return true;
         } else {
-          return;
+          return false;
         }
       } else {
-        return;
+        return false;
       }
     }
-    if (meshs.size() <= 0) return;
+    return true; // true indicates this area can be rendered
+  }
+
+  @Override
+  public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
+    if (area == null || !update() || meshs.size() == 0) return;
     for (AreaMesh mesh : meshs) {
       renderables.add(mesh.renderable(pool));
     }
@@ -147,6 +155,16 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
     AreaMesh areaMesh = Pools.obtain(AreaMesh.class);
     areaMesh.saveVertices(vertexCount);
     meshs.add(areaMesh);
+  }
+
+  public Vector3 getOffset() {
+    if (area == null) return Vector3.Zero;
+    return offset;
+  }
+
+  public int getYSection() {
+    if (area == null) return 0;
+    return ySection;
   }
 
   @Override

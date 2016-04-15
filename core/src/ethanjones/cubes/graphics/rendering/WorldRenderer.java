@@ -3,10 +3,7 @@ package ethanjones.cubes.graphics.rendering;
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.entity.Entity;
-import ethanjones.cubes.graphics.world.AreaMesh;
-import ethanjones.cubes.graphics.world.AreaRenderStatus;
-import ethanjones.cubes.graphics.world.AreaRenderer;
-import ethanjones.cubes.graphics.world.SelectedBlock;
+import ethanjones.cubes.graphics.world.*;
 import ethanjones.cubes.input.CameraController;
 import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.common.Cubes;
@@ -23,13 +20,12 @@ import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 import static ethanjones.cubes.graphics.Graphics.modelBatch;
 
 public class WorldRenderer implements Disposable {
-
-  //public Environment environment;
-  public PerspectiveCamera camera;
-  private AreaReference fastGet = new AreaReference();
 
   static {
     Pools.registerType(AreaRenderer.class, new Pool<AreaRenderer>() {
@@ -46,11 +42,12 @@ public class WorldRenderer implements Disposable {
     });
   }
 
-  public WorldRenderer() {
-    //environment = new Environment();
-    //environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
-    //environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.9f, -0.8f));
+  public PerspectiveCamera camera;
+  private AreaReference fastGet = new AreaReference();
 
+  private ArrayList<AreaRenderer> needToRefresh = new ArrayList<AreaRenderer>();
+
+  public WorldRenderer() {
     camera = new PerspectiveCamera(Settings.getIntegerSettingValue(Settings.GRAPHICS_FOV), Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) {
       @Override
       public void update(boolean b) {
@@ -67,6 +64,7 @@ public class WorldRenderer implements Disposable {
 
   public void render() {
     AreaRenderer.newFrame();
+    needToRefresh.clear();
     modelBatch.begin(camera);
 
     int renderDistance = Settings.getIntegerSettingValue(Settings.GRAPHICS_VIEW_DISTANCE);
@@ -89,12 +87,22 @@ public class WorldRenderer implements Disposable {
             if (area.areaRenderer[ySection] == null) {
               Pools.obtain(AreaRenderer.class).set(area, ySection);
             }
-            modelBatch.render(area.areaRenderer[ySection]);
+            // add if ready, else add to update queue
+            AreaRenderer areaRenderer = area.areaRenderer[ySection];
+            if (areaRenderer.needsRefresh()) {
+              needToRefresh.add(areaRenderer);
+            } else {
+              modelBatch.render(areaRenderer);
+            }
           } else if (area.areaRenderer[ySection] != null) {
             AreaRenderer.free(area.areaRenderer[ySection]);
           }
         }
       }
+    }
+    Collections.sort(needToRefresh, new AreaRendererSorter());
+    for (AreaRenderer areaRenderer : needToRefresh) {
+      if (areaRenderer.update()) modelBatch.render(areaRenderer);
     }
     for (Entity entity : world.entities.values()) {
       if (entity instanceof RenderableProvider) modelBatch.render(((RenderableProvider) entity));
