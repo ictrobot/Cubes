@@ -310,19 +310,19 @@ public class Area {
         if (areaRenderer[section + 1] != null) areaRenderer[section + 1].refresh = true;
       }
 
-      if (negX != null && negX.areaRenderer[section] != null) {
+      if (negX != null && y <= negX.maxY && negX.areaRenderer[section] != null) {
         negX.renderStatus[section] = AreaRenderStatus.UNKNOWN;
         negX.areaRenderer[section].refresh = true;
       }
-      if (posX != null && posX.areaRenderer[section] != null) {
+      if (posX != null && y <= posX.maxY && posX.areaRenderer[section] != null) {
         posX.renderStatus[section] = AreaRenderStatus.UNKNOWN;
         posX.areaRenderer[section].refresh = true;
       }
-      if (negZ != null && negZ.areaRenderer[section] != null) {
+      if (negZ != null && y <= negZ.maxY && negZ.areaRenderer[section] != null) {
         negZ.renderStatus[section] = AreaRenderStatus.UNKNOWN;
         negZ.areaRenderer[section].refresh = true;
       }
-      if (posZ != null && posZ.areaRenderer[section] != null) {
+      if (posZ != null && y <= posZ.maxY && posZ.areaRenderer[section] != null) {
         posZ.renderStatus[section] = AreaRenderStatus.UNKNOWN;
         posZ.areaRenderer[section].refresh = true;
       }
