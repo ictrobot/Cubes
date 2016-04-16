@@ -44,12 +44,17 @@ public class SunLight {
       ArrayDeque<LightNode> lightQueue = new ArrayDeque<LightNode>(1000);
       LightWorldSection w = new LightWorldSection(area, y / SIZE_BLOCKS);
 
-      if (w.transparent(x + 1, y, z)) lightQueue.add(new LightNode(x + 1, y, z, w.getSunlight(x + 1, y, z)));
-      if (w.transparent(x - 1, y, z)) lightQueue.add(new LightNode(x - 1, y, z, w.getSunlight(x - 1, y, z)));
-      if (w.transparent(x, y + 1, z)) lightQueue.add(new LightNode(x, y + 1, z, w.getSunlight(x, y + 1, z)));
-      if (w.transparent(x, y - 1, z)) lightQueue.add(new LightNode(x, y - 1, z, w.getSunlight(x, y - 1, z)));
-      if (w.transparent(x, y, z + 1)) lightQueue.add(new LightNode(x, y, z + 1, w.getSunlight(x, y, z + 1)));
-      if (w.transparent(x, y, z - 1)) lightQueue.add(new LightNode(x, y, z - 1, w.getSunlight(x, y, z - 1)));
+      if (y <= w.maxY(x + 1, z) && w.transparent(x + 1, y, z))
+        lightQueue.add(new LightNode(x + 1, y, z, w.getSunlight(x + 1, y, z)));
+      if (y <= w.maxY(x - 1, z) && w.transparent(x - 1, y, z))
+        lightQueue.add(new LightNode(x - 1, y, z, w.getSunlight(x - 1, y, z)));
+      if (y < w.maxY(x, z) && w.transparent(x, y + 1, z))
+        lightQueue.add(new LightNode(x, y + 1, z, w.getSunlight(x, y + 1, z)));
+      if (y > 0 && w.transparent(x, y - 1, z)) lightQueue.add(new LightNode(x, y - 1, z, w.getSunlight(x, y - 1, z)));
+      if (y <= w.maxY(x, z + 1) && w.transparent(x, y, z + 1))
+        lightQueue.add(new LightNode(x, y, z + 1, w.getSunlight(x, y, z + 1)));
+      if (y <= w.maxY(x, z - 1) && w.transparent(x, y, z - 1))
+        lightQueue.add(new LightNode(x, y, z - 1, w.getSunlight(x, y, z - 1)));
 
       propagateAdd(lightQueue, w);
       w.unlock();
@@ -73,7 +78,7 @@ public class SunLight {
       tryPropagateAdd(lightQueue, w, x, y, z - 1, l - 1);
       tryPropagateAdd(lightQueue, w, x, y, z + 1, l - 1);
       if (y > 0) tryPropagateAdd(lightQueue, w, x, y - 1, z, l); // go down without loss in strength
-      if (y < w.maxY(x, z)) tryPropagateAdd(lightQueue, w, x, y + 1, z, l - 1);
+      tryPropagateAdd(lightQueue, w, x, y + 1, z, l - 1);
     }
   }
 
@@ -83,8 +88,7 @@ public class SunLight {
     int dZ = CoordinateConverter.area(z) - w.initialAreaZ;
     Area a = w.areas[dX + 1][dZ + 1];
     int ref = getRef(x - a.minBlockX, y, z - a.minBlockZ);
-    if (ref >= a.light.length) return; //FIXME
-    if (!w.transparent(a, ref)) return;
+    if (y > a.maxY || !w.transparent(a, ref)) return;
     int i = ((a.light[ref] >> 4) & 0xF);
     if (i + 1 <= ln) { // DIFFERENT + 1 instead of + 2
       a.light[ref] = (byte) ((a.light[ref] & 0xF) | (ln << 4));
@@ -126,7 +130,7 @@ public class SunLight {
       tryPropagateRemove(removeQueue, addQueue, w, x, y, z + 1, l);
       if (y > 0)
         tryPropagateRemove(removeQueue, addQueue, w, x, y - 1, z, 16); //16 is higher than maximum light, therefore the sunlight is always removed
-      if (y < w.maxY(x, z)) tryPropagateRemove(removeQueue, addQueue, w, x, y + 1, z, l);
+      tryPropagateRemove(removeQueue, addQueue, w, x, y + 1, z, l);
     }
   }
 
@@ -135,7 +139,7 @@ public class SunLight {
     int dZ = CoordinateConverter.area(z) - w.initialAreaZ;
     Area a = w.areas[dX + 1][dZ + 1];
     int ref = getRef(x - a.minBlockX, y, z - a.minBlockZ);
-    if (!w.transparent(a, ref)) return;
+    if (y > a.maxY || !w.transparent(a, ref)) return;
     int p = ((a.light[ref] >> 4) & 0xF);
     if (p != 0 && p < l) {
       a.light[ref] = (byte) (a.light[ref] & 0xF); // same as ((a.light[ref] & 0xF0) | (0 << 4))
