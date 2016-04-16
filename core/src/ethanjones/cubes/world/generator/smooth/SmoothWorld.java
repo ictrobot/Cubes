@@ -1,6 +1,7 @@
 package ethanjones.cubes.world.generator.smooth;
 
 import ethanjones.cubes.block.Blocks;
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.world.generator.TerrainGenerator;
 import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.server.WorldServer;
@@ -30,6 +31,7 @@ public class SmoothWorld extends TerrainGenerator {
 
   public SmoothWorld(long baseSeed) {
     this.baseSeed = baseSeed;
+    Log.info("Smooth World Seed: " + baseSeed);
     temperature = new Feature(baseSeed + 1, 4, 1);
     rainfall = new Feature(baseSeed + 2, 4, 1);
     height = new Feature(baseSeed + 3, 4, 1);
