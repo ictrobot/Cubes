@@ -15,8 +15,11 @@ import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.CubesServer;
 import ethanjones.cubes.side.server.integrated.IntegratedServer;
+import ethanjones.cubes.world.client.WorldClient;
+import ethanjones.cubes.world.server.WorldServer;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -102,8 +105,7 @@ public class ClientAdapter implements AdapterInterface {
         Debug.crash(new CubesException("CubesClient and Menu both null"));
       }
       Compatibility.get().render();
-      Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-      Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+      glClear();
       if (cubesClient != null) {
         if (setupClient.getAndSet(false)) {
           cubesClient.create();
@@ -130,6 +132,18 @@ public class ClientAdapter implements AdapterInterface {
     } catch (Exception e) {
       Debug.crash(e);
     }
+  }
+
+  private void glClear() {
+    try {
+      Color skyColour = ((WorldClient) cubesClient.world).getSkyColour();
+      Log.debug(skyColour.toString() + " " + skyColour.r + " " + skyColour.g + " " + skyColour.b + " " + skyColour.a);
+      Gdx.gl20.glClearColor(skyColour.r, skyColour.g, skyColour.b, skyColour.a);
+    } catch (Exception ignored) {
+      Gdx.gl20.glClearColor(0, 0, 0, 1f);
+    }
+    Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
   }
 
   @Override

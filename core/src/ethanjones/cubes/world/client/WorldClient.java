@@ -7,6 +7,8 @@ import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
 import ethanjones.cubes.world.storage.Area;
 
+import com.badlogic.gdx.graphics.Color;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -43,6 +45,13 @@ public class WorldClient extends World {
     for (Area area : removed) {
       area.unload();
     }
+  }
+
+  public Color getSkyColour() {
+    float light = getSunlight();
+    if (light <= 0.3f) return Color.BLACK;
+    if (light >= 0.7f) return Color.SKY;
+    return Color.BLACK.cpy().lerp(Color.SKY, (light - 0.3f) * 2.5f);
   }
 
   @Override
