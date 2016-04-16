@@ -382,13 +382,15 @@ public class GuiRenderer implements Disposable {
         return true;
       }
     }
-    if (screenX >= startWidth && screenX <= (startWidth + (hotbarSize * 10)) && screenY >= (Gdx.graphics.getHeight() - hotbarSize)) {
-      int slot = (int) ((screenX - startWidth) / hotbarSize);
-      if (slot >= 0 && slot <= 10) {
-        Cubes.getClient().player.getInventory().hotbarSelected = slot;
-        Cubes.getClient().player.getInventory().sync();
+    if (isBlocksMenuEnabled() || Compatibility.get().isTouchScreen()) {
+      if (screenX >= startWidth && screenX <= (startWidth + (hotbarSize * 10)) && screenY >= (Gdx.graphics.getHeight() - hotbarSize)) {
+        int slot = (int) ((screenX - startWidth) / hotbarSize);
+        if (slot >= 0 && slot <= 10) {
+          Cubes.getClient().player.getInventory().hotbarSelected = slot;
+          Cubes.getClient().player.getInventory().sync();
+        }
+        return true;
       }
-      return true;
     }
     return false;
   }

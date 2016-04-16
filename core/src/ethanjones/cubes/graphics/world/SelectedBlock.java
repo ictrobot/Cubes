@@ -36,6 +36,7 @@ public class SelectedBlock {
   static Material material;
 
   public static Renderable draw() {
+    if (Cubes.getClient().renderer.guiRenderer.isHideGuiEnabled()) return null;
     RayTracing.BlockIntersection blockIntersection = RayTracing.getBlockIntersection(Cubes.getClient().player.position, Cubes.getClient().player.angle, Cubes.getClient().world);
     if (blockIntersection == null || blockIntersection.getBlockReference() == null) return null;
     BlockReference position = blockIntersection.getBlockReference();
