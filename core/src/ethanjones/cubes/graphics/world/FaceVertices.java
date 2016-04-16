@@ -117,28 +117,28 @@ public class FaceVertices {
     vertices[vertexOffset++] = offset.x + x;
     vertices[vertexOffset++] = offset.y + y;
     vertices[vertexOffset++] = offset.z + z + 1;
-    vertices[vertexOffset++] = region.getU();
+    vertices[vertexOffset++] = region.getU2();
     vertices[vertexOffset++] = region.getV2();
     vertices[vertexOffset++] = light + minX;
 
     vertices[vertexOffset++] = offset.x + x;
     vertices[vertexOffset++] = offset.y + y + 1;
     vertices[vertexOffset++] = offset.z + z + 1;
-    vertices[vertexOffset++] = region.getU();
+    vertices[vertexOffset++] = region.getU2();
     vertices[vertexOffset++] = region.getV();
     vertices[vertexOffset++] = light + minX;
 
     vertices[vertexOffset++] = offset.x + x;
     vertices[vertexOffset++] = offset.y + y + 1;
     vertices[vertexOffset++] = offset.z + z;
-    vertices[vertexOffset++] = region.getU2();
+    vertices[vertexOffset++] = region.getU();
     vertices[vertexOffset++] = region.getV();
     vertices[vertexOffset++] = light + minX;
 
     vertices[vertexOffset++] = offset.x + x;
     vertices[vertexOffset++] = offset.y + y;
     vertices[vertexOffset++] = offset.z + z;
-    vertices[vertexOffset++] = region.getU2();
+    vertices[vertexOffset++] = region.getU();
     vertices[vertexOffset++] = region.getV2();
     vertices[vertexOffset++] = light + minX;
     return vertexOffset;
