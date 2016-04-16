@@ -62,7 +62,7 @@ class LightWorldSection {
 
   protected boolean isLightSource(int x, int y, int z) {
     Area a = getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
-    int b = a.blocks[Area.getRef(x, y, z)];
+    int b = a.blocks[Area.getRef(x - a.minBlockX, y, z - a.minBlockZ)];
     if (b == 0) return false;
     if (b < 0) return Sided.getIDManager().toBlock(-b).getLightLevel() > 0;
     return Sided.getIDManager().toBlock(b).getLightLevel() > 0;
