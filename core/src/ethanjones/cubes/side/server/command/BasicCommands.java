@@ -7,6 +7,7 @@ public class BasicCommands {
     StopCommand.init();
     TeleportCommand.init();
     SpeedCommand.init();
+    TimeCommand.init();
   }
   
 }

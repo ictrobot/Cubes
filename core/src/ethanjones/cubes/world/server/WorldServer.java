@@ -5,6 +5,7 @@ import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketEntityAdd;
 import ethanjones.cubes.networking.packets.PacketEntityRemove;
 import ethanjones.cubes.networking.packets.PacketEntityUpdate;
+import ethanjones.cubes.networking.packets.PacketWorldTime;
 import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.generator.TerrainGenerator;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
@@ -70,5 +71,11 @@ public class WorldServer extends World {
     PacketEntityUpdate packet = new PacketEntityUpdate();
     packet.data = entity.write();
     NetworkingManager.sendPacketToAllClients(packet);
+  }
+
+  @Override
+  public void setTime(int time) {
+    super.setTime(time);
+    NetworkingManager.sendPacketToAllClients(new PacketWorldTime(this.time));
   }
 }

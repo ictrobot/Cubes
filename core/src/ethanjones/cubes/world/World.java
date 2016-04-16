@@ -145,6 +145,12 @@ public abstract class World implements Disposable {
     return f;
   }
 
+  public void setTime(int time) {
+    lock.writeLock();
+    this.time = time % MAX_TIME;
+    lock.writeUnlock();
+  }
+
   public TerrainGenerator getTerrainGenerator() {
     return terrainGenerator;
   }

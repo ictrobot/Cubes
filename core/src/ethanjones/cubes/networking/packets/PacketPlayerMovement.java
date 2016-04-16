@@ -3,6 +3,7 @@ package ethanjones.cubes.networking.packets;
 import ethanjones.cubes.core.util.VectorUtil;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.networking.packet.Packet;
+import ethanjones.cubes.networking.packet.PacketPriority;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
@@ -15,9 +16,11 @@ import java.io.DataOutputStream;
 public class PacketPlayerMovement extends Packet {
 
   public PacketPlayerMovement() {
+    setPacketPriority(PacketPriority.High);
   }
 
   public PacketPlayerMovement(Player player) {
+    setPacketPriority(PacketPriority.High);
     this.angle = player.angle.cpy();
     this.position = player.position.cpy();
   }

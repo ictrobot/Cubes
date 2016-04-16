@@ -10,7 +10,7 @@ import java.util.List;
 public class SpeedCommand {
 
   public static void init() {
-    CommandBuilder speed = new CommandBuilder("speed").register().add(CommandValue.coordinate).setCommandListener(new CommandListener() {
+    CommandBuilder speed = new CommandBuilder("speed").register().add(CommandValue.floatValue).setCommandListener(new CommandListener() {
       @Override
       public void onCommand(CommandBuilder builder, List<CommandArgument> arguments, CommandSender sender) {
         if (sender instanceof Player) {
