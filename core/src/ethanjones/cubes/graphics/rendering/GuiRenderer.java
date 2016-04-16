@@ -52,12 +52,29 @@ public class GuiRenderer implements Disposable {
     static final int hideGUI = Keys.F3;
     static final int blocksMenu = Keys.E;
 
+    private boolean functionKeys(int keycode) {
+      if (keycode == debug) {
+        setDebugEnabled(!isDebugEnabled());
+        return true;
+      }
+      if (keycode == chat) {
+        setChatEnabled(!isChatEnabled());
+        return true;
+      }
+      if (keycode == hideGUI) {
+        setHideGuiEnabled(!isHideGuiEnabled());
+        return true;
+      }
+      return false;
+    }
+
     @Override
     public void keyDown(int keycode) {
-      if (keycode == debug) setDebugEnabled(!isDebugEnabled());
-      if (keycode == chat) setChatEnabled(!isChatEnabled());
-      if (keycode == hideGUI) setHideGuiEnabled(!isHideGuiEnabled());
-      if (keycode == blocksMenu) setBlocksMenuEnabled(!isBlocksMenuEnabled());
+      functionKeys(keycode);
+
+      if (keycode == blocksMenu) {
+        setBlocksMenuEnabled(!isBlocksMenuEnabled());
+      }
 
       int selected = -1;
       if (keycode == Keys.NUM_1) selected = 0;
@@ -137,7 +154,16 @@ public class GuiRenderer implements Disposable {
     chatStyle.font = Fonts.FontHUD;
     chatStyle.background = new TextureRegionDrawable(Assets.getTextureRegion("core:hud/ChatBackground.png"));
 
-    chat = new TextField("", chatStyle);
+    chat = new TextField("", chatStyle) {
+      protected InputListener createInputListener() {
+        return new TextFieldClickListener() {
+          @Override
+          public boolean keyDown(InputEvent event, int keycode) {
+            return keyListener.functionKeys(keycode) || super.keyDown(event, keycode);
+          }
+        };
+      }
+    };
     chat.setTextFieldListener(new TextField.TextFieldListener() {
       @Override
       public void keyTyped(TextField textField, char c) {
@@ -147,7 +173,6 @@ public class GuiRenderer implements Disposable {
           NetworkingManager.sendPacketToServer(packetChat);
           chat.setText("");
           setChatEnabled(false);
-
         }
       }
     });
@@ -262,7 +287,7 @@ public class GuiRenderer implements Disposable {
     float crosshairSize = Math.min(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) / 40;
     if (!isHideGuiEnabled()) {
       spriteBatch.draw(crosshair, (Gdx.graphics.getWidth() / 2) - crosshairSize, (Gdx.graphics.getHeight() / 2) - crosshairSize, crosshairSize * 2, crosshairSize * 2);
-      renderHotbar();
+      if (!isChatEnabled()) renderHotbar();
     }
     if (isBlocksMenuEnabled()) renderBlockMenu();
     spriteBatch.end();
