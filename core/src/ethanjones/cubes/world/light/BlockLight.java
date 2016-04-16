@@ -14,8 +14,6 @@ public class BlockLight {
   public static final byte FULL_LIGHT = (byte) 0xFF;
 
   public static void spreadLight(int x, int y, int z) {
-    long ms = System.currentTimeMillis();
-
     Area area = Sided.getCubes().world.getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
     if (y >= 0 && y <= area.maxY) {
       ArrayDeque<LightNode> lightQueue = new ArrayDeque<LightNode>(1000);
@@ -39,12 +37,9 @@ public class BlockLight {
       propagateAdd(lightQueue, w);
       w.unlock();
     }
-    Log.debug("Light spread: " + (System.currentTimeMillis() - ms) + "ms");
   }
 
   public static void addLight(int x, int y, int z, int l) {
-    long ms = System.currentTimeMillis();
-
     Area area = Sided.getCubes().world.getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
     if (y > 0 && y <= area.maxY) {
       ArrayDeque<LightNode> lightQueue = new ArrayDeque<LightNode>(1000);
@@ -55,7 +50,6 @@ public class BlockLight {
       propagateAdd(lightQueue, lightWorldSection);
       lightWorldSection.unlock();
     }
-    Log.debug("Light add: " + (System.currentTimeMillis() - ms) + "ms");
   }
 
   private static void propagateAdd(ArrayDeque<LightNode> lightQueue, LightWorldSection w) {
@@ -92,8 +86,6 @@ public class BlockLight {
   }
 
   public static void removeLight(int x, int y, int z) {
-    long ms = System.currentTimeMillis();
-
     Area area = Sided.getCubes().world.getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
     if (y > 0 && y <= area.maxY) {
       ArrayDeque<LightNode> removeQueue = new ArrayDeque<LightNode>(1000);
@@ -107,7 +99,6 @@ public class BlockLight {
       propagateAdd(addQueue, lightWorldSection);
       lightWorldSection.unlock();
     }
-    Log.debug("Light remove: " + (System.currentTimeMillis() - ms) + "ms");
   }
 
   private static void propagateRemove(ArrayDeque<LightNode> removeQueue, ArrayDeque<LightNode> addQueue, LightWorldSection w) {
