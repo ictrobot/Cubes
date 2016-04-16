@@ -6,7 +6,7 @@ import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
 import ethanjones.cubes.world.reference.BlockReference;
 
 public class WorldLightHandler {
-  @EventHandler
+  @EventHandler(critical = true)
   public void blockChanged(BlockChangedEvent event) {
     BlockReference blockReference = event.getBlockReference();
     Block oldBlock = event.getOldBlock();

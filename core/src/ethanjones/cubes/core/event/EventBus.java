@@ -23,7 +23,7 @@ public class EventBus {
             Class<? extends Event> eventClass = parameterTypes[0].asSubclass(Event.class);
             final List<EventWrapper> list = getList(eventClass);
             synchronized (list) {
-              list.add(new EventWrapper(method, instance));
+              list.add(new EventWrapper(method, instance, eventHandler));
             }
           } else {
             Log.error(new CubesException("Invalid EventHandler method parameters"));
