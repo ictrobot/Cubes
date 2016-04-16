@@ -65,8 +65,8 @@ public class MenuManager {
       }
     }
     spriteBatch.begin();
-    int width = texture.getRegionWidth();
-    int height = texture.getRegionHeight();
+    float width = texture.getRegionWidth() * Fonts.scaleFactor;
+    float height = texture.getRegionHeight() * Fonts.scaleFactor;
     int xTimes = (int) Math.floor((float) Gdx.graphics.getWidth() / width);
     int yTimes = (int) Math.floor((float) Gdx.graphics.getHeight() / height);
     for (int x = 0; x <= xTimes; x++) {
