@@ -57,8 +57,12 @@ public class CommandManager {
             success = check(sender, builder, arg, c, i + 1, str);
           }
         } catch (Exception e) {
-          Log.warning(e.getClass().getSimpleName() + " while running command \"" + str + "\"", e);
-          sender.print(Localization.get("command.common.exception", e.getClass().getSimpleName()));
+          if (e instanceof CommandParsingException) {
+            sender.print(Localization.get(e.getMessage()));
+          } else {
+            Log.warning(e.getClass().getSimpleName() + " while running command \"" + str + "\"", e);
+            sender.print(Localization.get("command.common.exception", e.getClass().getSimpleName()));
+          }
           return true;
         }
       }

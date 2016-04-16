@@ -12,7 +12,7 @@ public abstract class CommandValue<T> {
       try {
         return Float.parseFloat(string);
       } catch (NumberFormatException e) {
-        throw new CommandParsingException("commands.common.value.coordinate.parsing");
+        throw new CommandParsingException("command.common.value.coordinate.parsing");
       }
     }
 
@@ -27,7 +27,7 @@ public abstract class CommandValue<T> {
       try {
         return Integer.parseInt(string);
       } catch (NumberFormatException e) {
-        throw new CommandParsingException("commands.common.value.blockCoordinate.parsing");
+        throw new CommandParsingException("command.common.value.blockCoordinate.parsing");
       }
     }
 
@@ -53,7 +53,7 @@ public abstract class CommandValue<T> {
     @Override
     public CommandBuilder getArgument(String string) throws CommandParsingException {
       CommandBuilder commandBuilder = CommandManager.commands.get(string);
-      if (commandBuilder == null) throw new CommandParsingException("commands.common.value.command.parsing");
+      if (commandBuilder == null) throw new CommandParsingException("command.common.value.command.parsing");
       return commandBuilder;
     }
 
