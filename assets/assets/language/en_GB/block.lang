@@ -1,4 +1,8 @@
 block.core.bedrock=Bedrock
+block.core.stone=Stone
 block.core.dirt=Dirt
 block.core.grass=Grass
-block.core.stone=Stone
+block.core.log=Log
+block.core.leaves=Leaves
+block.core.glow=Glow
+block.core.glass=Glass
