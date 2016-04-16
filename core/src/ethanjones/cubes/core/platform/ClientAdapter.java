@@ -137,7 +137,6 @@ public class ClientAdapter implements AdapterInterface {
   private void glClear() {
     try {
       Color skyColour = ((WorldClient) cubesClient.world).getSkyColour();
-      Log.debug(skyColour.toString() + " " + skyColour.r + " " + skyColour.g + " " + skyColour.b + " " + skyColour.a);
       Gdx.gl20.glClearColor(skyColour.r, skyColour.g, skyColour.b, skyColour.a);
     } catch (Exception ignored) {
       Gdx.gl20.glClearColor(0, 0, 0, 1f);
