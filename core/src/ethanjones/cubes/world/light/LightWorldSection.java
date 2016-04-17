@@ -6,6 +6,7 @@ import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.storage.Area;
+import ethanjones.cubes.world.thread.AreaNotLoadedException;
 
 class LightWorldSection {
   public final int initialAreaX;
@@ -34,6 +35,7 @@ class LightWorldSection {
 
     for (Area[] areaArr : areas) {
       for (Area area : areaArr) {
+        if (area == null) throw new AreaNotLoadedException();
         area.lock.writeLock();
       }
     }
