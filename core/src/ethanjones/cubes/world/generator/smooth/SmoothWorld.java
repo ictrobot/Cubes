@@ -64,10 +64,14 @@ public class SmoothWorld extends TerrainGenerator {
   public void generate(Area area) {
     for (int x = 0; x < Area.SIZE_BLOCKS; x++) {
       for (int z = 0; z < Area.SIZE_BLOCKS; z++) {
-        int g = getSurfaceHeight(area, x, z);
+        int g = getSurfaceHeight(x + area.minBlockX, z + area.minBlockZ);
+        int d = getDirtHeight(x + area.minBlockX, z + area.minBlockZ);
         set(area, Blocks.bedrock, x, 0, z);
-        for (int y = 1; y < g; y++) {
+        for (int y = 1; y < (g - d); y++) {
           set(area, Blocks.stone, x, y, z);
+        }
+        for (int y = (g - d); y < g; y++) {
+          set(area, Blocks.dirt, x, y, z);
         }
         set(area, Blocks.grass, x, g, z);
       }
@@ -76,14 +80,13 @@ public class SmoothWorld extends TerrainGenerator {
 
   @Override
   public void features(Area area, WorldServer world) {
-    Random r = getRandom("tree");
     for (int x = 0; x < Area.SIZE_BLOCKS; x++) {
       for (int z = 0; z < Area.SIZE_BLOCKS; z++) {
         double t = trees.eval(area.areaX + x, area.areaZ + z);
         if (t > 0.5d) {
           int trees = 100 - ((int) ((t - 0.4d) / 0.05d));
-          if (r.nextInt(trees) == 0) {
-            genTree(area, world, x, z, r);
+          if (pseudorandomInt(x + area.minBlockX, z + area.minBlockZ, trees) == 0) {
+            genTree(area, world, x, z);
           }
         }
       }
@@ -95,12 +98,12 @@ public class SmoothWorld extends TerrainGenerator {
     return new BlockReference().setFromBlockCoordinates(0, getSurfaceHeight(0, 0) + 1, 0);
   }
 
-  public void genTree(Area area, WorldServer world, int x, int z, Random r) {
-    int y = getSurfaceHeight(area, x, z) + 1;
-    int h = r.nextInt(4) + 2;
-
+  public void genTree(Area area, WorldServer world, int x, int z) {
     x += area.minBlockX;
     z += area.minBlockZ;
+
+    int y = getSurfaceHeight(x, z) + 1;
+    int h = getTreeHeight(x, z) + 1;
 
     //set(world, Blocks.leaves, x - 2, y + h, z - 2);
     set(world, Blocks.leaves, x - 1, y + h, z - 2);
@@ -164,17 +167,36 @@ public class SmoothWorld extends TerrainGenerator {
     }
   }
 
-  public int getSurfaceHeight(Area area, int x, int z) {
-    return getSurfaceHeight(area.minBlockX + x, area.minBlockZ + z);
-  }
-
   public int getSurfaceHeight(int x, int z) {
     double h = height.eval(x, z) * 60;
     double hv = Math.sqrt(heightVariation.eval(x, z) + 1);
     return (int) Math.pow(h, hv);
   }
 
-  private Random getRandom(String string) {
-    return new Random((long) (baseSeed + string.hashCode()));
+  public int getDirtHeight(int x, int z) {
+    double h = height.eval(x, z) * 100;
+    return 1 + ((int) Math.floor(h % 3));
+  }
+
+  public int getTreeHeight(int x, int z) {
+    double h = heightVariation.eval(x, z) * 100;
+    return 2 + ((int) Math.floor(h % 3));
+  }
+
+  public long pseudorandomBits(long x, long z, int bits) {
+    long l = (x * (x - 1)) + (z * (z + 1)) + (long) Math.pow(x, z > 0 ? z : (z < 0 ? -z : 1));
+
+    long multiplier = 0x5DEECE66DL;
+    long addend = 0xBL;
+
+    long l1 = l * multiplier + addend;
+    long l2 = l1 * multiplier + addend;
+    long lo = (l1 << 32) + l2;
+    return lo >>> (64 - bits);
+  }
+
+  public int pseudorandomInt(long x, long z, int bound) {
+    float f = pseudorandomBits(x, z, 24) / ((float) (1 << 24));
+    return (int) Math.floor(f * bound);
   }
 }
