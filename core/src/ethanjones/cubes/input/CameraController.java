@@ -161,7 +161,7 @@ public class CameraController extends InputAdapter {
     }
     if (deltaTime > 0f && jump > 0) {
       float f = deltaTime * 6;
-      if (!new PlayerMovementEvent(camera.position.cpy().add(0, f, 0)).post().isCanceled()) {
+      if (!new PlayerMovementEvent(Cubes.getClient().player, camera.position.cpy().add(0, f, 0)).post().isCanceled()) {
         camera.position.y += f;
       }
       jump -= deltaTime;
@@ -172,7 +172,7 @@ public class CameraController extends InputAdapter {
 
   private void tryMove() {
     Vector3 vector3 = new Vector3(camera.position).add(tmp);
-    if (!new PlayerMovementEvent(vector3).post().isCanceled()) {
+    if (!new PlayerMovementEvent(Cubes.getClient().player, vector3).post().isCanceled()) {
       camera.position.add(tmp);
     }
   }

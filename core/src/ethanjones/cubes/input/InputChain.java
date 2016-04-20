@@ -75,7 +75,7 @@ public class InputChain implements Disposable {
       pos.y = y + 1 + player.height;
     }
     if (!pos.equals(player.position)) {
-      if (!new PlayerMovementEvent(pos.cpy()).post().isCanceled()) {
+      if (!new PlayerMovementEvent(Cubes.getClient().player, pos.cpy()).post().isCanceled()) {
         player.position.set(pos);
       }
     }

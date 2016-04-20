@@ -2,6 +2,7 @@ package ethanjones.cubes.side.server;
 
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.event.EventHandler;
+import ethanjones.cubes.core.event.entity.living.player.PlayerMovementEvent;
 import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
 import ethanjones.cubes.core.event.world.generation.AreaGeneratedEvent;
 import ethanjones.cubes.entity.ItemEntity;
@@ -116,6 +117,15 @@ public class PlayerManager {
 
   public void setPosition(Vector3 newPosition, Vector3 newAngle, boolean clientKnows) {
     synchronized (this) {
+      if (newPosition != null && new PlayerMovementEvent(client.getPlayer(), newPosition).post().isCanceled()) {
+        // cancel move
+        if (!clientKnows) return;
+        // client knows new position, need to send old position
+        newPosition = client.getPlayer().position.cpy();
+        newAngle = client.getPlayer().angle.cpy();
+        clientKnows = false;
+      }
+
       if (newPosition == null) newPosition = client.getPlayer().position.cpy();
       if (newAngle == null) newAngle = client.getPlayer().angle.cpy();
 
