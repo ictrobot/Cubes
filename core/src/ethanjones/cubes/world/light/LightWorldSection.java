@@ -12,17 +12,14 @@ class LightWorldSection {
   public final int initialAreaX;
   public final int initialAreaZ;
   public final Area[][] areas = new Area[3][3];
-  private final World world;
   private final TransparencyManager transparency;
-  private final int ySection;
 
-  LightWorldSection(Area initial, int ySection) {
-    this.world = initial.world;
+  LightWorldSection(Area initial) {
     this.transparency = Sided.getIDManager().transparencyManager;
-    this.ySection = ySection;
     initialAreaX = initial.areaX;
     initialAreaZ = initial.areaZ;
 
+    World world = initial.world;
     areas[0][0] = world.getArea(initialAreaX - 1, initialAreaZ - 1);
     areas[0][1] = world.getArea(initialAreaX - 1, initialAreaZ);
     areas[0][2] = world.getArea(initialAreaX - 1, initialAreaZ + 1);
@@ -81,15 +78,8 @@ class LightWorldSection {
   }
 
   protected void unlock() {
-    boolean isClient = Sided.getSide() == Side.Client;
     for (Area[] areaArr : areas) {
       for (Area area : areaArr) {
-        if (ySection != -1) {
-          if (isClient && ySection - 1 < area.height && ySection != 0) area.updateRender(ySection - 1);
-          if (isClient && ySection < area.height) area.updateRender(ySection);
-          if (isClient && ySection + 1 < area.height) area.updateRender(ySection + 1);
-        }
-
         area.lock.writeUnlock();
       }
     }

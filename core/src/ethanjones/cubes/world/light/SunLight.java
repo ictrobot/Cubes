@@ -15,7 +15,7 @@ public class SunLight {
 
   public static void initialSunlight(Area area) {
     initalSunlight.lock(); // used to prevent all the World Generation threads grabbing different areas and deadlocking
-    LightWorldSection worldSection = new LightWorldSection(area, -1);
+    LightWorldSection worldSection = new LightWorldSection(area);
     initalSunlight.unlock();
 
     ArrayDeque<LightNode> lightQueue = new ArrayDeque<>();
@@ -42,7 +42,7 @@ public class SunLight {
     Area area = Sided.getCubes().world.getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
     if (y > 0 && y <= area.maxY) {
       ArrayDeque<LightNode> lightQueue = new ArrayDeque<LightNode>(1000);
-      LightWorldSection w = new LightWorldSection(area, y / SIZE_BLOCKS);
+      LightWorldSection w = new LightWorldSection(area);
 
       if (y <= w.maxY(x + 1, z) && w.transparent(x + 1, y, z))
         lightQueue.add(new LightNode(x + 1, y, z, w.getSunlight(x + 1, y, z)));
@@ -92,6 +92,7 @@ public class SunLight {
     int i = ((a.light[ref] >> 4) & 0xF);
     if (i + 1 <= ln) { // DIFFERENT + 1 instead of + 2
       a.light[ref] = (byte) ((a.light[ref] & 0xF) | (ln << 4));
+      a.updateRender(y / SIZE_BLOCKS);
       lightQueue.add(new LightNode(x, y, z, ln));
     }
   }
@@ -101,7 +102,7 @@ public class SunLight {
     if (y > 0 && y <= area.maxY) {
       ArrayDeque<LightNode> removeQueue = new ArrayDeque<LightNode>(1000);
       ArrayDeque<LightNode> addQueue = new ArrayDeque<LightNode>(1000);
-      LightWorldSection lightWorldSection = new LightWorldSection(area, y / SIZE_BLOCKS);
+      LightWorldSection lightWorldSection = new LightWorldSection(area);
 
       int prev = area.getSunlight(x - area.minBlockX, y, z - area.minBlockZ);
       area.setSunlight(x - area.minBlockX, y, z - area.minBlockZ, 0);
@@ -143,6 +144,7 @@ public class SunLight {
     int p = ((a.light[ref] >> 4) & 0xF);
     if (p != 0 && p < l) {
       a.light[ref] = (byte) (a.light[ref] & 0xF); // same as ((a.light[ref] & 0xF0) | (0 << 4))
+      a.updateRender(y / SIZE_BLOCKS);
       removeQueue.add(new LightNode(x, y, z, p));
     } else if (p >= l) {
       addQueue.add(new LightNode(x, y, z, p));

@@ -1,6 +1,7 @@
 package ethanjones.cubes.world.light;
 
 import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.storage.Area;
@@ -17,7 +18,7 @@ public class BlockLight {
     Area area = Sided.getCubes().world.getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
     if (y >= 0 && y <= area.maxY) {
       ArrayDeque<LightNode> lightQueue = new ArrayDeque<LightNode>(1000);
-      LightWorldSection w = new LightWorldSection(area, y / SIZE_BLOCKS);
+      LightWorldSection w = new LightWorldSection(area);
 
       if (y <= w.maxY(x + 1, z) && (w.transparent(x + 1, y, z) || w.isLightSource(x + 1, y, z)))
         lightQueue.add(new LightNode(x + 1, y, z, w.getLight(x + 1, y, z)));
@@ -43,7 +44,7 @@ public class BlockLight {
     Area area = Sided.getCubes().world.getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
     if (y > 0 && y <= area.maxY) {
       ArrayDeque<LightNode> lightQueue = new ArrayDeque<LightNode>(1000);
-      LightWorldSection lightWorldSection = new LightWorldSection(area, y / SIZE_BLOCKS);
+      LightWorldSection lightWorldSection = new LightWorldSection(area);
 
       area.setLight(x - area.minBlockX, y, z - area.minBlockZ, l);
       lightQueue.add(new LightNode(x, y, z, l));
@@ -81,6 +82,7 @@ public class BlockLight {
     if (y > a.maxY || !w.transparent(a, ref)) return;
     if ((a.light[ref] & 0xF) + 2 <= l) {
       a.light[ref] = (byte) ((a.light[ref] & 0xF0) | (l - 1));
+      a.updateRender(y / SIZE_BLOCKS);
       lightQueue.add(new LightNode(x, y, z, l - 1));
     }
   }
@@ -90,7 +92,7 @@ public class BlockLight {
     if (y > 0 && y <= area.maxY) {
       ArrayDeque<LightNode> removeQueue = new ArrayDeque<LightNode>(1000);
       ArrayDeque<LightNode> addQueue = new ArrayDeque<LightNode>(1000);
-      LightWorldSection lightWorldSection = new LightWorldSection(area, y / SIZE_BLOCKS);
+      LightWorldSection lightWorldSection = new LightWorldSection(area);
 
       int prev = area.getLight(x - area.minBlockX, y, z - area.minBlockZ);
       area.setLight(x - area.minBlockX, y, z - area.minBlockZ, 0);
@@ -131,6 +133,7 @@ public class BlockLight {
     int p = a.light[ref] & 0xF;
     if (p != 0 && p < l) {
       a.light[ref] = (byte) (a.light[ref] & 0xF0); // same as ((a.light[ref] & 0xF0) | 0)
+      a.updateRender(y / SIZE_BLOCKS);
       removeQueue.add(new LightNode(x, y, z, p));
     } else if (p >= l) {
       addQueue.add(new LightNode(x, y, z, p));

@@ -107,6 +107,7 @@ public class Area {
     int ref = getRef(x, y, z);
     light[ref] = (byte) ((light[ref] & 0xF) | (l << 4));
     lock.writeUnlock();
+    updateRender(y / SIZE_BLOCKS);
   }
 
   // Set the bits 0000XXXX
@@ -115,6 +116,7 @@ public class Area {
     int ref = getRef(x, y, z);
     light[ref] = (byte) ((light[ref] & 0xF0) | l);
     lock.writeUnlock();
+    updateRender(y / SIZE_BLOCKS);
   }
 
   public int getLightRaw(int x, int y, int z) {
@@ -155,6 +157,7 @@ public class Area {
     light = null;
     AreaRenderer.free(areaRenderer);
     areaRenderer = null;
+    if (renderStatus.length > 0) renderStatus = new int[0];
     maxY = 0;
     height = 0;
 
@@ -344,8 +347,8 @@ public class Area {
   }
 
   public void updateRender(int section) {
-    renderStatus[section] = AreaRenderStatus.UNKNOWN;
-    if (areaRenderer[section] != null) areaRenderer[section].refresh = true;
+    if (section < renderStatus.length) renderStatus[section] = AreaRenderStatus.UNKNOWN;
+    if (areaRenderer != null && areaRenderer[section] != null) areaRenderer[section].refresh = true;
   }
 
   public void updateAll() {
