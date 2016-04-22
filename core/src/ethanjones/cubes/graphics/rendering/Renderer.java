@@ -1,5 +1,8 @@
 package ethanjones.cubes.graphics.rendering;
 
+import ethanjones.cubes.core.performance.Performance;
+import ethanjones.cubes.core.performance.PerformanceTags;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
@@ -15,10 +18,16 @@ public class Renderer {
   }
 
   public void render() {
+    Performance.start(PerformanceTags.CLIENT_RENDER);
     Gdx.gl20.glDisable(GL20.GL_BLEND);
 
     worldRenderer.render();
+
+    Performance.start(PerformanceTags.CLIENT_RENDER_GUI);
     guiRenderer.render();
+    Performance.stop(PerformanceTags.CLIENT_RENDER_GUI);
+
+    Performance.stop(PerformanceTags.CLIENT_RENDER);
   }
 
   public void dispose() {

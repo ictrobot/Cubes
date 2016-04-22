@@ -1,5 +1,7 @@
 package ethanjones.cubes.graphics.rendering;
 
+import ethanjones.cubes.core.performance.Performance;
+import ethanjones.cubes.core.performance.PerformanceTags;
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.entity.Entity;
@@ -63,12 +65,14 @@ public class WorldRenderer implements Disposable {
   }
 
   public void render() {
+    Performance.start(PerformanceTags.CLIENT_RENDER_WORLD);
     AreaRenderer.newFrame();
     needToRefresh.clear();
     modelBatch.begin(camera);
 
     int renderDistance = Settings.getIntegerSettingValue(Settings.GRAPHICS_VIEW_DISTANCE);
 
+    Performance.start(PerformanceTags.CLIENT_RENDER_WORLD_AREAS);
     WorldClient world = (WorldClient) CubesClient.getClient().world;
     world.lock.readLock();
     AreaReference pos = Pools.obtainAreaReference().setFromPositionVector3(Cubes.getClient().player.position);
@@ -100,17 +104,29 @@ public class WorldRenderer implements Disposable {
         }
       }
     }
+    Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_AREAS);
+
+    Performance.start(PerformanceTags.CLIENT_RENDER_WORLD_UPDATES);
     Collections.sort(needToRefresh, new AreaRendererSorter());
     for (AreaRenderer areaRenderer : needToRefresh) {
+      Performance.start(PerformanceTags.CLIENT_RENDER_WORLD_UPDATE);
       if (areaRenderer.update()) modelBatch.render(areaRenderer);
+      Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_UPDATE);
     }
+    Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_UPDATES);
+
+    Performance.start(PerformanceTags.CLIENT_RENDER_WORLD_ENTITY);
     for (Entity entity : world.entities.values()) {
       if (entity instanceof RenderableProvider) modelBatch.render(((RenderableProvider) entity));
     }
+    Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_ENTITY);
+
     Renderable selected = SelectedBlock.draw();
     if (selected != null) modelBatch.render(selected);
     world.lock.readUnlock();
     modelBatch.end();
+
+    Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD);
   }
 
   public boolean areaInFrustum(Area area, Frustum frustum) {

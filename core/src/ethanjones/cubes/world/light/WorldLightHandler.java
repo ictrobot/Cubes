@@ -1,6 +1,8 @@
 package ethanjones.cubes.world.light;
 
 import ethanjones.cubes.block.Block;
+import ethanjones.cubes.core.performance.Performance;
+import ethanjones.cubes.core.performance.PerformanceTags;
 import ethanjones.cubes.core.event.EventHandler;
 import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
 import ethanjones.cubes.core.logging.Log;
@@ -14,6 +16,7 @@ public class WorldLightHandler {
     Block oldBlock = event.getOldBlock();
     Block newBlock = event.getNewBlock();
 
+    Performance.start(PerformanceTags.LIGHT_UPDATE);
     try {
       // Block light
       BlockLight.removeLight(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
@@ -30,5 +33,6 @@ public class WorldLightHandler {
     } catch (AreaNotLoadedException e) {
       Log.error("Failed to update light", e);
     }
+    Performance.stop(PerformanceTags.LIGHT_UPDATE);
   }
 }

@@ -1,5 +1,7 @@
 package ethanjones.cubes.side.client;
 
+import ethanjones.cubes.core.performance.Performance;
+import ethanjones.cubes.core.performance.PerformanceTags;
 import ethanjones.cubes.core.event.EventHandler;
 import ethanjones.cubes.core.event.entity.living.player.PlayerMovementEvent;
 import ethanjones.cubes.core.mod.ModManager;
@@ -60,11 +62,13 @@ public class CubesClient extends Cubes implements ApplicationListener {
       Adapter.gotoMainMenu();
       return;
     }
+    Performance.start(PerformanceTags.CLIENT_FRAME);
     super.render();
     inputChain.beforeRender();
     if (renderer.guiRenderer.isDebugEnabled()) ClientDebug.update();
     renderer.render();
     inputChain.afterRender();
+    Performance.stop(PerformanceTags.CLIENT_FRAME);
   }
 
   @Override

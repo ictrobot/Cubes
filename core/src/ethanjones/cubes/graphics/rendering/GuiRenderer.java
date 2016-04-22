@@ -2,6 +2,7 @@ package ethanjones.cubes.graphics.rendering;
 
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.IDManager;
+import ethanjones.cubes.core.performance.Performance;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.util.BlockFace;
@@ -63,6 +64,10 @@ public class GuiRenderer implements Disposable {
       }
       if (keycode == hideGUI) {
         setHideGuiEnabled(!isHideGuiEnabled());
+        return true;
+      }
+      if (keycode == Keys.F12) {
+        Performance.toggleTracking();
         return true;
       }
       return false;
