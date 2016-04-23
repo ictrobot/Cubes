@@ -1,6 +1,7 @@
 package ethanjones.cubes.core.platform.android;
 
 import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.logging.LogWriter;
 import ethanjones.cubes.core.mod.ModLoader;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.Compatibility;
@@ -8,7 +9,6 @@ import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menu.MenuManager;
 import ethanjones.cubes.graphics.menus.MainMenu;
-import ethanjones.cubes.graphics.world.AreaRenderer;
 import ethanjones.cubes.side.common.Cubes;
 
 import android.app.Activity;
@@ -117,5 +117,10 @@ public class AndroidCompatibility extends Compatibility {
   @Override
   public boolean functionModifier() {
     return modifier;
+  }
+
+  @Override
+  public LogWriter getCustomLogWriter() {
+    return new AndroidLogWriter();
   }
 }

@@ -1,12 +1,8 @@
 package ethanjones.cubes.core.logging;
 
 import ethanjones.cubes.core.logging.loggers.FileLogWriter;
-import ethanjones.cubes.core.logging.loggers.GdxAppLogWriter;
 import ethanjones.cubes.core.logging.loggers.SysOutLogWriter;
 import ethanjones.cubes.core.platform.Compatibility;
-
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
 
 import java.io.File;
 
@@ -17,8 +13,13 @@ public class Log {
 
   static {
     try {
-      if (Gdx.app != null && Application.ApplicationType.Android == Gdx.app.getType()) {
-        output = new GdxAppLogWriter();
+      if (Compatibility.get() != null) {
+        LogWriter customLogWriter = Compatibility.get().getCustomLogWriter();
+        if (customLogWriter != null) {
+          output = customLogWriter;
+        } else {
+          output = new SysOutLogWriter();
+        }
       } else {
         output = new SysOutLogWriter();
       }

@@ -1,6 +1,7 @@
 package ethanjones.cubes.core.platform;
 
 import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.logging.LogWriter;
 import ethanjones.cubes.core.mod.ModLoader;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.Debug.UncaughtExceptionHandler;
@@ -108,4 +109,8 @@ public abstract class Compatibility {
   }
 
   public abstract boolean functionModifier();
+
+  public LogWriter getCustomLogWriter() {
+    return null;
+  }
 }
