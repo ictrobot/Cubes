@@ -52,8 +52,8 @@ allprojects {
 
     ext {
         appName = 'Cubes'
-        gdxVersion = '1.9.1'
-        androidBuildToolsVersion = '23.0.1'
+        gdxVersion = '1.9.2'
+        androidBuildToolsVersion = '23.0.3'
         androidSdkVersion = 21
         dataVersion = '2.2'
         buildProperties = getRootProject().buildProperties
