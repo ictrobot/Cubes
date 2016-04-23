@@ -2,8 +2,6 @@ package ethanjones.cubes.side.client;
 
 import ethanjones.cubes.core.performance.Performance;
 import ethanjones.cubes.core.performance.PerformanceTags;
-import ethanjones.cubes.core.event.EventHandler;
-import ethanjones.cubes.core.event.entity.living.player.PlayerMovementEvent;
 import ethanjones.cubes.core.mod.ModManager;
 import ethanjones.cubes.core.mod.event.StartingClientEvent;
 import ethanjones.cubes.core.mod.event.StoppingClientEvent;
@@ -15,14 +13,14 @@ import ethanjones.cubes.input.InputChain;
 import ethanjones.cubes.input.keyboard.KeyboardHelper;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.side.Side;
+import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
-import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.client.WorldClient;
+import ethanjones.cubes.world.collision.PlayerCollision;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.math.Vector3;
 
 public class CubesClient extends Cubes implements ApplicationListener {
 
@@ -51,6 +49,7 @@ public class CubesClient extends Cubes implements ApplicationListener {
     world = new WorldClient();
 
     ModManager.postModEvent(new StartingClientEvent());
+    Sided.getEventBus().register(new PlayerCollision());
 
     state.setup();
   }
@@ -107,38 +106,5 @@ public class CubesClient extends Cubes implements ApplicationListener {
   @Override
   public void resume() {
 
-  }
-
-  @EventHandler
-  public void preventNoclip(PlayerMovementEvent event) {
-    Vector3 position = event.newPosition;
-    if (world.getArea(CoordinateConverter.area(position.x), CoordinateConverter.area(position.z)) != null) {
-      float r = 0.25f;
-      event.setCanceled(true);
-
-      if (world.getBlock(CoordinateConverter.block(position.x), CoordinateConverter.block(position.y - player.height), CoordinateConverter.block(position.z)) != null)
-        return;
-      if (world.getBlock(CoordinateConverter.block(position.x + r), CoordinateConverter.block(position.y - player.height), CoordinateConverter.block(position.z)) != null)
-        return;
-      if (world.getBlock(CoordinateConverter.block(position.x), CoordinateConverter.block(position.y - player.height), CoordinateConverter.block(position.z + r)) != null)
-        return;
-      if (world.getBlock(CoordinateConverter.block(position.x - r), CoordinateConverter.block(position.y - player.height), CoordinateConverter.block(position.z)) != null)
-        return;
-      if (world.getBlock(CoordinateConverter.block(position.x), CoordinateConverter.block(position.y - player.height), CoordinateConverter.block(position.z - r)) != null)
-        return;
-
-      if (world.getBlock(CoordinateConverter.block(position.x), CoordinateConverter.block(position.y), CoordinateConverter.block(position.z)) != null)
-        return;
-      if (world.getBlock(CoordinateConverter.block(position.x + r), CoordinateConverter.block(position.y), CoordinateConverter.block(position.z)) != null)
-        return;
-      if (world.getBlock(CoordinateConverter.block(position.x), CoordinateConverter.block(position.y), CoordinateConverter.block(position.z + r)) != null)
-        return;
-      if (world.getBlock(CoordinateConverter.block(position.x - r), CoordinateConverter.block(position.y), CoordinateConverter.block(position.z)) != null)
-        return;
-      if (world.getBlock(CoordinateConverter.block(position.x), CoordinateConverter.block(position.y), CoordinateConverter.block(position.z - r)) != null)
-        return;
-
-      event.setCanceled(false);
-    }
   }
 }
