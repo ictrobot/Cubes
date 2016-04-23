@@ -111,8 +111,7 @@ public class GuiRenderer implements Disposable {
         @Override
         public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
           if (bounds.contains(x, y)) {
-            CameraController controller = Cubes.getClient().inputChain.cameraController;
-            if (controller.jump == 0) controller.jump = CameraController.JUMP_RESET;
+            Cubes.getClient().inputChain.cameraController.resetJump();
             return true;
           }
           return false;

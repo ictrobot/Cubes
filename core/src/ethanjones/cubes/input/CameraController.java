@@ -45,7 +45,7 @@ public class CameraController extends InputAdapter {
 
   @Override
   public boolean keyDown(int keycode) {
-    if (keycode == Input.Keys.SPACE && jump == 0) jump = JUMP_RESET;
+    if (keycode == Input.Keys.SPACE) resetJump();
     keys.put(keycode, keycode);
 
     PacketKey packetKey = new PacketKey();
@@ -159,13 +159,15 @@ public class CameraController extends InputAdapter {
       tmp.set(camera.direction.x, 0, camera.direction.z).crs(camera.up).nor().scl(deltaTime * speed * right);
       tryMove();
     }
-    if (deltaTime > 0f && jump > 0) {
-      float f = deltaTime * 6;
-      if (!new PlayerMovementEvent(Cubes.getClient().player, camera.position.cpy().add(0, f, 0)).post().isCanceled()) {
-        camera.position.y += f;
+    if (deltaTime > 0f) {
+      if (jump > 0) {
+        float f = deltaTime * 6;
+        if (!new PlayerMovementEvent(Cubes.getClient().player, camera.position.cpy().add(0, f, 0)).post().isCanceled()) {
+          camera.position.y += f;
+        }
       }
-      jump -= deltaTime;
-      if (jump < 0) jump = 0;
+      if (jump > -JUMP_RESET) jump -= deltaTime;
+      if (jump < -JUMP_RESET) jump = -JUMP_RESET;
     }
     camera.update(true);
   }
@@ -175,6 +177,10 @@ public class CameraController extends InputAdapter {
     if (!new PlayerMovementEvent(Cubes.getClient().player, vector3).post().isCanceled()) {
       camera.position.add(tmp);
     }
+  }
+
+  public void resetJump() {
+    if (jump <= -JUMP_RESET) jump = JUMP_RESET;
   }
 
   public void tick() {
