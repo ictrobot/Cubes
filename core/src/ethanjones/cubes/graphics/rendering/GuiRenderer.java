@@ -3,14 +3,13 @@ package ethanjones.cubes.graphics.rendering;
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.IDManager;
 import ethanjones.cubes.core.performance.Performance;
-import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.entity.living.player.PlayerInventory;
 import ethanjones.cubes.graphics.Graphics;
 import ethanjones.cubes.graphics.assets.Assets;
+import ethanjones.cubes.graphics.hud.ImageButtons;
 import ethanjones.cubes.graphics.menu.Fonts;
-import ethanjones.cubes.input.CameraController;
 import ethanjones.cubes.input.keyboard.KeyTypedAdapter;
 import ethanjones.cubes.input.keyboard.KeyboardHelper;
 import ethanjones.cubes.item.ItemBlock;
@@ -137,9 +136,9 @@ public class GuiRenderer implements Disposable {
   Label chatLog;
   ArrayList<String> chatStrings = new ArrayList<String>();
   Touchpad touchpad;
-  TextButton debugButton;
-  TextButton chatButton;
-  TextButton blockSelectorButton;
+  ImageButton debugButton;
+  ImageButton chatButton;
+  ImageButton blockSelectorButton;
   KeyListener keyListener;
 
   Texture crosshair;
@@ -194,7 +193,7 @@ public class GuiRenderer implements Disposable {
 
       Cubes.getClient().inputChain.cameraController.touchpad = touchpad;
 
-      debugButton = new TextButton(Localization.get("hud.debug"), skin, "tiny");
+      debugButton = new ImageButton(ImageButtons.debugButton());
       debugButton.addListener(new ChangeListener() {
         @Override
         public void changed(ChangeEvent event, Actor actor) {
@@ -205,14 +204,14 @@ public class GuiRenderer implements Disposable {
           }
         }
       });
-      chatButton = new TextButton(Localization.get("hud.chat"), skin, "tiny");
+      chatButton = new ImageButton(ImageButtons.chatButton());
       chatButton.addListener(new ChangeListener() {
         @Override
         public void changed(ChangeEvent event, Actor actor) {
           setChatEnabled(!isChatEnabled());
         }
       });
-      blockSelectorButton = new TextButton(Localization.get("hud.block"), skin, "tiny");
+      blockSelectorButton = new ImageButton(ImageButtons.blocksButton());
       blockSelectorButton.addListener(new ChangeListener() {
         @Override
         public void changed(ChangeEvent event, Actor actor) {
@@ -364,11 +363,11 @@ public class GuiRenderer implements Disposable {
       touchpad.setBounds(Gdx.graphics.getWidth() / 3 * 2, 0, Gdx.graphics.getWidth() / 3, Gdx.graphics.getWidth() / 3);
     }
     if (chatButton != null && debugButton != null && blockSelectorButton != null) {
-      float width = Math.max(chatButton.getPrefWidth(), debugButton.getPrefWidth());
-      float height = Math.max(chatButton.getPrefHeight(), debugButton.getPrefHeight());
-      chatButton.setBounds(Gdx.graphics.getWidth() - width, Gdx.graphics.getHeight() - height, width, height);
-      debugButton.setBounds(Gdx.graphics.getWidth() - width - width, Gdx.graphics.getHeight() - height, width, height);
-      blockSelectorButton.setBounds(Gdx.graphics.getWidth() - width - width - width, Gdx.graphics.getHeight() - height, width, height);
+      float width = blockSelectorButton.getWidth() * Fonts.scaleFactor / 3 * 2;
+      float height = blockSelectorButton.getHeight() * Fonts.scaleFactor / 3 * 2;
+      blockSelectorButton.setBounds(Gdx.graphics.getWidth() - width, Gdx.graphics.getHeight() - height, width, height);
+      chatButton.setBounds(Gdx.graphics.getWidth() - width - width, Gdx.graphics.getHeight() - height, width, height);
+      debugButton.setBounds(Gdx.graphics.getWidth() - width - width - width, Gdx.graphics.getHeight() - height, width, height);
     }
   }
 
