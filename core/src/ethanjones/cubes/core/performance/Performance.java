@@ -70,6 +70,7 @@ public class Performance {
   public static synchronized void startTracking() {
     startTime = System.nanoTime();
     enabled.set(true);
+    Log.warning("Started performance tracking");
   }
 
   public static synchronized void stopTracking() {
@@ -85,6 +86,7 @@ public class Performance {
         }
       }
     }
+    Log.warning("Stopped performance tracking");
   }
 
   public static synchronized void toggleTracking() {
@@ -125,6 +127,7 @@ public class Performance {
     }
     dataOutputStream.writeByte(0xFF);
     fileOutputStream.close();
+    Log.info("Saved performance information '" + file.getAbsolutePath() + "'");
   }
 
   private static void write(PerformanceNode node, DataOutputStream dataOutputStream) throws IOException {

@@ -7,6 +7,7 @@ import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.entity.living.player.PlayerInventory;
+import ethanjones.cubes.graphics.Graphics;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.graphics.menu.Fonts;
 import ethanjones.cubes.input.CameraController;
@@ -48,26 +49,32 @@ public class GuiRenderer implements Disposable {
 
   private class KeyListener extends KeyTypedAdapter {
 
-    static final int debug = Keys.F1;
-    static final int chat = Keys.F2;
-    static final int hideGUI = Keys.F3;
+    static final int hideGUI = Keys.F1;
+    static final int screenshot = Keys.F2;
+    static final int debug = Keys.F3;
+    static final int chat = Keys.F4;
     static final int blocksMenu = Keys.E;
 
     private boolean functionKeys(int keycode) {
-      if (keycode == debug) {
-        setDebugEnabled(!isDebugEnabled());
-        return true;
-      }
-      if (keycode == chat) {
-        setChatEnabled(!isChatEnabled());
-        return true;
-      }
       if (keycode == hideGUI) {
         setHideGuiEnabled(!isHideGuiEnabled());
         return true;
       }
-      if (keycode == Keys.F12) {
-        Performance.toggleTracking();
+      if (keycode == screenshot) {
+        Graphics.takeScreenshot();
+        return true;
+      }
+      if (keycode == debug) {
+        if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT)) {
+          Performance.toggleTracking();
+          return true;
+        } else {
+          setDebugEnabled(!isDebugEnabled());
+          return true;
+        }
+      }
+      if (keycode == chat) {
+        setChatEnabled(!isChatEnabled());
         return true;
       }
       return false;
