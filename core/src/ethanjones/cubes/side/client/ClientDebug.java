@@ -3,10 +3,8 @@ package ethanjones.cubes.side.client;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.entity.living.player.Player;
-import ethanjones.cubes.graphics.world.RayTracing;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.CoordinateConverter;
-import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.storage.Area;
 
 import com.badlogic.gdx.Gdx;

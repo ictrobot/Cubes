@@ -113,10 +113,32 @@ public class CubesClient extends Cubes implements ApplicationListener {
   public void preventNoclip(PlayerMovementEvent event) {
     Vector3 position = event.newPosition;
     if (world.getArea(CoordinateConverter.area(position.x), CoordinateConverter.area(position.z)) != null) {
-      if (world.getBlock(CoordinateConverter.block(position.x), CoordinateConverter.block(position.y - player.height), CoordinateConverter.block(position.z)) != null ||
-              world.getBlock(CoordinateConverter.block(position.x), CoordinateConverter.block(position.y), CoordinateConverter.block(position.z)) != null) {
-        event.setCanceled(true);
-      }
+      float r = 0.25f;
+      event.setCanceled(true);
+
+      if (world.getBlock(CoordinateConverter.block(position.x), CoordinateConverter.block(position.y - player.height), CoordinateConverter.block(position.z)) != null)
+        return;
+      if (world.getBlock(CoordinateConverter.block(position.x + r), CoordinateConverter.block(position.y - player.height), CoordinateConverter.block(position.z)) != null)
+        return;
+      if (world.getBlock(CoordinateConverter.block(position.x), CoordinateConverter.block(position.y - player.height), CoordinateConverter.block(position.z + r)) != null)
+        return;
+      if (world.getBlock(CoordinateConverter.block(position.x - r), CoordinateConverter.block(position.y - player.height), CoordinateConverter.block(position.z)) != null)
+        return;
+      if (world.getBlock(CoordinateConverter.block(position.x), CoordinateConverter.block(position.y - player.height), CoordinateConverter.block(position.z - r)) != null)
+        return;
+
+      if (world.getBlock(CoordinateConverter.block(position.x), CoordinateConverter.block(position.y), CoordinateConverter.block(position.z)) != null)
+        return;
+      if (world.getBlock(CoordinateConverter.block(position.x + r), CoordinateConverter.block(position.y), CoordinateConverter.block(position.z)) != null)
+        return;
+      if (world.getBlock(CoordinateConverter.block(position.x), CoordinateConverter.block(position.y), CoordinateConverter.block(position.z + r)) != null)
+        return;
+      if (world.getBlock(CoordinateConverter.block(position.x - r), CoordinateConverter.block(position.y), CoordinateConverter.block(position.z)) != null)
+        return;
+      if (world.getBlock(CoordinateConverter.block(position.x), CoordinateConverter.block(position.y), CoordinateConverter.block(position.z - r)) != null)
+        return;
+
+      event.setCanceled(false);
     }
   }
 }

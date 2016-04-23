@@ -7,7 +7,7 @@ import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
 import ethanjones.cubes.core.event.world.generation.AreaGeneratedEvent;
 import ethanjones.cubes.entity.ItemEntity;
 import ethanjones.cubes.entity.living.player.PlayerInventory;
-import ethanjones.cubes.graphics.world.RayTracing;
+import ethanjones.cubes.world.collision.BlockIntersection;
 import ethanjones.cubes.item.ItemStack;
 import ethanjones.cubes.item.inv.InventoryHelper;
 import ethanjones.cubes.networking.NetworkingManager;
@@ -257,7 +257,7 @@ public class PlayerManager {
 
   protected void update() {
     if (buttonDownRecent(Buttons.LEFT)) {
-      RayTracing.BlockIntersection blockIntersection = RayTracing.getBlockIntersection(client.getPlayer().position, client.getPlayer().angle, server.world);
+      BlockIntersection blockIntersection = BlockIntersection.getBlockIntersection(client.getPlayer().position, client.getPlayer().angle, server.world);
       if (blockIntersection != null) {
         BlockReference blockReference = blockIntersection.getBlockReference();
         Block block = server.world.getBlock(blockReference.blockX, blockReference.blockY, blockReference.blockZ);

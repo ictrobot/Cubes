@@ -1,4 +1,4 @@
-package ethanjones.cubes.graphics.world;
+package ethanjones.cubes.world.collision;
 
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.world.CoordinateConverter;
@@ -20,31 +20,28 @@ import java.util.List;
 import static java.lang.Math.floor;
 import static java.lang.Math.signum;
 
-public class RayTracing {
+public class BlockIntersection {
 
-  public static class BlockIntersection {
+  private final BlockReference blockReference;
+  private final BlockFace blockFace;
+  private final Vector3 intersection;
 
-    private final BlockReference blockReference;
-    private final BlockFace blockFace;
-    private final Vector3 intersection;
+  public BlockIntersection(BlockReference blockReference, BlockFace blockFace, Vector3 intersection) {
+    this.blockReference = blockReference;
+    this.blockFace = blockFace;
+    this.intersection = intersection;
+  }
 
-    public BlockIntersection(BlockReference blockReference, BlockFace blockFace, Vector3 intersection) {
-      this.blockReference = blockReference;
-      this.blockFace = blockFace;
-      this.intersection = intersection;
-    }
+  public BlockReference getBlockReference() {
+    return blockReference;
+  }
 
-    public BlockReference getBlockReference() {
-      return blockReference;
-    }
+  public BlockFace getBlockFace() {
+    return blockFace;
+  }
 
-    public BlockFace getBlockFace() {
-      return blockFace;
-    }
-
-    public Vector3 getIntersection() {
-      return intersection;
-    }
+  public Vector3 getIntersection() {
+    return intersection;
   }
 
   public static BlockIntersection getBlockIntersection(Vector3 origin, Vector3 direction, World world) {

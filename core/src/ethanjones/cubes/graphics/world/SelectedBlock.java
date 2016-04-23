@@ -2,6 +2,7 @@ package ethanjones.cubes.graphics.world;
 
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.world.collision.BlockIntersection;
 import ethanjones.cubes.world.reference.BlockReference;
 
 import com.badlogic.gdx.graphics.GL20;
@@ -37,7 +38,7 @@ public class SelectedBlock {
 
   public static Renderable draw() {
     if (Cubes.getClient().renderer.guiRenderer.isHideGuiEnabled()) return null;
-    RayTracing.BlockIntersection blockIntersection = RayTracing.getBlockIntersection(Cubes.getClient().player.position, Cubes.getClient().player.angle, Cubes.getClient().world);
+    BlockIntersection blockIntersection = BlockIntersection.getBlockIntersection(Cubes.getClient().player.position, Cubes.getClient().player.angle, Cubes.getClient().world);
     if (blockIntersection == null || blockIntersection.getBlockReference() == null) return null;
     BlockReference position = blockIntersection.getBlockReference();
 
