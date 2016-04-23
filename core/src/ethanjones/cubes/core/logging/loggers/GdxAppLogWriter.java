@@ -8,15 +8,17 @@ import com.badlogic.gdx.Gdx;
 
 public class GdxAppLogWriter implements LogWriter {
 
+  public GdxAppLogWriter() {
+    Gdx.app.setLogLevel(Application.LOG_DEBUG);
+  }
+
   @Override
   public void log(LogLevel level, String message) {
-    Gdx.app.setLogLevel(getLevel(level));
     Gdx.app.log(Thread.currentThread().getName(), message);
   }
 
   @Override
   public void log(LogLevel level, String message, Throwable throwable) {
-    Gdx.app.setLogLevel(getLevel(level));
     Gdx.app.log(Thread.currentThread().getName(), message, throwable);
   }
 
@@ -36,7 +38,7 @@ public class GdxAppLogWriter implements LogWriter {
       case debug:
         return Application.LOG_DEBUG;
       default:
-        return Application.LOG_NONE;
+        return Application.LOG_DEBUG;
     }
   }
 
