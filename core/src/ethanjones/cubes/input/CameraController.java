@@ -1,6 +1,7 @@
 package ethanjones.cubes.input;
 
 import ethanjones.cubes.core.event.entity.living.player.PlayerMovementEvent;
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.item.ItemStack;
@@ -25,6 +26,7 @@ public class CameraController extends InputAdapter {
   private final Camera camera;
   private final IntIntMap keys = new IntIntMap();
   private final Vector3 tmp = new Vector3();
+  private final Vector3 tmpMovement = new Vector3();
   public Touchpad touchpad; //movement on android
   private int STRAFE_LEFT = Input.Keys.A;
   private int STRAFE_RIGHT = Input.Keys.D;
@@ -143,28 +145,31 @@ public class CameraController extends InputAdapter {
 
   private void update(float forward, float backward, float left, float right) {
     float deltaTime = Gdx.graphics.getRawDeltaTime();
+    if (deltaTime == 0f) return;
+    tmpMovement.setZero();
     if (forward > 0) {
       tmp.set(camera.direction.x, 0, camera.direction.z).nor().nor().scl(deltaTime * speed * forward);
-      tryMove();
+      tmpMovement.add(tmp);
     }
     if (backward > 0) {
       tmp.set(camera.direction.x, 0, camera.direction.z).nor().scl(-deltaTime * speed * backward);
-      tryMove();
+      tmpMovement.add(tmp);
     }
     if (left > 0) {
       tmp.set(camera.direction.x, 0, camera.direction.z).crs(camera.up).nor().scl(-deltaTime * speed * left);
-      tryMove();
+      tmpMovement.add(tmp);
     }
     if (right > 0) {
       tmp.set(camera.direction.x, 0, camera.direction.z).crs(camera.up).nor().scl(deltaTime * speed * right);
-      tryMove();
+      tmpMovement.add(tmp);
     }
+    if (!tmpMovement.isZero()) tryMove();
+
     if (deltaTime > 0f) {
       if (jump > 0) {
         float f = deltaTime * 6;
-        if (!new PlayerMovementEvent(Cubes.getClient().player, camera.position.cpy().add(0, f, 0)).post().isCanceled()) {
-          camera.position.y += f;
-        }
+        tmpMovement.set(0f, f, 0f);
+        tryMove();
       }
       if (jump > -JUMP_RESET) jump -= deltaTime;
       if (jump < -JUMP_RESET) jump = -JUMP_RESET;
@@ -173,9 +178,9 @@ public class CameraController extends InputAdapter {
   }
 
   private void tryMove() {
-    Vector3 vector3 = new Vector3(camera.position).add(tmp);
-    if (!new PlayerMovementEvent(Cubes.getClient().player, vector3).post().isCanceled()) {
-      camera.position.add(tmp);
+    tmpMovement.add(camera.position);
+    if (!new PlayerMovementEvent(Cubes.getClient().player, tmpMovement).post().isCanceled()) {
+      camera.position.set(tmpMovement);
     }
   }
 
