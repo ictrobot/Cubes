@@ -26,6 +26,7 @@ public class AndroidCompatibility extends Compatibility {
   public AndroidLauncher androidLauncher;
   protected AndroidModLoader modLoader;
   protected boolean back = false;
+  protected boolean modifier = false;
 
   protected ActivityManager activityManager;
   protected MemoryInfo memoryInfo;
@@ -111,5 +112,10 @@ public class AndroidCompatibility extends Compatibility {
   public int getFreeMemory() {
     activityManager.getMemoryInfo(memoryInfo);
     return (int) (memoryInfo.availMem / 1048576);
+  }
+
+  @Override
+  public boolean functionModifier() {
+    return modifier;
   }
 }

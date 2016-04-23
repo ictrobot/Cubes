@@ -4,6 +4,7 @@ import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.platform.Launcher;
 
 import android.os.Bundle;
+import android.view.KeyEvent;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 
 public class AndroidLauncher extends AndroidApplication implements Launcher {
@@ -27,5 +28,19 @@ public class AndroidLauncher extends AndroidApplication implements Launcher {
   @Override
   public void onBackPressed() {
     ((AndroidCompatibility) Compatibility.get()).back = true;
+  }
+
+  @Override
+  public boolean dispatchKeyEvent(KeyEvent event) {
+    int action = event.getAction();
+    int keyCode = event.getKeyCode();
+    if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+      if (action == KeyEvent.ACTION_DOWN) {
+        ((AndroidCompatibility) Compatibility.get()).modifier = true;
+      } else if (action == KeyEvent.ACTION_UP) {
+        ((AndroidCompatibility) Compatibility.get()).modifier = false;
+      }
+    }
+    return super.dispatchKeyEvent(event);
   }
 }

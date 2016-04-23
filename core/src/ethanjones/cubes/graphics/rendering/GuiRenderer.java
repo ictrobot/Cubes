@@ -65,13 +65,12 @@ public class GuiRenderer implements Disposable {
         return true;
       }
       if (keycode == debug) {
-        if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT)) {
+        if (Compatibility.get().functionModifier()) {
           Performance.toggleTracking();
-          return true;
         } else {
           setDebugEnabled(!isDebugEnabled());
-          return true;
         }
+        return true;
       }
       if (keycode == chat) {
         setChatEnabled(!isChatEnabled());
@@ -199,7 +198,11 @@ public class GuiRenderer implements Disposable {
       debugButton.addListener(new ChangeListener() {
         @Override
         public void changed(ChangeEvent event, Actor actor) {
-          setDebugEnabled(!isDebugEnabled());
+          if (Compatibility.get().functionModifier()) {
+            Performance.toggleTracking();
+          } else {
+            setDebugEnabled(!isDebugEnabled());
+          }
         }
       });
       chatButton = new TextButton(Localization.get("hud.chat"), skin, "tiny");

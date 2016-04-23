@@ -13,6 +13,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
 
 public abstract class Compatibility {
@@ -105,4 +106,6 @@ public abstract class Compatibility {
   public boolean handleCrash(Throwable throwable) {
     return true;
   }
+
+  public abstract boolean functionModifier();
 }

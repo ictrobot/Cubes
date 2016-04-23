@@ -9,6 +9,7 @@ import ethanjones.cubes.graphics.assets.AssetFinder;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
 
 public abstract class DesktopCompatibility extends Compatibility {
@@ -87,5 +88,10 @@ public abstract class DesktopCompatibility extends Compatibility {
     int allocated = (int) (runtime.totalMemory() / 1048576);
     int free = (int) (runtime.freeMemory() / 1048576);
     return free + (max - allocated);
+  }
+
+  @Override
+  public boolean functionModifier() {
+    return Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT);
   }
 }
