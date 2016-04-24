@@ -1,7 +1,7 @@
 package ethanjones.cubes.input;
 
+import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.event.entity.living.player.PlayerMovementEvent;
-import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.entity.living.player.Player;
@@ -11,6 +11,7 @@ import ethanjones.cubes.networking.packets.PacketButton;
 import ethanjones.cubes.networking.packets.PacketKey;
 import ethanjones.cubes.networking.packets.PacketPlayerMovement;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.world.CoordinateConverter;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -172,8 +173,7 @@ public class CameraController extends InputAdapter {
         tmpMovement.set(0f, f, 0f);
         tryMove();
       }
-      if (jump > -JUMP_RESET) jump -= deltaTime;
-      if (jump < -JUMP_RESET) jump = -JUMP_RESET;
+      jump -= deltaTime;
     }
     camera.update(true);
   }
@@ -186,7 +186,11 @@ public class CameraController extends InputAdapter {
   }
 
   public void resetJump() {
-    if (jump <= -JUMP_RESET) jump = JUMP_RESET;
+    if (jump > 0) return;
+    Vector3 pos = Cubes.getClient().player.position;
+    float y = pos.y - Cubes.getClient().player.height - 0.001f;
+    Block b = Cubes.getClient().world.getBlock(CoordinateConverter.block(pos.x), CoordinateConverter.block(y), CoordinateConverter.block(pos.z));
+    if (b != null) jump = JUMP_RESET;
   }
 
   public void tick() {
