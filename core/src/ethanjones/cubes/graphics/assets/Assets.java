@@ -3,6 +3,7 @@ package ethanjones.cubes.graphics.assets;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.Compatibility;
+import ethanjones.cubes.core.system.CubesException;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
@@ -78,6 +79,9 @@ public class Assets {
     }
     assetsFolder.mkdirs();
     Compatibility.get().setupAssets();
+
+    if (getAssetManager(CORE) == null) throw new CubesException("No core asset manager");
+    if (getAssetManager(CORE).assets.size() == 0) throw new CubesException("No core assets loaded");
   }
 
   public static void init() {

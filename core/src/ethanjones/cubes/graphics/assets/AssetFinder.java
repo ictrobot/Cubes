@@ -1,13 +1,13 @@
 package ethanjones.cubes.graphics.assets;
 
 import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.side.common.Cubes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
-import java.security.CodeSource;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -47,20 +47,16 @@ public class AssetFinder {
   private static void extractAssets(URL jar, AssetManager assetManager) {
     String assets = "assets";
     try {
-      CodeSource src = Cubes.class.getProtectionDomain().getCodeSource();
-
-      if (src != null) {
-        ZipInputStream zip = new ZipInputStream(jar.openStream());
-        ZipEntry ze;
-        while ((ze = zip.getNextEntry()) != null) {
-          String name = ze.getName().replace("\\", "/");
-          if (name.startsWith(assets) && !ze.isDirectory()) {
-            name = name.substring(ze.getName().lastIndexOf(assets) + assets.length() + 1);
-            assetManager.assets.put(name, new Asset(assetManager, name, Gdx.files.internal(ze.getName())));
-          }
+      ZipInputStream zip = new ZipInputStream(getInputStream(jar));
+      ZipEntry ze;
+      while ((ze = zip.getNextEntry()) != null) {
+        String name = ze.getName().replace("\\", "/");
+        if (name.startsWith(assets) && !ze.isDirectory()) {
+          name = name.substring(ze.getName().lastIndexOf(assets) + assets.length() + 1);
+          assetManager.assets.put(name, new Asset(assetManager, name, Gdx.files.internal(ze.getName())));
         }
-        zip.close();
       }
+      zip.close();
     } catch (Exception e) {
       Log.error("Failed to extract assets", e);
     }
@@ -75,5 +71,50 @@ public class AssetFinder {
     URL jar = AssetFinder.class.getProtectionDomain().getCodeSource().getLocation();
     extractAssets(jar, assetManager);
     addAssetManager(assetManager);
+  }
+
+  private static InputStream getInputStream(URL jar) throws IOException {
+    //to fix offset caused by launch4j
+    InputStream is = jar.openStream();
+    Log.debug("Scanning for jar...");
+    long offset = 0;
+    boolean found = false;
+    try {
+      while (true) {
+        if (getUnsignedInt(is) == 0x04034b50L) {
+          found = true;
+          break;
+        }
+        offset += 4;
+      }
+    } catch (IOException ignored) {
+    }
+    ;
+    is.close();
+
+    InputStream finalIS = jar.openStream();
+    if (!found) {
+      Log.debug("Failed to find start");
+    } else {
+      Log.debug("Skipping " + offset + " bytes until start of jar [" + finalIS.skip(offset) + "]");
+      if (finalIS.markSupported()) finalIS.mark(Integer.MAX_VALUE);
+    }
+    return finalIS;
+  }
+
+  private static long getUnsignedInt(InputStream inputStream) throws IOException {
+    long a = inputStream.read();
+    if (a == -1) throw new IOException();
+    long b = inputStream.read();
+    if (b == -1) throw new IOException();
+    long c = inputStream.read();
+    if (c == -1) throw new IOException();
+    long d = inputStream.read();
+    if (d == -1) throw new IOException();
+
+    b <<= 8;
+    c <<= 16;
+    d <<= 24;
+    return a | b | c | d;
   }
 }

@@ -1,4 +1,15 @@
+buildscript {
+    repositories {
+        maven {
+            url 'https://plugins.gradle.org/m2/'
+        }
+    }
+    dependencies {
+        classpath 'gradle.plugin.edu.sc.seis.gradle:launch4j:1.6.1'
+    }
+}
 apply plugin: "java"
+apply plugin: 'edu.sc.seis.launch4j'
 
 sourceCompatibility = 1.7
 sourceSets.main.java.srcDirs = ["src/"]
@@ -30,6 +41,22 @@ task run() << { //DOES NOT BUILD AUTOMATICALLY
 }
 
 run.mustRunAfter dist
+
+launch4j {
+    mainClassName = project.mainClassName
+    jreMinVersion = '1.7.0'
+
+    initialHeapSize = 2048
+    maxHeapSize = 2048
+
+    version = project.ext.buildProperties.version
+    textVersion = project.ext.buildProperties.version
+
+    icon = project.getRootDir().absolutePath + "/assets/assets/icon.ico"
+    copyConfigurable = project.tasks.dist.outputs.files
+    jar = new File(project.buildDir, "/libs/client.jar")
+}
+copyL4jLib.dependsOn dist
 
 eclipse {
     project {
