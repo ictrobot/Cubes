@@ -5,6 +5,7 @@ import ethanjones.cubes.core.logging.LogWriter;
 import ethanjones.cubes.core.mod.ModLoader;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.Compatibility;
+import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menu.MenuManager;
@@ -38,6 +39,12 @@ public class AndroidCompatibility extends Compatibility {
 
     activityManager = (ActivityManager) androidLauncher.getSystemService(Activity.ACTIVITY_SERVICE);
     memoryInfo = new MemoryInfo();
+  }
+
+  @Override
+  public void postInit() {
+    super.postInit();
+    Settings.getIntegerSetting(Settings.GRAPHICS_VIEW_DISTANCE).rangeEnd = 4;
   }
 
   @Override

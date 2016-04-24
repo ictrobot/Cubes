@@ -18,11 +18,11 @@ public class IntegerSetting extends Setting {
     TextField, Slider
   }
 
-  private int i;
-  private boolean hasRange;
+  public int i;
+  public boolean hasRange;
   private Type type;
-  private int rangeStart;
-  private int rangeEnd;
+  public int rangeStart;
+  public int rangeEnd;
 
   public IntegerSetting() {
     this(0);

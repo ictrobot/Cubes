@@ -34,7 +34,19 @@ public abstract class Compatibility {
     this.applicationType = applicationType;
   }
 
-  public void init(Side side) {
+  public void preInit() {
+
+  }
+
+  public void init() {
+
+  }
+
+  public void postInit() {
+
+  }
+
+  public void sideInit(Side side) {
     if (side != null) Sided.getEventBus().register(this);
   }
 
@@ -113,4 +125,5 @@ public abstract class Compatibility {
   public LogWriter getCustomLogWriter() {
     return null;
   }
+
 }

@@ -49,21 +49,23 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
     Log.info(Branding.DEBUG); //Can't log till base folder setup
     Debug.printProperties();
 
-    Compatibility.get().init(null);
     Compatibility.get().logEnvironment();
 
     Blocks.init();
 
     Assets.preInit();
     ModManager.init();
+    Compatibility.get().preInit();
     ModManager.postModEvent(new PreInitializationEvent());
 
     Settings.init();
+    Compatibility.get().init();
     ModManager.postModEvent(new InitializationEvent());
 
     Assets.init();
     Localization.load();
     Settings.print();
+    Compatibility.get().postInit();
     ModManager.postModEvent(new PostInitializationEvent());
     IDManager.loaded();
     EntityManager.loaded();
@@ -94,7 +96,7 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
   public void create() {
     thread = Thread.currentThread();
     Sided.setup(side);
-    Compatibility.get().init(side);
+    Compatibility.get().sideInit(side);
     Sided.getEventBus().register(this);
     Sided.getEventBus().register(new WorldLightHandler());
     Sided.getTiming().addHandler(this, tickMS);
