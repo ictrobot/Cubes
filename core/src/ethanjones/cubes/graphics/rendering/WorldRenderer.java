@@ -88,19 +88,22 @@ public class WorldRenderer implements Disposable {
         }
         for (int ySection = Math.max(yPos - renderDistance, 0); ySection <= yPos + renderDistance; ySection++) {
           if (ySection >= area.height) break;
-          if (areaInFrustum(area, ySection, camera.frustum) && shouldRender(world, area, ySection)) {
-            if (area.areaRenderer[ySection] == null) {
-              Pools.obtain(AreaRenderer.class).set(area, ySection);
-            }
-            // add if ready, else add to update queue
-            AreaRenderer areaRenderer = area.areaRenderer[ySection];
-            if (areaRenderer.needsRefresh()) {
-              needToRefresh.add(areaRenderer);
-            } else {
-              modelBatch.render(areaRenderer);
-            }
+          if (shouldRender(world, area, ySection)) {
+            if (areaInFrustum(area, ySection, camera.frustum)) {
+              if (area.areaRenderer[ySection] == null) {
+                Pools.obtain(AreaRenderer.class).set(area, ySection);
+              }
+              // add if ready, else add to update queue
+              AreaRenderer areaRenderer = area.areaRenderer[ySection];
+              if (areaRenderer.needsRefresh()) {
+                needToRefresh.add(areaRenderer);
+              } else {
+                modelBatch.render(areaRenderer);
+              }
+            } // don't free areas not in frustum
           } else if (area.areaRenderer[ySection] != null) {
             AreaRenderer.free(area.areaRenderer[ySection]);
+            area.areaRenderer[ySection] = null;
           }
         }
       }

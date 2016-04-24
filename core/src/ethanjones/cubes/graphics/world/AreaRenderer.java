@@ -215,9 +215,10 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
 
   public static void free(AreaRenderer[] areaRenderer) {
     if (areaRenderer == null) return;
-    for (AreaRenderer renderer : areaRenderer) {
-      if (renderer == null) continue;
-      Pools.free(AreaRenderer.class, renderer);
+    for (int i = 0; i < areaRenderer.length; i++) {
+      if (areaRenderer[i] == null) continue;
+      Pools.free(AreaRenderer.class, areaRenderer[i]);
+      areaRenderer[i] = null;
     }
   }
 

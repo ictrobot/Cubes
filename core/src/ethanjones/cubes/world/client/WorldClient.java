@@ -1,6 +1,7 @@
 package ethanjones.cubes.world.client;
 
 import ethanjones.cubes.core.settings.Settings;
+import ethanjones.cubes.graphics.world.AreaRenderer;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.reference.AreaReference;
@@ -17,7 +18,7 @@ public class WorldClient extends World {
 
   private ArrayList<Area> removed = new ArrayList<Area>();
   private AreaReference playerArea = new AreaReference();
-  private final int renderDistance = Settings.getIntegerSettingValue(Settings.GRAPHICS_VIEW_DISTANCE) + 3; //keep 3 extra
+  private final int renderDistance = Settings.getIntegerSettingValue(Settings.GRAPHICS_VIEW_DISTANCE); //keep 3 extra
 
   public WorldClient() {
     super(null);
@@ -35,9 +36,12 @@ public class WorldClient extends World {
     while (iterator.hasNext()) {
       Map.Entry<AreaReference, Area> entry = iterator.next();
       Area area = entry.getValue();
-      if (Math.abs(area.areaX - playerArea.areaX) > renderDistance || Math.abs(area.areaZ - playerArea.areaZ) > renderDistance) {
+      int dist = Math.max(Math.abs(area.areaX - playerArea.areaX), Math.abs(area.areaZ - playerArea.areaZ));
+      if (dist > renderDistance + 3) {
         removed.add(area);
         iterator.remove();
+      } else if (dist > renderDistance + 1) {
+        AreaRenderer.free(area.areaRenderer);
       }
     }
     lock.writeUnlock();
