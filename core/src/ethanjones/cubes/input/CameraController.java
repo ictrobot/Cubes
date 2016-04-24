@@ -3,6 +3,7 @@ package ethanjones.cubes.input;
 import ethanjones.cubes.core.event.entity.living.player.PlayerMovementEvent;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Compatibility;
+import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.item.ItemStack;
 import ethanjones.cubes.networking.NetworkingManager;
@@ -33,7 +34,7 @@ public class CameraController extends InputAdapter {
   private int FORWARD = Input.Keys.W;
   private int BACKWARD = Input.Keys.S;
   private float speed = 5;
-  private float degreesPerPixel = 0.5f;
+  private float degreesPerPixel = Settings.getFloatSettingValue(Settings.INPUT_MOUSE_SENSITIVITY);
   private Vector3 prevPosition = new Vector3();
   private Vector3 prevDirection = new Vector3();
   public float jump;

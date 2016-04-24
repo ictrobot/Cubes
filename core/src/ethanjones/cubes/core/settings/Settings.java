@@ -4,6 +4,7 @@ import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.settings.type.BooleanSetting;
+import ethanjones.cubes.core.settings.type.FloatSetting;
 import ethanjones.cubes.core.settings.type.IntegerSetting;
 import ethanjones.cubes.core.settings.type.StringSetting;
 import ethanjones.data.Data;
@@ -19,9 +20,11 @@ public class Settings {
   public static final String USERNAME = "username";
   public static final String GRAPHICS_VIEW_DISTANCE = "graphics.viewDistance";
   public static final String GRAPHICS_FOV = "graphics.fieldOfView";
+  public static final String INPUT_MOUSE_SENSITIVITY = "input.mouseSensitivity";
   public static final String NETWORKING_PORT = "networking.port";
 
   public static final String GROUP_GRAPHICS = "graphics";
+  public static final String GROUP_INPUT = "input";
   public static final String GROUP_NETWORKING = "networking";
 
   protected static SettingGroup base = new SettingGroup();
@@ -31,9 +34,13 @@ public class Settings {
     addSetting(USERNAME, new StringSetting("User"));
     addSetting(GRAPHICS_VIEW_DISTANCE, new IntegerSetting(1, 2, 16, IntegerSetting.Type.Slider));
     addSetting(GRAPHICS_FOV, new IntegerSetting(67, 10, 120, IntegerSetting.Type.Slider));
+    addSetting(INPUT_MOUSE_SENSITIVITY, new FloatSetting(0.5f, 0.05f, 1f, FloatSetting.Type.Slider));
     addSetting(NETWORKING_PORT, new IntegerSetting(24842));
 
-    base.add(USERNAME).add(GROUP_GRAPHICS, new SettingGroup().add(GRAPHICS_VIEW_DISTANCE).add(GRAPHICS_FOV)).add(GROUP_NETWORKING, new SettingGroup().add(NETWORKING_PORT));
+    base.add(USERNAME)
+            .add(GROUP_GRAPHICS, new SettingGroup().add(GRAPHICS_VIEW_DISTANCE).add(GRAPHICS_FOV))
+            .add(GROUP_INPUT, new SettingGroup().add(INPUT_MOUSE_SENSITIVITY))
+            .add(GROUP_NETWORKING, new SettingGroup().add(NETWORKING_PORT));
 
     if (!read()) {
       write();
@@ -108,6 +115,14 @@ public class Settings {
 
   public static IntegerSetting getIntegerSetting(String notLocalised) {
     return (IntegerSetting) getSetting(notLocalised);
+  }
+
+  public static float getFloatSettingValue(String notLocalised) {
+    return getFloatSetting(notLocalised).get();
+  }
+
+  public static FloatSetting getFloatSetting(String notLocalised) {
+    return (FloatSetting) getSetting(notLocalised);
   }
 
   public static String getStringSettingValue(String notLocalised) {

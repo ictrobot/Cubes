@@ -4,5 +4,8 @@ setting.graphics=Graphics
 setting.graphics.viewDistance=Rendering Distance
 setting.graphics.fieldOfView=FOV
 
+setting.input=Input
+setting.input.mouseSensitivity=Mouse Sensitivity
+
 setting.networking=Networking
 setting.networking.port=Port
