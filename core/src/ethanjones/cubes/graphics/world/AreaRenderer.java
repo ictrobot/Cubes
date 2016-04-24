@@ -28,9 +28,6 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
 
   public static final int MIN_AREA = 0;
   public static final int MAX_AREA = SIZE_BLOCKS - 1;
-  public static int MAX_REFRESH_PER_FRAME = 27; // to refresh whole world section on lighting updates
-
-  private static int refreshedThisFrame = 0;
 
   public boolean refresh = true;
   Vector3 offset = new Vector3();
@@ -44,17 +41,11 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
 
   public boolean update() {
     if (refresh) {
-      free(meshs);
-      if (refreshedThisFrame < MAX_REFRESH_PER_FRAME) {
-        if (calculateVertices()) {
-          refreshedThisFrame++;
-          refresh = false;
-          return true;
-        } else {
-          return false;
-        }
+      if ((System.nanoTime() - Cubes.getClient().frameStart) < 3000000 && calculateVertices()) {
+        refresh = false;
+        return true;
       } else {
-        return false;
+        return meshs.size() > 0; //still render old meshs
       }
     }
     return true; // true indicates this area can be rendered
@@ -82,6 +73,8 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
     Area minZ = worldClient.map.get(areaReference.setFromAreaCoordinates(area.areaX, area.areaZ - 1));
     worldClient.lock.readUnlock();
     if (maxX == null || minX == null || maxZ == null || minZ == null) return false;
+
+    free(meshs);
 
     if (maxX.isBlank()) maxX = null;
     else maxX.lock.readLock();
@@ -235,9 +228,5 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
       Pools.free(AreaMesh.class, areaMesh);
     }
     areaMeshs.clear();
-  }
-
-  public static void newFrame() {
-    refreshedThisFrame = 0;
   }
 }

@@ -1,5 +1,6 @@
 package ethanjones.cubes.graphics.rendering;
 
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.performance.Performance;
 import ethanjones.cubes.core.performance.PerformanceTags;
 import ethanjones.cubes.core.settings.Settings;
@@ -15,6 +16,7 @@ import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.storage.Area;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.RenderableProvider;
@@ -66,7 +68,6 @@ public class WorldRenderer implements Disposable {
 
   public void render() {
     Performance.start(PerformanceTags.CLIENT_RENDER_WORLD);
-    AreaRenderer.newFrame();
     needToRefresh.clear();
     modelBatch.begin(camera);
 
@@ -106,14 +107,16 @@ public class WorldRenderer implements Disposable {
     }
     Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_AREAS);
 
-    Performance.start(PerformanceTags.CLIENT_RENDER_WORLD_UPDATES);
-    Collections.sort(needToRefresh, new AreaRendererSorter());
-    for (AreaRenderer areaRenderer : needToRefresh) {
-      Performance.start(PerformanceTags.CLIENT_RENDER_WORLD_UPDATE);
-      if (areaRenderer.update()) modelBatch.render(areaRenderer);
-      Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_UPDATE);
+    if (needToRefresh.size() > 0) {
+      Performance.start(PerformanceTags.CLIENT_RENDER_WORLD_UPDATES);
+      Collections.sort(needToRefresh, new AreaRendererSorter());
+      for (AreaRenderer areaRenderer : needToRefresh) {
+        Performance.start(PerformanceTags.CLIENT_RENDER_WORLD_UPDATE);
+        modelBatch.render(areaRenderer);
+        Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_UPDATE);
+      }
+      Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_UPDATES);
     }
-    Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_UPDATES);
 
     Performance.start(PerformanceTags.CLIENT_RENDER_WORLD_ENTITY);
     for (Entity entity : world.entities.values()) {
