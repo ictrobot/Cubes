@@ -1,6 +1,5 @@
 package ethanjones.cubes.graphics.rendering;
 
-import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.performance.Performance;
 import ethanjones.cubes.core.performance.PerformanceTags;
 import ethanjones.cubes.core.settings.Settings;
@@ -16,7 +15,6 @@ import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.storage.Area;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.RenderableProvider;
@@ -129,6 +127,8 @@ public class WorldRenderer implements Disposable {
 
     Renderable selected = SelectedBlock.draw();
     if (selected != null) modelBatch.render(selected);
+    modelBatch.render(SunRenderer.draw());
+
     world.lock.readUnlock();
     modelBatch.end();
 
