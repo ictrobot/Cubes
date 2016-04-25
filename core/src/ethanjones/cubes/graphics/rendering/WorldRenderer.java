@@ -58,8 +58,8 @@ public class WorldRenderer implements Disposable {
         super.update(b);
       }
     };
-    camera.near = 0.1f;
-    camera.far = 300f;
+    camera.near = 0.2f;
+    camera.far = 768f;
 
     Cubes.getClient().inputChain.cameraController = new CameraController(camera);
   }

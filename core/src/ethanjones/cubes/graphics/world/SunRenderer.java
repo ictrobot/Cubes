@@ -22,7 +22,7 @@ public class SunRenderer {
   static short[] indicies;
 
   static {
-    indicies = new short[6 * 6];
+    indicies = new short[6];
     short j = 0;
     for (int i = 0; i < indicies.length; i += 6, j += 4) {
       indicies[i + 0] = (short) (j + 0);
@@ -45,18 +45,10 @@ public class SunRenderer {
       material = Assets.getMaterial("core:hud/Sun.png");
       material.set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
 
-      mesh = new Mesh(false, 4 * 6, 6 * 6, AreaMesh.vertexAttributes);
+      mesh = new Mesh(false, 4, 6, AreaMesh.vertexAttributes);
       mesh.setIndices(indicies);
-      vertices = new float[AreaMesh.VERTEX_SIZE * 4 * 6];
-      int f = 0;
-
-      f = FaceVertices.createMinX(new Vector3(0f, -0.5f, -0.5f), textureRegion, 0, 0, 0, FULL_LIGHT, vertices, f);
-      f = FaceVertices.createMinY(new Vector3(-0.5f, 0f, -0.5f), textureRegion, 0, 0, 0, FULL_LIGHT, vertices, f);
-      f = FaceVertices.createMinZ(new Vector3(-0.5f, -0.5f, 0f), textureRegion, 0, 0, 0, FULL_LIGHT, vertices, f);
-
-      f = FaceVertices.createMaxX(new Vector3(-1f, -0.5f, -0.5f), textureRegion, 0, 0, 0, FULL_LIGHT, vertices, f);
-      f = FaceVertices.createMaxY(new Vector3(-0.5f, -1f, -0.5f), textureRegion, 0, 0, 0, FULL_LIGHT, vertices, f);
-      f = FaceVertices.createMaxZ(new Vector3(-0.5f, -0.5f, -1f), textureRegion, 0, 0, 0, FULL_LIGHT, vertices, f);
+      vertices = new float[AreaMesh.VERTEX_SIZE * 4];
+      FaceVertices.createMinY(new Vector3(-0.5f, 0f, -0.5f), textureRegion, 0, 0, 0, FULL_LIGHT, vertices, 0);
 
       mesh.setVertices(vertices);
     }
@@ -65,7 +57,7 @@ public class SunRenderer {
 
     renderable.meshPart.primitiveType = GL20.GL_TRIANGLES;
     renderable.meshPart.offset = 0;
-    renderable.meshPart.size = 6 * 6;
+    renderable.meshPart.size = 6;
     renderable.meshPart.mesh = mesh;
     renderable.material = material;
     return renderable;
@@ -73,7 +65,7 @@ public class SunRenderer {
 
   public static void doStuff(Renderable renderable) {
     Vector3 pos = Cubes.getClient().player.position;
-    int r = 120;
+    int r = 512;
     float f = (float) (Cubes.getClient().world.time - (World.MAX_TIME / 4)) / (float) World.MAX_TIME;
     f %= 1;
 
@@ -83,6 +75,7 @@ public class SunRenderer {
     float z = pos.z;
 
     renderable.worldTransform.setToTranslation(x, y, z);
-    renderable.worldTransform.scl(20f);
+    renderable.worldTransform.scl(75f);
+    renderable.worldTransform.rotate(Vector3.Z, (f - 0.25f % 1) * 360);
   }
 }
