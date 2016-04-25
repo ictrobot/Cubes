@@ -3,17 +3,13 @@ package ethanjones.cubes.graphics.world;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.World;
-import ethanjones.cubes.world.collision.BlockIntersection;
-import ethanjones.cubes.world.reference.BlockReference;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
 import static ethanjones.cubes.world.light.BlockLight.FULL_LIGHT;
@@ -53,7 +49,7 @@ public class SunRenderer {
       mesh.setVertices(vertices);
     }
     Renderable renderable = new Renderable();
-    doStuff(renderable);
+    setWorldTransform(renderable);
 
     renderable.meshPart.primitiveType = GL20.GL_TRIANGLES;
     renderable.meshPart.offset = 0;
@@ -63,7 +59,7 @@ public class SunRenderer {
     return renderable;
   }
 
-  public static void doStuff(Renderable renderable) {
+  public static void setWorldTransform(Renderable renderable) {
     Vector3 pos = Cubes.getClient().player.position;
     int r = 512;
     float f = (float) (Cubes.getClient().world.time - (World.MAX_TIME / 4)) / (float) World.MAX_TIME;
