@@ -43,8 +43,8 @@ public class SelectedBlock {
     BlockReference position = blockIntersection.getBlockReference();
 
     if (mesh == null) {
-      textureRegion = Assets.getTextureRegion("core:hud/SelectedBlock.png");
-      material = Assets.getMaterial("core:hud/SelectedBlock.png");
+      textureRegion = Assets.getTextureRegion("core:world/selected_block.png");
+      material = Assets.getMaterial("core:world/selected_block.png");
       material.set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
 
       mesh = new Mesh(false, 4 * 6, 6 * 6, AreaMesh.vertexAttributes);

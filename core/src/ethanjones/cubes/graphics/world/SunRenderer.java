@@ -37,8 +37,8 @@ public class SunRenderer {
 
   public static Renderable draw() {
     if (mesh == null) {
-      textureRegion = Assets.getTextureRegion("core:hud/Sun.png");
-      material = Assets.getMaterial("core:hud/Sun.png");
+      textureRegion = Assets.getTextureRegion("core:world/sun.png");
+      material = Assets.getMaterial("core:world/sun.png");
       material.set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
 
       mesh = new Mesh(false, 4, 6, AreaMesh.vertexAttributes);
@@ -67,7 +67,6 @@ public class SunRenderer {
 
     float x = (float) (pos.x + (r * Math.cos(f * 2 * Math.PI)));
     float y = (float) (pos.y + (r * Math.sin(f * 2 * Math.PI)));
-    System.out.println(f + " " + x + " " + y);
     float z = pos.z;
 
     renderable.worldTransform.setToTranslation(x, y, z);
