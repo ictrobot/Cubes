@@ -110,11 +110,14 @@ public class GuiRenderer implements Disposable {
   TextField chat;
   Label chatLog;
   ArrayList<String> chatStrings = new ArrayList<String>();
+
+  KeyListener keyListener;
+
   Touchpad touchpad;
+  ImageButton jumpButton;
   ImageButton debugButton;
   ImageButton chatButton;
   ImageButton blockSelectorButton;
-  KeyListener keyListener;
 
   Texture crosshair;
   Texture hotbarSlot;
@@ -165,8 +168,10 @@ public class GuiRenderer implements Disposable {
 
     if (Compatibility.get().isTouchScreen()) {
       touchpad = new Touchpad(0, skin);
+      jumpButton = new ImageButton(ImageButtons.jumpButton());
 
       Cubes.getClient().inputChain.cameraController.touchpad = touchpad;
+      Cubes.getClient().inputChain.cameraController.jumpButton = jumpButton;
 
       debugButton = new ImageButton(ImageButtons.debugButton());
       debugButton.addListener(new ChangeListener() {
@@ -194,6 +199,7 @@ public class GuiRenderer implements Disposable {
         }
       });
       stage.addActor(touchpad);
+      stage.addActor(jumpButton);
       stage.addActor(debugButton);
       stage.addActor(chatButton);
       stage.addActor(blockSelectorButton);
@@ -335,13 +341,15 @@ public class GuiRenderer implements Disposable {
     chatLog.setBounds(0, chat.getHeight(), Gdx.graphics.getWidth(), chatLog.getStyle().font.getLineHeight() * 5);
 
     if (touchpad != null) {
-      float bottom = 48 * scaleFactor;
+      float hbSize = 48 * scaleFactor;
       float padding = 10 * scaleFactor;
       float size = Gdx.graphics.getHeight() * Settings.getFloatSettingValue(Settings.INPUT_TOUCHPAD_SIZE);
       if (Settings.getBooleanSettingValue(Settings.INPUT_TOUCHPAD_LEFT)) {
-        touchpad.setBounds(padding, bottom + padding, size, size);
+        touchpad.setBounds(padding, hbSize + padding, size, size);
+        jumpButton.setBounds(Gdx.graphics.getWidth() - hbSize - padding, hbSize, hbSize, hbSize);
       } else {
-        touchpad.setBounds(Gdx.graphics.getWidth() - size - padding, bottom, size, size);
+        touchpad.setBounds(Gdx.graphics.getWidth() - size - padding, hbSize, size, size);
+        jumpButton.setBounds(padding, hbSize + padding, hbSize, hbSize);
       }
     }
     if (chatButton != null && debugButton != null && blockSelectorButton != null) {

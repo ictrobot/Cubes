@@ -19,6 +19,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.utils.IntIntMap;
 
@@ -26,11 +27,13 @@ public class CameraController extends InputAdapter {
 
   public static final float MAX_JUMP = 0.25f;
 
+  public Touchpad touchpad; //movement on android
+  public ImageButton jumpButton;
+
   private final Camera camera;
   private final IntIntMap keys = new IntIntMap();
   private final Vector3 tmp = new Vector3();
   private final Vector3 tmpMovement = new Vector3();
-  public Touchpad touchpad; //movement on android
   private int STRAFE_LEFT = Input.Keys.A;
   private int STRAFE_RIGHT = Input.Keys.D;
   private int FORWARD = Input.Keys.W;
@@ -132,18 +135,14 @@ public class CameraController extends InputAdapter {
   public void update() {
     if (Cubes.getClient().renderer.guiRenderer.noCursorCatching()) return;
     if (touchpad != null) {
-      if (isTouchpadJump()) {
-        update(0f, 0f, 0f, 0f, true);
-      } else {
-        float knobPercentY = touchpad.getKnobPercentY();
-        float up = knobPercentY > 0 ? knobPercentY : 0;
-        float down = knobPercentY < 0 ? -knobPercentY : 0;
+      float knobPercentY = touchpad.getKnobPercentY();
+      float up = knobPercentY > 0 ? knobPercentY : 0;
+      float down = knobPercentY < 0 ? -knobPercentY : 0;
 
-        float knobPercentX = touchpad.getKnobPercentX();
-        float right = knobPercentX > 0 ? knobPercentX : 0;
-        float left = knobPercentX < 0 ? -knobPercentX : 0;
-        update(up, down, left, right, false);
-      }
+      float knobPercentX = touchpad.getKnobPercentX();
+      float right = knobPercentX > 0 ? knobPercentX : 0;
+      float left = knobPercentX < 0 ? -knobPercentX : 0;
+      update(up, down, left, right, jumpButton.getClickListener().isPressed());
     } else {
       boolean j = KeyboardHelper.isKeyDown(Input.Keys.SPACE);
       update(keys.containsKey(FORWARD) ? 1f : 0f, keys.containsKey(BACKWARD) ? 1f : 0f, keys.containsKey(STRAFE_LEFT) ? 1f : 0f, keys.containsKey(STRAFE_RIGHT) ? 1f : 0f, j);
@@ -190,16 +189,6 @@ public class CameraController extends InputAdapter {
     if (!new PlayerMovementEvent(Cubes.getClient().player, tmpMovement).post().isCanceled()) {
       camera.position.set(tmpMovement);
     }
-  }
-
-  public boolean isTouchpadJump() {
-    float perX = touchpad.getKnobPercentX();
-    float perY = touchpad.getKnobPercentY();
-
-    if (perX < -0.2 || perX > 0.2) return false;
-    if (perY < -0.2 || perY > 0.2) return false;
-
-    return true;
   }
 
   public boolean validJump() {

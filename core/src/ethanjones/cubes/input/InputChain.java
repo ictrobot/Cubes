@@ -69,9 +69,9 @@ public class InputChain implements Disposable {
       return;
     float f = pos.y - player.height;
     int y = CoordinateConverter.block(f - 0.01f);
-    if ((int) f == y && f - y <= 0.01) y -= 1; // actually land on block
+    if ((int) f == y && (f % 1) <= 0.1) y -= 1; // actually land on block
     Block b = world.getBlock(CoordinateConverter.block(pos.x), y, CoordinateConverter.block(pos.z));
-    if (b == null || f > y + 1.01f) {
+    if (b == null) {
       pos.y -= 6f * Gdx.graphics.getRawDeltaTime();
     } else {
       pos.y = y + 1 + player.height;
@@ -81,6 +81,7 @@ public class InputChain implements Disposable {
         player.position.set(pos);
       }
     }
+    // TODO should be movement event
   }
 
   public void afterRender() {

@@ -51,9 +51,9 @@ public class Entity implements DataParser, Disposable {
         return false;
       float f = position.y - height;
       int y = CoordinateConverter.block(f - 0.01f);
-      if ((int) f == y && f - y <= 0.01) y -= 1; // actually land on block
+      if ((int) f == y && (f % 1) <= 0.1) y -= 1; // actually land on block
       Block b = world.getBlock(CoordinateConverter.block(position.x), y, CoordinateConverter.block(position.z));
-      if (b == null || f > y + 1.01f) {
+      if (b == null) {
         position.y -= 0.1f;
         world.syncEntity(uuid);
       } else {
