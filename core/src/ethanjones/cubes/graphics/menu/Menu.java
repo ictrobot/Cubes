@@ -35,7 +35,7 @@ public class Menu {
 
     skin.add("default", new ScrollPane.ScrollPaneStyle());
 
-    skin.add("default", new TouchpadStyle(new TextureRegionDrawable(Assets.getTextureRegion("core:hud/TouchpadBackground.png")), new TextureRegionDrawable(Assets.getTextureRegion("core:hud/TouchpadKnob.png"))));
+    skin.add("default", new TouchpadStyle(new TextureRegionDrawable(Assets.getTextureRegion("core:hud/touch/TouchpadBackground.png")), new TextureRegionDrawable(Assets.getTextureRegion("core:hud/touch/TouchpadKnob.png"))));
   }
 
   public Stage stage;
