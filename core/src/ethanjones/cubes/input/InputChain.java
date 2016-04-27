@@ -56,7 +56,8 @@ public class InputChain implements Disposable {
 
   public void beforeRender() {
     cameraController.update();
-    if (cameraController.jump <= 0) playerGravity();
+    if (cameraController.jumpTimer == 0 || cameraController.jumpTimer >= CameraController.MAX_JUMP)
+      playerGravity();
   }
 
   private void playerGravity() {

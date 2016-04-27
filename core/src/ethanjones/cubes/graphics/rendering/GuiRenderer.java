@@ -105,32 +105,6 @@ public class GuiRenderer implements Disposable {
     }
   }
 
-  private static class JumpTouchpad extends Touchpad {
-
-    private final float radius;
-    private final Circle bounds = new Circle();
-
-    public JumpTouchpad(float deadzoneRadius, Skin skin) {
-      super(deadzoneRadius, skin);
-      this.radius = deadzoneRadius;
-      this.addListener(new InputListener() {
-        @Override
-        public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-          if (bounds.contains(x, y)) {
-            Cubes.getClient().inputChain.cameraController.resetJump();
-            return true;
-          }
-          return false;
-        }
-      });
-    }
-
-    public void layout() {
-      bounds.set(getWidth() / 2, getHeight() / 2, radius);
-      super.layout();
-    }
-  }
-
   Stage stage;
 
   TextField chat;
@@ -190,7 +164,7 @@ public class GuiRenderer implements Disposable {
     chatLog.setAlignment(Align.bottomLeft, Align.left);
 
     if (Compatibility.get().isTouchScreen()) {
-      touchpad = new JumpTouchpad(50, skin);
+      touchpad = new Touchpad(0, skin);
 
       Cubes.getClient().inputChain.cameraController.touchpad = touchpad;
 

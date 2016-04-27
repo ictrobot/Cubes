@@ -5,6 +5,7 @@ import ethanjones.cubes.core.event.entity.living.player.PlayerMovementEvent;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.entity.living.player.Player;
+import ethanjones.cubes.input.keyboard.KeyboardHelper;
 import ethanjones.cubes.item.ItemStack;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketButton;
@@ -23,7 +24,7 @@ import com.badlogic.gdx.utils.IntIntMap;
 
 public class CameraController extends InputAdapter {
 
-  public static final float JUMP_RESET = 0.25f;
+  public static final float MAX_JUMP = 0.25f;
 
   private final Camera camera;
   private final IntIntMap keys = new IntIntMap();
@@ -38,7 +39,7 @@ public class CameraController extends InputAdapter {
   private float degreesPerPixel = Settings.getFloatSettingValue(Settings.INPUT_MOUSE_SENSITIVITY);
   private Vector3 prevPosition = new Vector3();
   private Vector3 prevDirection = new Vector3();
-  public float jump;
+  public float jumpTimer;
 
   public CameraController(Camera camera) {
     this.camera = camera;
@@ -49,7 +50,6 @@ public class CameraController extends InputAdapter {
 
   @Override
   public boolean keyDown(int keycode) {
-    if (keycode == Input.Keys.SPACE) resetJump();
     keys.put(keycode, keycode);
 
     PacketKey packetKey = new PacketKey();
@@ -132,20 +132,25 @@ public class CameraController extends InputAdapter {
   public void update() {
     if (Cubes.getClient().renderer.guiRenderer.noCursorCatching()) return;
     if (touchpad != null) {
-      float knobPercentY = touchpad.getKnobPercentY();
-      float up = knobPercentY > 0 ? knobPercentY : 0;
-      float down = knobPercentY < 0 ? -knobPercentY : 0;
+      if (isTouchpadJump()) {
+        update(0f, 0f, 0f, 0f, true);
+      } else {
+        float knobPercentY = touchpad.getKnobPercentY();
+        float up = knobPercentY > 0 ? knobPercentY : 0;
+        float down = knobPercentY < 0 ? -knobPercentY : 0;
 
-      float knobPercentX = touchpad.getKnobPercentX();
-      float right = knobPercentX > 0 ? knobPercentX : 0;
-      float left = knobPercentX < 0 ? -knobPercentX : 0;
-      update(up, down, left, right);
+        float knobPercentX = touchpad.getKnobPercentX();
+        float right = knobPercentX > 0 ? knobPercentX : 0;
+        float left = knobPercentX < 0 ? -knobPercentX : 0;
+        update(up, down, left, right, false);
+      }
     } else {
-      update(keys.containsKey(FORWARD) ? 1f : 0f, keys.containsKey(BACKWARD) ? 1f : 0f, keys.containsKey(STRAFE_LEFT) ? 1f : 0f, keys.containsKey(STRAFE_RIGHT) ? 1f : 0f);
+      boolean j = KeyboardHelper.isKeyDown(Input.Keys.SPACE);
+      update(keys.containsKey(FORWARD) ? 1f : 0f, keys.containsKey(BACKWARD) ? 1f : 0f, keys.containsKey(STRAFE_LEFT) ? 1f : 0f, keys.containsKey(STRAFE_RIGHT) ? 1f : 0f, j);
     }
   }
 
-  private void update(float forward, float backward, float left, float right) {
+  private void update(float forward, float backward, float left, float right, boolean jump) {
     float deltaTime = Gdx.graphics.getRawDeltaTime();
     if (deltaTime == 0f) return;
     tmpMovement.setZero();
@@ -167,13 +172,15 @@ public class CameraController extends InputAdapter {
     }
     if (!tmpMovement.isZero()) tryMove();
 
-    if (deltaTime > 0f) {
-      if (jump > 0) {
-        float f = deltaTime * 6;
-        tmpMovement.set(0f, f, 0f);
+    if (jump) {
+      if (validJump()) {
+        float f = Math.min(MAX_JUMP - jumpTimer, deltaTime);
+        jumpTimer += f;
+        tmpMovement.set(0f, f * 6, 0f);
         tryMove();
       }
-      jump -= deltaTime;
+    } else {
+      jumpTimer = 0;
     }
     camera.update(true);
   }
@@ -185,12 +192,25 @@ public class CameraController extends InputAdapter {
     }
   }
 
-  public void resetJump() {
-    if (jump > 0) return;
-    Vector3 pos = Cubes.getClient().player.position;
-    float y = pos.y - Cubes.getClient().player.height - 0.001f;
-    Block b = Cubes.getClient().world.getBlock(CoordinateConverter.block(pos.x), CoordinateConverter.block(y), CoordinateConverter.block(pos.z));
-    if (b != null) jump = JUMP_RESET;
+  public boolean isTouchpadJump() {
+    float perX = touchpad.getKnobPercentX();
+    float perY = touchpad.getKnobPercentY();
+
+    if (perX < -0.2 || perX > 0.2) return false;
+    if (perY < -0.2 || perY > 0.2) return false;
+
+    return true;
+  }
+
+  public boolean validJump() {
+    if (jumpTimer > 0 && jumpTimer < MAX_JUMP) return true;
+    if (jumpTimer == 0) {
+      Vector3 pos = Cubes.getClient().player.position;
+      float y = pos.y - Cubes.getClient().player.height - 0.01f;
+      Block b = Cubes.getClient().world.getBlock(CoordinateConverter.block(pos.x), CoordinateConverter.block(y), CoordinateConverter.block(pos.z));
+      return b != null;
+    }
+    return false;
   }
 
   public void tick() {
