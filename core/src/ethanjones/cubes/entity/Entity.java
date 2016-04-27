@@ -51,6 +51,7 @@ public class Entity implements DataParser, Disposable {
         return false;
       float f = position.y - height;
       int y = CoordinateConverter.block(f - 0.01f);
+      if ((int) f == y && f - y <= 0.01) y -= 1; // actually land on block
       Block b = world.getBlock(CoordinateConverter.block(position.x), y, CoordinateConverter.block(position.z));
       if (b == null || f > y + 1.01f) {
         position.y -= Math.max(0.1f, f - (y + 1));
