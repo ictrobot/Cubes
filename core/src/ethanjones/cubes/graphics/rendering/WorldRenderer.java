@@ -127,7 +127,7 @@ public class WorldRenderer implements Disposable {
 
     Renderable selected = SelectedBlock.draw();
     if (selected != null) modelBatch.render(selected);
-    modelBatch.render(SunRenderer.draw());
+    SunRenderer.draw(modelBatch);
 
     world.lock.readUnlock();
     modelBatch.end();

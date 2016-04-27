@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.math.Vector3;
@@ -32,14 +33,19 @@ public class SunRenderer {
 
   static Mesh mesh;
   static float[] vertices;
-  static TextureRegion textureRegion;
-  static Material material;
 
-  public static Renderable draw() {
+  static TextureRegion textureRegion;
+  static Material sunMaterial;
+  static Material moonMaterial;
+
+  public static void draw(ModelBatch modelBatch) {
     if (mesh == null) {
       textureRegion = Assets.getTextureRegion("core:world/sun.png");
-      material = Assets.getMaterial("core:world/sun.png");
-      material.set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
+      sunMaterial = Assets.getMaterial("core:world/sun.png");
+      sunMaterial.set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
+
+      moonMaterial = Assets.getMaterial("core:world/moon.png");
+      moonMaterial.set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
 
       mesh = new Mesh(false, 4, 6, AreaMesh.vertexAttributes);
       mesh.setIndices(indicies);
@@ -48,21 +54,26 @@ public class SunRenderer {
 
       mesh.setVertices(vertices);
     }
-    Renderable renderable = new Renderable();
-    setWorldTransform(renderable);
+    Renderable sun = new Renderable();
+    setWorldTransform(sun, false);
+    sun.meshPart.primitiveType = GL20.GL_TRIANGLES;
+    sun.meshPart.offset = 0;
+    sun.meshPart.size = 6;
+    sun.meshPart.mesh = mesh;
+    sun.material = sunMaterial;
+    modelBatch.render(sun);
 
-    renderable.meshPart.primitiveType = GL20.GL_TRIANGLES;
-    renderable.meshPart.offset = 0;
-    renderable.meshPart.size = 6;
-    renderable.meshPart.mesh = mesh;
-    renderable.material = material;
-    return renderable;
+    Renderable moon = new Renderable().set(sun);
+    setWorldTransform(moon, true);
+    moon.material = moonMaterial;
+    modelBatch.render(moon);
   }
 
-  public static void setWorldTransform(Renderable renderable) {
+  public static void setWorldTransform(Renderable renderable, boolean isMoon) {
     Vector3 pos = Cubes.getClient().player.position;
     int r = 512;
     float f = (float) (Cubes.getClient().world.time - (World.MAX_TIME / 4)) / (float) World.MAX_TIME;
+    if (isMoon) f += 0.5f;
     f %= 1;
 
     float x = (float) (pos.x + (r * Math.cos(f * 2 * Math.PI)));
