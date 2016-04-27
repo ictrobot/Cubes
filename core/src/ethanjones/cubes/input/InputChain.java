@@ -72,7 +72,7 @@ public class InputChain implements Disposable {
     if ((int) f == y && f - y <= 0.01) y -= 1; // actually land on block
     Block b = world.getBlock(CoordinateConverter.block(pos.x), y, CoordinateConverter.block(pos.z));
     if (b == null || f > y + 1.01f) {
-      pos.y -= Math.max(6f * Gdx.graphics.getRawDeltaTime(), f - (y + 1));
+      pos.y -= 6f * Gdx.graphics.getRawDeltaTime();
     } else {
       pos.y = y + 1 + player.height;
     }

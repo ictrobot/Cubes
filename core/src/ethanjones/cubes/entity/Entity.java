@@ -54,7 +54,7 @@ public class Entity implements DataParser, Disposable {
       if ((int) f == y && f - y <= 0.01) y -= 1; // actually land on block
       Block b = world.getBlock(CoordinateConverter.block(position.x), y, CoordinateConverter.block(position.z));
       if (b == null || f > y + 1.01f) {
-        position.y -= Math.max(0.1f, f - (y + 1));
+        position.y -= 0.1f;
         world.syncEntity(uuid);
       } else {
         if (motion.y < 0) motion.y = 0;
