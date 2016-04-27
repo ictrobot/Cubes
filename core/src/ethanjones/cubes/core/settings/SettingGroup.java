@@ -49,4 +49,8 @@ public class SettingGroup {
   public HashMap<String, SettingGroup> getChildGroups() {
     return childGroups;
   }
+
+  public boolean shouldDisplay() {
+    return true;
+  }
 }

@@ -9,4 +9,8 @@ public abstract class Setting implements DataParser {
   public abstract Actor getActor(VisualSettingManager visualSettingManager);
 
   public abstract String toString();
+
+  public boolean shouldDisplay() {
+    return true;
+  }
 }

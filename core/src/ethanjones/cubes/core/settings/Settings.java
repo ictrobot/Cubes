@@ -21,6 +21,8 @@ public class Settings {
   public static final String GRAPHICS_VIEW_DISTANCE = "graphics.viewDistance";
   public static final String GRAPHICS_FOV = "graphics.fieldOfView";
   public static final String INPUT_MOUSE_SENSITIVITY = "input.mouseSensitivity";
+  public static final String INPUT_TOUCHPAD_SIZE = "input.touchpadSize";
+  public static final String INPUT_TOUCHPAD_LEFT = "input.touchpadLeft";
   public static final String NETWORKING_PORT = "networking.port";
 
   public static final String GROUP_GRAPHICS = "graphics";
@@ -34,12 +36,26 @@ public class Settings {
     addSetting(USERNAME, new StringSetting("User"));
     addSetting(GRAPHICS_VIEW_DISTANCE, new IntegerSetting(1, 2, 16, IntegerSetting.Type.Slider));
     addSetting(GRAPHICS_FOV, new IntegerSetting(67, 10, 120, IntegerSetting.Type.Slider));
-    addSetting(INPUT_MOUSE_SENSITIVITY, new FloatSetting(0.5f, 0.05f, 1f, FloatSetting.Type.Slider));
+
+    addSetting(INPUT_MOUSE_SENSITIVITY, new FloatSetting(0.5f, 0.0125f, 1f, FloatSetting.Type.Slider));
+    addSetting(INPUT_TOUCHPAD_SIZE, new FloatSetting(0.45f, 0.30f, 0.60f, FloatSetting.Type.Slider) {
+      @Override
+      public boolean shouldDisplay() {
+        return Compatibility.get().isTouchScreen();
+      }
+    });
+    addSetting(INPUT_TOUCHPAD_LEFT, new BooleanSetting(false) {
+      @Override
+      public boolean shouldDisplay() {
+        return Compatibility.get().isTouchScreen();
+      }
+    });
+
     addSetting(NETWORKING_PORT, new IntegerSetting(24842));
 
     base.add(USERNAME)
             .add(GROUP_GRAPHICS, new SettingGroup().add(GRAPHICS_VIEW_DISTANCE).add(GRAPHICS_FOV))
-            .add(GROUP_INPUT, new SettingGroup().add(INPUT_MOUSE_SENSITIVITY))
+            .add(GROUP_INPUT, new SettingGroup().add(INPUT_MOUSE_SENSITIVITY).add(INPUT_TOUCHPAD_SIZE).add(INPUT_TOUCHPAD_LEFT))
             .add(GROUP_NETWORKING, new SettingGroup().add(NETWORKING_PORT));
 
     if (!read()) {

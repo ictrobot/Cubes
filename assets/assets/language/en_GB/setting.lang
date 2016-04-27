@@ -5,7 +5,9 @@ setting.graphics.viewDistance=Rendering Distance
 setting.graphics.fieldOfView=FOV
 
 setting.input=Input
-setting.input.mouseSensitivity=Mouse Sensitivity
+setting.input.mouseSensitivity=Input Sensitivity
+setting.input.touchpadSize=Touchpad Size
+setting.input.touchpadLeft=Touchpad on Left
 
 setting.networking=Networking
 setting.networking.port=Port

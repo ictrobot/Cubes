@@ -4,6 +4,7 @@ import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.IDManager;
 import ethanjones.cubes.core.performance.Performance;
 import ethanjones.cubes.core.platform.Compatibility;
+import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.entity.living.player.PlayerInventory;
 import ethanjones.cubes.graphics.Graphics;
@@ -360,7 +361,14 @@ public class GuiRenderer implements Disposable {
     chatLog.setBounds(0, chat.getHeight(), Gdx.graphics.getWidth(), chatLog.getStyle().font.getLineHeight() * 5);
 
     if (touchpad != null) {
-      touchpad.setBounds(Gdx.graphics.getWidth() / 3 * 2, 0, Gdx.graphics.getWidth() / 3, Gdx.graphics.getWidth() / 3);
+      float bottom = 48 * scaleFactor;
+      float padding = 10 * scaleFactor;
+      float size = Gdx.graphics.getHeight() * Settings.getFloatSettingValue(Settings.INPUT_TOUCHPAD_SIZE);
+      if (Settings.getBooleanSettingValue(Settings.INPUT_TOUCHPAD_LEFT)) {
+        touchpad.setBounds(padding, bottom + padding, size, size);
+      } else {
+        touchpad.setBounds(Gdx.graphics.getWidth() - size - padding, bottom, size, size);
+      }
     }
     if (chatButton != null && debugButton != null && blockSelectorButton != null) {
       float width = blockSelectorButton.getWidth() * Fonts.scaleFactor / 3 * 2;
