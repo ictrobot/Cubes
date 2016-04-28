@@ -41,21 +41,28 @@ void main() {
 	v_normal = normal;
 
   float voxellight = a_voxellight;
+	#ifdef GL_ES
+	int int_side = int(floor(voxellight / 256.0));
+  #else
+  int int_voxellight = int(voxellight);
+  int int_side = int(int_voxellight) >> 8;
+  #endif
+
   if (u_lightoverride != -1.0) {
     voxellight = u_lightoverride;
+    #ifndef GL_ES
+    int_voxellight = int(u_lightoverride);
+    #endif
   }
 
   #ifdef GL_ES
-  int int_side = int(floor(voxellight / 256.0));
   int int_sunlight = int(floor(mod(voxellight, 256.0) / 16.0));
-  //int int_blocklight = int(voxellight) - (int_sunlight * 16);
   int int_blocklight = int(mod(voxellight, 16.0));
   #else
-  int int_voxellight = int(voxellight);
-  int int_side = (int_voxellight >> 8);
   int int_sunlight = (int_voxellight >> 4) & 0xF;
-	int int_blocklight = int_voxellight & 0xF;
-	#endif
+  int int_blocklight = int_voxellight & 0xF;
+  #endif
+
 	float light = max(float(int_blocklight), float(int_sunlight) * u_sunlight) / 15.0;
 	v_voxellight = 0.2 + (light * 0.8);
 	v_voxellight = v_voxellight * (1.0 - (float(int_side) * 0.04));
