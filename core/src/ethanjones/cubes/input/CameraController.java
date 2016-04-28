@@ -122,10 +122,23 @@ public class CameraController extends InputAdapter {
     if (Cubes.getClient().renderer.guiRenderer.noCursorCatching()) return false;
     float deltaX = -Gdx.input.getDeltaX() * degreesPerPixel;
     float deltaY = -Gdx.input.getDeltaY() * degreesPerPixel;
-    camera.direction.rotate(camera.up, deltaX);
-    tmp.set(camera.direction).crs(camera.up).nor();
-    camera.direction.rotate(tmp, deltaY);
+
+    tmpMovement.set(camera.direction);
+    tmpMovement.rotate(camera.up, deltaX);
+    tmp.set(tmpMovement).crs(camera.up).nor();
+    tmpMovement.rotate(tmp, deltaY);
+
+    if (preventFlicker(tmpMovement)) camera.direction.set(tmpMovement);
     return true;
+  }
+
+  private boolean preventFlicker(Vector3 newDirection) {
+    float oldX = Math.signum(camera.direction.x);
+    float oldZ = Math.signum(camera.direction.z);
+    float newX = Math.signum(newDirection.x);
+    float newZ = Math.signum(newDirection.z);
+
+    return !(oldX != newX && oldZ != newZ);
   }
 
   public void setSpeed(float speed) {
