@@ -23,6 +23,7 @@ public class FloatSetting extends Setting {
   private Type type;
   public float rangeStart;
   public float rangeEnd;
+  public float sliderSteps = 0.05f;
 
   public FloatSetting() {
     this(0);
@@ -104,7 +105,7 @@ public class FloatSetting extends Setting {
 
   public Slider getSlider() {
     if (!hasRange) throw new CubesException("Range required");
-    final Slider slider = new Slider(rangeStart, rangeEnd, 0.05f, false, Menu.skin);
+    final Slider slider = new Slider(rangeStart, rangeEnd, sliderSteps, false, Menu.skin);
     slider.setValue(f);
     slider.addListener(new EventListener() {
       @Override

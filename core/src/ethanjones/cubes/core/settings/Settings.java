@@ -39,6 +39,9 @@ public class Settings {
 
     addSetting(INPUT_MOUSE_SENSITIVITY, new FloatSetting(0.5f, 0.0125f, 1f, FloatSetting.Type.Slider));
     addSetting(INPUT_TOUCHPAD_SIZE, new FloatSetting(0.45f, 0.30f, 0.60f, FloatSetting.Type.Slider) {
+      {
+        this.sliderSteps = 0.005f;
+      }
       @Override
       public boolean shouldDisplay() {
         return Compatibility.get().isTouchScreen();
