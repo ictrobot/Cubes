@@ -52,6 +52,7 @@ public class ItemEntityRenderer implements RenderableProvider, Disposable {
   private Mesh mesh;
   private float[] vertices;
   private Item item;
+  private float randomYOffset = (float) (Math.random() / 20d);
 
   public ItemEntityRenderer(ItemEntity itemEntity) {
     this.itemEntity = itemEntity;
@@ -91,7 +92,7 @@ public class ItemEntityRenderer implements RenderableProvider, Disposable {
       item = itemEntity.itemStack.item;
     }
     Renderable renderable = new Renderable();
-    renderable.worldTransform.translate(itemEntity.position.x, itemEntity.position.y + yOffset(), itemEntity.position.z);
+    renderable.worldTransform.translate(itemEntity.position.x, itemEntity.position.y + yOffset() + randomYOffset, itemEntity.position.z);
     renderable.worldTransform.scl(0.3f);
     renderable.worldTransform.rotate(Vector3.Y, (System.currentTimeMillis() % 7200) / 20);
     renderable.meshPart.primitiveType = GL20.GL_TRIANGLES;
