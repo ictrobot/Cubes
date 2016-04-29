@@ -3,15 +3,15 @@ package ethanjones.cubes.graphics.menus;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Adapter;
+import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.graphics.assets.Assets;
+import ethanjones.cubes.graphics.menu.Fonts;
 import ethanjones.cubes.graphics.menu.Menu;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Value;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
@@ -32,6 +32,8 @@ public class MainMenu extends Menu {
     }
   };
   Image logo;
+  Label version;
+  Label author;
   Table buttons;
   TextButton singleplayer;
   TextButton multiplayer;
@@ -42,6 +44,8 @@ public class MainMenu extends Menu {
   public MainMenu() {
     super();
     logo = new Image(new TextureRegionDrawable(Assets.getTextureRegion("core:logo.png")), Scaling.fillY, Align.center);
+    version = new Label(Branding.DEBUG, new Label.LabelStyle(Fonts.FontSmallHUD, Color.WHITE));
+    author = new Label(Branding.AUTHOR, new Label.LabelStyle(Fonts.FontSmallHUD, Color.WHITE));
     buttons = new Table();
     buttons.defaults().height(cellHeight).width(cellWidth).pad(5).fillX().fillY();
     buttons.add(singleplayer = new TextButton(Localization.get("menu.main.singleplayer"), skin)).row();
@@ -82,6 +86,8 @@ public class MainMenu extends Menu {
     });
 
     stage.addActor(logo);
+    stage.addActor(version);
+    stage.addActor(author);
     stage.addActor(buttons);
   }
 
@@ -89,6 +95,10 @@ public class MainMenu extends Menu {
   public void resize(int width, int height) {
     super.resize(width, height);
     logo.setBounds(0, Gdx.graphics.getHeight() / 6 * 5, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 6);
+    version.setBounds(0, 0, author.getPrefWidth(), author.getPrefHeight());
+    version.setAlignment(Align.left);
+    author.setBounds(Gdx.graphics.getWidth() - author.getPrefWidth(), 0, author.getPrefWidth(), author.getPrefHeight());
+    author.setAlignment(Align.right);
     buttons.setBounds(0, 0, width, height / 6 * 5);
     buttons.align(Align.top);
     buttons.layout();

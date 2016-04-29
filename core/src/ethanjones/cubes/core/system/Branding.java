@@ -12,6 +12,7 @@ import java.util.Properties;
 public class Branding {
 
   public final static String NAME;
+  public final static String AUTHOR;
   public final static String PLATFORM;
 
   public final static String VERSION_HASH;
@@ -29,6 +30,7 @@ public class Branding {
   static {
     try {
       NAME = "Cubes";
+      AUTHOR = "Ethan Jones";
       PLATFORM = Gdx.app.getType().name();
 
       Properties properties = new Properties();
