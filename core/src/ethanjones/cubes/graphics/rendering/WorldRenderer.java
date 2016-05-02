@@ -74,31 +74,25 @@ public class WorldRenderer implements Disposable {
     Performance.start(PerformanceTags.CLIENT_RENDER_WORLD_AREAS);
     WorldClient world = (WorldClient) CubesClient.getClient().world;
     world.lock.readLock();
+
     AreaReference pos = Pools.obtainAreaReference().setFromPositionVector3(Cubes.getClient().player.position);
     int yPos = CoordinateConverter.area(Cubes.getClient().player.position.y);
+    int startY = Math.max(yPos - renderDistance, 0);
+
     for (int areaX = pos.areaX - renderDistance; areaX <= pos.areaX + renderDistance; areaX++) {
       for (int areaZ = pos.areaZ - renderDistance; areaZ <= pos.areaZ + renderDistance; areaZ++) {
         Area area = fastGet(world, areaX, areaZ);
-        if (area == null || area.isBlank()) continue;
-        if (!areaInFrustum(area, camera.frustum)) {
-          AreaRenderer.free(area.areaRenderer);
-          continue;
-        }
-        for (int ySection = Math.max(yPos - renderDistance, 0); ySection <= yPos + renderDistance; ySection++) {
-          if (ySection >= area.height) break;
+        if (area == null || area.isBlank() || !areaInFrustum(area, camera.frustum)) continue;
+        int endY = Math.min(yPos + renderDistance, area.height - 1);
+        for (int ySection = startY; ySection <= endY; ySection++) {
           if (shouldRender(world, area, ySection)) {
-            if (areaInFrustum(area, ySection, camera.frustum)) {
-              if (area.areaRenderer[ySection] == null) {
-                Pools.obtain(AreaRenderer.class).set(area, ySection);
-              }
-              // add if ready, else add to update queue
+            if (area.areaRenderer[ySection] == null) Pools.obtain(AreaRenderer.class).set(area, ySection);
               AreaRenderer areaRenderer = area.areaRenderer[ySection];
               if (areaRenderer.needsRefresh()) {
                 needToRefresh.add(areaRenderer);
               } else {
                 modelBatch.render(areaRenderer);
               }
-            } // don't free areas not in frustum
           } else if (area.areaRenderer[ySection] != null) {
             AreaRenderer.free(area.areaRenderer[ySection]);
             area.areaRenderer[ySection] = null;
