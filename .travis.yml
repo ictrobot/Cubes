@@ -14,5 +14,4 @@ before_install:
 - git checkout -qf $TRAVIS_COMMIT
 - echo $TRAVIS_COMMIT
 script:
-- chmod +x gradlew
 - "./gradlew travis"
