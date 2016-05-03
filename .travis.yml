@@ -13,5 +13,6 @@ before_install:
 - git fetch --unshallow
 - git checkout -qf $TRAVIS_COMMIT
 - echo $TRAVIS_COMMIT
-script:
-- "./gradlew travis"
+
+install: true
+script: ./gradlew travis
