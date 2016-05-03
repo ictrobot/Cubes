@@ -1,4 +1,10 @@
 language: java
+sudo: false
+addons:
+  apt:
+    packages:
+    - lib32stdc++6
+    - lib32z1
 jdk:
 - oraclejdk7
 before_install:
@@ -7,9 +13,6 @@ before_install:
 - git fetch --unshallow
 - git checkout -qf $TRAVIS_COMMIT
 - echo $TRAVIS_COMMIT
-install:
-- sudo apt-get update
-- sudo apt-get install lib32stdc++6 lib32z1
 before_script:
 - chmod +x gradlew
 script:
