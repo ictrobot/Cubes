@@ -42,6 +42,8 @@ public class Fonts {
     FreeTypeFontParameter parameter = new FreeTypeFontParameter();
     parameter.size = base * size;
     parameter.incremental = true;
+    parameter.shadowOffsetX = -base;
+    parameter.shadowOffsetY = -base;
     return generator.generateFont(parameter);
   }
 }
