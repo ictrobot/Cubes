@@ -1,6 +1,9 @@
 package ethanjones.cubes.core;
 
 import ethanjones.cubes.block.Block;
+import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.mod.ModInstance;
+import ethanjones.cubes.core.mod.ModManager;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.item.Item;
 import ethanjones.cubes.item.ItemBlock;
@@ -20,6 +23,7 @@ public class IDManager implements DataParser {
   private static List<ItemBlock> itemBlockList = new ArrayList<ItemBlock>();
   private static List<Item> itemList = new ArrayList<Item>();
   private static Map<String, Item> idToItem = new HashMap<String, Item>();
+  private static Map<String, ModInstance> idToMod = new HashMap<String, ModInstance>();
 
   public static void register(Block block) {
     if (block == null) return;
@@ -28,6 +32,7 @@ public class IDManager implements DataParser {
     ItemBlock itemBlock = block.getItemBlock();
     itemBlockList.add(itemBlock);
     idToItem.put(itemBlock.id, itemBlock);
+    idToMod.put(block.id, ModManager.getCurrentMod());
     if (!itemBlock.id.equals(block.id)) throw new IllegalArgumentException(itemBlock.id);
   }
 
@@ -39,6 +44,11 @@ public class IDManager implements DataParser {
   public static Item toItem(String id) {
     if (id == null || id.isEmpty()) return null;
     return idToItem.get(id);
+  }
+
+  public static ModInstance getMod(String id) {
+    if (id == null || id.isEmpty()) return null;
+    return idToMod.get(id);
   }
 
   public static List<Block> getBlocks() {
@@ -56,9 +66,16 @@ public class IDManager implements DataParser {
   public static void loaded() {
     idToBlock = Collections.unmodifiableMap(idToBlock);
     idToItem = Collections.unmodifiableMap(idToItem);
+    idToMod = Collections.unmodifiableMap(idToMod);
     blockList = Collections.unmodifiableList(blockList);
     itemBlockList = Collections.unmodifiableList(itemBlockList);
     itemList = Collections.unmodifiableList(itemList);
+
+    Log.debug("IDs:");
+    for (Map.Entry<String, ModInstance> entry : idToMod.entrySet()) {
+      ModInstance m = entry.getValue();
+      Log.debug(String.format("%1$-" + 32 + "s", entry.getKey()) + "- " + (m != null ? m.getName() : "core"));
+    }
   }
 
   private Map<Integer, Block> integerToBlock;

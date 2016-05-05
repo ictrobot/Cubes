@@ -22,6 +22,7 @@ public class ModManager {
 
   private static boolean init = false;
   private static List<ModInstance> mods;
+  private static ModInstance currentMod;
 
   public synchronized static void init() {
     if (init) return;
@@ -106,7 +107,7 @@ public class ModManager {
         if (!jsonFiles.isEmpty()) {
           Log.debug("Initialising JsonModInstance");
           JsonModInstance jsonModInstance = new JsonModInstance(name, fileHandle, assetManager, jsonFiles);
-          ((ModInstance) jsonModInstance).init();
+          init(jsonModInstance);
           mods.add(jsonModInstance);
           Log.info("Loaded Json mod " + name);
         }
@@ -117,7 +118,7 @@ public class ModManager {
           Object mod = c.newInstance();
           Log.debug("Initialising JavaModInstance");
           JavaModInstance javaModInstance = new JavaModInstance(name, fileHandle, assetManager, mod);
-          ((ModInstance) javaModInstance).init();
+          init(javaModInstance);
           mods.add(javaModInstance);
           Log.info("Loaded Java mod " + name);
         }
@@ -165,16 +166,34 @@ public class ModManager {
     return mods;
   }
 
+  private synchronized static void init(ModInstance instance) {
+    currentMod = instance;
+    try {
+      instance.init();
+    } catch (Exception e) {
+      currentMod = null;
+      throw new CubesException(e);
+    }
+    currentMod = null;
+  }
+
   public synchronized static void postModEvent(ModEvent modEvent) {
     Log.debug("Posting " + modEvent.getClass().getSimpleName());
     for (ModInstance mod : mods) {
+      currentMod = mod;
       try {
         mod.event(modEvent);
       } catch (Exception e) {
         mod.addState(ModState.Error);
+        currentMod = null;
         throw new CubesException("Exception while posting " + modEvent.getClass().getSimpleName() + " to mod " + mod.name, e);
       }
     }
+    currentMod = null;
     Log.debug("Finished posting " + modEvent.getClass().getSimpleName());
+  }
+
+  public synchronized static ModInstance getCurrentMod() {
+    return currentMod;
   }
 }
