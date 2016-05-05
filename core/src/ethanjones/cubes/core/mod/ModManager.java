@@ -124,7 +124,7 @@ public class ModManager {
         }
 
       } catch (Exception e) {
-        Log.debug("Failed to make instance of mod: " + className, e);
+        throw new CubesException("Failed to make instance of mod: " + name, e);
       }
     }
     ModManager.mods = Collections.unmodifiableList(mods);
@@ -172,7 +172,7 @@ public class ModManager {
       instance.init();
     } catch (Exception e) {
       currentMod = null;
-      throw new CubesException(e);
+      throw new CubesException("Failed to init mod", e);
     }
     currentMod = null;
   }
