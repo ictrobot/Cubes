@@ -196,4 +196,9 @@ public class ModManager {
   public synchronized static ModInstance getCurrentMod() {
     return currentMod;
   }
+
+  public synchronized static String getCurrentModName() {
+    if (currentMod != null) return currentMod.name;
+    return "core";
+  }
 }

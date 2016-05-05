@@ -27,6 +27,7 @@ public class IDManager implements DataParser {
 
   public static void register(Block block) {
     if (block == null) return;
+    checkID(block.id);
     blockList.add(block);
     idToBlock.put(block.id, block);
     ItemBlock itemBlock = block.getItemBlock();
@@ -34,6 +35,13 @@ public class IDManager implements DataParser {
     idToItem.put(itemBlock.id, itemBlock);
     idToMod.put(block.id, ModManager.getCurrentMod());
     if (!itemBlock.id.equals(block.id)) throw new IllegalArgumentException(itemBlock.id);
+  }
+
+  private static void checkID(String id) {
+    if (!id.contains(":")) throw new IllegalArgumentException(id + " is not in the correct format");
+    String i = id.substring(0, id.indexOf(":")).toLowerCase();
+    String m = ModManager.getCurrentModName().toLowerCase();
+    if (!i.equals(m)) throw new IllegalArgumentException("\"" + m + "\" cannot register id \"" + id + "\"");
   }
 
   public static Block toBlock(String id) {
