@@ -1,29 +1,21 @@
 package ethanjones.cubes.core.mod.json;
 
-import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.json.JsonLoader;
 import ethanjones.cubes.core.mod.ModInstance;
 import ethanjones.cubes.core.mod.ModState;
 import ethanjones.cubes.core.mod.event.ModEvent;
-import ethanjones.cubes.core.mod.event.PostInitializationEvent;
-import ethanjones.cubes.core.mod.event.PreInitializationEvent;
-import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.graphics.assets.AssetManager;
 
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class JsonModInstance extends ModInstance {
   
-  private final List<FileHandle> jsonFiles;
-  public List<JsonBlockParameter> blockParameters = new ArrayList<JsonBlockParameter>();
+  public final Map<String, FileHandle> jsonFiles;
   private List<ModState> modStates;
 
-  public JsonModInstance(String name, FileHandle file, AssetManager assetManager, List<FileHandle> jsonFiles) {
+  public JsonModInstance(String name, FileHandle file, AssetManager assetManager, Map<String, FileHandle> jsonFiles) {
     super(name, file, assetManager);
     this.jsonFiles = jsonFiles;
     List<ModState> modStates = new ArrayList<ModState>();
@@ -33,29 +25,12 @@ public class JsonModInstance extends ModInstance {
 
   @Override
   protected void init() throws Exception {
-    for (FileHandle fileHandle : jsonFiles) {
-      try {
-        JsonValue jsonValue = new JsonReader().parse(fileHandle);
-        JsonParser.parse(this, jsonValue);
-      } catch (Exception e) {
-        Log.error("Failed to read " + fileHandle.name() + " from " + name, e);
-      }
-    }
+    JsonLoader.load(this);
   }
 
   @Override
   protected void event(ModEvent modEvent) throws Exception {
-    if (modEvent instanceof PreInitializationEvent) {
-      for (JsonBlockParameter blockParameter : blockParameters) {
-        blockParameter.init(this);
-        blockParameter.register(this);
-      }
-    } else if (modEvent instanceof PostInitializationEvent) {
-      if (Adapter.isDedicatedServer()) return;
-      for (JsonBlockParameter blockParameter : blockParameters) {
-        blockParameter.loadGraphics();
-      }
-    }
+
   }
 
   @Override

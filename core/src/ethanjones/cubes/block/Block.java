@@ -16,20 +16,12 @@ public class Block {
 
   public Block(String id) {
     if (!id.contains(":")) throw new IllegalArgumentException(id + " is not in the correct format");
-    this.id = id;
+    this.id = id.toLowerCase();
     this.itemBlock = new ItemBlock(this);
   }
 
   public void loadGraphics() {
-    TextureRegion textureRegion = Assets.getPackedTexture(id + ".png");
-    if (textureRegion == null) {
-      int index = id.indexOf(":");
-      textureRegion = Assets.getPackedTexture(id.substring(0, index) + ":block/" + id.substring(index + 1) + ".png");
-      if (textureRegion == null) {
-        throw new CubesException("Can't find block texture for " + id);
-      }
-    }
-    textureHandler = new BlockTextureHandler(textureRegion);
+    textureHandler = new BlockTextureHandler(id);
   }
 
   public BlockTextureHandler getTextureHandler() {

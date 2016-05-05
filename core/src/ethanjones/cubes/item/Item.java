@@ -15,19 +15,11 @@ public class Item {
 
   public Item(String id) {
     if (!id.contains(":")) throw new IllegalArgumentException(id + " is not in the correct format");
-    this.id = id;
+    this.id = id.toLowerCase();
   }
 
   public void loadGraphics() {
-    TextureRegion textureRegion = Assets.getPackedTexture(id + ".png");
-    if (textureRegion == null) {
-      int index = id.indexOf(":");
-      textureRegion = Assets.getPackedTexture(id.substring(0, index) + ":item/" + id.substring(index + 1) + ".png");
-      if (textureRegion == null) {
-        throw new CubesException("Can't find item texture for " + id);
-      }
-    }
-    this.texture = textureRegion;
+    this.texture = Assets.getPackedTextureFromID(id, "item");
   }
 
   public TextureRegion getTextureRegion() {

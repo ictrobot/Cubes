@@ -78,6 +78,7 @@ project(":core") {
     apply plugin: "maven-publish"
 
     dependencies {
+        compile 'com.eclipsesource.minimal-json:minimal-json:0.9.4'
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compile "ethanjones:data:$dataVersion"

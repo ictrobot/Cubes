@@ -1,0 +1,39 @@
+[
+  {
+    "id": "core:bedrock"
+  },
+  {
+    "id": "core:stone"
+  },
+  {
+    "id": "core:dirt"
+  },
+  {
+    "id": "core:grass",
+    "texture": {
+      "side": "core:grass_side",
+      "top": "core:grass",
+      "bottom": "core:dirt"
+    }
+  },
+  {
+    "id": "core:log",
+    "texture": {
+      "side": "core:log",
+      "top": "core:log_y",
+      "bottom": "core:log_y"
+    }
+  },
+  {
+    "id": "core:leaves",
+    "transparent": true
+  },
+  {
+    "id": "core:glow",
+    "lightLevel": 15
+  },
+  {
+    "id": "core:glass",
+    "transparent": true
+  }
+]

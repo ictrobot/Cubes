@@ -1,7 +1,7 @@
 package ethanjones.cubes.side.common;
 
-import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.core.IDManager;
+import ethanjones.cubes.core.json.JsonLoader;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.mod.ModManager;
@@ -51,9 +51,9 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
 
     Compatibility.get().logEnvironment();
 
-    Blocks.init();
-
     Assets.preInit();
+    JsonLoader.loadCore();
+
     ModManager.init();
     Compatibility.get().preInit();
     ModManager.postModEvent(new PreInitializationEvent());

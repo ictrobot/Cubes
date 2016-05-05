@@ -1,14 +1,16 @@
 package ethanjones.cubes.core;
 
 import ethanjones.cubes.block.Block;
-import ethanjones.cubes.block.Blocks;
-import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.item.Item;
 import ethanjones.cubes.item.ItemBlock;
 import ethanjones.data.DataGroup;
 import ethanjones.data.DataParser;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.*;
 
 public class IDManager implements DataParser {
@@ -190,6 +192,26 @@ public class IDManager implements DataParser {
 
     public boolean isTransparent(Block block) {
       return block == null || block.isTransparent();
+    }
+  }
+
+  @Retention(RetentionPolicy.RUNTIME)
+  @Target(ElementType.FIELD)
+  public @interface GetBlock {
+    public String value();
+  }
+
+  public static void getBlocks(Class<?> c) {
+    for (java.lang.reflect.Field field : c.getDeclaredFields()) {
+      if (java.lang.reflect.Modifier.isStatic(field.getModifiers()) && field.isAnnotationPresent(GetBlock.class)) {
+        GetBlock g = field.getAnnotation(GetBlock.class);
+        Block block = IDManager.idToBlock.get(g.value());
+        try {
+          field.set(null, block);
+        } catch (IllegalAccessException e) {
+          throw new CubesException("Failed to getBlocks()", e);
+        }
+      }
     }
   }
 }

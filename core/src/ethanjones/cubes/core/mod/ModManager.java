@@ -14,10 +14,7 @@ import ethanjones.cubes.graphics.assets.Assets;
 import com.badlogic.gdx.files.FileHandle;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -39,7 +36,7 @@ public class ModManager {
       FileHandle classFile = null;
       String className = null;
       String name = "";
-      List<FileHandle> jsonFiles = new ArrayList<FileHandle>();
+      Map<String, FileHandle> jsonFiles = new HashMap<String, FileHandle>();
       FileHandle modAssets = Assets.assetsFolder.child(fileHandle.name());
       try {
         InputStream inputStream = new FileInputStream(fileHandle.file());
@@ -66,9 +63,9 @@ public class ModManager {
               name = properties.getProperty("modName");
             } else if (entryName.startsWith("assets/")) {
               writeToFile(modAssets.child(entry.getName().substring(7)), zipInputStream);
-            } else if (entryName.endsWith(".json")) { //if a json file not in assets
+            } else if (entryName.startsWith("json/") && entryName.endsWith(".json")) {
               writeToFile(f, zipInputStream);
-              jsonFiles.add(f);
+              jsonFiles.put(entryName.substring(5), f);
             }
           }
         }
@@ -105,7 +102,7 @@ public class ModManager {
           Log.debug("No assets detected for " + name);
           assetManager = null;
         }
-        jsonFiles = Collections.unmodifiableList(jsonFiles);
+        jsonFiles = Collections.unmodifiableMap(jsonFiles);
         if (!jsonFiles.isEmpty()) {
           Log.debug("Initialising JsonModInstance");
           JsonModInstance jsonModInstance = new JsonModInstance(name, fileHandle, assetManager, jsonFiles);

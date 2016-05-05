@@ -10,7 +10,7 @@ public class AssetManager {
   private final String name;
 
   protected AssetManager(String name) {
-    this.name = name;
+    this.name = name.toLowerCase().replace(" ", "");
     this.assets = new HashMap<String, Asset>();
   }
 

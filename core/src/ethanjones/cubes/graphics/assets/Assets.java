@@ -4,6 +4,7 @@ import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.system.CubesException;
+import ethanjones.cubes.side.common.Cubes;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
@@ -130,5 +131,13 @@ public class Assets {
   public static TextureRegion getPackedTexture(String name) {
     PackedTexture packedTexture = packedTextureSheet.getPackedTextures().get(name);
     return packedTexture == null ? null : packedTexture.textureRegion;
+  }
+
+  public static TextureRegion getPackedTextureFromID(String id, String type) {
+    int index = id.indexOf(":");
+    if (index == -1) throw new CubesException("Invalid block id \"" + id + "\"");
+    TextureRegion packedTexture = getPackedTexture(id.substring(0, index) + ":" + type + "/" + id.substring(index + 1) + ".png");
+    if (packedTexture == null) throw new CubesException("No block texture for " + type + " \"" + id + "\"");
+    return packedTexture;
   }
 }

@@ -12,7 +12,12 @@ public class BlockTextureHandler {
 
   TextureRegion[] textureRegions;
 
+  public BlockTextureHandler(String id) {
+    this(Assets.getPackedTextureFromID(id, "block"));
+  }
+
   public BlockTextureHandler(TextureRegion textureRegion) {
+    if (textureRegion == null) throw new CubesException("Texture region cannot be null");
     textureRegions = new TextureRegion[6];
     Arrays.fill(textureRegions, textureRegion);
   }
@@ -25,13 +30,13 @@ public class BlockTextureHandler {
     return textureRegions[direction];
   }
 
-  public BlockTextureHandler setSide(BlockFace blockFace, String name) {
-    TextureRegion textureRegion = Assets.getPackedTexture(name);
-    if (textureRegion == null) {
-      throw new CubesException("No block texture with name \"" + name + "\"");
-    }
-    textureRegions[blockFace.index] = textureRegion;
+  public BlockTextureHandler setSide(BlockFace blockFace, String id) {
+    textureRegions[blockFace.index] = Assets.getPackedTextureFromID(id, "block");
     return this;
   }
 
+  public BlockTextureHandler setSide(int blockFace, String id) {
+    textureRegions[blockFace] = Assets.getPackedTextureFromID(id, "block");
+    return this;
+  }
 }

@@ -6,3 +6,5 @@ Cubes Credits
 * [libGDX framework](http://libgdx.badlogicgames.com/)
 
 * [Munro font](http://tenbytwenty.com/?xxxx_posts=munro)
+
+* [minimal-json library](https://github.com/ralfstx/minimal-json)
