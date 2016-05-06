@@ -35,8 +35,9 @@ task properitesFile() {
     props.store(propsFile.newWriter(), null)
 }
 
-task copyLicenseFile(type: Copy) {
-    from getRootProject().file('LICENSE')
+task copyFilesFromRoot(type: Copy) {
+    from getRootProject().projectDir
+    include "LICENSE", "CREDITS.md"
     into new File(getBuildDir(), '/jar-extra/')
 }
 
@@ -94,4 +95,4 @@ publishing {
 
 publish.dependsOn(['properitesFile'])
 
-jar.dependsOn(['properitesFile', 'copyLicenseFile'])
+jar.dependsOn(['properitesFile', 'copyFilesFromRoot'])
