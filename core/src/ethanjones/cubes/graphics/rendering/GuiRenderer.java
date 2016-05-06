@@ -27,8 +27,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.profiling.GLProfiler;
-import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -57,7 +55,7 @@ public class GuiRenderer implements Disposable {
 
     private boolean functionKeys(int keycode) {
       if (keycode == hideGUI) {
-        setHideGuiEnabled(!isHideGuiEnabled());
+        hideGuiEnabled = !hideGuiEnabled;
         return true;
       }
       if (keycode == screenshot) {
@@ -68,12 +66,12 @@ public class GuiRenderer implements Disposable {
         if (Compatibility.get().functionModifier()) {
           Performance.toggleTracking();
         } else {
-          setDebugEnabled(!isDebugEnabled());
+          debugEnabled = !debugEnabled;
         }
         return true;
       }
       if (keycode == chat) {
-        setChatEnabled(!isChatEnabled());
+        chatEnabled = !chatEnabled;
         return true;
       }
       return false;
@@ -83,9 +81,7 @@ public class GuiRenderer implements Disposable {
     public void keyDown(int keycode) {
       functionKeys(keycode);
 
-      if (keycode == blocksMenu) {
-        setBlocksMenuEnabled(!isBlocksMenuEnabled());
-      }
+      if (keycode == blocksMenu) blocksMenuEnabled = !blocksMenuEnabled;
 
       int selected = -1;
       if (keycode == Keys.NUM_1) selected = 0;
@@ -124,10 +120,10 @@ public class GuiRenderer implements Disposable {
   Texture hotbarSelected;
   Block[][] blocks;
 
-  private boolean chatEnabled;
-  private boolean debugEnabled;
-  private boolean hideGuiEnabled;
-  private boolean blocksMenuEnabled;
+  public boolean chatEnabled;
+  public boolean debugEnabled;
+  public boolean hideGuiEnabled;
+  public boolean blocksMenuEnabled;
 
   public GuiRenderer() {
     stage = new Stage(screenViewport, spriteBatch);
@@ -136,9 +132,9 @@ public class GuiRenderer implements Disposable {
     keyListener = new KeyListener();
     KeyboardHelper.addKeyTypedListener(keyListener);
 
-    TextField.TextFieldStyle defaultStyle = skin.get("default", TextField.TextFieldStyle.class);
-    TextField.TextFieldStyle chatStyle = new TextField.TextFieldStyle(defaultStyle);
-    chatStyle.font = Fonts.FontHUD;
+    final TextField.TextFieldStyle defaultStyle = skin.get("default", TextField.TextFieldStyle.class);
+    final TextField.TextFieldStyle chatStyle = new TextField.TextFieldStyle(defaultStyle);
+    chatStyle.font = Fonts.hud;
     chatStyle.background = new TextureRegionDrawable(Assets.getTextureRegion("core:hud/ChatBackground.png"));
 
     chat = new TextField("", chatStyle) {
@@ -159,11 +155,11 @@ public class GuiRenderer implements Disposable {
           packetChat.msg = chat.getText();
           NetworkingManager.sendPacketToServer(packetChat);
           chat.setText("");
-          setChatEnabled(false);
+          chatEnabled = false;
         }
       }
     });
-    chatLog = new Label("", new LabelStyle(Fonts.FontHUD, Color.WHITE));
+    chatLog = new Label("", new LabelStyle(Fonts.hud, Color.WHITE));
     chatLog.setAlignment(Align.bottomLeft, Align.left);
 
     if (Compatibility.get().isTouchScreen()) {
@@ -180,7 +176,7 @@ public class GuiRenderer implements Disposable {
           if (Compatibility.get().functionModifier()) {
             Performance.toggleTracking();
           } else {
-            setDebugEnabled(!isDebugEnabled());
+            debugEnabled = !debugEnabled;
           }
         }
       });
@@ -188,14 +184,15 @@ public class GuiRenderer implements Disposable {
       chatButton.addListener(new ChangeListener() {
         @Override
         public void changed(ChangeEvent event, Actor actor) {
-          setChatEnabled(!isChatEnabled());
+          chatEnabled = !chatEnabled;
         }
       });
       blockSelectorButton = new ImageButton(ImageButtons.blocksButton());
       blockSelectorButton.addListener(new ChangeListener() {
         @Override
         public void changed(ChangeEvent event, Actor actor) {
-          setBlocksMenuEnabled(!isBlocksMenuEnabled());
+          blocksMenuEnabled = !blocksMenuEnabled;
+          ;
         }
       });
       stage.addActor(touchpad);
@@ -204,9 +201,6 @@ public class GuiRenderer implements Disposable {
       stage.addActor(chatButton);
       stage.addActor(blockSelectorButton);
     }
-    setChatEnabled(false);
-    setDebugEnabled(false);
-    setBlocksMenuEnabled(false);
 
     crosshair = Assets.getTexture("core:hud/Crosshair.png");
     hotbarSelected = Assets.getTexture("core:hud/HotbarSelected.png");
@@ -224,47 +218,10 @@ public class GuiRenderer implements Disposable {
     }
   }
 
-  public boolean isDebugEnabled() {
-    return debugEnabled;
-  }
-
-  public boolean isChatEnabled() {
-    return chatEnabled;
-  }
-
-  public boolean isHideGuiEnabled() {
-    return hideGuiEnabled;
-  }
-
-  public boolean isBlocksMenuEnabled() {
-    return blocksMenuEnabled;
-  }
-
-  public void setBlocksMenuEnabled(boolean blocksMenuEnabled) {
-    this.blocksMenuEnabled = blocksMenuEnabled;
-  }
-
-  public void setChatEnabled(boolean chatEnabled) {
-    this.chatEnabled = chatEnabled;
-  }
-
-  public void setHideGuiEnabled(boolean hideGuiEnabled) {
-    this.hideGuiEnabled = hideGuiEnabled;
-  }
-
-  public void setDebugEnabled(boolean debugEnabled) {
-    if (debugEnabled) {
-      GLProfiler.disable();
-    } else {
-      GLProfiler.enable();
-    }
-    this.debugEnabled = debugEnabled;
-  }
-
   public void render() {
     stage.getRoot().removeActor(chat);
     stage.getRoot().removeActor(chatLog);
-    if (isChatEnabled()) {
+    if (chatEnabled) {
       stage.addActor(chat);
       stage.setKeyboardFocus(chat);
       stage.addActor(chatLog);
@@ -276,14 +233,14 @@ public class GuiRenderer implements Disposable {
 
     spriteBatch.begin();
     if (debugEnabled) {
-      Fonts.FontDebug.draw(spriteBatch, ClientDebug.getDebugString(), 5f, Gdx.graphics.getHeight() - 5);
+      Fonts.debug.draw(spriteBatch, ClientDebug.getDebugString(), 5f, Gdx.graphics.getHeight() - 5);
     }
     float crosshairSize = Math.min(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) / 40;
-    if (!isHideGuiEnabled()) {
+    if (!hideGuiEnabled) {
       spriteBatch.draw(crosshair, (Gdx.graphics.getWidth() / 2) - crosshairSize, (Gdx.graphics.getHeight() / 2) - crosshairSize, crosshairSize * 2, crosshairSize * 2);
-      if (!isChatEnabled()) renderHotbar();
+      if (!chatEnabled) renderHotbar();
     }
-    if (isBlocksMenuEnabled()) renderBlockMenu();
+    if (blocksMenuEnabled) renderBlockMenu();
     spriteBatch.end();
   }
 
@@ -306,7 +263,7 @@ public class GuiRenderer implements Disposable {
         TextureRegion texture = itemStack.item.getTextureRegion();
         spriteBatch.draw(texture, minX + itemOffset, itemOffset, itemSize, itemSize);
 
-        BitmapFontCache cache = Fonts.FontSmallHUD.getCache();
+        BitmapFontCache cache = Fonts.smallHUD.getCache();
         cache.clear();
         GlyphLayout layout = cache.addText(itemStack.count + "", minX + itemOffset, itemOffset, itemSize, Align.right, false);
         cache.translate(0, layout.height);
@@ -387,7 +344,7 @@ public class GuiRenderer implements Disposable {
     float startWidth = (Gdx.graphics.getWidth() / 2) - (hotbarSize * 5);
     float startHeight = (Gdx.graphics.getHeight() / 2) - (hotbarSize * 3);
 
-    if (isBlocksMenuEnabled()) {
+    if (blocksMenuEnabled) {
       float x = screenX - startWidth;
       float y = screenY - startHeight;
       if (x < 0 || y < 0) return false;
@@ -410,7 +367,7 @@ public class GuiRenderer implements Disposable {
         return true;
       }
     }
-    if (isBlocksMenuEnabled() || Compatibility.get().isTouchScreen()) {
+    if (blocksMenuEnabled || Compatibility.get().isTouchScreen()) {
       if (screenX >= startWidth && screenX <= (startWidth + (hotbarSize * 10)) && screenY >= (Gdx.graphics.getHeight() - hotbarSize)) {
         int slot = (int) ((screenX - startWidth) / hotbarSize);
         if (slot >= 0 && slot <= 10) {

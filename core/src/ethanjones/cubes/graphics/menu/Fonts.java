@@ -10,11 +10,11 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 
 public class Fonts {
 
-  public static final BitmapFont FontTitle;
-  public static final BitmapFont FontMenu;
-  public static final BitmapFont FontHUD;
-  public static final BitmapFont FontSmallHUD;
-  public static final BitmapFont FontDebug;
+  public static final BitmapFont title;
+  public static final BitmapFont menu;
+  public static final BitmapFont hud;
+  public static final BitmapFont smallHUD;
+  public static final BitmapFont debug;
 
   private static final FreeTypeFontGenerator generator;
   public static final float scaleFactor;
@@ -29,14 +29,14 @@ public class Fonts {
     base = (int) f;
     scaleFactor = f;
 
-    FontTitle = getFont(64);
-    FontMenu = getFont(42);
-    FontHUD = getFont(32);
-    FontSmallHUD = getFont(20);
-    FontDebug = getFont(32);
+    title = getFont(64);
+    menu = getFont(42);
+    hud = getFont(32);
+    smallHUD = getFont(20);
+    debug = getFont(32);
 
-    // FontDebug fixed width numbers
-    FontDebug.setFixedWidthGlyphs("0123456789");
+    // debug fixed width numbers
+    debug.setFixedWidthGlyphs("0123456789");
 
     Log.debug("Font generated");
   }

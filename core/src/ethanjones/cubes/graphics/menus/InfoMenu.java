@@ -18,7 +18,7 @@ public class InfoMenu extends Menu {
 
   public InfoMenu(String labelText, String buttonText) {
     super();
-    text = new Label(labelText, new LabelStyle(Fonts.FontHUD, Color.WHITE));
+    text = new Label(labelText, new LabelStyle(Fonts.hud, Color.WHITE));
     text.setAlignment(Align.center, Align.center);
     button = new TextButton(buttonText, skin);
 
@@ -28,7 +28,7 @@ public class InfoMenu extends Menu {
 
   public InfoMenu(String labelText, boolean back) {
     super();
-    text = new Label(labelText, new LabelStyle(Fonts.FontHUD, Color.WHITE));
+    text = new Label(labelText, new LabelStyle(Fonts.hud, Color.WHITE));
     text.setAlignment(Align.center, Align.center);
     stage.addActor(text);
 

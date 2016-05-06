@@ -44,8 +44,8 @@ public class MainMenu extends Menu {
   public MainMenu() {
     super();
     logo = new Image(new TextureRegionDrawable(Assets.getTextureRegion("core:logo.png")), Scaling.fillY, Align.center);
-    version = new Label(Branding.DEBUG, new Label.LabelStyle(Fonts.FontSmallHUD, Color.WHITE));
-    author = new Label(Branding.AUTHOR, new Label.LabelStyle(Fonts.FontSmallHUD, Color.WHITE));
+    version = new Label(Branding.DEBUG, new Label.LabelStyle(Fonts.smallHUD, Color.WHITE));
+    author = new Label(Branding.AUTHOR, new Label.LabelStyle(Fonts.smallHUD, Color.WHITE));
     buttons = new Table();
     buttons.defaults().height(cellHeight).width(cellWidth).pad(5).fillX().fillY();
     buttons.add(singleplayer = new TextButton(Localization.get("menu.main.singleplayer"), skin)).row();
