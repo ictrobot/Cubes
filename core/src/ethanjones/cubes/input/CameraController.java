@@ -13,6 +13,7 @@ import ethanjones.cubes.networking.packets.PacketKey;
 import ethanjones.cubes.networking.packets.PacketPlayerMovement;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.CoordinateConverter;
+import ethanjones.cubes.core.util.WorldGravity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -187,7 +188,7 @@ public class CameraController extends InputAdapter {
     if (jump) {
       if (validJump()) {
         float t = Math.min(JUMP - jumpTime, deltaTime);
-        float j = (-32 * t * jumpTime) + (-16 * t * t) + (9 * t);
+        float j = WorldGravity.playerJump(jumpTime, t);
         jumpTime += t;
         tmpMovement.set(0f, j, 0f);
         tryMove();

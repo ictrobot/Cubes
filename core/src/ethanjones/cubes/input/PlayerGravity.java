@@ -6,6 +6,7 @@ import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.World;
+import ethanjones.cubes.core.util.WorldGravity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
@@ -41,10 +42,10 @@ public class PlayerGravity {
 
     if (b == null) {
       float t = Gdx.graphics.getRawDeltaTime();
-      float g = t * (17.65f * time + 7.825f) + (8.825f * t * t);
+      float g = WorldGravity.playerGravity(time, t);
 
       time += t;
-      temp.y -= Math.min(0.2f, g);
+      temp.y -= g;
     } else {
       time = 0f;
       temp.y = y + 1 + player.height;

@@ -3,6 +3,7 @@ package ethanjones.cubes.entity;
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.core.util.VectorUtil;
+import ethanjones.cubes.core.util.WorldGravity;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
@@ -20,6 +21,7 @@ public class Entity implements DataParser, Disposable {
 
   public UUID uuid;
   public float height = 0f;
+  private float gravityTime = 0f;
   public final Vector3 position;
   public final Vector3 angle;
   public final Vector3 motion;
@@ -47,20 +49,26 @@ public class Entity implements DataParser, Disposable {
   public boolean update() {
     if (Sided.getSide() == Side.Server) {
       World world = Sided.getCubes().world;
-      if (world.getArea(CoordinateConverter.area(position.x), CoordinateConverter.area(position.z)) == null)
+      if (world.getArea(CoordinateConverter.area(position.x), CoordinateConverter.area(position.z)) == null) {
+        gravityTime = 0f;
         return false;
+      }
       float f = position.y - height;
       int y = CoordinateConverter.block(f - 0.01f);
       if ((int) f == y && (f % 1) <= 0.1) y -= 1; // actually land on block
       Block b = world.getBlock(CoordinateConverter.block(position.x), y, CoordinateConverter.block(position.z));
       if (b == null) {
-        position.y -= 0.1f;
+        float t = Cubes.tickMS / 1000f;
+        float g = WorldGravity.entityGravity(gravityTime, t);
+        gravityTime += t;
+        position.y -= g;
         world.syncEntity(uuid);
       } else {
         if (motion.y < 0) motion.y = 0;
+        gravityTime = 0f;
         float newY = y + 1 + height;
         if (position.y != newY) {
-          position.y = y + 1 + height;
+          position.y = newY;
           world.syncEntity(uuid);
         }
       }
