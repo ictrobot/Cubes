@@ -25,6 +25,8 @@ import java.util.UUID;
 
 public class Player extends LivingEntity implements CommandSender, RenderableProvider {
 
+  private static final float PLAYER_HEIGHT = 1.625f;
+
   public final String username;
   public final ClientIdentifier clientIdentifier;
 
@@ -37,7 +39,7 @@ public class Player extends LivingEntity implements CommandSender, RenderablePro
     this.uuid = uuid;
     this.clientIdentifier = null;
     this.inventory = new PlayerInventory(this);
-    this.height = 1.5f;
+    this.height = PLAYER_HEIGHT;
   }
 
   public Player(String username, ClientIdentifier clientIdentifier) {
@@ -45,7 +47,7 @@ public class Player extends LivingEntity implements CommandSender, RenderablePro
     this.username = username;
     this.clientIdentifier = clientIdentifier;
     this.inventory = new PlayerInventory(this);
-    this.height = 1.5f;
+    this.height = PLAYER_HEIGHT;
   }
 
   public Player(Camera camera) {
@@ -53,7 +55,7 @@ public class Player extends LivingEntity implements CommandSender, RenderablePro
     this.username = Settings.getStringSettingValue(Settings.USERNAME);
     this.clientIdentifier = null;
     this.inventory = new PlayerInventory(this);
-    this.height = 1.5f;
+    this.height = PLAYER_HEIGHT;
   }
 
   public PlayerInventory getInventory() {

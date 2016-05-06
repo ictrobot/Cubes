@@ -25,7 +25,8 @@ import com.badlogic.gdx.utils.IntIntMap;
 
 public class CameraController extends InputAdapter {
 
-  public static final float MAX_JUMP = 0.25f;
+  public static final float JUMP = 0.3f;
+  public float jumpTime;
 
   public Touchpad touchpad; //movement on android
   public ImageButton jumpButton;
@@ -42,7 +43,6 @@ public class CameraController extends InputAdapter {
   private float degreesPerPixel = Settings.getFloatSettingValue(Settings.INPUT_MOUSE_SENSITIVITY);
   private Vector3 prevPosition = new Vector3();
   private Vector3 prevDirection = new Vector3();
-  public float jumpTimer;
 
   public CameraController(Camera camera) {
     this.camera = camera;
@@ -186,13 +186,14 @@ public class CameraController extends InputAdapter {
 
     if (jump) {
       if (validJump()) {
-        float f = Math.min(MAX_JUMP - jumpTimer, deltaTime);
-        jumpTimer += f;
-        tmpMovement.set(0f, f * 6, 0f);
+        float t = Math.min(JUMP - jumpTime, deltaTime);
+        float j = (-32 * t * jumpTime) + (-16 * t * t) + (9 * t);
+        jumpTime += t;
+        tmpMovement.set(0f, j, 0f);
         tryMove();
       }
     } else {
-      jumpTimer = 0;
+      jumpTime = 0;
     }
     camera.update(true);
   }
@@ -205,8 +206,8 @@ public class CameraController extends InputAdapter {
   }
 
   public boolean validJump() {
-    if (jumpTimer > 0 && jumpTimer < MAX_JUMP) return true;
-    if (jumpTimer == 0) {
+    if (jumpTime > 0 && jumpTime < JUMP) return true;
+    if (jumpTime == 0) {
       Vector3 pos = Cubes.getClient().player.position;
       float y = pos.y - Cubes.getClient().player.height - 0.01f;
       Block b = Cubes.getClient().world.getBlock(CoordinateConverter.block(pos.x), CoordinateConverter.block(y), CoordinateConverter.block(pos.z));

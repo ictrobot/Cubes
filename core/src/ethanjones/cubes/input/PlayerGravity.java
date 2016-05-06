@@ -11,7 +11,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
 
 public class PlayerGravity {
-  private float gravity;
+  private float time = 0f;
   private Vector3 temp;
 
   public Player player;
@@ -29,7 +29,7 @@ public class PlayerGravity {
     Vector3 pos = player.position;
 
     if (world.getArea(CoordinateConverter.area(pos.x), CoordinateConverter.area(pos.z)) == null) {
-      gravity = 0f;
+      time = 0f;
       return;
     }
     temp.set(pos);
@@ -40,11 +40,13 @@ public class PlayerGravity {
     Block b = world.getBlock(CoordinateConverter.block(pos.x), y, CoordinateConverter.block(pos.z));
 
     if (b == null) {
-      gravity += 0.1f * Gdx.graphics.getRawDeltaTime();
-      if (gravity > 0.1) gravity = 0.1f;
-      temp.y -= gravity;
+      float t = Gdx.graphics.getRawDeltaTime();
+      float g = t * (17.65f * time + 7.825f) + (8.825f * t * t);
+
+      time += t;
+      temp.y -= Math.min(0.2f, g);
     } else {
-      gravity = 0f;
+      time = 0f;
       temp.y = y + 1 + player.height;
     }
 
