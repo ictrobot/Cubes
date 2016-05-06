@@ -7,4 +7,6 @@ Cubes Credits
 
 * [Munro font](http://tenbytwenty.com/?xxxx_posts=munro)
 
+* [OpenSimplexNoise.java](https://gist.github.com/KdotJPG/b1270127455a94ac5d19)
+
 * [minimal-json library](https://github.com/ralfstx/minimal-json)
