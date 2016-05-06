@@ -35,6 +35,9 @@ public class Fonts {
     FontSmallHUD = getFont(20);
     FontDebug = getFont(32);
 
+    // FontDebug fixed width numbers
+    FontDebug.setFixedWidthGlyphs("0123456789");
+
     Log.debug("Font generated");
   }
 
