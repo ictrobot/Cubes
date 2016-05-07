@@ -61,7 +61,6 @@ public class Settings {
             .add(GROUP_INPUT, new SettingGroup().add(INPUT_MOUSE_SENSITIVITY).add(INPUT_TOUCHPAD_SIZE).add(INPUT_TOUCHPAD_LEFT))
             .add(GROUP_NETWORKING, new SettingGroup().add(NETWORKING_PORT));
 
-    write();
     if (!read()) {
       write();
     }
