@@ -35,9 +35,9 @@ public class Settings {
   public static void init() {
     addSetting(USERNAME, new StringSetting("User"));
     addSetting(GRAPHICS_VIEW_DISTANCE, new IntegerSetting(1, 2, 16, IntegerSetting.Type.Slider));
-    addSetting(GRAPHICS_FOV, new IntegerSetting(67, 10, 120, IntegerSetting.Type.Slider));
+    addSetting(GRAPHICS_FOV, new IntegerSetting(70, 10, 120, IntegerSetting.Type.Slider));
 
-    addSetting(INPUT_MOUSE_SENSITIVITY, new FloatSetting(0.5f, 0.0125f, 1f, FloatSetting.Type.Slider));
+    addSetting(INPUT_MOUSE_SENSITIVITY, new FloatSetting(0.5f, 0.05f, 1f, FloatSetting.Type.Slider));
     addSetting(INPUT_TOUCHPAD_SIZE, new FloatSetting(0.45f, 0.30f, 0.60f, FloatSetting.Type.Slider) {
       {
         this.sliderSteps = 0.005f;
@@ -61,6 +61,7 @@ public class Settings {
             .add(GROUP_INPUT, new SettingGroup().add(INPUT_MOUSE_SENSITIVITY).add(INPUT_TOUCHPAD_SIZE).add(INPUT_TOUCHPAD_LEFT))
             .add(GROUP_NETWORKING, new SettingGroup().add(NETWORKING_PORT));
 
+    write();
     if (!read()) {
       write();
     }

@@ -235,7 +235,7 @@ public class GuiRenderer implements Disposable {
     if (debugEnabled) {
       Fonts.debug.draw(spriteBatch, ClientDebug.getDebugString(), 5f, Gdx.graphics.getHeight() - 5);
     }
-    float crosshairSize = Math.min(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) / 40;
+    float crosshairSize = Fonts.scaleFactor * 10f;
     if (!hideGuiEnabled) {
       spriteBatch.draw(crosshair, (Gdx.graphics.getWidth() / 2) - crosshairSize, (Gdx.graphics.getHeight() / 2) - crosshairSize, crosshairSize * 2, crosshairSize * 2);
       if (!chatEnabled) renderHotbar();

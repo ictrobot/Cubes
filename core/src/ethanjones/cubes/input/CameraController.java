@@ -40,8 +40,8 @@ public class CameraController extends InputAdapter {
   private int STRAFE_RIGHT = Input.Keys.D;
   private int FORWARD = Input.Keys.W;
   private int BACKWARD = Input.Keys.S;
-  private float speed = 5;
-  private float degreesPerPixel = Settings.getFloatSettingValue(Settings.INPUT_MOUSE_SENSITIVITY);
+  private float speed = 4f;
+  private float degreesPerPixel = Settings.getFloatSettingValue(Settings.INPUT_MOUSE_SENSITIVITY) / 3;
   private Vector3 prevPosition = new Vector3();
   private Vector3 prevDirection = new Vector3();
 
