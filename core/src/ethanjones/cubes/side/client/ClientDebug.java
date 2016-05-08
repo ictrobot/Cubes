@@ -45,8 +45,8 @@ public class ClientDebug {
     }
 
     String performance = "FPS:" + fps.current + " AVG:" + fps.average + " MS:" + String.format("%01d", loop.current) + " AVG:" + String.format("%01d", loop.average) + " MEM:" + Compatibility.get().getFreeMemory() + "MB";
-    String position = "POS X:" + String.format("%.2f", p.x) + "(" + CoordinateConverter.area(p.x) + ")" + " Y:" + String.format("%.2f", p.y) + " Z:" + String.format("%.2f", p.z) + "(" + CoordinateConverter.area(p.z) + ")";
-    String direction = "DIR X:" + String.format("%.2f", Cubes.getClient().player.angle.x) + " Y:" + String.format("%.2f", Cubes.getClient().player.angle.y) + " Z:" + String.format("%.2f", Cubes.getClient().player.angle.z);
+    String position = "POS X:" + String.format("%.3f", p.x) + "(" + CoordinateConverter.area(p.x) + ")" + " Y:" + String.format("%.3f", p.y) + " Z:" + String.format("%.3f", p.z) + "(" + CoordinateConverter.area(p.z) + ")";
+    String direction = "DIR X:" + String.format("%.3f", Cubes.getClient().player.angle.x) + " Y:" + String.format("%.2f", Cubes.getClient().player.angle.y) + " Z:" + String.format("%.3f", Cubes.getClient().player.angle.z);
     String world = "W B:" + getBlockLight() + " S:" + getSunlight() + " T:" + Cubes.getClient().world.time;
     debugString = Branding.DEBUG + lineSeparator + performance + lineSeparator + position + lineSeparator + direction + lineSeparator + world;
 
