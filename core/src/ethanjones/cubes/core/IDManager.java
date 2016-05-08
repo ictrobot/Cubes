@@ -37,6 +37,14 @@ public class IDManager implements DataParser {
     if (!itemBlock.id.equals(block.id)) throw new IllegalArgumentException(itemBlock.id);
   }
 
+  public static void register(Item item) {
+    if (item == null) return;
+    checkID(item.id);
+    itemList.add(item);
+    idToItem.put(item.id, item);
+    idToMod.put(item.id, ModManager.getCurrentMod());
+  }
+
   private static void checkID(String id) {
     if (!id.contains(":")) throw new IllegalArgumentException(id + " is not in the correct format");
     String i = id.substring(0, id.indexOf(":")).toLowerCase();
@@ -226,15 +234,31 @@ public class IDManager implements DataParser {
     public String value();
   }
 
-  public static void getBlocks(Class<?> c) {
+  @Retention(RetentionPolicy.RUNTIME)
+  @Target(ElementType.FIELD)
+  public @interface GetItem {
+    public String value();
+  }
+
+  public static void getInstances(Class<?> c) {
     for (java.lang.reflect.Field field : c.getDeclaredFields()) {
-      if (java.lang.reflect.Modifier.isStatic(field.getModifiers()) && field.isAnnotationPresent(GetBlock.class)) {
-        GetBlock g = field.getAnnotation(GetBlock.class);
-        Block block = IDManager.idToBlock.get(g.value());
-        try {
-          field.set(null, block);
-        } catch (IllegalAccessException e) {
-          throw new CubesException("Failed to getBlocks()", e);
+      if (java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
+        if (field.isAnnotationPresent(GetBlock.class)) {
+          GetBlock g = field.getAnnotation(GetBlock.class);
+          Block block = IDManager.idToBlock.get(g.value());
+          try {
+            field.set(null, block);
+          } catch (IllegalAccessException e) {
+            throw new CubesException("Failed to getInstances()", e);
+          }
+        } else if (field.isAnnotationPresent(GetItem.class)) {
+          GetItem g = field.getAnnotation(GetItem.class);
+          Item item = IDManager.idToItem.get(g.value());
+          try {
+            field.set(null, item);
+          } catch (IllegalAccessException e) {
+            throw new CubesException("Failed to getInstances()", e);
+          }
         }
       }
     }

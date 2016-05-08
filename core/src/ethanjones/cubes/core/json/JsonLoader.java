@@ -3,12 +3,13 @@ package ethanjones.cubes.core.json;
 import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.block.BlockJson;
 import ethanjones.cubes.core.IDManager;
-import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.mod.json.JsonModInstance;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.graphics.assets.Asset;
 import ethanjones.cubes.graphics.assets.AssetManager;
 import ethanjones.cubes.graphics.assets.Assets;
+import ethanjones.cubes.item.ItemJson;
+import ethanjones.cubes.item.Items;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.eclipsesource.json.Json;
@@ -31,7 +32,8 @@ public class JsonLoader {
     } catch (IOException e) {
       throw new CubesException("Failed to load core json", e);
     }
-    IDManager.getBlocks(Blocks.class);
+    IDManager.getInstances(Blocks.class);
+    IDManager.getInstances(Items.class);
   }
 
   public static void load(JsonModInstance mod) throws IOException {
@@ -44,6 +46,13 @@ public class JsonLoader {
         Reader reader = entry.getValue().reader();
         try {
           BlockJson.json(Json.parse(reader).asArray());
+        } finally {
+          reader.close();
+        }
+      } else if (entry.getKey().startsWith("item")) {
+        Reader reader = entry.getValue().reader();
+        try {
+          ItemJson.json(Json.parse(reader).asArray());
         } finally {
           reader.close();
         }

@@ -86,26 +86,28 @@ public class Assets {
   }
 
   public static void init() {
-    packedTextureSheet = getPackedTextureSheet(AssetType.block);
+    packedTextureSheet = getPackedTextureSheet(AssetType.block, AssetType.item);
   }
 
-  private static PackedTextureSheet getPackedTextureSheet(AssetType assetType) {
+  private static PackedTextureSheet getPackedTextureSheet(AssetType... assetType) {
     if (Adapter.isDedicatedServer()) return null;
     TexturePacker texturePacker = new TexturePacker(2048, 2048, 1, true);
     for (Map.Entry<String, AssetManager> entry : assetManagers.entrySet()) {
-      ArrayList<Asset> assets = entry.getValue().getAssets(assetType.name() + "/");
-      for (Asset asset : assets) {
-        try {
-          if (!asset.getFileHandle().extension().equals("png")) continue;
-          texturePacker.insertImage(entry.getKey() + ":" + asset.getPath(), new Pixmap(asset.getFileHandle()));
-        } catch (Exception e) {
-          Log.error("Failed to read file: " + asset.getPath(), e);
+      for (AssetType type : assetType) {
+        ArrayList<Asset> assets = entry.getValue().getAssets(type.name() + "/");
+        for (Asset asset : assets) {
+          try {
+            if (!asset.getFileHandle().extension().equals("png")) continue;
+            texturePacker.insertImage(entry.getKey() + ":" + asset.getPath(), new Pixmap(asset.getFileHandle()));
+          } catch (Exception e) {
+            Log.error("Failed to read file: " + asset.getPath(), e);
+          }
         }
       }
     }
     FileHandle fileHandle = assetsFolder.child("packed");
     fileHandle.mkdirs();
-    fileHandle = fileHandle.child(assetType.name() + ".cim");
+    fileHandle = fileHandle.child(assetType[0].name() + ".cim");
 
     try {
       PixmapIO.writeCIM(fileHandle, texturePacker.getPixmap());

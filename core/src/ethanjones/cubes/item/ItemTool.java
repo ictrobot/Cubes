@@ -63,4 +63,9 @@ public class ItemTool extends Item {
       }
     }
   }
+
+  @Override
+  public int getStackCountMax() {
+    return 1;
+  }
 }

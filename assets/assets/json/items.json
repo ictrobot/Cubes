@@ -1,0 +1,23 @@
+[
+  {
+    "id": "core:pickaxe",
+    "tool": {
+      "type": "pickaxe",
+      "level": 1
+    }
+  },
+  {
+    "id": "core:axe",
+    "tool": {
+      "type": "axe",
+      "level": 1
+    }
+  },
+  {
+    "id": "core:shovel",
+    "tool": {
+      "type": "shovel",
+      "level": 1
+    }
+  }
+]
