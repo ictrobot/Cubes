@@ -3,6 +3,7 @@ setting.username=Username
 setting.graphics=Graphics
 setting.graphics.viewDistance=Rendering Distance
 setting.graphics.fieldOfView=FOV
+setting.graphics.vsync=VSync
 
 setting.input=Input
 setting.input.mouseSensitivity=Input Sensitivity
