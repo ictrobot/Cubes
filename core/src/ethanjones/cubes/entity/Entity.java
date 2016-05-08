@@ -1,13 +1,11 @@
 package ethanjones.cubes.entity;
 
-import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.core.util.VectorUtil;
-import ethanjones.cubes.core.util.WorldGravity;
+import ethanjones.cubes.world.gravity.WorldGravity;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
-import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.World;
 import ethanjones.data.DataGroup;
 import ethanjones.data.DataParser;
@@ -21,7 +19,7 @@ public class Entity implements DataParser, Disposable {
 
   public UUID uuid;
   public float height = 0f;
-  private float gravityTime = 0f;
+  public float gravityTime = 0f;
   public final Vector3 position;
   public final Vector3 angle;
   public final Vector3 motion;
@@ -49,31 +47,15 @@ public class Entity implements DataParser, Disposable {
   public boolean update() {
     if (Sided.getSide() == Side.Server) {
       World world = Sided.getCubes().world;
-      if (world.getArea(CoordinateConverter.area(position.x), CoordinateConverter.area(position.z)) == null) {
-        gravityTime = 0f;
-        return false;
-      }
-      float f = position.y - height;
-      int y = CoordinateConverter.block(f - 0.01f);
-      if ((int) f == y && (f % 1) <= 0.1) y -= 1; // actually land on block
-      Block b = world.getBlock(CoordinateConverter.block(position.x), y, CoordinateConverter.block(position.z));
-      if (b == null) {
-        float t = Cubes.tickMS / 1000f;
-        float g = WorldGravity.entityGravity(gravityTime, t);
-        gravityTime += t;
-        position.y -= g;
-        world.syncEntity(uuid);
-      } else {
+      Vector3 result = new Vector3();
+      if (WorldGravity.doGravity(result, world, this, Cubes.tickMS / 1000f)) {
         if (motion.y < 0) motion.y = 0;
-        gravityTime = 0f;
-        float newY = y + 1 + height;
-        if (position.y != newY) {
-          position.y = newY;
-          world.syncEntity(uuid);
-        }
+        position.set(result);
+        world.syncEntity(uuid);
       }
+
       if (!motion.isZero()) {
-        float scl = Cubes.tickMS / 1000f * 4f;
+        float scl = Cubes.tickMS / 1000f;
         position.add(motion.x * scl, motion.y * scl, motion.z * scl);
         motion.scl(0.9f);
         if (motion.len2() < 0.01f) motion.set(0f, 0f, 0f);

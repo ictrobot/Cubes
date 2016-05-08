@@ -13,7 +13,7 @@ import ethanjones.cubes.networking.packets.PacketKey;
 import ethanjones.cubes.networking.packets.PacketPlayerMovement;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.CoordinateConverter;
-import ethanjones.cubes.core.util.WorldGravity;
+import ethanjones.cubes.world.gravity.WorldGravity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
