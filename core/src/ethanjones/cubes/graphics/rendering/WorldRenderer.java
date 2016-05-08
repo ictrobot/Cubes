@@ -22,6 +22,7 @@ import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
 
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -114,7 +115,9 @@ public class WorldRenderer implements Disposable {
     }
 
     Performance.start(PerformanceTags.CLIENT_RENDER_WORLD_ENTITY);
+    float deltaTime = Gdx.graphics.getDeltaTime();
     for (Entity entity : world.entities.values()) {
+      entity.updatePosition(deltaTime);
       if (entity instanceof RenderableProvider) modelBatch.render(((RenderableProvider) entity));
     }
     Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_ENTITY);

@@ -45,24 +45,28 @@ public class Entity implements DataParser, Disposable {
    * @return true to be removed
    */
   public boolean update() {
-    if (Sided.getSide() == Side.Server) {
-      World world = Sided.getCubes().world;
-      Vector3 result = new Vector3();
-      if (WorldGravity.doGravity(result, world, this, Cubes.tickMS / 1000f)) {
-        if (motion.y < 0) motion.y = 0;
-        position.set(result);
-        world.syncEntity(uuid);
-      }
+    if (Sided.getSide() == Side.Server) updatePosition(Cubes.tickMS / 1000f);
+    motion.scl(0.9f);
+    if (motion.len2() < 0.01f) motion.set(0f, 0f, 0f);
 
-      if (!motion.isZero()) {
-        float scl = Cubes.tickMS / 1000f;
-        position.add(motion.x * scl, motion.y * scl, motion.z * scl);
-        motion.scl(0.9f);
-        if (motion.len2() < 0.01f) motion.set(0f, 0f, 0f);
-        world.syncEntity(uuid);
-      }
-    }
     return false;
+  }
+
+  public void updatePosition(float time) {
+    Side side = Sided.getSide();
+    World world = Sided.getCubes().world;
+    Vector3 temp = new Vector3();
+
+    if (WorldGravity.doGravity(temp, world, this, time)) {
+      if (motion.y < 0) motion.y = 0;
+      position.set(temp);
+      if (side == Side.Server) world.syncEntity(uuid);
+    }
+
+    if (!motion.isZero()) {
+      position.add(motion.x * time, motion.y * time, motion.z * time);
+      if (side == Side.Server) world.syncEntity(uuid);
+    }
   }
 
   @Override

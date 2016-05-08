@@ -84,19 +84,15 @@ public class Player extends LivingEntity implements CommandSender, RenderablePro
   }
 
   @Override
-  public boolean update() {
-    if (Sided.getSide() == Side.Server) {
-      World world = Sided.getCubes().world;
-      if (world.getArea(CoordinateConverter.area(position.x), CoordinateConverter.area(position.z)) != null) {
-        if (world.getBlock(CoordinateConverter.block(position.x), CoordinateConverter.block(position.y - height), CoordinateConverter.block(position.z)) != null) {
-          position.set(previousPosition);
-          world.syncEntity(uuid);
-        }
+  public void updatePosition(float time) {
+    World world = Sided.getCubes().world;
+    if (world.getArea(CoordinateConverter.area(position.x), CoordinateConverter.area(position.z)) != null) {
+      if (world.getBlock(CoordinateConverter.block(position.x), CoordinateConverter.block(position.y - height), CoordinateConverter.block(position.z)) != null) {
+        position.set(previousPosition);
+        world.syncEntity(uuid);
       }
-      previousPosition.set(position);
     }
-    return false;
-    //return super.update() gravity on client not server
+    previousPosition.set(position);
   }
 
   @Override
