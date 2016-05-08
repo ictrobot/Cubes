@@ -1,13 +1,12 @@
 package ethanjones.cubes.side.server;
 
-import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.event.EventHandler;
 import ethanjones.cubes.core.event.entity.living.player.PlayerMovementEvent;
 import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
 import ethanjones.cubes.core.event.world.generation.AreaGeneratedEvent;
 import ethanjones.cubes.entity.ItemEntity;
 import ethanjones.cubes.entity.living.player.PlayerInventory;
-import ethanjones.cubes.world.collision.BlockIntersection;
+import ethanjones.cubes.item.ItemTool;
 import ethanjones.cubes.item.ItemStack;
 import ethanjones.cubes.item.inv.InventoryHelper;
 import ethanjones.cubes.networking.NetworkingManager;
@@ -37,6 +36,7 @@ public class PlayerManager {
   private final ArrayList<Integer> buttons;
   private final ArrayList<Integer> recentKeys;
   private final ArrayList<Integer> recentButtons;
+  private ItemTool.MiningTarget currentlyMining;
   private int renderDistance;
   private int loadDistance;
 
@@ -262,19 +262,8 @@ public class PlayerManager {
   }
 
   protected void update() {
-    if (buttonDownRecent(Buttons.LEFT)) {
-      BlockIntersection blockIntersection = BlockIntersection.getBlockIntersection(client.getPlayer().position, client.getPlayer().angle, server.world);
-      if (blockIntersection != null) {
-        BlockReference blockReference = blockIntersection.getBlockReference();
-        Block block = server.world.getBlock(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
-        if (block != null) {
-          server.world.setBlock(null, blockReference.blockX, blockReference.blockY, blockReference.blockZ);
-          ItemEntity itemEntity = new ItemEntity();
-          itemEntity.itemStack = new ItemStack(block.getItemBlock(), 1);
-          itemEntity.position.set(blockReference.blockX + 0.5f, blockReference.blockY, blockReference.blockZ + 0.5f);
-          Cubes.getServer().world.addEntity(itemEntity);
-        }
-      }
+    if (buttonDown(Buttons.LEFT)) {
+      ItemTool.mine(client.getPlayer());
     }
     if (keyDownRecent(Keys.Q)) {
       PlayerInventory inventory = client.getPlayer().getInventory();
@@ -306,6 +295,14 @@ public class PlayerManager {
     synchronized (buttons) {
       return recentButtons.contains(button);
     }
+  }
+
+  public ItemTool.MiningTarget getCurrentlyMining() {
+    return currentlyMining;
+  }
+
+  public void setCurrentlyMining(ItemTool.MiningTarget currentlyMining) {
+    this.currentlyMining = currentlyMining;
   }
 
   public void disconnected() {
