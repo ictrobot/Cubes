@@ -11,8 +11,7 @@ import com.badlogic.gdx.math.Vector3;
 
 public class PlayerCollision {
   private World world = Sided.getCubes().world;
-  private static final float r = 0.25f;
-  private static final float c = (float) Math.sqrt(r * r * 2);
+  public static final float r = 0.25f;
 
   @EventHandler
   public void preventNoclip(PlayerMovementEvent event) {

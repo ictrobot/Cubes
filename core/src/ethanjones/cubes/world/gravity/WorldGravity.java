@@ -4,6 +4,7 @@ import ethanjones.cubes.entity.Entity;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.World;
+import ethanjones.cubes.world.collision.PlayerCollision;
 
 import com.badlogic.gdx.math.Vector3;
 
@@ -25,6 +26,7 @@ public class WorldGravity {
     Vector3 pos = entity.position;
     float height = entity.height;
     boolean isPlayer = entity instanceof Player;
+    float radius = (isPlayer ? PlayerCollision.r : 0f) * 0.95f;
     result.set(pos);
 
     if (world.getArea(CoordinateConverter.area(pos.x), CoordinateConverter.area(pos.z)) == null) {
@@ -32,14 +34,14 @@ public class WorldGravity {
       return false;
     }
 
-    if (!onBlock(world, result, height)) {
+    if (!onBlock(world, result, height, radius)) {
       float g = isPlayer ? playerGravity(entity.gravityTime, t) : entityGravity(entity.gravityTime, t);
 
       entity.gravityTime += t;
       result.y -= g;
     }
 
-    if (onBlock(world, result, height)) {
+    if (onBlock(world, result, height, radius)) {
       entity.gravityTime = 0f;
       result.y = getBlockY(result, height) + 1 + height;
     }
@@ -51,9 +53,15 @@ public class WorldGravity {
     return CoordinateConverter.block(f - 0.01f);
   }
 
-  private static boolean onBlock(World world, Vector3 pos, float height) {
+  private static boolean onBlock(World w, Vector3 pos, float height, float r) {
     int y = getBlockY(pos, height);
-    return world.getBlock(CoordinateConverter.block(pos.x), y, CoordinateConverter.block(pos.z)) != null;
+    boolean b = isBlock(w, pos.x, y, pos.z);
+    if (r == 0f) return b;
+    return isBlock(w, pos.x + r, y, pos.z) || isBlock(w, pos.x - r, y, pos.z) || isBlock(w, pos.x, y, pos.z + r) || isBlock(w, pos.x, y, pos.z - r);
+  }
+
+  private static boolean isBlock(World world, float x, int y, float z) {
+    return world.getBlock(CoordinateConverter.block(x), y, CoordinateConverter.block(z)) != null;
   }
 
   private static float f(float a, float b, float time, float t) {
