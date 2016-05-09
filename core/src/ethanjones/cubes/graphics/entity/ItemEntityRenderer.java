@@ -39,13 +39,17 @@ public class ItemEntityRenderer implements RenderableProvider, Disposable {
       blockIndices[i + 4] = (short) (j + 3);
       blockIndices[i + 5] = (short) (j + 0);
     }
-    itemIndices = new short[6];
-    itemIndices[0] = (short) 0;
-    itemIndices[1] = (short) 1;
-    itemIndices[2] = (short) 2;
-    itemIndices[3] = (short) 2;
-    itemIndices[4] = (short) 3;
-    itemIndices[5] = (short) 0;
+
+    itemIndices = new short[6 * 2];
+    j = 0;
+    for (int i = 0; i < itemIndices.length; i += 6, j += 4) {
+      itemIndices[i + 0] = (short) (j + 0);
+      itemIndices[i + 1] = (short) (j + 1);
+      itemIndices[i + 2] = (short) (j + 2);
+      itemIndices[i + 3] = (short) (j + 2);
+      itemIndices[i + 4] = (short) (j + 3);
+      itemIndices[i + 5] = (short) (j + 0);
+    }
   }
 
   private final ItemEntity itemEntity;
@@ -66,7 +70,8 @@ public class ItemEntityRenderer implements RenderableProvider, Disposable {
     }
 
     if (mesh == null) {
-      if (itemEntity.itemStack.item instanceof ItemBlock) {
+      item = itemEntity.itemStack.item;
+      if (item instanceof ItemBlock) {
         mesh = new Mesh(false, 4 * 6, 6 * 6, AreaMesh.vertexAttributes);
         mesh.setIndices(blockIndices);
         int vertexOffset = 0;
@@ -81,15 +86,17 @@ public class ItemEntityRenderer implements RenderableProvider, Disposable {
         vertexOffset = FaceVertices.createMinZ(offset, textureHandler.getSide(BlockFace.negZ), 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
         mesh.setVertices(vertices);
       } else {
-        mesh = new Mesh(false, 4, 6, AreaMesh.vertexAttributes);
+        mesh = new Mesh(false, 4 * 2, 6 * 2, AreaMesh.vertexAttributes);
         mesh.setIndices(itemIndices);
-        vertices = new float[AreaMesh.VERTEX_SIZE * 4];
+        int vertexOffset = 0;
+        vertices = new float[AreaMesh.VERTEX_SIZE * 4 * 2];
         TextureRegion textureRegion = itemEntity.itemStack.item.getTextureRegion();
-        Vector3 offset = new Vector3(-0.5f, 0f, 0);
-        FaceVertices.createMinZ(offset, textureRegion, 0, 0, 0, FULL_LIGHT, vertices, 0);
+        TextureRegion flip = new TextureRegion(textureRegion);
+        flip.flip(true, false);
+        vertexOffset = FaceVertices.createMinZ(new Vector3(-0.5f, 0f, 0f), textureRegion, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+        vertexOffset = FaceVertices.createMaxZ(new Vector3(-0.5f, 0f, -1f), flip, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
         mesh.setVertices(vertices);
       }
-      item = itemEntity.itemStack.item;
     }
     Renderable renderable = new Renderable();
     renderable.worldTransform.translate(itemEntity.position.x, itemEntity.position.y + yOffset() + randomYOffset, itemEntity.position.z);
@@ -97,7 +104,7 @@ public class ItemEntityRenderer implements RenderableProvider, Disposable {
     renderable.worldTransform.rotate(Vector3.Y, (System.currentTimeMillis() % 7200) / 20);
     renderable.meshPart.primitiveType = GL20.GL_TRIANGLES;
     renderable.meshPart.offset = 0;
-    renderable.meshPart.size = 6 * 6;
+    renderable.meshPart.size = item instanceof ItemBlock ? 6 * 6 : 6 * 2;
     renderable.meshPart.mesh = mesh;
     renderable.material = Assets.packedTextureSheet.getMaterial();
 

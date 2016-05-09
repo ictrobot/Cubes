@@ -1,12 +1,27 @@
 [
   {
-    "id": "core:bedrock"
+    "id": "core:bedrock",
+    "mining": {
+      "speed": 1000000,
+      "tool": "none",
+      "other": false
+    }
   },
   {
-    "id": "core:stone"
+    "id": "core:stone",
+    "mining": {
+      "speed": 1.5,
+      "tool": "pickaxe",
+      "other": false
+    }
   },
   {
-    "id": "core:dirt"
+    "id": "core:dirt",
+    "mining": {
+      "speed": 0.5,
+      "tool": "shovel",
+      "other": true
+    }
   },
   {
     "id": "core:grass",
@@ -14,6 +29,11 @@
       "side": "core:grass_side",
       "top": "core:grass",
       "bottom": "core:dirt"
+    },
+    "mining": {
+      "speed": 0.6,
+      "tool": "shovel",
+      "other": true
     }
   },
   {
@@ -22,18 +42,38 @@
       "side": "core:log",
       "top": "core:log_y",
       "bottom": "core:log_y"
+    },
+    "mining": {
+      "speed": 2,
+      "tool": "axe",
+      "other": true
     }
   },
   {
     "id": "core:leaves",
-    "transparent": true
+    "transparent": true,
+    "mining": {
+      "speed": 0.25,
+      "tool": "none",
+      "other": true
+    }
   },
   {
     "id": "core:glow",
-    "lightLevel": 15
+    "lightLevel": 15,
+    "mining": {
+      "speed": 0.25,
+      "tool": "none",
+      "other": true
+    }
   },
   {
     "id": "core:glass",
-    "transparent": true
+    "transparent": true,
+    "mining": {
+      "speed": 0.25,
+      "tool": "none",
+      "other": false
+    }
   }
 ]

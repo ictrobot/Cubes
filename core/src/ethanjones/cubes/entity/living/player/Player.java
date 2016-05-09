@@ -3,6 +3,7 @@ package ethanjones.cubes.entity.living.player;
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.entity.living.LivingEntity;
 import ethanjones.cubes.graphics.entity.PlayerRenderer;
+import ethanjones.cubes.item.ItemTool;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketChat;
 import ethanjones.cubes.networking.server.ClientIdentifier;
@@ -32,6 +33,7 @@ public class Player extends LivingEntity implements CommandSender, RenderablePro
 
   private final PlayerInventory inventory;
   private Vector3 previousPosition = new Vector3();
+  private ItemTool.MiningTarget currentlyMining;
 
   public Player(String username, UUID uuid) {
     super("core:player", 20);
@@ -100,4 +102,14 @@ public class Player extends LivingEntity implements CommandSender, RenderablePro
     if (Sided.getSide() == Side.Server || this == Cubes.getClient().player) return;
     PlayerRenderer.getRenderables(renderables, pool, this);
   }
+
+
+  public ItemTool.MiningTarget getCurrentlyMining() {
+    return currentlyMining;
+  }
+
+  public void setCurrentlyMining(ItemTool.MiningTarget currentlyMining) {
+    this.currentlyMining = currentlyMining;
+  }
+
 }

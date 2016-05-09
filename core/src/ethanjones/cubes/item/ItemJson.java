@@ -97,6 +97,8 @@ public class ItemJson {
         return ItemTool.ToolType.axe;
       case "shovel":
         return ItemTool.ToolType.shovel;
+      case "none":
+        return ItemTool.ToolType.none;
       default:
         throw new JsonException("No such tool: \"" + s + "\"");
     }

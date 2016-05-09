@@ -1,6 +1,7 @@
 package ethanjones.cubes.entity.living.player;
 
 import ethanjones.cubes.item.ItemStack;
+import ethanjones.cubes.item.Items;
 import ethanjones.cubes.item.inv.Inventory;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketPlayerInventory;
@@ -16,6 +17,10 @@ public class PlayerInventory extends Inventory {
     super(40);
     this.hotbarSelected = 0;
     this.player = player;
+    // start with tools
+    this.itemStacks[0] = new ItemStack(Items.pickaxe, 1);
+    this.itemStacks[1] = new ItemStack(Items.axe, 1);
+    this.itemStacks[2] = new ItemStack(Items.shovel, 1);
   }
 
   public ItemStack selectedItemStack() {

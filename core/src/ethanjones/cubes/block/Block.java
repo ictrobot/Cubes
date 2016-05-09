@@ -12,7 +12,7 @@ public class Block {
   protected ItemBlock itemBlock;
   protected BlockTextureHandler textureHandler;
   // block mining
-  protected float miningTime = 2f;
+  protected float miningTime = 0.5f;
   protected ItemTool.ToolType miningTool = ItemTool.ToolType.pickaxe;
   protected int miningToolLevel = 1;
   protected boolean miningOther = true;
@@ -57,7 +57,7 @@ public class Block {
     if (itemStack == null || !(itemStack.item instanceof ItemTool)) return miningOther;
     ItemTool itemTool = ((ItemTool) itemStack.item);
     if (itemTool.getToolType() != miningTool) return miningOther;
-    return miningToolLevel >= itemTool.getToolLevel();
+    return miningOther || miningToolLevel >= itemTool.getToolLevel();
   }
 
   public float getMiningTime() {

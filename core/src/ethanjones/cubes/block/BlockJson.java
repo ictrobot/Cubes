@@ -5,6 +5,8 @@ import ethanjones.cubes.core.json.JsonException;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.graphics.world.BlockTextureHandler;
+import ethanjones.cubes.item.ItemJson;
+import ethanjones.cubes.item.ItemTool;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -75,12 +77,36 @@ public class BlockJson {
     prop = json.get("transparent");
     if (prop != null) block.transparent = prop.asBoolean();
 
+    prop = json.get("mining");
+    if (prop != null) {
+      JsonObject object = prop.asObject();
+      for (JsonObject.Member member : object) {
+        switch (member.getName()) {
+          case "speed":
+            block.setMiningTime(member.getValue().asFloat());
+            break;
+          case "tool":
+            block.setMiningTool(ItemJson.toolType(member.getValue().asString()));
+            break;
+          case "toolLevel":
+            block.setMiningToolLevel(member.getValue().asInt());
+            break;
+          case "other":
+            block.setMiningOther(member.getValue().asBoolean());
+            break;
+          default:
+            throw new JsonException("Unexpected item tool member \"" + member.getName() + "\"");
+        }
+      }
+    }
+
     for (JsonObject.Member member : json) {
       switch (member.getName()) {
         case "id":
         case "texture":
         case "lightLevel":
         case "transparent":
+        case "mining":
           break;
         default:
           throw new JsonException("Unexpected block member \"" + member.getName() + "\"");
@@ -123,6 +149,22 @@ public class BlockJson {
     @Override
     public boolean isTransparent() {
       return transparent;
+    }
+
+    protected void setMiningTime(float miningTime) {
+      this.miningTime = miningTime;
+    }
+
+    protected void setMiningTool(ItemTool.ToolType miningTool) {
+      this.miningTool = miningTool;
+    }
+
+    protected void setMiningToolLevel(int miningToolLevel) {
+      this.miningToolLevel = miningToolLevel;
+    }
+
+    protected void setMiningOther(boolean miningOther) {
+      this.miningOther = miningOther;
     }
   }
 }

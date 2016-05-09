@@ -7,6 +7,7 @@ import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.input.keyboard.KeyboardHelper;
 import ethanjones.cubes.item.ItemStack;
+import ethanjones.cubes.item.ItemTool;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketButton;
 import ethanjones.cubes.networking.packets.PacketKey;
@@ -34,6 +35,7 @@ public class CameraController extends InputAdapter {
 
   private final Camera camera;
   private final IntIntMap keys = new IntIntMap();
+  private final IntIntMap buttons = new IntIntMap();
   private final Vector3 tmp = new Vector3();
   private final Vector3 tmpMovement = new Vector3();
   private int STRAFE_LEFT = Input.Keys.A;
@@ -84,6 +86,7 @@ public class CameraController extends InputAdapter {
         return false;
       }
     }
+    buttons.put(button, button);
     PacketButton packetButton = new PacketButton();
     packetButton.action = PacketButton.BUTTON_DOWN;
     packetButton.button = button;
@@ -106,6 +109,7 @@ public class CameraController extends InputAdapter {
         return false;
       }
     }
+    buttons.remove(button, 0);
     PacketButton packetButton = new PacketButton();
     packetButton.action = PacketButton.BUTTON_UP;
     packetButton.button = button;
@@ -224,6 +228,7 @@ public class CameraController extends InputAdapter {
       prevPosition.set(player.position);
       prevDirection.set(player.angle);
     }
+    ItemTool.mine(player, buttons.containsKey(Input.Buttons.LEFT));
   }
 }
 

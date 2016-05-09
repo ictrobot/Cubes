@@ -13,6 +13,7 @@ import ethanjones.cubes.input.keyboard.KeyTypedAdapter;
 import ethanjones.cubes.input.keyboard.KeyboardHelper;
 import ethanjones.cubes.item.Item;
 import ethanjones.cubes.item.ItemStack;
+import ethanjones.cubes.item.ItemTool;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketChat;
 import ethanjones.cubes.side.client.ClientDebug;
@@ -265,6 +266,7 @@ public class GuiRenderer implements Disposable {
 
         BitmapFontCache cache = Fonts.smallHUD.getCache();
         cache.clear();
+        if (itemStack.item instanceof ItemTool) continue;
         GlyphLayout layout = cache.addText(itemStack.count + "", minX + itemOffset, itemOffset, itemSize, Align.right, false);
         cache.translate(0, layout.height);
         cache.draw(spriteBatch);

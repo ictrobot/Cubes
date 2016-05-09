@@ -262,9 +262,7 @@ public class PlayerManager {
   }
 
   protected void update() {
-    if (buttonDown(Buttons.LEFT)) {
-      ItemTool.mine(client.getPlayer());
-    }
+    ItemTool.mine(client.getPlayer(), buttonDown(Buttons.LEFT));
     if (keyDownRecent(Keys.Q)) {
       PlayerInventory inventory = client.getPlayer().getInventory();
       ItemStack itemStack = InventoryHelper.reduceCount(inventory, inventory.hotbarSelected);
@@ -295,14 +293,6 @@ public class PlayerManager {
     synchronized (buttons) {
       return recentButtons.contains(button);
     }
-  }
-
-  public ItemTool.MiningTarget getCurrentlyMining() {
-    return currentlyMining;
-  }
-
-  public void setCurrentlyMining(ItemTool.MiningTarget currentlyMining) {
-    this.currentlyMining = currentlyMining;
   }
 
   public void disconnected() {
