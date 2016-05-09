@@ -43,35 +43,37 @@ public class ItemTool extends Item {
   }
 
   public static void mine(Player player, boolean mine) {
-    ItemStack itemStack = player.getInventory().selectedItemStack(); // may be null
-    BlockIntersection blockIntersection = BlockIntersection.getBlockIntersection(player.position, player.angle, Cubes.getServer().world);
-    if (mine && blockIntersection != null) {
-      BlockReference blockReference = blockIntersection.getBlockReference();
-      Block block = Sided.getCubes().world.getBlock(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
+    if (mine) {
+      ItemStack itemStack = player.getInventory().selectedItemStack(); // may be null
+      BlockIntersection blockIntersection = BlockIntersection.getBlockIntersection(player.position, player.angle, Cubes.getServer().world);
+      if (blockIntersection != null) {
+        BlockReference blockReference = blockIntersection.getBlockReference();
+        Block block = Sided.getCubes().world.getBlock(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
 
-      if (block != null) {
-        MiningTarget target = player.getCurrentlyMining();
-        if (target == null || !blockReference.equals(target.target) || target.itemStack != itemStack) {
-          target = new MiningTarget();
-          target.target = blockReference;
-          target.totalTime = block.getMiningTime();
-          target.itemStack = itemStack;
-          player.setCurrentlyMining(target);
-        }
-        target.time += block.getMiningSpeed(itemStack) * (Cubes.tickMS / 1000f);
-        if (target.time >= target.totalTime) {
-          player.setCurrentlyMining(null);
-          if (Sided.getSide() == Side.Server) {
-            Cubes.getServer().world.setBlock(null, blockReference.blockX, blockReference.blockY, blockReference.blockZ);
-            if (block.canMine(itemStack)) {
-              ItemEntity itemEntity = new ItemEntity();
-              itemEntity.itemStack = new ItemStack(block.getItemBlock(), 1);
-              itemEntity.position.set(blockReference.blockX + 0.5f, blockReference.blockY, blockReference.blockZ + 0.5f);
-              Cubes.getServer().world.addEntity(itemEntity);
+        if (block != null) {
+          MiningTarget target = player.getCurrentlyMining();
+          if (target == null || !blockReference.equals(target.target) || target.itemStack != itemStack) {
+            target = new MiningTarget();
+            target.target = blockReference;
+            target.totalTime = block.getMiningTime();
+            target.itemStack = itemStack;
+            player.setCurrentlyMining(target);
+          }
+          target.time += block.getMiningSpeed(itemStack) * (Cubes.tickMS / 1000f);
+          if (target.time >= target.totalTime) {
+            player.setCurrentlyMining(null);
+            if (Sided.getSide() == Side.Server) {
+              Cubes.getServer().world.setBlock(null, blockReference.blockX, blockReference.blockY, blockReference.blockZ);
+              if (block.canMine(itemStack)) {
+                ItemEntity itemEntity = new ItemEntity();
+                itemEntity.itemStack = new ItemStack(block.getItemBlock(), 1);
+                itemEntity.position.set(blockReference.blockX + 0.5f, blockReference.blockY, blockReference.blockZ + 0.5f);
+                Cubes.getServer().world.addEntity(itemEntity);
+              }
             }
           }
+          return;
         }
-        return;
       }
     }
     player.setCurrentlyMining(null);

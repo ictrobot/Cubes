@@ -68,8 +68,9 @@ public class BreakingRenderer {
     if (currentlyMining == null) return null;
     BlockReference position = currentlyMining.target;
     float percent = currentlyMining.time / currentlyMining.totalTime;
-    if (percent <= 1f / (1f + num)) return null;
-    int n = (int) Math.floor(percent * (1f + num));
+    percent -= 1f / (1f + num);
+    if (percent <= 0f) return null;
+    int n = (int) Math.floor(percent * num);
 
     float f = 1f / 128f;
     Renderable renderable = new Renderable();
