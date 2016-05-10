@@ -59,6 +59,14 @@ public class AreaReference implements Pool.Poolable, Cloneable {
     return this;
   }
 
+  public int minBlockX() {
+    return areaX * Area.SIZE_BLOCKS;
+  }
+
+  public int minBlockZ() {
+    return areaZ * Area.SIZE_BLOCKS;
+  }
+
   public AreaReference modified() {
     this.hashCode = 0;
     return this;

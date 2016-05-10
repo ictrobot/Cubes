@@ -7,57 +7,31 @@ import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.server.WorldServer;
 import ethanjones.cubes.world.storage.Area;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.Random;
 
 public class SmoothWorld extends TerrainGenerator {
 
-  private static Random random = new Random();
+  private static Random randomSeed = new Random();
 
-  private final long baseSeed;
-  private final Feature temperature;
-  private final Feature rainfall;
+  public final long baseSeed;
   private final Feature height;
   private final Feature heightVariation;
   private final Feature trees;
+  private final CaveManager caves;
 
   public SmoothWorld() {
-    this(random.nextLong());
+    this(randomSeed.nextLong());
   }
 
   public SmoothWorld(long baseSeed) {
     this.baseSeed = baseSeed;
     Log.info("Smooth World Seed: " + baseSeed);
-    temperature = new Feature(baseSeed + 1, 4, 1);
-    rainfall = new Feature(baseSeed + 2, 4, 1);
-    height = new Feature(baseSeed + 3, 4, 1);
-    heightVariation = new Feature(baseSeed + 4, 4, 2);
-    trees = new Feature(baseSeed + 5, 1, 3);
-  }
 
-  public static void main(String[] args) throws IOException {
-    SmoothWorld smoothWorld = new SmoothWorld(0);
-    BufferedImage image = new BufferedImage(4096, 4096, BufferedImage.TYPE_INT_RGB);
-    for (int y = 0; y < 4096; y++) {
-      for (int x = 0; x < 4096; x++) {
-        double value = smoothWorld.height.eval(x, y);
-        int c = (int) (255 * value);
-        image.setRGB(x, y, new Color(c, c, c).getRGB());
-      }
-    }
-    ImageIO.write(image, "png", new File("noise.png"));
-    for (int y = 0; y < 4096; y++) {
-      for (int x = 0; x < 4096; x++) {
-        double value = smoothWorld.heightVariation.eval(x, y);
-        int c = (int) (255 * value);
-        image.setRGB(x, y, new Color(c, c, c).getRGB());
-      }
-    }
-    ImageIO.write(image, "png", new File("noise2.png"));
+    height = new Feature(murmurHash3(baseSeed + 1), 4, 1);
+    heightVariation = new Feature(murmurHash3(baseSeed + 2), 4, 2);
+    trees = new Feature(murmurHash3(baseSeed + 3), 1, 3);
+
+    caves = new CaveManager(this);
   }
 
   @Override
@@ -76,6 +50,7 @@ public class SmoothWorld extends TerrainGenerator {
         set(area, Blocks.grass, x, g, z);
       }
     }
+    caves.apply(area);
   }
 
   @Override
@@ -184,7 +159,8 @@ public class SmoothWorld extends TerrainGenerator {
   }
 
   public long pseudorandomBits(long x, long z, int bits) {
-    long l = (x * (x - 1)) + (z * (z + 1)) + (long) Math.pow(x, z > 0 ? z : (z < 0 ? -z : 1));
+    long l = x + z + (x * (x - 1)) + (z * (z + 1)) + (long) Math.pow(x, z > 0 ? z : (z < 0 ? -z : 1));
+    l += baseSeed;
 
     long multiplier = 0x5DEECE66DL;
     long addend = 0xBL;
@@ -195,8 +171,18 @@ public class SmoothWorld extends TerrainGenerator {
     return lo >>> (64 - bits);
   }
 
-  public int pseudorandomInt(long x, long z, int bound) {
+  public int pseudorandomInt(long x, long z, int inclusiveBound) {
     float f = pseudorandomBits(x, z, 24) / ((float) (1 << 24));
-    return (int) Math.floor(f * bound);
+    return (int) Math.floor(f * (inclusiveBound + 1));
+  }
+
+  public static long murmurHash3(long x) {
+    x ^= x >>> 33;
+    x *= 0xff51afd7ed558ccdL;
+    x ^= x >>> 33;
+    x *= 0xc4ceb9fe1a85ec53L;
+    x ^= x >>> 33;
+
+    return x;
   }
 }
