@@ -79,7 +79,10 @@ task afterEclipseImport(description: "Post processing after project generation",
 publishing {
     publications {
         jar(MavenPublication) {
-            artifact dist
+            artifact tasks.dist
+            artifact(new File(project.getBuildDir(), '/launch4j/client.exe')) {
+                classifier = 'win'
+            }
             groupId 'ethanjones.cubes'
             artifactId 'client'
             version getMavenVersionString()
@@ -96,4 +99,4 @@ publishing {
     }
 }
 
-publish.dependsOn(['dist'])
+publish.dependsOn(['dist', 'launch4j'])
