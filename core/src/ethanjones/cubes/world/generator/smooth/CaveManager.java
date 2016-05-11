@@ -20,7 +20,7 @@ public class CaveManager {
     int r = 3;
     for (int aX = area.areaX - r; aX <= area.areaX + r; aX++) {
       for (int aZ = area.areaZ - r; aZ <= area.areaZ + r; aZ++) {
-        if (smoothWorld.pseudorandomInt(aX * 0xCAE, aZ * 0xCAE, 64) == 0) {
+        if (smoothWorld.pseudorandomInt(aX * 0xCAE, aZ * 0xCAE, 48) == 0) {
           Cave cave;
           synchronized (this) {
             current.setFromAreaCoordinates(aX, aZ);
