@@ -26,6 +26,7 @@ task run() << { //DOES NOT BUILD AUTOMATICALLY
         args dist.archivePath
         workingDir = project.buildDir.absolutePath + "/run"
         ignoreExitValue = true
+        maxHeapSize = "2G"
     }
 }
 

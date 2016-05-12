@@ -36,6 +36,7 @@ task run() << { //DOES NOT BUILD AUTOMATICALLY
         main = "-jar"
         args dist.archivePath
         workingDir = project.buildDir.absolutePath + "/run"
+        maxHeapSize = "2G"
         ignoreExitValue = true
     }
 }
