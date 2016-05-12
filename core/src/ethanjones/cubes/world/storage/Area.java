@@ -18,6 +18,7 @@ import ethanjones.cubes.world.reference.BlockReference;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Area {
@@ -76,10 +77,7 @@ public class Area {
   public Block getBlock(int x, int y, int z) {
     lock.readLock();
 
-    if (isBlank() || y > maxY || y < 0) {
-      lock.readUnlock();
-      return null;
-    }
+    if (unreadyReadLock(y)) return null;
     int b = blocks[getRef(x, y, z)];
 
     return lock.readUnlock(Sided.getIDManager().toBlock(Math.abs(b)));
@@ -88,6 +86,7 @@ public class Area {
   // Get the bits XXXX0000
   public int getSunlight(int x, int y, int z) {
     lock.readLock();
+    if (unreadyReadLock(y)) return 15;
     int r = (light[getRef(x, y, z)] >> 4) & 0xF;
     lock.readUnlock();
     return r;
@@ -96,6 +95,7 @@ public class Area {
   // Get the bits 0000XXXX
   public int getLight(int x, int y, int z) {
     lock.readLock();
+    if (unreadyReadLock(y)) return 0;
     int r = (light[getRef(x, y, z)]) & 0xF;
     lock.readUnlock();
     return r;
@@ -104,6 +104,7 @@ public class Area {
   // Set the bits XXXX0000
   public void setSunlight(int x, int y, int z, int l) {
     lock.writeLock();
+    if (unreadyWriteLock(y)) return;
     int ref = getRef(x, y, z);
     light[ref] = (byte) ((light[ref] & 0xF) | (l << 4));
     lock.writeUnlock();
@@ -113,6 +114,7 @@ public class Area {
   // Set the bits 0000XXXX
   public void setLight(int x, int y, int z, int l) {
     lock.writeLock();
+    if (unreadyWriteLock(y)) return;
     int ref = getRef(x, y, z);
     light[ref] = (byte) ((light[ref] & 0xF0) | l);
     lock.writeUnlock();
@@ -120,8 +122,9 @@ public class Area {
   }
 
   public int getLightRaw(int x, int y, int z) {
-    if (y > maxY) return SunLight.MAX_SUNLIGHT;
     lock.readLock();
+    if (y > maxY) return SunLight.MAX_SUNLIGHT;
+    if (unreadyWriteLock(y)) return 0;
     int r = light[getRef(x, y, z)] & 0xFF; // byte is signed (-128 to 127) so & 0xFF to convert to 0-255
     lock.readUnlock();
     return r;
@@ -132,6 +135,32 @@ public class Area {
     return lock.readUnlock(blocks == null);
   }
 
+  public boolean isUnloaded() {
+    lock.readLock();
+    return lock.readUnlock(unloaded);
+  }
+
+  // must be locked
+  public boolean isReady() {
+    return !unloaded && blocks != null;
+  }
+
+  public boolean unreadyWriteLock() {
+    return isReady() ? false : lock.writeUnlock(true);
+  }
+
+  public boolean unreadyReadLock() {
+    return isReady() ? false : lock.readUnlock(true);
+  }
+
+  public boolean unreadyWriteLock(int y) {
+    return isReady() && y >= 0 && y <= maxY ? false : lock.writeUnlock(true);
+  }
+
+  public boolean unreadyReadLock(int y) {
+    return isReady() && y >= 0 && y <= maxY ? false : lock.readUnlock(true);
+  }
+
   public void unload() {
     lock.writeLock();
 
@@ -139,11 +168,6 @@ public class Area {
     unloaded = true;
 
     lock.writeUnlock();
-  }
-
-  public boolean isUnloaded() {
-    lock.readLock();
-    return lock.readUnlock(unloaded);
   }
 
   private void removeArrays() {
@@ -160,6 +184,7 @@ public class Area {
     if (renderStatus.length > 0) renderStatus = new int[0];
     maxY = 0;
     height = 0;
+    Arrays.fill(heightmap, 0);
 
     lock.writeUnlock();
   }
@@ -232,6 +257,7 @@ public class Area {
     if (y < 0) return;
 
     lock.writeLock();
+    if (isUnloaded() && lock.writeUnlock(true)) return;
     setupArrays(y);
 
     int ref = getRef(x, y, z);
@@ -268,7 +294,7 @@ public class Area {
         negX = world.getArea(tempReference, false);
         if (negX != null) {
           negX.lock.writeLock();
-          negX.update(SIZE_BLOCKS - 1, y, z, getRef(SIZE_BLOCKS - 1, y, z));
+          if (negX.isReady()) negX.update(SIZE_BLOCKS - 1, y, z, getRef(SIZE_BLOCKS - 1, y, z));
           negX.lock.writeUnlock();
         }
       } else if (x == SIZE_BLOCKS - 1) {
@@ -276,7 +302,7 @@ public class Area {
         posX = world.getArea(tempReference, false);
         if (posX != null) {
           posX.lock.writeLock();
-          posX.update(SIZE_BLOCKS + 1, y, z, getRef(SIZE_BLOCKS + 1, y, z));
+          if (posX.isReady()) posX.update(SIZE_BLOCKS + 1, y, z, getRef(SIZE_BLOCKS + 1, y, z));
           posX.lock.writeUnlock();
         }
       }
@@ -285,7 +311,7 @@ public class Area {
         negZ = world.getArea(tempReference, false);
         if (negZ != null) {
           negZ.lock.writeLock();
-          negZ.update(x, y, SIZE_BLOCKS - 1, getRef(x, y, SIZE_BLOCKS - 1));
+          if (negZ.isReady()) negZ.update(x, y, SIZE_BLOCKS - 1, getRef(x, y, SIZE_BLOCKS - 1));
           negZ.lock.writeUnlock();
         }
       } else if (z == SIZE_BLOCKS - 1) {
@@ -293,7 +319,7 @@ public class Area {
         posZ = world.getArea(tempReference, false);
         if (posZ != null) {
           posZ.lock.writeLock();
-          posZ.update(x, y, SIZE_BLOCKS + 1, getRef(x, y, SIZE_BLOCKS + 1));
+          if (posZ.isReady()) posZ.update(x, y, SIZE_BLOCKS + 1, getRef(x, y, SIZE_BLOCKS + 1));
           posZ.lock.writeUnlock();
         }
       }
@@ -353,6 +379,7 @@ public class Area {
 
   public void updateAll() {
     lock.writeLock();
+    if (unreadyWriteLock()) return;
 
     if (!isBlank()) {
       int i = 0;
@@ -394,6 +421,8 @@ public class Area {
 
   public void rebuildHeightmap() {
     lock.writeLock();
+    if (unreadyWriteLock()) return;
+
     for (int x = 0; x < SIZE_BLOCKS; x++) {
       forLoop:
       for (int z = 0; z < SIZE_BLOCKS; z++) {
@@ -414,6 +443,8 @@ public class Area {
 
   public void calculateHeight(int x, int z) {
     lock.writeLock();
+    if (unreadyWriteLock()) return;
+
     int column = x + z * SIZE_BLOCKS;
     int y = maxY;
     while (y >= 0) {
@@ -554,12 +585,13 @@ public class Area {
       lock.readUnlock();
       return;
     }
-    for (int i = 0; i < SIZE_BLOCKS_SQUARED; i++) {
-      dataOutputStream.writeInt(heightmap[i]);
-    }
 
     int usedHeight = usedHeight();
     dataOutputStream.writeInt(features() ? usedHeight : -usedHeight);
+
+    for (int i = 0; i < SIZE_BLOCKS_SQUARED; i++) {
+      dataOutputStream.writeInt(heightmap[i]);
+    }
     for (int i = 0; i < (SIZE_BLOCKS_CUBED * usedHeight); i++) {
       dataOutputStream.writeInt(blocks[i]);
     }
@@ -587,10 +619,6 @@ public class Area {
     int areaZ = dataInputStream.readInt();
     Area area = new Area(areaX, areaZ);
 
-    for (int i = 0; i < SIZE_BLOCKS_SQUARED; i++) {
-      area.heightmap[i] = dataInputStream.readInt();
-    }
-
     int height = dataInputStream.readInt();
     if (height == 0) return area;
 
@@ -599,8 +627,11 @@ public class Area {
     } else {
       height = -height;
     }
-
     area.setupArrays((height * SIZE_BLOCKS) - 1);
+
+    for (int i = 0; i < SIZE_BLOCKS_SQUARED; i++) {
+      area.heightmap[i] = dataInputStream.readInt();
+    }
     for (int i = 0; i < area.blocks.length; i++) {
       area.blocks[i] = dataInputStream.readInt();
     }

@@ -116,7 +116,7 @@ public class BlockIntersection {
             if (area != null) area.lock.readLock();
           }
 
-          if (area != null && y <= area.maxY && y >= 0 && area.blocks[Area.getRef(x - area.minBlockX, y, z - area.minBlockZ)] != 0) {
+          if (area != null && area.isReady() && y <= area.maxY && y >= 0 && area.blocks[Area.getRef(x - area.minBlockX, y, z - area.minBlockZ)] != 0) {
             list.add(new BlockReference().setFromBlockCoordinates(x, y, z));
           }
         }
