@@ -10,7 +10,7 @@ import ethanjones.cubes.world.storage.Area;
 import java.util.Random;
 
 public class SmoothWorld extends TerrainGenerator {
-
+  public static final int minSurfaceHeight = 40;
   private static Random randomSeed = new Random();
 
   public final long baseSeed;
@@ -24,12 +24,12 @@ public class SmoothWorld extends TerrainGenerator {
   }
 
   public SmoothWorld(long baseSeed) {
-    this.baseSeed = baseSeed;
-    Log.info("Smooth World Seed: " + baseSeed);
+    this.baseSeed = murmurHash3(baseSeed);
+    Log.info("Smooth World Seed: " + baseSeed + " [" + this.baseSeed + "]");
 
-    height = new Feature(murmurHash3(baseSeed + 1), 4, 1);
-    heightVariation = new Feature(murmurHash3(baseSeed + 2), 4, 2);
-    trees = new Feature(murmurHash3(baseSeed + 3), 1, 3);
+    height = new Feature(murmurHash3(this.baseSeed + 1), 4, 1);
+    heightVariation = new Feature(murmurHash3(this.baseSeed + 2), 4, 2);
+    trees = new Feature(murmurHash3(this.baseSeed + 3), 1, 3);
 
     caves = new CaveManager(this);
   }
@@ -143,9 +143,9 @@ public class SmoothWorld extends TerrainGenerator {
   }
 
   public int getSurfaceHeight(int x, int z) {
-    double h = height.eval(x, z) * 60;
+    double h = height.eval(x, z) * 20;
     double hv = Math.sqrt(heightVariation.eval(x, z) + 1);
-    return (int) Math.pow(h, hv);
+    return (int) Math.pow(minSurfaceHeight + h, hv);
   }
 
   public int getDirtHeight(int x, int z) {
@@ -158,8 +158,9 @@ public class SmoothWorld extends TerrainGenerator {
     return 2 + ((int) Math.floor(h % 3));
   }
 
-  public long pseudorandomBits(long x, long z, int bits) {
+  public long pseudorandomBits(long x, long z, int bits, boolean murmurHash3) {
     long l = x + z + (x * (x - 1)) + (z * (z + 1)) + (long) Math.pow(x, z > 0 ? z : (z < 0 ? -z : 1));
+    if (murmurHash3) l = murmurHash3(l);
     l += baseSeed;
 
     long multiplier = 0x5DEECE66DL;
@@ -172,7 +173,7 @@ public class SmoothWorld extends TerrainGenerator {
   }
 
   public int pseudorandomInt(long x, long z, int inclusiveBound) {
-    float f = pseudorandomBits(x, z, 24) / ((float) (1 << 24));
+    float f = pseudorandomBits(x, z, 24, false) / ((float) (1 << 24));
     return (int) Math.floor(f * (inclusiveBound + 1));
   }
 

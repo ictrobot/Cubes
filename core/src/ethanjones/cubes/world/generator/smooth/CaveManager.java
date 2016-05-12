@@ -1,14 +1,17 @@
 package ethanjones.cubes.world.generator.smooth;
 
-import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.storage.Area;
 
 import java.util.HashMap;
 
 public class CaveManager {
+  public static final int caveAreaRadius = 4;
+  public static final int caveBlockRadius = caveAreaRadius * Area.SIZE_BLOCKS;
+  public static final int caveSafeBlockRadius = caveBlockRadius - Area.SIZE_BLOCKS;
 
   private final SmoothWorld smoothWorld;
+  private Cave spawnCave;
   private final HashMap<AreaReference, Cave> caves = new HashMap<AreaReference, Cave>();
   private final AreaReference current = new AreaReference();
 
@@ -17,10 +20,13 @@ public class CaveManager {
   }
 
   public void apply(Area area) {
-    int r = 3;
-    for (int aX = area.areaX - r; aX <= area.areaX + r; aX++) {
-      for (int aZ = area.areaZ - r; aZ <= area.areaZ + r; aZ++) {
-        if (smoothWorld.pseudorandomInt(aX * 0xCAE, aZ * 0xCAE, 48) == 0) {
+    getSpawnCave().apply(area);
+
+    for (int aX = area.areaX - caveAreaRadius; aX <= area.areaX + caveAreaRadius; aX++) {
+      for (int aZ = area.areaZ - caveAreaRadius; aZ <= area.areaZ + caveAreaRadius; aZ++) {
+        // 6 bits = 2^6 = 64
+        // one in 64 areas
+        if (smoothWorld.pseudorandomBits(aX, aZ, 6, true) == 0) {
           Cave cave;
           synchronized (this) {
             current.setFromAreaCoordinates(aX, aZ);
@@ -37,6 +43,17 @@ public class CaveManager {
     }
   }
 
+  private Cave getSpawnCave() {
+    synchronized (this) {
+      if (spawnCave == null) {
+        int spawnCaveX = smoothWorld.pseudorandomInt(1, 0, Area.SIZE_BLOCKS * 4) - (Area.SIZE_BLOCKS * 2);
+        int spawnCaveZ = smoothWorld.pseudorandomInt(0, 1, Area.SIZE_BLOCKS * 4) - (Area.SIZE_BLOCKS * 2);
+        this.spawnCave = new Cave(spawnCaveX, spawnCaveZ, smoothWorld);
+      }
+      return spawnCave;
+    }
+  }
+
   private Cave loadCave() {
     return null; //TODO implement storing and loading of caves
   }
@@ -47,9 +64,6 @@ public class CaveManager {
 
     int x = current.minBlockX() + offsetX;
     int z = current.minBlockZ() + offsetZ;
-
-    Log.debug("Generating new cave at " + x + "," + z);
     return new Cave(x, z, smoothWorld);
   }
-
 }
