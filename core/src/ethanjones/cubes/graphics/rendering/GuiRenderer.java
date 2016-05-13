@@ -311,8 +311,8 @@ public class GuiRenderer implements Disposable {
       }
     }
     if (chatButton != null && debugButton != null && blockSelectorButton != null) {
-      float width = blockSelectorButton.getWidth() * Fonts.scaleFactor / 3 * 2;
-      float height = blockSelectorButton.getHeight() * Fonts.scaleFactor / 3 * 2;
+      float width = blockSelectorButton.getPrefWidth() * Fonts.scaleFactor / 3 * 2;
+      float height = blockSelectorButton.getPrefHeight() * Fonts.scaleFactor / 3 * 2;
       blockSelectorButton.setBounds(Gdx.graphics.getWidth() - width, Gdx.graphics.getHeight() - height, width, height);
       chatButton.setBounds(Gdx.graphics.getWidth() - width - width, Gdx.graphics.getHeight() - height, width, height);
       debugButton.setBounds(Gdx.graphics.getWidth() - width - width - width, Gdx.graphics.getHeight() - height, width, height);
