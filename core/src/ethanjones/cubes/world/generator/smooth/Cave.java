@@ -24,7 +24,7 @@ public class Cave {
   public static final int roomChangeXZRandom = 15;
   public static final int roomChangeY = 10;
   public static final int roomConnectDistanceMin = 5;
-  public static final int roomConnectDistanceMax = 50;
+  public static final int roomConnectDistanceMax = 75;
 
   public final int caveStartX;
   public final int caveStartY;
@@ -53,23 +53,20 @@ public class Cave {
 
   public void generateNodes() {
     // make rooms
-    rooms.add(new RoomNode(caveStartX, caveStartY, caveStartZ, 0));
+    rooms.add(new RoomNode(caveStartX, caveStartY, caveStartZ, 0, null));
     int num = 0;
     while (num <= roomNodesMax) {
       RoomNode randomNode = rooms.get(numbers.nextInt(rooms.size()));
-      boolean noCheck = num <= (roomNodesMin / 2);
+      boolean allowSurface = num <= (roomNodesMin / 4);
 
       int finalX = randomNode.location.blockX + getRoomChangeXZ();
       int finalZ = randomNode.location.blockZ + getRoomChangeXZ();
 
       if (inRange(finalX, finalZ)) {
         int offsetY = numbers.nextInt((roomChangeY * 2) + 1) - roomChangeY;
-        int finalY = undergroundY(finalX, finalZ, randomNode.location.blockY, offsetY, noCheck);
+        int finalY = undergroundY(finalX, finalZ, randomNode.location.blockY, offsetY, allowSurface);
 
-        RoomNode roomNode = new RoomNode(finalX, finalY, finalZ, 2 + numbers.nextInt(3));
-        roomNode.connect = randomNode;
-        roomNode.noChecks = noCheck;
-        rooms.add(roomNode);
+        rooms.add(new RoomNode(finalX, finalY, finalZ, 1 + numbers.nextInt(2), randomNode));
       }
       if (num >= roomNodesMin && numbers.nextInt((roomNodesMax - roomNodesMin) - num) == 0) break;
       num++;
@@ -78,11 +75,7 @@ public class Cave {
     ArrayList<TunnelNode> straightTunnels = new ArrayList<TunnelNode>();
     for (int i = 0; i < rooms.size(); i++) {
       RoomNode roomNode = rooms.get(i);
-      if (roomNode.connect != null) {
-        TunnelNode tunnelNode = new TunnelNode(roomNode.location, roomNode.connect.location);
-        tunnelNode.noChecks = roomNode.noChecks && roomNode.connect.noChecks;
-        straightTunnels.add(tunnelNode);
-      }
+      if (roomNode.connect != null) straightTunnels.add(new TunnelNode(roomNode.location, roomNode.connect.location));
 
       int roomConnections = 0;
       for (int j = 0; j < 25; j++) {
@@ -110,7 +103,6 @@ public class Cave {
 
       int numTurns = 1 + (dist / 10) + (dist / 5 == 0 ? 0 : numbers.nextInt(dist / 5));
       float turnXZChange = (float) Math.sqrt(dX * dX + dZ * dZ) / (float) numTurns;
-      float turnYChange = (float) Math.abs(dY) / (float) numTurns;
 
       tunnelSections.clear();
       tunnelSections.add(a);
@@ -121,11 +113,12 @@ public class Cave {
         int z = b.blockZ + (int) (dZ * f);
 
         int randomX = (int) (((4 * numbers.nextFloat()) - 2f) * turnXZChange);
+        int randomY = numbers.nextInt(3) - 1;
         int randomZ = (int) (((4 * numbers.nextFloat()) - 2f) * turnXZChange);
 
         int finalX = x + randomX;
+        int finalY = y + randomY;
         int finalZ = z + randomZ;
-        int finalY = undergroundY(finalX, finalZ, y, (int) (((4 * numbers.nextFloat()) - 2f) * turnYChange), tunnelNode.noChecks);
 
         tunnelSections.add(new BlockReference().setFromBlockCoordinates(finalX, finalY, finalZ));
       }
@@ -199,19 +192,14 @@ public class Cave {
     return rand + (rand < 0 ? -roomChangeXZConstant : roomChangeXZConstant);
   }
 
-  private int undergroundY(int x, int z, int prevY, int changeY, boolean noCheck) {
+  private int undergroundY(int x, int z, int prevY, int changeY, boolean allowSurface) {
     int y = prevY + changeY;
     if (y < 10) return 10;
-    if (y < minSurfaceHeight || noCheck) return y;
-
-//  if (numbers.nextInt(32) == 0) return y;
-//
-//  int height = smoothWorld.getSurfaceHeight(x, z);
-//  if (y >= height - 10) y = prevY - changeY;
-//  if (y >= height - 10) y = height - 10 - Math.abs(changeY);
+    if (y < minSurfaceHeight) return y;
 
     int height = smoothWorld.getSurfaceHeight(x, z);
-    while (y >= height - 6 && y >= 10) y--;
+    while (y > height - (allowSurface ? -1 : 8) && y >= 10)
+      y--;
     return y;
   }
 
@@ -270,7 +258,6 @@ public class Cave {
     BlockReference end;
     float startRadius = (float) (1.5f + (numbers.nextFloat() * 1.5));
     float endRadius = (float) (1.5f + (numbers.nextFloat() * 1.5));
-    boolean noChecks;
 
     private TunnelNode(BlockReference start, BlockReference end) {
       this.start = start;
@@ -279,19 +266,14 @@ public class Cave {
   }
 
   private class RoomNode {
-    RoomNode connect;
     BlockReference location;
+    RoomNode connect;
     int size;
-    boolean noChecks;
 
-    private RoomNode(int blockX, int blockY, int blockZ, int size) {
+    private RoomNode(int blockX, int blockY, int blockZ, int size, RoomNode connect) {
       this.location = new BlockReference().setFromBlockCoordinates(blockX, blockY, blockZ);
+      this.connect = connect;
       this.size = size;
-    }
-
-    @Override
-    public String toString() {
-      return location.toString() + "    " + size;
     }
   }
 }
