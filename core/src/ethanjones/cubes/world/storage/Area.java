@@ -3,6 +3,7 @@ package ethanjones.cubes.world.storage;
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.IDManager.TransparencyManager;
 import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.Executor;
 import ethanjones.cubes.core.util.Lock;
@@ -576,7 +577,7 @@ public class Area {
     return (int) Math.ceil((maxUsedY + 1) / (float) SIZE_BLOCKS);
   }
 
-  public void write(DataOutputStream dataOutputStream) throws IOException {
+  public void write(DataOutputStream dataOutputStream, boolean resize) throws IOException {
     lock.readLock();
     dataOutputStream.writeInt(areaX);
     dataOutputStream.writeInt(areaZ);
@@ -586,15 +587,39 @@ public class Area {
       return;
     }
 
-    int usedHeight = usedHeight();
+    int usedHeight = resize ? usedHeight() : height;
     dataOutputStream.writeInt(features() ? usedHeight : -usedHeight);
 
     for (int i = 0; i < SIZE_BLOCKS_SQUARED; i++) {
       dataOutputStream.writeInt(heightmap[i]);
     }
+
+    int currentBlock = -1, num = 0;
     for (int i = 0; i < (SIZE_BLOCKS_CUBED * usedHeight); i++) {
-      dataOutputStream.writeInt(blocks[i]);
+      int block = blocks[i];
+      block = (block < 0 ? -block : block) + 1; //shifted by 1 so blank is not 0, because -0 == 0
+      if (block == currentBlock) {
+        num++;
+      } else {
+        if (currentBlock != -1) {
+          if (num == 1) {
+            dataOutputStream.writeInt(currentBlock);
+          } else {
+            dataOutputStream.writeInt(-num);
+            dataOutputStream.writeInt(currentBlock);
+          }
+        }
+        currentBlock = block;
+        num = 1;
+      }
     }
+    if (num == 1) {
+      dataOutputStream.writeInt(currentBlock);
+    } else {
+      dataOutputStream.writeInt(-num);
+      dataOutputStream.writeInt(currentBlock);
+    }
+
     for (int i = 0; i < (SIZE_BLOCKS_CUBED * usedHeight); i++) {
       dataOutputStream.writeByte(light[i]);
     }
@@ -632,12 +657,25 @@ public class Area {
     for (int i = 0; i < SIZE_BLOCKS_SQUARED; i++) {
       area.heightmap[i] = dataInputStream.readInt();
     }
-    for (int i = 0; i < area.blocks.length; i++) {
-      area.blocks[i] = dataInputStream.readInt();
+
+    int counter = 0;
+    while (counter < (SIZE_BLOCKS_CUBED * height)) {
+      int a = dataInputStream.readInt();
+      if (a > 0) {
+        area.blocks[counter++] = a - 1;
+      } else {
+        int block = dataInputStream.readInt() - 1;
+        for (int i = 0; i < -a; i++) {
+          area.blocks[counter++] = block;
+        }
+      }
     }
+
     for (int i = 0; i < area.light.length; i++) {
       area.light[i] = dataInputStream.readByte();
     }
+
+    area.updateAll();
     return area;
   }
 
