@@ -15,6 +15,7 @@ import ethanjones.cubes.side.common.Cubes;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.MemoryInfo;
+import android.content.Intent;
 import android.os.Build;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
@@ -129,5 +130,16 @@ public class AndroidCompatibility extends Compatibility {
   @Override
   public LogWriter getCustomLogWriter() {
     return new AndroidLogWriter();
+  }
+
+  @Override
+  public boolean handleCrash(Throwable throwable) {
+    Intent intent = new Intent(androidLauncher, CrashActivity.class);
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    intent.putExtra("ethanjones.cubes.core.platform.android.LOG_FILE", Compatibility.get().getBaseFolder().child("log.txt").file().getAbsolutePath());
+    androidLauncher.startActivity(intent);
+    System.exit(1);
+    return false;
   }
 }

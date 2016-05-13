@@ -2,5 +2,6 @@
 <resources>
 
     <string name="app_name">Cubes</string>
+    <string name="title_activity_crash">Cubes Crash</string>
 
 </resources>
