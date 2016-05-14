@@ -20,7 +20,7 @@ import static ethanjones.cubes.world.generator.smooth.SmoothWorld.murmurHash3;
 public class CaveGenerator {
   public static final int roomNodesMin = 25;
   public static final int roomNodesMax = 100;
-  public static final int roomChangeXZConstant = 10;
+  public static final int roomChangeXZConstant = 15;
   public static final int roomChangeXZRandom = 15;
   public static final int roomChangeY = 10;
   public static final int roomConnectDistanceMin = 5;
@@ -81,8 +81,8 @@ public class CaveGenerator {
       RoomNode randomNode = rooms.get(numbers.nextInt(rooms.size()));
       boolean allowSurface = num <= (roomNodesMin / 4);
 
-      int finalX = randomNode.location.blockX + getRoomChangeXZ();
-      int finalZ = randomNode.location.blockZ + getRoomChangeXZ();
+      int finalX = randomNode.location.blockX + getRoomChangeXZ(randomNode.location.blockX - caveStartX);
+      int finalZ = randomNode.location.blockZ + getRoomChangeXZ(randomNode.location.blockZ - caveStartZ);
 
       if (inRange(finalX, finalZ)) {
         int offsetY = numbers.nextInt((roomChangeY * 2) + 1) - roomChangeY;
@@ -209,9 +209,16 @@ public class CaveGenerator {
     }
   }
 
-  private int getRoomChangeXZ() {
-    int rand = numbers.nextInt((roomChangeXZRandom * 2) + 1) - roomChangeXZRandom;
-    return rand + (rand < 0 ? -roomChangeXZConstant : roomChangeXZConstant);
+  private int getRoomChangeXZ(int distance) {
+    int sign = distance < 0 ? -1 : 1;
+
+    float factor = 1f - ((float) (distance * sign) / (float) CaveManager.caveSafeBlockRadius);
+    factor *= 0.6f;
+
+    int randRange = (int) (roomChangeXZRandom * (2f + factor));
+    int rand = sign * (numbers.nextInt(randRange) - roomChangeXZRandom);
+
+    return rand + (sign * roomChangeXZConstant);
   }
 
   private int undergroundY(int x, int z, int prevY, int changeY, boolean allowSurface) {
@@ -259,8 +266,8 @@ public class CaveGenerator {
   private class TunnelNode {
     BlockReference start;
     BlockReference end;
-    float startRadius = (float) (1.5f + (numbers.nextFloat() * 1.5));
-    float endRadius = (float) (1.5f + (numbers.nextFloat() * 1.5));
+    float startRadius = (float) (1.5f + (numbers.nextFloat() * 1));
+    float endRadius = (float) (1.5f + (numbers.nextFloat() * 1));
 
     private TunnelNode(BlockReference start, BlockReference end) {
       this.start = start;
