@@ -30,6 +30,7 @@ public class CubesClient extends Cubes implements ApplicationListener {
   public InputChain inputChain;
   public Renderer renderer;
   public long frameStart;
+  public boolean ready = false;
 
   public CubesClient() {
     super(Side.Client);
@@ -61,6 +62,10 @@ public class CubesClient extends Cubes implements ApplicationListener {
   public void render() {
     frameStart = System.nanoTime();
     if (shouldReturn()) return;
+    if (ready) {
+      Adapter.setMenu(null);
+      ready = false;
+    }
     if (KeyboardHelper.isKeyDown(Input.Keys.ESCAPE)) {
       Adapter.gotoMainMenu();
       return;

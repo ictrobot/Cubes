@@ -49,12 +49,12 @@ public class WorldGenerationThread implements Runnable {
           features = task.featuresQueue.poll();
         }
 
-        queue.remove(task);
+        if (queue.remove(task) && task.parameter.afterCompletion != null) {
+          task.parameter.afterCompletion.run();
+        }
       } catch (CubesException e) {
         if (e.className.equals(Sided.class.getName())) {
-          while (!queue.isEmpty()) {
-            queue.poll();
-          }
+          queue.clear();
         } else {
           throw e;
         }

@@ -72,6 +72,18 @@ public class AreaReference implements Pool.Poolable, Cloneable {
     return this;
   }
 
+  public double distance(AreaReference areaReference) {
+    int dX = this.areaX - areaReference.areaX;
+    int dZ = this.areaZ - areaReference.areaZ;
+    return Math.sqrt(dX * dX + dZ * dZ);
+  }
+
+  public int distance2(AreaReference areaReference) {
+    int dX = this.areaX - areaReference.areaX;
+    int dZ = this.areaZ - areaReference.areaZ;
+    return dX * dX + dZ * dZ;
+  }
+
   @Override
   public int hashCode() {
     if (hashCode == 0) updateHashCode();

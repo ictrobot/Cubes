@@ -9,18 +9,21 @@ import ethanjones.cubes.side.server.integrated.SingleplayerServer;
 
 public class SingleplayerLoadingMenu extends InfoMenu {
 
+  private int frameNum = 0;
+
   public SingleplayerLoadingMenu() {
     super(Localization.get("menu.general.loading"), false);
   }
 
   public void render() {
     super.render();
+    frameNum++;
+    if (frameNum != 2) return;
     try {
       try {
         NetworkingManager.singleplayerPreInit();
         Adapter.setServer(new SingleplayerServer());
         Adapter.setClient(new CubesClient());
-        Adapter.setMenu(null);
       } catch (Exception e) {
         Log.error("Failed to setup client", e);
       }

@@ -30,7 +30,6 @@ public class MultiplayerLoadingMenu extends InfoMenu {
       CubesClient cubesClient = new CubesClient();
       Adapter.setServer(null);
       Adapter.setClient(cubesClient);
-      Adapter.setMenu(null);
     } catch (Exception e) {
       if (e instanceof GdxRuntimeException && e.getCause() instanceof Exception) e = (Exception) e.getCause();
       Adapter.setClient(null);

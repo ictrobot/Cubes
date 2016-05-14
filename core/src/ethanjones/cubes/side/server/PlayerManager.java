@@ -18,8 +18,10 @@ import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.reference.multi.AreaReferenceSet;
+import ethanjones.cubes.world.reference.multi.MultiAreaReference;
 import ethanjones.cubes.world.reference.multi.WorldRegion;
 import ethanjones.cubes.world.storage.Area;
+import ethanjones.cubes.world.thread.WorldRequestParameter;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Input.Buttons;
@@ -100,7 +102,7 @@ public class PlayerManager {
           if (area != null) sendArea(area);
         }
       }
-      server.world.requestRegion(new WorldRegion(playerArea, loadDistance));
+      requestRegion(new WorldRegion(playerArea, loadDistance));
     }
   }
 
@@ -149,7 +151,7 @@ public class PlayerManager {
           if (area != null) sendArea(area);
         }
 
-        server.world.requestRegion(difference);
+        requestRegion(difference);
         playerArea.setFromAreaReference(newRef);
       }
 
@@ -161,6 +163,16 @@ public class PlayerManager {
       if (!clientKnows) NetworkingManager.sendPacketToClient(new PacketPlayerMovement(client.getPlayer()), client);
       NetworkingManager.sendPacketToOtherClients(new PacketOtherPlayerMovement(client.getPlayer()), client);
     }
+  }
+
+  public void requestRegion(MultiAreaReference multiAreaReference) {
+    WorldRequestParameter parameter = new WorldRequestParameter(playerArea.clone(), new Runnable() {
+      @Override
+      public void run() {
+        NetworkingManager.sendPacketToClient(new PacketInitialAreasLoaded(), client);
+      }
+    });
+    server.world.requestRegion(multiAreaReference, parameter);
   }
 
   @EventHandler

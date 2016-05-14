@@ -13,6 +13,7 @@ import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
 import ethanjones.cubes.world.reference.multi.WorldRegion;
 import ethanjones.cubes.world.storage.Area;
+import ethanjones.cubes.world.thread.WorldRequestParameter;
 import ethanjones.data.DataGroup;
 
 import com.badlogic.gdx.utils.Disposable;
@@ -108,12 +109,12 @@ public abstract class World implements Disposable {
     if (area != null) {
       return area;
     } else if (request) {
-      requestRegion(new WorldRegion(areaReference));
+      requestRegion(new WorldRegion(areaReference), null);
     }
     return null;
   }
 
-  public abstract void requestRegion(MultiAreaReference references);
+  public abstract void requestRegion(MultiAreaReference references, WorldRequestParameter parameter);
 
   public void setBlock(Block block, int x, int y, int z) {
     Area area = getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));

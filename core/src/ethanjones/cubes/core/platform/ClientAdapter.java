@@ -112,10 +112,9 @@ public class ClientAdapter implements AdapterInterface {
           cubesClient.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         }
         cubesClient.render();
-      } else {
-        MenuManager.renderBackground();
       }
       if (menu != null) {
+        MenuManager.renderBackground();
         if (setupMenu.getAndSet(false)) {
           menu.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
           InputChain.showMenu(menu);
@@ -160,7 +159,7 @@ public class ClientAdapter implements AdapterInterface {
       setupMenu.set(true);
     } else {
       Log.debug("Menu set to null");
-      setupMenu.set(true);
+      setupMenu.set(false);
     }
   }
 
