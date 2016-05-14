@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.IntArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import static ethanjones.cubes.world.generator.smooth.SmoothWorld.minSurfaceHeight;
 import static ethanjones.cubes.world.generator.smooth.SmoothWorld.murmurHash3;
@@ -53,7 +54,7 @@ public class CaveGenerator {
     calculateBlocks();
 
     Cave cave = new Cave(caveStartX, caveStartY, caveStartZ, new HashMap<AreaReference, int[]>() {{
-      for (Entry<AreaReference, IntArray> entry : blocks.entrySet()) {
+      for (Map.Entry<AreaReference, IntArray> entry : blocks.entrySet()) {
         this.put(entry.getKey(), entry.getValue().toArray());
       }
     }});
