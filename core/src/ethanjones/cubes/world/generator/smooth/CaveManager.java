@@ -48,7 +48,8 @@ public class CaveManager {
       if (spawnCave == null) {
         int spawnCaveX = smoothWorld.pseudorandomInt(1, 0, Area.SIZE_BLOCKS * 4) - (Area.SIZE_BLOCKS * 2);
         int spawnCaveZ = smoothWorld.pseudorandomInt(0, 1, Area.SIZE_BLOCKS * 4) - (Area.SIZE_BLOCKS * 2);
-        this.spawnCave = new Cave(spawnCaveX, spawnCaveZ, smoothWorld);
+        CaveGenerator caveGenerator = new CaveGenerator(spawnCaveX, spawnCaveZ, smoothWorld);
+        this.spawnCave = caveGenerator.generate();
       }
       return spawnCave;
     }
@@ -64,6 +65,8 @@ public class CaveManager {
 
     int x = current.minBlockX() + offsetX;
     int z = current.minBlockZ() + offsetZ;
-    return new Cave(x, z, smoothWorld);
+
+    CaveGenerator caveGenerator = new CaveGenerator(x, z, smoothWorld);
+    return caveGenerator.generate();
   }
 }
