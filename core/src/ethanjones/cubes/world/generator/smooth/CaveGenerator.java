@@ -59,9 +59,6 @@ public class CaveGenerator {
       }
     }});
 
-    blocks.clear();
-    rooms.clear();
-    tunnels.clear();
     return cave;
   }
 
