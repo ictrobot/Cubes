@@ -24,13 +24,6 @@ public abstract class TerrainGenerator {
     area.lock.writeUnlock();
   }
 
-  public static void set(Area area, Block block, int ref) {
-    ;
-    area.lock.writeLock();
-    if (ref < area.blocks.length) area.blocks[ref] = Sided.getIDManager().toInt(block);
-    area.lock.writeUnlock();
-  }
-
   public static void set(WorldServer world, Block block, int x, int y, int z) {
     AreaReference areaReference = new AreaReference().setFromBlockCoordinates(x, z);
     world.lock.readLock();

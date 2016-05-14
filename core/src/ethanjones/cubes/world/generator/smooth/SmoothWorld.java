@@ -2,6 +2,7 @@ package ethanjones.cubes.world.generator.smooth;
 
 import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.world.generator.TerrainGenerator;
 import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.server.WorldServer;
@@ -36,21 +37,32 @@ public class SmoothWorld extends TerrainGenerator {
 
   @Override
   public void generate(Area area) {
+    area.lock.writeLock();
+
+    int blockBedrock = Sided.getIDManager().toInt(Blocks.bedrock);
+    int blockStone = Sided.getIDManager().toInt(Blocks.stone);
+    int blockDirt = Sided.getIDManager().toInt(Blocks.dirt);
+    int blockGrass = Sided.getIDManager().toInt(Blocks.grass);
+
     for (int x = 0; x < Area.SIZE_BLOCKS; x++) {
       for (int z = 0; z < Area.SIZE_BLOCKS; z++) {
         int g = getSurfaceHeight(x + area.minBlockX, z + area.minBlockZ);
         int d = getDirtHeight(x + area.minBlockX, z + area.minBlockZ);
-        set(area, Blocks.bedrock, x, 0, z);
-        for (int y = 1; y < (g - d); y++) {
-          set(area, Blocks.stone, x, y, z);
+
+        if ((x == 0 && z == 0) || g > area.maxY) area.setupArrays(g);
+
+        area.blocks[Area.getRef(x, 0, z)] = blockBedrock;
+        for (int y = 1; y < g; y++) {
+          if (y < (g - d))
+            area.blocks[Area.getRef(x, y, z)] = blockStone;
+          else
+            area.blocks[Area.getRef(x, y, z)] = blockDirt;
         }
-        for (int y = (g - d); y < g; y++) {
-          set(area, Blocks.dirt, x, y, z);
-        }
-        set(area, Blocks.grass, x, g, z);
+        area.blocks[Area.getRef(x, g, z)] = blockGrass;
       }
     }
     caves.apply(area);
+    area.lock.writeUnlock();
   }
 
   @Override

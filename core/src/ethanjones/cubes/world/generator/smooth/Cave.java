@@ -5,8 +5,6 @@ import ethanjones.cubes.world.storage.Area;
 
 import java.util.HashMap;
 
-import static ethanjones.cubes.world.generator.smooth.SmoothWorld.set;
-
 public class Cave {
   public final int caveStartX;
   public final int caveStartY;
@@ -26,7 +24,7 @@ public class Cave {
     int[] array = blocks.get(new AreaReference().setFromArea(area));
     if (array == null) return;
     for (int ref : array) {
-      set(area, null, ref);
+      if (ref < area.blocks.length) area.blocks[ref] = 0;
     }
   }
 }
