@@ -1,9 +1,11 @@
 package ethanjones.cubes.networking.singleplayer;
 
 import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.logging.loggers.SysOutLogWriter;
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.networking.packet.PacketQueue;
+import ethanjones.cubes.networking.packets.PacketArea;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 
@@ -46,18 +48,24 @@ public class SingleplayerNetworkingThread extends Thread {
         if (packet == null) continue;
         if (!packet.shouldSend()) continue;
 
-        Sided.setSide(sideIn);
-        outputStream.reset();
-        packet.write(dataOutputStream);
-        if (NETWORKING_DEBUG) Log.debug(sideIn + " send " + packet.toString());
-
         Sided.setSide(sideOut);
-        inputStream.update();
-        Packet n = packet.getClass().newInstance();
-        n.read(dataInputStream);
-        if (NETWORKING_DEBUG) Log.debug(sideOut + " recieve " + packet.toString());
+        Packet copy = packet.copy();
+        if (copy == packet) throw new IllegalStateException(packet.getClass().getName());
 
-        output.add(n);
+        if (copy == null) {
+          Sided.setSide(sideIn);
+          outputStream.reset();
+          packet.write(dataOutputStream);
+
+          Sided.setSide(sideOut);
+          inputStream.update();
+          copy = packet.getClass().newInstance();
+          copy.read(dataInputStream);
+        }
+
+        if (NETWORKING_DEBUG) Log.debug(packet.toString());
+
+        output.add(copy);
       } catch (Exception e) {
         Debug.crash(e);
       }
@@ -67,7 +75,7 @@ public class SingleplayerNetworkingThread extends Thread {
   public static class SingleplayerOutputStream extends ByteArrayOutputStream {
 
     public SingleplayerOutputStream() {
-      super(16777216); //16 mb
+      super(262144); //256 kib
     }
 
     public byte[] buffer() {

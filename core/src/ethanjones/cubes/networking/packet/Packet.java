@@ -18,6 +18,8 @@ public abstract class Packet {
 
   public abstract void read(DataInputStream dataInputStream) throws Exception;
 
+  public abstract void handlePacket();
+
   /**
    * Called right before writing packet into output stream
    *
@@ -27,7 +29,20 @@ public abstract class Packet {
     return true;
   }
 
-  public abstract void handlePacket();
+  public boolean shouldCompress() {
+    return false;
+  }
+
+  /**
+   * Sided.getSide() will return the new side
+   */
+  public Packet copy() {
+    return null;
+  }
+
+  public String toString() {
+    return this.getClass().getSimpleName();
+  }
 
   public PacketPriority getPacketPriority() {
     return packetPriority;
@@ -43,13 +58,5 @@ public abstract class Packet {
 
   public void setSocketMonitor(SocketMonitor socketMonitor) {
     this.socketMonitor = socketMonitor;
-  }
-
-  public boolean shouldCompress() {
-    return false;
-  }
-
-  public String toString() {
-    return this.getClass().getSimpleName();
   }
 }

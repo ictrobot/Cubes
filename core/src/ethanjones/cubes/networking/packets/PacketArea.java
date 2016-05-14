@@ -31,19 +31,26 @@ public class PacketArea extends Packet {
   }
 
   @Override
-  public boolean shouldSend() {
-    return !area.isUnloaded() && (playerManager == null || playerManager.shouldSendArea(area.areaX, area.areaZ));
-  }
-
-  @Override
   public void handlePacket() {
     if (Sided.getSide() != Side.Client) return;
     Cubes.getClient().world.setAreaInternal(area);
   }
 
   @Override
+  public boolean shouldSend() {
+    return !area.isUnloaded() && (playerManager == null || playerManager.shouldSendArea(area.areaX, area.areaZ));
+  }
+
+  @Override
   public boolean shouldCompress() {
     return true;
+  }
+
+  @Override
+  public Packet copy() {
+    PacketArea copy = new PacketArea();
+    copy.area = new Area(this.area);
+    return copy;
   }
 
   @Override

@@ -75,6 +75,19 @@ public class Area {
     features = new AtomicReference<Object>();
   }
 
+  public Area(Area toCopy) {
+    this(toCopy.areaX, toCopy.areaZ);
+    toCopy.lock.readLock();
+    if (toCopy.isReady()) {
+      this.setupArrays(toCopy.maxY);
+      System.arraycopy(toCopy.blocks, 0, this.blocks, 0, this.blocks.length);
+      System.arraycopy(toCopy.light, 0, this.light, 0, this.light.length);
+      System.arraycopy(toCopy.heightmap, 0, this.heightmap, 0, this.heightmap.length);
+      if (toCopy.features.get() != null) this.features.set(Boolean.TRUE);
+    }
+    toCopy.lock.readUnlock();
+  }
+
   public Block getBlock(int x, int y, int z) {
     lock.readLock();
 
