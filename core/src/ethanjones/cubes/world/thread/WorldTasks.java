@@ -31,8 +31,6 @@ public class WorldTasks {
     area = new Area(areaReference.areaX, areaReference.areaZ);
     world.getTerrainGenerator().generate(area);
     new GenerationEvent(area, areaReference).post();
-    area.updateAll();
-    area.rebuildHeightmap();
 
     world.setAreaInternal(area);
   }

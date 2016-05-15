@@ -3,7 +3,7 @@ package ethanjones.cubes.world.generator.smooth;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.storage.Area;
 
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class CaveManager {
   public static final int caveAreaRadius = 4;
@@ -12,8 +12,7 @@ public class CaveManager {
 
   private final SmoothWorld smoothWorld;
   private Cave spawnCave;
-  private final HashMap<AreaReference, Cave> caves = new HashMap<AreaReference, Cave>();
-  private final AreaReference current = new AreaReference();
+  private final ConcurrentHashMap<AreaReference, Object> caves = new ConcurrentHashMap<AreaReference, Object>();
 
   public CaveManager(SmoothWorld smoothWorld) {
     this.smoothWorld = smoothWorld;
@@ -27,16 +26,34 @@ public class CaveManager {
         // 6 bits = 2^6 = 64
         // one in 64 areas
         if (smoothWorld.pseudorandomBits(aX, aZ, 6, true) == 0) {
-          Cave cave;
-          synchronized (this) {
-            current.setFromAreaCoordinates(aX, aZ);
-            cave = caves.get(current);
-            if (cave == null) {
-              cave = loadCave();
-              if (cave == null) cave = generateCave();
-              caves.put(current.clone(), cave);
+          Cave cave = null;
+
+          AreaReference areaReference = new AreaReference().setFromAreaCoordinates(aX, aZ);
+          Object o = caves.putIfAbsent(areaReference, Thread.currentThread());
+          if (o instanceof Cave) {
+            cave = (Cave) o;
+          } else if (o == null) { // this thread
+            cave = loadCave(areaReference);
+            if (cave == null) cave = generateCave(areaReference);
+            if (!caves.replace(areaReference.clone(), Thread.currentThread(), cave)) throw new IllegalStateException();
+            synchronized (caves) {
+              caves.notifyAll();
             }
+          } else if (o instanceof Thread) { // wait for another thread
+            while (cave == null) {
+              synchronized (caves) {
+                try {
+                  caves.wait();
+                } catch (InterruptedException ignored) {
+                }
+              }
+              o = caves.get(areaReference);
+              if (o instanceof Cave) cave = (Cave) o;
+            }
+          } else {
+            throw new IllegalStateException(o.getClass().getName());
           }
+
           cave.apply(area);
         }
       }
@@ -55,16 +72,16 @@ public class CaveManager {
     }
   }
 
-  private Cave loadCave() {
+  private Cave loadCave(AreaReference a) {
     return null; //TODO implement storing and loading of caves
   }
 
-  private Cave generateCave() {
-    int offsetX = smoothWorld.pseudorandomInt(current.areaX, current.areaZ, Area.SIZE_BLOCKS - 1);
-    int offsetZ = smoothWorld.pseudorandomInt(current.areaZ, current.areaX, Area.SIZE_BLOCKS - 1);
+  private Cave generateCave(AreaReference a) {
+    int offsetX = smoothWorld.pseudorandomInt(a.areaX, a.areaZ, Area.SIZE_BLOCKS - 1);
+    int offsetZ = smoothWorld.pseudorandomInt(a.areaZ, a.areaX, Area.SIZE_BLOCKS - 1);
 
-    int x = current.minBlockX() + offsetX;
-    int z = current.minBlockZ() + offsetZ;
+    int x = a.minBlockX() + offsetX;
+    int z = a.minBlockZ() + offsetZ;
 
     CaveGenerator caveGenerator = new CaveGenerator(x, z, smoothWorld);
     return caveGenerator.generate();

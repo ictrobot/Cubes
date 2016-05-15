@@ -102,7 +102,13 @@ public class PlayerManager {
           if (area != null) sendArea(area);
         }
       }
-      requestRegion(new WorldRegion(playerArea, loadDistance));
+      WorldRequestParameter parameter = new WorldRequestParameter(playerArea.clone(), new Runnable() {
+        @Override
+        public void run() {
+          NetworkingManager.sendPacketToClient(new PacketInitialAreasLoaded(), client);
+        }
+      });
+      server.world.requestRegion(new WorldRegion(playerArea, loadDistance), parameter);
     }
   }
 
@@ -151,7 +157,7 @@ public class PlayerManager {
           if (area != null) sendArea(area);
         }
 
-        requestRegion(difference);
+        server.world.requestRegion(difference, null);
         playerArea.setFromAreaReference(newRef);
       }
 
@@ -163,16 +169,6 @@ public class PlayerManager {
       if (!clientKnows) NetworkingManager.sendPacketToClient(new PacketPlayerMovement(client.getPlayer()), client);
       NetworkingManager.sendPacketToOtherClients(new PacketOtherPlayerMovement(client.getPlayer()), client);
     }
-  }
-
-  public void requestRegion(MultiAreaReference multiAreaReference) {
-    WorldRequestParameter parameter = new WorldRequestParameter(playerArea.clone(), new Runnable() {
-      @Override
-      public void run() {
-        NetworkingManager.sendPacketToClient(new PacketInitialAreasLoaded(), client);
-      }
-    });
-    server.world.requestRegion(multiAreaReference, parameter);
   }
 
   @EventHandler
@@ -191,7 +187,7 @@ public class PlayerManager {
   }
 
   @EventHandler
-  public void areaSet(AreaGeneratedEvent event) {
+  public void areaGenerated(AreaGeneratedEvent event) {
     Area area = event.getArea();
     synchronized (this) {
       if (Math.abs(area.areaX - playerArea.areaX) > loadDistance) return;

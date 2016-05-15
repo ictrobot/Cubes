@@ -4,11 +4,11 @@ import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
 import ethanjones.cubes.world.reference.multi.WorldRegion;
 import ethanjones.cubes.world.server.WorldServer;
+import ethanjones.cubes.world.storage.Area;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
+import com.badlogic.gdx.math.MathUtils;
+
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 
@@ -25,37 +25,49 @@ public class WorldGenerationTask {
     this.world = world;
     this.references = references;
     this.parameter = parameter != null ? parameter : WorldRequestParameter.DEFAULT;
-    fillQueues();
+
+    fillGenerateQueue();
+    fillFeaturesQueue();
   }
 
-  private void fillQueues() {
-    Collection<AreaReference> references = this.references.getAreaReferences();
-
-    Set<AreaReference> set;
-    if (parameter.prioritise != null) {
-      set = new TreeSet<AreaReference>(parameter.getComparator());
-    } else {
-      set = new HashSet<AreaReference>(references.size() * 4);
-    }
-
+  private void fillGenerateQueue() {
+    Set<AreaReference> generate;
     if (this.references instanceof WorldRegion) {
       WorldRegion f = (WorldRegion) this.references;
       WorldRegion g = new WorldRegion(f.minAreaX - 1, f.maxAreaX + 1, f.minAreaZ - 1, f.maxAreaZ + 1);
-      set.addAll(g.getAreaReferences());
+      generate = g.getAreaReferences();
     } else {
-      for (AreaReference reference : references) {
-        set.add(reference.clone().offset(0, 1));
-        set.add(reference.clone().offset(0, -1));
-        set.add(reference.clone().offset(1, 0));
-        set.add(reference.clone().offset(1, 1));
-        set.add(reference.clone().offset(1, -1));
-        set.add(reference.clone().offset(-1, 0));
-        set.add(reference.clone().offset(-1, 1));
-        set.add(reference.clone().offset(-1, -1));
+      generate = new HashSet<AreaReference>();
+      for (AreaReference reference : references.getAreaReferences()) {
+        generate.add(reference.clone().offset(0, 1));
+        generate.add(reference.clone().offset(0, -1));
+        generate.add(reference.clone().offset(1, 0));
+        generate.add(reference.clone().offset(1, 1));
+        generate.add(reference.clone().offset(1, -1));
+        generate.add(reference.clone().offset(-1, 0));
+        generate.add(reference.clone().offset(-1, 1));
+        generate.add(reference.clone().offset(-1, -1));
       }
     }
 
-    generateQueue.addAll(set);
-    featuresQueue.addAll(references);
+    if (generate.size() >= 50) {
+      //randomize so all threads not waiting for one cave
+      ArrayList<AreaReference> copy = new ArrayList<AreaReference>(generate);
+      while (copy.size() > 0) {
+        generateQueue.add(copy.remove(MathUtils.random.nextInt(copy.size())));
+      }
+    } else {
+      generateQueue.addAll(generate);
+    }
+  }
+
+  private void fillFeaturesQueue() {
+    if (parameter.prioritise != null) {
+      TreeSet<AreaReference> set = new TreeSet<AreaReference>(parameter.getComparator());
+      set.addAll(references.getAreaReferences());
+      featuresQueue.addAll(set);
+    } else {
+      featuresQueue.addAll(references.getAreaReferences());
+    }
   }
 }
