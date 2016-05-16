@@ -5,6 +5,7 @@ import ethanjones.cubes.networking.packet.DataPacket;
 import ethanjones.cubes.networking.packet.PacketDirection;
 import ethanjones.cubes.networking.packet.PacketDirection.Direction;
 import ethanjones.cubes.networking.packet.PacketPriority;
+import ethanjones.cubes.networking.packet.PacketPriority.Priority;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.data.DataGroup;
@@ -12,15 +13,12 @@ import ethanjones.data.DataGroup;
 import java.util.UUID;
 
 @Direction(PacketDirection.TO_CLIENT)
+@Priority(PacketPriority.HIGH)
 public class PacketConnected extends DataPacket {
 
   public DataGroup idManager;
   public UUID player;
   public int worldTime;
-
-  public PacketConnected() {
-    setPacketPriority(PacketPriority.High);
-  }
 
   @Override
   public void handlePacket() {

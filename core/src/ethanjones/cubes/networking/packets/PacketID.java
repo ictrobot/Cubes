@@ -4,19 +4,17 @@ import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.networking.packet.PacketDirection;
 import ethanjones.cubes.networking.packet.PacketDirection.Direction;
 import ethanjones.cubes.networking.packet.PacketPriority;
+import ethanjones.cubes.networking.packet.PacketPriority.Priority;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
 @Direction(PacketDirection.OMNIDIRECTIONAL)
+@Priority(PacketPriority.HIGH)
 public class PacketID extends Packet {
 
   public String c;
   public int id;
-
-  public PacketID() {
-    setPacketPriority(PacketPriority.High);
-  }
 
   @Override
   public void write(DataOutputStream dataOutputStream) throws Exception {

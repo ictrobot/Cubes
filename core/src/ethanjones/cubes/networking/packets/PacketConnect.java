@@ -5,19 +5,17 @@ import ethanjones.cubes.networking.packet.DataPacket;
 import ethanjones.cubes.networking.packet.PacketDirection;
 import ethanjones.cubes.networking.packet.PacketDirection.Direction;
 import ethanjones.cubes.networking.packet.PacketPriority;
+import ethanjones.cubes.networking.packet.PacketPriority.Priority;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.data.DataGroup;
 
 @Direction(PacketDirection.TO_SERVER)
+@Priority(PacketPriority.HIGH)
 public class PacketConnect extends DataPacket {
 
   public String username = Settings.getStringSettingValue(Settings.USERNAME);
   public int renderDistance = Settings.getIntegerSettingValue(Settings.GRAPHICS_VIEW_DISTANCE);
-
-  public PacketConnect() {
-    setPacketPriority(PacketPriority.High);
-  }
 
   @Override
   public void handlePacket() {

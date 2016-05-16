@@ -7,8 +7,6 @@ import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.networking.packet.PacketDirection;
 import ethanjones.cubes.networking.packet.PacketDirection.Direction;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 
 import com.badlogic.gdx.math.Vector3;
@@ -21,6 +19,7 @@ import java.util.UUID;
 public class PacketOtherPlayerMovement extends Packet {
 
   public PacketOtherPlayerMovement() {
+
   }
 
   public PacketOtherPlayerMovement(Player player) {

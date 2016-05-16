@@ -4,6 +4,7 @@ import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.networking.packet.PacketDirection;
 import ethanjones.cubes.networking.packet.PacketDirection.Direction;
 import ethanjones.cubes.networking.packet.PacketPriority;
+import ethanjones.cubes.networking.packet.PacketPriority.Priority;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.PlayerManager;
 import ethanjones.cubes.world.storage.Area;
@@ -12,14 +13,11 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
 @Direction(PacketDirection.TO_CLIENT)
+@Priority(PacketPriority.LOW)
 public class PacketArea extends Packet {
 
   public Area area;
   public PlayerManager playerManager;
-
-  public PacketArea() {
-    setPacketPriority(PacketPriority.Low);
-  }
 
   @Override
   public void write(DataOutputStream dataOutputStream) throws Exception {

@@ -5,6 +5,7 @@ import ethanjones.cubes.core.logging.loggers.SysOutLogWriter;
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.networking.packet.PacketQueue;
+import ethanjones.cubes.networking.packet.PriorityPacketQueue;
 import ethanjones.cubes.networking.packets.PacketArea;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
@@ -26,7 +27,7 @@ public class SingleplayerNetworkingThread extends Thread {
   private final Side sideOut;
 
   public SingleplayerNetworkingThread(PacketQueue output, Side sideOut) {
-    this.input = new PacketQueue(true);
+    this.input = new PriorityPacketQueue();
     this.output = output;
     this.sideIn = sideOut == Side.Client ? Side.Server : Side.Client;
     this.sideOut = sideOut;

@@ -6,6 +6,7 @@ import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.networking.packet.PacketDirection;
 import ethanjones.cubes.networking.packet.PacketDirection.Direction;
 import ethanjones.cubes.networking.packet.PacketPriority;
+import ethanjones.cubes.networking.packet.PacketPriority.Priority;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
@@ -16,14 +17,14 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
 @Direction(PacketDirection.OMNIDIRECTIONAL)
+@Priority(PacketPriority.HIGH)
 public class PacketPlayerMovement extends Packet {
 
   public PacketPlayerMovement() {
-    setPacketPriority(PacketPriority.High);
+
   }
 
   public PacketPlayerMovement(Player player) {
-    setPacketPriority(PacketPriority.High);
     this.angle = player.angle.cpy();
     this.position = player.position.cpy();
   }

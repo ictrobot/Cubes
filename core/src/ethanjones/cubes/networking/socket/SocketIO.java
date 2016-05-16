@@ -1,6 +1,7 @@
 package ethanjones.cubes.networking.socket;
 
 import ethanjones.cubes.networking.packet.PacketQueue;
+import ethanjones.cubes.networking.packet.PriorityPacketQueue;
 
 import com.badlogic.gdx.utils.Disposable;
 
@@ -12,7 +13,7 @@ public abstract class SocketIO implements Runnable, Disposable {
 
   public SocketIO(SocketMonitor socketMonitor) {
     this.socketMonitor = socketMonitor;
-    this.packetQueue = new PacketQueue(this instanceof SocketOutput);
+    this.packetQueue = this instanceof SocketOutput ? new PriorityPacketQueue() : new PacketQueue();
   }
 
   public Thread start(String name) {

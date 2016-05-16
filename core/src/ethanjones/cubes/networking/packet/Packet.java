@@ -7,12 +7,7 @@ import java.io.DataOutputStream;
 
 public abstract class Packet {
 
-  private PacketPriority packetPriority;
   private SocketMonitor socketMonitor;
-
-  public Packet() {
-    packetPriority = PacketPriority.Medium;
-  }
 
   public abstract void write(DataOutputStream dataOutputStream) throws Exception;
 
@@ -42,14 +37,6 @@ public abstract class Packet {
 
   public String toString() {
     return this.getClass().getSimpleName();
-  }
-
-  public PacketPriority getPacketPriority() {
-    return packetPriority;
-  }
-
-  public void setPacketPriority(PacketPriority packetPriority) {
-    this.packetPriority = packetPriority;
   }
 
   public SocketMonitor getSocketMonitor() {

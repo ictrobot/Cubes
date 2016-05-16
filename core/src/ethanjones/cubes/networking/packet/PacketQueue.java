@@ -9,12 +9,8 @@ public class PacketQueue {
 
   private BlockingQueue<Packet> queue;
 
-  public PacketQueue(boolean priority) {
-    if (priority) {
-      queue = new PriorityBlockingQueue<Packet>(16, PacketComparator.instance);
-    } else {
-      queue = new LinkedBlockingQueue<Packet>();
-    }
+  public PacketQueue() {
+    queue = new LinkedBlockingQueue<Packet>();
   }
 
   public void add(Packet packet) {
@@ -28,9 +24,10 @@ public class PacketQueue {
 
   public Packet waitAndGet() {
     try {
-      return queue.poll(1, TimeUnit.SECONDS);
+      return queue.poll(5, TimeUnit.SECONDS);
     } catch (InterruptedException e) {
       return null;
     }
   }
+
 }

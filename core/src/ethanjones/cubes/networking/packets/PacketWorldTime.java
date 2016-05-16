@@ -4,20 +4,21 @@ import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.networking.packet.PacketDirection;
 import ethanjones.cubes.networking.packet.PacketDirection.Direction;
 import ethanjones.cubes.networking.packet.PacketPriority;
+import ethanjones.cubes.networking.packet.PacketPriority.Priority;
 import ethanjones.cubes.side.common.Cubes;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
 @Direction(PacketDirection.TO_SERVER)
+@Priority(PacketPriority.HIGH)
 public class PacketWorldTime extends Packet {
 
   public PacketWorldTime() {
-    setPacketPriority(PacketPriority.High);
+
   }
 
   public PacketWorldTime(int time) {
-    setPacketPriority(PacketPriority.High);
     this.time = time;
   }
 
