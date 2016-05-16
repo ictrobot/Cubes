@@ -9,6 +9,7 @@ public class ThreadPool {
   private final Runnable runnable;
   private final Thread[] threads;
   private Side side = null;
+  private int priority = Thread.NORM_PRIORITY;
   private boolean daemon = false;
   private ThreadGroup group;
 
@@ -32,17 +33,23 @@ public class ThreadPool {
     return this;
   }
 
+  public ThreadPool setPriority(int priority) {
+    this.priority = priority;
+    return this;
+  }
+
   public ThreadPool start() {
-    group = new ThreadGroup("WorldGen");
+    group = new ThreadGroup(name);
     for (int i = 0; i < threads.length; i++) {
       Thread thread = new Thread(group, new Runnable() {
         @Override
         public void run() {
-          Sided.setSide(side);
+          if (side != null) Sided.setSide(side);
           runnable.run();
         }
       });
       thread.setDaemon(daemon);
+      thread.setPriority(priority);
       thread.setName(name + "-" + (i + 1));
       thread.setUncaughtExceptionHandler(Debug.UncaughtExceptionHandler.instance);
       thread.start();

@@ -18,7 +18,15 @@ public class WorldTasks {
   public static final int GENERATION_THREADS = 8;
 
   private static final WorldGenerationThread gen = new WorldGenerationThread();
-  private static final ThreadPool threadPool = new ThreadPool("WorldGeneration", gen, GENERATION_THREADS).setSide(Side.Server).setDaemon(true).start();
+  private static final ThreadPool threadPool;
+
+  static {
+    threadPool = new ThreadPool("WorldGeneration", gen, GENERATION_THREADS);
+    threadPool.setSide(Side.Server);
+    threadPool.setPriority(Thread.MIN_PRIORITY);
+    threadPool.setDaemon(true);
+    threadPool.start();
+  }
 
   public static GenerationTask request(WorldServer worldServer, MultiAreaReference references, WorldRequestParameter parameter) {
     WorldGenerationTask generationTask = new WorldGenerationTask(worldServer, references, parameter);
