@@ -2,6 +2,7 @@ package ethanjones.cubes.networking.socket;
 
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.networking.packet.Packet;
+import ethanjones.cubes.networking.stream.PairedStreams;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 
@@ -16,9 +17,9 @@ public class SocketInput extends SocketIO {
   private final DataInputStream dataInputStream;
 
   private final Inflater inflater;
-  private final ByteArrayOutputStream byteArrayOutputStream;
-  private final byte[] compressedBuffer = new byte[1024];
-  private final byte[] inflateBuffer = new byte[1024];
+  private final PairedStreams pairedStreams;
+  private final byte[] compressedBuffer = new byte[16384];
+  private final byte[] inflateBuffer = new byte[16384];
 
   public SocketInput(SocketMonitor socketMonitor) {
     super(socketMonitor);
@@ -31,7 +32,7 @@ public class SocketInput extends SocketIO {
     };
 
     this.inflater = new Inflater(SocketOutput.COMPRESSION_NOWRAP);
-    this.byteArrayOutputStream = new ByteArrayOutputStream(16384);
+    this.pairedStreams = new PairedStreams();
   }
 
   @Override
@@ -55,7 +56,7 @@ public class SocketInput extends SocketIO {
         packet.setSocketMonitor(socketMonitor);
         if (b == 2 || b == 3) {
           //Reset
-          byteArrayOutputStream.reset();
+          pairedStreams.reset();
           inflater.reset();
           //Read compressed and uncompressed lengths
           int compressedLength = dataInputStream.readInt();
@@ -70,7 +71,7 @@ public class SocketInput extends SocketIO {
           while (true) {
             inflater_length = inflater.inflate(inflateBuffer, 0, inflateBuffer.length);
             if (inflater_length > 0) {
-              byteArrayOutputStream.write(inflateBuffer, 0, inflater_length);
+              pairedStreams.output.write(inflateBuffer, 0, inflater_length);
             } else {
               if (offset < compressedLength) {
                 input_length = dataInputStream.read(compressedBuffer, 0, Math.min(compressedLength - offset, compressedBuffer.length));
@@ -81,16 +82,16 @@ public class SocketInput extends SocketIO {
               }
             }
           }
-          // uncompressed
-          byte[] uncompressed = byteArrayOutputStream.toByteArray();
-          if (uncompressed.length != uncompressedLength) {
-            String msg = "Uncompressed length should be " + uncompressedLength + " but is " + uncompressed.length + " [" + inflater.needsInput() + "," + inflater.needsDictionary() + "]";
+          // uncompressed);
+          if (pairedStreams.output.count() != uncompressedLength) {
+            String msg = "Uncompressed length should be " + uncompressedLength + " but is " + pairedStreams.output.count() + " [" + inflater.needsInput() + "," + inflater.needsDictionary() + "]";
             Log.error(msg);
             socketMonitor.getNetworking().disconnected(socketMonitor, new IOException(msg));
             return;
           }
           //Packet read in
-          packet.read(new DataInputStream(new ByteArrayInputStream(uncompressed)));
+          pairedStreams.updateInput();
+          packet.read(pairedStreams.dataInput);
         } else {
           packet.read(dataInputStream);
         }

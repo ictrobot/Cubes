@@ -1,17 +1,14 @@
 package ethanjones.cubes.networking.singleplayer;
 
 import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.core.logging.loggers.SysOutLogWriter;
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.networking.packet.PacketQueue;
 import ethanjones.cubes.networking.packet.PriorityPacketQueue;
-import ethanjones.cubes.networking.packets.PacketArea;
+import ethanjones.cubes.networking.stream.PairedStreams;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -38,10 +35,9 @@ public class SingleplayerNetworkingThread extends Thread {
 
   @Override
   public void run() {
-    SingleplayerOutputStream outputStream = new SingleplayerOutputStream();
-    SingleplayerInputStream inputStream = new SingleplayerInputStream(outputStream);
-    DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
-    DataInputStream dataInputStream = new DataInputStream(inputStream);
+    PairedStreams pair = new PairedStreams();
+    DataOutputStream dataOutputStream = new DataOutputStream(pair.output);
+    DataInputStream dataInputStream = new DataInputStream(pair.input);
 
     while (running.get()) {
       try {
@@ -55,11 +51,11 @@ public class SingleplayerNetworkingThread extends Thread {
 
         if (copy == null) {
           Sided.setSide(sideIn);
-          outputStream.reset();
+          pair.reset();
           packet.write(dataOutputStream);
 
           Sided.setSide(sideOut);
-          inputStream.update();
+          pair.updateInput();
           copy = packet.getClass().newInstance();
           copy.read(dataInputStream);
         }
@@ -73,34 +69,4 @@ public class SingleplayerNetworkingThread extends Thread {
     }
   }
 
-  public static class SingleplayerOutputStream extends ByteArrayOutputStream {
-
-    public SingleplayerOutputStream() {
-      super(262144); //256 kib
-    }
-
-    public byte[] buffer() {
-      return buf;
-    }
-
-    public int count() {
-      return count;
-    }
-  }
-
-  public static class SingleplayerInputStream extends ByteArrayInputStream {
-    private final SingleplayerOutputStream os;
-
-    public SingleplayerInputStream(SingleplayerOutputStream os) {
-      super(os.buffer(), 0, os.count());
-      this.os = os;
-    }
-
-    public void update() {
-      pos = 0;
-      mark = 0;
-      buf = os.buffer();
-      count = os.count();
-    }
-  }
 }
