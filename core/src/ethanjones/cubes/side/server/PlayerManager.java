@@ -18,9 +18,9 @@ import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.reference.multi.AreaReferenceSet;
-import ethanjones.cubes.world.reference.multi.MultiAreaReference;
 import ethanjones.cubes.world.reference.multi.WorldRegion;
 import ethanjones.cubes.world.storage.Area;
+import ethanjones.cubes.world.thread.GenerationTask;
 import ethanjones.cubes.world.thread.WorldRequestParameter;
 
 import com.badlogic.gdx.Input.Keys;
@@ -38,7 +38,7 @@ public class PlayerManager {
   private final ArrayList<Integer> buttons;
   private final ArrayList<Integer> recentKeys;
   private final ArrayList<Integer> recentButtons;
-  private ItemTool.MiningTarget currentlyMining;
+  private GenerationTask initialGenerationTask;
   private int renderDistance;
   private int loadDistance;
 
@@ -108,7 +108,7 @@ public class PlayerManager {
           NetworkingManager.sendPacketToClient(new PacketInitialAreasLoaded(), client);
         }
       });
-      server.world.requestRegion(new WorldRegion(playerArea, loadDistance), parameter);
+      initialGenerationTask = server.world.requestRegion(new WorldRegion(playerArea, loadDistance), parameter);
     }
   }
 
@@ -294,6 +294,20 @@ public class PlayerManager {
     }
     synchronized (keys) {
       recentKeys.clear();
+    }
+    synchronized (this) {
+      if (initialGenerationTask != null) {
+        int doneGenerate = initialGenerationTask.doneGenerate();
+        int doneFeatures = initialGenerationTask.doneFeatures();
+        int totalGenerate = initialGenerationTask.totalGenerate();
+        int totalFeatures = initialGenerationTask.totalFeatures();
+
+        PacketInitialAreasProgress packet = new PacketInitialAreasProgress();
+        packet.progress = ((float) (doneGenerate + doneFeatures)) / ((float) (totalGenerate + totalGenerate));
+        NetworkingManager.sendPacketToClient(packet, client);
+
+        if (doneFeatures == totalFeatures && doneGenerate == totalGenerate) initialGenerationTask = null;
+      }
     }
   }
 

@@ -4,7 +4,6 @@ import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
 import ethanjones.cubes.world.reference.multi.WorldRegion;
 import ethanjones.cubes.world.server.WorldServer;
-import ethanjones.cubes.world.storage.Area;
 
 import com.badlogic.gdx.math.MathUtils;
 
@@ -12,7 +11,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 
-public class WorldGenerationTask {
+public class WorldGenerationTask implements GenerationTask {
 
   public final WorldServer world;
   public final MultiAreaReference references;
@@ -20,17 +19,19 @@ public class WorldGenerationTask {
   public final ConcurrentLinkedQueue<AreaReference> generateQueue = new ConcurrentLinkedQueue<AreaReference>();
   public final CountDownLatch generationComplete = new CountDownLatch(WorldTasks.GENERATION_THREADS);
   public final ConcurrentLinkedQueue<AreaReference> featuresQueue = new ConcurrentLinkedQueue<AreaReference>();
+  public final int generateSize;
+  public final int featureSize;
 
   public WorldGenerationTask(WorldServer world, MultiAreaReference references, WorldRequestParameter parameter) {
     this.world = world;
     this.references = references;
     this.parameter = parameter != null ? parameter : WorldRequestParameter.DEFAULT;
 
-    fillGenerateQueue();
-    fillFeaturesQueue();
+    generateSize = fillGenerateQueue();
+    featureSize = fillFeaturesQueue();
   }
 
-  private void fillGenerateQueue() {
+  private int fillGenerateQueue() {
     Set<AreaReference> generate;
     if (this.references instanceof WorldRegion) {
       WorldRegion f = (WorldRegion) this.references;
@@ -59,15 +60,38 @@ public class WorldGenerationTask {
     } else {
       generateQueue.addAll(generate);
     }
+    return generate.size();
   }
 
-  private void fillFeaturesQueue() {
+  private int fillFeaturesQueue() {
+    Set<AreaReference> set;
     if (parameter.prioritise != null) {
-      TreeSet<AreaReference> set = new TreeSet<AreaReference>(parameter.getComparator());
+      set = new TreeSet<AreaReference>(parameter.getComparator());
       set.addAll(references.getAreaReferences());
-      featuresQueue.addAll(set);
     } else {
-      featuresQueue.addAll(references.getAreaReferences());
+      set = references.getAreaReferences();
     }
+    featuresQueue.addAll(set);
+    return set.size();
+  }
+
+  @Override
+  public int totalGenerate() {
+    return generateSize;
+  }
+
+  @Override
+  public int totalFeatures() {
+    return featureSize;
+  }
+
+  @Override
+  public int doneGenerate() {
+    return generateSize - generateQueue.size();
+  }
+
+  @Override
+  public int doneFeatures() {
+    return featureSize - featuresQueue.size();
   }
 }

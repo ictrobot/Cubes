@@ -9,6 +9,7 @@ import ethanjones.cubes.networking.packets.PacketWorldTime;
 import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.generator.TerrainGenerator;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
+import ethanjones.cubes.world.thread.GenerationTask;
 import ethanjones.cubes.world.thread.WorldRequestParameter;
 import ethanjones.cubes.world.thread.WorldTasks;
 import ethanjones.data.DataGroup;
@@ -23,8 +24,8 @@ public class WorldServer extends World {
   }
 
   @Override
-  public void requestRegion(MultiAreaReference references, WorldRequestParameter parameter) {
-    WorldTasks.request(this, references, parameter);
+  public GenerationTask requestRegion(MultiAreaReference references, WorldRequestParameter parameter) {
+    return WorldTasks.request(this, references, parameter);
   }
 
   @Override

@@ -13,6 +13,7 @@ import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
 import ethanjones.cubes.world.reference.multi.WorldRegion;
 import ethanjones.cubes.world.storage.Area;
+import ethanjones.cubes.world.thread.GenerationTask;
 import ethanjones.cubes.world.thread.WorldRequestParameter;
 import ethanjones.data.DataGroup;
 
@@ -114,7 +115,7 @@ public abstract class World implements Disposable {
     return null;
   }
 
-  public abstract void requestRegion(MultiAreaReference references, WorldRequestParameter parameter);
+  public abstract GenerationTask requestRegion(MultiAreaReference references, WorldRequestParameter parameter);
 
   public void setBlock(Block block, int x, int y, int z) {
     Area area = getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));

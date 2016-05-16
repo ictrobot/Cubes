@@ -7,6 +7,7 @@ import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
 import ethanjones.cubes.world.storage.Area;
+import ethanjones.cubes.world.thread.GenerationTask;
 import ethanjones.cubes.world.thread.WorldRequestParameter;
 
 import com.badlogic.gdx.graphics.Color;
@@ -65,7 +66,8 @@ public class WorldClient extends World {
   }
 
   @Override
-  public void requestRegion(MultiAreaReference references, WorldRequestParameter parameter) {
+  public GenerationTask requestRegion(MultiAreaReference references, WorldRequestParameter parameter) {
     // not needed, server sends needed areas automatically
+    return null;
   }
 }

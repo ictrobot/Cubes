@@ -21,6 +21,7 @@ public class MultiplayerLoadingMenu extends InfoMenu {
     this.port = port;
   }
 
+  @Override
   public void render() {
     super.render();
     frameNum++;
@@ -30,6 +31,7 @@ public class MultiplayerLoadingMenu extends InfoMenu {
       CubesClient cubesClient = new CubesClient();
       Adapter.setServer(null);
       Adapter.setClient(cubesClient);
+      Adapter.setMenu(new WorldLoadingMenu());
     } catch (Exception e) {
       if (e instanceof GdxRuntimeException && e.getCause() instanceof Exception) e = (Exception) e.getCause();
       Adapter.setClient(null);

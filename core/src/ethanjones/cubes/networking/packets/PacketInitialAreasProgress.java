@@ -9,29 +9,26 @@ import ethanjones.cubes.side.common.Cubes;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
-public class PacketInitialAreasLoaded extends Packet {
+public class PacketInitialAreasProgress extends Packet {
+  public float progress;
 
-  public PacketInitialAreasLoaded() {
+  public PacketInitialAreasProgress() {
     setPacketPriority(PacketPriority.Low);
   }
 
   @Override
   public void write(DataOutputStream dataOutputStream) throws Exception {
-
+    dataOutputStream.writeFloat(progress);
   }
 
   @Override
   public void read(DataInputStream dataInputStream) throws Exception {
-
+    progress = dataInputStream.readFloat();
   }
 
   @Override
   public void handlePacket() {
-    if (Sided.getSide() == Side.Client) Cubes.getClient().worldReady = true;
-  }
-
-  @Override
-  public Packet copy() {
-    return new PacketInitialAreasLoaded();
+    if (Sided.getSide() == Side.Client && progress > Cubes.getClient().worldProgress)
+      Cubes.getClient().worldProgress = progress;
   }
 }

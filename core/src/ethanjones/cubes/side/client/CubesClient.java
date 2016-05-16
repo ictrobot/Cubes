@@ -11,7 +11,6 @@ import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.graphics.rendering.Renderer;
 import ethanjones.cubes.input.InputChain;
 import ethanjones.cubes.input.keyboard.KeyboardHelper;
-import ethanjones.cubes.item.ItemTool;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
@@ -22,7 +21,6 @@ import ethanjones.cubes.world.collision.PlayerCollision;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 
 public class CubesClient extends Cubes implements ApplicationListener {
 
@@ -30,7 +28,8 @@ public class CubesClient extends Cubes implements ApplicationListener {
   public InputChain inputChain;
   public Renderer renderer;
   public long frameStart;
-  public boolean ready = false;
+  public float worldProgress = 0f;
+  public boolean worldReady = false;
 
   public CubesClient() {
     super(Side.Client);
@@ -62,9 +61,9 @@ public class CubesClient extends Cubes implements ApplicationListener {
   public void render() {
     frameStart = System.nanoTime();
     if (shouldReturn()) return;
-    if (ready) {
+    if (worldReady) {
       Adapter.setMenu(null);
-      ready = false;
+      worldReady = false;
     }
     if (KeyboardHelper.isKeyDown(Input.Keys.ESCAPE)) {
       Adapter.gotoMainMenu();

@@ -15,6 +15,7 @@ public class SingleplayerLoadingMenu extends InfoMenu {
     super(Localization.get("menu.general.loading"), false);
   }
 
+  @Override
   public void render() {
     super.render();
     frameNum++;
@@ -24,6 +25,7 @@ public class SingleplayerLoadingMenu extends InfoMenu {
         NetworkingManager.singleplayerPreInit();
         Adapter.setServer(new SingleplayerServer());
         Adapter.setClient(new CubesClient());
+        Adapter.setMenu(new WorldLoadingMenu());
       } catch (Exception e) {
         Log.error("Failed to setup client", e);
       }
