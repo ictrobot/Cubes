@@ -99,7 +99,7 @@ public class PlayerManager {
           check.areaZ = areaZ;
           check.modified();
           Area area = server.world.getArea(check, false); //don't request individually, request in a batch
-          if (area != null) sendArea(area);
+          if (area != null && area.features()) sendArea(area);
         }
       }
       WorldRequestParameter parameter = new WorldRequestParameter(playerArea.clone(), new Runnable() {
@@ -154,7 +154,7 @@ public class PlayerManager {
 
         for (AreaReference areaReference : difference) {
           Area area = server.world.getArea(areaReference, false); //don't request individually, request in a batch
-          if (area != null) sendArea(area);
+          if (area != null && area.features()) sendArea(area);
         }
 
         server.world.requestRegion(difference, null);
