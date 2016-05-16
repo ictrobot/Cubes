@@ -3,15 +3,15 @@ package ethanjones.cubes.networking.packets;
 import ethanjones.cubes.core.util.VectorUtil;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.networking.packet.Packet;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
-
+import ethanjones.cubes.networking.packet.PacketDirection;
+import ethanjones.cubes.networking.packet.PacketDirection.Direction;
 import com.badlogic.gdx.math.Vector3;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.util.UUID;
 
+@Direction(PacketDirection.TO_CLIENT)
 public class PacketOtherPlayerConnected extends Packet {
   //TODO PacketPlayerDisconnected ???
   public String username;
@@ -38,12 +38,10 @@ public class PacketOtherPlayerConnected extends Packet {
 
   @Override
   public void handlePacket() {
-    if (Sided.getSide() == Side.Client) {
-      Player player = new Player(username, uuid);
-      player.position.set(position);
-      player.angle.set(angle);
-      player.addToWorld();
-    }
+    Player player = new Player(username, uuid);
+    player.position.set(position);
+    player.angle.set(angle);
+    player.addToWorld();
   }
 
   @Override

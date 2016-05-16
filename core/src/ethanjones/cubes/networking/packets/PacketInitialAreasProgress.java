@@ -1,14 +1,15 @@
 package ethanjones.cubes.networking.packets;
 
 import ethanjones.cubes.networking.packet.Packet;
+import ethanjones.cubes.networking.packet.PacketDirection;
+import ethanjones.cubes.networking.packet.PacketDirection.Direction;
 import ethanjones.cubes.networking.packet.PacketPriority;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
+@Direction(PacketDirection.TO_CLIENT)
 public class PacketInitialAreasProgress extends Packet {
   public float progress;
 
@@ -28,7 +29,6 @@ public class PacketInitialAreasProgress extends Packet {
 
   @Override
   public void handlePacket() {
-    if (Sided.getSide() == Side.Client && progress > Cubes.getClient().worldProgress)
-      Cubes.getClient().worldProgress = progress;
+    if (progress > Cubes.getClient().worldProgress) Cubes.getClient().worldProgress = progress;
   }
 }

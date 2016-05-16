@@ -2,11 +2,14 @@ package ethanjones.cubes.networking.packets;
 
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.networking.packet.DataPacket;
+import ethanjones.cubes.networking.packet.PacketDirection;
+import ethanjones.cubes.networking.packet.PacketDirection.Direction;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.data.DataGroup;
 
+@Direction(PacketDirection.OMNIDIRECTIONAL)
 public class PacketPlayerInventory extends DataPacket {
   public DataGroup inv;
 

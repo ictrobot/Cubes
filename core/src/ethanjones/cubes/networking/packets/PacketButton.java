@@ -1,6 +1,8 @@
 package ethanjones.cubes.networking.packets;
 
 import ethanjones.cubes.networking.packet.Packet;
+import ethanjones.cubes.networking.packet.PacketDirection;
+import ethanjones.cubes.networking.packet.PacketDirection.Direction;
 import ethanjones.cubes.side.common.Cubes;
 
 import java.io.DataInputStream;
@@ -8,6 +10,7 @@ import java.io.DataOutputStream;
 
 import static com.badlogic.gdx.Input.Buttons.*;
 
+@Direction(PacketDirection.TO_SERVER)
 public class PacketButton extends Packet {
 
   public static final int BUTTON_DOWN = 0;

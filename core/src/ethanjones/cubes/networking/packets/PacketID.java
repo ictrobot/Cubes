@@ -1,11 +1,14 @@
 package ethanjones.cubes.networking.packets;
 
 import ethanjones.cubes.networking.packet.Packet;
+import ethanjones.cubes.networking.packet.PacketDirection;
+import ethanjones.cubes.networking.packet.PacketDirection.Direction;
 import ethanjones.cubes.networking.packet.PacketPriority;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
+@Direction(PacketDirection.OMNIDIRECTIONAL)
 public class PacketID extends Packet {
 
   public String c;

@@ -4,6 +4,7 @@ import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.networking.Networking;
 import ethanjones.cubes.networking.packet.Packet;
+import ethanjones.cubes.networking.packet.PacketDirection;
 import ethanjones.cubes.networking.packet.PacketQueue;
 import ethanjones.cubes.networking.packets.PacketConnect;
 import ethanjones.cubes.networking.socket.SocketMonitor;
@@ -92,6 +93,7 @@ public class ClientNetworking extends Networking {
       Log.warning("Cannot send " + packet.toString() + " as " + getNetworkingState().name());
       return;
     }
+    PacketDirection.checkPacketSend(packet.getClass(), Side.Client);
     socketMonitor.getSocketOutput().getPacketQueue().add(packet);
   }
 
@@ -106,6 +108,7 @@ public class ClientNetworking extends Networking {
     Packet packet = null;
     PacketQueue packetQueue = socketMonitor.getSocketInput().getPacketQueue();
     while ((packet = packetQueue.get()) != null) {
+      PacketDirection.checkPacketReceive(packet.getClass(), Side.Client);
       packet.handlePacket();
     }
   }

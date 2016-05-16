@@ -3,6 +3,8 @@ package ethanjones.cubes.networking.packets;
 import ethanjones.cubes.core.util.VectorUtil;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.networking.packet.Packet;
+import ethanjones.cubes.networking.packet.PacketDirection;
+import ethanjones.cubes.networking.packet.PacketDirection.Direction;
 import ethanjones.cubes.networking.packet.PacketPriority;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
@@ -13,6 +15,7 @@ import com.badlogic.gdx.math.Vector3;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
+@Direction(PacketDirection.OMNIDIRECTIONAL)
 public class PacketPlayerMovement extends Packet {
 
   public PacketPlayerMovement() {

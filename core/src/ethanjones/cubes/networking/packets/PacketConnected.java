@@ -2,14 +2,16 @@ package ethanjones.cubes.networking.packets;
 
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.networking.packet.DataPacket;
+import ethanjones.cubes.networking.packet.PacketDirection;
+import ethanjones.cubes.networking.packet.PacketDirection.Direction;
 import ethanjones.cubes.networking.packet.PacketPriority;
-import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.data.DataGroup;
 
 import java.util.UUID;
 
+@Direction(PacketDirection.TO_CLIENT)
 public class PacketConnected extends DataPacket {
 
   public DataGroup idManager;
@@ -22,13 +24,11 @@ public class PacketConnected extends DataPacket {
 
   @Override
   public void handlePacket() {
-    if (Sided.getSide() == Side.Client) {
-      Sided.getIDManager().read(idManager);
-      Player player = Cubes.getClient().player;
-      player.uuid = this.player;
-      player.addToWorld();
-      Cubes.getClient().world.time = worldTime;
-    }
+    Sided.getIDManager().read(idManager);
+    Player player = Cubes.getClient().player;
+    player.uuid = this.player;
+    player.addToWorld();
+    Cubes.getClient().world.time = worldTime;
   }
 
   @Override

@@ -3,6 +3,7 @@ package ethanjones.cubes.networking.singleplayer;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.networking.Networking;
 import ethanjones.cubes.networking.packet.Packet;
+import ethanjones.cubes.networking.packet.PacketDirection;
 import ethanjones.cubes.networking.packet.PacketQueue;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.networking.socket.SocketMonitor;
@@ -50,11 +51,13 @@ public class SingleplayerNetworking extends Networking {
 
   @Override
   public void sendPacketToServer(Packet packet) throws UnsupportedOperationException {
+    PacketDirection.checkPacketSend(packet.getClass(), Side.Client);
     send(packet, cloneToServer);
   }
 
   @Override
   public void sendPacketToClient(Packet packet, ClientIdentifier clientIdentifier) throws UnsupportedOperationException {
+    PacketDirection.checkPacketSend(packet.getClass(), Side.Server);
     send(packet, cloneToClient);
   }
 
@@ -83,6 +86,7 @@ public class SingleplayerNetworking extends Networking {
     }
     Packet packet = null;
     while ((packet = packetQueue.get()) != null) {
+      PacketDirection.checkPacketReceive(packet.getClass(), side);
       packet.handlePacket();
     }
   }

@@ -5,6 +5,8 @@ import ethanjones.cubes.core.util.VectorUtil;
 import ethanjones.cubes.entity.Entity;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.networking.packet.Packet;
+import ethanjones.cubes.networking.packet.PacketDirection;
+import ethanjones.cubes.networking.packet.PacketDirection.Direction;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
@@ -15,6 +17,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.util.UUID;
 
+@Direction(PacketDirection.TO_CLIENT)
 public class PacketOtherPlayerMovement extends Packet {
 
   public PacketOtherPlayerMovement() {
@@ -47,14 +50,12 @@ public class PacketOtherPlayerMovement extends Packet {
 
   @Override
   public void handlePacket() {
-    if (Sided.getSide() == Side.Client) {
-      Entity entity = Cubes.getClient().world.getEntity(uuid);
-      if (entity instanceof Player) {
-        entity.angle.set(angle);
-        entity.position.set(position);
-      } else {
-        Log.warning("No player with uuid " + uuid.toString());
-      }
+    Entity entity = Cubes.getClient().world.getEntity(uuid);
+    if (entity instanceof Player) {
+      entity.angle.set(angle);
+      entity.position.set(position);
+    } else {
+      Log.warning("No player with uuid " + uuid.toString());
     }
   }
 

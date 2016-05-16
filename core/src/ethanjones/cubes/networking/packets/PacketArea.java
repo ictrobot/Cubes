@@ -1,9 +1,9 @@
 package ethanjones.cubes.networking.packets;
 
 import ethanjones.cubes.networking.packet.Packet;
+import ethanjones.cubes.networking.packet.PacketDirection;
+import ethanjones.cubes.networking.packet.PacketDirection.Direction;
 import ethanjones.cubes.networking.packet.PacketPriority;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.PlayerManager;
 import ethanjones.cubes.world.storage.Area;
@@ -11,6 +11,7 @@ import ethanjones.cubes.world.storage.Area;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
+@Direction(PacketDirection.TO_CLIENT)
 public class PacketArea extends Packet {
 
   public Area area;
@@ -32,7 +33,6 @@ public class PacketArea extends Packet {
 
   @Override
   public void handlePacket() {
-    if (Sided.getSide() != Side.Client) return;
     Cubes.getClient().world.setAreaInternal(area);
   }
 

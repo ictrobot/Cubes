@@ -1,13 +1,14 @@
 package ethanjones.cubes.networking.packets;
 
 import ethanjones.cubes.networking.packet.Packet;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
+import ethanjones.cubes.networking.packet.PacketDirection;
+import ethanjones.cubes.networking.packet.PacketDirection.Direction;
 import ethanjones.cubes.side.common.Cubes;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
+@Direction(PacketDirection.TO_CLIENT)
 public class PacketMovementSpeed extends Packet {
 
   public float speed;
@@ -24,9 +25,7 @@ public class PacketMovementSpeed extends Packet {
 
   @Override
   public void handlePacket() {
-    if (Sided.getSide() == Side.Client) {
-      Cubes.getClient().inputChain.cameraController.setSpeed(speed);
-    }
+    Cubes.getClient().inputChain.cameraController.setSpeed(speed);
   }
 
   @Override
