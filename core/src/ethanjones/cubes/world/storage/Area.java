@@ -44,6 +44,7 @@ public class Area {
   public final int areaZ;
   public final int minBlockX;
   public final int minBlockZ;
+  public final int hashCode;
 
   public volatile AreaRenderer[] areaRenderer; //Always null on server
   public volatile int[] blocks; //0 = null, positive = visible, negative = invisible
@@ -66,6 +67,10 @@ public class Area {
     this.areaZ = areaZ;
     minBlockX = areaX * SIZE_BLOCKS;
     minBlockZ = areaZ * SIZE_BLOCKS;
+
+    int hashCode = 7;
+    hashCode = 31 * hashCode + areaX;
+    this.hashCode = 31 * hashCode + areaZ;
 
     areaRenderer = null;
     blocks = null;
@@ -588,6 +593,11 @@ public class Area {
       y--;
     }
     return (int) Math.ceil((maxUsedY + 1) / (float) SIZE_BLOCKS);
+  }
+
+  @Override
+  public int hashCode() {
+    return hashCode;
   }
 
   public void write(DataOutputStream dataOutputStream, boolean resize) throws IOException {

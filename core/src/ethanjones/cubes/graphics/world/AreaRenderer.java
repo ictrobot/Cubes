@@ -7,7 +7,6 @@ import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.client.WorldClient;
-import ethanjones.cubes.world.light.SunLight;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.storage.Area;
 
@@ -29,6 +28,9 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
 
   public static final int MIN_AREA = 0;
   public static final int MAX_AREA = SIZE_BLOCKS - 1;
+
+  public static int renderedThisFrame = 0;
+  public static int renderedMeshesThisFrame = 0;
 
   public boolean refresh = true;
   Vector3 offset = new Vector3();
@@ -55,7 +57,9 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
   @Override
   public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
     if (area == null || !update() || meshs.size() == 0) return;
+    renderedThisFrame++;
     for (AreaMesh mesh : meshs) {
+      renderedMeshesThisFrame++;
       renderables.add(mesh.renderable(pool));
     }
   }

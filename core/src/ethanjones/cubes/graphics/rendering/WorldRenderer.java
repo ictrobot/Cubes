@@ -22,9 +22,10 @@ import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
 
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 
 import static ethanjones.cubes.graphics.Graphics.modelBatch;
 
@@ -67,6 +68,8 @@ public class WorldRenderer implements Disposable {
 
   public void render() {
     Performance.start(PerformanceTags.CLIENT_RENDER_WORLD);
+    AreaRenderer.renderedThisFrame = 0;
+    AreaRenderer.renderedMeshesThisFrame = 0;
     needToRefresh.clear();
     modelBatch.begin(camera);
 
@@ -78,26 +81,64 @@ public class WorldRenderer implements Disposable {
 
     AreaReference pos = Pools.obtainAreaReference().setFromPositionVector3(Cubes.getClient().player.position);
     int yPos = CoordinateConverter.area(Cubes.getClient().player.position.y);
-    int startY = Math.max(yPos - renderDistance, 0);
+    ArrayDeque<AreaNode> queue = new ArrayDeque<AreaNode>();
+    HashSet<AreaNode> set = new HashSet<AreaNode>();
+    queue.add(new AreaNode(fastGet(world, pos.areaX, pos.areaZ), pos.areaX, pos.areaZ, yPos));
 
-    for (int areaX = pos.areaX - renderDistance; areaX <= pos.areaX + renderDistance; areaX++) {
-      for (int areaZ = pos.areaZ - renderDistance; areaZ <= pos.areaZ + renderDistance; areaZ++) {
-        Area area = fastGet(world, areaX, areaZ);
-        if (area == null || area.isBlank() || !areaInFrustum(area, camera.frustum)) continue;
-        int endY = Math.min(yPos + renderDistance, area.height - 1);
-        for (int ySection = startY; ySection <= endY; ySection++) {
-          if (shouldRender(world, area, ySection)) {
-            if (area.areaRenderer[ySection] == null) Pools.obtain(AreaRenderer.class).set(area, ySection);
-              AreaRenderer areaRenderer = area.areaRenderer[ySection];
-              if (areaRenderer.needsRefresh()) {
-                needToRefresh.add(areaRenderer);
-              } else {
-                modelBatch.render(areaRenderer);
-              }
-          } else if (area.areaRenderer[ySection] != null) {
-            AreaRenderer.free(area.areaRenderer[ySection]);
-            area.areaRenderer[ySection] = null;
+    while (!queue.isEmpty()) {
+      AreaNode node = queue.pop();
+      Area area = node.area;
+      int ySection = node.ySection;
+      int areaX = node.areaX;
+      int areaZ = node.areaZ;
+
+      if (node.area != null && !set.add(node)) continue;
+      if (!areaInFrustum(areaX, areaZ, ySection, camera.frustum)) continue;
+      if (!inRange(areaX, areaZ, pos.areaX, pos.areaZ, renderDistance)) continue;
+
+      boolean nullArea = area == null || ySection >= area.height;
+      int traverse = 0;
+
+      if (!nullArea) {
+        int status = area.renderStatus[ySection];
+        if (status == AreaRenderStatus.UNKNOWN) status = AreaRenderStatus.update(area, ySection);
+        traverse = status == AreaRenderStatus.EMPTY ? 0 : status;
+        boolean render = status != AreaRenderStatus.EMPTY && !complete(area, ySection, world, status);
+
+        if (render) {
+          if (area.areaRenderer[ySection] == null) Pools.obtain(AreaRenderer.class).set(area, ySection);
+
+          AreaRenderer areaRenderer = area.areaRenderer[ySection];
+          if (areaRenderer.needsRefresh()) {
+            needToRefresh.add(areaRenderer);
+          } else {
+            modelBatch.render(areaRenderer);
           }
+        } else if (area.areaRenderer[ySection] != null) {
+          AreaRenderer.free(area.areaRenderer[ySection]);
+          area.areaRenderer[ySection] = null;
+        }
+      }
+
+      if (traverse != AreaRenderStatus.COMPLETE) {
+        Area a;
+        if ((traverse & AreaRenderStatus.COMPLETE_MAX_X) == 0 && further(pos.areaX, pos.areaZ, areaX, areaZ, areaX + 1, areaZ)) {
+          if ((a = fastGet(world, areaX + 1, areaZ)) != null) queue.add(new AreaNode(a, areaX + 1, areaZ, ySection));
+        }
+        if ((traverse & AreaRenderStatus.COMPLETE_MIN_X) == 0 && further(pos.areaX, pos.areaZ, areaX, areaZ, areaX - 1, areaZ)) {
+          if ((a = fastGet(world, areaX - 1, areaZ)) != null) queue.add(new AreaNode(a, areaX - 1, areaZ, ySection));
+        }
+        if ((traverse & AreaRenderStatus.COMPLETE_MAX_Z) == 0 && further(pos.areaX, pos.areaZ, areaX, areaZ, areaX, areaZ + 1)) {
+          if ((a = fastGet(world, areaX, areaZ + 1)) != null) queue.add(new AreaNode(a, areaX, areaZ + 1, ySection));
+        }
+        if ((traverse & AreaRenderStatus.COMPLETE_MIN_Z) == 0 && further(pos.areaX, pos.areaZ, areaX, areaZ, areaX, areaZ - 1)) {
+          if ((a = fastGet(world, areaX, areaZ - 1)) != null) queue.add(new AreaNode(a, areaX, areaZ - 1, ySection));
+        }
+        if ((traverse & AreaRenderStatus.COMPLETE_MAX_Y) == 0 && !nullArea && ySection >= yPos) {
+          queue.add(new AreaNode(area, areaX, areaZ, ySection + 1));
+        }
+        if ((traverse & AreaRenderStatus.COMPLETE_MIN_Y) == 0 && ySection > 0 && ySection <= yPos) {
+          queue.add(new AreaNode(area, areaX, areaZ, ySection - 1));
         }
       }
     }
@@ -138,38 +179,35 @@ public class WorldRenderer implements Disposable {
     return frustum.boundsInFrustum(area.minBlockX + Area.HALF_SIZE_BLOCKS, Area.MAX_Y / 2f, area.minBlockZ + Area.HALF_SIZE_BLOCKS, Area.HALF_SIZE_BLOCKS, Area.MAX_Y / 2f, Area.HALF_SIZE_BLOCKS);
   }
 
-  public boolean areaInFrustum(Area area, int ySection, Frustum frustum) {
-    return frustum.boundsInFrustum(area.minBlockX + Area.HALF_SIZE_BLOCKS, (ySection * Area.SIZE_BLOCKS) + Area.HALF_SIZE_BLOCKS, area.minBlockZ + Area.HALF_SIZE_BLOCKS, Area.HALF_SIZE_BLOCKS, Area.HALF_SIZE_BLOCKS, Area.HALF_SIZE_BLOCKS);
+  public boolean areaInFrustum(int areaX, int areaZ, int ySection, Frustum frustum) {
+    return frustum.boundsInFrustum((areaX * Area.SIZE_BLOCKS) + Area.HALF_SIZE_BLOCKS, (ySection * Area.SIZE_BLOCKS) + Area.HALF_SIZE_BLOCKS, (areaZ * Area.SIZE_BLOCKS) + Area.HALF_SIZE_BLOCKS, Area.HALF_SIZE_BLOCKS, Area.HALF_SIZE_BLOCKS, Area.HALF_SIZE_BLOCKS);
   }
 
-  public boolean shouldRender(WorldClient world, Area area, int ySection) {
-    int status = area.renderStatus[ySection];
-    if (status == AreaRenderStatus.UNKNOWN) status = AreaRenderStatus.update(area, ySection);
-    if (status == AreaRenderStatus.EMPTY) return false;
+  public boolean complete(Area area, int ySection, WorldClient world, int status) {
     if (status == AreaRenderStatus.COMPLETE) {
       if (ySection > 0 && (area.renderStatus[ySection - 1] & AreaRenderStatus.COMPLETE_MAX_Y) != AreaRenderStatus.COMPLETE_MAX_Y)
-        return true;
+        return false;
       if (ySection < area.renderStatus.length - 1 && (area.renderStatus[ySection + 1] & AreaRenderStatus.COMPLETE_MIN_Y) != AreaRenderStatus.COMPLETE_MIN_Y)
-        return true;
+        return false;
       Area maxX = fastGet(world, area.areaX + 1, area.areaZ);
       if (maxX != null && !maxX.isBlank())
         if (maxX.renderStatus.length < ySection - 1 || (maxX.renderStatus[ySection] & AreaRenderStatus.COMPLETE_MIN_X) != AreaRenderStatus.COMPLETE_MIN_X)
-          return true;
+          return false;
       Area minX = fastGet(world, area.areaX - 1, area.areaZ);
       if (minX != null && !minX.isBlank())
         if (minX.renderStatus.length < ySection - 1 || (minX.renderStatus[ySection] & AreaRenderStatus.COMPLETE_MAX_X) != AreaRenderStatus.COMPLETE_MAX_X)
-          return true;
+          return false;
       Area maxZ = fastGet(world, area.areaX, area.areaZ + 1);
       if (maxZ != null && !maxZ.isBlank())
         if (maxZ.renderStatus.length < ySection - 1 || (maxZ.renderStatus[ySection] & AreaRenderStatus.COMPLETE_MIN_Z) != AreaRenderStatus.COMPLETE_MIN_Z)
-          return true;
+          return false;
       Area minZ = fastGet(world, area.areaX, area.areaZ - 1);
       if (minZ != null && !minZ.isBlank())
         if (minZ.renderStatus.length < ySection - 1 || (minZ.renderStatus[ySection] & AreaRenderStatus.COMPLETE_MAX_Z) != AreaRenderStatus.COMPLETE_MAX_Z)
-          return true;
-      return false;
+          return false;
+      return true;
     }
-    return true;
+    return false;
   }
 
   private Area fastGet(WorldClient worldClient, int x, int z) {
@@ -177,8 +215,55 @@ public class WorldRenderer implements Disposable {
     return worldClient.map.get(fastGet);
   }
 
+  private static boolean inRange(int areaX, int areaZ, int posAreaX, int posAreaZ, int renderDistance) {
+    return Math.abs(areaX - posAreaX) <= renderDistance && Math.abs(areaZ - posAreaZ) <= renderDistance;
+  }
+
+  private static boolean further(int posAreaX, int posAreaZ, int oldAreaX, int oldAreaZ, int newAreaX, int newAreaZ) {
+    int oDX = Math.abs(posAreaX - oldAreaX);
+    int oDZ = Math.abs(posAreaZ - oldAreaZ);
+
+    int nDX = Math.abs(posAreaX - newAreaX);
+    int nDZ = Math.abs(posAreaZ - newAreaZ);
+    return (oDX * oDX + oDZ * oDZ) <= (nDX * nDX + nDZ * nDZ);
+  }
+
   @Override
   public void dispose() {
 
+  }
+
+  public static class AreaNode {
+    final Area area;
+    final int areaX;
+    final int areaZ;
+    final int ySection;
+    final int hashCode;
+
+    public AreaNode(Area area, int areaX, int areaZ, int ySection) {
+      this.area = area;
+      this.areaX = areaX;
+      this.areaZ = areaZ;
+      this.ySection = ySection;
+
+      int hashCode = 7;
+      hashCode = 31 * hashCode + ySection;
+      hashCode = 31 * hashCode + areaX;
+      this.hashCode = 31 * hashCode + areaZ;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (obj instanceof AreaNode) {
+        AreaNode a = ((AreaNode) obj);
+        return a.areaX == this.areaX && a.areaZ == this.areaZ && a.ySection == this.ySection;
+      }
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      return hashCode;
+    }
   }
 }
