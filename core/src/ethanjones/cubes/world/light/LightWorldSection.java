@@ -1,7 +1,7 @@
 package ethanjones.cubes.world.light;
 
 import ethanjones.cubes.core.IDManager.TransparencyManager;
-import ethanjones.cubes.side.Side;
+import ethanjones.cubes.core.util.Lock;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.World;
@@ -33,9 +33,9 @@ class LightWorldSection {
     for (Area[] areaArr : areas) {
       for (Area area : areaArr) {
         if (area == null) throw new AreaNotLoadedException();
-        area.lock.writeLock();
       }
     }
+    Lock.waitToLockAll(true, areas[0][0], areas[0][1], areas[0][2], areas[1][0], areas[1][1], areas[1][2], areas[2][0], areas[2][1], areas[2][2]);
   }
 
   protected boolean transparent(int x, int y, int z) {

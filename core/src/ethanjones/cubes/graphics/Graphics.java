@@ -5,6 +5,7 @@ import ethanjones.cubes.core.IDManager;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.system.CubesException;
+import ethanjones.cubes.graphics.world.WorldGraphicsPools;
 import ethanjones.cubes.graphics.world.WorldShaderProvider;
 import ethanjones.cubes.item.Item;
 import ethanjones.cubes.item.ItemBlock;
@@ -40,6 +41,7 @@ public class Graphics {
     for (Item item : IDManager.getItems()) {
       item.loadGraphics();
     }
+    WorldGraphicsPools.init();
   }
 
   public static void resize() {

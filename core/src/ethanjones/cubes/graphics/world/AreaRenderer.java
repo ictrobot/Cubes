@@ -4,6 +4,8 @@ import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.IDManager.TransparencyManager;
 import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.core.util.BlockFace;
+import ethanjones.cubes.core.util.Lock;
+import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.client.WorldClient;
@@ -80,19 +82,21 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
     if (maxX == null || minX == null || maxZ == null || minZ == null) return false;
 
     free(meshs);
+    Area[] toLock = new Area[]{area, null, null, null, null};
 
     if (maxX.isBlank()) maxX = null;
-    else maxX.lock.readLock();
+    else toLock[1] = maxX;
     if (minX.isBlank()) minX = null;
-    else minX.lock.readLock();
+    else toLock[2] = minX;
     if (maxZ.isBlank()) maxZ = null;
-    else maxZ.lock.readLock();
+    else toLock[3] = maxZ;
     if (minZ.isBlank()) minZ = null;
-    else minZ.lock.readLock();
+    else toLock[4] = minZ;
 
     int i = ySection * SIZE_BLOCKS_CUBED;
     int vertexOffset = 0;
-    area.lock.readLock();
+
+    Lock.waitToLockAll(false, toLock);
 
     for (int y = ySection * SIZE_BLOCKS; y < (ySection + 1) * SIZE_BLOCKS; y++) {
       for (int z = 0; z < SIZE_BLOCKS; z++) {
@@ -214,15 +218,22 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
     return this;
   }
 
+  // always client
   public static void free(AreaRenderer areaRenderer) {
     if (areaRenderer != null) Pools.free(AreaRenderer.class, areaRenderer);
   }
 
+  // checks if client thread
   public static void free(AreaRenderer[] areaRenderer) {
     if (areaRenderer == null) return;
+    boolean isClient = Sided.getSide() == Side.Client;
     for (int i = 0; i < areaRenderer.length; i++) {
       if (areaRenderer[i] == null) continue;
-      Pools.free(AreaRenderer.class, areaRenderer[i]);
+      if (isClient) {
+        Pools.free(AreaRenderer.class, areaRenderer[i]);
+      } else {
+        WorldGraphicsPools.toFree.add(areaRenderer[i]);
+      }
       areaRenderer[i] = null;
     }
   }

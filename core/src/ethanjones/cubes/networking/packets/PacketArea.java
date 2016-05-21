@@ -46,9 +46,14 @@ public class PacketArea extends Packet {
 
   @Override
   public Packet copy() {
-    PacketArea copy = new PacketArea();
-    copy.area = new Area(this.area);
-    return copy;
+    PacketArea p = new PacketArea();
+    if (Area.isShared()) {
+      assert area.shared;
+      p.area = this.area;
+    } else {
+      p.area = new Area(this.area);
+    }
+    return p;
   }
 
   @Override

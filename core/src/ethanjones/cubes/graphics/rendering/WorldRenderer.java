@@ -20,7 +20,6 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.Pool;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -31,24 +30,10 @@ import static ethanjones.cubes.graphics.Graphics.modelBatch;
 
 public class WorldRenderer implements Disposable {
 
-  static {
-    Pools.registerType(AreaRenderer.class, new Pool<AreaRenderer>() {
-      @Override
-      protected AreaRenderer newObject() {
-        return new AreaRenderer();
-      }
-    });
-    Pools.registerType(AreaMesh.class, new Pool<AreaMesh>() {
-      @Override
-      protected AreaMesh newObject() {
-        return new AreaMesh();
-      }
-    });
-  }
+  private static ArrayDeque<AreaNode> poolNode = new ArrayDeque<AreaNode>();
 
   public PerspectiveCamera camera;
   private AreaReference fastGet = new AreaReference();
-
   private ArrayList<AreaRenderer> needToRefresh = new ArrayList<AreaRenderer>();
 
   public WorldRenderer() {
@@ -67,6 +52,8 @@ public class WorldRenderer implements Disposable {
   }
 
   public void render() {
+    WorldGraphicsPools.free();
+
     Performance.start(PerformanceTags.CLIENT_RENDER_WORLD);
     AreaRenderer.renderedThisFrame = 0;
     AreaRenderer.renderedMeshesThisFrame = 0;
@@ -83,7 +70,7 @@ public class WorldRenderer implements Disposable {
     int yPos = CoordinateConverter.area(Cubes.getClient().player.position.y);
     ArrayDeque<AreaNode> queue = new ArrayDeque<AreaNode>();
     HashSet<AreaNode> set = new HashSet<AreaNode>();
-    queue.add(new AreaNode(fastGet(world, pos.areaX, pos.areaZ), pos.areaX, pos.areaZ, yPos));
+    queue.add(get(fastGet(world, pos.areaX, pos.areaZ), pos.areaX, pos.areaZ, yPos));
 
     while (!queue.isEmpty()) {
       AreaNode node = queue.pop();
@@ -92,7 +79,10 @@ public class WorldRenderer implements Disposable {
       int areaX = node.areaX;
       int areaZ = node.areaZ;
 
-      if (node.area != null && !set.add(node)) continue;
+      if (!set.add(node)) {
+        poolNode.add(node);
+        continue;
+      }
       if (!areaInFrustum(areaX, areaZ, ySection, camera.frustum)) continue;
       if (!inRange(areaX, areaZ, pos.areaX, pos.areaZ, renderDistance)) continue;
 
@@ -123,25 +113,26 @@ public class WorldRenderer implements Disposable {
       if (traverse != AreaRenderStatus.COMPLETE) {
         Area a;
         if ((traverse & AreaRenderStatus.COMPLETE_MAX_X) == 0 && further(pos.areaX, pos.areaZ, areaX, areaZ, areaX + 1, areaZ)) {
-          if ((a = fastGet(world, areaX + 1, areaZ)) != null) queue.add(new AreaNode(a, areaX + 1, areaZ, ySection));
+          if ((a = fastGet(world, areaX + 1, areaZ)) != null) queue.add(get(a, areaX + 1, areaZ, ySection));
         }
         if ((traverse & AreaRenderStatus.COMPLETE_MIN_X) == 0 && further(pos.areaX, pos.areaZ, areaX, areaZ, areaX - 1, areaZ)) {
-          if ((a = fastGet(world, areaX - 1, areaZ)) != null) queue.add(new AreaNode(a, areaX - 1, areaZ, ySection));
+          if ((a = fastGet(world, areaX - 1, areaZ)) != null) queue.add(get(a, areaX - 1, areaZ, ySection));
         }
         if ((traverse & AreaRenderStatus.COMPLETE_MAX_Z) == 0 && further(pos.areaX, pos.areaZ, areaX, areaZ, areaX, areaZ + 1)) {
-          if ((a = fastGet(world, areaX, areaZ + 1)) != null) queue.add(new AreaNode(a, areaX, areaZ + 1, ySection));
+          if ((a = fastGet(world, areaX, areaZ + 1)) != null) queue.add(get(a, areaX, areaZ + 1, ySection));
         }
         if ((traverse & AreaRenderStatus.COMPLETE_MIN_Z) == 0 && further(pos.areaX, pos.areaZ, areaX, areaZ, areaX, areaZ - 1)) {
-          if ((a = fastGet(world, areaX, areaZ - 1)) != null) queue.add(new AreaNode(a, areaX, areaZ - 1, ySection));
+          if ((a = fastGet(world, areaX, areaZ - 1)) != null) queue.add(get(a, areaX, areaZ - 1, ySection));
         }
         if ((traverse & AreaRenderStatus.COMPLETE_MAX_Y) == 0 && !nullArea && ySection >= yPos) {
-          queue.add(new AreaNode(area, areaX, areaZ, ySection + 1));
+          queue.add(get(area, areaX, areaZ, ySection + 1));
         }
         if ((traverse & AreaRenderStatus.COMPLETE_MIN_Y) == 0 && ySection > 0 && ySection <= yPos) {
-          queue.add(new AreaNode(area, areaX, areaZ, ySection - 1));
+          queue.add(get(area, areaX, areaZ, ySection - 1));
         }
       }
     }
+    poolNode.addAll(set);
     Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_AREAS);
 
     if (needToRefresh.size() > 0) {
@@ -233,14 +224,21 @@ public class WorldRenderer implements Disposable {
 
   }
 
-  public static class AreaNode {
-    final Area area;
-    final int areaX;
-    final int areaZ;
-    final int ySection;
-    final int hashCode;
+  private static AreaNode get(Area area, int areaX, int areaZ, int ySection) {
+    AreaNode node = poolNode.pollFirst();
+    if (node == null) node = new AreaNode();
+    node.set(area, areaX, areaZ, ySection);
+    return node;
+  }
 
-    public AreaNode(Area area, int areaX, int areaZ, int ySection) {
+  private static class AreaNode {
+    Area area;
+    int areaX;
+    int areaZ;
+    int ySection;
+    int hashCode;
+
+    public void set(Area area, int areaX, int areaZ, int ySection) {
       this.area = area;
       this.areaX = areaX;
       this.areaZ = areaZ;

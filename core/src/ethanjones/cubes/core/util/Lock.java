@@ -1,8 +1,11 @@
 package ethanjones.cubes.core.util;
 
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class Lock {
+  private static final ReentrantLock multiLock = new ReentrantLock(true);
+
   private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
   private ReentrantReadWriteLock.ReadLock read = lock.readLock();
   private ReentrantReadWriteLock.WriteLock write = lock.writeLock();
@@ -35,5 +38,46 @@ public class Lock {
   public <T> T writeUnlock(T t) {
     write.unlock();
     return t;
+  }
+
+  public static void waitToLockAll(boolean write, HasLock... locks) {
+    while (true) {
+      if (lockAll(write, locks)) return;
+    }
+  }
+
+  public static boolean lockAll(boolean write, HasLock... locks) {
+    multiLock.lock();
+    int i = 0;
+    boolean fail = false;
+
+    for (; i < locks.length; i++) {
+      if (locks[i] == null) continue;
+      Lock l = locks[i].getLock();
+      boolean b;
+
+      if (write) b = l.write.tryLock();
+      else b = l.read.tryLock();
+
+      if (!b) {
+        fail = true;
+        break;
+      }
+    }
+
+    if (fail) {
+      for (int j = 0; j < i; j++) {
+        if (locks[j] == null) continue;
+        Lock l = locks[j].getLock();
+        if (write) l.write.unlock();
+        else l.read.unlock();
+      }
+    }
+    multiLock.unlock();
+    return !fail;
+  }
+
+  public static interface HasLock {
+    public Lock getLock();
   }
 }

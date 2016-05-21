@@ -164,7 +164,7 @@ public abstract class World implements Disposable {
     disposed.set(true);
 
     for (Entry<AreaReference, Area> entry : map.entrySet()) {
-      entry.getValue().unload();
+      entry.getValue().ensureUnload();
     }
     map.clear();
     for (Entity entity : entities.values()) {

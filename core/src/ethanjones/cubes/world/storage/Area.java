@@ -3,12 +3,13 @@ package ethanjones.cubes.world.storage;
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.IDManager.TransparencyManager;
 import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
-import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.Executor;
 import ethanjones.cubes.core.util.Lock;
 import ethanjones.cubes.graphics.world.AreaRenderStatus;
 import ethanjones.cubes.graphics.world.AreaRenderer;
+import ethanjones.cubes.networking.NetworkingManager;
+import ethanjones.cubes.networking.singleplayer.SingleplayerNetworking;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.world.World;
@@ -22,7 +23,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class Area {
+public class Area implements Lock.HasLock {
 
   public static final int SIZE_BLOCKS = 32;
   public static final int SIZE_BLOCKS_SQUARED = SIZE_BLOCKS * SIZE_BLOCKS;
@@ -58,6 +59,7 @@ public class Area {
   private volatile boolean unloaded;
 
   public World world;
+  public final boolean shared;
 
   private AreaReference tempReference = new AreaReference();
   private TransparencyManager transparency = Sided.getIDManager().transparencyManager;
@@ -78,6 +80,8 @@ public class Area {
     height = 0;
     unloaded = false;
     features = new AtomicReference<Object>();
+
+    this.shared = isShared();
   }
 
   public Area(Area toCopy) {
@@ -185,6 +189,14 @@ public class Area {
 
     removeArrays();
     unloaded = true;
+
+    lock.writeUnlock();
+  }
+
+  public void ensureUnload() {
+    lock.writeLock();
+
+    if (!unloaded) removeArrays();
 
     lock.writeUnlock();
   }
@@ -426,7 +438,7 @@ public class Area {
       blocks = new int[SIZE_BLOCKS_CUBED * height];
       light = new byte[SIZE_BLOCKS_CUBED * height];
       AreaRenderer.free(areaRenderer);
-      if (Sided.getSide() == Side.Client) {
+      if (Sided.getSide() == Side.Client || isShared()) {
         areaRenderer = new AreaRenderer[height];
         renderStatus = AreaRenderStatus.create(height);
       }
@@ -503,7 +515,7 @@ public class Area {
     System.arraycopy(oldLight, 0, light, 0, oldLight.length);
 
     AreaRenderer.free(areaRenderer);
-    if (Sided.getSide() == Side.Client) {
+    if (Sided.getSide() == Side.Client || isShared()) {
       areaRenderer = new AreaRenderer[height];
       if (renderStatus.length < height) {
         renderStatus = AreaRenderStatus.create(height);
@@ -559,7 +571,7 @@ public class Area {
     System.arraycopy(oldLight, 0, light, 0, light.length);
 
     AreaRenderer.free(areaRenderer);
-    if (Sided.getSide() == Side.Client) {
+    if (Sided.getSide() == Side.Client || isShared()) {
       areaRenderer = new AreaRenderer[usedHeight];
       renderStatus = AreaRenderStatus.create(usedHeight);
     } else {
@@ -708,5 +720,14 @@ public class Area {
 
   public static int getHeightMapRef(int x, int z) {
     return x + z * SIZE_BLOCKS;
+  }
+
+  public static boolean isShared() {
+    return NetworkingManager.getNetworking(Sided.getSide()) instanceof SingleplayerNetworking;
+  }
+
+  @Override
+  public Lock getLock() {
+    return lock;
   }
 }

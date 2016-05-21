@@ -178,12 +178,20 @@ public class PlayerManager {
       if (Math.abs(CoordinateConverter.area(blockReference.blockX) - playerArea.areaX) > loadDistance) return;
       if (Math.abs(CoordinateConverter.area(blockReference.blockZ) - playerArea.areaZ) > loadDistance) return;
     }
-    PacketBlockChanged packet = new PacketBlockChanged();
-    packet.x = blockReference.blockX;
-    packet.y = blockReference.blockY;
-    packet.z = blockReference.blockZ;
-    packet.block = Sided.getIDManager().toInt(event.getNewBlock());
-    NetworkingManager.sendPacketToClient(packet, client);
+    if (Area.isShared()) {
+      PacketAreaUpdateRender packet = new PacketAreaUpdateRender();
+      packet.areaX = CoordinateConverter.area(blockReference.blockX);
+      packet.areaZ = CoordinateConverter.area(blockReference.blockZ);
+      packet.ySection = CoordinateConverter.area(blockReference.blockY);
+      NetworkingManager.sendPacketToClient(packet, client);
+    } else {
+      PacketBlockChanged packet = new PacketBlockChanged();
+      packet.x = blockReference.blockX;
+      packet.y = blockReference.blockY;
+      packet.z = blockReference.blockZ;
+      packet.block = Sided.getIDManager().toInt(event.getNewBlock());
+      NetworkingManager.sendPacketToClient(packet, client);
+    }
   }
 
   @EventHandler
