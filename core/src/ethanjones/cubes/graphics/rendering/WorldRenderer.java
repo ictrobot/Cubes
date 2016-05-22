@@ -35,6 +35,9 @@ public class WorldRenderer implements Disposable {
   public PerspectiveCamera camera;
   private AreaReference fastGet = new AreaReference();
   private ArrayList<AreaRenderer> needToRefresh = new ArrayList<AreaRenderer>();
+  private ArrayDeque<AreaNode> queue = new ArrayDeque<AreaNode>();
+  private HashSet<AreaNode> renderedNodes = new HashSet<AreaNode>();
+  private HashSet<Area> lockedAreas = new HashSet<Area>();
 
   public WorldRenderer() {
     camera = new PerspectiveCamera(Settings.getIntegerSettingValue(Settings.GRAPHICS_FOV), Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) {
@@ -58,6 +61,10 @@ public class WorldRenderer implements Disposable {
     AreaRenderer.renderedThisFrame = 0;
     AreaRenderer.renderedMeshesThisFrame = 0;
     needToRefresh.clear();
+    queue.clear();
+    renderedNodes.clear();
+    lockedAreas.clear();
+    
     modelBatch.begin(camera);
 
     int renderDistance = Settings.getIntegerSettingValue(Settings.GRAPHICS_VIEW_DISTANCE);
@@ -68,8 +75,6 @@ public class WorldRenderer implements Disposable {
 
     AreaReference pos = Pools.obtainAreaReference().setFromPositionVector3(Cubes.getClient().player.position);
     int yPos = CoordinateConverter.area(Cubes.getClient().player.position.y);
-    ArrayDeque<AreaNode> queue = new ArrayDeque<AreaNode>();
-    HashSet<AreaNode> set = new HashSet<AreaNode>();
     queue.add(get(fastGet(world, pos.areaX, pos.areaZ), pos.areaX, pos.areaZ, yPos));
 
     while (!queue.isEmpty()) {
@@ -79,7 +84,7 @@ public class WorldRenderer implements Disposable {
       int areaX = node.areaX;
       int areaZ = node.areaZ;
 
-      if (!set.add(node)) {
+      if (!renderedNodes.add(node)) {
         poolNode.add(node);
         continue;
       }
@@ -90,6 +95,9 @@ public class WorldRenderer implements Disposable {
       int traverse = 0;
 
       if (!nullArea) {
+        if (lockedAreas.add(area)) {
+          area.lock.writeLock();
+        }
         int status = area.renderStatus[ySection];
         if (status == AreaRenderStatus.UNKNOWN) status = AreaRenderStatus.update(area, ySection);
         traverse = status == AreaRenderStatus.EMPTY ? 0 : status;
@@ -132,7 +140,10 @@ public class WorldRenderer implements Disposable {
         }
       }
     }
-    poolNode.addAll(set);
+    poolNode.addAll(renderedNodes);
+    for (Area lockedArea : lockedAreas) {
+      lockedArea.lock.writeUnlock();
+    }
     Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_AREAS);
 
     if (needToRefresh.size() > 0) {

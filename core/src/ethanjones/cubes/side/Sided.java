@@ -45,6 +45,10 @@ public class Sided {
     return sideLocal.get();
   }
 
+  public static boolean isMainThread(Side side) {
+    return mainLocal.get() && sideLocal.get() == side;
+  }
+
   /**
    * Allow network threads etc. to access sided objects
    */

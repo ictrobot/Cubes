@@ -49,7 +49,7 @@ public class WorldClient extends World {
     lock.writeUnlock();
 
     for (Area area : removed) {
-      area.unload();
+      if (!area.shared) area.unload();
     }
   }
 

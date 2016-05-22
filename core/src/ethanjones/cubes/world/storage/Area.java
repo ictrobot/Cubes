@@ -311,81 +311,57 @@ public class Area implements Lock.HasLock {
   public void doUpdates(int x, int y, int z, int ref) {
     updateSurrounding(x, y, z, ref);
 
+    boolean updateRender = Sided.getSide() == Side.Client || shared;
     int section = y / SIZE_BLOCKS;
 
-    Area negX = null;
-    Area posX = null;
-    Area negZ = null;
-    Area posZ = null;
+    if (updateRender) {
+      updateRender(section);
+      if (y % SIZE_BLOCKS == 0) updateRender(section - 1);
+      if (y % SIZE_BLOCKS == SIZE_BLOCKS - 1) updateRender(section + 1);
+    }
 
     if (world != null && (x == 0 || x == SIZE_BLOCKS - 1 || z == 0 || z == SIZE_BLOCKS - 1)) {
+      Area area;
       world.lock.readLock();
       if (x == 0) {
         tempReference.setFromAreaCoordinates(areaX - 1, areaZ);
-        negX = world.getArea(tempReference, false);
-        if (negX != null) {
-          negX.lock.writeLock();
-          if (negX.isReady()) negX.update(SIZE_BLOCKS - 1, y, z, getRef(SIZE_BLOCKS - 1, y, z));
-          negX.lock.writeUnlock();
+        area = world.getArea(tempReference, false);
+        if (area != null) {
+          area.lock.writeLock();
+          if (area.isReady()) area.update(SIZE_BLOCKS - 1, y, z, getRef(SIZE_BLOCKS - 1, y, z));
+          if (updateRender) area.updateRender(section);
+          area.lock.writeUnlock();
         }
       } else if (x == SIZE_BLOCKS - 1) {
         tempReference.setFromAreaCoordinates(areaX + 1, areaZ);
-        posX = world.getArea(tempReference, false);
-        if (posX != null) {
-          posX.lock.writeLock();
-          if (posX.isReady()) posX.update(SIZE_BLOCKS + 1, y, z, getRef(SIZE_BLOCKS + 1, y, z));
-          posX.lock.writeUnlock();
+        area = world.getArea(tempReference, false);
+        if (area != null) {
+          area.lock.writeLock();
+          if (area.isReady()) area.update(SIZE_BLOCKS + 1, y, z, getRef(SIZE_BLOCKS + 1, y, z));
+          if (updateRender) area.updateRender(section);
+          area.lock.writeUnlock();
         }
       }
       if (z == 0) {
         tempReference.setFromAreaCoordinates(areaX, areaZ - 1);
-        negZ = world.getArea(tempReference, false);
-        if (negZ != null) {
-          negZ.lock.writeLock();
-          if (negZ.isReady()) negZ.update(x, y, SIZE_BLOCKS - 1, getRef(x, y, SIZE_BLOCKS - 1));
-          negZ.lock.writeUnlock();
+        area = world.getArea(tempReference, false);
+        if (area != null) {
+          area.lock.writeLock();
+          if (area.isReady()) area.update(x, y, SIZE_BLOCKS - 1, getRef(x, y, SIZE_BLOCKS - 1));
+          if (updateRender) area.updateRender(section);
+          area.lock.writeUnlock();
         }
       } else if (z == SIZE_BLOCKS - 1) {
         tempReference.setFromAreaCoordinates(areaX, areaZ + 1);
-        posZ = world.getArea(tempReference, false);
-        if (posZ != null) {
-          posZ.lock.writeLock();
-          if (posZ.isReady()) posZ.update(x, y, SIZE_BLOCKS + 1, getRef(x, y, SIZE_BLOCKS + 1));
-          posZ.lock.writeUnlock();
+        area = world.getArea(tempReference, false);
+        if (area != null) {
+          area.lock.writeLock();
+          if (area.isReady()) area.update(x, y, SIZE_BLOCKS + 1, getRef(x, y, SIZE_BLOCKS + 1));
+          if (updateRender) area.updateRender(section);
+          area.lock.writeUnlock();
         }
       }
       world.lock.readUnlock();
-    }
-
-    if (Sided.getSide() == Side.Client) {
-      renderStatus[section] = AreaRenderStatus.UNKNOWN;
-      if (areaRenderer[section] != null) areaRenderer[section].refresh = true;
-
-      if (y > 0 && y % SIZE_BLOCKS == 0) {
-        renderStatus[section - 1] = AreaRenderStatus.UNKNOWN;
-        if (areaRenderer[section - 1] != null) areaRenderer[section - 1].refresh = true;
-      }
-      if (y < maxY && y % SIZE_BLOCKS == (SIZE_BLOCKS - 1)) {
-        renderStatus[section + 1] = AreaRenderStatus.UNKNOWN;
-        if (areaRenderer[section + 1] != null) areaRenderer[section + 1].refresh = true;
-      }
-
-      if (negX != null && y <= negX.maxY && negX.areaRenderer[section] != null) {
-        negX.renderStatus[section] = AreaRenderStatus.UNKNOWN;
-        negX.areaRenderer[section].refresh = true;
-      }
-      if (posX != null && y <= posX.maxY && posX.areaRenderer[section] != null) {
-        posX.renderStatus[section] = AreaRenderStatus.UNKNOWN;
-        posX.areaRenderer[section].refresh = true;
-      }
-      if (negZ != null && y <= negZ.maxY && negZ.areaRenderer[section] != null) {
-        negZ.renderStatus[section] = AreaRenderStatus.UNKNOWN;
-        negZ.areaRenderer[section].refresh = true;
-      }
-      if (posZ != null && y <= posZ.maxY && posZ.areaRenderer[section] != null) {
-        posZ.renderStatus[section] = AreaRenderStatus.UNKNOWN;
-        posZ.areaRenderer[section].refresh = true;
-      }
     }
   }
 
@@ -404,7 +380,7 @@ public class Area implements Lock.HasLock {
   }
 
   public void updateRender(int section) {
-    if (section < renderStatus.length) renderStatus[section] = AreaRenderStatus.UNKNOWN;
+    if (section >= 0 && section < renderStatus.length) renderStatus[section] = AreaRenderStatus.UNKNOWN;
     if (areaRenderer != null && areaRenderer[section] != null) areaRenderer[section].refresh = true;
   }
 
