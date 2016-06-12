@@ -207,7 +207,11 @@ public class ClientAdapter implements AdapterInterface {
 
   @Override
   public void dispose() {
-    Adapter.dispose();
+    try {
+      Adapter.dispose();
+    } catch (StopLoopException ignored) {
+
+    }
   }
 
   @Override
