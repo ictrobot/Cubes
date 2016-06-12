@@ -2,6 +2,7 @@ package ethanjones.cubes.side.server.integrated;
 
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.networking.socket.SocketMonitor;
+import ethanjones.cubes.world.save.Save;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,10 @@ import java.util.List;
 public class SingleplayerServer extends IntegratedServer {
 
   private SingleplayerClientIdentifier singleplayerClientIdentifier;
+
+  public SingleplayerServer(Save save) {
+    super(save);
+  }
 
   public void create() {
     super.create();

@@ -13,6 +13,7 @@ import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
 import ethanjones.cubes.world.reference.multi.WorldRegion;
 import ethanjones.cubes.world.storage.Area;
+import ethanjones.cubes.world.save.Save;
 import ethanjones.cubes.world.thread.GenerationTask;
 import ethanjones.cubes.world.thread.WorldRequestParameter;
 import ethanjones.data.DataGroup;
@@ -32,13 +33,15 @@ public abstract class World implements Disposable {
   public final Lock lock = new Lock();
   public final HashMap<AreaReference, Area> map;
   public final TerrainGenerator terrainGenerator;
+  public final Save save;
   public final AtomicBoolean disposed = new AtomicBoolean(false);
   public final BlockReference spawnpoint = new BlockReference();
   public final HashMap<UUID, Entity> entities = new HashMap<UUID, Entity>();
   public int time;
 
-  public World(TerrainGenerator terrainGenerator) {
+  public World(TerrainGenerator terrainGenerator, Save save) {
     this.terrainGenerator = terrainGenerator;
+    this.save = save;
     map = new HashMap<AreaReference, Area>(1024);
   }
 

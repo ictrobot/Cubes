@@ -23,7 +23,7 @@ public class WorldClient extends World {
   private final int renderDistance = Settings.getIntegerSettingValue(Settings.GRAPHICS_VIEW_DISTANCE); //keep 3 extra
 
   public WorldClient() {
-    super(null);
+    super(null, null);
   }
 
   @Override

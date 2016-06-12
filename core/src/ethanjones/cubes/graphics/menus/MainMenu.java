@@ -52,7 +52,7 @@ public class MainMenu extends Menu {
     singleplayer.addListener(new ChangeListener() {
       @Override
       public void changed(ChangeEvent event, Actor actor) {
-        Adapter.setMenu(new SingleplayerLoadingMenu());
+        Adapter.setMenu(new SingleplayerSavesMenu());
       }
     });
     buttons.add(multiplayer = new TextButton(Localization.get("menu.main.multiplayer"), skin)).row();

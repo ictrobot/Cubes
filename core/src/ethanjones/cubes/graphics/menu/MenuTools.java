@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.Align;
 
 public class MenuTools {
@@ -42,15 +43,24 @@ public class MenuTools {
 
   public static void setSize(float width, float height, Actor... actors) {
     for (Actor o : actors) {
-      o.setWidth(width);
-      o.setHeight(height);
+      o.setSize(width, height);
     }
   }
 
   public static void setPos(float x, float y, Actor... actors) {
     for (Actor o : actors) {
-      o.setX(x);
-      o.setY(y);
+      o.setPosition(x, y);
+    }
+  }
+
+  public static void setMaxPrefSize(Layout... actors) {
+    float width = 0f, height = 0f;
+    for (Layout actor : actors) {
+      if (actor.getPrefWidth() > width) width = actor.getPrefWidth();
+      if (actor.getPrefHeight() > height) height = actor.getPrefHeight();
+    }
+    for (Layout actor : actors) {
+      ((Actor) actor).setSize(width, height);
     }
   }
 
@@ -95,6 +105,22 @@ public class MenuTools {
   public static void copyPosAndSize(Actor main, Actor... others) {
     setPos(main.getX(), main.getY(), others);
     setSize(main.getWidth(), main.getHeight(), others);
+  }
+
+  public static void arrangeX(float y, boolean centerY, Actor... actors) {
+    float w = ((float) Gdx.graphics.getWidth() / (actors.length + 1));
+    for (int i = 0; i < actors.length; i++) {
+      Actor a = actors[i];
+      a.setPosition(((i + 1) * w) - (a.getWidth() / 2f), y - (centerY ? (a.getWidth() / 2f) : 0));
+    }
+  }
+
+  public static void arrangeY(float x, boolean centerX, Actor... actors) {
+    float w = ((float) Gdx.graphics.getHeight() / (actors.length + 1));
+    for (int i = 0; i < actors.length; i++) {
+      Actor a = actors[i];
+      a.setPosition(x - (centerX ? (a.getWidth() / 2f) : 0), ((i + 1) * w) - (a.getHeight() / 2f));
+    }
   }
 
   public static TextButton getBackButton(final Menu menu) {

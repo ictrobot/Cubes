@@ -13,13 +13,21 @@ import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.command.CommandManager;
 import ethanjones.cubes.world.generator.smooth.SmoothWorld;
 import ethanjones.cubes.world.server.WorldServer;
+import ethanjones.cubes.world.save.Save;
 
 import java.util.List;
 
 public abstract class CubesServer extends Cubes implements TimeHandler {
 
+  private final Save save;
+
   public CubesServer() {
+    this(null);
+  }
+
+  public CubesServer(Save save) {
     super(Side.Server);
+    this.save = save;
   }
 
   @Override
@@ -29,7 +37,7 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
     CommandManager.reset();
     NetworkingManager.serverInit();
 
-    world = new WorldServer(new SmoothWorld());
+    world = new WorldServer(new SmoothWorld(), save);
 
     //Sided.getTiming().addHandler(this, 250);
 

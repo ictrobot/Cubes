@@ -1,5 +1,7 @@
 package ethanjones.cubes.world.server;
 
+import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.entity.Entity;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketEntityAdd;
@@ -9,6 +11,7 @@ import ethanjones.cubes.networking.packets.PacketWorldTime;
 import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.generator.TerrainGenerator;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
+import ethanjones.cubes.world.save.Save;
 import ethanjones.cubes.world.thread.GenerationTask;
 import ethanjones.cubes.world.thread.WorldRequestParameter;
 import ethanjones.cubes.world.thread.WorldTasks;
@@ -18,8 +21,9 @@ import java.util.UUID;
 
 public class WorldServer extends World {
 
-  public WorldServer(TerrainGenerator terrainGenerator) {
-    super(terrainGenerator);
+  public WorldServer(TerrainGenerator terrainGenerator, Save save) {
+    super(terrainGenerator, save == null ? getDefaultSave() : save);
+    Log.info("Save '" + this.save.name + "' in '" + this.save.fileHandle.file().getAbsolutePath() + "'");
     spawnpoint.setFromBlockReference(terrainGenerator.spawnPoint(this));
   }
 
@@ -79,5 +83,13 @@ public class WorldServer extends World {
   public void setTime(int time) {
     super.setTime(time);
     NetworkingManager.sendPacketToAllClients(new PacketWorldTime(this.time));
+  }
+
+  private static Save getDefaultSave() {
+    Save save = new Save();
+    save.name = "world";
+    save.fileHandle = Compatibility.get().getBaseFolder().child("world");
+    save.fileHandle.mkdirs();
+    return save;
   }
 }

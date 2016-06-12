@@ -4,10 +4,19 @@ import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.CubesServer;
+import ethanjones.cubes.world.save.Save;
 
 public abstract class IntegratedServer extends CubesServer implements Runnable {
 
   private Thread thread = null;
+
+  public IntegratedServer() {
+    super();
+  }
+
+  public IntegratedServer(Save save) {
+    super(save);
+  }
 
   @Override
   public void run() {

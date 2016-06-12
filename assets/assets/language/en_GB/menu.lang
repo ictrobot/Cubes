@@ -9,6 +9,19 @@ menu.main.serveronly=Server only
 menu.main.settings=Settings
 menu.main.quit=Quit
 
+menu.singleplayer.title=Singleplayer
+menu.singleplayer.play=Play
+menu.singleplayer.delete=Delete
+menu.singleplayer.create=Create
+
+menu.singleplayer.create.title=New Save
+menu.singleplayer.create.name=Save name
+menu.singleplayer.create.start=Start
+
+menu.singleplayer.delete.title=Delete Save?
+menu.singleplayer.delete.text=Do you really want to delete %s?
+menu.singleplayer.delete.delete=Delete %s
+
 menu.multiplayer.title=Multiplayer
 menu.multiplayer.address=Address
 menu.multiplayer.port=Port (%s)

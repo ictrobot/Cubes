@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad.TouchpadStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -36,6 +37,9 @@ public class Menu {
     skin.add("default", new ScrollPane.ScrollPaneStyle());
 
     skin.add("default", new TouchpadStyle(new TextureRegionDrawable(Assets.getTextureRegion("core:hud/touch/TouchpadBackground.png")), new TextureRegionDrawable(Assets.getTextureRegion("core:hud/touch/TouchpadKnob.png"))));
+
+    NinePatch listSelected = new NinePatch(Assets.getTextureRegion("core:hud/ListSelected.png"), 8, 8, 8, 8);
+    skin.add("default", new ListStyle(Fonts.menu, Color.WHITE, Color.GRAY, new NinePatchDrawable(listSelected)));
   }
 
   public Stage stage;

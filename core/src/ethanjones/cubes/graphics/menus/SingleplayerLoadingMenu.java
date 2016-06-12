@@ -6,13 +6,16 @@ import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.server.integrated.SingleplayerServer;
+import ethanjones.cubes.world.save.Save;
 
 public class SingleplayerLoadingMenu extends InfoMenu {
 
+  private final Save save;
   private int frameNum = 0;
 
-  public SingleplayerLoadingMenu() {
+  public SingleplayerLoadingMenu(Save save) {
     super(Localization.get("menu.general.loading"), false);
+    this.save = save;
   }
 
   @Override
@@ -23,7 +26,7 @@ public class SingleplayerLoadingMenu extends InfoMenu {
     try {
       try {
         NetworkingManager.singleplayerPreInit();
-        Adapter.setServer(new SingleplayerServer());
+        Adapter.setServer(new SingleplayerServer(save));
         Adapter.setClient(new CubesClient());
         Adapter.setMenu(new WorldLoadingMenu());
       } catch (Exception e) {
