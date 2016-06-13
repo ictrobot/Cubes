@@ -125,15 +125,16 @@ public class Save {
 
   public synchronized SaveAreaList writeSaveAreaList(String tag) {
     if (readOnly) return saveAreaList;
+    long time = System.currentTimeMillis();
     if (tag == null) {
       if (saveAreaListModCount == saveAreaList.getModCount()) return saveAreaList;
-      tag = Long.toString(System.currentTimeMillis());
+      tag = Long.toString(time);
     }
     saveAreaListModCount = saveAreaList.getModCount();
     FileHandle file = folderAreaList().child(tag);
     try {
       OutputStream outputStream = file.write(false, 8192);
-      saveAreaList.write(new DataOutputStream(outputStream));
+      saveAreaList.write(new DataOutputStream(outputStream), time);
       outputStream.close();
 
       fileHandle.child("areatag").writeString(tag, false, "UTF-8");

@@ -20,7 +20,8 @@ public class SaveAreaList {
     return areas.get(getLong(x, z));
   }
 
-  public void write(DataOutputStream stream) throws IOException {
+  public void write(DataOutputStream stream, long time) throws IOException {
+    stream.writeLong(time);
     stream.writeLong(areas.size);
     for (Entry<byte[]> area : areas) {
       stream.writeLong(area.key);
@@ -29,6 +30,7 @@ public class SaveAreaList {
   }
 
   public void read(DataInputStream stream) throws IOException {
+    long time = stream.readLong();
     int size = (int) stream.readLong();
     areas.clear(size);
     modCount++;
