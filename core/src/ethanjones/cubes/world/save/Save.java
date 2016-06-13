@@ -14,20 +14,27 @@ import java.util.UUID;
 public class Save {
   public final String name;
   public final FileHandle fileHandle;
+  public final boolean readOnly;
   private SaveOptions saveOptions;
   private SaveAreaList saveAreaList;
   private int saveAreaListModCount = 0;
 
   public Save(String name, FileHandle fileHandle) {
+    this(name, fileHandle, false);
+  }
+
+  public Save(String name, FileHandle fileHandle, boolean readOnly) {
     this.name = name;
     this.fileHandle = fileHandle;
     this.fileHandle.mkdirs();
     folderArea().mkdirs();
     folderAreaList().mkdirs();
     folderPlayer().mkdirs();
+    this.readOnly = readOnly;
   }
 
   public boolean writeArea(Area area) {
+    if (readOnly) return false;
     return SaveAreaIO.write(this, area);
   }
 
@@ -39,6 +46,7 @@ public class Save {
   }
 
   public void writePlayer(Player player) {
+    if (readOnly) return;
     FileHandle folder = folderPlayer();
     FileHandle file = folder.child(player.uuid.toString());
     DataGroup data = player.write();
@@ -79,7 +87,7 @@ public class Save {
   }
 
   public synchronized SaveOptions writeSaveOptions() {
-    if (saveOptions != null) {
+    if (!readOnly && saveOptions != null) {
       try {
         DataGroup dataGroup = saveOptions.write();
         Data.output(dataGroup, fileHandle.child("options").file());
@@ -116,6 +124,7 @@ public class Save {
   }
 
   public synchronized SaveAreaList writeSaveAreaList(String tag) {
+    if (readOnly) return saveAreaList;
     if (tag == null) {
       if (saveAreaListModCount == saveAreaList.getModCount()) return saveAreaList;
       tag = Long.toString(System.currentTimeMillis());
