@@ -14,6 +14,7 @@ import com.badlogic.gdx.Gdx;
 
 public class Adapter {
 
+  private static final int JOIN_TIMEOUT = 10000;
   private static AdapterInterface adapter;
 
   public static void setClient(CubesClient cubesClient) throws UnsupportedOperationException {
@@ -91,7 +92,7 @@ public class Adapter {
       }
       if (cubesServer != null) {
         try {
-          cubesServer.getThread().join(1000);
+          cubesServer.getThread().join(JOIN_TIMEOUT);
         } catch (InterruptedException e) {
         }
         if (cubesServer.getThread().isAlive()) {
@@ -113,7 +114,7 @@ public class Adapter {
       }
       if (cubesClient != null) {
         try {
-          cubesClient.getThread().join(1000);
+          cubesClient.getThread().join(JOIN_TIMEOUT);
         } catch (InterruptedException e) {
         }
         if (cubesClient.getThread().isAlive()) {
@@ -135,7 +136,7 @@ public class Adapter {
       }
       if (cubesClient != null) {
         try {
-          cubesClient.getThread().join(1000);
+          cubesClient.getThread().join(JOIN_TIMEOUT);
         } catch (InterruptedException e) {
         }
         if (cubesClient.getThread().isAlive()) {
@@ -144,7 +145,7 @@ public class Adapter {
       }
       if (cubesServer != null) {
         try {
-          cubesServer.getThread().join(1000);
+          cubesServer.getThread().join(JOIN_TIMEOUT);
         } catch (InterruptedException e) {
         }
         if (cubesServer.getThread().isAlive()) {
