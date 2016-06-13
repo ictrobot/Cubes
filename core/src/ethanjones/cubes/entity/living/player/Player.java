@@ -15,6 +15,7 @@ import ethanjones.cubes.side.server.command.CommandPermission;
 import ethanjones.cubes.side.server.command.CommandSender;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.World;
+import ethanjones.data.DataGroup;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Renderable;
@@ -23,6 +24,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class Player extends LivingEntity implements CommandSender, RenderableProvider {
@@ -38,15 +40,16 @@ public class Player extends LivingEntity implements CommandSender, RenderablePro
 
   public Player(String username, UUID uuid) {
     super("core:player", 20);
-    this.username = username;
     this.uuid = uuid;
+    this.username = username;
     this.clientIdentifier = null;
     this.inventory = new PlayerInventory(this);
     this.height = PLAYER_HEIGHT;
   }
 
-  public Player(String username, ClientIdentifier clientIdentifier) {
+  public Player(String username, UUID uuid, ClientIdentifier clientIdentifier) {
     super("core:player", 20);
+    this.uuid = uuid;
     this.username = username;
     this.clientIdentifier = clientIdentifier;
     this.inventory = new PlayerInventory(this);
@@ -114,4 +117,18 @@ public class Player extends LivingEntity implements CommandSender, RenderablePro
     this.currentlyMining = currentlyMining;
   }
 
+  public DataGroup write() {
+    DataGroup dataGroup = super.write();
+    dataGroup.put("username", username);
+    dataGroup.put("inventory", inventory.write());
+    return dataGroup;
+  }
+
+
+  public void read(DataGroup dataGroup) {
+    if (!username.equals(dataGroup.getString("username"))) {
+      throw new IllegalStateException("Player username does not match");
+    }
+    inventory.read(dataGroup.getGroup("inventory"));
+  }
 }

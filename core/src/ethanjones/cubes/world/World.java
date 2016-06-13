@@ -2,9 +2,11 @@ package ethanjones.cubes.world;
 
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.system.CubesSecurity;
 import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.core.util.Lock;
 import ethanjones.cubes.entity.Entity;
+import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.generator.GeneratorManager;
 import ethanjones.cubes.world.generator.TerrainGenerator;
@@ -23,6 +25,7 @@ import com.badlogic.gdx.utils.Disposable;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -212,6 +215,7 @@ public abstract class World implements Disposable {
 
   public void save(String tag) {
     if (save == null) return;
+    savePlayers();
     saveAreas();
     save.writeSaveAreaList(tag);
   }
@@ -225,5 +229,12 @@ public abstract class World implements Disposable {
     }
     lock.readUnlock();
     Log.debug("Saving areas: wrote " + written + " total " + total);
+  }
+
+  public void savePlayers() {
+    List<ClientIdentifier> clients = Cubes.getServer().getAllClients();
+    for (ClientIdentifier client : clients) {
+      save.writePlayer(client.getPlayer());
+    }
   }
 }

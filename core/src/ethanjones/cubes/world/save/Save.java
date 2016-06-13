@@ -1,6 +1,7 @@
 package ethanjones.cubes.world.save;
 
 import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.world.storage.Area;
 import ethanjones.data.Data;
 import ethanjones.data.DataGroup;
@@ -8,6 +9,7 @@ import ethanjones.data.DataGroup;
 import com.badlogic.gdx.files.FileHandle;
 
 import java.io.*;
+import java.util.UUID;
 
 public class Save {
   public final String name;
@@ -22,6 +24,7 @@ public class Save {
     this.fileHandle.mkdirs();
     folderArea().mkdirs();
     folderAreaList().mkdirs();
+    folderPlayer().mkdirs();
   }
 
   public boolean writeArea(Area area) {
@@ -33,6 +36,32 @@ public class Save {
     byte[] hash = saveAreaList.getArea(x, z);
     if (hash == null) return null;
     return SaveAreaIO.read(this, x, z, hash);
+  }
+
+  public void writePlayer(Player player) {
+    FileHandle folder = folderPlayer();
+    FileHandle file = folder.child(player.uuid.toString());
+    DataGroup data = player.write();
+    try {
+      Data.output(data, file.file());
+    } catch (Exception e) {
+      Log.warning("Failed to write player", e);
+    }
+  }
+
+  public Player readPlayer(UUID uuid) {
+    FileHandle folder = folderPlayer();
+    FileHandle file = folder.child(uuid.toString());
+    if (!file.exists()) return null;
+    try {
+      DataGroup data = (DataGroup) Data.input(file.file());
+      Player player = new Player(data.getString("username"), uuid);
+      player.read(data);
+      return player;
+    } catch (Exception e) {
+      Log.warning("Failed to read player", e);
+      return null;
+    }
   }
 
   public synchronized SaveOptions getSaveOptions() {
@@ -111,6 +140,10 @@ public class Save {
 
   public FileHandle folderAreaList() {
     return fileHandle.child("arealist");
+  }
+
+  public FileHandle folderPlayer() {
+    return fileHandle.child("player");
   }
 
   @Override

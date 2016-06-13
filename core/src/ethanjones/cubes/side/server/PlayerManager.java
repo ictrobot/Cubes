@@ -62,7 +62,11 @@ public class PlayerManager {
     packetConnected.worldTime = server.world.time;
     NetworkingManager.sendPacketToClient(packetConnected, client);
 
-    teleportToSpawn();
+    PacketPlayerInventory packetPlayerInventory = new PacketPlayerInventory();
+    packetPlayerInventory.inv = clientIdentifier.getPlayer().getInventory().write();
+    NetworkingManager.sendPacketToClient(packetPlayerInventory, client);
+
+    if (clientIdentifier.getPlayer().position.isZero()) teleportToSpawn();
 
     PacketChat packetChat = new PacketChat(); //TODO server should log connecting and disconnecting messages
     packetChat.msg = packetConnect.username + " joined the game";
