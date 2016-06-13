@@ -327,7 +327,7 @@ public class Area implements Lock.HasLock {
         tempReference.setFromAreaCoordinates(areaX - 1, areaZ);
         area = world.getArea(tempReference, false);
         if (area != null) {
-          area.lock.writeLock();
+          Lock.waitToLock(true, area);
           if (area.isReady()) area.update(SIZE_BLOCKS - 1, y, z, getRef(SIZE_BLOCKS - 1, y, z));
           if (updateRender) area.updateRender(section);
           area.lock.writeUnlock();
@@ -336,7 +336,7 @@ public class Area implements Lock.HasLock {
         tempReference.setFromAreaCoordinates(areaX + 1, areaZ);
         area = world.getArea(tempReference, false);
         if (area != null) {
-          area.lock.writeLock();
+          Lock.waitToLock(true, area);
           if (area.isReady()) area.update(SIZE_BLOCKS + 1, y, z, getRef(SIZE_BLOCKS + 1, y, z));
           if (updateRender) area.updateRender(section);
           area.lock.writeUnlock();
@@ -346,7 +346,7 @@ public class Area implements Lock.HasLock {
         tempReference.setFromAreaCoordinates(areaX, areaZ - 1);
         area = world.getArea(tempReference, false);
         if (area != null) {
-          area.lock.writeLock();
+          Lock.waitToLock(true, area);
           if (area.isReady()) area.update(x, y, SIZE_BLOCKS - 1, getRef(x, y, SIZE_BLOCKS - 1));
           if (updateRender) area.updateRender(section);
           area.lock.writeUnlock();
@@ -355,7 +355,7 @@ public class Area implements Lock.HasLock {
         tempReference.setFromAreaCoordinates(areaX, areaZ + 1);
         area = world.getArea(tempReference, false);
         if (area != null) {
-          area.lock.writeLock();
+          Lock.waitToLock(true, area);
           if (area.isReady()) area.update(x, y, SIZE_BLOCKS + 1, getRef(x, y, SIZE_BLOCKS + 1));
           if (updateRender) area.updateRender(section);
           area.lock.writeUnlock();

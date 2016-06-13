@@ -40,9 +40,18 @@ public class Lock {
     return t;
   }
 
+  public static void waitToLock(boolean write, HasLock lock) {
+    java.util.concurrent.locks.Lock l = write ? lock.getLock().write : lock.getLock().read;
+    while (true) {
+      if (l.tryLock()) return;
+      Thread.yield();
+    }
+  }
+
   public static void waitToLockAll(boolean write, HasLock... locks) {
     while (true) {
       if (lockAll(write, locks)) return;
+      Thread.yield();
     }
   }
 
