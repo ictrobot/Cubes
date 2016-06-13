@@ -37,7 +37,6 @@ public class SingleplayerSavesMenu extends Menu {
     play.addListener(new ChangeListener() {
       @Override
       public void changed(ChangeEvent event, Actor actor) {
-        ;
         Save save = listLabel.getSelected();
         if (save == null) return;
         Adapter.setMenu(new SingleplayerLoadingMenu(save));

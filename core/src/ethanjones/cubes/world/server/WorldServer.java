@@ -86,10 +86,6 @@ public class WorldServer extends World {
   }
 
   private static Save getDefaultSave() {
-    Save save = new Save();
-    save.name = "world";
-    save.fileHandle = Compatibility.get().getBaseFolder().child("world");
-    save.fileHandle.mkdirs();
-    return save;
+    return new Save("world", Compatibility.get().getBaseFolder().child("world"));
   }
 }

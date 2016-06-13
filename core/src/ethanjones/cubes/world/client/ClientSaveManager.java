@@ -19,9 +19,7 @@ public class ClientSaveManager {
     FileHandle[] list = clientSavesFolder.list();
     Save[] saves = new Save[list.length];
     for (int i = 0; i < list.length; i++) {
-      saves[i] = new Save();
-      saves[i].fileHandle = list[i];
-      saves[i].name = list[i].name();
+      saves[i] = new Save(list[i].name(), list[i]);
     }
     return saves;
   }
@@ -32,10 +30,7 @@ public class ClientSaveManager {
     FileHandle folder = getSavesFolder();
     FileHandle handle = folder.child(name);
     handle.mkdirs();
-    Save save = new Save();
-    save.name = name;
-    save.fileHandle = handle;
-    return save;
+    return new Save(name, handle);
   }
 
   public static void deleteSave(Save save) {
