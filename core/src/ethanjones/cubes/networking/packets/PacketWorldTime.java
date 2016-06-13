@@ -10,7 +10,7 @@ import ethanjones.cubes.side.common.Cubes;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
-@Direction(PacketDirection.TO_SERVER)
+@Direction(PacketDirection.TO_CLIENT)
 @Priority(PacketPriority.HIGH)
 public class PacketWorldTime extends Packet {
 
