@@ -11,7 +11,6 @@ import ethanjones.cubes.networking.socket.SocketMonitor;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.command.CommandManager;
-import ethanjones.cubes.world.generator.smooth.SmoothWorld;
 import ethanjones.cubes.world.server.WorldServer;
 import ethanjones.cubes.world.save.Save;
 
@@ -37,7 +36,7 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
     CommandManager.reset();
     NetworkingManager.serverInit();
 
-    world = new WorldServer(new SmoothWorld(), save);
+    world = new WorldServer(save);
 
     //Sided.getTiming().addHandler(this, 250);
 

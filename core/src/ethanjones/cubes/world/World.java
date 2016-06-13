@@ -7,6 +7,7 @@ import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.core.util.Lock;
 import ethanjones.cubes.entity.Entity;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.world.generator.GeneratorManager;
 import ethanjones.cubes.world.generator.TerrainGenerator;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
@@ -39,9 +40,9 @@ public abstract class World implements Disposable {
   public final HashMap<UUID, Entity> entities = new HashMap<UUID, Entity>();
   public int time;
 
-  public World(TerrainGenerator terrainGenerator, Save save) {
-    this.terrainGenerator = terrainGenerator;
+  public World(Save save) {
     this.save = save;
+    this.terrainGenerator = save == null ? null : GeneratorManager.getTerrainGenerator(save.getSaveOptions());
     map = new HashMap<AreaReference, Area>(1024);
   }
 

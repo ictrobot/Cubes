@@ -25,6 +25,7 @@ public class Save {
         saveOptions.read(dataGroup);
       } catch (Exception e) {
         Log.warning("Failed to read save options", e);
+        writeSaveOptions();
       }
     }
     return saveOptions;
@@ -40,6 +41,12 @@ public class Save {
       }
     }
     return saveOptions;
+  }
+
+  public SaveOptions setSaveOptions(SaveOptions saveOptions) {
+    this.saveOptions = saveOptions;
+    writeSaveOptions();
+    return this.saveOptions;
   }
 
   @Override

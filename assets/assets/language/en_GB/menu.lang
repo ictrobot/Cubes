@@ -16,6 +16,7 @@ menu.singleplayer.create=Create
 
 menu.singleplayer.create.title=New Save
 menu.singleplayer.create.name=Save name
+menu.singleplayer.create.seed=Terrain seed
 menu.singleplayer.create.start=Start
 
 menu.singleplayer.delete.title=Delete Save?

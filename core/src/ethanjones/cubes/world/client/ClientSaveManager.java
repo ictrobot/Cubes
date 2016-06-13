@@ -3,6 +3,7 @@ package ethanjones.cubes.world.client;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.world.save.Save;
+import ethanjones.cubes.world.save.SaveOptions;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.MathUtils;
@@ -24,13 +25,31 @@ public class ClientSaveManager {
     return saves;
   }
 
-  public static Save createSave(String name) {
+  public static Save createSave(String name, String generatorID, String stringSeed) {
     if (name != null) name = name.trim();
     if (name == null || name.isEmpty()) name = "world-" + Integer.toHexString(MathUtils.random.nextInt());
     FileHandle folder = getSavesFolder();
     FileHandle handle = folder.child(name);
     handle.mkdirs();
-    return new Save(name, handle);
+    Save s = new Save(name, handle);
+
+    long seed = 0;
+    try {
+      seed = Long.parseLong(stringSeed);
+    } catch (NumberFormatException e) {
+      if (stringSeed.isEmpty()) {
+        seed = MathUtils.random.nextLong();
+      } else {
+        seed = stringSeed.hashCode();
+      }
+    }
+
+    SaveOptions options = new SaveOptions();
+    options.worldSeed = seed;
+    options.worldType = generatorID;
+    s.setSaveOptions(options);
+
+    return s;
   }
 
   public static void deleteSave(Save save) {

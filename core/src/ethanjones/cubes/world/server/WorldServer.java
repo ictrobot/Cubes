@@ -9,7 +9,6 @@ import ethanjones.cubes.networking.packets.PacketEntityRemove;
 import ethanjones.cubes.networking.packets.PacketEntityUpdate;
 import ethanjones.cubes.networking.packets.PacketWorldTime;
 import ethanjones.cubes.world.World;
-import ethanjones.cubes.world.generator.TerrainGenerator;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
 import ethanjones.cubes.world.save.Save;
 import ethanjones.cubes.world.thread.GenerationTask;
@@ -21,8 +20,8 @@ import java.util.UUID;
 
 public class WorldServer extends World {
 
-  public WorldServer(TerrainGenerator terrainGenerator, Save save) {
-    super(terrainGenerator, save == null ? getDefaultSave() : save);
+  public WorldServer(Save save) {
+    super(save == null ? getDefaultSave() : save);
     Log.info("Save '" + this.save.name + "' in '" + this.save.fileHandle.file().getAbsolutePath() + "'");
     spawnpoint.setFromBlockReference(terrainGenerator.spawnPoint(this));
   }

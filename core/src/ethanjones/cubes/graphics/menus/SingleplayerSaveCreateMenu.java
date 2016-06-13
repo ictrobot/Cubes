@@ -5,9 +5,11 @@ import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menu.MenuTools;
 import ethanjones.cubes.world.client.ClientSaveManager;
+import ethanjones.cubes.world.generator.GeneratorManager;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -16,6 +18,8 @@ public class SingleplayerSaveCreateMenu extends Menu {
 
   Label title;
   TextField name;
+  SelectBox<SaveTypeDisplay> type;
+  TextField seed;
   TextButton start;
   TextButton back;
 
@@ -30,18 +34,32 @@ public class SingleplayerSaveCreateMenu extends Menu {
         return c >= 0x20 && c < 0x7F;
       }
     });
+
+    type = new SelectBox<SaveTypeDisplay>(skin);
+    String[] types = GeneratorManager.ids();
+    SaveTypeDisplay[] display = new SaveTypeDisplay[types.length];
+    for (int i = 0; i < types.length; i++) {
+      display[i] = new SaveTypeDisplay(types[i]);
+    }
+    type.setItems(display);
+
+    seed = new TextField("", skin);
+    seed.setMessageText(Localization.get("menu.singleplayer.create.seed"));
+
     start = new TextButton(Localization.get("menu.singleplayer.create.start"), skin);
     back = MenuTools.getBackButton(this);
 
     start.addListener(new ChangeListener() {
       @Override
       public void changed(ChangeEvent event, Actor actor) {
-        Adapter.setMenu(new SingleplayerLoadingMenu(ClientSaveManager.createSave(name.getText())));
+        Adapter.setMenu(new SingleplayerLoadingMenu(ClientSaveManager.createSave(name.getText(), type.getSelected().id, seed.getText())));
       }
     });
 
     stage.addActor(title);
     stage.addActor(name);
+    stage.addActor(type);
+    stage.addActor(seed);
     stage.addActor(start);
     stage.addActor(back);
   }
@@ -50,8 +68,21 @@ public class SingleplayerSaveCreateMenu extends Menu {
   public void resize(int width, int height) {
     super.resize(width, height);
     MenuTools.setTitle(title);
-    MenuTools.arrange(width / 4, height / 2, width / 2, height / 4, MenuTools.Direction.Above, start, name);
+    MenuTools.arrange(width / 4, height / 4, width / 2, height / 2, MenuTools.Direction.Above, start, seed, type, name);
     MenuTools.copyPosAndSize(start, back);
     back.setY(0);
+  }
+
+  private static class SaveTypeDisplay {
+    public final String id;
+
+    public SaveTypeDisplay(String id) {
+      this.id = id;
+    }
+
+    @Override
+    public String toString() {
+      return GeneratorManager.getName(id);
+    }
   }
 }
