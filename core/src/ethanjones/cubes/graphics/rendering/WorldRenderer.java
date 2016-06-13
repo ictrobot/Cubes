@@ -94,7 +94,7 @@ public class WorldRenderer implements Disposable {
       boolean nullArea = area == null || ySection >= area.height;
       int traverse = 0;
 
-      if (!nullArea) {
+      if (!nullArea && ySection >= 0) {
         if (lockedAreas.add(area)) {
           area.lock.writeLock();
         }
