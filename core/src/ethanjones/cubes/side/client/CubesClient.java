@@ -22,7 +22,10 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 
+import java.util.UUID;
+
 public class CubesClient extends Cubes implements ApplicationListener {
+  public static UUID uuid;
 
   public Player player;
   public InputChain inputChain;

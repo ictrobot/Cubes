@@ -9,6 +9,7 @@ import ethanjones.cubes.networking.packets.PacketChat;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
+import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.command.CommandPermission;
 import ethanjones.cubes.side.server.command.CommandSender;
@@ -54,6 +55,7 @@ public class Player extends LivingEntity implements CommandSender, RenderablePro
 
   public Player(Camera camera) {
     super("core:player", camera.position, camera.direction, 20);
+    this.uuid = CubesClient.uuid;
     this.username = Settings.getStringSettingValue(Settings.USERNAME);
     this.clientIdentifier = null;
     this.inventory = new PlayerInventory(this);

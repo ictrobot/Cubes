@@ -3,10 +3,7 @@ package ethanjones.cubes.core.settings;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Compatibility;
-import ethanjones.cubes.core.settings.type.BooleanSetting;
-import ethanjones.cubes.core.settings.type.FloatSetting;
-import ethanjones.cubes.core.settings.type.IntegerSetting;
-import ethanjones.cubes.core.settings.type.StringSetting;
+import ethanjones.cubes.core.settings.type.*;
 import ethanjones.cubes.graphics.Graphics;
 import ethanjones.data.Data;
 import ethanjones.data.DataGroup;
@@ -21,6 +18,7 @@ import java.util.Map;
 public class Settings {
 
   public static final String USERNAME = "username";
+  public static final String UUID = "uuid";
   public static final String GRAPHICS_VIEW_DISTANCE = "graphics.viewDistance";
   public static final String GRAPHICS_FOV = "graphics.fieldOfView";
   public static final String GRAPHICS_VSYNC = "graphics.vsync";
@@ -38,6 +36,7 @@ public class Settings {
 
   public static void init() {
     addSetting(USERNAME, new StringSetting("User"));
+    addSetting(UUID, new PlayerUUIDSetting());
     addSetting(GRAPHICS_VIEW_DISTANCE, new IntegerSetting(2, 2, 16, IntegerSetting.Type.Slider));
     addSetting(GRAPHICS_FOV, new IntegerSetting(70, 10, 120, IntegerSetting.Type.Slider));
     addSetting(GRAPHICS_VSYNC, new BooleanSetting(false) {
