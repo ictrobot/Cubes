@@ -330,6 +330,7 @@ public class PlayerManager {
   }
 
   public void disconnected() {
+    Cubes.getServer().world.save.writePlayer(client.getPlayer());
     Cubes.getServer().world.removeEntity(client.getPlayer().uuid);
 
     PacketChat packetChat = new PacketChat();

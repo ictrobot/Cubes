@@ -7,6 +7,8 @@ import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.core.util.Lock;
 import ethanjones.cubes.entity.Entity;
 import ethanjones.cubes.networking.server.ClientIdentifier;
+import ethanjones.cubes.side.Side;
+import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.generator.GeneratorManager;
 import ethanjones.cubes.world.generator.TerrainGenerator;
@@ -167,8 +169,10 @@ public abstract class World implements Disposable {
 
     disposed.set(true);
 
-    for (Entry<AreaReference, Area> entry : map.entrySet()) {
-      entry.getValue().ensureUnload();
+    if (Sided.getSide() == Side.Server || !Area.isShared()) {
+      for (Entry<AreaReference, Area> entry : map.entrySet()) {
+        entry.getValue().ensureUnload();
+      }
     }
     map.clear();
     for (Entity entity : entities.values()) {
@@ -215,23 +219,25 @@ public abstract class World implements Disposable {
 
   public void save(String tag) {
     if (save == null) return;
+    lock.readLock();
+
     savePlayers();
     saveAreas();
     save.writeSaveAreaList(tag);
+
+    lock.readUnlock();
   }
 
-  public void saveAreas() {
-    lock.readLock();
+  protected void saveAreas() {
     int total = 0, written = 0;
     for (Entry<AreaReference, Area> entry : map.entrySet()) {
       if (save.writeArea(entry.getValue())) written++;
       total++;
     }
-    lock.readUnlock();
     Log.debug("Saving areas: wrote " + written + " total " + total);
   }
 
-  public void savePlayers() {
+  protected void savePlayers() {
     List<ClientIdentifier> clients = Cubes.getServer().getAllClients();
     for (ClientIdentifier client : clients) {
       save.writePlayer(client.getPlayer());

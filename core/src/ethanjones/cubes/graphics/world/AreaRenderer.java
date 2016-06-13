@@ -203,7 +203,7 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
 
   @Override
   public void reset() {
-    if (area != null) area.areaRenderer[ySection] = null;
+    if (area != null && area.areaRenderer != null) area.areaRenderer[ySection] = null;
     free(meshs);
     area = null;
     refresh = true;
