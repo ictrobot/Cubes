@@ -21,7 +21,7 @@ public class PacketArea extends Packet {
 
   @Override
   public void write(DataOutputStream dataOutputStream) throws Exception {
-    area.write(dataOutputStream, false);
+    area.write(dataOutputStream, false, true);
   }
 
   @Override

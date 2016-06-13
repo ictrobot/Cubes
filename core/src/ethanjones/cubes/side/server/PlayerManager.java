@@ -3,7 +3,7 @@ package ethanjones.cubes.side.server;
 import ethanjones.cubes.core.event.EventHandler;
 import ethanjones.cubes.core.event.entity.living.player.PlayerMovementEvent;
 import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
-import ethanjones.cubes.core.event.world.generation.AreaGeneratedEvent;
+import ethanjones.cubes.core.event.world.generation.AreaLoadedEvent;
 import ethanjones.cubes.entity.ItemEntity;
 import ethanjones.cubes.entity.living.player.PlayerInventory;
 import ethanjones.cubes.item.ItemTool;
@@ -195,7 +195,7 @@ public class PlayerManager {
   }
 
   @EventHandler
-  public void areaGenerated(AreaGeneratedEvent event) {
+  public void areaLoaded(AreaLoadedEvent event) {
     Area area = event.getArea();
     synchronized (this) {
       if (Math.abs(area.areaX - playerArea.areaX) > loadDistance) return;

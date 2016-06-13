@@ -9,6 +9,7 @@ import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.networking.socket.SocketMonitor;
 import ethanjones.cubes.side.Side;
+import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.command.CommandManager;
 import ethanjones.cubes.world.server.WorldServer;
@@ -18,6 +19,7 @@ import java.util.List;
 
 public abstract class CubesServer extends Cubes implements TimeHandler {
 
+  private static final int SAVE_TIME = 60000;
   private final Save save;
 
   public CubesServer() {
@@ -38,6 +40,7 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
 
     world = new WorldServer(save);
 
+    Sided.getTiming().addHandler(this, SAVE_TIME);
     //Sided.getTiming().addHandler(this, 250);
 
     ModManager.postModEvent(new StartingServerEvent());
@@ -66,6 +69,7 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
   public void time(int interval) {
     if (shouldReturn()) return;
     super.time(interval);
+    if (interval == SAVE_TIME) world.save(null);
     //if (interval != 250) return;
     //world.setBlock(Blocks.dirt, (int) (Math.random() * 16), (int) (8 + (Math.random() * 7)), (int) (Math.random() * 16));
   }

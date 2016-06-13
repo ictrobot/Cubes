@@ -1,6 +1,6 @@
 package ethanjones.cubes.world.thread;
 
-import ethanjones.cubes.core.event.world.generation.AreaGeneratedEvent;
+import ethanjones.cubes.core.event.world.generation.AreaLoadedEvent;
 import ethanjones.cubes.core.event.world.generation.FeaturesEvent;
 import ethanjones.cubes.core.event.world.generation.GenerationEvent;
 import ethanjones.cubes.core.system.ThreadPool;
@@ -37,6 +37,12 @@ public class WorldTasks {
   protected static void generate(AreaReference areaReference, WorldServer world) {
     Area area = world.getArea(areaReference, false);
     if (area != null) return;
+    area = world.save.readArea(areaReference.areaX, areaReference.areaZ);
+    if (area != null) {
+      world.setAreaInternal(area);
+      if (area.features.get() != null) new AreaLoadedEvent(area, areaReference).post();
+      return;
+    }
 
     area = new Area(areaReference.areaX, areaReference.areaZ);
     world.getTerrainGenerator().generate(area);
@@ -57,7 +63,7 @@ public class WorldTasks {
       area.updateAll();
       area.rebuildHeightmap();
       SunLight.initialSunlight(area);
-      new AreaGeneratedEvent(area, areaReference).post();
+      new AreaLoadedEvent(area, areaReference).post();
     }
   }
 }

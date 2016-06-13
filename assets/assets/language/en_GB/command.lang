@@ -3,6 +3,7 @@ command.common.failedPermissionCheck=You do not have permission to run this comm
 command.common.onlyPlayer=Only players can run this command!
 command.common.exception=%s while running command
 
+command.common.value.stringValue.string=[string]
 command.common.value.floatValue.parsing=Not a number
 command.common.value.floatValue.string=[number]
 command.common.value.intValue.parsing=Not an integer

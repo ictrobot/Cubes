@@ -1,7 +1,6 @@
 package ethanjones.cubes.world;
 
 import ethanjones.cubes.block.Block;
-import ethanjones.cubes.core.event.world.generation.AreaGeneratedEvent;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.core.util.Lock;
@@ -13,6 +12,7 @@ import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
 import ethanjones.cubes.world.reference.multi.WorldRegion;
+import ethanjones.cubes.world.save.SaveAreaIO;
 import ethanjones.cubes.world.storage.Area;
 import ethanjones.cubes.world.save.Save;
 import ethanjones.cubes.world.thread.GenerationTask;
@@ -59,9 +59,6 @@ public abstract class World implements Disposable {
     Area old = map.put(areaReference.clone(), area);
 
     lock.writeUnlock();
-
-    //Must be after lock released to prevent dead locks
-    if (area.features()) new AreaGeneratedEvent(area, areaReference.clone()).post();
 
     synchronized (map) {
       map.notifyAll();
@@ -211,5 +208,22 @@ public abstract class World implements Disposable {
 
   public void syncEntity(UUID uuid) {
 
+  }
+
+  public void save(String tag) {
+    if (save == null) return;
+    saveAreas();
+    save.writeSaveAreaList(tag);
+  }
+
+  public void saveAreas() {
+    lock.readLock();
+    int total = 0, written = 0;
+    for (Entry<AreaReference, Area> entry : map.entrySet()) {
+      if (save.writeArea(entry.getValue())) written++;
+      total++;
+    }
+    lock.readUnlock();
+    Log.debug("Saving areas: wrote " + written + " total " + total);
   }
 }

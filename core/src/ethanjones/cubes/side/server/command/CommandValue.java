@@ -6,6 +6,18 @@ import ethanjones.cubes.side.common.Cubes;
 
 public abstract class CommandValue<T> {
 
+  public static final CommandValue<String> stringValue = new CommandValue<String>() {
+    @Override
+    public String getArgument(String string) throws CommandParsingException {
+      return string;
+    }
+
+    @Override
+    public String toString() {
+      return Localization.get("command.common.value.stringValue.string");
+    }
+  };
+
   public static final CommandValue<Float> floatValue = new CommandValue<Float>() {
     @Override
     public Float getArgument(String string) throws CommandParsingException {

@@ -4,11 +4,11 @@ import ethanjones.cubes.core.event.world.WorldEvent;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.storage.Area;
 
-public class AreaGeneratedEvent extends WorldEvent {
+public class AreaLoadedEvent extends WorldEvent {
   private final Area area;
   private final AreaReference areaReference;
 
-  public AreaGeneratedEvent(Area area, AreaReference areaReference) {
+  public AreaLoadedEvent(Area area, AreaReference areaReference) {
     super(false);
     this.area = area;
     this.areaReference = areaReference;

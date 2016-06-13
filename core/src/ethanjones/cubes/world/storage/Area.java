@@ -588,10 +588,12 @@ public class Area implements Lock.HasLock {
     return hashCode;
   }
 
-  public void write(DataOutputStream dataOutputStream, boolean resize) throws IOException {
+  public void write(DataOutputStream dataOutputStream, boolean resize, boolean writeCoordinates) throws IOException {
     lock.readLock();
-    dataOutputStream.writeInt(areaX);
-    dataOutputStream.writeInt(areaZ);
+    if (writeCoordinates) {
+      dataOutputStream.writeInt(areaX);
+      dataOutputStream.writeInt(areaZ);
+    }
     if (isBlank()) {
       dataOutputStream.writeInt(0);
       lock.readUnlock();
@@ -650,43 +652,53 @@ public class Area implements Lock.HasLock {
     lock.readUnlock();
   }
 
-  public static Area read(DataInputStream dataInputStream) throws IOException {
-    int areaX = dataInputStream.readInt();
-    int areaZ = dataInputStream.readInt();
-    Area area = new Area(areaX, areaZ);
+  public void read(DataInputStream dataInputStream, boolean readCoordinates) throws IOException {
+    if (readCoordinates) {
+      if (areaX != dataInputStream.readInt() || areaZ != dataInputStream.readInt()) {
+        throw new IllegalStateException("Area x/z does not match");
+      }
+    }
 
     int height = dataInputStream.readInt();
-    if (height == 0) return area;
+    if (height == 0) return;
 
     if (height > 0) { //if features
-      area.features.set(Boolean.TRUE);
+      features.set(Boolean.TRUE);
     } else {
       height = -height;
     }
-    area.setupArrays((height * SIZE_BLOCKS) - 1);
+    setupArrays((height * SIZE_BLOCKS) - 1);
 
     for (int i = 0; i < SIZE_BLOCKS_SQUARED; i++) {
-      area.heightmap[i] = dataInputStream.readInt();
+      heightmap[i] = dataInputStream.readInt();
     }
 
     int counter = 0;
     while (counter < (SIZE_BLOCKS_CUBED * height)) {
       int a = dataInputStream.readInt();
       if (a > 0) {
-        area.blocks[counter++] = a - 1;
+        blocks[counter++] = a - 1;
       } else {
         int block = dataInputStream.readInt() - 1;
         for (int i = 0; i < -a; i++) {
-          area.blocks[counter++] = block;
+          blocks[counter++] = block;
         }
       }
     }
 
-    for (int i = 0; i < area.light.length; i++) {
-      area.light[i] = dataInputStream.readByte();
+    for (int i = 0; i < light.length; i++) {
+      light[i] = dataInputStream.readByte();
     }
 
-    area.updateAll();
+    updateAll();
+  }
+
+  public static Area read(DataInputStream dataInputStream) throws IOException {
+    int areaX = dataInputStream.readInt();
+    int areaZ = dataInputStream.readInt();
+    Area area = new Area(areaX, areaZ);
+
+    area.read(dataInputStream, false);
     return area;
   }
 
