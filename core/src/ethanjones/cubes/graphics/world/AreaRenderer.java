@@ -82,21 +82,16 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
     if (maxX == null || minX == null || maxZ == null || minZ == null) return false;
 
     free(meshs);
-    Area[] toLock = new Area[]{area, null, null, null, null};
 
     if (maxX.isBlank()) maxX = null;
-    else toLock[1] = maxX;
     if (minX.isBlank()) minX = null;
-    else toLock[2] = minX;
     if (maxZ.isBlank()) maxZ = null;
-    else toLock[3] = maxZ;
     if (minZ.isBlank()) minZ = null;
-    else toLock[4] = minZ;
 
     int i = ySection * SIZE_BLOCKS_CUBED;
     int vertexOffset = 0;
 
-    Lock.waitToLockAll(false, toLock);
+    Lock.waitToLockAll(false, area, minX, maxX, minZ, maxZ);
 
     for (int y = ySection * SIZE_BLOCKS; y < (ySection + 1) * SIZE_BLOCKS; y++) {
       for (int z = 0; z < SIZE_BLOCKS; z++) {
