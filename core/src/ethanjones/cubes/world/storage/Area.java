@@ -337,7 +337,7 @@ public class Area implements Lock.HasLock {
         area = world.getArea(tempReference, false);
         if (area != null) {
           Lock.waitToLock(true, area);
-          if (area.isReady()) area.update(SIZE_BLOCKS + 1, y, z, getRef(SIZE_BLOCKS + 1, y, z));
+          if (area.isReady()) area.update(0, y, z, getRef(SIZE_BLOCKS + 1, y, z));
           if (updateRender) area.updateRender(section);
           area.lock.writeUnlock();
         }
@@ -356,7 +356,7 @@ public class Area implements Lock.HasLock {
         area = world.getArea(tempReference, false);
         if (area != null) {
           Lock.waitToLock(true, area);
-          if (area.isReady()) area.update(x, y, SIZE_BLOCKS + 1, getRef(x, y, SIZE_BLOCKS + 1));
+          if (area.isReady()) area.update(x, y, 0, getRef(x, y, SIZE_BLOCKS + 1));
           if (updateRender) area.updateRender(section);
           area.lock.writeUnlock();
         }
