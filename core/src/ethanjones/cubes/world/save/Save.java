@@ -2,6 +2,9 @@ package ethanjones.cubes.world.save;
 
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.entity.living.player.Player;
+import ethanjones.cubes.networking.server.ClientIdentifier;
+import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.storage.Area;
 import ethanjones.data.Data;
 import ethanjones.data.DataGroup;
@@ -9,6 +12,7 @@ import ethanjones.data.DataGroup;
 import com.badlogic.gdx.files.FileHandle;
 
 import java.io.*;
+import java.util.List;
 import java.util.UUID;
 
 public class Save {
@@ -38,6 +42,16 @@ public class Save {
     return SaveAreaIO.write(this, area);
   }
 
+  public boolean writeAreas(Area[] areas) {
+    int total = 0, written = 0;
+    for (Area area : areas) {
+      if (writeArea(area)) written++;
+      total++;
+    }
+    Log.debug("Saving areas: wrote " + written + " total " + total);
+    return written != 0;
+  }
+
   public Area readArea(int x, int z) {
     SaveAreaList saveAreaList = getSaveAreaList();
     byte[] hash = saveAreaList.getArea(x, z);
@@ -54,6 +68,13 @@ public class Save {
       Data.output(data, file.file());
     } catch (Exception e) {
       Log.warning("Failed to write player", e);
+    }
+  }
+
+  public void writePlayers() {
+    List<ClientIdentifier> clients = Cubes.getServer().getAllClients();
+    for (ClientIdentifier client : clients) {
+      writePlayer(client.getPlayer());
     }
   }
 

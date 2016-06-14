@@ -53,6 +53,7 @@ public class Area implements Lock.HasLock {
   public volatile int[] heightmap = new int[SIZE_BLOCKS_SQUARED];
   public volatile int maxY;
   public volatile int height;
+  private volatile int modCount = 0, saveModCount = -1;
 
   public int[] renderStatus = new int[0];
 
@@ -130,6 +131,7 @@ public class Area implements Lock.HasLock {
     if (unreadyWriteLock(y)) return;
     int ref = getRef(x, y, z);
     light[ref] = (byte) ((light[ref] & 0xF) | (l << 4));
+    modify();
     lock.writeUnlock();
     updateRender(y / SIZE_BLOCKS);
   }
@@ -140,6 +142,7 @@ public class Area implements Lock.HasLock {
     if (unreadyWriteLock(y)) return;
     int ref = getRef(x, y, z);
     light[ref] = (byte) ((light[ref] & 0xF0) | l);
+    modify();
     lock.writeUnlock();
     updateRender(y / SIZE_BLOCKS);
   }
@@ -296,19 +299,21 @@ public class Area implements Lock.HasLock {
     b = blocks[ref];
     blocks[ref] = Sided.getIDManager().toInt(block);
 
-    doUpdates(x, y, z, ref);
+    doUpdatesThisArea(x, y, z, ref);
 
     int hmRef = x + z * SIZE_BLOCKS;
     if (y > heightmap[hmRef] && block != null) heightmap[hmRef] = y;
     if (y == heightmap[hmRef] && block == null) calculateHeight(x, z);
 
+    modify();
     lock.writeUnlock();
+    doUpdatesOtherAreas(x, y, z, ref);
 
     //Must be after lock released to prevent dead locks
     new BlockChangedEvent(new BlockReference().setFromBlockCoordinates(x + minBlockX, y, z + minBlockZ), Sided.getIDManager().toBlock(b), block).post();
   }
 
-  public void doUpdates(int x, int y, int z, int ref) {
+  public void doUpdatesThisArea(int x, int y, int z, int ref) {
     updateSurrounding(x, y, z, ref);
 
     boolean updateRender = Sided.getSide() == Side.Client || shared;
@@ -319,6 +324,11 @@ public class Area implements Lock.HasLock {
       if (y % SIZE_BLOCKS == 0) updateRender(section - 1);
       if (y % SIZE_BLOCKS == SIZE_BLOCKS - 1) updateRender(section + 1);
     }
+  }
+
+  public void doUpdatesOtherAreas(int x, int y, int z, int ref) {
+    boolean updateRender = Sided.getSide() == Side.Client || shared;
+    int section = y / SIZE_BLOCKS;
 
     if (world != null && (x == 0 || x == SIZE_BLOCKS - 1 || z == 0 || z == SIZE_BLOCKS - 1)) {
       Area area;
@@ -691,6 +701,7 @@ public class Area implements Lock.HasLock {
     }
 
     updateAll();
+    saveModCount();
   }
 
   public static Area read(DataInputStream dataInputStream) throws IOException {
@@ -717,5 +728,23 @@ public class Area implements Lock.HasLock {
   @Override
   public Lock getLock() {
     return lock;
+  }
+
+  /**
+   * Crucial to call this so changes are written to disk.
+   * Area should be write locked
+   */
+  public void modify() {
+    modCount++;
+  }
+
+  public boolean modifiedSinceSave() {
+    return saveModCount != modCount;
+  }
+
+  public void saveModCount() {
+    lock.writeLock();
+    saveModCount = modCount;
+    lock.writeUnlock();
   }
 }

@@ -25,11 +25,8 @@ import ethanjones.data.DataGroup;
 
 import com.badlogic.gdx.utils.Disposable;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class World implements Disposable {
@@ -221,26 +218,15 @@ public abstract class World implements Disposable {
     if (save == null) return;
     lock.readLock();
 
-    savePlayers();
-    saveAreas();
+    // players
+    save.writePlayers();
+    // areas
+    Collection<Area> areas = map.values();
+    Area[] a = areas.toArray(new Area[areas.size()]);
+    save.writeAreas(a);
+    // area list
     save.writeSaveAreaList(tag);
 
     lock.readUnlock();
-  }
-
-  protected void saveAreas() {
-    int total = 0, written = 0;
-    for (Entry<AreaReference, Area> entry : map.entrySet()) {
-      if (save.writeArea(entry.getValue())) written++;
-      total++;
-    }
-    Log.debug("Saving areas: wrote " + written + " total " + total);
-  }
-
-  protected void savePlayers() {
-    List<ClientIdentifier> clients = Cubes.getServer().getAllClients();
-    for (ClientIdentifier client : clients) {
-      save.writePlayer(client.getPlayer());
-    }
   }
 }

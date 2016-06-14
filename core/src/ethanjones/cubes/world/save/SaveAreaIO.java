@@ -57,6 +57,9 @@ public class SaveAreaIO {
 
   protected static boolean write(Save save, Area area) {
     if (!area.isReady()) return false;
+    if (!area.modifiedSinceSave()) return false;
+    area.saveModCount();
+
     ThreadData data = local.get();
 
     data.stream.reset();
