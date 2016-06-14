@@ -56,7 +56,7 @@ public class ItemEntityRenderer implements RenderableProvider, Disposable {
   private Mesh mesh;
   private float[] vertices;
   private Item item;
-  private float randomYOffset = (float) (Math.random() / 20d);
+  private float randomOffset = (float) Math.random();
 
   public ItemEntityRenderer(ItemEntity itemEntity) {
     this.itemEntity = itemEntity;
@@ -99,9 +99,9 @@ public class ItemEntityRenderer implements RenderableProvider, Disposable {
       }
     }
     Renderable renderable = new Renderable();
-    renderable.worldTransform.translate(itemEntity.position.x, itemEntity.position.y + yOffset() + randomYOffset, itemEntity.position.z);
+    renderable.worldTransform.translate(itemEntity.position.x, itemEntity.position.y + yOffset() + (randomOffset / 20f), itemEntity.position.z);
     renderable.worldTransform.scl(0.3f);
-    renderable.worldTransform.rotate(Vector3.Y, (System.currentTimeMillis() % 7200) / 20);
+    renderable.worldTransform.rotate(Vector3.Y, (360 * randomOffset) + Math.abs(itemEntity.age % 360));
     renderable.meshPart.primitiveType = GL20.GL_TRIANGLES;
     renderable.meshPart.offset = 0;
     renderable.meshPart.size = item instanceof ItemBlock ? 6 * 6 : 6 * 2;
@@ -115,12 +115,11 @@ public class ItemEntityRenderer implements RenderableProvider, Disposable {
     renderables.add(renderable);
   }
 
-  private static float yOffset() {
-    long l = System.currentTimeMillis();
-    l %= 2000;
-    if (l > 1000) l = 2000 - l;
-    float f = (float) l / 8000f;
-    return f;
+  private float yOffset() {
+    long l = itemEntity.age;
+    l %= 50;
+    if (l > 25) l = 50 - l;
+    return (float) l / 1000f;
   }
 
   @Override

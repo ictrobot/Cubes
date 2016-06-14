@@ -19,8 +19,8 @@ import com.badlogic.gdx.utils.Pool;
 public class ItemEntity extends Entity implements RenderableProvider {
 
   public ItemStack itemStack;
-  public int cooldown;
   private ItemEntityRenderer renderer;
+  public int age;
 
   public ItemEntity() {
     super("core:item");
@@ -32,6 +32,7 @@ public class ItemEntity extends Entity implements RenderableProvider {
   public DataGroup write() {
     DataGroup write = super.write();
     write.put("itemstack", itemStack.write());
+    write.put("age", age);
     return write;
   }
 
@@ -40,6 +41,7 @@ public class ItemEntity extends Entity implements RenderableProvider {
     super.read(data);
     itemStack = new ItemStack();
     itemStack.read(data.getGroup("itemstack"));
+    age = data.getInteger("age");
   }
 
   @Override
@@ -56,9 +58,8 @@ public class ItemEntity extends Entity implements RenderableProvider {
   public boolean update() {
     super.update();
     if (Sided.getSide() == Side.Server) {
-      if (cooldown > 0) {
-        cooldown--;
-      } else {
+      if (age >= (600000 / Cubes.tickMS)) return true;
+      if (age >= 0) {
         for (ClientIdentifier clientIdentifier : Cubes.getServer().getAllClients()) {
           float distance2 = VectorUtil.distance2(this.position, clientIdentifier.getPlayer().position.cpy().sub(0, clientIdentifier.getPlayer().height, 0));
           if (distance2 < 1f) {
@@ -68,6 +69,7 @@ public class ItemEntity extends Entity implements RenderableProvider {
         }
       }
     }
+    age++;
     return false;
   }
 }

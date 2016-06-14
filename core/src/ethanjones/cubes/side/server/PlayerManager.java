@@ -291,7 +291,7 @@ public class PlayerManager {
         itemEntity.itemStack = itemStack;
         itemEntity.position.set(client.getPlayer().position);
         itemEntity.motion.set(client.getPlayer().angle);
-        itemEntity.cooldown = 3000 / Cubes.tickMS;
+        itemEntity.age = -3000 / Cubes.tickMS;
         Cubes.getServer().world.addEntity(itemEntity);
       }
     }
