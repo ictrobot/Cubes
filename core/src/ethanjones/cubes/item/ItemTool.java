@@ -45,7 +45,7 @@ public class ItemTool extends Item {
   public static void mine(Player player, boolean mine) {
     if (mine) {
       ItemStack itemStack = player.getInventory().selectedItemStack(); // may be null
-      BlockIntersection blockIntersection = BlockIntersection.getBlockIntersection(player.position, player.angle, Cubes.getServer().world);
+      BlockIntersection blockIntersection = BlockIntersection.getBlockIntersection(player.position, player.angle, Sided.getCubes().world);
       if (blockIntersection != null) {
         BlockReference blockReference = blockIntersection.getBlockReference();
         Block block = Sided.getCubes().world.getBlock(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
