@@ -146,6 +146,7 @@ public class Save {
 
   public synchronized SaveAreaList writeSaveAreaList(String tag) {
     if (readOnly) return saveAreaList;
+    getSaveAreaList();
     long time = System.currentTimeMillis();
     if (tag == null) {
       if (saveAreaListModCount == saveAreaList.getModCount()) return saveAreaList;
