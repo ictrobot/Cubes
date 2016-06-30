@@ -97,8 +97,8 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
       for (int z = 0; z < SIZE_BLOCKS; z++) {
         for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
           int blockInt = area.blocks[i];
-          if (blockInt > 0) {
-            Block block = Sided.getIDManager().toBlock(blockInt);
+          if ((blockInt & BLOCK_VISIBLE) == BLOCK_VISIBLE) {
+            Block block = Sided.getIDManager().toBlock(blockInt & 0xFFFFF);
             if (block == null) continue;
             BlockTextureHandler textureHandler = block.getTextureHandler();
 

@@ -5,6 +5,7 @@ import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.mod.ModInstance;
 import ethanjones.cubes.core.mod.ModManager;
 import ethanjones.cubes.core.system.CubesException;
+import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.item.Item;
 import ethanjones.cubes.item.ItemBlock;
 import ethanjones.data.DataGroup;
@@ -17,6 +18,8 @@ import java.lang.annotation.Target;
 import java.util.*;
 
 public class IDManager implements DataParser {
+
+  public static final int MAX_BLOCK_ID = 1048575;
 
   private static List<Block> blockList = new ArrayList<Block>();
   private static Map<String, Block> idToBlock = new HashMap<String, Block>();
@@ -114,6 +117,10 @@ public class IDManager implements DataParser {
 
     int i = 1;
     for (Block block : blockList) {
+      if (i > MAX_BLOCK_ID) {
+        Debug.crash(new CubesException("No more block ids"));
+      }
+
       ItemBlock itemBlock = block.getItemBlock();
       integerToBlock.put(i, block);
       blockToInteger.put(block, i);
@@ -122,6 +129,10 @@ public class IDManager implements DataParser {
       i++;
     }
     for (Item item : itemList) {
+      if (i < 0) {
+        Debug.crash(new CubesException("No more item ids"));
+      }
+
       integerToItem.put(i, item);
       itemToInteger.put(item, i);
       i++;
@@ -220,6 +231,7 @@ public class IDManager implements DataParser {
     }
 
     public boolean isTransparent(int block) {
+      block &= 0xFFFFF;
       return block == 0 || (block < 0 ? bitSet.get(-block) : bitSet.get(block));
     }
 

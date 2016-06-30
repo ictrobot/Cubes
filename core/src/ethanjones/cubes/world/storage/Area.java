@@ -25,6 +25,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class Area implements Lock.HasLock {
 
+  public static final int BLOCK_VISIBLE = 1 << 28;
+
   public static final int SIZE_BLOCKS = 32;
   public static final int SIZE_BLOCKS_SQUARED = SIZE_BLOCKS * SIZE_BLOCKS;
   public static final int SIZE_BLOCKS_CUBED = SIZE_BLOCKS * SIZE_BLOCKS * SIZE_BLOCKS;
@@ -47,10 +49,20 @@ public class Area implements Lock.HasLock {
   public final int minBlockZ;
   public final int hashCode;
 
-  public volatile AreaRenderer[] areaRenderer; //Always null on server
-  public volatile int[] blocks; //0 = null, positive = visible, negative = invisible
+  // Least significant
+  // ID (20 bits, 0- 1,048,575)
+  // Meta (8 bits, 0-255)
+  // Visible (1 bit)
+  //
+  // blank == 0, as id=0 meta=0 visible=0
+  //
+  //int blockID = blocks[i] & 0xFFFFF;
+  //int blockMeta = (blocks[i] >> 20) & 0xFF;
+  //boolean blockVisible = (blocks[i] & BLOCK_VISIBLE) == BLOCK_VISIBLE;
+  public volatile int[] blocks;
   public volatile byte[] light; // most significant 4 bits are sunlight. the least significant are lights
   public volatile int[] heightmap = new int[SIZE_BLOCKS_SQUARED];
+  public volatile AreaRenderer[] areaRenderer; //Always null on server, unless shared
   public volatile int maxY;
   public volatile int height;
   private volatile int modCount = 0, saveModCount = -1;
@@ -102,9 +114,9 @@ public class Area implements Lock.HasLock {
     lock.readLock();
 
     if (unreadyReadLock(y)) return null;
-    int b = blocks[getRef(x, y, z)];
+    int b = blocks[getRef(x, y, z)] & 0xFFFFF;
 
-    return lock.readUnlock(Sided.getIDManager().toBlock(Math.abs(b)));
+    return lock.readUnlock(Sided.getIDManager().toBlock(b));
   }
 
   // Get the bits XXXX0000
@@ -228,63 +240,64 @@ public class Area implements Lock.HasLock {
     if (y > maxY || y < 0 || blocks[i] == 0) {
       return;
     }
+    if (blocks[i] == 0) return; // air cannot be visible
 
-    int block = Math.abs(blocks[i]);
+    blocks[i] &= 0xFFFFFFF; // keep block id and meta
+
     if (x < SIZE_BLOCKS - 1) {
       if (transparency.isTransparent(blocks[i + MAX_X_OFFSET])) {
-        blocks[i] = block;
+        blocks[i] |= BLOCK_VISIBLE;
         return;
       }
     } else {
-      blocks[i] = block;
+      blocks[i] |= BLOCK_VISIBLE;
       return;
     }
     if (x > 0) {
       if (transparency.isTransparent(blocks[i + MIN_X_OFFSET])) {
-        blocks[i] = block;
+        blocks[i] |= BLOCK_VISIBLE;
         return;
       }
     } else {
-      blocks[i] = block;
+      blocks[i] |= BLOCK_VISIBLE;
       return;
     }
     if (y < maxY) {
       if (transparency.isTransparent(blocks[i + MAX_Y_OFFSET])) {
-        blocks[i] = block;
+        blocks[i] |= BLOCK_VISIBLE;
         return;
       }
     } else {
-      blocks[i] = block;
+      blocks[i] |= BLOCK_VISIBLE;
       return;
     }
     if (y > 0) {
       if (transparency.isTransparent(blocks[i + MIN_Y_OFFSET])) {
-        blocks[i] = block;
+        blocks[i] |= BLOCK_VISIBLE;
         return;
       }
     } else {
-      blocks[i] = block;
+      blocks[i] |= BLOCK_VISIBLE;
       return;
     }
     if (z < SIZE_BLOCKS - 1) {
       if (transparency.isTransparent(blocks[i + MAX_Z_OFFSET])) {
-        blocks[i] = block;
+        blocks[i] |= BLOCK_VISIBLE;
         return;
       }
     } else {
-      blocks[i] = block;
+      blocks[i] |= BLOCK_VISIBLE;
       return;
     }
     if (z > 0) {
       if (transparency.isTransparent(blocks[i + MIN_Z_OFFSET])) {
-        blocks[i] = block;
+        blocks[i] |= BLOCK_VISIBLE;
         return;
       }
     } else {
-      blocks[i] = block;
+      blocks[i] |= BLOCK_VISIBLE;
       return;
     }
-    blocks[i] = -block;
   }
 
   public void setBlock(Block block, int x, int y, int z) {
@@ -295,8 +308,7 @@ public class Area implements Lock.HasLock {
     setupArrays(y);
 
     int ref = getRef(x, y, z);
-    int b;
-    b = blocks[ref];
+    int b = blocks[ref];
     blocks[ref] = Sided.getIDManager().toInt(block);
 
     doUpdatesThisArea(x, y, z, ref);
@@ -307,9 +319,9 @@ public class Area implements Lock.HasLock {
 
     modify();
     lock.writeUnlock();
-    doUpdatesOtherAreas(x, y, z, ref);
 
     //Must be after lock released to prevent dead locks
+    doUpdatesOtherAreas(x, y, z, ref);
     new BlockChangedEvent(new BlockReference().setFromBlockCoordinates(x + minBlockX, y, z + minBlockZ), Sided.getIDManager().toBlock(b), block).post();
   }
 
