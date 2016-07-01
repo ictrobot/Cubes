@@ -100,7 +100,7 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
           if ((blockInt & BLOCK_VISIBLE) == BLOCK_VISIBLE) {
             Block block = Sided.getIDManager().toBlock(blockInt & 0xFFFFF);
             if (block == null) continue;
-            BlockTextureHandler textureHandler = block.getTextureHandler();
+            BlockTextureHandler textureHandler = block.getTextureHandler((blockInt >> 20) & 0xFF);
 
             if (x < SIZE_BLOCKS - 1) {
               if (tm.isTransparent(area.blocks[i + MAX_X_OFFSET])) { //light: byte is signed (-128 to 127) so & 0xFF to convert to 0-255

@@ -27,7 +27,7 @@ public class Block {
     textureHandler = new BlockTextureHandler(id);
   }
 
-  public BlockTextureHandler getTextureHandler() {
+  public BlockTextureHandler getTextureHandler(int meta) {
     return textureHandler;
   }
 

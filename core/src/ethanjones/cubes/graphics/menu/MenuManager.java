@@ -51,7 +51,7 @@ public class MenuManager {
         Block block = blocks.get(index);
         BlockTextureHandler textureHandler;
         try {
-          textureHandler = block.getTextureHandler();
+          textureHandler = block.getTextureHandler(0);
           if (textureHandler == null) throw new NullPointerException();
         } catch (Exception e) {
           blocks.remove(index);

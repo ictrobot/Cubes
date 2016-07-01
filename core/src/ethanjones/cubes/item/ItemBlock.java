@@ -21,7 +21,7 @@ public class ItemBlock extends Item {
   }
 
   public void loadGraphics() {
-    this.texture = block.getTextureHandler().getSide(BlockFace.posX);
+    this.texture = block.getTextureHandler(0).getSide(BlockFace.posX);
   }
 
   @Override

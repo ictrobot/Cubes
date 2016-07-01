@@ -76,7 +76,7 @@ public class ItemEntityRenderer implements RenderableProvider, Disposable {
         mesh.setIndices(blockIndices);
         int vertexOffset = 0;
         vertices = new float[AreaMesh.VERTEX_SIZE * 4 * 6];
-        BlockTextureHandler textureHandler = ((ItemBlock) itemEntity.itemStack.item).block.getTextureHandler();
+        BlockTextureHandler textureHandler = ((ItemBlock) itemEntity.itemStack.item).block.getTextureHandler(0); //TODO item meta
         Vector3 offset = new Vector3(-0.5f, 0f, -0.5f);
         vertexOffset = FaceVertices.createMaxX(offset, textureHandler.getSide(BlockFace.posX), 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
         vertexOffset = FaceVertices.createMaxY(offset, textureHandler.getSide(BlockFace.posY), 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
