@@ -38,10 +38,23 @@
   },
   {
     "id": "core:log",
+    "meta": 3,
     "texture": {
-      "side": "core:log",
-      "top": "core:log_y",
-      "bottom": "core:log_y"
+      "0": {
+        "posY": "core:log_y",
+        "negY": "core:log_y",
+        "other": "core:log"
+      },
+      "1": {
+        "posX": "core:log_y",
+        "negX": "core:log_y",
+        "other": "core:log"
+      },
+      "2": {
+        "posZ": "core:log_y",
+        "negZ": "core:log_y",
+        "other": "core:log"
+      }
     },
     "mining": {
       "speed": 2,

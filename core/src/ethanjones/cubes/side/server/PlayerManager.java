@@ -193,6 +193,7 @@ public class PlayerManager {
       packet.x = blockReference.blockX;
       packet.y = blockReference.blockY;
       packet.z = blockReference.blockZ;
+      packet.meta = event.getNewMeta();
       packet.block = Sided.getIDManager().toInt(event.getNewBlock());
       NetworkingManager.sendPacketToClient(packet, client);
     }

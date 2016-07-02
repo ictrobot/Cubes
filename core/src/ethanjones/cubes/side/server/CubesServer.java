@@ -1,5 +1,8 @@
 package ethanjones.cubes.side.server;
 
+import ethanjones.cubes.block.Blocks;
+import ethanjones.cubes.core.event.EventHandler;
+import ethanjones.cubes.core.event.entity.living.player.PlayerPlaceBlockEvent;
 import ethanjones.cubes.core.mod.ModManager;
 import ethanjones.cubes.core.mod.event.StartingServerEvent;
 import ethanjones.cubes.core.mod.event.StoppingServerEvent;
@@ -72,6 +75,25 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
     if (interval == SAVE_TIME) world.save(null);
     //if (interval != 250) return;
     //world.setBlock(Blocks.dirt, (int) (Math.random() * 16), (int) (8 + (Math.random() * 7)), (int) (Math.random() * 16));
+  }
+
+  @EventHandler
+  public void logPlace(PlayerPlaceBlockEvent event) {
+    if (event.getBlock() != Blocks.log) return;
+    switch (event.getBlockIntersection().getBlockFace()) {
+      case posY:
+      case negY:
+        event.setMeta(0);
+        break;
+      case posX:
+      case negX:
+        event.setMeta(1);
+        break;
+      case posZ:
+      case negZ:
+        event.setMeta(2);
+        break;
+    }
   }
 
   public abstract boolean isDedicated();

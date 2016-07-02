@@ -16,6 +16,7 @@ public class PacketBlockChanged extends Packet {
   public int y;
   public int z;
   public int block;
+  public int meta;
 
   @Override
   public void write(DataOutputStream dataOutputStream) throws Exception {
@@ -23,6 +24,7 @@ public class PacketBlockChanged extends Packet {
     dataOutputStream.writeInt(y);
     dataOutputStream.writeInt(z);
     dataOutputStream.writeInt(block);
+    dataOutputStream.writeInt(meta);
   }
 
   @Override
@@ -31,6 +33,7 @@ public class PacketBlockChanged extends Packet {
     y = dataInputStream.readInt();
     z = dataInputStream.readInt();
     block = dataInputStream.readInt();
+    meta = dataInputStream.readInt();
   }
 
   @Override

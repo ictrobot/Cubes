@@ -15,7 +15,7 @@ public class EventBus {
 
   public EventBus register(Object instance) {
     try {
-      for (Method method : instance.getClass().getDeclaredMethods()) {
+      for (Method method : instance.getClass().getMethods()) {
         EventHandler eventHandler = method.getAnnotation(EventHandler.class);
         if (eventHandler != null) {
           Class<?>[] parameterTypes = method.getParameterTypes();

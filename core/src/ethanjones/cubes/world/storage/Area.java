@@ -300,8 +300,11 @@ public class Area implements Lock.HasLock {
     }
   }
 
-  public void setBlock(Block block, int x, int y, int z) {
+  public void setBlock(Block block, int x, int y, int z, int meta) {
     if (y < 0) return;
+
+    int n = Sided.getIDManager().toInt(block);
+    n += (meta & 0xFF) << 20;
 
     lock.writeLock();
     if (isUnloaded() && lock.writeUnlock(true)) return;
@@ -309,7 +312,7 @@ public class Area implements Lock.HasLock {
 
     int ref = getRef(x, y, z);
     int b = blocks[ref];
-    blocks[ref] = Sided.getIDManager().toInt(block);
+    blocks[ref] = n;
 
     doUpdatesThisArea(x, y, z, ref);
 
@@ -322,7 +325,7 @@ public class Area implements Lock.HasLock {
 
     //Must be after lock released to prevent dead locks
     doUpdatesOtherAreas(x, y, z, ref);
-    new BlockChangedEvent(new BlockReference().setFromBlockCoordinates(x + minBlockX, y, z + minBlockZ), Sided.getIDManager().toBlock(b), block).post();
+    new BlockChangedEvent(new BlockReference().setFromBlockCoordinates(x + minBlockX, y, z + minBlockZ), Sided.getIDManager().toBlock(b & 0xFFFFF), (b >> 20) & 0xFF, block, meta).post();
   }
 
   public void doUpdatesThisArea(int x, int y, int z, int ref) {

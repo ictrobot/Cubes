@@ -10,7 +10,7 @@ public class Block {
 
   public String id;
   protected ItemBlock itemBlock;
-  protected BlockTextureHandler textureHandler;
+  protected BlockTextureHandler[] textureHandlers;
   // block mining
   protected float miningTime = 0.5f;
   protected ItemTool.ToolType miningTool = ItemTool.ToolType.pickaxe;
@@ -24,11 +24,12 @@ public class Block {
   }
 
   public void loadGraphics() {
-    textureHandler = new BlockTextureHandler(id);
+    textureHandlers = new BlockTextureHandler[]{new BlockTextureHandler(id)};
   }
 
   public BlockTextureHandler getTextureHandler(int meta) {
-    return textureHandler;
+    if (meta < 0 || meta >= textureHandlers.length) meta = 0;
+    return textureHandlers[meta];
   }
 
   public ItemBlock getItemBlock() {

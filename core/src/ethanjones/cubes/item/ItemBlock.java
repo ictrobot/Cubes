@@ -1,6 +1,7 @@
 package ethanjones.cubes.item;
 
 import ethanjones.cubes.block.Block;
+import ethanjones.cubes.core.event.entity.living.player.PlayerPlaceBlockEvent;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.world.collision.BlockIntersection;
@@ -55,7 +56,10 @@ public class ItemBlock extends Item {
       if (blockReference.equals(new BlockReference().setFromVector3(player.position.cpy().sub(0, player.height, 0))))
         return;
 
-      Cubes.getServer().world.setBlock(block, blockReference.blockX, blockReference.blockY, blockReference.blockZ);
+      PlayerPlaceBlockEvent event = new PlayerPlaceBlockEvent(player, block, blockIntersection, blockReference);
+      if (event.post().isCanceled()) return;
+
+      Cubes.getServer().world.setBlock(block, blockReference.blockX, blockReference.blockY, blockReference.blockZ, event.getMeta());
 
       InventoryHelper.reduceCount(player.getInventory(), stack);
     }

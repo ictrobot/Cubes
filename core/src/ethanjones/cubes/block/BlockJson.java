@@ -10,6 +10,7 @@ import ethanjones.cubes.item.ItemTool;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonObject.Member;
 import com.eclipsesource.json.JsonValue;
 
 public class BlockJson {
@@ -23,52 +24,44 @@ public class BlockJson {
   public static void addBlock(JsonObject json) {
     String id = json.getString("id", null);
     if (id == null) throw new JsonException("No block id");
-    JBlock block = new JBlock(id);
+    int meta = json.getInt("meta", 1);
+    JBlock block = new JBlock(id, meta);
 
     JsonValue prop;
 
     prop = json.get("texture");
     if (prop != null) {
-      if (prop.isString()) {
-        block.textures = new String[]{prop.asString()};
+      if (meta == 1) {
+        block.textures = new String[1][];
+        block.textures[0] = parseTextures(prop);
       } else {
-        JsonObject texture = prop.asObject();
-        block.textures = new String[6];
-        for (JsonObject.Member member : texture) {
-          switch (member.getName()) {
-            case "posX":
-              block.textures[BlockFace.posX.index] = member.getValue().asString();
-              break;
-            case "negX":
-              block.textures[BlockFace.negX.index] = member.getValue().asString();
-              break;
-            case "posY":
-            case "top":
-              block.textures[BlockFace.posY.index] = member.getValue().asString();
-              break;
-            case "negY":
-            case "bottom":
-              block.textures[BlockFace.negY.index] = member.getValue().asString();
-              break;
-            case "posZ":
-              block.textures[BlockFace.posZ.index] = member.getValue().asString();
-              break;
-            case "negZ":
-              block.textures[BlockFace.negZ.index] = member.getValue().asString();
-              break;
-            case "side":
-              block.textures[BlockFace.posX.index] = member.getValue().asString();
-              block.textures[BlockFace.negX.index] = member.getValue().asString();
-              block.textures[BlockFace.posZ.index] = member.getValue().asString();
-              block.textures[BlockFace.negZ.index] = member.getValue().asString();
-              break;
-            default:
-              throw new JsonException("Unexpected block texture member \"" + member.getName() + "\"");
+        block.textures = new String[meta][];
+        JsonObject jsonObject = prop.asObject();
+        String[] defaultTextures = null;
+        for (Member member : jsonObject) {
+          String s = member.getName();
+          if (s.equals("default")) {
+            defaultTextures = parseTextures(member.getValue());
+            continue;
+          }
+          int m = -1;
+          try {
+            m = Integer.parseInt(s);
+          } catch (NumberFormatException e) {
+            throw new JsonException("Unexpected texture member \"" + member.getName() + "\"");
+          }
+          block.textures[m] = parseTextures(member.getValue());
+        }
+        for (int i = 0; i < block.textures.length; i++) {
+          if (block.textures[i] == null) {
+            if (defaultTextures == null) {
+              throw new JsonException("Textures for meta " + i + " not defined");
+            } else {
+              block.textures[i] = defaultTextures;
+            }
           }
         }
       }
-    } else {
-      block.textures = new String[]{id};
     }
 
     prop = json.get("lightLevel");
@@ -103,6 +96,7 @@ public class BlockJson {
     for (JsonObject.Member member : json) {
       switch (member.getName()) {
         case "id":
+        case "meta":
         case "texture":
         case "lightLevel":
         case "transparent":
@@ -116,6 +110,54 @@ public class BlockJson {
     IDManager.register(block);
   }
 
+  private static String[] parseTextures(JsonValue prop) {
+    if (prop.isString()) {
+      return new String[]{prop.asString()};
+    } else {
+      JsonObject texture = prop.asObject();
+      String[] textures = new String[6];
+      for (JsonObject.Member member : texture) {
+        String value = member.getValue().asString();
+        switch (member.getName()) {
+          case "posX":
+            textures[BlockFace.posX.index] = value;
+            break;
+          case "negX":
+            textures[BlockFace.negX.index] = value;
+            break;
+          case "posY":
+          case "top":
+            textures[BlockFace.posY.index] = value;
+            break;
+          case "negY":
+          case "bottom":
+            textures[BlockFace.negY.index] = value;
+            break;
+          case "posZ":
+            textures[BlockFace.posZ.index] = value;
+            break;
+          case "negZ":
+            textures[BlockFace.negZ.index] = value;
+            break;
+          case "side":
+            textures[BlockFace.posX.index] = value;
+            textures[BlockFace.negX.index] = value;
+            textures[BlockFace.posZ.index] = value;
+            textures[BlockFace.negZ.index] = value;
+            break;
+          case "other":
+            for (int i = 0; i < textures.length; i++) {
+              if (textures[i] == null) textures[i] = value;
+            }
+            break;
+          default:
+            throw new JsonException("Unexpected block texture member \"" + member.getName() + "\"");
+        }
+      }
+      return textures;
+    }
+  }
+
   public static boolean isJsonBlock(Block b) {
     return b instanceof JBlock;
   }
@@ -123,22 +165,32 @@ public class BlockJson {
   private static class JBlock extends Block {
     protected int lightLevel = 0;
     protected boolean transparent = false;
-    protected String[] textures;
+    protected String[][] textures;
+    private final int meta;
 
-    public JBlock(String id) {
+    public JBlock(String id, int meta) {
       super(id);
+      this.meta = meta;
     }
 
     @Override
     public void loadGraphics() {
-      textureHandler = new BlockTextureHandler(textures[0]);
-      if (textures.length == 6) {
-        for (int i = 1; i < textures.length; i++) {
-          textureHandler.setSide(i, textures[i]);
-        }
-      } else if (textures.length != 1) {
-        throw new CubesException("Invalid JBlock.textures length for id \"" + id + "\"");
+      if (textures == null) {
+        super.loadGraphics();
+        return;
       }
+      textureHandlers = new BlockTextureHandler[meta];
+      for (int m = 0; m < textureHandlers.length; m++) {
+        textureHandlers[m] = new BlockTextureHandler(textures[m][0]);
+        if (textures[m].length == 6) {
+          for (int s = 1; s < textures[m].length; s++) {
+            textureHandlers[m].setSide(s, textures[m][s]);
+          }
+        } else {
+          throw new CubesException("Invalid JBlock.textures length for id \"" + id + "\"");
+        }
+      }
+      textures = null;
     }
 
     @Override

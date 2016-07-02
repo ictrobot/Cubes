@@ -122,7 +122,12 @@ public abstract class World implements Disposable {
 
   public void setBlock(Block block, int x, int y, int z) {
     Area area = getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
-    if (area != null) area.setBlock(block, x - area.minBlockX, y, z - area.minBlockZ);
+    if (area != null) area.setBlock(block, x - area.minBlockX, y, z - area.minBlockZ, 0);
+  }
+
+  public void setBlock(Block block, int x, int y, int z, int meta) {
+    Area area = getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
+    if (area != null) area.setBlock(block, x - area.minBlockX, y, z - area.minBlockZ, meta);
   }
 
   public void tick() {
