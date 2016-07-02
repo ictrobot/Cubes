@@ -5,7 +5,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:1.5.0'
-        classpath 'com.github.sschuberth:sdk-manager-plugin:1bbe7159ce076944fe18f74382d9994faef8b189'
+        classpath 'com.github.rusmonster:sdk-manager-plugin:a35a7b1c2a41a8945fbd69c6187285bd6927a63f'
     }
 }
 
