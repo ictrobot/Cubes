@@ -2,6 +2,7 @@ package ethanjones.cubes.core;
 
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.lua.LuaMappingCubes;
 import ethanjones.cubes.core.mod.ModInstance;
 import ethanjones.cubes.core.mod.ModManager;
 import ethanjones.cubes.core.system.CubesException;
@@ -11,11 +12,14 @@ import ethanjones.cubes.item.ItemBlock;
 import ethanjones.data.DataGroup;
 import ethanjones.data.DataParser;
 
+import org.luaj.vm2.LuaUserdata;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.*;
+import java.util.Map.Entry;
 
 public class IDManager implements DataParser {
 
@@ -94,6 +98,13 @@ public class IDManager implements DataParser {
     for (Map.Entry<String, ModInstance> entry : idToMod.entrySet()) {
       ModInstance m = entry.getValue();
       Log.debug(String.format("%1$-" + 32 + "s", entry.getKey()) + "- " + (m != null ? m.getName() : "core"));
+    }
+
+    for (Entry<String, Block> entry : idToBlock.entrySet()) {
+      LuaMappingCubes.blocks.set(entry.getKey(), new LuaUserdata(entry.getValue()));
+    }
+    for (Entry<String, Item> entry : idToItem.entrySet()) {
+      LuaMappingCubes.items.set(entry.getKey(), new LuaUserdata(entry.getValue()));
     }
   }
 

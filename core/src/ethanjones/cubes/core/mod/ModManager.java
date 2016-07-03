@@ -5,6 +5,7 @@ import ethanjones.cubes.core.mod.ModLoader.ModType;
 import ethanjones.cubes.core.mod.event.ModEvent;
 import ethanjones.cubes.core.mod.java.JavaModInstance;
 import ethanjones.cubes.core.mod.json.JsonModInstance;
+import ethanjones.cubes.core.mod.lua.LuaModInstance;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.graphics.assets.AssetFinder;
@@ -38,6 +39,7 @@ public class ModManager {
       String className = null;
       String name = "";
       Map<String, FileHandle> jsonFiles = new HashMap<String, FileHandle>();
+      Map<String, FileHandle> luaFiles = new HashMap<String, FileHandle>();
       FileHandle modAssets = Assets.assetsFolder.child(fileHandle.name());
       try {
         InputStream inputStream = new FileInputStream(fileHandle.file());
@@ -67,6 +69,9 @@ public class ModManager {
             } else if (entryName.startsWith("json/") && entryName.endsWith(".json")) {
               writeToFile(f, zipInputStream);
               jsonFiles.put(entryName.substring(5), f);
+            } else if (entryName.startsWith("lua/") && entryName.endsWith(".lua")) {
+              writeToFile(f, zipInputStream);
+              luaFiles.put(entryName.substring(4), f);
             }
           }
         }
@@ -74,9 +79,9 @@ public class ModManager {
           Log.error("Mod " + fileHandle.name() + " does not contain a properties file");
           continue;
         }
-        if (jsonFiles.isEmpty()) {
+        if (jsonFiles.isEmpty() && luaFiles.isEmpty()) {
           if (className == null) {
-            Log.error("Mod " + fileHandle.name() + " does not contain a \"mod.properties\" with a \"className\" or json files");
+            Log.error("Mod " + fileHandle.name() + " does not contain a \"mod.properties\" with a \"className\" or json or lua files");
             continue;
           }
           if (classFile == null) {
@@ -110,6 +115,14 @@ public class ModManager {
           init(jsonModInstance);
           mods.add(jsonModInstance);
           Log.info("Loaded Json mod " + name);
+        }
+        luaFiles = Collections.unmodifiableMap(luaFiles);
+        if (!luaFiles.isEmpty()) {
+          Log.debug("Initialising LuaModInstance");
+          LuaModInstance luaModInstance = new LuaModInstance(name, fileHandle, assetManager, luaFiles);
+          init(luaModInstance);
+          mods.add(luaModInstance);
+          Log.info("Loaded Lua mod " + name);
         }
         if (className != null) {
           Log.info("Trying to load Java mod " + name);
