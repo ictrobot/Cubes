@@ -72,6 +72,22 @@ public final class LuaMappingWorld {
     }
   };
 
+  public VarArgFunction setBlocks = new VarArgFunction() {
+    @Override
+    public Varargs invoke(Varargs args) {
+      int x1 = args.checkint(1);
+      int y1 = args.checkint(2);
+      int z1 = args.checkint(3);
+      int x2 = args.checkint(4);
+      int y2 = args.checkint(5);
+      int z2 = args.checkint(6);
+      Block block = (Block) args.checkuserdata(7, Block.class);
+      int meta = args.optint(8, 0);
+      world.setBlocks(block, x1, y1, z1, x2, y2, z2, meta);
+      return NIL;
+    }
+  };
+
   public OneArgFunction setTime = new OneArgFunction() {
     @Override
     public LuaValue call(LuaValue arg) {

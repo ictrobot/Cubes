@@ -132,6 +132,22 @@ public abstract class World implements Disposable {
     if (area != null) area.setBlock(block, x - area.minBlockX, y, z - area.minBlockZ, meta);
   }
 
+  public void setBlocks(Block block, int x1, int y1, int z1, int x2, int y2, int z2, int meta) {
+    int minX = Math.min(x1, x2), minY = Math.min(y1, y2), minZ = Math.min(z1, z2);
+    int maxX = Math.max(x1, x2), maxY = Math.max(y1, y2), maxZ = Math.max(z1, z2);
+
+    for (int x = minX; x <= maxX; x++) {
+      for (int z = minZ; z <= maxZ; z++) {
+        Area area = getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
+        if (area != null) {
+          for (int y = minY; y <= maxY; y++) {
+            area.setBlock(block, x - area.minBlockX, y, z - area.minBlockZ, meta);
+          }
+        }
+      }
+    }
+  }
+
   public void tick() {
     lock.writeLock();
     Iterator<Entry<UUID, Entity>> iterator = entities.entrySet().iterator();
