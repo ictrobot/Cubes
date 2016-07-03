@@ -3,6 +3,7 @@ package ethanjones.cubes.core.lua;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.system.Branding;
+import ethanjones.cubes.side.Sided;
 
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
@@ -14,7 +15,12 @@ public class LuaMappingCubes {
   public static LuaTable blocks = new LuaTable();
   public static LuaTable items = new LuaTable();
 
-  public static Class world = LuaMappingWorld.class;
+  public static ZeroArgFunction world = new ZeroArgFunction() {
+    @Override
+    public LuaValue call() {
+      return Sided.getCubes().world.lua;
+    }
+  };
 
   public static ZeroArgFunction isDedicatedServer = new ZeroArgFunction() {
     @Override

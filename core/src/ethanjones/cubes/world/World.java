@@ -2,11 +2,11 @@ package ethanjones.cubes.world;
 
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.core.system.CubesSecurity;
+import ethanjones.cubes.core.lua.LuaMapping;
+import ethanjones.cubes.core.lua.LuaMappingWorld;
 import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.core.util.Lock;
 import ethanjones.cubes.entity.Entity;
-import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
@@ -16,7 +16,6 @@ import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
 import ethanjones.cubes.world.reference.multi.WorldRegion;
-import ethanjones.cubes.world.save.SaveAreaIO;
 import ethanjones.cubes.world.storage.Area;
 import ethanjones.cubes.world.save.Save;
 import ethanjones.cubes.world.thread.GenerationTask;
@@ -24,6 +23,7 @@ import ethanjones.cubes.world.thread.WorldRequestParameter;
 import ethanjones.data.DataGroup;
 
 import com.badlogic.gdx.utils.Disposable;
+import org.luaj.vm2.LuaTable;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -41,11 +41,13 @@ public abstract class World implements Disposable {
   public final BlockReference spawnpoint = new BlockReference();
   public final HashMap<UUID, Entity> entities = new HashMap<UUID, Entity>();
   public int time;
+  public final LuaTable lua;
 
   public World(Save save) {
     this.save = save;
     this.terrainGenerator = save == null ? null : GeneratorManager.getTerrainGenerator(save.getSaveOptions());
     map = new HashMap<AreaReference, Area>(1024);
+    lua = LuaMapping.mapping(new LuaMappingWorld(this));
   }
 
   public Area setAreaInternal(Area area) {
