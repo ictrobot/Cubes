@@ -362,7 +362,7 @@ public class Area implements Lock.HasLock {
         area = world.getArea(tempReference, false);
         if (area != null) {
           Lock.waitToLock(true, area);
-          if (area.isReady()) area.update(0, y, z, getRef(SIZE_BLOCKS + 1, y, z));
+          if (area.isReady()) area.update(0, y, z, getRef(0, y, z));
           if (updateRender) area.updateRender(section);
           area.lock.writeUnlock();
         }
@@ -381,7 +381,7 @@ public class Area implements Lock.HasLock {
         area = world.getArea(tempReference, false);
         if (area != null) {
           Lock.waitToLock(true, area);
-          if (area.isReady()) area.update(x, y, 0, getRef(x, y, SIZE_BLOCKS + 1));
+          if (area.isReady()) area.update(x, y, 0, getRef(x, y, 0));
           if (updateRender) area.updateRender(section);
           area.lock.writeUnlock();
         }
@@ -405,8 +405,10 @@ public class Area implements Lock.HasLock {
   }
 
   public void updateRender(int section) {
-    if (section >= 0 && section < renderStatus.length) renderStatus[section] = AreaRenderStatus.UNKNOWN;
-    if (areaRenderer != null && areaRenderer[section] != null) areaRenderer[section].refresh = true;
+    if (section >= 0 && section < renderStatus.length) {
+      renderStatus[section] = AreaRenderStatus.UNKNOWN;
+      if (areaRenderer != null && areaRenderer[section] != null) areaRenderer[section].refresh = true;
+    }
   }
 
   public void updateAll() {
@@ -516,7 +518,7 @@ public class Area implements Lock.HasLock {
     System.arraycopy(oldLight, 0, light, 0, oldLight.length);
 
     AreaRenderer.free(areaRenderer);
-    if (Sided.getSide() == Side.Client || isShared()) {
+    if (Sided.getSide() == Side.Client || shared) {
       areaRenderer = new AreaRenderer[height];
       if (renderStatus.length < height) {
         renderStatus = AreaRenderStatus.create(height);
