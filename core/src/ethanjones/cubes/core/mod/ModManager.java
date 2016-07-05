@@ -47,7 +47,7 @@ public class ModManager {
         ZipEntry entry;
         while ((entry = zipInputStream.getNextEntry()) != null) {
           if (!entry.isDirectory()) {
-            String entryName = entry.getName().toLowerCase();
+            String entryName = entry.getName();
             FileHandle f = temp.child(fileHandle.name()).child(entry.getName());
             if (entryName.equals("mod.jar")) {
               if (modLoader.getType() == ModType.jar) {
@@ -119,7 +119,8 @@ public class ModManager {
         luaFiles = Collections.unmodifiableMap(luaFiles);
         if (!luaFiles.isEmpty()) {
           Log.debug("Initialising LuaModInstance");
-          LuaModInstance luaModInstance = new LuaModInstance(name, fileHandle, assetManager, luaFiles);
+          FileHandle luaFolder = temp.child(fileHandle.name()).child("lua");
+          LuaModInstance luaModInstance = new LuaModInstance(name, fileHandle, assetManager, luaFiles, luaFolder);
           init(luaModInstance);
           mods.add(luaModInstance);
           Log.info("Loaded Lua mod " + name);
