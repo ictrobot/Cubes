@@ -3,6 +3,7 @@ package ethanjones.cubes.core.mod.lua;
 import ethanjones.cubes.core.event.Event;
 import ethanjones.cubes.core.event.EventAlias;
 import ethanjones.cubes.core.event.EventHandler;
+import ethanjones.cubes.core.mod.ModInstance;
 import ethanjones.cubes.core.mod.ModManager;
 import ethanjones.cubes.core.mod.ModState;
 import ethanjones.cubes.side.Side;
@@ -21,8 +22,13 @@ public class LuaMappingMod {
     public LuaValue call(LuaValue arg1, LuaValue arg2) {
       ModState modState = (ModState) arg1.checkuserdata(ModState.class);
       LuaFunction callback = arg2.checkfunction();
-      ((LuaModInstance) ModManager.getCurrentMod()).luaModEvent.put(modState, callback);
-      return NIL;
+      ModInstance mod = ModManager.getCurrentMod();
+      if (mod instanceof LuaModInstance) {
+        ((LuaModInstance) mod).luaModEvent.put(modState, callback);
+        return TRUE;
+      } else {
+        return FALSE;
+      }
     }
   };
 
@@ -33,7 +39,9 @@ public class LuaMappingMod {
       Class<? extends Event> c = EventAlias.getEventClass(event);
       LuaFunction callback = args.checkfunction(2);
       Side side = (Side) args.optuserdata(3, Side.class, null);
-      LuaModInstance m = (LuaModInstance) ModManager.getCurrentMod();
+      ModInstance mod = ModManager.getCurrentMod();
+      if (!(mod instanceof LuaModInstance)) return FALSE;
+      LuaModInstance m = (LuaModInstance) mod;
 
       if (side == Side.Client || side == null) {
         m.clientEventListeners.add(new LuaEventListener(Side.Client, c, callback));
@@ -41,7 +49,7 @@ public class LuaMappingMod {
       if (side == Side.Server || side == null) {
         m.serverEventListeners.add(new LuaEventListener(Side.Server, c, callback));
       }
-      return NIL;
+      return TRUE;
     }
   };
 
