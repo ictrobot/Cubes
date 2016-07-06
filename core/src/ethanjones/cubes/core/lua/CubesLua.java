@@ -45,6 +45,7 @@ public class CubesLua {
     globals.rawset("cubes", mapping(LuaMappingCubes.class));
     globals.rawset("log", mapping(LuaMappingLog.class));
     globals.rawset("mod", mapping(LuaMappingMod.class));
+    globals.rawset("vector", LuaVector.create);
 
     LoadState.install(globals);
     LuaC.install(globals);
