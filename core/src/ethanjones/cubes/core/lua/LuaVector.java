@@ -185,7 +185,7 @@ public class LuaVector {
         return three;
       }
     });
-    metatable.set("__metatable", LuaValue.NIL);
+    metatable.set("__metatable", LuaValue.TRUE);
 
     final VarArgFunction values = new VarArgFunction() {
       @Override
