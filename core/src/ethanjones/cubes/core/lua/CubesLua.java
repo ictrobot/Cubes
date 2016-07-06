@@ -8,10 +8,7 @@ import ethanjones.cubes.core.mod.lua.LuaModInstance;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.Debug;
 
-import org.luaj.vm2.Globals;
-import org.luaj.vm2.LoadState;
-import org.luaj.vm2.LuaTable;
-import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.*;
 import org.luaj.vm2.compiler.LuaC;
 import org.luaj.vm2.lib.*;
 import org.luaj.vm2.lib.jse.*;
@@ -49,9 +46,13 @@ public class CubesLua {
 
     LoadState.install(globals);
     LuaC.install(globals);
+
+    if (!(LuaString.s_metatable instanceof ReadOnlyLuaTable)) {
+      LuaString.s_metatable = new ReadOnlyLuaTable(LuaString.s_metatable);
+    }
+
     return globals;
   }
-
 
   private static class CubesBaseLib extends JseBaseLib {
     private static final String regex = Pattern.quote("|");

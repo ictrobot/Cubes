@@ -22,7 +22,7 @@ public final class LuaMapping {
           luaTable.set(field.getName(), mapping((Class<?>) field.get(null)));
         }
       }
-      return luaTable;
+      return new ReadOnlyLuaTable(luaTable);
     } catch (Exception e) {
       throw new CubesException("Failed to create lua api", e);
     }
@@ -40,7 +40,7 @@ public final class LuaMapping {
           luaTable.set(field.getName(), mapping((Class<?>) field.get(o)));
         }
       }
-      return luaTable;
+      return new ReadOnlyLuaTable(luaTable);
     } catch (Exception e) {
       throw new CubesException("Failed to create lua api", e);
     }

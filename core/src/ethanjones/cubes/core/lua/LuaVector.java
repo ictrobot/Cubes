@@ -159,9 +159,9 @@ public class LuaVector {
       }
     };
 
-    metatable = new LuaTable();
+    LuaTable m = new LuaTable();
 
-    metatable.set("__newindex", new ThreeArgFunction() {
+    m.set("__newindex", new ThreeArgFunction() {
       @Override
       public LuaValue call(LuaValue lv, LuaValue k, LuaValue v) {
         String s = k.tojstring();
@@ -171,13 +171,13 @@ public class LuaVector {
         return NIL;
       }
     });
-    metatable.set("__tostring", new OneArgFunction() {
+    m.set("__tostring", new OneArgFunction() {
       @Override
       public LuaValue call(LuaValue arg) {
         return valueOf(ensure(arg).toString());
       }
     });
-    metatable.set("__len", new OneArgFunction() {
+    m.set("__len", new OneArgFunction() {
       final LuaInteger three = valueOf(3);
 
       @Override
@@ -185,7 +185,7 @@ public class LuaVector {
         return three;
       }
     });
-    metatable.set("__metatable", LuaValue.TRUE);
+    m.set("__metatable", LuaValue.TRUE);
 
     final VarArgFunction values = new VarArgFunction() {
       @Override
@@ -258,11 +258,11 @@ public class LuaVector {
       }
     };
 
-    metatable.set("__add", add);
-    metatable.set("__sub", sub);
-    metatable.set("__mul", mul);
+    m.set("__add", add);
+    m.set("__sub", sub);
+    m.set("__mul", mul);
 
-    metatable.set("__index", new TwoArgFunction() {
+    m.set("__index", new TwoArgFunction() {
       @Override
       public LuaValue call(LuaValue arg1, LuaValue arg2) {
         LuaVector l = ensure(arg1);
@@ -306,5 +306,7 @@ public class LuaVector {
         return NIL;
       }
     });
+
+    metatable = new ReadOnlyLuaTable(m);
   }
 }
