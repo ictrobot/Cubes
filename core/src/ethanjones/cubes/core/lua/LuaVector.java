@@ -10,6 +10,8 @@ import org.luaj.vm2.lib.ThreeArgFunction;
 import org.luaj.vm2.lib.TwoArgFunction;
 import org.luaj.vm2.lib.VarArgFunction;
 
+import static ethanjones.cubes.world.storage.Area.SIZE_BLOCKS;
+
 public class LuaVector {
   protected static final VarArgFunction create;
   private static final LuaTable metatable;
@@ -165,9 +167,28 @@ public class LuaVector {
       @Override
       public LuaValue call(LuaValue lv, LuaValue k, LuaValue v) {
         String s = k.tojstring();
-        if ("x".equals(s)) ensure(lv).x = v.checkdouble();
-        if ("y".equals(s)) ensure(lv).y = v.checkdouble();
-        if ("z".equals(s)) ensure(lv).z = v.checkdouble();
+        switch (s) {
+          case "x":
+          case "blockX":
+            ensure(lv).x = v.checkdouble();
+            break;
+          case "y":
+          case "blockY":
+            ensure(lv).y = v.checkdouble();
+            break;
+          case "z":
+          case "blockZ":
+            ensure(lv).z = v.checkdouble();
+            break;
+          case "areaX":
+            ensure(lv).x = v.checkint() * SIZE_BLOCKS;
+            break;
+          case "areaZ":
+            ensure(lv).z = v.checkint() * SIZE_BLOCKS;
+            break;
+          default:
+            return error("Cannot set \"" + s + "\"");
+        }
         return NIL;
       }
     });
@@ -192,6 +213,20 @@ public class LuaVector {
       public Varargs invoke(Varargs args) {
         LuaVector l = ensure(args.arg1());
         return varargsOf(new LuaValue[]{valueOf(l.x), valueOf(l.y), valueOf(l.z)});
+      }
+    };
+    final VarArgFunction blockValues = new VarArgFunction() {
+      @Override
+      public Varargs invoke(Varargs args) {
+        LuaVector l = ensure(args.arg1());
+        return varargsOf(new LuaValue[]{valueOf((int) Math.floor(l.x)), valueOf((int) Math.floor(l.y)), valueOf((int) Math.floor(l.z))});
+      }
+    };
+    final VarArgFunction areaValues = new VarArgFunction() {
+      @Override
+      public Varargs invoke(Varargs args) {
+        LuaVector l = ensure(args.arg1());
+        return varargsOf(valueOf((int) Math.floor(l.x / SIZE_BLOCKS)), valueOf((int) Math.floor(l.z / SIZE_BLOCKS)));
       }
     };
 
@@ -274,8 +309,22 @@ public class LuaVector {
             return valueOf(l.y);
           case "z":
             return valueOf(l.z);
+          case "blockX":
+            return valueOf((int) Math.floor(l.x));
+          case "blockY":
+            return valueOf((int) Math.floor(l.y));
+          case "blockZ":
+            return valueOf((int) Math.floor(l.z));
+          case "areaX":
+            return valueOf((int) Math.floor(l.x / SIZE_BLOCKS));
+          case "areaZ":
+            return valueOf((int) Math.floor(l.z / SIZE_BLOCKS));
           case "values":
             return values;
+          case "blockValues":
+            return blockValues;
+          case "areaValues":
+            return areaValues;
           case "add":
             return add;
           case "sub":
