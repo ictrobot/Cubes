@@ -262,34 +262,34 @@ public class LuaVector {
       }
     };
 
-    final TwoArgFunction add = new TwoArgFunction() {
+    final TwoVectorArgFunction add = new TwoVectorArgFunction() {
       @Override
-      public LuaValue call(LuaValue arg1, LuaValue arg2) {
-        return ensure(arg1).add(ensure(arg2)).toUserdata();
+      public LuaValue function(LuaVector a, LuaVector b) {
+        return a.add(b).toUserdata();
       }
     };
-    final TwoArgFunction sub = new TwoArgFunction() {
+    final TwoVectorArgFunction sub = new TwoVectorArgFunction() {
       @Override
-      public LuaValue call(LuaValue arg1, LuaValue arg2) {
-        return ensure(arg1).sub(ensure(arg2)).toUserdata();
+      public LuaValue function(LuaVector a, LuaVector b) {
+        return a.sub(b).toUserdata();
+      }
+    };
+    final TwoVectorArgFunction dot = new TwoVectorArgFunction() {
+      @Override
+      public LuaValue function(LuaVector a, LuaVector b) {
+        return valueOf(a.dot(b));
+      }
+    };
+    final TwoVectorArgFunction cross = new TwoVectorArgFunction() {
+      @Override
+      public LuaValue function(LuaVector a, LuaVector b) {
+        return a.cross(b).toUserdata();
       }
     };
     final TwoArgFunction mul = new TwoArgFunction() {
       @Override
       public LuaValue call(LuaValue arg1, LuaValue arg2) {
         return ensure(arg1).mul(arg2.checkdouble()).toUserdata();
-      }
-    };
-    final TwoArgFunction dot = new TwoArgFunction() {
-      @Override
-      public LuaValue call(LuaValue arg1, LuaValue arg2) {
-        return valueOf(ensure(arg1).dot(ensure(arg2)));
-      }
-    };
-    final TwoArgFunction cross = new TwoArgFunction() {
-      @Override
-      public LuaValue call(LuaValue arg1, LuaValue arg2) {
-        return ensure(arg1).cross(ensure(arg2)).toUserdata();
       }
     };
 
@@ -357,5 +357,23 @@ public class LuaVector {
     });
 
     metatable = new ReadOnlyLuaTable(m);
+  }
+
+  private static abstract class TwoVectorArgFunction extends VarArgFunction {
+
+    @Override
+    public Varargs invoke(Varargs args) {
+      LuaVector a = ensure(args.arg1());
+      LuaVector b = null;
+      if (args.arg(2).isuserdata(LuaVector.class)) {
+        b = ensure(args.arg(2));
+      } else {
+        b = new LuaVector(args.checkdouble(2), args.checkdouble(3), args.checkdouble(4));
+      }
+      return function(a, b);
+    }
+
+    public abstract LuaValue function(LuaVector a, LuaVector b);
+
   }
 }
