@@ -2,7 +2,6 @@ package ethanjones.cubes.core;
 
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.core.lua.LuaMappingCubes;
 import ethanjones.cubes.core.mod.ModInstance;
 import ethanjones.cubes.core.mod.ModManager;
 import ethanjones.cubes.core.system.CubesException;
@@ -12,14 +11,12 @@ import ethanjones.cubes.item.ItemBlock;
 import ethanjones.data.DataGroup;
 import ethanjones.data.DataParser;
 
-import org.luaj.vm2.LuaUserdata;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.*;
-import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class IDManager implements DataParser {
 
@@ -31,6 +28,7 @@ public class IDManager implements DataParser {
   private static List<Item> itemList = new ArrayList<Item>();
   private static Map<String, Item> idToItem = new HashMap<String, Item>();
   private static Map<String, ModInstance> idToMod = new HashMap<String, ModInstance>();
+  private static AtomicBoolean loaded = new AtomicBoolean(false);
 
   public static void register(Block block) {
     if (block == null) return;
@@ -87,6 +85,8 @@ public class IDManager implements DataParser {
   }
 
   public static void loaded() {
+    if (!loaded.compareAndSet(false, true)) return;
+
     idToBlock = Collections.unmodifiableMap(idToBlock);
     idToItem = Collections.unmodifiableMap(idToItem);
     idToMod = Collections.unmodifiableMap(idToMod);
@@ -99,13 +99,10 @@ public class IDManager implements DataParser {
       ModInstance m = entry.getValue();
       Log.debug(String.format("%1$-" + 32 + "s", entry.getKey()) + "- " + (m != null ? m.getName() : "core"));
     }
+  }
 
-    for (Entry<String, Block> entry : idToBlock.entrySet()) {
-      LuaMappingCubes.blocks.set(entry.getKey(), new LuaUserdata(entry.getValue()));
-    }
-    for (Entry<String, Item> entry : idToItem.entrySet()) {
-      LuaMappingCubes.items.set(entry.getKey(), new LuaUserdata(entry.getValue()));
-    }
+  public static boolean isLoaded() {
+    return loaded.get();
   }
 
   private Map<Integer, Block> integerToBlock;

@@ -3,6 +3,7 @@ package ethanjones.cubes.core.mod.lua;
 import ethanjones.cubes.core.event.Event;
 import ethanjones.cubes.core.event.EventAlias;
 import ethanjones.cubes.core.event.EventHandler;
+import ethanjones.cubes.core.lua.convert.LuaConversion;
 import ethanjones.cubes.core.mod.ModInstance;
 import ethanjones.cubes.core.mod.ModManager;
 import ethanjones.cubes.core.mod.ModState;
@@ -13,7 +14,6 @@ import org.luaj.vm2.*;
 import org.luaj.vm2.lib.TwoArgFunction;
 import org.luaj.vm2.lib.VarArgFunction;
 import org.luaj.vm2.lib.ZeroArgFunction;
-import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
 public class LuaMappingMod {
 
@@ -115,7 +115,7 @@ public class LuaMappingMod {
             return NIL;
           }
         });
-        event.set("data", CoerceJavaToLua.coerce(e));
+        event.set("data", LuaConversion.complexToLua(e));
 
         callback.call(event);
       }
