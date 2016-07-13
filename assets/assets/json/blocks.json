@@ -27,7 +27,7 @@
     "id": "core:grass",
     "texture": {
       "side": "core:grass_side",
-      "top": "core:grass",
+      "top": "core:grass_top",
       "bottom": "core:dirt"
     },
     "mining": {
@@ -41,18 +41,18 @@
     "meta": 3,
     "texture": {
       "0": {
-        "posY": "core:log_y",
-        "negY": "core:log_y",
+        "posY": "core:log_top",
+        "negY": "core:log_top",
         "other": "core:log"
       },
       "1": {
-        "posX": "core:log_y",
-        "negX": "core:log_y",
+        "posX": "core:log_top",
+        "negX": "core:log_top",
         "other": "core:log"
       },
       "2": {
-        "posZ": "core:log_y",
-        "negZ": "core:log_y",
+        "posZ": "core:log_top",
+        "negZ": "core:log_top",
         "other": "core:log"
       }
     },
