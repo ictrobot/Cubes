@@ -25,7 +25,7 @@ public class WorldLightHandler {
       }
       BlockLight.spreadLight(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
       // Sunlight
-      if (newBlock != null) {
+      if (newBlock != null && !newBlock.isTransparent()) {
         SunLight.removeSunlight(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
       } else {
         SunLight.addSunlight(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
