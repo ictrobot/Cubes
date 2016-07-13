@@ -516,6 +516,7 @@ public class Area implements Lock.HasLock {
     byte[] oldLight = light;
     light = new byte[SIZE_BLOCKS_CUBED * height];
     System.arraycopy(oldLight, 0, light, 0, oldLight.length);
+    Arrays.fill(light, oldLight.length, light.length, (byte) SunLight.MAX_SUNLIGHT);
 
     AreaRenderer.free(areaRenderer);
     if (Sided.getSide() == Side.Client || shared) {
