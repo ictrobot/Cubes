@@ -1,6 +1,7 @@
 package ethanjones.cubes.item;
 
 import ethanjones.cubes.block.Block;
+import ethanjones.cubes.core.event.entity.living.player.PlayerBreakBlockEvent;
 import ethanjones.cubes.entity.ItemEntity;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.side.Side;
@@ -49,6 +50,7 @@ public class ItemTool extends Item {
       if (blockIntersection != null) {
         BlockReference blockReference = blockIntersection.getBlockReference();
         Block block = Sided.getCubes().world.getBlock(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
+        int meta = Sided.getCubes().world.getMeta(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
 
         if (block != null) {
           MiningTarget target = player.getCurrentlyMining();
@@ -65,8 +67,10 @@ public class ItemTool extends Item {
             if (Sided.getSide() == Side.Server) {
               Cubes.getServer().world.setBlock(null, blockReference.blockX, blockReference.blockY, blockReference.blockZ);
               if (block.canMine(itemStack)) {
+                PlayerBreakBlockEvent event = new PlayerBreakBlockEvent(player, block, meta, blockIntersection, blockReference);
+                if (event.post().isCanceled()) return;
                 ItemEntity itemEntity = new ItemEntity();
-                itemEntity.itemStack = new ItemStack(block.getItemBlock(), 1);
+                itemEntity.itemStack = new ItemStack(block.getItemBlock(), 1, event.getMeta());
                 itemEntity.position.set(blockReference.blockX + 0.5f, blockReference.blockY, blockReference.blockZ + 0.5f);
                 Cubes.getServer().world.addEntity(itemEntity);
               }

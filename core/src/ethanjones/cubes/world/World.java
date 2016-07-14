@@ -81,6 +81,11 @@ public abstract class World implements Disposable {
     return area == null ? null : area.getBlock(x - area.minBlockX, y, z - area.minBlockZ);
   }
 
+  public int getMeta(int x, int y, int z) {
+    Area area = getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
+    return area == null ? 0 : area.getMeta(x - area.minBlockX, y, z - area.minBlockZ);
+  }
+
   public int getLight(int x, int y, int z) {
     Area area = getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
     return area == null || y < 0 || y > area.maxY ? 0 : area.getLight(x - area.minBlockX, y, z - area.minBlockZ);

@@ -119,6 +119,15 @@ public class Area implements Lock.HasLock {
     return lock.readUnlock(Sided.getIDManager().toBlock(b));
   }
 
+  public int getMeta(int x, int y, int z) {
+    lock.readLock();
+
+    if (unreadyReadLock(y)) return 0;
+    int b = (blocks[getRef(x, y, z)] >> 20) & 0xFF;
+
+    return lock.readUnlock(b);
+  }
+
   // Get the bits XXXX0000
   public int getSunlight(int x, int y, int z) {
     lock.readLock();

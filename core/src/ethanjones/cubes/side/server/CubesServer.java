@@ -2,6 +2,7 @@ package ethanjones.cubes.side.server;
 
 import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.core.event.EventHandler;
+import ethanjones.cubes.core.event.entity.living.player.PlayerBreakBlockEvent;
 import ethanjones.cubes.core.event.entity.living.player.PlayerPlaceBlockEvent;
 import ethanjones.cubes.core.mod.ModManager;
 import ethanjones.cubes.core.mod.event.StartingServerEvent;
@@ -93,6 +94,12 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
         event.setMeta(2);
         break;
     }
+  }
+
+  @EventHandler
+  public void logBreak(PlayerBreakBlockEvent event) {
+    if (event.getBlock() != Blocks.log) return;
+    event.setMeta(0);
   }
 
   public abstract boolean isDedicated();
