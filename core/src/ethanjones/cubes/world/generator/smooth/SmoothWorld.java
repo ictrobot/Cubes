@@ -67,6 +67,7 @@ public class SmoothWorld extends TerrainGenerator {
 
   @Override
   public void features(Area area, WorldServer world) {
+    if (area.areaX == 0 && area.areaZ == 0) return; // no trees on spawnpoint
     for (int x = 0; x < Area.SIZE_BLOCKS; x++) {
       for (int z = 0; z < Area.SIZE_BLOCKS; z++) {
         double t = trees.eval(area.areaX + x, area.areaZ + z);

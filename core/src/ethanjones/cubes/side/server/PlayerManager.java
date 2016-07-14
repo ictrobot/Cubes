@@ -5,6 +5,7 @@ import ethanjones.cubes.core.event.entity.living.player.PlayerMovementEvent;
 import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
 import ethanjones.cubes.core.event.world.generation.AreaLoadedEvent;
 import ethanjones.cubes.entity.ItemEntity;
+import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.entity.living.player.PlayerInventory;
 import ethanjones.cubes.item.ItemTool;
 import ethanjones.cubes.item.ItemStack;
@@ -121,7 +122,7 @@ public class PlayerManager {
     BlockReference spawn = server.world.spawnpoint;
     if (spawn.blockY < 0)
       throw new IllegalStateException("The spawn point y coordinate must be greater than 0. " + spawn.blockY + " < 0");
-    setPosition(spawn.asVector3().add(0.5f, 3f, 0.5f), null, false);
+    setPosition(spawn.asVector3().add(0.5f, Player.PLAYER_HEIGHT, 0.5f), null, false);
   }
 
   public void handlePacket(PacketPlayerMovement packetPlayerMovement) {

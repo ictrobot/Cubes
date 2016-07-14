@@ -24,12 +24,11 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 
-import java.util.Objects;
 import java.util.UUID;
 
 public class Player extends LivingEntity implements CommandSender, RenderableProvider {
 
-  private static final float PLAYER_HEIGHT = 1.625f;
+  public static final float PLAYER_HEIGHT = 1.625f;
 
   public final String username;
   public final ClientIdentifier clientIdentifier;
