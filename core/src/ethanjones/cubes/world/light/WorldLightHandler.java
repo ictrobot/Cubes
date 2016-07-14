@@ -15,13 +15,14 @@ public class WorldLightHandler {
     BlockReference blockReference = event.getBlockReference();
     Block oldBlock = event.getOldBlock();
     Block newBlock = event.getNewBlock();
+    int newMeta = event.getNewMeta();
 
     Performance.start(PerformanceTags.LIGHT_UPDATE);
     try {
       // Block light
       BlockLight.removeLight(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
-      if (newBlock != null && newBlock.getLightLevel() > 0) {
-        BlockLight.addLight(blockReference.blockX, blockReference.blockY, blockReference.blockZ, event.getNewBlock().getLightLevel());
+      if (newBlock != null && newBlock.getLightLevel(newMeta) > 0) {
+        BlockLight.addLight(blockReference.blockX, blockReference.blockY, blockReference.blockZ, event.getNewBlock().getLightLevel(newMeta));
       }
       BlockLight.spreadLight(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
       // Sunlight

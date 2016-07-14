@@ -40,7 +40,7 @@ public class Block {
     return Localization.get("block." + id.replaceFirst(":", "."));
   }
 
-  public int getLightLevel() {
+  public int getLightLevel(int meta) {
     return 0;
   }
 

@@ -69,7 +69,8 @@ class LightWorldSection {
     int b = a.blocks[Area.getRef(x - a.minBlockX, y, z - a.minBlockZ)];
     if (b == 0) return false;
     int blockID = b & 0xFFFFF;
-    return Sided.getIDManager().toBlock(blockID).getLightLevel() > 0;
+    int blockMeta = (b >> 20) & 0xFF;
+    return Sided.getIDManager().toBlock(blockID).getLightLevel(blockMeta) > 0;
   }
 
   protected int maxY(int x, int z) {
