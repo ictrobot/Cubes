@@ -13,6 +13,8 @@ import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonObject.Member;
 import com.eclipsesource.json.JsonValue;
 
+import java.util.Arrays;
+
 public class BlockJson {
 
   public static void json(JsonArray json) {
@@ -27,48 +29,11 @@ public class BlockJson {
     int meta = json.getInt("meta", 1);
     JBlock block = new JBlock(id, meta);
 
+    block.textures = parseMetaElement(json, "texture", new String[meta][], textureParser);
+    block.lightLevel = parseMetaElement(json, "lightLevel", new Integer[meta], integerParser);
+    block.transparent = parseMetaElement(json, "transparent", new Boolean[meta], booleanParser);
+
     JsonValue prop;
-
-    prop = json.get("texture");
-    if (prop != null) {
-      if (meta == 1) {
-        block.textures = new String[1][];
-        block.textures[0] = parseTextures(prop);
-      } else {
-        block.textures = new String[meta][];
-        JsonObject jsonObject = prop.asObject();
-        String[] defaultTextures = null;
-        for (Member member : jsonObject) {
-          String s = member.getName();
-          if (s.equals("default")) {
-            defaultTextures = parseTextures(member.getValue());
-            continue;
-          }
-          int m = -1;
-          try {
-            m = Integer.parseInt(s);
-          } catch (NumberFormatException e) {
-            throw new JsonException("Unexpected texture member \"" + member.getName() + "\"");
-          }
-          block.textures[m] = parseTextures(member.getValue());
-        }
-        for (int i = 0; i < block.textures.length; i++) {
-          if (block.textures[i] == null) {
-            if (defaultTextures == null) {
-              throw new JsonException("Textures for meta " + i + " not defined");
-            } else {
-              block.textures[i] = defaultTextures;
-            }
-          }
-        }
-      }
-    }
-
-    prop = json.get("lightLevel");
-    if (prop != null) block.lightLevel = prop.asInt();
-
-    prop = json.get("transparent");
-    if (prop != null) block.transparent = prop.asBoolean();
 
     prop = json.get("mining");
     if (prop != null) {
@@ -110,52 +75,40 @@ public class BlockJson {
     IDManager.register(block);
   }
 
-  private static String[] parseTextures(JsonValue prop) {
-    if (prop.isString()) {
-      return new String[]{prop.asString()};
+  private static <T> T[] parseMetaElement(JsonObject json, String name, T[] t, MetaElementParser<T> parser) {
+    JsonValue j = json.get(name);
+    if (j == null) return null;
+    if (!j.isObject() || t.length == 1) {
+      Arrays.fill(t, parser.parse(j));
     } else {
-      JsonObject texture = prop.asObject();
-      String[] textures = new String[6];
-      for (JsonObject.Member member : texture) {
-        String value = member.getValue().asString();
-        switch (member.getName()) {
-          case "posX":
-            textures[BlockFace.posX.index] = value;
-            break;
-          case "negX":
-            textures[BlockFace.negX.index] = value;
-            break;
-          case "posY":
-          case "top":
-            textures[BlockFace.posY.index] = value;
-            break;
-          case "negY":
-          case "bottom":
-            textures[BlockFace.negY.index] = value;
-            break;
-          case "posZ":
-            textures[BlockFace.posZ.index] = value;
-            break;
-          case "negZ":
-            textures[BlockFace.negZ.index] = value;
-            break;
-          case "side":
-            textures[BlockFace.posX.index] = value;
-            textures[BlockFace.negX.index] = value;
-            textures[BlockFace.posZ.index] = value;
-            textures[BlockFace.negZ.index] = value;
-            break;
-          case "other":
-            for (int i = 0; i < textures.length; i++) {
-              if (textures[i] == null) textures[i] = value;
-            }
-            break;
-          default:
-            throw new JsonException("Unexpected block texture member \"" + member.getName() + "\"");
+      JsonObject jsonObject = j.asObject();
+      T defaultT = null;
+      for (Member member : jsonObject) {
+        String s = member.getName();
+        if (s.equals("default")) {
+          defaultT = parser.parse(member.getValue());
+          continue;
+        }
+        int m = -1;
+        try {
+          m = Integer.parseInt(s);
+          t[m] = null; // catch out of range exceptions
+        } catch (Exception e) {
+          throw new JsonException("Unexpected " + name + " member \"" + member.getName() + "\"");
+        }
+        t[m] = parser.parse(member.getValue());
+      }
+      for (int i = 0; i < t.length; i++) {
+        if (t[i] == null) {
+          if (defaultT == null) {
+            throw new JsonException(name + " for meta " + i + " not defined");
+          } else {
+            t[i] = defaultT;
+          }
         }
       }
-      return textures;
     }
+    return t;
   }
 
   public static boolean isJsonBlock(Block b) {
@@ -163,8 +116,8 @@ public class BlockJson {
   }
 
   private static class JBlock extends Block {
-    protected int lightLevel = 0;
-    protected boolean transparent = false;
+    protected Integer[] lightLevel;
+    protected Boolean[] transparent;
     protected String[][] textures;
     private final int meta;
 
@@ -195,12 +148,12 @@ public class BlockJson {
 
     @Override
     public int getLightLevel(int meta) {
-      return lightLevel;
+      return lightLevel == null ? 0 : lightLevel[meta];
     }
 
     @Override
     public boolean isTransparent(int meta) {
-      return transparent;
+      return transparent == null ? false : transparent[meta];
     }
 
     protected void setMiningTime(float miningTime) {
@@ -219,4 +172,74 @@ public class BlockJson {
       this.miningOther = miningOther;
     }
   }
+
+  public static interface MetaElementParser<E> {
+    public E parse(JsonValue prop);
+  }
+
+  private static final MetaElementParser<Integer> integerParser = new MetaElementParser<Integer>() {
+    @Override
+    public Integer parse(JsonValue prop) {
+      return prop.asInt();
+    }
+  };
+
+  private static final MetaElementParser<Boolean> booleanParser = new MetaElementParser<Boolean>() {
+    @Override
+    public Boolean parse(JsonValue prop) {
+      return prop.asBoolean();
+    }
+  };
+
+  private static final MetaElementParser<String[]> textureParser = new MetaElementParser<String[]>() {
+    @Override
+    public String[] parse(JsonValue prop) {
+      String[] textures = new String[6];
+      if (prop.isString()) {
+        Arrays.fill(textures, prop.asString());
+      } else {
+        JsonObject texture = prop.asObject();
+        for (JsonObject.Member member : texture) {
+          String value = member.getValue().asString();
+          switch (member.getName()) {
+            case "posX":
+              textures[BlockFace.posX.index] = value;
+              break;
+            case "negX":
+              textures[BlockFace.negX.index] = value;
+              break;
+            case "posY":
+            case "top":
+              textures[BlockFace.posY.index] = value;
+              break;
+            case "negY":
+            case "bottom":
+              textures[BlockFace.negY.index] = value;
+              break;
+            case "posZ":
+              textures[BlockFace.posZ.index] = value;
+              break;
+            case "negZ":
+              textures[BlockFace.negZ.index] = value;
+              break;
+            case "side":
+              textures[BlockFace.posX.index] = value;
+              textures[BlockFace.negX.index] = value;
+              textures[BlockFace.posZ.index] = value;
+              textures[BlockFace.negZ.index] = value;
+              break;
+            case "other":
+              for (int i = 0; i < textures.length; i++) {
+                if (textures[i] == null) textures[i] = value;
+              }
+              break;
+            default:
+              throw new JsonException("Unexpected block texture member \"" + member.getName() + "\"");
+          }
+        }
+      }
+      return textures;
+    }
+  };
+
 }
