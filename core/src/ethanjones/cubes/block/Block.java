@@ -44,7 +44,11 @@ public class Block {
     return 0;
   }
 
-  public boolean isTransparent() {
+  public boolean canBeTransparent() {
+    return false; // should be true if it is possible for isTransparent to return true
+  }
+
+  public boolean isTransparent(int meta) {
     return false;
   }
 

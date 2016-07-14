@@ -199,7 +199,7 @@ public class BlockJson {
     }
 
     @Override
-    public boolean isTransparent() {
+    public boolean isTransparent(int meta) {
       return transparent;
     }
 
