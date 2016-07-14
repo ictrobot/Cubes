@@ -194,7 +194,7 @@ public class BlockJson {
     }
 
     @Override
-    public int getLightLevel() {
+    public int getLightLevel(int meta) {
       return lightLevel;
     }
 
