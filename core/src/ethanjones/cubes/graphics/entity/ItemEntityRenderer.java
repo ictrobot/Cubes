@@ -56,6 +56,7 @@ public class ItemEntityRenderer implements RenderableProvider, Disposable {
   private Mesh mesh;
   private float[] vertices;
   private Item item;
+  private int meta;
   private float randomOffset = (float) Math.random();
 
   public ItemEntityRenderer(ItemEntity itemEntity) {
@@ -71,12 +72,13 @@ public class ItemEntityRenderer implements RenderableProvider, Disposable {
 
     if (mesh == null) {
       item = itemEntity.itemStack.item;
+      meta = itemEntity.itemStack.meta;
       if (item instanceof ItemBlock) {
         mesh = new Mesh(false, 4 * 6, 6 * 6, AreaMesh.vertexAttributes);
         mesh.setIndices(blockIndices);
         int vertexOffset = 0;
         vertices = new float[AreaMesh.VERTEX_SIZE * 4 * 6];
-        BlockTextureHandler textureHandler = ((ItemBlock) itemEntity.itemStack.item).block.getTextureHandler(0); //TODO item meta
+        BlockTextureHandler textureHandler = ((ItemBlock) itemEntity.itemStack.item).block.getTextureHandler(meta);
         Vector3 offset = new Vector3(-0.5f, 0f, -0.5f);
         vertexOffset = FaceVertices.createMaxX(offset, textureHandler.getSide(BlockFace.posX), 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
         vertexOffset = FaceVertices.createMaxY(offset, textureHandler.getSide(BlockFace.posY), 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);

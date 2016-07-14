@@ -8,13 +8,14 @@ public class InventoryHelper {
   public static ItemStack reduceCount(Inventory inventory, int stack) {
     if (inventory.itemStacks[stack] == null) return null;
     Item item = inventory.itemStacks[stack].item;
+    int meta = inventory.itemStacks[stack].meta;
     if (inventory.itemStacks[stack].count > 1) {
       inventory.itemStacks[stack].count--;
     } else {
       inventory.itemStacks[stack] = null;
     }
     inventory.sync();
-    return new ItemStack(item, 1);
+    return new ItemStack(item, 1, meta);
   }
 
   public static void addItemstack(Inventory inventory, ItemStack itemstack) {
@@ -22,7 +23,7 @@ public class InventoryHelper {
       if (inventory.itemStacks[i] == null) {
         inventory.itemStacks[i] = itemstack;
         break;
-      } else if (inventory.itemStacks[i].item == itemstack.item) {
+      } else if (inventory.itemStacks[i].item == itemstack.item && inventory.itemStacks[i].meta == itemstack.meta) {
         if (inventory.itemStacks[i].count + itemstack.count <= itemstack.item.getStackCountMax()) {
           inventory.itemStacks[i].count += itemstack.count;
           break;

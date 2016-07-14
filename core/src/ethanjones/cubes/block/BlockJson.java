@@ -35,6 +35,22 @@ public class BlockJson {
 
     JsonValue prop;
 
+    prop = json.get("displayMeta");
+    if (prop != null) {
+      JsonArray array = prop.asArray();
+      int[] ints = new int[array.size()];
+      for (int i = 0; i < array.size(); i++) {
+        ints[i] = array.get(i).asInt();
+      }
+      block.displayMeta = ints;
+    } else {
+      int[] ints = new int[meta];
+      for (int i = 0; i < ints.length; i++) {
+        ints[i] = i;
+      }
+      block.displayMeta = ints;
+    }
+
     prop = json.get("mining");
     if (prop != null) {
       JsonObject object = prop.asObject();
@@ -65,6 +81,7 @@ public class BlockJson {
         case "texture":
         case "lightLevel":
         case "transparent":
+        case "displayMeta":
         case "mining":
           break;
         default:
@@ -119,6 +136,7 @@ public class BlockJson {
     protected Integer[] lightLevel;
     protected Boolean[] transparent;
     protected String[][] textures;
+    protected int[] displayMeta;
     private final int meta;
 
     public JBlock(String id, int meta) {
@@ -154,6 +172,11 @@ public class BlockJson {
     @Override
     public boolean isTransparent(int meta) {
       return transparent == null ? false : transparent[meta];
+    }
+
+    @Override
+    public int[] displayMetaValues() {
+      return displayMeta;
     }
 
     protected void setMiningTime(float miningTime) {

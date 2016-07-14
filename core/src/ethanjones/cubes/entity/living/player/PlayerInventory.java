@@ -18,9 +18,9 @@ public class PlayerInventory extends Inventory {
     this.hotbarSelected = 0;
     this.player = player;
     // start with tools
-    this.itemStacks[0] = new ItemStack(Items.pickaxe, 1);
-    this.itemStacks[1] = new ItemStack(Items.axe, 1);
-    this.itemStacks[2] = new ItemStack(Items.shovel, 1);
+    this.itemStacks[0] = new ItemStack(Items.pickaxe);
+    this.itemStacks[1] = new ItemStack(Items.axe);
+    this.itemStacks[2] = new ItemStack(Items.shovel);
   }
 
   public ItemStack selectedItemStack() {

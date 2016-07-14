@@ -7,6 +7,7 @@ import ethanjones.cubes.item.ItemStack;
 import ethanjones.cubes.item.ItemTool;
 
 public class Block {
+  private static final int[] ONE_ZERO = new int[]{0};
 
   public String id;
   protected ItemBlock itemBlock;
@@ -50,6 +51,10 @@ public class Block {
 
   public boolean isTransparent(int meta) {
     return false;
+  }
+
+  public int[] displayMetaValues() {
+    return ONE_ZERO;
   }
 
   @Override

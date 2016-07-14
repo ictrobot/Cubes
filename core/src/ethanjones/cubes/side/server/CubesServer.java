@@ -17,7 +17,6 @@ import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.command.CommandManager;
 import ethanjones.cubes.world.server.WorldServer;
 import ethanjones.cubes.world.save.Save;
-
 import java.util.List;
 
 public abstract class CubesServer extends Cubes implements TimeHandler {

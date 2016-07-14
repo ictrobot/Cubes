@@ -12,6 +12,7 @@ import ethanjones.cubes.graphics.menu.Fonts;
 import ethanjones.cubes.input.keyboard.KeyTypedAdapter;
 import ethanjones.cubes.input.keyboard.KeyboardHelper;
 import ethanjones.cubes.item.Item;
+import ethanjones.cubes.item.ItemBlock;
 import ethanjones.cubes.item.ItemStack;
 import ethanjones.cubes.item.ItemTool;
 import ethanjones.cubes.networking.NetworkingManager;
@@ -117,7 +118,7 @@ public class GuiRenderer implements Disposable {
   Texture crosshair;
   Texture hotbarSlot;
   Texture hotbarSelected;
-  Item[][] items;
+  ItemStack[][] itemstacks;
 
   public boolean chatEnabled;
   public boolean debugEnabled;
@@ -205,15 +206,21 @@ public class GuiRenderer implements Disposable {
     hotbarSelected = Assets.getTexture("core:hud/HotbarSelected.png");
     hotbarSlot = Assets.getTexture("core:hud/HotbarSlot.png");
 
-    items = new Item[10][6];
+    itemstacks = new ItemStack[10][6];
     int i = 0;
-    List<Item> list = new ArrayList<Item>();
-    list.addAll(IDManager.getItemBlocks());
-    list.addAll(IDManager.getItems());
+    List<ItemStack> list = new ArrayList<ItemStack>();
+    for (ItemBlock itemBlock : IDManager.getItemBlocks()) {
+      for (int j : itemBlock.block.displayMetaValues()) {
+        list.add(new ItemStack(itemBlock, 1, j));
+      }
+    }
+    for (Item item : IDManager.getItems()) {
+      list.add(new ItemStack(item));
+    }
     for (int y = 0; y < 6; y++) {
       for (int x = 0; x < 10; x++, i++) {
         if (i >= list.size()) break;
-        items[x][y] = list.get(i);
+        itemstacks[x][y] = list.get(i);
       }
       if (i >= list.size()) break;
     }
@@ -287,9 +294,9 @@ public class GuiRenderer implements Disposable {
       for (int x = 0; x < 10; x++, i++) {
         float minX = startWidth + (x * hotbarSize);
         spriteBatch.draw(hotbarSlot, minX, minY, hotbarSize, hotbarSize);
-        Item item = items[x][y];
-        if (item == null) continue;
-        spriteBatch.draw(item.getTextureRegion(), minX + itemOffset, minY + itemOffset, itemSize, itemSize);
+        ItemStack itemStack = itemstacks[x][y];
+        if (itemStack == null || itemStack.item == null) continue;
+        spriteBatch.draw(itemStack.item.getTextureRegion(), minX + itemOffset, minY + itemOffset, itemSize, itemSize);
       }
     }
   }
@@ -354,12 +361,12 @@ public class GuiRenderer implements Disposable {
       if (remX >= itemOffset && remX <= itemSize + itemOffset && remY >= itemOffset && remY <= itemSize + itemOffset) {
         int slotX = (int) (x / hotbarSize);
         int slotY = (int) (y / hotbarSize);
-        if (slotX >= items.length || slotY >= items[0].length) return false;
+        if (slotX >= itemstacks.length || slotY >= itemstacks[0].length) return false;
 
-        Item item = items[slotX][slotY];
+        ItemStack base = itemstacks[slotX][slotY];
         ItemStack itemStack = null;
-        if (item != null) {
-          itemStack = new ItemStack(item, item.getStackCountMax());
+        if (base != null && base.item != null) {
+          itemStack = new ItemStack(base.item, base.item.getStackCountMax(), base.meta);
         }
         PlayerInventory inventory = Cubes.getClient().player.getInventory();
         inventory.itemStacks[inventory.hotbarSelected] = itemStack;

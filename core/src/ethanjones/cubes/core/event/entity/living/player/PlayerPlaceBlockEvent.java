@@ -8,13 +8,14 @@ import ethanjones.cubes.world.reference.BlockReference;
 public class PlayerPlaceBlockEvent extends PlayerEvent {
 
   private final Block block;
+  private int meta;
   private final BlockIntersection blockIntersection;
   private final BlockReference blockReference;
-  private int meta;
 
-  public PlayerPlaceBlockEvent(Player player, Block block, BlockIntersection blockIntersection, BlockReference blockReference) {
+  public PlayerPlaceBlockEvent(Player player, Block block, int meta, BlockIntersection blockIntersection, BlockReference blockReference) {
     super(player, true);
     this.block = block;
+    this.meta = meta;
     this.blockIntersection = blockIntersection;
     this.blockReference = blockReference;
   }
