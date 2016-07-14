@@ -63,7 +63,12 @@ void main() {
   int int_blocklight = int_voxellight & 0xF;
   #endif
 
-	float light = max(float(int_blocklight), float(int_sunlight) * u_sunlight) / 15.0;
-	v_voxellight = 0.2 + (light * 0.8);
-	v_voxellight = v_voxellight * (1.0 - (float(int_side) * 0.04));
+	//float light = max(float(int_blocklight), float(int_sunlight) * u_sunlight) / 15.0;
+	//v_voxellight = 0.2 + (light * 0.8);
+	//v_voxellight = v_voxellight * (1.0 - (float(int_side) * 0.04));
+
+  float float_sunlight = 0.4 + (float(int_sunlight) * u_sunlight / 30.0);
+  float float_voxellight = (1.0 - float_sunlight) * (float(int_blocklight) / 15.0);
+  float float_light = float_sunlight + float_voxellight;
+  v_voxellight = float_light * (1.0 - (float(int_side) * 0.04));
 }
