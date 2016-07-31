@@ -7,6 +7,7 @@ import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.entity.living.player.PlayerInventory;
 import ethanjones.cubes.graphics.Graphics;
 import ethanjones.cubes.graphics.assets.Assets;
+import ethanjones.cubes.graphics.hud.FrametimeGraph;
 import ethanjones.cubes.graphics.hud.ImageButtons;
 import ethanjones.cubes.graphics.menu.Fonts;
 import ethanjones.cubes.input.keyboard.KeyTypedAdapter;
@@ -227,6 +228,8 @@ public class GuiRenderer implements Disposable {
   }
 
   public void render() {
+    FrametimeGraph.update();
+
     stage.getRoot().removeActor(chat);
     stage.getRoot().removeActor(chatLog);
     if (chatEnabled) {
@@ -242,6 +245,7 @@ public class GuiRenderer implements Disposable {
     spriteBatch.begin();
     if (debugEnabled) {
       Fonts.debug.draw(spriteBatch, ClientDebug.getDebugString(), 5f, Gdx.graphics.getHeight() - 5);
+      FrametimeGraph.draw(spriteBatch);
     }
     float crosshairSize = Fonts.scaleFactor * 10f;
     if (!hideGuiEnabled) {

@@ -13,3 +13,6 @@ setting.input.touchpadLeft=Touchpad on Left
 
 setting.networking=Networking
 setting.networking.port=Port
+
+setting.debug=Debug
+setting.debug.frametimeGraph=Frametime Graph

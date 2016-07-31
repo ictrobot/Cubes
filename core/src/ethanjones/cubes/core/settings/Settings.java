@@ -26,10 +26,12 @@ public class Settings {
   public static final String INPUT_TOUCHPAD_SIZE = "input.touchpadSize";
   public static final String INPUT_TOUCHPAD_LEFT = "input.touchpadLeft";
   public static final String NETWORKING_PORT = "networking.port";
+  public static final String DEBUG_FRAMETIME_GRAPH = "debug.frametimeGraph";
 
   public static final String GROUP_GRAPHICS = "graphics";
   public static final String GROUP_INPUT = "input";
   public static final String GROUP_NETWORKING = "networking";
+  public static final String GROUP_DEBUG = "debug";
 
   protected static SettingGroup base = new SettingGroup();
   protected static HashMap<String, Setting> settings = new HashMap<String, Setting>();
@@ -76,11 +78,13 @@ public class Settings {
     });
 
     addSetting(NETWORKING_PORT, new IntegerSetting(24842));
+    addSetting(DEBUG_FRAMETIME_GRAPH, new BooleanSetting(false));
 
     base.add(USERNAME)
             .add(GROUP_GRAPHICS, new SettingGroup().add(GRAPHICS_VIEW_DISTANCE).add(GRAPHICS_FOV).add(GRAPHICS_VSYNC))
             .add(GROUP_INPUT, new SettingGroup().add(INPUT_MOUSE_SENSITIVITY).add(INPUT_TOUCHPAD_SIZE).add(INPUT_TOUCHPAD_LEFT))
-            .add(GROUP_NETWORKING, new SettingGroup().add(NETWORKING_PORT));
+            .add(GROUP_NETWORKING, new SettingGroup().add(NETWORKING_PORT))
+            .add(GROUP_DEBUG, new SettingGroup().add(DEBUG_FRAMETIME_GRAPH));
 
     if (!read()) {
       write();
