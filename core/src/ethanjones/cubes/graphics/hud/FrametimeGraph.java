@@ -18,8 +18,6 @@ public class FrametimeGraph {
   private static final int scale = 10;
   private static final float yOffset = Fonts.scaleFactor * 50f;
 
-  private boolean enabled = Settings.getBooleanSettingValue(Settings.DEBUG_FRAMETIME_GRAPH);
-
   public static void draw(Batch batch) {
     if (!Settings.getBooleanSettingValue(Settings.DEBUG_FRAMETIME_GRAPH)) return;
 
