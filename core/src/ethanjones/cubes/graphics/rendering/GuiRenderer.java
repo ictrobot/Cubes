@@ -243,17 +243,20 @@ public class GuiRenderer implements Disposable {
     stage.draw();
 
     spriteBatch.begin();
-    if (debugEnabled) {
-      Fonts.debug.draw(spriteBatch, ClientDebug.getDebugString(), 5f, Gdx.graphics.getHeight() - 5);
-      FrametimeGraph.draw(spriteBatch);
-    }
     float crosshairSize = Fonts.scaleFactor * 10f;
     if (!hideGuiEnabled) {
       spriteBatch.draw(crosshair, (Gdx.graphics.getWidth() / 2) - crosshairSize, (Gdx.graphics.getHeight() / 2) - crosshairSize, crosshairSize * 2, crosshairSize * 2);
       if (!chatEnabled) renderHotbar();
     }
     if (blocksMenuEnabled) renderBlockMenu();
+    if (debugEnabled) {
+      FrametimeGraph.drawLines(spriteBatch);
+      Fonts.debug.draw(spriteBatch, ClientDebug.getDebugString(), 5f, Gdx.graphics.getHeight() - 5);
+    }
     spriteBatch.end();
+    if (debugEnabled) {
+      FrametimeGraph.drawPoints();
+    }
   }
 
   public void renderHotbar() {
