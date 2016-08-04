@@ -31,12 +31,15 @@ public class Save {
   public Save(String name, FileHandle fileHandle, boolean readOnly) {
     this.name = name;
     this.fileHandle = fileHandle;
-    this.fileHandle.mkdirs();
-    folderArea().mkdirs();
-    folderAreaList().mkdirs();
-    folderPlayer().mkdirs();
-    folderCave().mkdirs();
     this.readOnly = readOnly;
+
+    if (!this.readOnly) {
+      this.fileHandle.mkdirs();
+      folderArea().mkdirs();
+      folderAreaList().mkdirs();
+      folderPlayer().mkdirs();
+      folderCave().mkdirs();
+    }
   }
 
   public boolean writeArea(Area area) {
