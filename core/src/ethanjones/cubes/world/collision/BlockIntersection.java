@@ -12,10 +12,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import static java.lang.Math.floor;
 import static java.lang.Math.signum;
@@ -53,12 +50,13 @@ public class BlockIntersection {
   private static Ray ray = new Ray();
 
   public static BlockIntersection intersection(Vector3 origin, Vector3 direction, int radius, World world) {
-    List<BlockReference> blocks = getSortedBlockList(origin, direction, radius, world);
+    Iterator<BlockReference> blocks = getSortedBlockList(origin, direction, radius, world);
 
     ray.set(origin, direction);
     Vector3 intersection = new Vector3();
 
-    for (BlockReference b : blocks) {
+    while (blocks.hasNext()) {
+      BlockReference b = blocks.next();
       boundingBox.min.set(b.blockX, b.blockY, b.blockZ);
       boundingBox.max.set(b.blockX + 1, b.blockY + 1, b.blockZ + 1);
 
@@ -81,7 +79,7 @@ public class BlockIntersection {
     return null;
   }
 
-  private static List<BlockReference> getSortedBlockList(final Vector3 origin, Vector3 direction, int radius, World world) {
+  private static Iterator<BlockReference> getSortedBlockList(final Vector3 origin, final Vector3 direction, int radius, World world) {
     int initialX = (int) floor(origin.x);
     int initialY = (int) floor(origin.y);
     int initialZ = (int) floor(origin.z);
@@ -90,7 +88,7 @@ public class BlockIntersection {
     int stepY = (int) signum(direction.y);
     int stepZ = (int) signum(direction.z);
 
-    List<BlockReference> list = new ArrayList<BlockReference>();
+    final ArrayList<BlockReference> list = new ArrayList<BlockReference>();
 
     world.lock.readLock();
     int currentAreaX = Integer.MIN_VALUE;
@@ -125,13 +123,25 @@ public class BlockIntersection {
     if (area != null) area.lock.readUnlock();
     world.lock.readUnlock();
 
-    Collections.sort(list, new Comparator<BlockReference>() {
+    return new Iterator<BlockReference>() {
       @Override
-      public int compare(BlockReference o1, BlockReference o2) {
-        float d1 = distance2(o1);
-        float d2 = distance2(o2);
-        float dst = d1 - d2;
-        return dst < 0 ? -1 : (dst > 0 ? 1 : 0);
+      public boolean hasNext() {
+        return list.size() > 0;
+      }
+
+      @Override
+      public BlockReference next() {
+        BlockReference current = null;
+        float currentDistance2 = Float.POSITIVE_INFINITY;
+        for (BlockReference blockReference : list) {
+          float distance2 = distance2(blockReference);
+          if (distance2 < currentDistance2) {
+            currentDistance2 = distance2;
+            current = blockReference;
+          }
+        }
+        list.remove(current);
+        return current;
       }
 
       public float distance2(BlockReference b) {
@@ -140,9 +150,12 @@ public class BlockIntersection {
         float dz = b.blockZ - origin.z;
         return (dx * dx) + (dy * dy) + (dz * dz);
       }
-    });
 
-    return list;
+      @Override
+      public void remove() {
+        throw new UnsupportedOperationException();
+      }
+    };
   }
 
   private static Area fastGet(World world, int x, int z) {
