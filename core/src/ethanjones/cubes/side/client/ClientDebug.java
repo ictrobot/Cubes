@@ -9,79 +9,30 @@ import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.storage.Area;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.WindowedMean;
+
+import java.text.DecimalFormat;
 
 public class ClientDebug {
 
-  public static class IntAverage {
-
-    public int current;
-    public long total;
-    public int num;
-    public int average;
-
-    public void add(int i) {
-      current = i;
-      total += i;
-      num++;
-      average = (int) (total / num);
-    }
-  }
-
-  public static class FloatAverage {
-
-    public float current;
-    public long total;
-    public int num;
-    public float average;
-
-    public void add(float i) {
-      current = i;
-      total += i;
-      num++;
-      average = (float) (total / (float) num);
-    }
-  }
-
   private static final String lineSeparator = System.getProperty("line.separator");
-  static IntAverage fps = new IntAverage();
-  static FloatAverage loop = new FloatAverage();
-  //static long lastTime = System.currentTimeMillis();
-  private static String debugString = "";
+  static WindowedMean ms = new WindowedMean(50);
   private static StringBuilder builder = new StringBuilder(250).append(Branding.DEBUG).append(lineSeparator);
   private static int brandingDebugLength = builder.length();
+  private static DecimalFormat twoDP = new DecimalFormat("#0.00");
 
-  public static void update() {
+  public static String getDebugString() {
     Vector3 p = Cubes.getClient().player.position;
-    loop.add(Gdx.graphics.getRawDeltaTime() * 1000f);
-    //loop.add((int) (System.currentTimeMillis() - lastTime));
-    //lastTime = System.currentTimeMillis();
-
-    String str = Branding.VERSION_HASH;
-    if (!str.isEmpty()) {
-      str = "HASH: " + str + lineSeparator;
-    }
-
-    //String performance = "FPS:" + fps.current + " AVG:" + fps.average + " MS:" + String.format("%.3f", loop.current) + " AVG:" + String.format("%.3f", loop.average) + " MEM:" + Compatibility.get().getFreeMemory() + "MB";
-    //String position = "POS X:" + String.format("%.3f", p.x) + "(" + CoordinateConverter.area(p.x) + ")" + " Y:" + String.format("%.3f", p.y) + "(" + CoordinateConverter.area(p.y) + ")" + " Z:" + String.format("%.3f", p.z) + "(" + CoordinateConverter.area(p.z) + ")";
-    //String direction = "DIR X:" + String.format("%.3f", Cubes.getClient().player.angle.x) + " Y:" + String.format("%.2f", Cubes.getClient().player.angle.y) + " Z:" + String.format("%.3f", Cubes.getClient().player.angle.z);
-    //String rendering = "R A:" + AreaRenderer.renderedThisFrame + " M:" + AreaRenderer.renderedMeshesThisFrame;
-    //String world = "W B:" + getBlockLight() + " S:" + getSunlight() + " T:" + Cubes.getClient().world.time;
-    //debugString = Branding.DEBUG + lineSeparator + performance + lineSeparator + position + lineSeparator + direction + lineSeparator + rendering + lineSeparator + world;
+    ms.addValue(Gdx.graphics.getRawDeltaTime() * 1000f);
 
     builder.setLength(brandingDebugLength);
-    builder.append("FPS:").append(fps.current).append(" AVG:").append(fps.average).append(" MS:").append(String.format("%.3f", loop.current)).append(" AVG:").append(String.format("%.3f", loop.average)).append(" MEM:").append(Compatibility.get().getFreeMemory()).append("MB").append(lineSeparator);
-    builder.append("POS X:").append(String.format("%.3f", p.x)).append("(").append(CoordinateConverter.area(p.x)).append(")").append(" Y:").append(String.format("%.3f", p.y)).append("(").append(CoordinateConverter.area(p.y)).append(")").append(" Z:").append(String.format("%.3f", p.z)).append("(").append(CoordinateConverter.area(p.z)).append(")").append(lineSeparator);
-    builder.append("DIR X:").append(String.format("%.3f", Cubes.getClient().player.angle.x)).append(" Y:").append(String.format("%.2f", Cubes.getClient().player.angle.y)).append(" Z:").append(String.format("%.3f", Cubes.getClient().player.angle.z)).append(lineSeparator);
+    builder.append("FPS:").append(Gdx.graphics.getFramesPerSecond()).append(" MS:").append(twoDP.format(ms.getMean())).append(" MEM:").append(Compatibility.get().getFreeMemory()).append("MB").append(lineSeparator);
+    builder.append("POS X:").append(twoDP.format(p.x)).append("(").append(CoordinateConverter.area(p.x)).append(")").append(" Y:").append(twoDP.format(p.y)).append("(").append(CoordinateConverter.area(p.y)).append(")").append(" Z:").append(twoDP.format(p.z)).append("(").append(CoordinateConverter.area(p.z)).append(")").append(lineSeparator);
+    builder.append("DIR X:").append(twoDP.format(Cubes.getClient().player.angle.x)).append(" Y:").append(twoDP.format(Cubes.getClient().player.angle.y)).append(" Z:").append(twoDP.format(Cubes.getClient().player.angle.z)).append(lineSeparator);
     builder.append("R A:").append(AreaRenderer.renderedThisFrame).append(" M:").append(AreaRenderer.renderedMeshesThisFrame).append(lineSeparator);
     builder.append("W B:").append(getBlockLight()).append(" S:").append(getSunlight()).append(" T:").append(Cubes.getClient().world.time);
-    debugString = builder.toString();
-
-    GLProfiler.calls = 0;
-    GLProfiler.drawCalls = 0;
-    GLProfiler.shaderSwitches = 0;
-    GLProfiler.textureBindings = 0;
+    return builder.toString();
   }
 
   private static int getBlockLight() {
@@ -108,13 +59,5 @@ public class ClientDebug {
       return area.getSunlight(x - area.minBlockX, y, z - area.minBlockZ);
     }
     return 0;
-  }
-
-  public static String getDebugString() {
-    return debugString;
-  }
-
-  public static void tick() {
-    fps.add(Gdx.graphics.getFramesPerSecond());
   }
 }
