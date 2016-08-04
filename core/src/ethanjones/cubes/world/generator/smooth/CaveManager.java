@@ -1,6 +1,9 @@
 package ethanjones.cubes.world.generator.smooth;
 
+import ethanjones.cubes.core.system.Executor;
+import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.reference.AreaReference;
+import ethanjones.cubes.world.save.Save;
 import ethanjones.cubes.world.storage.Area;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -73,10 +76,10 @@ public class CaveManager {
   }
 
   private Cave loadCave(AreaReference a) {
-    return null; //TODO implement storing and loading of caves
+    return Cubes.getServer().world.save.readCave(a);
   }
 
-  private Cave generateCave(AreaReference a) {
+  private Cave generateCave(final AreaReference a) {
     int offsetX = smoothWorld.pseudorandomInt(a.areaX, a.areaZ, Area.SIZE_BLOCKS - 1);
     int offsetZ = smoothWorld.pseudorandomInt(a.areaZ, a.areaX, Area.SIZE_BLOCKS - 1);
 
@@ -84,6 +87,14 @@ public class CaveManager {
     int z = a.minBlockZ() + offsetZ;
 
     CaveGenerator caveGenerator = new CaveGenerator(x, z, smoothWorld);
-    return caveGenerator.generate();
+    final Cave cave = caveGenerator.generate();
+    final Save save = Cubes.getServer().world.save;
+    Executor.execute(new Runnable() {
+      @Override
+      public void run() {
+        save.writeCave(a, cave);
+      }
+    });
+    return cave;
   }
 }

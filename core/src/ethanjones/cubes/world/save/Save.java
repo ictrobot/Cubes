@@ -4,6 +4,7 @@ import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.world.generator.smooth.Cave;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.storage.Area;
 import ethanjones.data.Data;
@@ -34,6 +35,7 @@ public class Save {
     folderArea().mkdirs();
     folderAreaList().mkdirs();
     folderPlayer().mkdirs();
+    folderCave().mkdirs();
     this.readOnly = readOnly;
   }
 
@@ -89,6 +91,37 @@ public class Save {
       return player;
     } catch (Exception e) {
       Log.warning("Failed to read player", e);
+      return null;
+    }
+  }
+
+  public void writeCave(AreaReference areaReference, Cave cave) {
+    if (readOnly) return;
+
+    FileHandle folder = folderCave();
+    FileHandle file = folder.child(areaReference.areaX + "_" + areaReference.areaZ);
+    try {
+      OutputStream write = file.write(false);
+      DataOutputStream dataOutputStream = new DataOutputStream(write);
+      cave.write(dataOutputStream);
+      write.close();
+    } catch (IOException e) {
+      Log.warning("Failed to write cave", e);
+    }
+  }
+
+  public Cave readCave(AreaReference areaReference) {
+    FileHandle folder = folderCave();
+    FileHandle file = folder.child(areaReference.areaX + "_" + areaReference.areaZ);
+    if (!file.exists()) return null;
+    try {
+      InputStream read = file.read();
+      DataInputStream dataInputStream = new DataInputStream(read);
+      Cave cave = Cave.read(dataInputStream);
+      read.close();
+      return cave;
+    } catch (IOException e) {
+      Log.warning("Failed to read cave", e);
       return null;
     }
   }
@@ -168,6 +201,10 @@ public class Save {
 
   public FileHandle folderArea() {
     return fileHandle.child("area");
+  }
+
+  public FileHandle folderCave() {
+    return fileHandle.child("cave");
   }
 
   public FileHandle folderAreaList() {
