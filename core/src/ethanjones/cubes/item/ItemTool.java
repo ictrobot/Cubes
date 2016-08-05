@@ -7,7 +7,6 @@ import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
-import ethanjones.cubes.side.server.PlayerManager;
 import ethanjones.cubes.world.collision.BlockIntersection;
 import ethanjones.cubes.world.reference.BlockReference;
 

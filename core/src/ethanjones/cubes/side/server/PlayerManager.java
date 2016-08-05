@@ -7,8 +7,8 @@ import ethanjones.cubes.core.event.world.generation.AreaLoadedEvent;
 import ethanjones.cubes.entity.ItemEntity;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.entity.living.player.PlayerInventory;
-import ethanjones.cubes.item.ItemTool;
 import ethanjones.cubes.item.ItemStack;
+import ethanjones.cubes.item.ItemTool;
 import ethanjones.cubes.item.inv.InventoryHelper;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.*;
@@ -24,8 +24,8 @@ import ethanjones.cubes.world.storage.Area;
 import ethanjones.cubes.world.thread.GenerationTask;
 import ethanjones.cubes.world.thread.WorldRequestParameter;
 
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector3;
 
 import java.util.ArrayList;

@@ -1,7 +1,7 @@
 package ethanjones.cubes.core.json;
 
-import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.block.BlockJson;
+import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.core.IDManager;
 import ethanjones.cubes.core.mod.json.JsonModInstance;
 import ethanjones.cubes.core.system.CubesException;

@@ -2,9 +2,6 @@ package ethanjones.cubes.side.server.command;
 
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.entity.living.player.Player;
-import ethanjones.cubes.networking.NetworkingManager;
-import ethanjones.cubes.networking.packets.PacketOtherPlayerMovement;
-import ethanjones.cubes.networking.packets.PacketPlayerMovement;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 
 import com.badlogic.gdx.math.Vector3;

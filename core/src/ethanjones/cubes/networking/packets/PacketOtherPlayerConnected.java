@@ -5,6 +5,7 @@ import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.networking.packet.PacketDirection;
 import ethanjones.cubes.networking.packet.PacketDirection.Direction;
+
 import com.badlogic.gdx.math.Vector3;
 
 import java.io.DataInputStream;

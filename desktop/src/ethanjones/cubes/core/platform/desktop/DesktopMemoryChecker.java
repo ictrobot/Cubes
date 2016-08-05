@@ -1,6 +1,5 @@
 package ethanjones.cubes.core.platform.desktop;
 
-import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.system.Debug;
 

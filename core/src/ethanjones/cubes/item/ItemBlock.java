@@ -4,11 +4,11 @@ import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.event.entity.living.player.PlayerPlaceBlockEvent;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.entity.living.player.Player;
-import ethanjones.cubes.world.collision.BlockIntersection;
 import ethanjones.cubes.item.inv.InventoryHelper;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.world.collision.BlockIntersection;
 import ethanjones.cubes.world.reference.BlockReference;
 
 import com.badlogic.gdx.Input;

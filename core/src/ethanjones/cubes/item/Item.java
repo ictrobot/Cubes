@@ -1,7 +1,6 @@
 package ethanjones.cubes.item;
 
 import ethanjones.cubes.core.localization.Localization;
-import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.graphics.assets.Assets;
 

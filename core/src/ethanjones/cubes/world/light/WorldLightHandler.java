@@ -1,11 +1,11 @@
 package ethanjones.cubes.world.light;
 
 import ethanjones.cubes.block.Block;
-import ethanjones.cubes.core.performance.Performance;
-import ethanjones.cubes.core.performance.PerformanceTags;
 import ethanjones.cubes.core.event.EventHandler;
 import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
 import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.performance.Performance;
+import ethanjones.cubes.core.performance.PerformanceTags;
 import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.thread.AreaNotLoadedException;
 

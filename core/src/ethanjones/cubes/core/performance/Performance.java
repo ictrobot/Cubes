@@ -1,14 +1,19 @@
 package ethanjones.cubes.core.performance;
 
 import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.core.logging.loggers.SysOutLogWriter;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.system.Debug;
 
 import com.badlogic.gdx.files.FileHandle;
 
-import java.io.*;
-import java.util.*;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Performance {

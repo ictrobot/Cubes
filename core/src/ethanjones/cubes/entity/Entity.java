@@ -2,11 +2,11 @@ package ethanjones.cubes.entity;
 
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.core.util.VectorUtil;
-import ethanjones.cubes.world.gravity.WorldGravity;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.World;
+import ethanjones.cubes.world.gravity.WorldGravity;
 import ethanjones.data.DataGroup;
 import ethanjones.data.DataParser;
 

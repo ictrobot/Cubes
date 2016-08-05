@@ -6,7 +6,9 @@ import ethanjones.cubes.networking.stream.PairedStreams;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.zip.Inflater;
 
 import static ethanjones.cubes.networking.Networking.NETWORKING_DEBUG;

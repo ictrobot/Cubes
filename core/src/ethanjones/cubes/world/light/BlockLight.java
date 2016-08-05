@@ -1,14 +1,13 @@
 package ethanjones.cubes.world.light;
 
-import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.storage.Area;
 
 import java.util.ArrayDeque;
 
-import static ethanjones.cubes.world.storage.Area.*;
+import static ethanjones.cubes.world.storage.Area.SIZE_BLOCKS;
+import static ethanjones.cubes.world.storage.Area.getRef;
 
 public class BlockLight {
 

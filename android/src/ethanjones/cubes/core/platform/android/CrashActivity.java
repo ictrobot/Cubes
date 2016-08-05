@@ -1,7 +1,7 @@
 package ethanjones.cubes.core.platform.android;
 
-import android.os.Bundle;
 import android.app.Activity;
+import android.os.Bundle;
 import android.widget.TextView;
 
 import java.io.FileInputStream;

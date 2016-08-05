@@ -11,7 +11,9 @@ import ethanjones.cubes.core.system.Debug;
 import org.luaj.vm2.*;
 import org.luaj.vm2.compiler.LuaC;
 import org.luaj.vm2.lib.*;
-import org.luaj.vm2.lib.jse.*;
+import org.luaj.vm2.lib.jse.JseBaseLib;
+import org.luaj.vm2.lib.jse.JseMathLib;
+import org.luaj.vm2.lib.jse.JseOsLib;
 
 import java.io.File;
 import java.io.FileInputStream;

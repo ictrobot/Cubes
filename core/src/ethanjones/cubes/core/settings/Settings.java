@@ -4,7 +4,6 @@ import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.settings.type.*;
-import ethanjones.cubes.graphics.Graphics;
 import ethanjones.data.Data;
 import ethanjones.data.DataGroup;
 
@@ -65,6 +64,7 @@ public class Settings {
       {
         this.sliderSteps = 0.005f;
       }
+
       @Override
       public boolean shouldDisplay() {
         return Compatibility.get().isTouchScreen();
