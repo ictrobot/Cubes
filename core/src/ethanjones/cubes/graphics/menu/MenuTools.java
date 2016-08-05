@@ -3,13 +3,15 @@ package ethanjones.cubes.graphics.menu;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.platform.Adapter;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.Align;
+
+import static ethanjones.cubes.graphics.GUI.HEIGHT;
+import static ethanjones.cubes.graphics.GUI.WIDTH;
 
 public class MenuTools {
 
@@ -90,7 +92,7 @@ public class MenuTools {
   }
 
   public static void setTitle(Label label) {
-    label.setBounds(0, Gdx.graphics.getHeight() / 6 * 5, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 6);
+    label.setBounds(0, HEIGHT / 6 * 5, WIDTH, HEIGHT / 6);
     label.setAlignment(Align.center, Align.center);
   }
 
@@ -108,7 +110,7 @@ public class MenuTools {
   }
 
   public static void arrangeX(float y, boolean centerY, Actor... actors) {
-    float w = ((float) Gdx.graphics.getWidth() / (actors.length + 1));
+    float w = (WIDTH / (actors.length + 1));
     for (int i = 0; i < actors.length; i++) {
       Actor a = actors[i];
       a.setPosition(((i + 1) * w) - (a.getWidth() / 2f), y - (centerY ? (a.getWidth() / 2f) : 0));
@@ -116,7 +118,7 @@ public class MenuTools {
   }
 
   public static void arrangeY(float x, boolean centerX, Actor... actors) {
-    float w = ((float) Gdx.graphics.getHeight() / (actors.length + 1));
+    float w = (HEIGHT / (actors.length + 1));
     for (int i = 0; i < actors.length; i++) {
       Actor a = actors[i];
       a.setPosition(x - (centerX ? (a.getWidth() / 2f) : 0), ((i + 1) * w) - (a.getHeight() / 2f));

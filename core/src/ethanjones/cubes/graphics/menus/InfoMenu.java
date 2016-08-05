@@ -39,7 +39,7 @@ public class InfoMenu extends Menu {
   }
 
   @Override
-  public void resize(int width, int height) {
+  public void resize(float width, float height) {
     super.resize(width, height);
     if (button != null) {
       button.layout();

@@ -5,7 +5,6 @@ import ethanjones.cubes.core.IDManager;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.graphics.world.BlockTextureHandler;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
@@ -13,6 +12,8 @@ import com.badlogic.gdx.utils.Array;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ethanjones.cubes.graphics.GUI.HEIGHT;
+import static ethanjones.cubes.graphics.GUI.WIDTH;
 import static ethanjones.cubes.graphics.Graphics.spriteBatch;
 
 public class MenuManager {
@@ -65,10 +66,10 @@ public class MenuManager {
       }
     }
     spriteBatch.begin();
-    float width = texture.getRegionWidth() * Fonts.scaleFactor;
-    float height = texture.getRegionHeight() * Fonts.scaleFactor;
-    int xTimes = (int) Math.floor((float) Gdx.graphics.getWidth() / width);
-    int yTimes = (int) Math.floor((float) Gdx.graphics.getHeight() / height);
+    float width = texture.getRegionWidth();
+    float height = texture.getRegionHeight();
+    int xTimes = (int) Math.floor(WIDTH / width);
+    int yTimes = (int) Math.floor(HEIGHT / height);
     for (int x = 0; x <= xTimes; x++) {
       for (int y = 0; y <= yTimes; y++) {
         spriteBatch.draw(texture, x * width, y * height, width, height);

@@ -7,10 +7,12 @@ import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.server.ServerNetworkingParameter;
 import ethanjones.cubes.side.server.integrated.ServerOnlyServer;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+
+import static java.awt.image.ImageObserver.HEIGHT;
+import static java.awt.image.ImageObserver.WIDTH;
 
 public class ServerRunningMenu extends InfoMenu {
 
@@ -47,6 +49,6 @@ public class ServerRunningMenu extends InfoMenu {
       return;
     }
     text.setText(Localization.get("menu.server.running"));
-    resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    resize(WIDTH, HEIGHT);
   }
 }

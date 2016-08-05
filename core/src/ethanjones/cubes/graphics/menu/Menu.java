@@ -53,7 +53,7 @@ public class Menu {
     stage = new Stage(screenViewport, spriteBatch);
   }
 
-  public void resize(int width, int height) {
+  public void resize(float width, float height) {
 
   }
 

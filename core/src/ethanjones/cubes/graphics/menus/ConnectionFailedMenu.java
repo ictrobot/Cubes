@@ -24,6 +24,7 @@ public class ConnectionFailedMenu extends InfoMenu {
     super(Localization.get("menu.connection_failed.failed"), Localization.get("menu.general.return_main_menu"));
   }
 
+  @Override
   public void render() {
     super.render();
     if (!firstRender) return;

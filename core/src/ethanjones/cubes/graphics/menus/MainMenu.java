@@ -8,7 +8,6 @@ import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.graphics.menu.Fonts;
 import ethanjones.cubes.graphics.menu.Menu;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -17,18 +16,21 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 
+import static ethanjones.cubes.graphics.GUI.HEIGHT;
+import static ethanjones.cubes.graphics.GUI.WIDTH;
+
 public class MainMenu extends Menu {
 
   private static Value cellHeight = new Value() {
     @Override
     public float get(Actor context) {
-      return Gdx.graphics.getHeight() / 8;
+      return HEIGHT / 8;
     }
   };
   private static Value cellWidth = new Value() {
     @Override
     public float get(Actor context) {
-      return Gdx.graphics.getWidth() / 6 * 4;
+      return WIDTH / 3 * 2;
     }
   };
   Image logo;
@@ -92,12 +94,12 @@ public class MainMenu extends Menu {
   }
 
   @Override
-  public void resize(int width, int height) {
+  public void resize(float width, float height) {
     super.resize(width, height);
-    logo.setBounds(0, Gdx.graphics.getHeight() / 6 * 5, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 6);
+    logo.setBounds(0, height / 6 * 5, width, height / 6);
     version.setBounds(0, 0, author.getPrefWidth(), author.getPrefHeight());
     version.setAlignment(Align.left);
-    author.setBounds(Gdx.graphics.getWidth() - author.getPrefWidth(), 0, author.getPrefWidth(), author.getPrefHeight());
+    author.setBounds(width - author.getPrefWidth(), 0, author.getPrefWidth(), author.getPrefHeight());
     author.setAlignment(Align.right);
     buttons.setBounds(0, 0, width, height / 6 * 5);
     buttons.align(Align.top);

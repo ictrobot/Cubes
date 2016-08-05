@@ -21,16 +21,21 @@ import ethanjones.cubes.networking.packets.PacketChat;
 import ethanjones.cubes.side.client.ClientDebug;
 import ethanjones.cubes.side.common.Cubes;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.*;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
@@ -39,10 +44,11 @@ import com.badlogic.gdx.utils.Disposable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ethanjones.cubes.graphics.GUI.HEIGHT;
+import static ethanjones.cubes.graphics.GUI.WIDTH;
 import static ethanjones.cubes.graphics.Graphics.screenViewport;
 import static ethanjones.cubes.graphics.Graphics.spriteBatch;
 import static ethanjones.cubes.graphics.menu.Menu.skin;
-import static ethanjones.cubes.graphics.menu.Fonts.scaleFactor;
 
 public class GuiRenderer implements Disposable {
 
@@ -243,15 +249,15 @@ public class GuiRenderer implements Disposable {
     stage.draw();
 
     spriteBatch.begin();
-    float crosshairSize = Fonts.scaleFactor * 10f;
+    float crosshairSize = 10f;
     if (!hideGuiEnabled) {
-      spriteBatch.draw(crosshair, (Gdx.graphics.getWidth() / 2) - crosshairSize, (Gdx.graphics.getHeight() / 2) - crosshairSize, crosshairSize * 2, crosshairSize * 2);
+      spriteBatch.draw(crosshair, (WIDTH / 2) - crosshairSize, (HEIGHT / 2) - crosshairSize, crosshairSize * 2, crosshairSize * 2);
       if (!chatEnabled) renderHotbar();
     }
     if (blocksMenuEnabled) renderBlockMenu();
     if (debugEnabled) {
       FrametimeGraph.drawLines(spriteBatch);
-      Fonts.debug.draw(spriteBatch, ClientDebug.getDebugString(), 5f, Gdx.graphics.getHeight() - 5);
+      Fonts.debug.draw(spriteBatch, ClientDebug.getDebugString(), 5f, HEIGHT - 5);
     }
     spriteBatch.end();
     if (debugEnabled) {
@@ -261,11 +267,11 @@ public class GuiRenderer implements Disposable {
 
   public void renderHotbar() {
     PlayerInventory inv = Cubes.getClient().player.getInventory();
-    float itemSize = 32 * scaleFactor;
-    float hotbarSize = 48 * scaleFactor;
-    float itemOffset = 8 * scaleFactor;
+    float itemSize = 32;
+    float hotbarSize = 48;
+    float itemOffset = 8;
 
-    float startWidth = (Gdx.graphics.getWidth() / 2) - (5 * hotbarSize);
+    float startWidth = (WIDTH / 2) - (5 * hotbarSize);
     for (int i = 0; i < 10; i++) {
       float minX = startWidth + (i * hotbarSize);
       if (i == inv.hotbarSelected) {
@@ -289,13 +295,13 @@ public class GuiRenderer implements Disposable {
   }
 
   public void renderBlockMenu() {
-    float itemSize = 32 * scaleFactor;
-    float hotbarSize = 48 * scaleFactor;
-    float itemOffset = 8 * scaleFactor;
+    float itemSize = 32;
+    float hotbarSize = 48;
+    float itemOffset = 8;
 
     int i = 0;
-    float startWidth = (Gdx.graphics.getWidth() / 2) - (5 * hotbarSize);
-    float startHeight = (Gdx.graphics.getHeight() / 2) - (3 * hotbarSize);
+    float startWidth = (WIDTH / 2) - (5 * hotbarSize);
+    float startHeight = (HEIGHT / 2) - (3 * hotbarSize);
     for (int y = 0; y < 6; y++) {
       float minY = startHeight + ((5 - y) * hotbarSize);
       for (int x = 0; x < 10; x++, i++) {
@@ -309,27 +315,27 @@ public class GuiRenderer implements Disposable {
   }
 
   public void resize() {
-    chat.setBounds(0, 0, Gdx.graphics.getWidth(), chat.getStyle().font.getLineHeight() * 1.5f);
-    chatLog.setBounds(0, chat.getHeight(), Gdx.graphics.getWidth(), chatLog.getStyle().font.getLineHeight() * 5);
+    chat.setBounds(0, 0, WIDTH, chat.getStyle().font.getLineHeight() * 1.5f);
+    chatLog.setBounds(0, chat.getHeight(), WIDTH, chatLog.getStyle().font.getLineHeight() * 5);
 
     if (touchpad != null) {
-      float hbSize = 48 * scaleFactor;
-      float padding = 10 * scaleFactor;
-      float size = Gdx.graphics.getHeight() * Settings.getFloatSettingValue(Settings.INPUT_TOUCHPAD_SIZE);
+      float hbSize = 48;
+      float padding = 10;
+      float size = HEIGHT * Settings.getFloatSettingValue(Settings.INPUT_TOUCHPAD_SIZE);
       if (Settings.getBooleanSettingValue(Settings.INPUT_TOUCHPAD_LEFT)) {
         touchpad.setBounds(padding, hbSize + padding, size, size);
-        jumpButton.setBounds(Gdx.graphics.getWidth() - hbSize - padding, hbSize, hbSize, hbSize);
+        jumpButton.setBounds(WIDTH - hbSize - padding, hbSize, hbSize, hbSize);
       } else {
-        touchpad.setBounds(Gdx.graphics.getWidth() - size - padding, hbSize, size, size);
+        touchpad.setBounds(WIDTH - size - padding, hbSize, size, size);
         jumpButton.setBounds(padding, hbSize + padding, hbSize, hbSize);
       }
     }
     if (chatButton != null && debugButton != null && blockSelectorButton != null) {
-      float width = blockSelectorButton.getPrefWidth() * Fonts.scaleFactor / 3 * 2;
-      float height = blockSelectorButton.getPrefHeight() * Fonts.scaleFactor / 3 * 2;
-      blockSelectorButton.setBounds(Gdx.graphics.getWidth() - width, Gdx.graphics.getHeight() - height, width, height);
-      chatButton.setBounds(Gdx.graphics.getWidth() - width - width, Gdx.graphics.getHeight() - height, width, height);
-      debugButton.setBounds(Gdx.graphics.getWidth() - width - width - width, Gdx.graphics.getHeight() - height, width, height);
+      float width = blockSelectorButton.getPrefWidth() / 3 * 2;
+      float height = blockSelectorButton.getPrefHeight() / 3 * 2;
+      blockSelectorButton.setBounds(WIDTH - width, HEIGHT - height, width, height);
+      chatButton.setBounds(WIDTH - width - width, HEIGHT - height, width, height);
+      debugButton.setBounds(WIDTH - width - width - width, HEIGHT - height, width, height);
     }
   }
 
@@ -352,12 +358,12 @@ public class GuiRenderer implements Disposable {
   }
 
   public boolean touch(int screenX, int screenY, int pointer, int button) {
-    float itemSize = 32 * scaleFactor;
-    float hotbarSize = 48 * scaleFactor;
-    float itemOffset = 8 * scaleFactor;
+    float itemSize = 32;
+    float hotbarSize = 48;
+    float itemOffset = 8;
 
-    float startWidth = (Gdx.graphics.getWidth() / 2) - (hotbarSize * 5);
-    float startHeight = (Gdx.graphics.getHeight() / 2) - (hotbarSize * 3);
+    float startWidth = (WIDTH / 2) - (hotbarSize * 5);
+    float startHeight = (HEIGHT / 2) - (hotbarSize * 3);
 
     if (blocksMenuEnabled) {
       float x = screenX - startWidth;
@@ -382,7 +388,7 @@ public class GuiRenderer implements Disposable {
       }
     }
     if (blocksMenuEnabled || Compatibility.get().isTouchScreen()) {
-      if (screenX >= startWidth && screenX <= (startWidth + (hotbarSize * 10)) && screenY >= (Gdx.graphics.getHeight() - hotbarSize)) {
+      if (screenX >= startWidth && screenX <= (startWidth + (hotbarSize * 10)) && screenY >= (HEIGHT - hotbarSize)) {
         int slot = (int) ((screenX - startWidth) / hotbarSize);
         if (slot >= 0 && slot <= 10) {
           Cubes.getClient().player.getInventory().hotbarSelected = slot;

@@ -42,7 +42,7 @@ public class ServerSetupMenu extends Menu {
   }
 
   @Override
-  public void resize(int width, int height) {
+  public void resize(float width, float height) {
     super.resize(width, height);
     MenuTools.setTitle(title);
     MenuTools.arrange(width / 4, height / 2, width / 2, height / 4, MenuTools.Direction.Above, start, port);

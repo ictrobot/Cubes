@@ -10,7 +10,6 @@ import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menu.MenuTools;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -19,6 +18,9 @@ import com.badlogic.gdx.utils.Align;
 
 import java.util.ArrayList;
 import java.util.Map;
+
+import static ethanjones.cubes.graphics.GUI.HEIGHT;
+import static ethanjones.cubes.graphics.GUI.WIDTH;
 
 public class SettingsMenu extends Menu implements VisualSettingManager {
 
@@ -48,13 +50,13 @@ public class SettingsMenu extends Menu implements VisualSettingManager {
 
     @Override
     public float get(Actor context) {
-      return (Gdx.graphics.getWidth() / 2) - (CELL_PADDING.get(context) * 2);
+      return (WIDTH / 2) - (CELL_PADDING.get(context) * 2);
     }
   };
   static final Value CELL_HEIGHT = new Value() {
     @Override
     public float get(Actor context) {
-      return (Gdx.graphics.getHeight() / 10) - (CELL_PADDING.get(context) * 2);
+      return (HEIGHT / 10) - (CELL_PADDING.get(context) * 2);
     }
   };
   static SaveEvent saveEvent = new SaveEvent();
@@ -109,10 +111,10 @@ public class SettingsMenu extends Menu implements VisualSettingManager {
   }
 
   @Override
-  public void resize(int width, int height) {
+  public void resize(float width, float height) {
     super.resize(width, height);
 
-    scrollPane.setBounds(0, height / 6, Gdx.graphics.getWidth(), height / 6 * 4);
+    scrollPane.setBounds(0, height / 6, width, height / 6 * 4);
 
     table.setWidth(width);
     table.clearChildren();

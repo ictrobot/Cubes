@@ -47,7 +47,7 @@ public class SingleplayerSaveDeleteMenu extends Menu {
   }
 
   @Override
-  public void resize(int width, int height) {
+  public void resize(float width, float height) {
     super.resize(width, height);
     MenuTools.setTitle(title);
     MenuTools.arrange(0, height / 2, width, height / 4, MenuTools.Direction.Above, delete, text);

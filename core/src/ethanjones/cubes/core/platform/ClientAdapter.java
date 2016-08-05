@@ -5,6 +5,7 @@ import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.Debug;
+import ethanjones.cubes.graphics.GUI;
 import ethanjones.cubes.graphics.Graphics;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menu.MenuManager;
@@ -16,7 +17,6 @@ import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.CubesServer;
 import ethanjones.cubes.side.server.integrated.IntegratedServer;
 import ethanjones.cubes.world.client.WorldClient;
-import ethanjones.cubes.world.server.WorldServer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -72,7 +72,7 @@ public class ClientAdapter implements AdapterInterface {
   public void resize(int width, int height) {
     try {
       Graphics.resize();
-      if (menu != null) menu.resize(width, height);
+      if (menu != null) menu.resize(GUI.WIDTH, GUI.HEIGHT);
       if (cubesClient != null) cubesClient.resize(width, height);
     } catch (StopLoopException e) {
       Log.debug(e);
@@ -116,7 +116,7 @@ public class ClientAdapter implements AdapterInterface {
       if (menu != null) {
         MenuManager.renderBackground();
         if (setupMenu.getAndSet(false)) {
-          menu.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+          menu.resize(GUI.WIDTH, GUI.HEIGHT);
           InputChain.showMenu(menu);
         }
         menu.render(); //Render menu over client

@@ -45,7 +45,14 @@ public class Graphics {
   }
 
   public static void resize() {
-    screenViewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+    int width = Gdx.graphics.getWidth();
+    int height = Gdx.graphics.getHeight();
+    float scaleFactor = scaleFactor();
+    GUI.WIDTH = width / scaleFactor;
+    GUI.HEIGHT = height / scaleFactor;
+
+    screenViewport.setUnitsPerPixel(1 / scaleFactor);
+    screenViewport.update(width, height, true);
   }
 
   public static void takeScreenshot() {
@@ -67,5 +74,11 @@ public class Graphics {
       pixmap.dispose();
     }
     Log.info("Took screenshot '" + f.file().getAbsolutePath() + "'");
+  }
+
+  public static float scaleFactor() {
+    float f = Gdx.graphics.getPpiX() / 96;
+    if (f > 1) f -= (f - 1) * 0.4f;
+    return f;
   }
 }

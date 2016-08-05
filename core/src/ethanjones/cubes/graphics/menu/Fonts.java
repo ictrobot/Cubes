@@ -3,7 +3,6 @@ package ethanjones.cubes.graphics.menu;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.graphics.assets.Assets;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
@@ -17,17 +16,11 @@ public class Fonts {
   public static final BitmapFont debug;
 
   private static final FreeTypeFontGenerator generator;
-  public static final float scaleFactor;
-  private static final int base;
 
   static {
     Log.debug("Generating font");
     FreeTypeFontGenerator.setMaxTextureSize(2048);
     generator = new FreeTypeFontGenerator(Assets.getAsset("core:font/font.ttf").getFileHandle());
-    float f = Gdx.graphics.getPpiX() / 96;
-    if (f > 1) f -= (f - 1) * 0.4f;
-    base = (int) f;
-    scaleFactor = f;
 
     title = getFont(64);
     menu = getFont(42);
@@ -43,10 +36,10 @@ public class Fonts {
 
   public static BitmapFont getFont(int size) {
     FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-    parameter.size = base * size;
+    parameter.size = size;
     parameter.incremental = true;
-    parameter.shadowOffsetX = -base;
-    parameter.shadowOffsetY = -base;
+    parameter.shadowOffsetX = -1;
+    parameter.shadowOffsetY = -1;
     return generator.generateFont(parameter);
   }
 }
