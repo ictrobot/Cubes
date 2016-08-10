@@ -14,11 +14,13 @@ import java.net.SocketTimeoutException;
 
 public class ClientConnectionInitializer {
 
+  public static final int TIMEOUT = 5000;
+
   public static void connect(com.badlogic.gdx.net.Socket gdxSocket) throws Exception {
     Socket javaSocket = extractJavaSocket(gdxSocket);
     DataOutputStream dataOutputStream = new DataOutputStream(javaSocket.getOutputStream());
     dataOutputStream.writeByte(0); //0 is connect
-    javaSocket.setSoTimeout(500);
+    javaSocket.setSoTimeout(TIMEOUT);
     int serverMajor;
     int serverMinor;
     int serverPoint;
@@ -79,7 +81,7 @@ public class ClientConnectionInitializer {
     DataOutputStream dataOutputStream = new DataOutputStream(javaSocket.getOutputStream());
     Long firstTime = System.currentTimeMillis();
     dataOutputStream.writeByte(1); //1 is ping
-    javaSocket.setSoTimeout(500);
+    javaSocket.setSoTimeout(TIMEOUT);
     try {
       DataInputStream dataInputStream = new DataInputStream(javaSocket.getInputStream());
       PingResult pingResult = new PingResult();
