@@ -20,6 +20,8 @@ import static ethanjones.cubes.networking.client.ClientConnectionInitializer.ext
 
 public class ServerConnectionInitializer {
 
+  public static final int TIMEOUT = 5000;
+
   private static class Checker implements Callable<Object> {
 
     private final Socket javaSocket;
@@ -52,7 +54,7 @@ public class ServerConnectionInitializer {
   }
 
   private static void initialConnect(Socket javaSocket, NetJavaSocketImpl gdxSocket) throws Exception {
-    javaSocket.setSoTimeout(500);
+    javaSocket.setSoTimeout(TIMEOUT);
     DataInputStream dataInputStream = new DataInputStream(javaSocket.getInputStream());
     byte b = dataInputStream.readByte();
     DataOutputStream dataOutputStream = new DataOutputStream(javaSocket.getOutputStream());
