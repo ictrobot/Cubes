@@ -113,11 +113,11 @@ public class ClientAdapter implements AdapterInterface {
         cubesClient.render();
       }
       if (menu != null) {
-        MenuManager.renderBackground();
         if (setupMenu.getAndSet(false)) {
           menu.resize(Graphics.GUI_WIDTH, Graphics.GUI_HEIGHT);
           InputChain.showMenu(menu);
         }
+        if (menu.shouldRenderBackground()) MenuManager.renderBackground();
         menu.render(); //Render menu over client
       }
       if (menu != null || (cubesClient != null && cubesClient.renderer != null && cubesClient.renderer.noCursorCatching())) {

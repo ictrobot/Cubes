@@ -69,4 +69,8 @@ public class Menu {
   public void dispose() {
     stage.dispose();
   }
+
+  public boolean shouldRenderBackground() {
+    return true;
+  }
 }
