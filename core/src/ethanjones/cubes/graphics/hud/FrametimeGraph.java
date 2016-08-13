@@ -14,7 +14,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 import java.util.LinkedList;
 
-import static ethanjones.cubes.graphics.GUI.WIDTH;
+import static ethanjones.cubes.graphics.Graphics.GUI_WIDTH;
 
 public class FrametimeGraph {
   private static LinkedList<Float> frametimes = new LinkedList<Float>();
@@ -27,13 +27,13 @@ public class FrametimeGraph {
   public static void drawLines(SpriteBatch batch) {
     if (!Settings.getBooleanSettingValue(Settings.DEBUG_FRAMETIME_GRAPH)) return;
 
-    while (frametimes.size() < WIDTH) {
+    while (frametimes.size() < GUI_WIDTH) {
       frametimes.addFirst(0f);
     }
     for (int i = 0; i <= 16; i++) {
-      batch.draw(textureLine, 0, yOffset + (scale * i), WIDTH, 1);
+      batch.draw(textureLine, 0, yOffset + (scale * i), GUI_WIDTH, 1);
     }
-    batch.draw(textureLine60, 0, yOffset + (scale * 16.666666f), WIDTH, 1);
+    batch.draw(textureLine60, 0, yOffset + (scale * 16.666666f), GUI_WIDTH, 1);
   }
 
   public static void drawPoints() {
@@ -49,7 +49,7 @@ public class FrametimeGraph {
 
   public static void update() {
     frametimes.addLast(Gdx.graphics.getRawDeltaTime() * 1000f);
-    while (frametimes.size() > WIDTH) {
+    while (frametimes.size() > GUI_WIDTH) {
       frametimes.removeFirst();
     }
   }

@@ -44,10 +44,7 @@ import com.badlogic.gdx.utils.Disposable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ethanjones.cubes.graphics.GUI.HEIGHT;
-import static ethanjones.cubes.graphics.GUI.WIDTH;
-import static ethanjones.cubes.graphics.Graphics.screenViewport;
-import static ethanjones.cubes.graphics.Graphics.spriteBatch;
+import static ethanjones.cubes.graphics.Graphics.*;
 import static ethanjones.cubes.graphics.menu.Menu.skin;
 
 public class GuiRenderer implements Disposable {
@@ -251,13 +248,13 @@ public class GuiRenderer implements Disposable {
     spriteBatch.begin();
     float crosshairSize = 10f;
     if (!hideGuiEnabled) {
-      spriteBatch.draw(crosshair, (WIDTH / 2) - crosshairSize, (HEIGHT / 2) - crosshairSize, crosshairSize * 2, crosshairSize * 2);
+      spriteBatch.draw(crosshair, (GUI_WIDTH / 2) - crosshairSize, (GUI_HEIGHT / 2) - crosshairSize, crosshairSize * 2, crosshairSize * 2);
       if (!chatEnabled) renderHotbar();
     }
     if (blocksMenuEnabled) renderBlockMenu();
     if (debugEnabled) {
       FrametimeGraph.drawLines(spriteBatch);
-      Fonts.debug.draw(spriteBatch, ClientDebug.getDebugString(), 5f, HEIGHT - 5);
+      Fonts.debug.draw(spriteBatch, ClientDebug.getDebugString(), 5f, GUI_HEIGHT - 5);
     }
     spriteBatch.end();
     if (debugEnabled) {
@@ -271,7 +268,7 @@ public class GuiRenderer implements Disposable {
     float hotbarSize = 48;
     float itemOffset = 8;
 
-    float startWidth = (WIDTH / 2) - (5 * hotbarSize);
+    float startWidth = (GUI_WIDTH / 2) - (5 * hotbarSize);
     for (int i = 0; i < 10; i++) {
       float minX = startWidth + (i * hotbarSize);
       if (i == inv.hotbarSelected) {
@@ -300,8 +297,8 @@ public class GuiRenderer implements Disposable {
     float itemOffset = 8;
 
     int i = 0;
-    float startWidth = (WIDTH / 2) - (5 * hotbarSize);
-    float startHeight = (HEIGHT / 2) - (3 * hotbarSize);
+    float startWidth = (GUI_WIDTH / 2) - (5 * hotbarSize);
+    float startHeight = (GUI_HEIGHT / 2) - (3 * hotbarSize);
     for (int y = 0; y < 6; y++) {
       float minY = startHeight + ((5 - y) * hotbarSize);
       for (int x = 0; x < 10; x++, i++) {
@@ -315,27 +312,27 @@ public class GuiRenderer implements Disposable {
   }
 
   public void resize() {
-    chat.setBounds(0, 0, WIDTH, chat.getStyle().font.getLineHeight() * 1.5f);
-    chatLog.setBounds(0, chat.getHeight(), WIDTH, chatLog.getStyle().font.getLineHeight() * 5);
+    chat.setBounds(0, 0, GUI_WIDTH, chat.getStyle().font.getLineHeight() * 1.5f);
+    chatLog.setBounds(0, chat.getHeight(), GUI_WIDTH, chatLog.getStyle().font.getLineHeight() * 5);
 
     if (touchpad != null) {
       float hbSize = 48;
       float padding = 10;
-      float size = HEIGHT * Settings.getFloatSettingValue(Settings.INPUT_TOUCHPAD_SIZE);
+      float size = GUI_HEIGHT * Settings.getFloatSettingValue(Settings.INPUT_TOUCHPAD_SIZE);
       if (Settings.getBooleanSettingValue(Settings.INPUT_TOUCHPAD_LEFT)) {
         touchpad.setBounds(padding, hbSize + padding, size, size);
-        jumpButton.setBounds(WIDTH - hbSize - padding, hbSize, hbSize, hbSize);
+        jumpButton.setBounds(GUI_WIDTH - hbSize - padding, hbSize, hbSize, hbSize);
       } else {
-        touchpad.setBounds(WIDTH - size - padding, hbSize, size, size);
+        touchpad.setBounds(GUI_WIDTH - size - padding, hbSize, size, size);
         jumpButton.setBounds(padding, hbSize + padding, hbSize, hbSize);
       }
     }
     if (chatButton != null && debugButton != null && blockSelectorButton != null) {
       float width = blockSelectorButton.getPrefWidth() / 3 * 2;
       float height = blockSelectorButton.getPrefHeight() / 3 * 2;
-      blockSelectorButton.setBounds(WIDTH - width, HEIGHT - height, width, height);
-      chatButton.setBounds(WIDTH - width - width, HEIGHT - height, width, height);
-      debugButton.setBounds(WIDTH - width - width - width, HEIGHT - height, width, height);
+      blockSelectorButton.setBounds(GUI_WIDTH - width, GUI_HEIGHT - height, width, height);
+      chatButton.setBounds(GUI_WIDTH - width - width, GUI_HEIGHT - height, width, height);
+      debugButton.setBounds(GUI_WIDTH - width - width - width, GUI_HEIGHT - height, width, height);
     }
   }
 
@@ -362,8 +359,8 @@ public class GuiRenderer implements Disposable {
     float hotbarSize = 48;
     float itemOffset = 8;
 
-    float startWidth = (WIDTH / 2) - (hotbarSize * 5);
-    float startHeight = (HEIGHT / 2) - (hotbarSize * 3);
+    float startWidth = (GUI_WIDTH / 2) - (hotbarSize * 5);
+    float startHeight = (GUI_HEIGHT / 2) - (hotbarSize * 3);
 
     if (blocksMenuEnabled) {
       float x = screenX - startWidth;
@@ -388,7 +385,7 @@ public class GuiRenderer implements Disposable {
       }
     }
     if (blocksMenuEnabled || Compatibility.get().isTouchScreen()) {
-      if (screenX >= startWidth && screenX <= (startWidth + (hotbarSize * 10)) && screenY >= (HEIGHT - hotbarSize)) {
+      if (screenX >= startWidth && screenX <= (startWidth + (hotbarSize * 10)) && screenY >= (GUI_HEIGHT - hotbarSize)) {
         int slot = (int) ((screenX - startWidth) / hotbarSize);
         if (slot >= 0 && slot <= 10) {
           Cubes.getClient().player.getInventory().hotbarSelected = slot;

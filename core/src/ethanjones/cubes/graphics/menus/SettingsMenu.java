@@ -19,8 +19,8 @@ import com.badlogic.gdx.utils.Align;
 import java.util.ArrayList;
 import java.util.Map;
 
-import static ethanjones.cubes.graphics.GUI.HEIGHT;
-import static ethanjones.cubes.graphics.GUI.WIDTH;
+import static ethanjones.cubes.graphics.Graphics.GUI_HEIGHT;
+import static ethanjones.cubes.graphics.Graphics.GUI_WIDTH;
 
 public class SettingsMenu extends Menu implements VisualSettingManager {
 
@@ -50,13 +50,13 @@ public class SettingsMenu extends Menu implements VisualSettingManager {
 
     @Override
     public float get(Actor context) {
-      return (WIDTH / 2) - (CELL_PADDING.get(context) * 2);
+      return (GUI_WIDTH / 2) - (CELL_PADDING.get(context) * 2);
     }
   };
   static final Value CELL_HEIGHT = new Value() {
     @Override
     public float get(Actor context) {
-      return (HEIGHT / 10) - (CELL_PADDING.get(context) * 2);
+      return (GUI_HEIGHT / 10) - (CELL_PADDING.get(context) * 2);
     }
   };
   static SaveEvent saveEvent = new SaveEvent();

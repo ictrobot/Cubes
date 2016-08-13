@@ -12,9 +12,7 @@ import com.badlogic.gdx.utils.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ethanjones.cubes.graphics.GUI.HEIGHT;
-import static ethanjones.cubes.graphics.GUI.WIDTH;
-import static ethanjones.cubes.graphics.Graphics.spriteBatch;
+import static ethanjones.cubes.graphics.Graphics.*;
 
 public class MenuManager {
 
@@ -68,8 +66,8 @@ public class MenuManager {
     spriteBatch.begin();
     float width = texture.getRegionWidth();
     float height = texture.getRegionHeight();
-    int xTimes = (int) Math.floor(WIDTH / width);
-    int yTimes = (int) Math.floor(HEIGHT / height);
+    int xTimes = (int) Math.floor(GUI_WIDTH / width);
+    int yTimes = (int) Math.floor(GUI_HEIGHT / height);
     for (int x = 0; x <= xTimes; x++) {
       for (int y = 0; y <= yTimes; y++) {
         spriteBatch.draw(texture, x * width, y * height, width, height);

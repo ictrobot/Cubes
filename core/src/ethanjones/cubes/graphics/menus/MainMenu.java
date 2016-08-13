@@ -16,21 +16,21 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
 
-import static ethanjones.cubes.graphics.GUI.HEIGHT;
-import static ethanjones.cubes.graphics.GUI.WIDTH;
+import static ethanjones.cubes.graphics.Graphics.GUI_HEIGHT;
+import static ethanjones.cubes.graphics.Graphics.GUI_WIDTH;
 
 public class MainMenu extends Menu {
 
   private static Value cellHeight = new Value() {
     @Override
     public float get(Actor context) {
-      return HEIGHT / 8;
+      return GUI_HEIGHT / 8;
     }
   };
   private static Value cellWidth = new Value() {
     @Override
     public float get(Actor context) {
-      return WIDTH / 3 * 2;
+      return GUI_WIDTH / 3 * 2;
     }
   };
   Image logo;

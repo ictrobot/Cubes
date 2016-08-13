@@ -27,6 +27,9 @@ public class Graphics {
   public static ModelBatch modelBatch;
   public static ScreenViewport screenViewport;
 
+  public static float GUI_WIDTH = 0f;
+  public static float GUI_HEIGHT = 0f;
+
   public static void init() {
     spriteBatch = new SpriteBatch();
     modelBatch = new ModelBatch(new WorldShaderProvider());
@@ -48,8 +51,8 @@ public class Graphics {
     int width = Gdx.graphics.getWidth();
     int height = Gdx.graphics.getHeight();
     float scaleFactor = scaleFactor();
-    GUI.WIDTH = width / scaleFactor;
-    GUI.HEIGHT = height / scaleFactor;
+    GUI_WIDTH = width / scaleFactor;
+    GUI_HEIGHT = height / scaleFactor;
 
     screenViewport.setUnitsPerPixel(1 / scaleFactor);
     screenViewport.update(width, height, true);
