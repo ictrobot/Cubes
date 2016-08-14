@@ -125,6 +125,10 @@ public class MenuTools {
     }
   }
 
+  public static void center(Actor actor) {
+    actor.setPosition((GUI_WIDTH / 2) - (actor.getWidth() / 2), (GUI_HEIGHT / 2) - (actor.getHeight() / 2));
+  }
+
   public static TextButton getBackButton(final Menu menu) {
     TextButton textButton = new TextButton(Localization.get("menu.general.back"), Menu.skin);
     textButton.addListener(new ChangeListener() {

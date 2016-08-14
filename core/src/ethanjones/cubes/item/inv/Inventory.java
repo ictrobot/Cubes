@@ -1,18 +1,26 @@
 package ethanjones.cubes.item.inv;
 
+import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.item.ItemStack;
 import ethanjones.data.DataGroup;
 import ethanjones.data.DataParser;
 
 public class Inventory implements DataParser {
+  protected final String name;
   public ItemStack[] itemStacks;
+  public int width = 9;
 
-  public Inventory() {
-
+  public Inventory(String name) {
+    this.name = name;
   }
 
-  public Inventory(int size) {
+  public Inventory(String name, int size) {
+    this.name = name;
     itemStacks = new ItemStack[size];
+  }
+
+  public String getDisplayName() {
+    return Localization.get("inventory." + name.replaceFirst(":", "."));
   }
 
   @Override

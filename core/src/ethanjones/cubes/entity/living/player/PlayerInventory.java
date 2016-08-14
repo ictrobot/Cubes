@@ -14,7 +14,7 @@ public class PlayerInventory extends Inventory {
   public Player player;
 
   public PlayerInventory(Player player) {
-    super(40);
+    super("core:player", 36);
     this.hotbarSelected = 0;
     this.player = player;
     // start with tools

@@ -4,12 +4,16 @@ import ethanjones.cubes.core.IDManager;
 import ethanjones.cubes.core.performance.Performance;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.settings.Settings;
+import ethanjones.cubes.core.util.Toggle;
 import ethanjones.cubes.entity.living.player.PlayerInventory;
 import ethanjones.cubes.graphics.Graphics;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.graphics.hud.FrametimeGraph;
 import ethanjones.cubes.graphics.hud.ImageButtons;
+import ethanjones.cubes.graphics.hud.inv.InventoryActor;
+import ethanjones.cubes.graphics.hud.inv.SlotTooltipListener;
 import ethanjones.cubes.graphics.menu.Fonts;
+import ethanjones.cubes.graphics.menu.MenuTools;
 import ethanjones.cubes.input.keyboard.KeyTypedAdapter;
 import ethanjones.cubes.input.keyboard.KeyboardHelper;
 import ethanjones.cubes.item.Item;
@@ -75,7 +79,7 @@ public class GuiRenderer implements Disposable {
         return true;
       }
       if (keycode == chat) {
-        chatEnabled = !chatEnabled;
+        chatToggle.toggle();
         return true;
       }
       return false;
@@ -85,7 +89,7 @@ public class GuiRenderer implements Disposable {
     public void keyDown(int keycode) {
       functionKeys(keycode);
 
-      if (keycode == blocksMenu) blocksMenuEnabled = !blocksMenuEnabled;
+      if (keycode == blocksMenu) playerInvToggle.toggle();
 
       int selected = -1;
       if (keycode == Keys.NUM_1) selected = 0;
@@ -119,19 +123,47 @@ public class GuiRenderer implements Disposable {
   ImageButton chatButton;
   ImageButton blockSelectorButton;
 
+  public InventoryActor playerInv;
+
   Texture crosshair;
   Texture hotbarSlot;
   Texture hotbarSelected;
   ItemStack[][] itemstacks;
 
-  public boolean chatEnabled;
+  public Toggle chatToggle = new Toggle() {
+    @Override
+    public void doEnable() {
+      stage.addActor(chat);
+      stage.setKeyboardFocus(chat);
+      stage.addActor(chatLog);
+    }
+
+    @Override
+    public void doDisable() {
+      stage.setKeyboardFocus(null);
+      stage.getRoot().removeActor(chat);
+      stage.getRoot().removeActor(chatLog);
+    }
+  };
   public boolean debugEnabled;
   public boolean hideGuiEnabled;
-  public boolean blocksMenuEnabled;
+  public Toggle playerInvToggle = new Toggle() {
+    @Override
+    public void doEnable() {
+      stage.addActor(playerInv);
+    }
+
+    @Override
+    public void doDisable() {
+      stage.getRoot().removeActor(playerInv);
+    }
+  };
 
   public GuiRenderer() {
     stage = new Stage(screenViewport, spriteBatch);
     Cubes.getClient().inputChain.hud = stage;
+
+    stage.addActor(SlotTooltipListener.tooltip);
 
     keyListener = new KeyListener();
     KeyboardHelper.addKeyTypedListener(keyListener);
@@ -159,7 +191,7 @@ public class GuiRenderer implements Disposable {
           packetChat.msg = chat.getText();
           NetworkingManager.sendPacketToServer(packetChat);
           chat.setText("");
-          chatEnabled = false;
+          chatToggle.disable();
         }
       }
     });
@@ -188,15 +220,14 @@ public class GuiRenderer implements Disposable {
       chatButton.addListener(new ChangeListener() {
         @Override
         public void changed(ChangeEvent event, Actor actor) {
-          chatEnabled = !chatEnabled;
+          chatToggle.toggle();
         }
       });
       blockSelectorButton = new ImageButton(ImageButtons.blocksButton());
       blockSelectorButton.addListener(new ChangeListener() {
         @Override
         public void changed(ChangeEvent event, Actor actor) {
-          blocksMenuEnabled = !blocksMenuEnabled;
-          ;
+          playerInvToggle.toggle();
         }
       });
       stage.addActor(touchpad);
@@ -233,15 +264,6 @@ public class GuiRenderer implements Disposable {
   public void render() {
     FrametimeGraph.update();
 
-    stage.getRoot().removeActor(chat);
-    stage.getRoot().removeActor(chatLog);
-    if (chatEnabled) {
-      stage.addActor(chat);
-      stage.setKeyboardFocus(chat);
-      stage.addActor(chatLog);
-    } else {
-      stage.setKeyboardFocus(null);
-    }
     stage.act();
     stage.draw();
 
@@ -249,9 +271,8 @@ public class GuiRenderer implements Disposable {
     float crosshairSize = 10f;
     if (!hideGuiEnabled) {
       spriteBatch.draw(crosshair, (GUI_WIDTH / 2) - crosshairSize, (GUI_HEIGHT / 2) - crosshairSize, crosshairSize * 2, crosshairSize * 2);
-      if (!chatEnabled) renderHotbar();
+      if (!chatToggle.isEnabled()) renderHotbar();
     }
-    if (blocksMenuEnabled) renderBlockMenu();
     if (debugEnabled) {
       FrametimeGraph.drawLines(spriteBatch);
       Fonts.debug.draw(spriteBatch, ClientDebug.getDebugString(), 5f, GUI_HEIGHT - 5);
@@ -334,6 +355,8 @@ public class GuiRenderer implements Disposable {
       chatButton.setBounds(GUI_WIDTH - width - width, GUI_HEIGHT - height, width, height);
       debugButton.setBounds(GUI_WIDTH - width - width - width, GUI_HEIGHT - height, width, height);
     }
+
+    MenuTools.center(playerInv);
   }
 
   public void print(String string) {
@@ -351,49 +374,6 @@ public class GuiRenderer implements Disposable {
   }
 
   public boolean noCursorCatching() {
-    return chatEnabled || blocksMenuEnabled || hideGuiEnabled;
-  }
-
-  public boolean touch(int screenX, int screenY, int pointer, int button) {
-    float itemSize = 32;
-    float hotbarSize = 48;
-    float itemOffset = 8;
-
-    float startWidth = (GUI_WIDTH / 2) - (hotbarSize * 5);
-    float startHeight = (GUI_HEIGHT / 2) - (hotbarSize * 3);
-
-    if (blocksMenuEnabled) {
-      float x = screenX - startWidth;
-      float y = screenY - startHeight;
-      if (x < 0 || y < 0) return false;
-      float remX = x % hotbarSize;
-      float remY = y % hotbarSize;
-      if (remX >= itemOffset && remX <= itemSize + itemOffset && remY >= itemOffset && remY <= itemSize + itemOffset) {
-        int slotX = (int) (x / hotbarSize);
-        int slotY = (int) (y / hotbarSize);
-        if (slotX >= itemstacks.length || slotY >= itemstacks[0].length) return false;
-
-        ItemStack base = itemstacks[slotX][slotY];
-        ItemStack itemStack = null;
-        if (base != null && base.item != null) {
-          itemStack = new ItemStack(base.item, base.item.getStackCountMax(), base.meta);
-        }
-        PlayerInventory inventory = Cubes.getClient().player.getInventory();
-        inventory.itemStacks[inventory.hotbarSelected] = itemStack;
-        inventory.sync();
-        return true;
-      }
-    }
-    if (blocksMenuEnabled || Compatibility.get().isTouchScreen()) {
-      if (screenX >= startWidth && screenX <= (startWidth + (hotbarSize * 10)) && screenY >= (GUI_HEIGHT - hotbarSize)) {
-        int slot = (int) ((screenX - startWidth) / hotbarSize);
-        if (slot >= 0 && slot <= 10) {
-          Cubes.getClient().player.getInventory().hotbarSelected = slot;
-          Cubes.getClient().player.getInventory().sync();
-        }
-        return true;
-      }
-    }
-    return false;
+    return chatToggle.isEnabled() || playerInvToggle.isEnabled() || hideGuiEnabled;
   }
 }

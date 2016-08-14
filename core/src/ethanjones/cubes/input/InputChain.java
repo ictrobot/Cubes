@@ -8,7 +8,6 @@ import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.gravity.WorldGravity;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -36,16 +35,9 @@ public class InputChain implements Disposable {
 
   public Stage hud;
   public CameraController cameraController;
-  public InputAdapter guiRendererTouch;
 
   public void setup() {
     //Starts at top
-    inputMultiplexer.addProcessor(guiRendererTouch = new InputAdapter() {
-      @Override
-      public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        return Cubes.getClient().renderer.guiRenderer.touch(screenX, screenY, pointer, button);
-      }
-    });
     inputMultiplexer.addProcessor(hud);
     inputMultiplexer.addProcessor(KeyboardHelper.inputProcessor);
     inputMultiplexer.addProcessor(cameraController);
@@ -70,7 +62,6 @@ public class InputChain implements Disposable {
 
   @Override
   public void dispose() {
-    inputMultiplexer.removeProcessor(guiRendererTouch);
     inputMultiplexer.removeProcessor(hud);
     inputMultiplexer.removeProcessor(KeyboardHelper.inputProcessor);
     inputMultiplexer.removeProcessor(cameraController);

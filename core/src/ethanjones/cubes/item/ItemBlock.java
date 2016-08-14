@@ -26,6 +26,11 @@ public class ItemBlock extends Item {
   }
 
   @Override
+  public String getName() {
+    return block.getName();
+  }
+
+  @Override
   public void onButtonPress(int button, ItemStack itemStack, Player player, int stack) {
     if (Sided.getSide() == Side.Server && button == Input.Buttons.RIGHT) {
       BlockIntersection blockIntersection = BlockIntersection.getBlockIntersection(player.position, player.angle, Cubes.getServer().world);

@@ -32,4 +32,9 @@ public class InventoryHelper {
     }
     inventory.sync();
   }
+
+  public static boolean sameItem(ItemStack a, ItemStack b) {
+    return a != null && b != null && a.item == b.item && a.meta == b.meta;
+  }
+
 }
