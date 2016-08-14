@@ -8,6 +8,10 @@ public abstract class Toggle {
     return enabled;
   }
 
+  public boolean isDisabled() {
+    return !enabled;
+  }
+
   public boolean setEnabled(boolean b) {
     if (b != enabled) {
       toggle();

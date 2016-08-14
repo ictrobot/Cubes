@@ -270,8 +270,9 @@ public class GuiRenderer implements Disposable {
     spriteBatch.begin();
     float crosshairSize = 10f;
     if (!hideGuiEnabled) {
-      spriteBatch.draw(crosshair, (GUI_WIDTH / 2) - crosshairSize, (GUI_HEIGHT / 2) - crosshairSize, crosshairSize * 2, crosshairSize * 2);
-      if (!chatToggle.isEnabled()) renderHotbar();
+      if (playerInvToggle.isDisabled())
+        spriteBatch.draw(crosshair, (GUI_WIDTH / 2) - crosshairSize, (GUI_HEIGHT / 2) - crosshairSize, crosshairSize * 2, crosshairSize * 2);
+      if (chatToggle.isDisabled()) renderHotbar();
     }
     if (debugEnabled) {
       FrametimeGraph.drawLines(spriteBatch);
@@ -308,26 +309,6 @@ public class GuiRenderer implements Disposable {
         GlyphLayout layout = cache.addText(itemStack.count + "", minX + itemOffset, itemOffset, itemSize, Align.right, false);
         cache.translate(0, layout.height);
         cache.draw(spriteBatch);
-      }
-    }
-  }
-
-  public void renderBlockMenu() {
-    float itemSize = 32;
-    float hotbarSize = 48;
-    float itemOffset = 8;
-
-    int i = 0;
-    float startWidth = (GUI_WIDTH / 2) - (5 * hotbarSize);
-    float startHeight = (GUI_HEIGHT / 2) - (3 * hotbarSize);
-    for (int y = 0; y < 6; y++) {
-      float minY = startHeight + ((5 - y) * hotbarSize);
-      for (int x = 0; x < 10; x++, i++) {
-        float minX = startWidth + (x * hotbarSize);
-        spriteBatch.draw(hotbarSlot, minX, minY, hotbarSize, hotbarSize);
-        ItemStack itemStack = itemstacks[x][y];
-        if (itemStack == null || itemStack.item == null) continue;
-        spriteBatch.draw(itemStack.item.getTextureRegion(), minX + itemOffset, minY + itemOffset, itemSize, itemSize);
       }
     }
   }
