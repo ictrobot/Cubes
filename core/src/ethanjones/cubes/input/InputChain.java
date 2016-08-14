@@ -27,17 +27,21 @@ public class InputChain implements Disposable {
 
   public static void showMenu(Menu menu) {
     inputMultiplexer.addProcessor(0, menu.stage);
+    if (menu.blockClientInput()) InputBlocker.BLOCK_INPUT = true;
   }
 
   public static void hideMenu(Menu menu) {
     inputMultiplexer.removeProcessor(menu.stage);
+    InputBlocker.BLOCK_INPUT = false;
   }
 
   public Stage hud;
   public CameraController cameraController;
 
+
   public void setup() {
     //Starts at top
+    inputMultiplexer.addProcessor(InputBlocker.INSTANCE);
     inputMultiplexer.addProcessor(hud);
     inputMultiplexer.addProcessor(KeyboardHelper.inputProcessor);
     inputMultiplexer.addProcessor(cameraController);
@@ -62,6 +66,7 @@ public class InputChain implements Disposable {
 
   @Override
   public void dispose() {
+    inputMultiplexer.removeProcessor(InputBlocker.INSTANCE);
     inputMultiplexer.removeProcessor(hud);
     inputMultiplexer.removeProcessor(KeyboardHelper.inputProcessor);
     inputMultiplexer.removeProcessor(cameraController);

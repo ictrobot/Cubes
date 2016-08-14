@@ -40,3 +40,6 @@ menu.connection_failed.failed_exception=Failed to connect:
 
 menu.settings.title=Settings
 menu.settings.open_group=Open
+
+menu.pause.resume=Resume
+menu.pause.quit=Quit

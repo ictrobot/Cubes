@@ -8,6 +8,7 @@ import ethanjones.cubes.core.performance.PerformanceTags;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.entity.living.player.Player;
+import ethanjones.cubes.graphics.menus.PauseMenu;
 import ethanjones.cubes.graphics.rendering.Renderer;
 import ethanjones.cubes.input.InputChain;
 import ethanjones.cubes.input.keyboard.KeyboardHelper;
@@ -68,9 +69,8 @@ public class CubesClient extends Cubes implements ApplicationListener {
       Adapter.setMenu(null);
       worldReady = false;
     }
-    if (KeyboardHelper.isKeyDown(Input.Keys.ESCAPE)) {
-      Adapter.gotoMainMenu();
-      return;
+    if (KeyboardHelper.isKeyDown(Input.Keys.ESCAPE) && !(Adapter.getMenu() instanceof PauseMenu)) {
+      Adapter.setMenu(new PauseMenu());
     }
     Performance.start(PerformanceTags.CLIENT_FRAME);
     super.render();

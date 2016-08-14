@@ -73,4 +73,8 @@ public class Menu {
   public boolean shouldRenderBackground() {
     return true;
   }
+
+  public boolean blockClientInput() {
+    return false;
+  }
 }

@@ -89,6 +89,7 @@ public class BlockJson {
       }
     }
 
+    block.jsonFinish();
     IDManager.register(block);
   }
 
@@ -138,10 +139,22 @@ public class BlockJson {
     protected String[][] textures;
     protected int[] displayMeta;
     private final int meta;
+    private boolean canBeTransparent;
 
     public JBlock(String id, int meta) {
       super(id);
       this.meta = meta;
+    }
+
+    private void jsonFinish() {
+      if (transparent != null) {
+        for (Boolean b : transparent) {
+          if (b) {
+            canBeTransparent = true;
+            break;
+          }
+        }
+      }
     }
 
     @Override
@@ -167,6 +180,11 @@ public class BlockJson {
     @Override
     public int getLightLevel(int meta) {
       return lightLevel == null ? 0 : lightLevel[meta];
+    }
+
+    @Override
+    public boolean canBeTransparent() {
+      return canBeTransparent;
     }
 
     @Override

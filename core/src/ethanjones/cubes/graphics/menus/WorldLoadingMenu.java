@@ -48,4 +48,9 @@ public class WorldLoadingMenu extends InfoMenu {
     if (Cubes.getClient() != null) progressBar.setValue(Cubes.getClient().worldProgress);
     super.render();
   }
+
+  @Override
+  public boolean blockClientInput() {
+    return true;
+  }
 }
