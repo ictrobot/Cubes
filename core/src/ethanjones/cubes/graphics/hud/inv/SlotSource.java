@@ -4,6 +4,8 @@ import ethanjones.cubes.item.ItemStack;
 import ethanjones.cubes.item.inv.Inventory;
 import ethanjones.cubes.item.inv.InventoryHelper;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -18,6 +20,7 @@ public class SlotSource extends Source {
   static {
     dragAndDrop.setDragActorPosition(-16f, 16f);
     dragAndDrop.setDragTime(100);
+    dragAndDrop.setButton(-1);
   }
 
   private Inventory sourceInv;
@@ -35,7 +38,14 @@ public class SlotSource extends Source {
 
     Payload payload = new Payload();
     ItemStack payloadStack = sourceInv.itemStacks[sourceNum];
-    sourceInv.itemStacks[sourceNum] = null;
+    if (Gdx.input.isButtonPressed(Buttons.RIGHT)) {
+      int n = payloadStack.count / 2;
+      payloadStack = payloadStack.copy();
+      payloadStack.count = n;
+      sourceInv.itemStacks[sourceNum].count -= n;
+    } else {
+      sourceInv.itemStacks[sourceNum] = null;
+    }
     sourceInv.sync();
     payload.setObject(payloadStack);
 
@@ -68,12 +78,19 @@ public class SlotSource extends Source {
           int transfer = max - targetStack.count;
           targetStack.count += transfer;
           payloadStack.count -= transfer;
-          sourceInv.itemStacks[sourceNum] = payloadStack;
+          if (InventoryHelper.sameItem(sourceInv.itemStacks[sourceNum], payloadStack)) {
+            sourceInv.itemStacks[sourceNum].count += payloadStack.count;
+          } else {
+            sourceInv.itemStacks[sourceNum] = payloadStack;
+          }
 
           targetInv.sync();
           sourceInv.sync();
         }
       } else {
+        if (InventoryHelper.sameItem(sourceInv.itemStacks[sourceNum], payloadStack)) {
+          payloadStack.count += sourceInv.itemStacks[sourceNum].count;
+        }
         sourceInv.itemStacks[sourceNum] = targetStack;
         targetInv.itemStacks[targetNum] = payloadStack;
 

@@ -45,4 +45,8 @@ public class ItemStack implements DataParser {
     count = dataGroup.getInteger("count");
     meta = dataGroup.containsKey("meta") ? dataGroup.getInteger("meta") : 0;
   }
+
+  public ItemStack copy() {
+    return new ItemStack(item, count, meta);
+  }
 }
