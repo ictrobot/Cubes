@@ -10,6 +10,7 @@ import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menu.MenuManager;
 import ethanjones.cubes.graphics.menus.MainMenu;
+import ethanjones.cubes.graphics.menus.PauseMenu;
 import ethanjones.cubes.side.common.Cubes;
 
 import android.app.Activity;
@@ -105,8 +106,13 @@ public class AndroidCompatibility extends Compatibility {
         return;
       }
 
-      if (Cubes.getClient() != null || Cubes.getServer() != null || current == null) {
+      if (current instanceof PauseMenu) {
         Adapter.gotoMainMenu();
+        return;
+      }
+
+      if (Cubes.getClient() != null || Cubes.getServer() != null || current == null) {
+        Adapter.setMenu(new PauseMenu());
         return;
       }
 
