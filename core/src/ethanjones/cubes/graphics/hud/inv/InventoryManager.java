@@ -1,6 +1,7 @@
 package ethanjones.cubes.graphics.hud.inv;
 
 import ethanjones.cubes.core.platform.Compatibility;
+import ethanjones.cubes.graphics.menu.MenuTools;
 import ethanjones.cubes.side.common.Cubes;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -21,12 +22,18 @@ public class InventoryManager {
       return false;
     }
   };
+  private static Actor openInventory;
 
   public static void reset() {
+    openInventory = null;
     GROUP_INVENTORY.clear();
     GROUP_INVENTORY.remove();
     if (!Compatibility.get().isTouchScreen()) GROUP_INVENTORY.addListener(moveItem);
     InventoryManagerDesktop.itemActor = null;
+  }
+
+  public static void resize() {
+    if (openInventory != null) MenuTools.center(openInventory);
   }
 
   public static boolean isInventoryOpen() {
@@ -34,11 +41,14 @@ public class InventoryManager {
   }
 
   public static void showInventory(Actor actor) {
+    openInventory = actor;
     GROUP_INVENTORY.addActor(actor);
     GROUP_INVENTORY.toFront();
+    resize();
   }
 
   public static void hideInventory() {
+    openInventory = null;
     GROUP_INVENTORY.clear();
     Cubes.getClient().renderer.guiRenderer.playerInvToggle.disable();
   }

@@ -12,9 +12,9 @@ import ethanjones.cubes.graphics.hud.FrametimeGraph;
 import ethanjones.cubes.graphics.hud.ImageButtons;
 import ethanjones.cubes.graphics.hud.inv.InventoryActor;
 import ethanjones.cubes.graphics.hud.inv.InventoryManager;
+import ethanjones.cubes.graphics.hud.inv.InventoryWindow;
 import ethanjones.cubes.graphics.hud.inv.SlotTooltipListener;
 import ethanjones.cubes.graphics.menu.Fonts;
-import ethanjones.cubes.graphics.menu.MenuTools;
 import ethanjones.cubes.input.keyboard.KeyTypedAdapter;
 import ethanjones.cubes.input.keyboard.KeyboardHelper;
 import ethanjones.cubes.item.Item;
@@ -151,7 +151,7 @@ public class GuiRenderer implements Disposable {
   public Toggle playerInvToggle = new Toggle() {
     @Override
     public void doEnable() {
-      InventoryManager.showInventory(playerInv);
+      InventoryManager.showInventory(new InventoryWindow(playerInv));
     }
 
     @Override
@@ -340,7 +340,7 @@ public class GuiRenderer implements Disposable {
       debugButton.setBounds(GUI_WIDTH - width - width - width, GUI_HEIGHT - height, width, height);
     }
 
-    MenuTools.center(playerInv);
+    InventoryManager.resize();
   }
 
   public void print(String string) {
