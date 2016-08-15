@@ -24,9 +24,6 @@ public class InventoryActor extends Window {
       SlotActor slotActor = new SlotActor(inventory, i);
       add(slotActor);
 
-      SlotSource.dragAndDrop.addSource(new SlotSource(slotActor));
-      SlotSource.dragAndDrop.addTarget(new SlotTarget(slotActor));
-
       if ((i + 1) % inventory.width == 0) {
         row();
       }

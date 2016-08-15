@@ -21,12 +21,12 @@ public abstract class Toggle {
   }
 
   public boolean toggle() {
-    if (enabled) {
-      doDisable();
-    } else {
-      doEnable();
-    }
     enabled = !enabled;
+    if (enabled) {
+      doEnable();
+    } else {
+      doDisable();
+    }
     return enabled;
   }
 

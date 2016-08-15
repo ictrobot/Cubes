@@ -11,6 +11,7 @@ import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.graphics.hud.FrametimeGraph;
 import ethanjones.cubes.graphics.hud.ImageButtons;
 import ethanjones.cubes.graphics.hud.inv.InventoryActor;
+import ethanjones.cubes.graphics.hud.inv.InventoryManager;
 import ethanjones.cubes.graphics.hud.inv.SlotTooltipListener;
 import ethanjones.cubes.graphics.menu.Fonts;
 import ethanjones.cubes.graphics.menu.MenuTools;
@@ -150,12 +151,12 @@ public class GuiRenderer implements Disposable {
   public Toggle playerInvToggle = new Toggle() {
     @Override
     public void doEnable() {
-      stage.addActor(playerInv);
+      InventoryManager.showInventory(playerInv);
     }
 
     @Override
     public void doDisable() {
-      stage.getRoot().removeActor(playerInv);
+      InventoryManager.hideInventory();
     }
   };
 
@@ -163,6 +164,8 @@ public class GuiRenderer implements Disposable {
     stage = new Stage(screenViewport, spriteBatch);
     Cubes.getClient().inputChain.hud = stage;
 
+    InventoryManager.reset();
+    stage.addActor(InventoryManager.GROUP_INVENTORY);
     stage.addActor(SlotTooltipListener.tooltip);
 
     keyListener = new KeyListener();
@@ -355,6 +358,6 @@ public class GuiRenderer implements Disposable {
   }
 
   public boolean noCursorCatching() {
-    return chatToggle.isEnabled() || playerInvToggle.isEnabled() || hideGuiEnabled;
+    return chatToggle.isEnabled() || InventoryManager.isInventoryOpen() || hideGuiEnabled;
   }
 }

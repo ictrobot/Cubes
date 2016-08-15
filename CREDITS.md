@@ -11,4 +11,4 @@ Cubes Credits
 
 * [minimal-json library](https://github.com/ralfstx/minimal-json)
 
-* InventoryActor, SlotActor, SlotSource, SlotTarget and SlotTooltipListener based on [PixelScientists/libgdx-utils](https://github.com/PixelScientists/libgdx-utils)
+* InventoryActor, SlotActor and SlotTooltipListener based on [PixelScientists/libgdx-utils](https://github.com/PixelScientists/libgdx-utils)

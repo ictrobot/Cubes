@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable;
@@ -17,6 +18,7 @@ import com.badlogic.gdx.utils.Scaling;
 
 public class SlotActor extends Button {
   public static final TextureRegion blank = Assets.getTextureRegion("core:hud/inv/Slot.png");
+  public static final TextureRegion blankSelected = Assets.getTextureRegion("core:hud/inv/SelectedSlot.png");
 
   private final Inventory inventory;
   private final int num;
@@ -27,12 +29,14 @@ public class SlotActor extends Button {
     Image image = new Image();
     image.setScaling(Scaling.fit);
     image.setDrawable(new SlotDrawable());
+    image.setTouchable(Touchable.disabled);
     add(image);
     setSize(getPrefWidth(), getPrefHeight());
 
     this.inventory = inventory;
     this.num = num;
 
+    InventoryManager.newSlot(this);
     addListener(new SlotTooltipListener(this));
   }
 
@@ -56,7 +60,11 @@ public class SlotActor extends Button {
     }
 
     public void draw(Batch batch, float x, float y, float width, float height) {
-      batch.draw(blank, x, y, width, height);
+      if (InventoryManagerTouchscreen.isSelected(SlotActor.this)) {
+        batch.draw(blankSelected, x, y, width, height);
+      } else {
+        batch.draw(blank, x, y, width, height);
+      }
       if (inventory.itemStacks[num] != null) {
         TextureRegion region = inventory.itemStacks[num].item.getTextureRegion();
         batch.draw(region, x + 2f, y + 2f, width - 4f, height - 4f);
