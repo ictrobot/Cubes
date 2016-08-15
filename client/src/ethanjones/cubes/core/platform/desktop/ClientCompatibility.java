@@ -28,8 +28,8 @@ public class ClientCompatibility extends DesktopCompatibility {
   };
 
   public boolean fullscreen = false;
-  public int windowWidth = 640;
-  public int windowHeight = 480;
+  public int windowWidth = 960; // qHD
+  public int windowHeight = 540;
 
   protected ClientCompatibility(ClientLauncher clientLauncher, String[] arg) {
     super(clientLauncher, Application.ApplicationType.Desktop, arg);
