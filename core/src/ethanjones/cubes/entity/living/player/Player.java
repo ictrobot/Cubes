@@ -3,7 +3,6 @@ package ethanjones.cubes.entity.living.player;
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.entity.living.LivingEntity;
 import ethanjones.cubes.graphics.entity.PlayerRenderer;
-import ethanjones.cubes.graphics.hud.inv.InventoryActor;
 import ethanjones.cubes.item.ItemTool;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketChat;
@@ -63,8 +62,6 @@ public class Player extends LivingEntity implements CommandSender, RenderablePro
     this.clientIdentifier = null;
     this.inventory = new PlayerInventory(this);
     this.height = PLAYER_HEIGHT;
-
-    Cubes.getClient().renderer.guiRenderer.playerInv = new InventoryActor(inventory);
   }
 
   public PlayerInventory getInventory() {

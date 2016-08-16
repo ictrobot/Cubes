@@ -4,17 +4,15 @@ import ethanjones.cubes.core.performance.Performance;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.core.util.Toggle;
-import ethanjones.cubes.entity.living.player.PlayerInventory;
 import ethanjones.cubes.graphics.Graphics;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.graphics.hud.FrametimeGraph;
 import ethanjones.cubes.graphics.hud.ImageButtons;
 import ethanjones.cubes.graphics.hud.inv.*;
 import ethanjones.cubes.graphics.menu.Fonts;
+import ethanjones.cubes.graphics.menu.MenuTools;
 import ethanjones.cubes.input.keyboard.KeyTypedAdapter;
 import ethanjones.cubes.input.keyboard.KeyboardHelper;
-import ethanjones.cubes.item.ItemStack;
-import ethanjones.cubes.item.ItemTool;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketChat;
 import ethanjones.cubes.side.client.ClientDebug;
@@ -24,9 +22,6 @@ import ethanjones.cubes.world.save.Gamemode;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -44,6 +39,7 @@ import com.badlogic.gdx.utils.Disposable;
 import java.util.ArrayList;
 
 import static ethanjones.cubes.graphics.Graphics.*;
+import static ethanjones.cubes.graphics.hud.inv.HotbarActor.scroll;
 import static ethanjones.cubes.graphics.menu.Menu.skin;
 
 public class GuiRenderer implements Disposable {
@@ -96,7 +92,6 @@ public class GuiRenderer implements Disposable {
       if (keycode == Keys.NUM_7) selected = 6;
       if (keycode == Keys.NUM_8) selected = 7;
       if (keycode == Keys.NUM_9) selected = 8;
-      if (keycode == Keys.NUM_0) selected = 9;
       if (selected != -1) {
         Cubes.getClient().player.getInventory().hotbarSelected = selected;
         Cubes.getClient().player.getInventory().sync();
@@ -119,10 +114,9 @@ public class GuiRenderer implements Disposable {
   ImageButton blockSelectorButton;
 
   public InventoryActor playerInv;
+  public HotbarActor hotbar;
 
   Texture crosshair;
-  Texture hotbarSlot;
-  Texture hotbarSelected;
 
   public Toggle chatToggle = new Toggle() {
     @Override
@@ -130,6 +124,7 @@ public class GuiRenderer implements Disposable {
       stage.addActor(chat);
       stage.setKeyboardFocus(chat);
       stage.addActor(chatLog);
+      hotbar.remove();
     }
 
     @Override
@@ -137,6 +132,7 @@ public class GuiRenderer implements Disposable {
       stage.setKeyboardFocus(null);
       stage.getRoot().removeActor(chat);
       stage.getRoot().removeActor(chatLog);
+      stage.addActor(hotbar);
     }
   };
   public boolean debugEnabled;
@@ -160,6 +156,8 @@ public class GuiRenderer implements Disposable {
   public GuiRenderer() {
     stage = new Stage(screenViewport, spriteBatch);
     Cubes.getClient().inputChain.hud = stage;
+
+    stage.addListener(scroll);
 
     InventoryManager.setup(stage);
 
@@ -236,8 +234,13 @@ public class GuiRenderer implements Disposable {
     }
 
     crosshair = Assets.getTexture("core:hud/Crosshair.png");
-    hotbarSelected = Assets.getTexture("core:hud/HotbarSelected.png");
-    hotbarSlot = Assets.getTexture("core:hud/HotbarSlot.png");
+  }
+
+  public void playerCreated() {
+    playerInv = new InventoryActor(Cubes.getClient().player.getInventory());
+    hotbar = new HotbarActor(Cubes.getClient().player.getInventory());
+
+    stage.addActor(hotbar);
   }
 
   public void render() {
@@ -251,7 +254,6 @@ public class GuiRenderer implements Disposable {
     if (!hideGuiEnabled) {
       if (playerInvToggle.isDisabled())
         spriteBatch.draw(crosshair, (GUI_WIDTH / 2) - crosshairSize, (GUI_HEIGHT / 2) - crosshairSize, crosshairSize * 2, crosshairSize * 2);
-      if (chatToggle.isDisabled()) renderHotbar();
     }
     if (debugEnabled) {
       FrametimeGraph.drawLines(spriteBatch);
@@ -260,35 +262,6 @@ public class GuiRenderer implements Disposable {
     spriteBatch.end();
     if (debugEnabled) {
       FrametimeGraph.drawPoints();
-    }
-  }
-
-  public void renderHotbar() {
-    PlayerInventory inv = Cubes.getClient().player.getInventory();
-    float itemSize = 32;
-    float hotbarSize = 48;
-    float itemOffset = 8;
-
-    float startWidth = (GUI_WIDTH / 2) - (5 * hotbarSize);
-    for (int i = 0; i < 10; i++) {
-      float minX = startWidth + (i * hotbarSize);
-      if (i == inv.hotbarSelected) {
-        spriteBatch.draw(hotbarSelected, minX, 0, hotbarSize, hotbarSize);
-      } else {
-        spriteBatch.draw(hotbarSlot, minX, 0, hotbarSize, hotbarSize);
-      }
-      ItemStack itemStack = inv.itemStacks[i];
-      if (itemStack != null) {
-        TextureRegion texture = itemStack.item.getTextureRegion();
-        spriteBatch.draw(texture, minX + itemOffset, itemOffset, itemSize, itemSize);
-
-        BitmapFontCache cache = Fonts.smallHUD.getCache();
-        cache.clear();
-        if (itemStack.item instanceof ItemTool) continue;
-        GlyphLayout layout = cache.addText(itemStack.count + "", minX + itemOffset, itemOffset, itemSize, Align.right, false);
-        cache.translate(0, layout.height);
-        cache.draw(spriteBatch);
-      }
     }
   }
 
@@ -317,6 +290,9 @@ public class GuiRenderer implements Disposable {
     }
 
     InventoryManager.resize();
+
+    MenuTools.center(hotbar);
+    hotbar.setY(0);
   }
 
   public void print(String string) {
