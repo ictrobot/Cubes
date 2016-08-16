@@ -8,6 +8,7 @@ import ethanjones.cubes.networking.packet.PacketPriority;
 import ethanjones.cubes.networking.packet.PacketPriority.Priority;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.world.save.Gamemode;
 import ethanjones.data.DataGroup;
 
 import java.util.UUID;
@@ -19,6 +20,7 @@ public class PacketConnected extends DataPacket {
   public DataGroup idManager;
   public UUID player;
   public int worldTime;
+  public Gamemode gamemode;
 
   @Override
   public void handlePacket() {
@@ -27,6 +29,7 @@ public class PacketConnected extends DataPacket {
     player.uuid = this.player;
     player.addToWorld();
     Cubes.getClient().world.time = worldTime;
+    Cubes.getClient().gamemode = gamemode;
   }
 
   @Override
@@ -35,6 +38,7 @@ public class PacketConnected extends DataPacket {
     dataGroup.put("idManager", idManager);
     dataGroup.put("player", player);
     dataGroup.put("worldTime", worldTime);
+    dataGroup.put("worldGamemode", gamemode.name());
     return dataGroup;
   }
 
@@ -43,6 +47,7 @@ public class PacketConnected extends DataPacket {
     idManager = dataGroup.getGroup("idManager");
     player = (UUID) dataGroup.get("player");
     worldTime = dataGroup.getInteger("worldTime");
+    gamemode = Gamemode.valueOf(dataGroup.getString("worldGamemode"));
   }
 
   @Override

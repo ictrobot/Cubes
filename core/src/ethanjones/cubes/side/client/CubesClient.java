@@ -18,6 +18,7 @@ import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.client.WorldClient;
 import ethanjones.cubes.world.collision.PlayerCollision;
+import ethanjones.cubes.world.save.Gamemode;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -31,6 +32,7 @@ public class CubesClient extends Cubes implements ApplicationListener {
   public Player player;
   public InputChain inputChain;
   public Renderer renderer;
+  public Gamemode gamemode;
   public long frameStart;
   public float worldProgress = 0f;
   public boolean worldReady = false;

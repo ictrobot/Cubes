@@ -10,10 +10,7 @@ import ethanjones.cubes.graphics.Graphics;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.graphics.hud.FrametimeGraph;
 import ethanjones.cubes.graphics.hud.ImageButtons;
-import ethanjones.cubes.graphics.hud.inv.InventoryActor;
-import ethanjones.cubes.graphics.hud.inv.InventoryManager;
-import ethanjones.cubes.graphics.hud.inv.InventoryWindow;
-import ethanjones.cubes.graphics.hud.inv.SlotTooltipListener;
+import ethanjones.cubes.graphics.hud.inv.*;
 import ethanjones.cubes.graphics.menu.Fonts;
 import ethanjones.cubes.input.keyboard.KeyTypedAdapter;
 import ethanjones.cubes.input.keyboard.KeyboardHelper;
@@ -25,6 +22,7 @@ import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketChat;
 import ethanjones.cubes.side.client.ClientDebug;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.world.save.Gamemode;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
@@ -151,7 +149,11 @@ public class GuiRenderer implements Disposable {
   public Toggle playerInvToggle = new Toggle() {
     @Override
     public void doEnable() {
-      InventoryManager.showInventory(new InventoryWindow(playerInv));
+      if (Cubes.getClient().gamemode == Gamemode.creative) {
+        InventoryManager.showInventory(new InventoryWindow(new DoubleInventory(new CreativeInventoryActor(), playerInv)));
+      } else {
+        InventoryManager.showInventory(new InventoryWindow(playerInv));
+      }
     }
 
     @Override
@@ -164,9 +166,7 @@ public class GuiRenderer implements Disposable {
     stage = new Stage(screenViewport, spriteBatch);
     Cubes.getClient().inputChain.hud = stage;
 
-    InventoryManager.reset();
-    stage.addActor(InventoryManager.GROUP_INVENTORY);
-    stage.addActor(SlotTooltipListener.tooltip);
+    InventoryManager.setup(stage);
 
     keyListener = new KeyListener();
     KeyboardHelper.addKeyTypedListener(keyListener);

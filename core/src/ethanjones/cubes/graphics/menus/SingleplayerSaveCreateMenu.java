@@ -6,6 +6,7 @@ import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menu.MenuTools;
 import ethanjones.cubes.world.client.ClientSaveManager;
 import ethanjones.cubes.world.generator.GeneratorManager;
+import ethanjones.cubes.world.save.Gamemode;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -18,7 +19,8 @@ public class SingleplayerSaveCreateMenu extends Menu {
 
   Label title;
   TextField name;
-  SelectBox<SaveTypeDisplay> type;
+  SelectBox<SaveTypeDisplay> generator;
+  SelectBox<Gamemode> mode;
   TextField seed;
   TextButton start;
   TextButton back;
@@ -35,13 +37,16 @@ public class SingleplayerSaveCreateMenu extends Menu {
       }
     });
 
-    type = new SelectBox<SaveTypeDisplay>(skin);
+    generator = new SelectBox<SaveTypeDisplay>(skin);
     String[] types = GeneratorManager.ids();
     SaveTypeDisplay[] display = new SaveTypeDisplay[types.length];
     for (int i = 0; i < types.length; i++) {
       display[i] = new SaveTypeDisplay(types[i]);
     }
-    type.setItems(display);
+    generator.setItems(display);
+
+    mode = new SelectBox<Gamemode>(skin);
+    mode.setItems(Gamemode.values());
 
     seed = new TextField("", skin);
     seed.setMessageText(Localization.get("menu.singleplayer.create.seed"));
@@ -52,13 +57,14 @@ public class SingleplayerSaveCreateMenu extends Menu {
     start.addListener(new ChangeListener() {
       @Override
       public void changed(ChangeEvent event, Actor actor) {
-        Adapter.setMenu(new SingleplayerLoadingMenu(ClientSaveManager.createSave(name.getText(), type.getSelected().id, seed.getText())));
+        Adapter.setMenu(new SingleplayerLoadingMenu(ClientSaveManager.createSave(name.getText(), generator.getSelected().id, mode.getSelected(), seed.getText())));
       }
     });
 
     stage.addActor(title);
     stage.addActor(name);
-    stage.addActor(type);
+    stage.addActor(generator);
+    stage.addActor(mode);
     stage.addActor(seed);
     stage.addActor(start);
     stage.addActor(back);
@@ -68,7 +74,7 @@ public class SingleplayerSaveCreateMenu extends Menu {
   public void resize(float width, float height) {
     super.resize(width, height);
     MenuTools.setTitle(title);
-    MenuTools.arrange(width / 4, height / 4, width / 2, height / 2, MenuTools.Direction.Above, start, seed, type, name);
+    MenuTools.arrange(width / 4, height / 4, width / 2, height / 2, MenuTools.Direction.Above, start, seed, mode, generator, name);
     MenuTools.copyPosAndSize(start, back);
     back.setY(0);
   }

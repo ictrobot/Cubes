@@ -2,6 +2,7 @@ package ethanjones.cubes.world.client;
 
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Compatibility;
+import ethanjones.cubes.world.save.Gamemode;
 import ethanjones.cubes.world.save.Save;
 import ethanjones.cubes.world.save.SaveOptions;
 
@@ -25,7 +26,7 @@ public class ClientSaveManager {
     return saves;
   }
 
-  public static Save createSave(String name, String generatorID, String stringSeed) {
+  public static Save createSave(String name, String generatorID, Gamemode gamemode, String stringSeed) {
     if (name != null) name = name.trim();
     if (name == null || name.isEmpty()) name = "world-" + Integer.toHexString(MathUtils.random.nextInt());
     FileHandle folder = getSavesFolder();
@@ -47,6 +48,7 @@ public class ClientSaveManager {
     SaveOptions options = new SaveOptions();
     options.worldSeed = seed;
     options.worldType = generatorID;
+    options.worldGamemode = gamemode;
     s.setSaveOptions(options);
 
     return s;

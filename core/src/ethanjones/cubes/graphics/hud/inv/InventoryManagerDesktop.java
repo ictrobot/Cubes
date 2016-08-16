@@ -30,15 +30,19 @@ public class InventoryManagerDesktop {
         if (stack == null) return true;
 
         ItemStack payloadStack = stack;
-        if (Gdx.input.isButtonPressed(Buttons.RIGHT)) {
-          int n = stack.count / 2;
-          payloadStack = stack.copy();
-          payloadStack.count = n;
-          stack.count -= n;
+        if (!inventory.fixed) {
+          if (Gdx.input.isButtonPressed(Buttons.RIGHT)) {
+            int n = stack.count / 2;
+            payloadStack = stack.copy();
+            payloadStack.count = n;
+            stack.count -= n;
+          } else {
+            inventory.itemStacks[num] = null;
+          }
+          inventory.sync();
         } else {
-          inventory.itemStacks[num] = null;
+          payloadStack = payloadStack.copy();
         }
-        inventory.sync();
 
         ItemActor itemActor = new ItemActor(payloadStack, inventory, num);
         itemActor.center(event.getStageX(), event.getStageY());
@@ -80,7 +84,13 @@ public class InventoryManagerDesktop {
             SlotActor slotActor = (SlotActor) hit;
             Inventory targetInv = slotActor.getInventory();
             int targetNum = slotActor.getNum();
-            if (targetInv.itemStacks[targetNum] == null) {
+            if (targetInv.fixed) {
+              if (targetInv.voidItems) {
+                itemStack.count = 0;
+              } else {
+                return true;
+              }
+            } else if (targetInv.itemStacks[targetNum] == null) {
               ItemStack copy = itemStack.copy();
               if (button == Buttons.RIGHT) {
                 copy.count = 1;
@@ -113,7 +123,7 @@ public class InventoryManagerDesktop {
 
     @Override
     protected void setStage(Stage stage) {
-      if (stage == null && itemStack != null) {
+      if (stage == null && itemStack != null && !inventory.fixed) {
         if (inventory.itemStacks[num] == null) {
           inventory.itemStacks[num] = itemStack;
         } else if (InventoryHelper.sameItem(inventory.itemStacks[num], itemStack)) {

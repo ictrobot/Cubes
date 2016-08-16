@@ -4,10 +4,7 @@ import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.graphics.menu.MenuTools;
 import ethanjones.cubes.side.common.Cubes;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.*;
 
 public class InventoryManager {
 
@@ -23,6 +20,12 @@ public class InventoryManager {
     }
   };
   private static Actor openInventory;
+
+  public static void setup(Stage stage) {
+    reset();
+    stage.addActor(GROUP_INVENTORY);
+    stage.addListener(moveItem);
+  }
 
   public static void reset() {
     openInventory = null;
@@ -43,6 +46,7 @@ public class InventoryManager {
   public static void showInventory(Actor actor) {
     openInventory = actor;
     GROUP_INVENTORY.addActor(actor);
+    GROUP_INVENTORY.addActor(SlotTooltipListener.tooltip);
     GROUP_INVENTORY.toFront();
     resize();
   }

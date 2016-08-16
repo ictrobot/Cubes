@@ -61,6 +61,7 @@ public class PlayerManager {
     packetConnected.idManager = Sided.getIDManager().write();
     packetConnected.player = client.getPlayer().uuid;
     packetConnected.worldTime = server.world.time;
+    packetConnected.gamemode = server.world.save.getSaveOptions().worldGamemode;
     NetworkingManager.sendPacketToClient(packetConnected, client);
 
     PacketPlayerInventory packetPlayerInventory = new PacketPlayerInventory();

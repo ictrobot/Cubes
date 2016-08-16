@@ -9,6 +9,8 @@ public class Inventory implements DataParser {
   protected final String name;
   public ItemStack[] itemStacks;
   public int width = 9;
+  public boolean fixed = false;
+  public boolean voidItems = false;
 
   public Inventory(String name) {
     this.name = name;
