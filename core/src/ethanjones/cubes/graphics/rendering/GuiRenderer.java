@@ -1,6 +1,5 @@
 package ethanjones.cubes.graphics.rendering;
 
-import ethanjones.cubes.core.IDManager;
 import ethanjones.cubes.core.performance.Performance;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.settings.Settings;
@@ -14,8 +13,6 @@ import ethanjones.cubes.graphics.hud.inv.*;
 import ethanjones.cubes.graphics.menu.Fonts;
 import ethanjones.cubes.input.keyboard.KeyTypedAdapter;
 import ethanjones.cubes.input.keyboard.KeyboardHelper;
-import ethanjones.cubes.item.Item;
-import ethanjones.cubes.item.ItemBlock;
 import ethanjones.cubes.item.ItemStack;
 import ethanjones.cubes.item.ItemTool;
 import ethanjones.cubes.networking.NetworkingManager;
@@ -45,7 +42,6 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static ethanjones.cubes.graphics.Graphics.*;
 import static ethanjones.cubes.graphics.menu.Menu.skin;
@@ -127,7 +123,6 @@ public class GuiRenderer implements Disposable {
   Texture crosshair;
   Texture hotbarSlot;
   Texture hotbarSelected;
-  ItemStack[][] itemstacks;
 
   public Toggle chatToggle = new Toggle() {
     @Override
@@ -243,25 +238,6 @@ public class GuiRenderer implements Disposable {
     crosshair = Assets.getTexture("core:hud/Crosshair.png");
     hotbarSelected = Assets.getTexture("core:hud/HotbarSelected.png");
     hotbarSlot = Assets.getTexture("core:hud/HotbarSlot.png");
-
-    itemstacks = new ItemStack[10][6];
-    int i = 0;
-    List<ItemStack> list = new ArrayList<ItemStack>();
-    for (ItemBlock itemBlock : IDManager.getItemBlocks()) {
-      for (int j : itemBlock.block.displayMetaValues()) {
-        list.add(new ItemStack(itemBlock, 1, j));
-      }
-    }
-    for (Item item : IDManager.getItems()) {
-      list.add(new ItemStack(item));
-    }
-    for (int y = 0; y < 6; y++) {
-      for (int x = 0; x < 10; x++, i++) {
-        if (i >= list.size()) break;
-        itemstacks[x][y] = list.get(i);
-      }
-      if (i >= list.size()) break;
-    }
   }
 
   public void render() {
