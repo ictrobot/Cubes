@@ -44,7 +44,8 @@ public class SaveAreaIO {
       data.inflater.reset();
       InputStream inputStream = file.read(8192);
       InflaterInputStream inflaterInputStream = new InflaterInputStream(inputStream, data.inflater);
-      DataInputStream dataInputStream = new DataInputStream(inflaterInputStream);
+      BufferedInputStream bufferedInputStream = new BufferedInputStream(inflaterInputStream);
+      DataInputStream dataInputStream = new DataInputStream(bufferedInputStream);
       Area area = new Area(x, z);
       area.read(dataInputStream, false);
       dataInputStream.close();
