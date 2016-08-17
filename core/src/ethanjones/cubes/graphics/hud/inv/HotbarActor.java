@@ -33,6 +33,15 @@ public class HotbarActor extends Image {
     this.playerInventory = inventory;
     setDrawable(new HotbarDrawable());
     pack();
+    addListener(new InputListener() {
+
+      @Override
+      public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+        int slot = (int) Math.floor((event.getStageX() - getX()) / 48f);
+        playerInventory.hotbarSelected = slot;
+        return true;
+      }
+    });
   }
 
   private class HotbarDrawable extends BaseDrawable {
