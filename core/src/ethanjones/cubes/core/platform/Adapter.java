@@ -10,8 +10,6 @@ import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.server.CubesServer;
 
-import com.badlogic.gdx.Gdx;
-
 public class Adapter {
 
   private static final int JOIN_TIMEOUT = 10000;
@@ -184,6 +182,7 @@ public class Adapter {
   }
 
   public static void quit() {
-    Gdx.app.exit();
+    System.exit(0); // Force android to exit vm
+    //Gdx.app.exit();
   }
 }
