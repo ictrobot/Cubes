@@ -120,7 +120,12 @@ public class SaveAreaIO {
     final DataOutputStream dataOutputStream = new DataOutputStream(stream);
     final MessageDigest md;
     final Deflater deflater = new Deflater();
-    final Inflater inflater = new Inflater();
+    final Inflater inflater = new Inflater() {
+      @Override
+      public void end() {
+        // do nothing, as android calls inflater.end() when closing InflaterInputStream
+      }
+    };
     final byte[] hash = new byte[32];
 
     public ThreadData() {
