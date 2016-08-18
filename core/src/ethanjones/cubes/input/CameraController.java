@@ -151,8 +151,9 @@ public class CameraController extends InputAdapter {
   }
 
   public void update() {
-    if (Cubes.getClient().renderer.guiRenderer.noCursorCatching()) return;
-    if (touchpad != null) {
+    if (Cubes.getClient().renderer.guiRenderer.noCursorCatching()) {
+      update(0f, 0f, 0f, 0f, false);
+    } else if (touchpad != null) {
       float knobPercentY = touchpad.getKnobPercentY();
       float up = knobPercentY > 0 ? knobPercentY : 0;
       float down = knobPercentY < 0 ? -knobPercentY : 0;
