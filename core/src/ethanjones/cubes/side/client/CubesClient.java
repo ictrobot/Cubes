@@ -8,10 +8,10 @@ import ethanjones.cubes.core.performance.PerformanceTags;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.entity.living.player.Player;
+import ethanjones.cubes.graphics.hud.inv.InventoryManager;
 import ethanjones.cubes.graphics.menus.PauseMenu;
 import ethanjones.cubes.graphics.rendering.Renderer;
 import ethanjones.cubes.input.InputChain;
-import ethanjones.cubes.input.keyboard.KeyboardHelper;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
@@ -72,8 +72,14 @@ public class CubesClient extends Cubes implements ApplicationListener {
       Adapter.setMenu(null);
       worldReady = false;
     }
-    if (KeyboardHelper.isKeyDown(Input.Keys.ESCAPE) && !(Adapter.getMenu() instanceof PauseMenu)) {
-      Adapter.setMenu(new PauseMenu());
+    if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+      if (InventoryManager.isInventoryOpen()) {
+        InventoryManager.hideInventory();
+      } else if (Adapter.getMenu() instanceof PauseMenu) {
+        Adapter.setMenu(null);
+      } else {
+        Adapter.setMenu(new PauseMenu());
+      }
     }
     Performance.start(PerformanceTags.CLIENT_FRAME);
     super.render();
