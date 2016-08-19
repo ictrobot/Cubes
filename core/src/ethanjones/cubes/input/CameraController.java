@@ -27,7 +27,7 @@ import com.badlogic.gdx.utils.IntIntMap;
 
 public class CameraController extends InputAdapter {
 
-  public static final float JUMP = 0.3f;
+  public static final float JUMP = 9f / 16f;
   public float jumpTime;
 
   public Touchpad touchpad; //movement on android
