@@ -23,6 +23,7 @@ public class HotbarActor extends Image {
       player.hotbarSelected += amount;
       if (player.hotbarSelected == -1) player.hotbarSelected = 8;
       if (player.hotbarSelected == 9) player.hotbarSelected = 0;
+      player.sync();
       return true;
     }
   };
