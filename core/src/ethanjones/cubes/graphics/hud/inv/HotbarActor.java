@@ -39,6 +39,7 @@ public class HotbarActor extends Image {
       public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
         int slot = (int) Math.floor((event.getStageX() - getX()) / 48f);
         playerInventory.hotbarSelected = slot;
+        playerInventory.sync();
         return true;
       }
     });
