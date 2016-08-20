@@ -14,7 +14,6 @@ import ethanjones.cubes.networking.packets.PacketKey;
 import ethanjones.cubes.networking.packets.PacketPlayerMovement;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.CoordinateConverter;
-import ethanjones.cubes.world.gravity.WorldGravity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -27,8 +26,9 @@ import com.badlogic.gdx.utils.IntIntMap;
 
 public class CameraController extends InputAdapter {
 
-  public static final float JUMP = 9f / 16f;
-  public float jumpTime;
+  public static final float JUMP_START_VELOCITY = 5f;
+  public static final float JUMP_RELEASE_VELOCITY = 2f;
+  public boolean jumping = false;
 
   public Touchpad touchpad; //movement on android
   public ImageButton jumpButton;
@@ -190,17 +190,16 @@ public class CameraController extends InputAdapter {
     }
     if (!tmpMovement.isZero()) tryMove();
 
-    if (jump) {
-      if (validJump()) {
-        float t = Math.min(JUMP - jumpTime, deltaTime);
-        float j = WorldGravity.playerJump(jumpTime, t);
-        jumpTime += t;
-        tmpMovement.set(0f, j, 0f);
-        tryMove();
-      }
-    } else {
-      jumpTime = 0;
+    if (!jumping && jump && validJump()) {
+      Cubes.getClient().player.motion.y = JUMP_START_VELOCITY;
+      jumping = true;
     }
+    if (jumping && !jump) {
+      Cubes.getClient().player.motion.y = Math.min(JUMP_RELEASE_VELOCITY, Cubes.getClient().player.motion.y);
+      jumping = false;
+    }
+    Cubes.getClient().player.updatePosition(deltaTime);
+
     camera.update(true);
   }
 
@@ -212,8 +211,7 @@ public class CameraController extends InputAdapter {
   }
 
   public boolean validJump() {
-    if (jumpTime > 0 && jumpTime < JUMP) return true;
-    if (jumpTime == 0) {
+    if (Cubes.getClient().player.motion.y == 0) {
       Vector3 pos = Cubes.getClient().player.position;
       float y = pos.y - Cubes.getClient().player.height - 0.01f;
       Block b = Cubes.getClient().world.getBlock(CoordinateConverter.block(pos.x), CoordinateConverter.block(y), CoordinateConverter.block(pos.z));

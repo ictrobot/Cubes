@@ -1,5 +1,6 @@
 package ethanjones.cubes.entity.living.player;
 
+import ethanjones.cubes.core.event.entity.living.player.PlayerMovementEvent;
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.entity.living.LivingEntity;
 import ethanjones.cubes.graphics.entity.PlayerRenderer;
@@ -15,6 +16,8 @@ import ethanjones.cubes.side.server.command.CommandPermission;
 import ethanjones.cubes.side.server.command.CommandSender;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.World;
+import ethanjones.cubes.world.collision.PlayerCollision;
+import ethanjones.cubes.world.gravity.WorldGravity;
 import ethanjones.data.DataGroup;
 
 import com.badlogic.gdx.graphics.Camera;
@@ -91,6 +94,28 @@ public class Player extends LivingEntity implements CommandSender, RenderablePro
 
   @Override
   public void updatePosition(float time) {
+    if (Sided.getSide() == Side.Client) {
+      if (!inLoadedArea()) return;
+      Side side = Sided.getSide();
+      World world = Sided.getCubes().world;
+      float r = PlayerCollision.r;
+      tmpVector.set(position);
+
+      if (!motion.isZero() || !WorldGravity.onBlock(world, tmpVector, height, r)) {
+        tmpVector.add(motion.x * time, motion.y * time, motion.z * time);
+        motion.y -= GRAVITY * time;
+
+        if (WorldGravity.onBlock(world, tmpVector, height, r) && motion.y < 0) {
+          tmpVector.y = WorldGravity.getBlockY(tmpVector, height) + 1 + height;
+          motion.y = 0f;
+        }
+
+        if (!new PlayerMovementEvent(this, tmpVector).post().isCanceled()) {
+          position.set(tmpVector);
+          if (side == Side.Server) world.syncEntity(uuid);
+        }
+      }
+    }
     World world = Sided.getCubes().world;
     if (world.getArea(CoordinateConverter.area(position.x), CoordinateConverter.area(position.z)) != null) {
       if (world.getBlock(CoordinateConverter.block(position.x), CoordinateConverter.block(position.y - height), CoordinateConverter.block(position.z)) != null) {

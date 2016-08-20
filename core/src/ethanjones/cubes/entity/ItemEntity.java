@@ -24,9 +24,14 @@ public class ItemEntity extends Entity implements RenderableProvider {
 
   public ItemEntity() {
     super("core:item");
-    this.motion.set(MathUtils.random(1f) - 0.5f, 0, MathUtils.random(1f) - 0.5f);
+    this.motion.set(randomMotion(), 0, randomMotion());
     if (Sided.getSide() == Side.Client) renderer = new ItemEntityRenderer(this);
   }
+
+  private float randomMotion() {
+    return ((float) Math.sqrt(MathUtils.random(16f))) - 2f;
+  }
+
 
   @Override
   public DataGroup write() {
