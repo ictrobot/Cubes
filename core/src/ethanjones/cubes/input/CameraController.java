@@ -1,6 +1,5 @@
 package ethanjones.cubes.input;
 
-import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.event.entity.living.player.PlayerMovementEvent;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.settings.Settings;
@@ -13,7 +12,8 @@ import ethanjones.cubes.networking.packets.PacketButton;
 import ethanjones.cubes.networking.packets.PacketKey;
 import ethanjones.cubes.networking.packets.PacketPlayerMovement;
 import ethanjones.cubes.side.common.Cubes;
-import ethanjones.cubes.world.CoordinateConverter;
+import ethanjones.cubes.world.collision.PlayerCollision;
+import ethanjones.cubes.world.gravity.WorldGravity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -190,7 +190,7 @@ public class CameraController extends InputAdapter {
     }
     if (!tmpMovement.isZero()) tryMove();
 
-    if (!jumping && jump && validJump()) {
+    if (!jumping && jump && WorldGravity.onBlock(Cubes.getClient().world, Cubes.getClient().player.position, Player.PLAYER_HEIGHT, PlayerCollision.r)) {
       Cubes.getClient().player.motion.y = JUMP_START_VELOCITY;
       jumping = true;
     }
@@ -198,6 +198,8 @@ public class CameraController extends InputAdapter {
       Cubes.getClient().player.motion.y = Math.min(JUMP_RELEASE_VELOCITY, Cubes.getClient().player.motion.y);
       jumping = false;
     }
+    if (Cubes.getClient().player.motion.y <= 0) jumping = false;
+
     Cubes.getClient().player.updatePosition(deltaTime);
 
     camera.update(true);
@@ -208,16 +210,6 @@ public class CameraController extends InputAdapter {
     if (!new PlayerMovementEvent(Cubes.getClient().player, tmpMovement).post().isCanceled()) {
       camera.position.set(tmpMovement);
     }
-  }
-
-  public boolean validJump() {
-    if (Cubes.getClient().player.motion.y == 0) {
-      Vector3 pos = Cubes.getClient().player.position;
-      float y = pos.y - Cubes.getClient().player.height - 0.01f;
-      Block b = Cubes.getClient().world.getBlock(CoordinateConverter.block(pos.x), CoordinateConverter.block(y), CoordinateConverter.block(pos.z));
-      return b != null;
-    }
-    return false;
   }
 
   public void tick() {
