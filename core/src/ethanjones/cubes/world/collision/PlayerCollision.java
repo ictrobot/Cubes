@@ -11,16 +11,22 @@ import com.badlogic.gdx.math.Vector3;
 
 public class PlayerCollision {
   private World world = Sided.getCubes().world;
-  public static final float r = 0.25f;
+  private static final float r = 0.25f;
 
   @EventHandler
   public void preventNoclip(PlayerMovementEvent event) {
     Player player = event.getPlayer();
     Vector3 pos = event.newPosition;
     if (world.getArea(CoordinateConverter.area(pos.x), CoordinateConverter.area(pos.z)) != null && !event.isCanceled()) {
-      if (check(pos, 0f, 0f, 0f) || check(pos, 0f, -player.height, 0f)) {
-        event.setCanceled(true);
-        return;
+      int blockX = CoordinateConverter.block(pos.x);
+      int blockZ = CoordinateConverter.block(pos.z);
+      int minBlockY = CoordinateConverter.block(pos.y - player.height);
+      int maxBlockY = CoordinateConverter.block(pos.y + 0.2f);
+      for (int y = minBlockY; y <= maxBlockY; y++) {
+        if (world.getBlock(blockX, y, blockZ) != null) {
+          event.setCanceled(true);
+          return;
+        }
       }
 
       limit(pos, +r, 0, player.height);

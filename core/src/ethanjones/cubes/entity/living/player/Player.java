@@ -16,7 +16,6 @@ import ethanjones.cubes.side.server.command.CommandPermission;
 import ethanjones.cubes.side.server.command.CommandSender;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.World;
-import ethanjones.cubes.world.collision.PlayerCollision;
 import ethanjones.cubes.world.gravity.WorldGravity;
 import ethanjones.data.DataGroup;
 
@@ -32,6 +31,7 @@ import java.util.UUID;
 public class Player extends LivingEntity implements CommandSender, RenderableProvider {
 
   public static final float PLAYER_HEIGHT = 1.625f;
+  public static final float PLAYER_RADIUS = 0.24f;
 
   public final String username;
   public final ClientIdentifier clientIdentifier;
@@ -98,14 +98,13 @@ public class Player extends LivingEntity implements CommandSender, RenderablePro
       if (!inLoadedArea()) return;
       Side side = Sided.getSide();
       World world = Sided.getCubes().world;
-      float r = PlayerCollision.r;
       tmpVector.set(position);
 
-      if (!motion.isZero() || !WorldGravity.onBlock(world, tmpVector, height, r)) {
+      if (!motion.isZero() || !WorldGravity.onBlock(world, tmpVector, height, PLAYER_RADIUS)) {
         tmpVector.add(motion.x * time, motion.y * time, motion.z * time);
         motion.y -= GRAVITY * time;
 
-        if (WorldGravity.onBlock(world, tmpVector, height, r) && motion.y < 0) {
+        if (WorldGravity.onBlock(world, tmpVector, height, PLAYER_RADIUS) && motion.y < 0) {
           tmpVector.y = WorldGravity.getBlockY(tmpVector, height) + 1 + height;
           motion.y = 0f;
         }

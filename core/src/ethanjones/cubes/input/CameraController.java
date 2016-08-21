@@ -12,7 +12,6 @@ import ethanjones.cubes.networking.packets.PacketButton;
 import ethanjones.cubes.networking.packets.PacketKey;
 import ethanjones.cubes.networking.packets.PacketPlayerMovement;
 import ethanjones.cubes.side.common.Cubes;
-import ethanjones.cubes.world.collision.PlayerCollision;
 import ethanjones.cubes.world.gravity.WorldGravity;
 
 import com.badlogic.gdx.Gdx;
@@ -190,7 +189,7 @@ public class CameraController extends InputAdapter {
     }
     if (!tmpMovement.isZero()) tryMove();
 
-    if (!jumping && jump && WorldGravity.onBlock(Cubes.getClient().world, Cubes.getClient().player.position, Player.PLAYER_HEIGHT, PlayerCollision.r)) {
+    if (!jumping && jump && WorldGravity.onBlock(Cubes.getClient().world, Cubes.getClient().player.position, Player.PLAYER_HEIGHT, Player.PLAYER_RADIUS)) {
       Cubes.getClient().player.motion.y = JUMP_START_VELOCITY;
       jumping = true;
     }
