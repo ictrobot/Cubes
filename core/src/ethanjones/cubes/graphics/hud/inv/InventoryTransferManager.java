@@ -34,7 +34,7 @@ public class InventoryTransferManager {
 
   public static void reset() {
     itemActor = null;
-    InventoryManager.GROUP_SHOWN.addActor(selected);
+    if (selected != null) InventoryManager.GROUP_SHOWN.addActor(selected);
   }
 
   protected static void newSlot(final SlotActor slot) {
