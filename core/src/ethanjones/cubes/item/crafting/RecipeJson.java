@@ -28,9 +28,10 @@ public class RecipeJson {
       JsonValue value = member.getValue();
       if (!value.isArray()) continue;
       JsonArray array = value.asArray();
-      if (array.size() != 9) throw new JsonException("Invalid size " + array.size());
+      if (!(array.size() == 9 || array.size() == 4 || array.size() == 1))
+        throw new JsonException("Invalid size " + array.size());
       ItemStack output = parseStack(Json.value(member.getName()), mappings);
-      CraftingInput[] inputs = new CraftingInput[9];
+      CraftingInput[] inputs = new CraftingInput[array.size()];
       for (int i = 0; i < array.size(); i++) {
         JsonValue j = array.get(i);
         inputs[i] = parseInput(j, mappings);

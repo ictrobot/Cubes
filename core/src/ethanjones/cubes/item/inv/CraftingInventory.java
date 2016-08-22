@@ -29,6 +29,7 @@ public class CraftingInventory extends Inventory {
       output.itemStacks[0] = stack;
       output.stack = true;
     } else {
+      output.itemStacks[0] = null;
       output.stack = false;
     }
   }

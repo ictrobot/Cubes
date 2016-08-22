@@ -3,6 +3,8 @@ package ethanjones.cubes.item.crafting;
 import ethanjones.cubes.item.ItemStack;
 import ethanjones.cubes.item.inv.CraftingInventory;
 
+import static ethanjones.cubes.item.crafting.CraftingPatterns.patterns;
+
 public class CraftingRecipe {
 
   public final CraftingInput[] input;
@@ -13,9 +15,9 @@ public class CraftingRecipe {
 
     if (input == null) {
       this.input = null; // implement custom matching logic
-    } else if (input.length == 9) {
-      this.input = new CraftingInput[9];
-      for (int i = 0; i < 9; i++) {
+    } else if (input.length == 9 || input.length == 4 || input.length == 1) {
+      this.input = new CraftingInput[input.length];
+      for (int i = 0; i < input.length; i++) {
         this.input[i] = toCraftingInput(input[i]);
       }
     } else {
@@ -25,20 +27,31 @@ public class CraftingRecipe {
 
   public ItemStack match(CraftingInventory inventory) {
     ItemStack[] itemStacks = inventory.itemStacks;
-    for (int i = 0; i < 9; i++) {
-      CraftingInput ci = input[i];
-      ItemStack stack = itemStacks[i];
-      if (ci == null) {
-        if (stack == null) {
-          continue;
+    boolean[][] pattern = patterns[input.length];
+
+    patternLoop:
+    for (boolean[] p : pattern) {
+      int j = 0;
+      for (int i = 0; i < 9; i++) {
+        ItemStack stack = itemStacks[i];
+        if (p[i]) {
+          CraftingInput ci = input[j++];
+          if (ci == null) {
+            if (stack == null) {
+              continue;
+            }
+            continue patternLoop;
+          } else if (ci.matches(stack)) {
+            continue;
+          }
+          continue patternLoop;
+        } else {
+          if (stack != null) continue patternLoop;
         }
-        return null;
-      } else if (ci.matches(stack)) {
-        continue;
       }
-      return null;
+      return output;
     }
-    return output;
+    return null;
   }
 
   public static CraftingInput toCraftingInput(Object o) {
