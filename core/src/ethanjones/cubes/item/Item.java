@@ -29,7 +29,8 @@ public class Item {
     return Localization.get("item." + id.replaceFirst(":", "."));
   }
 
-  public void onButtonPress(int button, ItemStack itemStack, Player player, int stack) {
+  public boolean onButtonPress(int button, ItemStack itemStack, Player player, int stack) {
+    return false;
   }
 
   public int getStackCountMax() {

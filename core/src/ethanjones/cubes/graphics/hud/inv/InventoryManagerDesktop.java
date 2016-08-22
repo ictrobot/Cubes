@@ -84,8 +84,10 @@ public class InventoryManagerDesktop {
             SlotActor slotActor = (SlotActor) hit;
             Inventory targetInv = slotActor.getInventory();
             int targetNum = slotActor.getNum();
-            if (targetInv.fixed) {
-              if (targetInv.voidItems) {
+            if (targetInv.cancelInputItems) {
+              return true;
+            } else if (targetInv.fixed) {
+              if (targetInv.voidInputItems) {
                 itemStack.count = 0;
               } else {
                 return true;

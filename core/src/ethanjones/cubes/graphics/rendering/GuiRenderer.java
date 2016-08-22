@@ -80,7 +80,7 @@ public class GuiRenderer implements Disposable {
     public void keyDown(int keycode) {
       functionKeys(keycode);
 
-      if (keycode == blocksMenu) playerInvToggle.toggle();
+      if (keycode == blocksMenu) toggleInventory();
 
       int selected = -1;
       if (keycode == Keys.NUM_1) selected = 0;
@@ -137,21 +137,6 @@ public class GuiRenderer implements Disposable {
   };
   public boolean debugEnabled;
   public boolean hideGuiEnabled;
-  public Toggle playerInvToggle = new Toggle() {
-    @Override
-    public void doEnable() {
-      if (Cubes.getClient().gamemode == Gamemode.creative) {
-        InventoryManager.showInventory(new InventoryWindow(new DoubleInventory(new CreativeInventoryActor(), playerInv)));
-      } else {
-        InventoryManager.showInventory(new InventoryWindow(playerInv));
-      }
-    }
-
-    @Override
-    public void doDisable() {
-      InventoryManager.hideInventory();
-    }
-  };
 
   public GuiRenderer() {
     stage = new Stage(screenViewport, spriteBatch);
@@ -223,7 +208,7 @@ public class GuiRenderer implements Disposable {
       blockSelectorButton.addListener(new ChangeListener() {
         @Override
         public void changed(ChangeEvent event, Actor actor) {
-          playerInvToggle.toggle();
+          toggleInventory();
         }
       });
       stage.addActor(touchpad);
@@ -252,7 +237,7 @@ public class GuiRenderer implements Disposable {
     spriteBatch.begin();
     float crosshairSize = 10f;
     if (!hideGuiEnabled) {
-      if (playerInvToggle.isDisabled())
+      if (!InventoryManager.isInventoryOpen())
         spriteBatch.draw(crosshair, (GUI_WIDTH / 2) - crosshairSize, (GUI_HEIGHT / 2) - crosshairSize, crosshairSize * 2, crosshairSize * 2);
     }
     if (debugEnabled) {
@@ -302,6 +287,18 @@ public class GuiRenderer implements Disposable {
       builder.append(chatStrings.get(i)).append("\n");
     }
     chatLog.setText(builder.toString());
+  }
+
+  public void toggleInventory() {
+    if (InventoryManager.isInventoryOpen()) {
+      InventoryManager.hideInventory();
+    } else {
+      if (Cubes.getClient().gamemode == Gamemode.creative) {
+        InventoryManager.showInventory(new InventoryWindow(new DoubleInventory(new CreativeInventoryActor(), playerInv)));
+      } else {
+        InventoryManager.showInventory(new InventoryWindow(playerInv));
+      }
+    }
   }
 
   @Override

@@ -16,6 +16,7 @@ import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.CoordinateConverter;
+import ethanjones.cubes.world.collision.BlockIntersection;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.reference.multi.AreaReferenceSet;
@@ -302,8 +303,17 @@ public class PlayerManager {
     synchronized (buttons) {
       for (Integer recentButton : recentButtons) {
         ItemStack itemStack = client.getPlayer().getInventory().selectedItemStack();
-        if (itemStack != null)
-          itemStack.item.onButtonPress(recentButton, itemStack, client.getPlayer(), client.getPlayer().getInventory().hotbarSelected);
+        boolean b = true;
+        if (itemStack != null) {
+          b = !itemStack.item.onButtonPress(recentButton, itemStack, client.getPlayer(), client.getPlayer().getInventory().hotbarSelected);
+        }
+        if (b) {
+          BlockIntersection blockIntersection = BlockIntersection.getBlockIntersection(client.getPlayer().position, client.getPlayer().angle, server.world);
+          if (blockIntersection != null) {
+            BlockReference r = blockIntersection.getBlockReference();
+            server.world.getBlock(r.blockX, r.blockY, r.blockZ).onButtonPress(recentButton, client.getPlayer(), r.blockX, r.blockY, r.blockZ);
+          }
+        }
       }
 
       recentButtons.clear();

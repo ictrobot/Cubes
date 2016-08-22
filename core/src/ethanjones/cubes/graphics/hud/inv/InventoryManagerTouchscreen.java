@@ -26,14 +26,16 @@ public class InventoryManagerTouchscreen {
           int selectedNum = selected.getNum();
 
           ItemStack itemStack = targetInv.itemStacks[targetNum];
-          if (targetInv.fixed) {
-            if (targetInv.voidItems && !selectedInv.fixed) {
-              selectedInv.itemStacks[selectedNum] = null;
-            }
-          } else {
-            targetInv.itemStacks[targetNum] = selectedInv.itemStacks[selectedNum];
-            if (!selectedInv.fixed) {
-              selectedInv.itemStacks[selectedNum] = itemStack;
+          if (!targetInv.cancelInputItems) {
+            if (targetInv.fixed) {
+              if (targetInv.voidInputItems && !selectedInv.fixed) {
+                selectedInv.itemStacks[selectedNum] = null;
+              }
+            } else {
+              targetInv.itemStacks[targetNum] = selectedInv.itemStacks[selectedNum];
+              if (!selectedInv.fixed) {
+                selectedInv.itemStacks[selectedNum] = itemStack;
+              }
             }
           }
 

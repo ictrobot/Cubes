@@ -14,7 +14,7 @@ public class CreativeInventory extends Inventory {
     super("core:creative");
 
     fixed = true;
-    voidItems = true;
+    voidInputItems = true;
     ArrayList<ItemStack> list = new ArrayList<ItemStack>();
     for (ItemBlock itemBlock : IDManager.getItemBlocks()) {
       for (int j : itemBlock.block.displayMetaValues()) {

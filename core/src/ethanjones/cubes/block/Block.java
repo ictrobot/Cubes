@@ -1,6 +1,7 @@
 package ethanjones.cubes.block;
 
 import ethanjones.cubes.core.localization.Localization;
+import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.graphics.world.BlockTextureHandler;
 import ethanjones.cubes.item.ItemBlock;
 import ethanjones.cubes.item.ItemStack;
@@ -79,5 +80,9 @@ public class Block {
     ItemTool itemTool = ((ItemTool) itemStack.item);
     if (itemTool.getToolType() != miningTool) return 1f;
     return itemTool.getToolLevel() * 2;
+  }
+
+  public boolean onButtonPress(int button, Player player, int blockX, int blockY, int blockZ) {
+    return false;
   }
 }

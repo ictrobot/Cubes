@@ -2,7 +2,6 @@ package ethanjones.cubes.graphics.hud.inv;
 
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.graphics.menu.MenuTools;
-import ethanjones.cubes.side.common.Cubes;
 
 import com.badlogic.gdx.scenes.scene2d.*;
 
@@ -54,7 +53,6 @@ public class InventoryManager {
   public static void hideInventory() {
     openInventory = null;
     GROUP_INVENTORY.clear();
-    Cubes.getClient().renderer.guiRenderer.playerInvToggle.disable();
   }
 
   public static void newSlot(final SlotActor slot) {

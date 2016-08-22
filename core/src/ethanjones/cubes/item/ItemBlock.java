@@ -31,10 +31,10 @@ public class ItemBlock extends Item {
   }
 
   @Override
-  public void onButtonPress(int button, ItemStack itemStack, Player player, int stack) {
+  public boolean onButtonPress(int button, ItemStack itemStack, Player player, int stack) {
     if (Sided.getSide() == Side.Server && button == Input.Buttons.RIGHT) {
       BlockIntersection blockIntersection = BlockIntersection.getBlockIntersection(player.position, player.angle, Cubes.getServer().world);
-      if (blockIntersection == null || blockIntersection.getBlockFace() == null) return;
+      if (blockIntersection == null || blockIntersection.getBlockFace() == null) return false;
       BlockReference blockReference = blockIntersection.getBlockReference();
       switch (blockIntersection.getBlockFace()) {
         case posX:
@@ -57,16 +57,18 @@ public class ItemBlock extends Item {
           break;
       }
       // check block would not be in player
-      if (blockReference.equals(new BlockReference().setFromVector3(player.position))) return;
+      if (blockReference.equals(new BlockReference().setFromVector3(player.position))) return false;
       if (blockReference.equals(new BlockReference().setFromVector3(player.position.cpy().sub(0, player.height, 0))))
-        return;
+        return false;
 
       PlayerPlaceBlockEvent event = new PlayerPlaceBlockEvent(player, block, itemStack.meta, blockIntersection, blockReference);
-      if (event.post().isCanceled()) return;
+      if (event.post().isCanceled()) return false;
 
       Cubes.getServer().world.setBlock(block, blockReference.blockX, blockReference.blockY, blockReference.blockZ, event.getMeta());
 
       InventoryHelper.reduceCount(player.getInventory(), stack);
+      return true;
     }
+    return false;
   }
 }

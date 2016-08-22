@@ -12,7 +12,9 @@ import ethanjones.cubes.networking.packets.PacketButton;
 import ethanjones.cubes.networking.packets.PacketKey;
 import ethanjones.cubes.networking.packets.PacketPlayerMovement;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.world.collision.BlockIntersection;
 import ethanjones.cubes.world.gravity.WorldGravity;
+import ethanjones.cubes.world.reference.BlockReference;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -91,9 +93,19 @@ public class CameraController extends InputAdapter {
     packetButton.button = button;
     NetworkingManager.sendPacketToServer(packetButton);
 
-    ItemStack itemStack = Cubes.getClient().player.getInventory().selectedItemStack();
-    if (itemStack != null)
-      itemStack.item.onButtonPress(button, itemStack, Cubes.getClient().player, Cubes.getClient().player.getInventory().hotbarSelected);
+    Player player = Cubes.getClient().player;
+    ItemStack itemStack = player.getInventory().selectedItemStack();
+    boolean b = true;
+    if (itemStack != null) {
+      b = !itemStack.item.onButtonPress(button, itemStack, player, player.getInventory().hotbarSelected);
+    }
+    if (b) {
+      BlockIntersection blockIntersection = BlockIntersection.getBlockIntersection(camera.position, camera.direction, Cubes.getClient().world);
+      if (blockIntersection != null) {
+        BlockReference r = blockIntersection.getBlockReference();
+        Cubes.getClient().world.getBlock(r.blockX, r.blockY, r.blockZ).onButtonPress(button, player, r.blockX, r.blockY, r.blockZ);
+      }
+    }
     return true;
   }
 
