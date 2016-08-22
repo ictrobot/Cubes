@@ -10,14 +10,18 @@ import ethanjones.cubes.graphics.assets.AssetManager;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.item.ItemJson;
 import ethanjones.cubes.item.Items;
+import ethanjones.cubes.item.crafting.RecipeJson;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.eclipsesource.json.Json;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class JsonLoader {
 
@@ -41,6 +45,7 @@ public class JsonLoader {
   }
 
   private static void load(Map<String, FileHandle> map) throws IOException {
+    List<Entry<String, FileHandle>> delayed = new ArrayList<Entry<String, FileHandle>>();
     for (Map.Entry<String, FileHandle> entry : map.entrySet()) {
       if (entry.getKey().startsWith("block")) {
         Reader reader = entry.getValue().reader();
@@ -56,8 +61,20 @@ public class JsonLoader {
         } finally {
           reader.close();
         }
+      } else if (entry.getKey().startsWith("recipe")) {
+        delayed.add(entry); // needs to be done after item & block loading
       } else {
         throw new CubesException("Invalid json file path \"" + entry.getKey() + "\"");
+      }
+    }
+    for (Entry<String, FileHandle> entry : delayed) {
+      if (entry.getKey().startsWith("recipe")) {
+        Reader reader = entry.getValue().reader();
+        try {
+          RecipeJson.json(Json.parse(reader).asObject());
+        } finally {
+          reader.close();
+        }
       }
     }
   }
