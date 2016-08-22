@@ -303,7 +303,7 @@ public class GuiRenderer implements Disposable {
       if (Cubes.getClient().gamemode == Gamemode.creative) {
         InventoryManager.showInventory(new InventoryWindow(new DoubleInventory(new CreativeInventoryActor(), playerInv)));
       } else {
-        InventoryManager.showInventory(new InventoryWindow(playerInv));
+        InventoryManager.showInventory(new InventoryWindow(new DoubleInventory(new CraftingInventoryActor(), playerInv)));
       }
     }
   }

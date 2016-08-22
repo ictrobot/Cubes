@@ -16,18 +16,23 @@ public class CraftingInventoryActor extends Table {
   CraftingInventory c;
 
   public CraftingInventoryActor() {
+    this(true);
+  }
+
+  public CraftingInventoryActor(boolean name) {
     c = new CraftingInventory();
     defaults().space(4f);
 
-    add(new Label(c.getDisplayName(), new LabelStyle(Fonts.hud, Color.WHITE))).colspan(9);
-    row();
+    if (name) {
+      add(new Label(c.getDisplayName(), new LabelStyle(Fonts.hud, Color.WHITE))).colspan(9);
+      row();
+    }
 
     add().uniform();
     add().uniform();
     add(s(0)).uniform();
     add(s(1)).uniform();
     add(s(2)).uniform();
-    add().uniform();
     add().uniform();
     add().uniform();
     add().uniform();
@@ -43,7 +48,6 @@ public class CraftingInventoryActor extends Table {
     add(new SlotActor(c.output, 0)).uniform();
     add().uniform();
     add().uniform();
-    add().uniform();
     row();
 
     add().uniform();
@@ -51,7 +55,6 @@ public class CraftingInventoryActor extends Table {
     add(s(6)).uniform();
     add(s(7)).uniform();
     add(s(8)).uniform();
-    add().uniform();
     add().uniform();
     add().uniform();
     add().uniform();

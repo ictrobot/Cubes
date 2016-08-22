@@ -13,25 +13,27 @@ public class ScrollInventoryActor extends Table {
 
   private static final float CALIBRATION_PER_ROW = 40f;
 
+  protected final Table inner;
+
   public ScrollInventoryActor(Inventory inventory, int slots) {
     defaults().space(4f);
 
     add(new Label(inventory.getDisplayName(), new LabelStyle(Fonts.hud, Color.WHITE)));
     row();
 
-    Table table = new Table();
-    table.defaults().space(4f);
+    inner = new Table();
+    inner.defaults().space(4f);
     for (int i = 0; i < inventory.itemStacks.length; i++) {
       SlotActor slotActor = new SlotActor(inventory, i);
-      table.add(slotActor);
+      inner.add(slotActor);
 
       if ((i + 1) % inventory.width == 0) {
-        table.row();
+        inner.row();
       }
     }
-    table.pack();
+    inner.pack();
 
-    ScrollPane scrollPane = new ScrollPane(table);
+    ScrollPane scrollPane = new ScrollPane(inner);
     scrollPane.setScrollingDisabled(true, false);
     add(scrollPane).height(slots * CALIBRATION_PER_ROW).fill();
     row();
