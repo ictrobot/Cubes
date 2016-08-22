@@ -29,4 +29,10 @@ public class ImageButtons {
     TextureRegionDrawable down = new TextureRegionDrawable(Assets.getTextureRegion("core:hud/touch/DebugButtonDown.png"));
     return new ImageButton.ImageButtonStyle(up, down, null, null, null, null);
   }
+
+  public static ImageButton.ImageButtonStyle inventoryModifierButton() {
+    TextureRegionDrawable up = new TextureRegionDrawable(Assets.getTextureRegion("core:hud/touch/InventoryModifierButtonUp.png"));
+    TextureRegionDrawable down = new TextureRegionDrawable(Assets.getTextureRegion("core:hud/touch/InventoryModifierButtonDown.png"));
+    return new ImageButton.ImageButtonStyle(up, down, null, null, null, null);
+  }
 }

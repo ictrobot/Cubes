@@ -112,6 +112,7 @@ public class GuiRenderer implements Disposable {
   ImageButton debugButton;
   ImageButton chatButton;
   ImageButton blockSelectorButton;
+  public ImageButton inventoryModifierButton;
 
   public InventoryActor playerInv;
   public HotbarActor hotbar;
@@ -211,11 +212,16 @@ public class GuiRenderer implements Disposable {
           toggleInventory();
         }
       });
-      stage.addActor(touchpad);
-      stage.addActor(jumpButton);
-      stage.addActor(debugButton);
-      stage.addActor(chatButton);
+      inventoryModifierButton = new ImageButton(ImageButtons.inventoryModifierButton());
+
+      InventoryManager.GROUP_HIDDEN.addActor(touchpad);
+      InventoryManager.GROUP_HIDDEN.addActor(jumpButton);
+      InventoryManager.GROUP_HIDDEN.addActor(debugButton);
+      InventoryManager.GROUP_HIDDEN.addActor(chatButton);
+
       stage.addActor(blockSelectorButton);
+
+      InventoryManager.GROUP_SHOWN.addActor(inventoryModifierButton);
     }
 
     crosshair = Assets.getTexture("core:hud/Crosshair.png");
@@ -225,7 +231,7 @@ public class GuiRenderer implements Disposable {
     playerInv = new InventoryActor(Cubes.getClient().player.getInventory());
     hotbar = new HotbarActor(Cubes.getClient().player.getInventory());
 
-    stage.addActor(hotbar);
+    InventoryManager.GROUP_HIDDEN.addActor(hotbar);
   }
 
   public void render() {
@@ -272,6 +278,7 @@ public class GuiRenderer implements Disposable {
       blockSelectorButton.setBounds(GUI_WIDTH - width, GUI_HEIGHT - height, width, height);
       chatButton.setBounds(GUI_WIDTH - width - width, GUI_HEIGHT - height, width, height);
       debugButton.setBounds(GUI_WIDTH - width - width - width, GUI_HEIGHT - height, width, height);
+      inventoryModifierButton.setBounds(0, GUI_HEIGHT - height, width, height);
     }
 
     InventoryManager.resize();
