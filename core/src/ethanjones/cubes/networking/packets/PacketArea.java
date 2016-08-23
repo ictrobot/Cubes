@@ -48,7 +48,6 @@ public class PacketArea extends Packet {
   public Packet copy() {
     PacketArea p = new PacketArea();
     if (Area.isShared()) {
-      assert area.shared;
       p.area = this.area;
     } else {
       p.area = new Area(this.area);
