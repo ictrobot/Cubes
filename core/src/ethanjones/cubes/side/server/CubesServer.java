@@ -99,7 +99,7 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
           event.setMeta(2);
           break;
       }
-    } else {
+    } else if (event.getBlock() == Blocks.chest) {
       Vector3 pos = event.getPlayer().position.cpy();
       pos.sub(event.getBlockReference().asVector3());
       pos.nor();
