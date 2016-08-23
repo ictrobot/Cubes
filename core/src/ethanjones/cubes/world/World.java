@@ -1,6 +1,7 @@
 package ethanjones.cubes.world;
 
 import ethanjones.cubes.block.Block;
+import ethanjones.cubes.block.data.BlockData;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.lua.LuaMapping;
 import ethanjones.cubes.core.lua.LuaMappingWorld;
@@ -82,6 +83,11 @@ public abstract class World implements Disposable {
   public Block getBlock(int x, int y, int z) {
     Area area = getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
     return area == null ? null : area.getBlock(x - area.minBlockX, y, z - area.minBlockZ);
+  }
+
+  public BlockData getBlockData(int x, int y, int z) {
+    Area area = getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
+    return area == null ? null : area.getBlockData(x - area.minBlockX, y, z - area.minBlockZ);
   }
 
   public int getMeta(int x, int y, int z) {

@@ -1,6 +1,7 @@
 package ethanjones.cubes.world.storage;
 
 import ethanjones.cubes.block.Block;
+import ethanjones.cubes.block.data.BlockData;
 import ethanjones.cubes.core.IDManager.TransparencyManager;
 import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
 import ethanjones.cubes.core.system.CubesException;
@@ -16,11 +17,15 @@ import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.light.SunLight;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
+import ethanjones.data.Data;
+import ethanjones.data.DataGroup;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Area implements Lock.HasLock {
@@ -65,6 +70,7 @@ public class Area implements Lock.HasLock {
   public volatile AreaRenderer[] areaRenderer; //Always null on server, unless shared
   public volatile int maxY;
   public volatile int height;
+  public volatile ArrayList<BlockData> blockDataList = new ArrayList<BlockData>(0);
   private volatile int modCount = 0, saveModCount = -1;
 
   public int[] renderStatus = new int[0];
@@ -234,6 +240,7 @@ public class Area implements Lock.HasLock {
     }
     blocks = null;
     light = null;
+    blockDataList.clear();
     AreaRenderer.free(areaRenderer);
     areaRenderer = null;
     if (renderStatus.length > 0) renderStatus = new int[0];
@@ -323,6 +330,15 @@ public class Area implements Lock.HasLock {
     int b = blocks[ref];
     blocks[ref] = n;
 
+    Block old = Sided.getIDManager().toBlock(b & 0xFFFFF);
+
+    if (old != null && old.blockData()) {
+      removeBlockData(x, y, z);
+    }
+    if (block != null && block.blockData()) {
+      addBlockData(block, x, y, z, meta);
+    }
+
     doUpdatesThisArea(x, y, z, ref);
 
     int hmRef = x + z * SIZE_BLOCKS;
@@ -334,7 +350,51 @@ public class Area implements Lock.HasLock {
 
     //Must be after lock released to prevent dead locks
     doUpdatesOtherAreas(x, y, z, ref);
-    new BlockChangedEvent(new BlockReference().setFromBlockCoordinates(x + minBlockX, y, z + minBlockZ), Sided.getIDManager().toBlock(b & 0xFFFFF), (b >> 20) & 0xFF, block, meta).post();
+    new BlockChangedEvent(new BlockReference().setFromBlockCoordinates(x + minBlockX, y, z + minBlockZ), old, (b >> 20) & 0xFF, block, meta).post();
+  }
+
+  public BlockData removeBlockData(int x, int y, int z) {
+    lock.writeLock();
+
+    Iterator<BlockData> iterator = blockDataList.iterator();
+    while (iterator.hasNext()) {
+      BlockData blockData = iterator.next();
+      if (blockData.getX() == x && blockData.getY() == y && blockData.getZ() == z) {
+        iterator.remove();
+        return lock.writeUnlock(blockData);
+      }
+    }
+
+    lock.writeUnlock();
+    return null;
+  }
+
+
+  public BlockData getBlockData(int x, int y, int z) {
+    lock.writeLock();
+
+    for (BlockData blockData : blockDataList) {
+      if (blockData.getX() == x && blockData.getY() == y && blockData.getZ() == z) {
+        return lock.writeUnlock(blockData);
+      }
+    }
+
+    lock.writeUnlock();
+    return null;
+  }
+
+  public BlockData addBlockData(Block block, int x, int y, int z, int meta) {
+    BlockData data = block.createBlockData(this, x, y, z, meta, null);
+    addBlockData(data);
+    return data;
+  }
+
+  public void addBlockData(BlockData blockData) {
+    lock.writeLock();
+
+    blockDataList.add(blockData);
+
+    lock.writeUnlock();
   }
 
   public void doUpdatesThisArea(int x, int y, int z, int ref) {
@@ -674,6 +734,12 @@ public class Area implements Lock.HasLock {
       dataOutputStream.writeByte(light[i]);
     }
 
+    dataOutputStream.writeInt(blockDataList.size());
+    for (BlockData blockData : blockDataList) {
+      dataOutputStream.writeInt(getRef(blockData.getX(), blockData.getY(), blockData.getZ()));
+      Data.output(blockData.write(), dataOutputStream);
+    }
+
     if (usedHeight != height) {
       Executor.execute(new Runnable() {
         @Override
@@ -727,6 +793,22 @@ public class Area implements Lock.HasLock {
       light[i] = dataInputStream.readByte();
     }
 
+    int dataSize = dataInputStream.readInt();
+    blockDataList.clear();
+    blockDataList.ensureCapacity(dataSize);
+    for (int i = 0; i < dataSize; i++) {
+      int ref = dataInputStream.readInt();
+      int x = getX(ref), y = getY(ref), z = getZ(ref);
+      Block block = getBlock(x, y, z);
+      if (block == null) continue;
+      int meta = getMeta(x, y, z);
+      DataGroup dataGroup = (DataGroup) Data.input(dataInputStream);
+      BlockData data = block.createBlockData(this, x, y, z, meta, dataGroup);
+      if (data == null) continue;
+      data.read(dataGroup);
+      blockDataList.add(data);
+    }
+
     updateAll();
     saveModCount();
   }
@@ -742,6 +824,18 @@ public class Area implements Lock.HasLock {
 
   public static int getRef(int x, int y, int z) {
     return x + z * SIZE_BLOCKS + y * SIZE_BLOCKS_SQUARED;
+  }
+
+  public static int getX(int ref) {
+    return ref % SIZE_BLOCKS;
+  }
+
+  public static int getZ(int ref) {
+    return (ref % SIZE_BLOCKS_SQUARED) / SIZE_BLOCKS;
+  }
+
+  public static int getY(int ref) {
+    return ref / SIZE_BLOCKS_SQUARED;
   }
 
   public static int getHeightMapRef(int x, int z) {

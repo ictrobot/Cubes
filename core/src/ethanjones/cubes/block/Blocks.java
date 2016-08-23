@@ -1,5 +1,6 @@
 package ethanjones.cubes.block;
 
+import ethanjones.cubes.core.IDManager;
 import ethanjones.cubes.core.IDManager.GetBlock;
 
 public class Blocks {
@@ -21,4 +22,10 @@ public class Blocks {
   @GetBlock("core:glass")
   public static Block glass;
 
+  public static Block chest;
+
+  public static void init() {
+    chest = new BlockChest();
+    IDManager.register(chest);
+  }
 }

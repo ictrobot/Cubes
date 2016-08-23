@@ -1,11 +1,14 @@
 package ethanjones.cubes.block;
 
+import ethanjones.cubes.block.data.BlockData;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.graphics.world.BlockTextureHandler;
 import ethanjones.cubes.item.ItemBlock;
 import ethanjones.cubes.item.ItemStack;
 import ethanjones.cubes.item.ItemTool;
+import ethanjones.cubes.world.storage.Area;
+import ethanjones.data.DataGroup;
 
 public class Block {
   private static final int[] ONE_ZERO = new int[]{0};
@@ -84,5 +87,13 @@ public class Block {
 
   public boolean onButtonPress(int button, Player player, int blockX, int blockY, int blockZ) {
     return false;
+  }
+
+  public BlockData createBlockData(Area area, int x, int y, int z, int meta, DataGroup dataGroup) {
+    return null;
+  }
+
+  public boolean blockData() {
+    return false; // true if in any state the block has blockdata
   }
 }

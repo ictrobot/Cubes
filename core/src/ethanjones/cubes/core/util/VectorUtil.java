@@ -37,4 +37,35 @@ public class VectorUtil {
     return (dx * dx) + (dy * dy) + (dz * dz);
   }
 
+  public static BlockFace directionXZ(Vector3 vector3) {
+    float length = 0;
+    BlockFace blockFace = null;
+
+    if (vector3.x > 0) {
+      if (vector3.x > length) {
+        length = vector3.x;
+        blockFace = BlockFace.posX;
+      }
+    } else if (vector3.x < 0) {
+      if (-vector3.x > length) {
+        length = -vector3.x;
+        blockFace = BlockFace.negX;
+      }
+    }
+
+    if (vector3.z > 0) {
+      if (vector3.z > length) {
+        length = vector3.z;
+        blockFace = BlockFace.posZ;
+      }
+    } else if (vector3.z < 0) {
+      if (-vector3.z > length) {
+        length = -vector3.z;
+        blockFace = BlockFace.negZ;
+      }
+    }
+
+    return blockFace;
+  }
+
 }

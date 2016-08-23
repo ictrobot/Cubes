@@ -9,6 +9,8 @@ import ethanjones.cubes.core.mod.event.StartingServerEvent;
 import ethanjones.cubes.core.mod.event.StoppingServerEvent;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.timing.TimeHandler;
+import ethanjones.cubes.core.util.BlockFace;
+import ethanjones.cubes.core.util.VectorUtil;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.networking.socket.SocketMonitor;
@@ -18,6 +20,8 @@ import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.command.CommandManager;
 import ethanjones.cubes.world.save.Save;
 import ethanjones.cubes.world.server.WorldServer;
+
+import com.badlogic.gdx.math.Vector3;
 
 import java.util.List;
 
@@ -79,27 +83,42 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
   }
 
   @EventHandler
-  public void logPlace(PlayerPlaceBlockEvent event) {
-    if (event.getBlock() != Blocks.log) return;
-    switch (event.getBlockIntersection().getBlockFace()) {
-      case posY:
-      case negY:
+  public void placeMeta(PlayerPlaceBlockEvent event) {
+    if (event.getBlock() == Blocks.log) {
+      switch (event.getBlockIntersection().getBlockFace()) {
+        case posY:
+        case negY:
+          event.setMeta(0);
+          break;
+        case posX:
+        case negX:
+          event.setMeta(1);
+          break;
+        case posZ:
+        case negZ:
+          event.setMeta(2);
+          break;
+      }
+    } else {
+      Vector3 pos = event.getPlayer().position.cpy();
+      pos.sub(event.getBlockReference().asVector3());
+      pos.nor();
+      BlockFace blockFace = VectorUtil.directionXZ(pos);
+      if (blockFace == null || blockFace == BlockFace.posX) {
         event.setMeta(0);
-        break;
-      case posX:
-      case negX:
+      } else if (blockFace == BlockFace.negX) {
         event.setMeta(1);
-        break;
-      case posZ:
-      case negZ:
+      } else if (blockFace == BlockFace.posZ) {
         event.setMeta(2);
-        break;
+      } else if (blockFace == BlockFace.negZ) {
+        event.setMeta(3);
+      }
     }
   }
 
   @EventHandler
-  public void logBreak(PlayerBreakBlockEvent event) {
-    if (event.getBlock() != Blocks.log) return;
+  public void breakMeta(PlayerBreakBlockEvent event) {
+    if (!(event.getBlock() == Blocks.log || event.getBlock() == Blocks.chest)) return;
     event.setMeta(0);
   }
 
