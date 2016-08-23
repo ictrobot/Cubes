@@ -12,6 +12,7 @@ public class Inventory implements DataParser {
   public boolean fixed = false;
   public boolean voidInputItems = false;
   public boolean cancelInputItems = false;
+  public boolean output = false;
 
   public Inventory(String name) {
     this.name = name;

@@ -51,7 +51,7 @@ public class InventoryTransferManager {
 
           ItemStack payloadStack = stack;
           if (!inventory.fixed) {
-            if (m.modifier()) {
+            if (m.modifier() && !inventory.output) {
               int n = stack.count / 2;
               payloadStack = stack.copy();
               payloadStack.count = n;
@@ -84,6 +84,14 @@ public class InventoryTransferManager {
   private static boolean doTransfer(SlotActor slotActor) {
     Inventory targetInv = slotActor.getInventory();
     int targetNum = slotActor.getNum();
+    if (targetInv.output && InventoryHelper.sameItem(itemActor.itemStack, targetInv.itemStacks[targetNum])) {
+      if (itemActor.itemStack.count + targetInv.itemStacks[targetNum].count < itemActor.itemStack.item.getStackCountMax()) {
+        itemActor.itemStack.count += targetInv.itemStacks[targetNum].count;
+        targetInv.itemStacks[targetNum] = null;
+        targetInv.sync();
+        return true;
+      }
+    }
     if (targetInv.cancelInputItems) {
       return true;
     } else if (targetInv.fixed) {
