@@ -14,6 +14,7 @@ public class ScrollInventoryActor extends Table {
   private static final float CALIBRATION_PER_ROW = 40f;
 
   protected final Table inner;
+  protected final ScrollPane scrollPane;
 
   public ScrollInventoryActor(Inventory inventory, int slots) {
     defaults().space(4f);
@@ -33,7 +34,7 @@ public class ScrollInventoryActor extends Table {
     }
     inner.pack();
 
-    ScrollPane scrollPane = new ScrollPane(inner);
+    scrollPane = new ScrollPane(inner);
     scrollPane.setScrollingDisabled(true, false);
     add(scrollPane).height(slots * CALIBRATION_PER_ROW).fill();
     row();
