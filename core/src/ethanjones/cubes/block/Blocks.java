@@ -31,7 +31,7 @@ public class Blocks {
     chest = new BlockChest();
     IDManager.register(chest);
 
-    ItemStack c = new ItemStack(chest.getItemBlock());
+    ItemStack c = new ItemStack(chest.getItemBlock(), 2);
     ItemStack l = new ItemStack(log.getItemBlock());
     CraftingManager.addRecipe(new CraftingRecipe(c, l, l, l, l, null, l, l, l, l));
   }
