@@ -11,8 +11,6 @@ import ethanjones.cubes.graphics.hud.ImageButtons;
 import ethanjones.cubes.graphics.hud.inv.*;
 import ethanjones.cubes.graphics.menu.Fonts;
 import ethanjones.cubes.graphics.menu.MenuTools;
-import ethanjones.cubes.input.keyboard.KeyTypedAdapter;
-import ethanjones.cubes.input.keyboard.KeyboardHelper;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketChat;
 import ethanjones.cubes.side.client.ClientDebug;
@@ -20,6 +18,7 @@ import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.save.Gamemode;
 
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -44,68 +43,11 @@ import static ethanjones.cubes.graphics.menu.Menu.skin;
 
 public class GuiRenderer implements Disposable {
 
-  private class KeyListener extends KeyTypedAdapter {
-
-    static final int hideGUI = Keys.F1;
-    static final int screenshot = Keys.F2;
-    static final int debug = Keys.F3;
-    static final int chat = Keys.F4;
-    static final int blocksMenu = Keys.E;
-
-    private boolean functionKeys(int keycode) {
-      if (keycode == hideGUI) {
-        hideGuiEnabled = !hideGuiEnabled;
-        return true;
-      }
-      if (keycode == screenshot) {
-        Graphics.takeScreenshot();
-        return true;
-      }
-      if (keycode == debug) {
-        if (Compatibility.get().functionModifier()) {
-          Performance.toggleTracking();
-        } else {
-          debugEnabled = !debugEnabled;
-        }
-        return true;
-      }
-      if (keycode == chat) {
-        chatToggle.toggle();
-        return true;
-      }
-      return false;
-    }
-
-    @Override
-    public void keyDown(int keycode) {
-      functionKeys(keycode);
-
-      if (keycode == blocksMenu) toggleInventory();
-
-      int selected = -1;
-      if (keycode == Keys.NUM_1) selected = 0;
-      if (keycode == Keys.NUM_2) selected = 1;
-      if (keycode == Keys.NUM_3) selected = 2;
-      if (keycode == Keys.NUM_4) selected = 3;
-      if (keycode == Keys.NUM_5) selected = 4;
-      if (keycode == Keys.NUM_6) selected = 5;
-      if (keycode == Keys.NUM_7) selected = 6;
-      if (keycode == Keys.NUM_8) selected = 7;
-      if (keycode == Keys.NUM_9) selected = 8;
-      if (selected != -1) {
-        Cubes.getClient().player.getInventory().hotbarSelected = selected;
-        Cubes.getClient().player.getInventory().sync();
-      }
-    }
-  }
-
   Stage stage;
 
   TextField chat;
   Label chatLog;
   ArrayList<String> chatStrings = new ArrayList<String>();
-
-  KeyListener keyListener;
 
   Touchpad touchpad;
   ImageButton jumpButton;
@@ -141,14 +83,14 @@ public class GuiRenderer implements Disposable {
 
   public GuiRenderer() {
     stage = new Stage(screenViewport, spriteBatch);
-    Cubes.getClient().inputChain.hud = stage;
+
+    final Input input = new Input();
+    Cubes.getClient().inputChain.stageHud = stage;
+    Cubes.getClient().inputChain.hud = input;
 
     stage.addListener(scroll);
 
     InventoryManager.setup(stage);
-
-    keyListener = new KeyListener();
-    KeyboardHelper.addKeyTypedListener(keyListener);
 
     final TextField.TextFieldStyle defaultStyle = skin.get("default", TextField.TextFieldStyle.class);
     final TextField.TextFieldStyle chatStyle = new TextField.TextFieldStyle(defaultStyle);
@@ -160,7 +102,7 @@ public class GuiRenderer implements Disposable {
         return new TextFieldClickListener() {
           @Override
           public boolean keyDown(InputEvent event, int keycode) {
-            return keyListener.functionKeys(keycode) || super.keyDown(event, keycode);
+            return input.functionKeys(keycode) || super.keyDown(event, keycode);
           }
         };
       }
@@ -315,5 +257,65 @@ public class GuiRenderer implements Disposable {
 
   public boolean noCursorCatching() {
     return chatToggle.isEnabled() || InventoryManager.isInventoryOpen() || hideGuiEnabled;
+  }
+
+  private class Input extends InputAdapter {
+
+    static final int hideGUI = Keys.F1;
+    static final int screenshot = Keys.F2;
+    static final int debug = Keys.F3;
+    static final int chat = Keys.F4;
+    static final int blocksMenu = Keys.E;
+
+    private boolean functionKeys(int keycode) {
+      if (keycode == hideGUI) {
+        hideGuiEnabled = !hideGuiEnabled;
+        return true;
+      }
+      if (keycode == screenshot) {
+        Graphics.takeScreenshot();
+        return true;
+      }
+      if (keycode == debug) {
+        if (Compatibility.get().functionModifier()) {
+          Performance.toggleTracking();
+        } else {
+          debugEnabled = !debugEnabled;
+        }
+        return true;
+      }
+      if (keycode == chat) {
+        chatToggle.toggle();
+        return true;
+      }
+      return false;
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+      if (functionKeys(keycode)) return true;
+
+      if (keycode == blocksMenu) {
+        toggleInventory();
+        return true;
+      }
+
+      int selected = -1;
+      if (keycode == Keys.NUM_1) selected = 0;
+      if (keycode == Keys.NUM_2) selected = 1;
+      if (keycode == Keys.NUM_3) selected = 2;
+      if (keycode == Keys.NUM_4) selected = 3;
+      if (keycode == Keys.NUM_5) selected = 4;
+      if (keycode == Keys.NUM_6) selected = 5;
+      if (keycode == Keys.NUM_7) selected = 6;
+      if (keycode == Keys.NUM_8) selected = 7;
+      if (keycode == Keys.NUM_9) selected = 8;
+      if (selected != -1) {
+        Cubes.getClient().player.getInventory().hotbarSelected = selected;
+        Cubes.getClient().player.getInventory().sync();
+        return true;
+      }
+      return false;
+    }
   }
 }

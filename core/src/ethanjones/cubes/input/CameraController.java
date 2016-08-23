@@ -4,7 +4,6 @@ import ethanjones.cubes.core.event.entity.living.player.PlayerMovementEvent;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.entity.living.player.Player;
-import ethanjones.cubes.input.keyboard.KeyboardHelper;
 import ethanjones.cubes.item.ItemStack;
 import ethanjones.cubes.item.ItemTool;
 import ethanjones.cubes.networking.NetworkingManager;
@@ -174,7 +173,7 @@ public class CameraController extends InputAdapter {
       float left = knobPercentX < 0 ? -knobPercentX : 0;
       update(up, down, left, right, jumpButton.getClickListener().isPressed());
     } else {
-      boolean j = KeyboardHelper.isKeyDown(Input.Keys.SPACE);
+      boolean j = Gdx.input.isKeyPressed(Input.Keys.SPACE);
       update(keys.containsKey(FORWARD) ? 1f : 0f, keys.containsKey(BACKWARD) ? 1f : 0f, keys.containsKey(STRAFE_LEFT) ? 1f : 0f, keys.containsKey(STRAFE_RIGHT) ? 1f : 0f, j);
     }
   }
