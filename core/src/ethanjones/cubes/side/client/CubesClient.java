@@ -10,6 +10,7 @@ import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.graphics.hud.inv.InventoryManager;
 import ethanjones.cubes.graphics.menus.PauseMenu;
+import ethanjones.cubes.graphics.menus.WorldLoadingMenu;
 import ethanjones.cubes.graphics.rendering.Renderer;
 import ethanjones.cubes.input.InputChain;
 import ethanjones.cubes.networking.NetworkingManager;
@@ -72,7 +73,7 @@ public class CubesClient extends Cubes implements ApplicationListener {
       Adapter.setMenu(null);
       worldReady = false;
     }
-    if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+    if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) && !(Adapter.getMenu() instanceof WorldLoadingMenu)) {
       if (InventoryManager.isInventoryOpen()) {
         InventoryManager.hideInventory();
       } else if (Adapter.getMenu() instanceof PauseMenu) {
