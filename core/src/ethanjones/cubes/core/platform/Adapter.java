@@ -12,7 +12,7 @@ import ethanjones.cubes.side.server.CubesServer;
 
 public class Adapter {
 
-  private static final int JOIN_TIMEOUT = 10000;
+  private static final int JOIN_TIMEOUT = 60000;
   private static AdapterInterface adapter;
 
   public static void setClient(CubesClient cubesClient) throws UnsupportedOperationException {
