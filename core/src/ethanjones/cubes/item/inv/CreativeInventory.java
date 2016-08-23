@@ -24,7 +24,7 @@ public class CreativeInventory extends Inventory {
     for (Item item : IDManager.getItems()) {
       list.add(new ItemStack(item, item.getStackCountMax()));
     }
-    while (list.size() % 9 != 0) {
+    while (list.size() % 9 != 0 || list.size() < 27) {
       list.add(null);
     }
     itemStacks = list.toArray(new ItemStack[list.size()]);
