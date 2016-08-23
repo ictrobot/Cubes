@@ -2,6 +2,9 @@ package ethanjones.cubes.block;
 
 import ethanjones.cubes.core.IDManager;
 import ethanjones.cubes.core.IDManager.GetBlock;
+import ethanjones.cubes.item.ItemStack;
+import ethanjones.cubes.item.crafting.CraftingManager;
+import ethanjones.cubes.item.crafting.CraftingRecipe;
 
 public class Blocks {
 
@@ -27,5 +30,9 @@ public class Blocks {
   public static void init() {
     chest = new BlockChest();
     IDManager.register(chest);
+
+    ItemStack c = new ItemStack(chest.getItemBlock());
+    ItemStack l = new ItemStack(log.getItemBlock());
+    CraftingManager.addRecipe(new CraftingRecipe(c, l, l, l, l, null, l, l, l, l));
   }
 }
