@@ -1,0 +1,11 @@
+[
+  {
+    "output": {
+      "id": "core:planks",
+      "count": 4
+    },
+    "recipe": [
+      "core:log"
+    ]
+  }
+]
