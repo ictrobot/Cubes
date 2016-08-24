@@ -71,7 +71,7 @@ public class JsonLoader {
       if (entry.getKey().startsWith("recipe")) {
         Reader reader = entry.getValue().reader();
         try {
-          RecipeJson.json(Json.parse(reader).asObject());
+          RecipeJson.json(Json.parse(reader).asArray());
         } finally {
           reader.close();
         }
