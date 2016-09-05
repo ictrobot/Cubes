@@ -86,11 +86,17 @@ public class SmoothWorld extends TerrainGenerator {
     return new BlockReference().setFromBlockCoordinates(0, getSurfaceHeight(0, 0) + 1, 0);
   }
 
-  public void genTree(Area area, WorldServer world, int x, int z) {
-    x += area.minBlockX;
-    z += area.minBlockZ;
+  public void genTree(Area area, WorldServer world, int aX, int aZ) {
+    int x = aX + area.minBlockX;
+    int z = aZ + area.minBlockZ;
+    int ground = getSurfaceHeight(x, z);
+    if (area.getBlock(aX, ground, aZ) == Blocks.grass) {
+      set(area, Blocks.dirt, aX, ground, aZ);
+    } else {
+      return;
+    }
 
-    int y = getSurfaceHeight(x, z) + 1;
+    int y = ground + 1;
     int h = getTreeHeight(x, z) + 1;
 
     //set(world, Blocks.leaves, x - 2, y + h, z - 2);
