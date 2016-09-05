@@ -51,6 +51,7 @@ public class Inventory implements DataParser {
       if (d.size() > 0) {
         itemStacks[i] = new ItemStack();
         itemStacks[i].read(d);
+        if (itemStacks[i].item == null) itemStacks[i] = null;
       } else {
         itemStacks[i] = null;
       }
