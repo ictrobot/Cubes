@@ -49,4 +49,8 @@ public abstract class BlockData implements DataParser {
       NetworkingManager.sendPacketToAllClients(packet);
     }
   }
+
+  public void update() {
+
+  }
 }

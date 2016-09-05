@@ -5,11 +5,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-public class OneManyMap<K, V> {
+public class Multimap<K, V> {
   private final List<V> u = Collections.emptyList();
   private final HashMap<K, List<V>> map = new HashMap<K, List<V>>();
 
-  public List<V> get(Object o) {
+  public List<V> get(K o) {
     List<V> l = map.get(o);
     return l == null ? u : l;
   }
@@ -21,5 +21,10 @@ public class OneManyMap<K, V> {
       map.put(key, l);
     }
     l.add(value);
+  }
+
+  public List<V> remove(K stage) {
+    List<V> l = map.remove(stage);
+    return l != null ? l : u;
   }
 }

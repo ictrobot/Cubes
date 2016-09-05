@@ -10,7 +10,7 @@ import ethanjones.cubes.core.mod.event.PreInitializationEvent;
 import ethanjones.cubes.core.mod.event.StartingClientEvent;
 import ethanjones.cubes.core.mod.event.StartingServerEvent;
 import ethanjones.cubes.core.mod.lua.LuaMappingMod.LuaEventListener;
-import ethanjones.cubes.core.util.OneManyMap;
+import ethanjones.cubes.core.util.Multimap;
 import ethanjones.cubes.graphics.assets.AssetManager;
 import ethanjones.cubes.side.Sided;
 
@@ -33,7 +33,7 @@ public class LuaModInstance extends ModInstance {
   private List<ModState> modStates;
 
   private Globals globals;
-  protected OneManyMap<ModState, LuaFunction> luaModEvent;
+  protected Multimap<ModState, LuaFunction> luaModEvent;
   protected ArrayList<LuaEventListener> clientEventListeners;
   protected ArrayList<LuaEventListener> serverEventListeners;
 
@@ -44,7 +44,7 @@ public class LuaModInstance extends ModInstance {
     this.modStates = new ArrayList<ModState>();
 
     this.globals = CubesLua.globals(); // each mod has its own globals
-    this.luaModEvent = new OneManyMap<ModState, LuaFunction>();
+    this.luaModEvent = new Multimap<ModState, LuaFunction>();
     this.clientEventListeners = new ArrayList<LuaEventListener>();
     this.serverEventListeners = new ArrayList<LuaEventListener>();
 

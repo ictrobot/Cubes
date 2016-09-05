@@ -9,13 +9,16 @@ import ethanjones.cubes.networking.packets.PacketEntityRemove;
 import ethanjones.cubes.networking.packets.PacketEntityUpdate;
 import ethanjones.cubes.networking.packets.PacketWorldTime;
 import ethanjones.cubes.world.World;
+import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
 import ethanjones.cubes.world.save.Save;
+import ethanjones.cubes.world.storage.Area;
 import ethanjones.cubes.world.thread.GenerationTask;
 import ethanjones.cubes.world.thread.WorldRequestParameter;
 import ethanjones.cubes.world.thread.WorldTasks;
 import ethanjones.data.DataGroup;
 
+import java.util.Map.Entry;
 import java.util.UUID;
 
 public class WorldServer extends World {
@@ -24,6 +27,18 @@ public class WorldServer extends World {
     super(save == null ? getDefaultSave() : save);
     Log.info("Save '" + this.save.name + "' in '" + this.save.fileHandle.file().getAbsolutePath() + "'");
     spawnpoint.setFromBlockReference(terrainGenerator.spawnPoint(this));
+  }
+
+  @Override
+  public void tick() {
+    lock.writeLock();
+    super.tick();
+
+    for (Entry<AreaReference, Area> entry : map.entrySet()) {
+      entry.getValue().tick();
+    }
+
+    lock.writeUnlock();
   }
 
   @Override

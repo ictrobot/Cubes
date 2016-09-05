@@ -89,11 +89,17 @@ public class Block {
     return false;
   }
 
+  // coordinates inside area
   public BlockData createBlockData(Area area, int x, int y, int z, int meta, DataGroup dataGroup) {
     return null;
   }
 
   public boolean blockData() {
     return false; // true if in any state the block has blockdata
+  }
+
+  // coordinates inside area
+  public void randomTick(Area area, int x, int y, int z, int meta) {
+    // TODO implement
   }
 }

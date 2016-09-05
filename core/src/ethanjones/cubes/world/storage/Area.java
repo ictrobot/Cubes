@@ -38,6 +38,8 @@ public class Area implements Lock.HasLock {
   public static final int HALF_SIZE_BLOCKS = SIZE_BLOCKS / 2;
   public static final int MAX_Y = Integer.MAX_VALUE / SIZE_BLOCKS_SQUARED;
 
+  public static final int NUM_RANDOM_UPDATES = 12;
+
   public static final int MAX_X_OFFSET = 1;
   public static final int MIN_X_OFFSET = -MAX_X_OFFSET;
   public static final int MAX_Y_OFFSET = SIZE_BLOCKS_SQUARED;
@@ -395,6 +397,33 @@ public class Area implements Lock.HasLock {
     blockDataList.add(blockData);
 
     lock.writeUnlock();
+  }
+
+  public void tick() {
+    if (Sided.getSide() == Side.Server) {
+//      ThreadLocalRandom random = ThreadLocalRandom.current();
+      lock.writeLock();
+//      int updates = NUM_RANDOM_UPDATES * height;
+//      for (int i = 0; i < updates; i++) {
+//        int randomX = random.nextInt(SIZE_BLOCKS);
+//        int randomZ = random.nextInt(SIZE_BLOCKS);
+//        int randomY = random.nextInt(maxY + 1);
+//        randomTick(randomX, randomY, randomZ);
+//      }
+      for (BlockData blockData : blockDataList) {
+        blockData.update();
+      }
+      lock.writeUnlock();
+    }
+  }
+
+  private void randomTick(int x, int y, int z) {
+    int b = blocks[getRef(x, y, z)];
+    int blockID = b & 0xFFFFF;
+    int blockMeta = (b >> 20) & 0xFF;
+    Block block = Sided.getIDManager().toBlock(blockID);
+    if (block == null) return;
+    block.randomTick(this, x, y, z, blockMeta);
   }
 
   public void doUpdatesThisArea(int x, int y, int z, int ref) {

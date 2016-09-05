@@ -9,6 +9,7 @@ import ethanjones.cubes.graphics.hud.inv.InventoryActor;
 import ethanjones.cubes.graphics.hud.inv.InventoryManager;
 import ethanjones.cubes.graphics.hud.inv.InventoryWindow;
 import ethanjones.cubes.graphics.world.BlockTextureHandler;
+import ethanjones.cubes.item.ItemTool.ToolType;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
@@ -21,6 +22,10 @@ public class BlockChest extends Block {
 
   public BlockChest() {
     super("core:chest");
+
+    miningTime = 3;
+    miningTool = ToolType.axe;
+    miningOther = true;
   }
 
   @Override
