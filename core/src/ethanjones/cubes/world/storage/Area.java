@@ -13,6 +13,7 @@ import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.singleplayer.SingleplayerNetworking;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
+import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.light.SunLight;
 import ethanjones.cubes.world.reference.AreaReference;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Area implements Lock.HasLock {
@@ -38,7 +40,8 @@ public class Area implements Lock.HasLock {
   public static final int HALF_SIZE_BLOCKS = SIZE_BLOCKS / 2;
   public static final int MAX_Y = Integer.MAX_VALUE / SIZE_BLOCKS_SQUARED;
 
-  public static final int NUM_RANDOM_UPDATES = 12;
+  // update every block about once a minute
+  public static final int NUM_RANDOM_UPDATES = SIZE_BLOCKS_CUBED / (1000 / Cubes.tickMS) / 60;
 
   public static final int MAX_X_OFFSET = 1;
   public static final int MIN_X_OFFSET = -MAX_X_OFFSET;
@@ -401,15 +404,15 @@ public class Area implements Lock.HasLock {
 
   public void tick() {
     if (Sided.getSide() == Side.Server) {
-//      ThreadLocalRandom random = ThreadLocalRandom.current();
+      ThreadLocalRandom random = ThreadLocalRandom.current();
       lock.writeLock();
-//      int updates = NUM_RANDOM_UPDATES * height;
-//      for (int i = 0; i < updates; i++) {
-//        int randomX = random.nextInt(SIZE_BLOCKS);
-//        int randomZ = random.nextInt(SIZE_BLOCKS);
-//        int randomY = random.nextInt(maxY + 1);
-//        randomTick(randomX, randomY, randomZ);
-//      }
+      int updates = NUM_RANDOM_UPDATES * height;
+      for (int i = 0; i < updates; i++) {
+        int randomX = random.nextInt(SIZE_BLOCKS);
+        int randomZ = random.nextInt(SIZE_BLOCKS);
+        int randomY = random.nextInt(maxY + 1);
+        randomTick(randomX, randomY, randomZ);
+      }
       for (BlockData blockData : blockDataList) {
         blockData.update();
       }
@@ -423,7 +426,7 @@ public class Area implements Lock.HasLock {
     int blockMeta = (b >> 20) & 0xFF;
     Block block = Sided.getIDManager().toBlock(blockID);
     if (block == null) return;
-    block.randomTick(this, x, y, z, blockMeta);
+    block.randomTick(world, this, x, y, z, blockMeta);
   }
 
   public void doUpdatesThisArea(int x, int y, int z, int ref) {

@@ -11,7 +11,7 @@ public class Blocks {
   public static Block stone;
   @GetBlock("core:dirt")
   public static Block dirt;
-  @GetBlock("core:grass")
+
   public static Block grass;
   @GetBlock("core:log")
   public static Block log;
@@ -25,6 +25,8 @@ public class Blocks {
   public static Block chest;
 
   public static void init() {
+    grass = new BlockGrass();
+    IDManager.register(grass);
     chest = new BlockChest();
     IDManager.register(chest);
   }

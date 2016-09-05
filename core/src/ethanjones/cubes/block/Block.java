@@ -7,6 +7,7 @@ import ethanjones.cubes.graphics.world.BlockTextureHandler;
 import ethanjones.cubes.item.ItemBlock;
 import ethanjones.cubes.item.ItemStack;
 import ethanjones.cubes.item.ItemTool;
+import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.storage.Area;
 import ethanjones.data.DataGroup;
 
@@ -99,7 +100,7 @@ public class Block {
   }
 
   // coordinates inside area
-  public void randomTick(Area area, int x, int y, int z, int meta) {
-    // TODO implement
+  public void randomTick(World world, Area area, int x, int y, int z, int meta) {
+
   }
 }

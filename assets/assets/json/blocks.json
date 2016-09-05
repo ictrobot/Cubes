@@ -24,19 +24,6 @@
     }
   },
   {
-    "id": "core:grass",
-    "texture": {
-      "side": "core:grass_side",
-      "top": "core:grass_top",
-      "bottom": "core:dirt"
-    },
-    "mining": {
-      "speed": 0.6,
-      "tool": "shovel",
-      "other": true
-    }
-  },
-  {
     "id": "core:log",
     "meta": 3,
     "displayMeta": [

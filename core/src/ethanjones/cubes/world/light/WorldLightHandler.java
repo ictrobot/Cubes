@@ -15,7 +15,12 @@ public class WorldLightHandler {
     BlockReference blockReference = event.getBlockReference();
     Block oldBlock = event.getOldBlock();
     Block newBlock = event.getNewBlock();
+    int oldMeta = event.getOldMeta();
     int newMeta = event.getNewMeta();
+
+    if (oldBlock != null && newBlock != null && oldBlock.getLightLevel(oldMeta) == 0 && newBlock.getLightLevel(newMeta) == 0 && !oldBlock.isTransparent(oldMeta) && !newBlock.isTransparent(newMeta)) {
+      return;
+    }
 
     Performance.start(PerformanceTags.LIGHT_UPDATE);
     try {
