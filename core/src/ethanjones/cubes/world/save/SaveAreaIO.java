@@ -1,15 +1,11 @@
 package ethanjones.cubes.world.save;
 
 import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.core.system.CubesException;
-import ethanjones.cubes.networking.stream.DirectByteArrayOutputStream;
 import ethanjones.cubes.world.storage.Area;
 
 import com.badlogic.gdx.files.FileHandle;
 
 import java.io.*;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.Inflater;
@@ -56,32 +52,18 @@ public class SaveAreaIO {
 
     ThreadData data = local.get();
 
-    data.stream.reset();
-    try {
-      area.write(data.dataOutputStream, false, false); //TODO resize when writing
-    } catch (IOException e) {
-      Log.error(e);
-      return false;
-    }
-
-//    data.md.reset();
-//    data.md.update(data.stream.buffer(), 0, data.stream.count());
-//    try {
-//      data.md.digest(data.hash, 0, data.hash.length);
-//    } catch (DigestException e) {
-//      Log.error(e);
-//      return false;
-//    }
-
     FileHandle file = file(save, area.areaX, area.areaZ);
 
     boolean write = !file.exists();
     if (write) {
       try {
         data.deflater.reset();
-        OutputStream stream = file.write(false);
+        OutputStream stream = file.write(false, 8192);
         DeflaterOutputStream deflaterStream = new DeflaterOutputStream(stream, data.deflater);
-        deflaterStream.write(data.stream.buffer(), 0, data.stream.count());
+        BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(deflaterStream);
+        DataOutputStream dataOutputStream = new DataOutputStream(bufferedOutputStream);
+        area.write(dataOutputStream, false, false); //TODO resize when writing
+        bufferedOutputStream.flush();
         deflaterStream.finish();
         stream.close();
       } catch (Exception e) {
@@ -94,9 +76,6 @@ public class SaveAreaIO {
   }
 
   private static class ThreadData {
-    final DirectByteArrayOutputStream stream = new DirectByteArrayOutputStream();
-    final DataOutputStream dataOutputStream = new DataOutputStream(stream);
-    final MessageDigest md;
     final Deflater deflater = new Deflater();
     final Inflater inflater = new Inflater() {
       @Override
@@ -104,15 +83,6 @@ public class SaveAreaIO {
         // do nothing, as android calls inflater.end() when closing InflaterInputStream
       }
     };
-    final byte[] hash = new byte[32];
-
-    public ThreadData() {
-      try {
-        md = MessageDigest.getInstance("SHA-256");
-      } catch (NoSuchAlgorithmException e) {
-        throw new CubesException(e);
-      }
-    }
   }
 
   public static FileHandle file(Save save, int x, int z) {
