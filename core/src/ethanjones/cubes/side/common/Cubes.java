@@ -156,7 +156,7 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
   }
 
   public void write() {
-    world.save(null);
+    world.save();
     Settings.write();
   }
 

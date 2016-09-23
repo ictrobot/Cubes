@@ -251,7 +251,7 @@ public abstract class World implements Disposable {
 
   }
 
-  public void save(String tag) {
+  public void save() {
     if (save == null) return;
     lock.readLock();
 
@@ -261,8 +261,6 @@ public abstract class World implements Disposable {
     Collection<Area> areas = map.values();
     Area[] a = areas.toArray(new Area[areas.size()]);
     save.writeAreas(a);
-    // area list
-    save.writeSaveAreaList(tag);
 
     lock.readUnlock();
   }

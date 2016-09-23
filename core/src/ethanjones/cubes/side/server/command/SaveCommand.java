@@ -14,15 +14,7 @@ public class SaveCommand {
       @Override
       public void onCommand(CommandBuilder builder, List<CommandArgument> arguments, CommandSender sender) {
         sender.print(Localization.get("Saving..."));
-        Cubes.getServer().world.save(null);
-      }
-    });
-
-    save.add(CommandValue.stringValue).setCommandListener(new CommandListener() {
-      @Override
-      public void onCommand(CommandBuilder builder, List<CommandArgument> arguments, CommandSender sender) {
-        sender.print(Localization.get("Saving..."));
-        Cubes.getServer().world.save(((String) arguments.get(1).get()));
+        Cubes.getServer().world.save();
       }
     });
   }

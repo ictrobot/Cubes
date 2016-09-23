@@ -8,7 +8,6 @@ import ethanjones.cubes.world.storage.Area;
 import com.badlogic.gdx.files.FileHandle;
 
 import java.io.*;
-import java.security.DigestException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.zip.Deflater;
@@ -17,7 +16,6 @@ import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
 public class SaveAreaIO {
-  private static final char[] hex = "0123456789ABCDEF".toCharArray();
   private static final ThreadLocal<ThreadData> local = new ThreadLocal<ThreadData>() {
     @Override
     protected ThreadData initialValue() {
@@ -25,16 +23,11 @@ public class SaveAreaIO {
     }
   };
 
-  public static Area read(Save save, int x, int z, byte[] hash) {
-    String firstByte = bytesToHex(hash, 0, 1);
-    String allBytes = bytesToHex(hash, 0, 32);
-
-    FileHandle folderArea = save.folderArea();
-    FileHandle subDirectory = folderArea.child(firstByte);
-    FileHandle file = subDirectory.child(allBytes);
+  public static Area read(Save save, int x, int z) {
+    FileHandle file = file(save, x, z);
 
     if (!file.exists()) {
-      Log.warning("Area does not exist");
+      //Log.warning("Area does not exist");
       return null;
     }
 
@@ -71,21 +64,16 @@ public class SaveAreaIO {
       return false;
     }
 
-    data.md.reset();
-    data.md.update(data.stream.buffer(), 0, data.stream.count());
-    try {
-      data.md.digest(data.hash, 0, data.hash.length);
-    } catch (DigestException e) {
-      Log.error(e);
-      return false;
-    }
+//    data.md.reset();
+//    data.md.update(data.stream.buffer(), 0, data.stream.count());
+//    try {
+//      data.md.digest(data.hash, 0, data.hash.length);
+//    } catch (DigestException e) {
+//      Log.error(e);
+//      return false;
+//    }
 
-    String firstByte = bytesToHex(data.hash, 0, 1);
-    String allBytes = bytesToHex(data.hash, 0, 32);
-
-    FileHandle folderArea = save.folderArea();
-    FileHandle subDirectory = folderArea.child(firstByte);
-    FileHandle file = subDirectory.child(allBytes);
+    FileHandle file = file(save, area.areaX, area.areaZ);
 
     boolean write = !file.exists();
     if (write) {
@@ -100,20 +88,9 @@ public class SaveAreaIO {
         Log.error(e);
         return false;
       }
-      save.getSaveAreaList().setArea(area.areaX, area.areaZ, data.hash.clone());
     }
 
     return write;
-  }
-
-  public static String bytesToHex(byte[] data, int start, int length) {
-    StringBuilder builder = new StringBuilder(data.length * 2);
-    int end = start + length;
-    for (int i = start; i < end; i++) {
-      byte b = data[i];
-      builder.append(hex[(b >> 4) & 0xF]).append(hex[(b & 0xF)]);
-    }
-    return builder.toString();
   }
 
   private static class ThreadData {
@@ -136,5 +113,14 @@ public class SaveAreaIO {
         throw new CubesException(e);
       }
     }
+  }
+
+  public static FileHandle file(Save save, int x, int z) {
+    FileHandle folderArea = save.folderArea();
+    FileHandle xMostSignificant = folderArea.child(Integer.toString(x & 0xFFFF0000));
+    FileHandle xLeastSignificant = xMostSignificant.child(Integer.toString(x & 0xFFFF));
+    FileHandle zMostSignificant = xLeastSignificant.child(Integer.toString(z & 0xFFFF0000));
+    zMostSignificant.mkdirs();
+    return zMostSignificant.child(Integer.toString(z & 0xFFFF));
   }
 }

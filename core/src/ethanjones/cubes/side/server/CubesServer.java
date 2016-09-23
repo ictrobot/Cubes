@@ -77,7 +77,7 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
   public void time(int interval) {
     if (shouldReturn()) return;
     super.time(interval);
-    if (interval == SAVE_TIME) world.save(null);
+    if (interval == SAVE_TIME) world.save();
     //if (interval != 250) return;
     //world.setBlock(Blocks.dirt, (int) (Math.random() * 16), (int) (8 + (Math.random() * 7)), (int) (Math.random() * 16));
   }

@@ -21,8 +21,6 @@ public class Save {
   public final FileHandle fileHandle;
   public final boolean readOnly;
   private SaveOptions saveOptions;
-  private SaveAreaList saveAreaList;
-  private int saveAreaListModCount = 0;
 
   public Save(String name, FileHandle fileHandle) {
     this(name, fileHandle, false);
@@ -36,7 +34,6 @@ public class Save {
     if (!this.readOnly) {
       this.fileHandle.mkdirs();
       folderArea().mkdirs();
-      folderAreaList().mkdirs();
       folderPlayer().mkdirs();
       folderCave().mkdirs();
     }
@@ -58,10 +55,7 @@ public class Save {
   }
 
   public Area readArea(int x, int z) {
-    SaveAreaList saveAreaList = getSaveAreaList();
-    byte[] hash = saveAreaList.getArea(x, z);
-    if (hash == null) return null;
-    return SaveAreaIO.read(this, x, z, hash);
+    return SaveAreaIO.read(this, x, z);
   }
 
   public void writePlayer(Player player) {
@@ -161,57 +155,12 @@ public class Save {
     return this.saveOptions;
   }
 
-  public synchronized SaveAreaList getSaveAreaList() {
-    if (saveAreaList == null) {
-      saveAreaList = new SaveAreaList();
-      FileHandle tagFile = fileHandle.child("areatag");
-      if (tagFile.exists()) {
-        String tag = tagFile.readString("UTF-8");
-        FileHandle file = folderAreaList().child(tag);
-        try {
-          BufferedInputStream stream = file.read(8192);
-          saveAreaList.read(new DataInputStream(stream));
-          stream.close();
-        } catch (Exception e) {
-          Log.warning("Failed to read save area list", e);
-        }
-      }
-    }
-    return saveAreaList;
-  }
-
-  public synchronized SaveAreaList writeSaveAreaList(String tag) {
-    if (readOnly) return saveAreaList;
-    getSaveAreaList();
-    long time = System.currentTimeMillis();
-    if (tag == null) {
-      if (saveAreaListModCount == saveAreaList.getModCount()) return saveAreaList;
-      tag = Long.toString(time);
-    }
-    saveAreaListModCount = saveAreaList.getModCount();
-    FileHandle file = folderAreaList().child(tag);
-    try {
-      OutputStream outputStream = file.write(false, 8192);
-      saveAreaList.write(new DataOutputStream(outputStream), time);
-      outputStream.close();
-
-      fileHandle.child("areatag").writeString(tag, false, "UTF-8");
-    } catch (Exception e) {
-      Log.warning("Failed to write save area list", e);
-    }
-    return saveAreaList;
-  }
-
   public FileHandle folderArea() {
     return fileHandle.child("area");
   }
 
   public FileHandle folderCave() {
     return fileHandle.child("cave");
-  }
-
-  public FileHandle folderAreaList() {
-    return fileHandle.child("arealist");
   }
 
   public FileHandle folderPlayer() {
