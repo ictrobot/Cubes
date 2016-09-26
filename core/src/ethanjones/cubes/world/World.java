@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class World implements Disposable {
 
-  public static final int MAX_TIME = (1000 / Cubes.tickMS) * 300;
+  public static final int MAX_TIME = (1000 / Cubes.tickMS) * 60 * 10;
 
   public final Lock lock = new Lock();
   public final HashMap<AreaReference, Area> map;
