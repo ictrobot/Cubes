@@ -24,10 +24,6 @@ public class Event {
     return cancelable;
   }
 
-  public boolean isThreaded() {
-    return threaded;
-  }
-
   public boolean isCanceled() {
     return canceled;
   }

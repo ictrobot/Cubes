@@ -2,11 +2,11 @@ package ethanjones.cubes.core.event;
 
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.CubesException;
-import ethanjones.cubes.core.system.Executor;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class EventBus {
@@ -48,14 +48,25 @@ public class EventBus {
   }
 
   public <E extends Event> E post(E event) {
-    if (event == null) return null;
-    if (event.isThreaded()) {
-      Executor.execute(new EventCallable(this, event));
-      return null; //Still being called
-    } else {
-      EventCallable.run(this, event);
-      return event;
+    Class<?> c = event.getClass();
+    final List<EventWrapper> posted = new ArrayList<EventWrapper>(); //Prevents being posted multiple times to same EventHandler
+    while (c != null && Event.class.isAssignableFrom(c)) {
+      Class<? extends Event> eventClass = c.asSubclass(Event.class);
+      final List<EventWrapper> list = getList(eventClass);
+      synchronized (list) {
+        Iterator<EventWrapper> iterator = list.iterator();
+        while (iterator.hasNext()) {
+          EventWrapper wrapper = iterator.next();
+          if (posted.contains(wrapper)) continue;
+          posted.add(wrapper);
+          if (!wrapper.run(event)) {
+            iterator.remove();
+          }
+        }
+      }
+      c = c.getSuperclass();
     }
+    return event;
   }
 
 }
