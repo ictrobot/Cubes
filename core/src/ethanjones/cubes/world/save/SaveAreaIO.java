@@ -12,10 +12,21 @@ import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
 public class SaveAreaIO {
-  private static final ThreadLocal<ThreadData> local = new ThreadLocal<ThreadData>() {
+  private static final ThreadLocal<Deflater> deflaterThreadLocal = new ThreadLocal<Deflater>() {
     @Override
-    protected ThreadData initialValue() {
-      return new ThreadData();
+    protected Deflater initialValue() {
+      return new Deflater();
+    }
+  };
+  private static final ThreadLocal<Inflater> inflaterThreadLocal = new ThreadLocal<Inflater>() {
+    @Override
+    protected Inflater initialValue() {
+      return new Inflater() {
+        @Override
+        public void end() {
+          // do nothing, as android calls inflater.end() when closing InflaterInputStream
+        }
+      };
     }
   };
 
@@ -27,12 +38,12 @@ public class SaveAreaIO {
       return null;
     }
 
-    ThreadData data = local.get();
+    Inflater inflater = inflaterThreadLocal.get();
 
     try {
-      data.inflater.reset();
+      inflater.reset();
       InputStream inputStream = file.read(8192);
-      InflaterInputStream inflaterInputStream = new InflaterInputStream(inputStream, data.inflater);
+      InflaterInputStream inflaterInputStream = new InflaterInputStream(inputStream, inflater);
       BufferedInputStream bufferedInputStream = new BufferedInputStream(inflaterInputStream);
       DataInputStream dataInputStream = new DataInputStream(bufferedInputStream);
       Area area = new Area(x, z);
@@ -50,39 +61,25 @@ public class SaveAreaIO {
     if (!area.modifiedSinceSave()) return false;
     area.saveModCount();
 
-    ThreadData data = local.get();
+    Deflater deflater = deflaterThreadLocal.get();
 
     FileHandle file = file(save, area.areaX, area.areaZ);
-
-    boolean write = !file.exists();
-    if (write) {
-      try {
-        data.deflater.reset();
-        OutputStream stream = file.write(false, 8192);
-        DeflaterOutputStream deflaterStream = new DeflaterOutputStream(stream, data.deflater);
-        BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(deflaterStream);
-        DataOutputStream dataOutputStream = new DataOutputStream(bufferedOutputStream);
-        area.write(dataOutputStream, false, false); //TODO resize when writing
-        bufferedOutputStream.flush();
-        deflaterStream.finish();
-        stream.close();
-      } catch (Exception e) {
-        Log.error(e);
-        return false;
-      }
+    try {
+      deflater.reset();
+      OutputStream stream = file.write(false, 8192);
+      DeflaterOutputStream deflaterStream = new DeflaterOutputStream(stream, deflater);
+      BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(deflaterStream);
+      DataOutputStream dataOutputStream = new DataOutputStream(bufferedOutputStream);
+      area.write(dataOutputStream, false, false); //TODO resize when writing
+      bufferedOutputStream.flush();
+      deflaterStream.finish();
+      stream.close();
+    } catch (Exception e) {
+      Log.error(e);
+      return false;
     }
 
-    return write;
-  }
-
-  private static class ThreadData {
-    final Deflater deflater = new Deflater();
-    final Inflater inflater = new Inflater() {
-      @Override
-      public void end() {
-        // do nothing, as android calls inflater.end() when closing InflaterInputStream
-      }
-    };
+    return true;
   }
 
   public static FileHandle file(Save save, int x, int z) {
