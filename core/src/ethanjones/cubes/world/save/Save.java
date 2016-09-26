@@ -47,12 +47,16 @@ public class Save {
   }
 
   public boolean writeAreas(Collection<Area> areas) {
+    Log.debug("Saving areas");
     int total = 0, written = 0;
     for (Area area : areas) {
-      if (writeArea(area)) written++;
+      if (writeArea(area)) {
+        written++;
+        if (written % 100 == 0) Log.debug("Written " + written + " areas");
+      }
       total++;
     }
-    Log.debug("Saving areas: wrote " + written + " total " + total);
+    Log.debug("Saved areas: wrote " + written + " total " + total);
     return written != 0;
   }
 
