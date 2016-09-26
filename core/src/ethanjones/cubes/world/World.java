@@ -26,7 +26,6 @@ import ethanjones.data.DataGroup;
 import com.badlogic.gdx.utils.Disposable;
 import org.luaj.vm2.LuaTable;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -50,6 +49,7 @@ public abstract class World implements Disposable {
   public World(Save save) {
     this.save = save;
     this.terrainGenerator = save == null ? null : GeneratorManager.getTerrainGenerator(save.getSaveOptions());
+    this.time = save == null ? 0 : save.getSaveState().worldTime;
     map = new HashMap<AreaReference, Area>(1024);
     lua = LuaMapping.mapping(new LuaMappingWorld(this));
   }
@@ -258,9 +258,10 @@ public abstract class World implements Disposable {
     // players
     save.writePlayers();
     // areas
-    Collection<Area> areas = map.values();
-    Area[] a = areas.toArray(new Area[areas.size()]);
-    save.writeAreas(a);
+    save.writeAreas(map.values());
+    // state
+    save.getSaveState().worldTime = time;
+    save.writeSaveState();
 
     lock.readUnlock();
   }

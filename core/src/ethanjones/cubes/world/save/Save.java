@@ -13,6 +13,7 @@ import ethanjones.data.DataGroup;
 import com.badlogic.gdx.files.FileHandle;
 
 import java.io.*;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,6 +22,7 @@ public class Save {
   public final FileHandle fileHandle;
   public final boolean readOnly;
   private SaveOptions saveOptions;
+  private SaveState saveState;
 
   public Save(String name, FileHandle fileHandle) {
     this(name, fileHandle, false);
@@ -44,7 +46,7 @@ public class Save {
     return SaveAreaIO.write(this, area);
   }
 
-  public boolean writeAreas(Area[] areas) {
+  public boolean writeAreas(Collection<Area> areas) {
     int total = 0, written = 0;
     for (Area area : areas) {
       if (writeArea(area)) written++;
@@ -153,6 +155,39 @@ public class Save {
     this.saveOptions = saveOptions;
     writeSaveOptions();
     return this.saveOptions;
+  }
+
+
+  public synchronized SaveState getSaveState() {
+    if (saveState == null) {
+      saveState = new SaveState();
+      try {
+        DataGroup dataGroup = (DataGroup) Data.input(fileHandle.child("state").file());
+        saveState.read(dataGroup);
+      } catch (Exception e) {
+        Log.warning("Failed to read save state", e);
+        writeSaveState();
+      }
+    }
+    return saveState;
+  }
+
+  public synchronized SaveState writeSaveState() {
+    if (!readOnly && saveState != null) {
+      try {
+        DataGroup dataGroup = saveState.write();
+        Data.output(dataGroup, fileHandle.child("state").file());
+      } catch (Exception e) {
+        Log.warning("Failed to write save state", e);
+      }
+    }
+    return saveState;
+  }
+
+  public synchronized SaveState setSaveState(SaveState saveState) {
+    this.saveState = saveState;
+    writeSaveState();
+    return this.saveState;
   }
 
   public FileHandle folderArea() {
