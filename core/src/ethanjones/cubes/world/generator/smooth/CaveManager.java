@@ -89,7 +89,7 @@ public class CaveManager {
     CaveGenerator caveGenerator = new CaveGenerator(x, z, smoothWorld);
     final Cave cave = caveGenerator.generate();
     final Save save = Cubes.getServer().world.save;
-    Executor.execute(new Runnable() {
+    Executor.executeNotSided(new Runnable() {
       @Override
       public void run() {
         save.writeCave(a, cave);
