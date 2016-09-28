@@ -21,6 +21,7 @@ import ethanjones.cubes.world.save.Save;
 import ethanjones.cubes.world.storage.Area;
 import ethanjones.cubes.world.thread.GenerationTask;
 import ethanjones.cubes.world.thread.WorldRequestParameter;
+import ethanjones.cubes.world.thread.WorldTasks;
 import ethanjones.data.DataGroup;
 
 import com.badlogic.gdx.utils.Disposable;
@@ -199,6 +200,7 @@ public abstract class World implements Disposable {
 
   @Override
   public void dispose() {
+    WorldTasks.waitSaveFinish();
     lock.writeLock();
 
     disposed.set(true);

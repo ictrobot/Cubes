@@ -6,7 +6,7 @@ import ethanjones.cubes.world.reference.AreaReference;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class WorldGenerationThread implements Runnable {
+public class WorldGenerationRunnable implements Runnable {
   public LinkedBlockingQueue<WorldGenerationTask> queue = new LinkedBlockingQueue<WorldGenerationTask>();
 
   @Override
@@ -16,7 +16,7 @@ public class WorldGenerationThread implements Runnable {
         WorldGenerationTask task = queue.peek();
         while (task == null) {
           try {
-            Thread.sleep(5);
+            Thread.sleep(25);
           } catch (InterruptedException e) {
             return;
           }

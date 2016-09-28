@@ -56,7 +56,7 @@ public class SaveAreaIO {
     }
   }
 
-  protected static boolean write(Save save, Area area) {
+  public static boolean write(Save save, Area area) {
     if (!area.isReady()) return false;
     if (!area.modifiedSinceSave()) return false;
     area.saveModCount();

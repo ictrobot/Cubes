@@ -7,6 +7,7 @@ import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.generator.smooth.Cave;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.storage.Area;
+import ethanjones.cubes.world.thread.WorldTasks;
 import ethanjones.data.Data;
 import ethanjones.data.DataGroup;
 
@@ -46,18 +47,8 @@ public class Save {
     return SaveAreaIO.write(this, area);
   }
 
-  public boolean writeAreas(Collection<Area> areas) {
-    Log.debug("Saving areas");
-    int total = 0, written = 0;
-    for (Area area : areas) {
-      if (writeArea(area)) {
-        written++;
-        if (written % 100 == 0) Log.debug("Written " + written + " areas");
-      }
-      total++;
-    }
-    Log.debug("Saved areas: wrote " + written + " total " + total);
-    return written != 0;
+  public void writeAreas(Collection<Area> areas) {
+    WorldTasks.save(this, areas);
   }
 
   public Area readArea(int x, int z) {

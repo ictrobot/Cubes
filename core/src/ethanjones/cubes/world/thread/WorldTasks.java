@@ -3,35 +3,67 @@ package ethanjones.cubes.world.thread;
 import ethanjones.cubes.core.event.world.generation.AreaLoadedEvent;
 import ethanjones.cubes.core.event.world.generation.FeaturesEvent;
 import ethanjones.cubes.core.event.world.generation.GenerationEvent;
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.ThreadPool;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.world.light.SunLight;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
+import ethanjones.cubes.world.save.Save;
 import ethanjones.cubes.world.server.WorldServer;
 import ethanjones.cubes.world.storage.Area;
 
+import java.util.Collection;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class WorldTasks {
 
   public static final int GENERATION_THREADS = 8;
+  public static final int SAVE_THREADS = 8;
 
-  private static final WorldGenerationThread gen = new WorldGenerationThread();
-  private static final ThreadPool threadPool;
+  private static final WorldGenerationRunnable gen = new WorldGenerationRunnable();
+  private static final WorldSaveRunnable save = new WorldSaveRunnable();
+  private static final ThreadPool genThreadPool;
+  private static final ThreadPool saveThreadPool;
 
   static {
-    threadPool = new ThreadPool("WorldGeneration", gen, GENERATION_THREADS);
-    threadPool.setSide(Side.Server);
-    threadPool.setPriority(Thread.MIN_PRIORITY);
-    threadPool.setDaemon(true);
-    threadPool.start();
+    genThreadPool = new ThreadPool("WorldGeneration", gen, GENERATION_THREADS);
+    genThreadPool.setSide(Side.Server);
+    genThreadPool.setPriority(Thread.MIN_PRIORITY);
+    genThreadPool.setDaemon(true);
+    genThreadPool.start();
+    saveThreadPool = new ThreadPool("Save", save, SAVE_THREADS);
+    saveThreadPool.setSide(Side.Server);
+    saveThreadPool.setPriority(Thread.MIN_PRIORITY + 1);
+    saveThreadPool.setDaemon(true);
+    saveThreadPool.start();
   }
 
   public static GenerationTask request(WorldServer worldServer, MultiAreaReference references, WorldRequestParameter parameter) {
     WorldGenerationTask generationTask = new WorldGenerationTask(worldServer, references, parameter);
     gen.queue.add(generationTask);
     return generationTask;
+  }
+
+  public static void save(Save s, Collection<Area> areas) {
+    WorldSaveTask saveTask = new WorldSaveTask(s, areas);
+    save.queue.add(saveTask);
+  }
+
+  public static boolean currentlySaving() {
+    return save.queue.size() > 0;
+  }
+
+  public static boolean waitSaveFinish() {
+    while (currentlySaving()) {
+      try {
+        Thread.sleep(100);
+      } catch (InterruptedException e) {
+        Log.debug(e);
+        return false;
+      }
+    }
+    return true;
   }
 
   protected static void generate(AreaReference areaReference, WorldServer world) {
