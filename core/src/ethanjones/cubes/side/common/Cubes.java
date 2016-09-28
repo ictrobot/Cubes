@@ -16,6 +16,7 @@ import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.Debug;
+import ethanjones.cubes.core.system.Executor;
 import ethanjones.cubes.core.timing.TimeHandler;
 import ethanjones.cubes.entity.EntityManager;
 import ethanjones.cubes.graphics.Graphics;
@@ -51,6 +52,7 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
     Debug.printProperties();
 
     Compatibility.get().logEnvironment();
+    Executor.init();
 
     Assets.preInit();
     JsonLoader.loadCore();

@@ -14,13 +14,20 @@ public class Executor {
   private static ScheduledThreadPoolExecutor executor;
   private static ArrayList<ScheduledFuture> scheduled = new ArrayList<ScheduledFuture>();
 
+  public static void init() {
+    synchronized (sync) {
+      if (!running) start();
+    }
+  }
+
   private static synchronized void start() {
     synchronized (sync) {
+      final ThreadGroup threadGroup = new ThreadGroup("Executor");
       executor = new ScheduledThreadPoolExecutor(8, new ThreadFactory() {
         int threads = 0;
 
         public Thread newThread(Runnable r) {
-          Thread t = new Thread(r);
+          Thread t = new Thread(threadGroup, r);
           t.setName("Executor-" + threads++);
           t.setDaemon(true);
           return t;
