@@ -140,6 +140,7 @@ public class BlockJson {
     protected int[] displayMeta;
     private final int meta;
     private boolean canBeTransparent;
+    private boolean alwaysTransparent;
 
     public JBlock(String id, int meta) {
       super(id);
@@ -148,10 +149,12 @@ public class BlockJson {
 
     private void jsonFinish() {
       if (transparent != null) {
+        alwaysTransparent = true;
         for (Boolean b : transparent) {
           if (b) {
             canBeTransparent = true;
-            break;
+          } else {
+            alwaysTransparent = false;
           }
         }
       }
@@ -185,6 +188,11 @@ public class BlockJson {
     @Override
     public boolean canBeTransparent() {
       return canBeTransparent;
+    }
+
+    @Override
+    public boolean alwaysTransparent() {
+      return alwaysTransparent;
     }
 
     @Override

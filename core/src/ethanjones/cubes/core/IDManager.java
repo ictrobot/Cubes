@@ -228,14 +228,15 @@ public class IDManager implements DataParser {
     private boolean setup = false;
 
     public TransparencyManager() {
-      bitSet = new BitSet(getBlocks().size());
+      bitSet = new BitSet(getBlocks().size() * 2);
     }
 
     public void setup(IDManager idManager) {
       if (setup) return;
       this.integerToBlock = idManager.integerToBlock;
       for (Map.Entry<Integer, Block> entry : integerToBlock.entrySet()) {
-        bitSet.set(entry.getKey(), entry.getValue().canBeTransparent());
+        bitSet.set(entry.getKey() * 2, entry.getValue().canBeTransparent());
+        bitSet.set((entry.getKey() * 2) + 1, entry.getValue().alwaysTransparent());
       }
       setup = true;
     }
@@ -243,12 +244,14 @@ public class IDManager implements DataParser {
     public boolean isTransparent(int idAndMeta) {
       int blockID = idAndMeta & 0xFFFFF;
       int blockMeta = (idAndMeta >> 20) & 0xFF;
-      return blockID == 0 || (bitSet.get(blockID) && integerToBlock.get(blockID).isTransparent(blockMeta));
+      // air || (canBeTransparent && (alwaysTransparent || lookup))
+      return blockID == 0 || (bitSet.get(blockID * 2) && (bitSet.get((blockID * 2) + 1) || integerToBlock.get(blockID).isTransparent(blockMeta)));
     }
 
     public boolean isTransparent(int blockID, int blockMeta) {
       blockID &= 0xFFFFF;
-      return blockID == 0 || (bitSet.get(blockID) && integerToBlock.get(blockID).isTransparent(blockMeta));
+      // air || (canBeTransparent && (alwaysTransparent || lookup))
+      return blockID == 0 || (bitSet.get(blockID * 2) && (bitSet.get((blockID * 2) + 1) || integerToBlock.get(blockID).isTransparent(blockMeta)));
     }
 
     public boolean isTransparent(Block block, int meta) {
