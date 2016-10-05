@@ -258,7 +258,7 @@ public class Area implements Lock.HasLock {
 
   //Should already be write locked
   private void update(int x, int y, int z, int i) {
-    if (y > maxY || y < 0 || blocks[i] == 0) {
+    if (y > maxY || y < 0) {
       return;
     }
     if (blocks[i] == 0) return; // air cannot be visible
