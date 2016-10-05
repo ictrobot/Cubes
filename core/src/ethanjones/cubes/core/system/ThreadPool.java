@@ -41,16 +41,15 @@ public class ThreadPool {
   public ThreadPool start() {
     group = new ThreadGroup(name);
     for (int i = 0; i < threads.length; i++) {
-      Thread thread = new Thread(group, new Runnable() {
+      Thread thread = new Thread(group, name + "-" + (i + 1)) {
         @Override
         public void run() {
           if (side != null) Sided.setSide(side);
           runnable.run();
         }
-      });
+      };
       thread.setDaemon(daemon);
       thread.setPriority(priority);
-      thread.setName(name + "-" + (i + 1));
       thread.setUncaughtExceptionHandler(Debug.UncaughtExceptionHandler.instance);
       thread.start();
       threads[i] = thread;
