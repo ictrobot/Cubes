@@ -540,7 +540,7 @@ public class Area implements Lock.HasLock {
       int height = -1;
       for (int y = 0; y <= maxY; y++) {
         int ref = (z * SIZE_BLOCKS) + (y * SIZE_BLOCKS_SQUARED);
-        if (blocks[ref] == 0) {
+        if (transparency.isTransparent(blocks[ref])) {
           if (blocks[ref + MAX_X_OFFSET] != 0) blocks[ref + MAX_X_OFFSET] |= BLOCK_VISIBLE;
         } else {
           blocks[ref] |= BLOCK_VISIBLE;
@@ -554,7 +554,7 @@ public class Area implements Lock.HasLock {
       int height = -1;
       for (int y = 0; y <= maxY; y++) {
         int ref = (SIZE_BLOCKS - 1) + (z * SIZE_BLOCKS) + (y * SIZE_BLOCKS_SQUARED);
-        if (blocks[ref] == 0) {
+        if (transparency.isTransparent(blocks[ref])) {
           if (blocks[ref + MIN_X_OFFSET] != 0) blocks[ref + MIN_X_OFFSET] |= BLOCK_VISIBLE;
         } else {
           blocks[ref] |= BLOCK_VISIBLE;
@@ -568,7 +568,7 @@ public class Area implements Lock.HasLock {
       int height = -1;
       for (int y = 0; y <= maxY; y++) {
         int ref = x + (y * SIZE_BLOCKS_SQUARED);
-        if (blocks[ref] == 0) {
+        if (transparency.isTransparent(blocks[ref])) {
           if (blocks[ref + MAX_Z_OFFSET] != 0) blocks[ref + MAX_Z_OFFSET] |= BLOCK_VISIBLE;
         } else {
           blocks[ref] |= BLOCK_VISIBLE;
@@ -582,7 +582,7 @@ public class Area implements Lock.HasLock {
       int height = -1;
       for (int y = 0; y <= maxY; y++) {
         int ref = x + (SIZE_BLOCKS_SQUARED - SIZE_BLOCKS) + (y * SIZE_BLOCKS_SQUARED);
-        if (blocks[ref] == 0) {
+        if (transparency.isTransparent(blocks[ref])) {
           if (blocks[ref + MIN_Z_OFFSET] != 0) blocks[ref + MIN_Z_OFFSET] |= BLOCK_VISIBLE;
         } else {
           blocks[ref] |= BLOCK_VISIBLE;
@@ -597,7 +597,7 @@ public class Area implements Lock.HasLock {
         int height = -1;
         for (int y = 0; y <= maxY; y++) {
           int ref = x + z * SIZE_BLOCKS + y * SIZE_BLOCKS_SQUARED;
-          if (blocks[ref] == 0) {
+          if (transparency.isTransparent(blocks[ref])) {
             if (blocks[ref + MAX_X_OFFSET] != 0) blocks[ref + MAX_X_OFFSET] |= BLOCK_VISIBLE;
             if (blocks[ref + MIN_X_OFFSET] != 0) blocks[ref + MIN_X_OFFSET] |= BLOCK_VISIBLE;
             if (blocks[ref + MAX_Z_OFFSET] != 0) blocks[ref + MAX_Z_OFFSET] |= BLOCK_VISIBLE;
