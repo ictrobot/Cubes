@@ -530,6 +530,92 @@ public class Area implements Lock.HasLock {
     lock.writeUnlock();
   }
 
+  // initial update and build of heightmap
+  public void initialUpdate() {
+    lock.writeLock();
+    if (unreadyWriteLock()) return;
+
+    // neg x side
+    for (int z = 0; z < SIZE_BLOCKS; z++) {
+      int height = -1;
+      for (int y = 0; y <= maxY; y++) {
+        int ref = (z * SIZE_BLOCKS) + (y * SIZE_BLOCKS_SQUARED);
+        if (blocks[ref] == 0) {
+          if (blocks[ref + MAX_X_OFFSET] != 0) blocks[ref + MAX_X_OFFSET] |= BLOCK_VISIBLE;
+        } else {
+          blocks[ref] |= BLOCK_VISIBLE;
+          height = y;
+        }
+      }
+      heightmap[z * SIZE_BLOCKS] = height;
+    }
+    // pos x side
+    for (int z = 0; z < SIZE_BLOCKS; z++) {
+      int height = -1;
+      for (int y = 0; y <= maxY; y++) {
+        int ref = (SIZE_BLOCKS - 1) + (z * SIZE_BLOCKS) + (y * SIZE_BLOCKS_SQUARED);
+        if (blocks[ref] == 0) {
+          if (blocks[ref + MIN_X_OFFSET] != 0) blocks[ref + MIN_X_OFFSET] |= BLOCK_VISIBLE;
+        } else {
+          blocks[ref] |= BLOCK_VISIBLE;
+          height = y;
+        }
+      }
+      heightmap[(SIZE_BLOCKS - 1) + (z * SIZE_BLOCKS)] = height;
+    }
+    // neg z side
+    for (int x = 1; x < SIZE_BLOCKS - 1; x++) { //don't include x = 0 or x = SIZE_BLOCKS - 1
+      int height = -1;
+      for (int y = 0; y <= maxY; y++) {
+        int ref = x + (y * SIZE_BLOCKS_SQUARED);
+        if (blocks[ref] == 0) {
+          if (blocks[ref + MAX_Z_OFFSET] != 0) blocks[ref + MAX_Z_OFFSET] |= BLOCK_VISIBLE;
+        } else {
+          blocks[ref] |= BLOCK_VISIBLE;
+          height = y;
+        }
+      }
+      heightmap[x] = height;
+    }
+    // pos z side
+    for (int x = 1; x < SIZE_BLOCKS - 1; x++) {
+      int height = -1;
+      for (int y = 0; y <= maxY; y++) {
+        int ref = x + (SIZE_BLOCKS_SQUARED - SIZE_BLOCKS) + (y * SIZE_BLOCKS_SQUARED);
+        if (blocks[ref] == 0) {
+          if (blocks[ref + MIN_Z_OFFSET] != 0) blocks[ref + MIN_Z_OFFSET] |= BLOCK_VISIBLE;
+        } else {
+          blocks[ref] |= BLOCK_VISIBLE;
+          height = y;
+        }
+      }
+      heightmap[x + (SIZE_BLOCKS_SQUARED - SIZE_BLOCKS)] = height;
+    }
+    // inner
+    for (int x = 1; x < SIZE_BLOCKS - 1; x++) {
+      for (int z = 1; z < SIZE_BLOCKS - 1; z++) {
+        int height = -1;
+        for (int y = 0; y <= maxY; y++) {
+          int ref = x + z * SIZE_BLOCKS + y * SIZE_BLOCKS_SQUARED;
+          if (blocks[ref] == 0) {
+            if (blocks[ref + MAX_X_OFFSET] != 0) blocks[ref + MAX_X_OFFSET] |= BLOCK_VISIBLE;
+            if (blocks[ref + MIN_X_OFFSET] != 0) blocks[ref + MIN_X_OFFSET] |= BLOCK_VISIBLE;
+            if (blocks[ref + MAX_Z_OFFSET] != 0) blocks[ref + MAX_Z_OFFSET] |= BLOCK_VISIBLE;
+            if (blocks[ref + MIN_Z_OFFSET] != 0) blocks[ref + MIN_Z_OFFSET] |= BLOCK_VISIBLE;
+            if (y < maxY && blocks[ref + MAX_Y_OFFSET] != 0) blocks[ref + MAX_Y_OFFSET] |= BLOCK_VISIBLE;
+            if (y > 0 && blocks[ref + MIN_Y_OFFSET] != 0) blocks[ref + MIN_Y_OFFSET] |= BLOCK_VISIBLE;
+          } else {
+            height = y;
+          }
+        }
+        heightmap[x + z * SIZE_BLOCKS] = height;
+      }
+    }
+
+    modify();
+    lock.writeUnlock();
+  }
+
   public void setupArrays(int y) {
     lock.writeLock();
 
@@ -840,7 +926,6 @@ public class Area implements Lock.HasLock {
       blockDataList.add(data);
     }
 
-    updateAll();
     saveModCount();
   }
 

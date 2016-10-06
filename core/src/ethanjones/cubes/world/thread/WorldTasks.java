@@ -93,9 +93,7 @@ public class WorldTasks {
     if (features.compareAndSet(null, Thread.currentThread())) {
       world.getTerrainGenerator().features(area, world);
       new FeaturesEvent(area, areaReference).post();
-      area.updateAll();
-      area.modify();
-      area.rebuildHeightmap();
+      area.initialUpdate();
       SunLight.initialSunlight(area);
       new AreaLoadedEvent(area, areaReference).post();
     }
