@@ -738,8 +738,7 @@ public class Area implements Lock.HasLock {
 
     int currentBlock = -1, num = 0;
     for (int i = 0; i < (SIZE_BLOCKS_CUBED * usedHeight); i++) {
-      int block = blocks[i];
-      block = (block < 0 ? -block : block) + 1; //shifted by 1 so blank is not 0, because -0 == 0
+      int block = blocks[i]; // always positive
       if (block == currentBlock) {
         num++;
       } else {
@@ -811,10 +810,10 @@ public class Area implements Lock.HasLock {
     int counter = 0;
     while (counter < (SIZE_BLOCKS_CUBED * height)) {
       int a = dataInputStream.readInt();
-      if (a > 0) {
-        blocks[counter++] = a - 1;
+      if (a >= 0) {
+        blocks[counter++] = a;
       } else {
-        int block = dataInputStream.readInt() - 1;
+        int block = dataInputStream.readInt();
         for (int i = 0; i < -a; i++) {
           blocks[counter++] = block;
         }
