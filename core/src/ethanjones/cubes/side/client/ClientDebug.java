@@ -20,7 +20,7 @@ public class ClientDebug {
   static WindowedMean ms = new WindowedMean(50);
   private static StringBuilder builder = new StringBuilder(250).append(Branding.DEBUG).append(lineSeparator);
   private static int brandingDebugLength = builder.length();
-  private static DecimalFormat twoDP = new DecimalFormat("#0.00");
+  private static DecimalFormat twoDP = new DecimalFormat("0.00");
 
   public static String getDebugString() {
     Vector3 p = Cubes.getClient().player.position;
