@@ -11,7 +11,7 @@ import ethanjones.cubes.world.storage.Area;
 import java.util.Random;
 
 public class SmoothWorld extends TerrainGenerator {
-  public static final int minSurfaceHeight = 40;
+  public static final int minSurfaceHeight = 48;
   private static Random randomSeed = new Random();
 
   public final long baseSeed;
@@ -163,8 +163,8 @@ public class SmoothWorld extends TerrainGenerator {
 
   public int getSurfaceHeight(int x, int z) {
     double h = height.eval(x, z) * 20;
-    double hv = Math.sqrt(heightVariation.eval(x, z) + 1);
-    return (int) Math.pow(minSurfaceHeight + h, hv);
+    double hv = (heightVariation.eval(x, z) * 6) - 3;
+    return minSurfaceHeight + (int) Math.exp(Math.log(h) + hv);
   }
 
   public int getDirtHeight(int x, int z) {
