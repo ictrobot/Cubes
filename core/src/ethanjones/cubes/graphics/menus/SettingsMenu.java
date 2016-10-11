@@ -19,7 +19,6 @@ import com.badlogic.gdx.utils.Align;
 import java.util.ArrayList;
 import java.util.Map;
 
-import static ethanjones.cubes.graphics.Graphics.GUI_HEIGHT;
 import static ethanjones.cubes.graphics.Graphics.GUI_WIDTH;
 
 public class SettingsMenu extends Menu implements VisualSettingManager {
@@ -40,23 +39,11 @@ public class SettingsMenu extends Menu implements VisualSettingManager {
     }
   }
 
-  static final Value CELL_PADDING = new Value() {
-    @Override
-    public float get(Actor context) {
-      return 5;
-    }
-  };
   static final Value CELL_WIDTH = new Value() {
 
     @Override
     public float get(Actor context) {
-      return (GUI_WIDTH / 2) - (CELL_PADDING.get(context) * 2);
-    }
-  };
-  static final Value CELL_HEIGHT = new Value() {
-    @Override
-    public float get(Actor context) {
-      return (GUI_HEIGHT / 10) - (CELL_PADDING.get(context) * 2);
+      return (GUI_WIDTH / 2) - 10;
     }
   };
   static SaveEvent saveEvent = new SaveEvent();
@@ -108,6 +95,15 @@ public class SettingsMenu extends Menu implements VisualSettingManager {
     stage.addActor(title);
     stage.addActor(scrollPane);
     stage.addActor(back);
+
+    table.defaults().width(CELL_WIDTH).pad(5).fillX().fillY().uniform();
+    for (int i = 0; i < listObjects.size(); i++) {
+      ListObject listObject = listObjects.get(i);
+
+      table.add(listObject.label);
+      table.add(listObject.actor);
+      table.row();
+    }
   }
 
   @Override
@@ -117,16 +113,6 @@ public class SettingsMenu extends Menu implements VisualSettingManager {
     scrollPane.setBounds(0, height / 6, width, height / 6 * 4);
 
     table.setWidth(width);
-    table.clearChildren();
-
-    for (int i = 0; i < listObjects.size(); i++) {
-      ListObject listObject = listObjects.get(i);
-
-      table.add(listObject.label).width(CELL_WIDTH).height(CELL_HEIGHT).pad(CELL_PADDING).fillX().fillY();
-      table.add(listObject.actor).width(CELL_WIDTH).height(CELL_HEIGHT).pad(CELL_PADDING).fillX().fillY();
-      table.row();
-    }
-
     scrollPane.layout();
 
     MenuTools.setTitle(title);
