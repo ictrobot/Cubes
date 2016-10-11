@@ -30,7 +30,7 @@ public class MainMenu extends Menu {
   private static Value cellWidth = new Value() {
     @Override
     public float get(Actor context) {
-      return GUI_WIDTH / 3 * 2;
+      return GUI_WIDTH / 2;
     }
   };
   Image logo;
@@ -48,7 +48,7 @@ public class MainMenu extends Menu {
     version = new Label(Branding.DEBUG, new Label.LabelStyle(Fonts.smallHUD, Color.WHITE));
     author = new Label(Branding.AUTHOR, new Label.LabelStyle(Fonts.smallHUD, Color.WHITE));
     buttons = new Table();
-    buttons.defaults().height(cellHeight).width(cellWidth).pad(5).fillX().fillY();
+    buttons.defaults().height(cellHeight).width(cellWidth).pad(10).fillX().fillY();
     buttons.add(singleplayer = new TextButton(Localization.get("menu.main.singleplayer"), skin)).row();
     singleplayer.addListener(new ChangeListener() {
       @Override
@@ -88,12 +88,12 @@ public class MainMenu extends Menu {
   @Override
   public void resize(float width, float height) {
     super.resize(width, height);
-    logo.setBounds(0, height / 6 * 5, width, height / 6);
-    version.setBounds(0, 0, author.getPrefWidth(), author.getPrefHeight());
+    logo.setBounds(0, (height / 4 * 3) + 5, width, height / 6);
+    version.setBounds(5, 5, author.getPrefWidth(), author.getPrefHeight());
     version.setAlignment(Align.left);
-    author.setBounds(width - author.getPrefWidth(), 0, author.getPrefWidth(), author.getPrefHeight());
+    author.setBounds(width - author.getPrefWidth() - 5, 5, author.getPrefWidth(), author.getPrefHeight());
     author.setAlignment(Align.right);
-    buttons.setBounds(0, 0, width, height / 6 * 5);
+    buttons.setBounds(0, 0, width, (height / 4 * 3) - 5);
     buttons.align(Align.top);
     buttons.layout();
   }
