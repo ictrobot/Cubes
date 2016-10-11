@@ -5,12 +5,12 @@ menu.general.return_main_menu=Return to main menu
 
 menu.main.singleplayer=Singleplayer
 menu.main.multiplayer=Multiplayer
-menu.main.serveronly=Server only
 menu.main.settings=Settings
 menu.main.quit=Quit
 
 menu.singleplayer.title=Singleplayer
 menu.singleplayer.play=Play
+menu.singleplayer.server_only=Server
 menu.singleplayer.delete=Delete
 menu.singleplayer.create=Create
 
@@ -30,6 +30,7 @@ menu.multiplayer.connect=Connect
 menu.multiplayer.connecting=Connecting
 
 menu.server.title=Server
+menu.server.save=Save name: %s
 menu.server.port=Port (%s)
 menu.server.start=Start
 menu.server.running=Running

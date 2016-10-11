@@ -2,6 +2,7 @@ package ethanjones.cubes.side.server.integrated;
 
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.networking.socket.SocketMonitor;
+import ethanjones.cubes.world.save.Save;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,6 +13,10 @@ public class ServerOnlyServer extends IntegratedServer {
 
   private final HashMap<SocketMonitor, ClientIdentifier> clients = new HashMap<SocketMonitor, ClientIdentifier>();
   private final ArrayList<ClientIdentifier> disconnected = new ArrayList<ClientIdentifier>();
+
+  public ServerOnlyServer(Save save) {
+    super(save);
+  }
 
   @Override
   public void render() {

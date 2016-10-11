@@ -20,9 +20,10 @@ public class SingleplayerSavesMenu extends Menu {
   ScrollPane scrollPane;
   List<Save> listLabel;
   TextButton back;
-  TextButton play;
   TextButton delete;
   TextButton create;
+  TextButton server;
+  TextButton play;
 
   public SingleplayerSavesMenu() {
     title = new Label(Localization.get("menu.singleplayer.title"), skin.get("title", Label.LabelStyle.class));
@@ -34,16 +35,6 @@ public class SingleplayerSavesMenu extends Menu {
     back = MenuTools.getBackButton(this);
 
     updateSavesList();
-
-    play = new TextButton(Localization.get("menu.singleplayer.play"), skin);
-    play.addListener(new ChangeListener() {
-      @Override
-      public void changed(ChangeEvent event, Actor actor) {
-        Save save = listLabel.getSelected();
-        if (save == null) return;
-        Adapter.setMenu(new SingleplayerLoadingMenu(save));
-      }
-    });
 
     delete = new TextButton(Localization.get("menu.singleplayer.delete"), skin);
     delete.addListener(new ChangeListener() {
@@ -63,12 +54,33 @@ public class SingleplayerSavesMenu extends Menu {
       }
     });
 
+    server = new TextButton(Localization.get("menu.singleplayer.server_only"), skin);
+    server.addListener(new ChangeListener() {
+      @Override
+      public void changed(ChangeEvent event, Actor actor) {
+        Save save = listLabel.getSelected();
+        if (save == null) return;
+        Adapter.setMenu(new ServerSetupMenu(save));
+      }
+    });
+
+    play = new TextButton(Localization.get("menu.singleplayer.play"), skin);
+    play.addListener(new ChangeListener() {
+      @Override
+      public void changed(ChangeEvent event, Actor actor) {
+        Save save = listLabel.getSelected();
+        if (save == null) return;
+        Adapter.setMenu(new SingleplayerLoadingMenu(save));
+      }
+    });
+
     stage.addActor(title);
     stage.addActor(scrollPane);
     stage.addActor(back);
-    stage.addActor(play);
     stage.addActor(delete);
     stage.addActor(create);
+    stage.addActor(server);
+    stage.addActor(play);
   }
 
   public void updateSavesList() {
@@ -81,8 +93,8 @@ public class SingleplayerSavesMenu extends Menu {
 
     MenuTools.setTitle(title);
 
-    MenuTools.setMaxPrefSize(back, delete, create, play);
-    MenuTools.arrangeX(1f, false, back, delete, create, play);
+    MenuTools.setMaxPrefSize(back, delete, create, server, play);
+    MenuTools.arrangeX(1f, false, back, delete, create, server, play);
 
     float w = listLabel.getPrefWidth();
     scrollPane.setBounds((width / 2) - (w / 2), back.getTop() + 1f, w, title.getY() - back.getTop() - 2f);

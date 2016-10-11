@@ -39,7 +39,6 @@ public class MainMenu extends Menu {
   Table buttons;
   TextButton singleplayer;
   TextButton multiplayer;
-  TextButton serveronly;
   TextButton settings;
   TextButton quit;
 
@@ -62,13 +61,6 @@ public class MainMenu extends Menu {
       @Override
       public void changed(ChangeEvent event, Actor actor) {
         Adapter.setMenu(new MultiplayerConnectMenu());
-      }
-    });
-    buttons.add(serveronly = new TextButton(Localization.get("menu.main.serveronly"), skin)).row();
-    serveronly.addListener(new ChangeListener() {
-      @Override
-      public void changed(ChangeEvent event, Actor actor) {
-        Adapter.setMenu(new ServerSetupMenu());
       }
     });
     buttons.add(settings = new TextButton(Localization.get("menu.main.settings"), skin)).row();

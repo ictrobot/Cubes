@@ -10,10 +10,6 @@ public abstract class IntegratedServer extends CubesServer implements Runnable {
 
   private Thread thread = null;
 
-  public IntegratedServer() {
-    super();
-  }
-
   public IntegratedServer(Save save) {
     super(save);
   }
