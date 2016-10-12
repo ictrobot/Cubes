@@ -1,5 +1,6 @@
 package ethanjones.cubes.world.thread;
 
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
 import ethanjones.cubes.world.reference.multi.WorldRegion;
@@ -13,6 +14,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class WorldGenerationTask implements GenerationTask {
 
@@ -22,6 +25,10 @@ public class WorldGenerationTask implements GenerationTask {
   public final ConcurrentLinkedQueue<AreaReference> generateQueue = new ConcurrentLinkedQueue<AreaReference>();
   public final CountDownLatch generationComplete = new CountDownLatch(WorldTasks.GENERATION_THREADS);
   public final ConcurrentLinkedQueue<AreaReference> featuresQueue = new ConcurrentLinkedQueue<AreaReference>();
+  public final AtomicLong timeStarted = new AtomicLong(0);
+  public final AtomicInteger generateCounter = new AtomicInteger(0);
+  public final AtomicInteger featureCounter = new AtomicInteger(0);
+  public final AtomicInteger readCounter = new AtomicInteger(0);
   public final int generateSize;
   public final int featureSize;
 
@@ -96,5 +103,11 @@ public class WorldGenerationTask implements GenerationTask {
   @Override
   public int doneFeatures() {
     return featureSize - featuresQueue.size();
+  }
+
+  public void printStatistics() {
+    long now = System.currentTimeMillis();
+    long delta = now - timeStarted.get();
+    Log.debug("Generated " + generateCounter.get() + " Read " + readCounter.get() + " Features " + featureCounter.get() + " Total " + generateSize + "," + featureSize + " Time " + delta + "ms");
   }
 }

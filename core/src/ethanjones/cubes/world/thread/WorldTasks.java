@@ -66,14 +66,14 @@ public class WorldTasks {
     return true;
   }
 
-  protected static void generate(AreaReference areaReference, WorldServer world) {
+  protected static int generate(AreaReference areaReference, WorldServer world) {
     Area area = world.getArea(areaReference, false);
-    if (area != null) return;
+    if (area != null) return 0;
     area = world.save.readArea(areaReference.areaX, areaReference.areaZ);
     if (area != null) {
       world.setAreaInternal(area);
       if (area.features.get() != null) new AreaLoadedEvent(area, areaReference).post();
-      return;
+      return 1;
     }
 
     area = new Area(areaReference.areaX, areaReference.areaZ);
@@ -82,11 +82,12 @@ public class WorldTasks {
     area.modify();
 
     world.setAreaInternal(area);
+    return 2;
   }
 
-  protected static void features(AreaReference areaReference, WorldServer world) {
+  protected static int features(AreaReference areaReference, WorldServer world) {
     Area area = world.getArea(areaReference, false);
-    if (area == null) return;
+    if (area == null) return 0;
 
     AtomicReference<Object> features = area.features;
 
@@ -96,6 +97,8 @@ public class WorldTasks {
       area.initialUpdate();
       SunLight.initialSunlight(area);
       new AreaLoadedEvent(area, areaReference).post();
+      return 1;
     }
+    return 0;
   }
 }

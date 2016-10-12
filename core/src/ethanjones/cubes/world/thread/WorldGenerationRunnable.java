@@ -28,9 +28,15 @@ public class WorldGenerationRunnable implements Runnable {
           continue;
         }
 
+        task.timeStarted.compareAndSet(0, System.currentTimeMillis());
         AreaReference generate = task.generateQueue.poll();
         while (generate != null) {
-          WorldTasks.generate(generate, task.world);
+          int status = WorldTasks.generate(generate, task.world);
+          if (status == 1) { // read from file
+            task.readCounter.incrementAndGet();
+          } else if (status == 2) { // generated
+            task.generateCounter.incrementAndGet();
+          }
 
           generate = task.generateQueue.poll();
         }
@@ -44,13 +50,17 @@ public class WorldGenerationRunnable implements Runnable {
 
         AreaReference features = task.featuresQueue.poll();
         while (features != null) {
-          WorldTasks.features(features, task.world);
+          int status = WorldTasks.features(features, task.world);
+          if (status == 1) { // done features
+            task.featureCounter.incrementAndGet();
+          }
 
           features = task.featuresQueue.poll();
         }
 
         if (queue.remove(task) && task.parameter.afterCompletion != null) {
           task.parameter.afterCompletion.run();
+          task.printStatistics();
         }
       } catch (CubesException e) {
         if (e.className.equals(Sided.class.getName())) {
