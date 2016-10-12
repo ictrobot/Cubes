@@ -37,4 +37,26 @@ public abstract class TerrainGenerator {
     set(area, block, x - area.minBlockX, y, z - area.minBlockZ);
     //area.setBlock(block, x - area.minBlockX, y, z - area.minBlockZ);
   }
+
+  public static void setVisible(Area area, Block block, int x, int y, int z) {
+    int ref = Area.getRef(x, y, z);
+
+    area.lock.writeLock();
+    area.setupArrays(y);
+    area.blocks[ref] = Sided.getIDManager().toInt(block) | Area.BLOCK_VISIBLE;
+    area.lock.writeUnlock();
+  }
+
+  public static void setVisible(WorldServer world, Block block, int x, int y, int z) {
+    AreaReference areaReference = new AreaReference().setFromBlockCoordinates(x, z);
+    world.lock.readLock();
+    Area area = world.getArea(areaReference, false);
+    if (area == null) {
+      world.lock.readUnlock();
+      throw new IllegalStateException(areaReference.toString());
+    }
+    world.lock.readUnlock();
+
+    setVisible(area, block, x - area.minBlockX, y, z - area.minBlockZ);
+  }
 }

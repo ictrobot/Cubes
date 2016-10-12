@@ -99,65 +99,65 @@ public class SmoothWorld extends TerrainGenerator {
     int y = ground + 1;
     int h = getTreeHeight(x, z) + 1;
 
-    //set(world, Blocks.leaves, x - 2, y + h, z - 2);
-    set(world, Blocks.leaves, x - 1, y + h, z - 2);
-    set(world, Blocks.leaves, x + 0, y + h, z - 2);
-    set(world, Blocks.leaves, x + 1, y + h, z - 2);
-    //set(world, Blocks.leaves, x + 2, y + h, z - 2);
+    //setVisible(world, Blocks.leaves, x - 2, y + h, z - 2);
+    setVisible(world, Blocks.leaves, x - 1, y + h, z - 2);
+    setVisible(world, Blocks.leaves, x + 0, y + h, z - 2);
+    setVisible(world, Blocks.leaves, x + 1, y + h, z - 2);
+    //setVisible(world, Blocks.leaves, x + 2, y + h, z - 2);
 
-    set(world, Blocks.leaves, x - 2, y + h, z - 1);
-    set(world, Blocks.leaves, x - 1, y + h, z - 1);
-    set(world, Blocks.leaves, x + 0, y + h, z - 1);
-    set(world, Blocks.leaves, x + 1, y + h, z - 1);
-    set(world, Blocks.leaves, x + 2, y + h, z - 1);
+    setVisible(world, Blocks.leaves, x - 2, y + h, z - 1);
+    setVisible(world, Blocks.leaves, x - 1, y + h, z - 1);
+    setVisible(world, Blocks.leaves, x + 0, y + h, z - 1);
+    setVisible(world, Blocks.leaves, x + 1, y + h, z - 1);
+    setVisible(world, Blocks.leaves, x + 2, y + h, z - 1);
 
-    set(world, Blocks.leaves, x - 2, y + h, z + 0);
-    set(world, Blocks.leaves, x - 1, y + h, z + 0);
-    set(world, Blocks.leaves, x + 0, y + h, z + 0);
-    set(world, Blocks.leaves, x + 1, y + h, z + 0);
-    set(world, Blocks.leaves, x + 2, y + h, z + 0);
+    setVisible(world, Blocks.leaves, x - 2, y + h, z + 0);
+    setVisible(world, Blocks.leaves, x - 1, y + h, z + 0);
+    setVisible(world, Blocks.leaves, x + 0, y + h, z + 0);
+    setVisible(world, Blocks.leaves, x + 1, y + h, z + 0);
+    setVisible(world, Blocks.leaves, x + 2, y + h, z + 0);
 
-    set(world, Blocks.leaves, x - 2, y + h, z + 1);
-    set(world, Blocks.leaves, x - 1, y + h, z + 1);
-    set(world, Blocks.leaves, x + 0, y + h, z + 1);
-    set(world, Blocks.leaves, x + 1, y + h, z + 1);
-    set(world, Blocks.leaves, x + 2, y + h, z + 1);
+    setVisible(world, Blocks.leaves, x - 2, y + h, z + 1);
+    setVisible(world, Blocks.leaves, x - 1, y + h, z + 1);
+    setVisible(world, Blocks.leaves, x + 0, y + h, z + 1);
+    setVisible(world, Blocks.leaves, x + 1, y + h, z + 1);
+    setVisible(world, Blocks.leaves, x + 2, y + h, z + 1);
 
-    //set(world, Blocks.leaves, x - 2, y + h, z + 2);
-    set(world, Blocks.leaves, x - 1, y + h, z + 2);
-    set(world, Blocks.leaves, x + 0, y + h, z + 2);
-    set(world, Blocks.leaves, x + 1, y + h, z + 2);
-    //set(world, Blocks.leaves, x + 2, y + h, z + 2);
+    //setVisible(world, Blocks.leaves, x - 2, y + h, z + 2);
+    setVisible(world, Blocks.leaves, x - 1, y + h, z + 2);
+    setVisible(world, Blocks.leaves, x + 0, y + h, z + 2);
+    setVisible(world, Blocks.leaves, x + 1, y + h, z + 2);
+    //setVisible(world, Blocks.leaves, x + 2, y + h, z + 2);
 
     //Second layer
 
-    set(world, Blocks.leaves, x - 2, y + h + 1, z + 0);
-    set(world, Blocks.leaves, x - 1, y + h + 1, z + 0);
-    set(world, Blocks.leaves, x + 0, y + h + 1, z + 0);
-    set(world, Blocks.leaves, x + 1, y + h + 1, z + 0);
-    set(world, Blocks.leaves, x + 2, y + h + 1, z + 0);
+    setVisible(world, Blocks.leaves, x - 2, y + h + 1, z + 0);
+    setVisible(world, Blocks.leaves, x - 1, y + h + 1, z + 0);
+    setVisible(world, Blocks.leaves, x + 0, y + h + 1, z + 0);
+    setVisible(world, Blocks.leaves, x + 1, y + h + 1, z + 0);
+    setVisible(world, Blocks.leaves, x + 2, y + h + 1, z + 0);
 
-    set(world, Blocks.leaves, x + 0, y + h + 1, z - 2);
-    set(world, Blocks.leaves, x + 0, y + h + 1, z - 1);
-    set(world, Blocks.leaves, x + 0, y + h + 1, z + 0);
-    set(world, Blocks.leaves, x + 0, y + h + 1, z + 1);
-    set(world, Blocks.leaves, x + 0, y + h + 1, z + 2);
+    setVisible(world, Blocks.leaves, x + 0, y + h + 1, z - 2);
+    setVisible(world, Blocks.leaves, x + 0, y + h + 1, z - 1);
+    setVisible(world, Blocks.leaves, x + 0, y + h + 1, z + 0);
+    setVisible(world, Blocks.leaves, x + 0, y + h + 1, z + 1);
+    setVisible(world, Blocks.leaves, x + 0, y + h + 1, z + 2);
 
-    set(world, Blocks.leaves, x + 1, y + h + 1, z + 1);
-    set(world, Blocks.leaves, x + 1, y + h + 1, z - 1);
-    set(world, Blocks.leaves, x - 1, y + h + 1, z + 1);
-    set(world, Blocks.leaves, x - 1, y + h + 1, z - 1);
+    setVisible(world, Blocks.leaves, x + 1, y + h + 1, z + 1);
+    setVisible(world, Blocks.leaves, x + 1, y + h + 1, z - 1);
+    setVisible(world, Blocks.leaves, x - 1, y + h + 1, z + 1);
+    setVisible(world, Blocks.leaves, x - 1, y + h + 1, z - 1);
 
     // Third layer
 
-    set(world, Blocks.leaves, x + 0, y + h + 2, z + 0);
-    set(world, Blocks.leaves, x + 0, y + h + 2, z + 1);
-    set(world, Blocks.leaves, x + 0, y + h + 2, z - 1);
-    set(world, Blocks.leaves, x + 1, y + h + 2, z + 0);
-    set(world, Blocks.leaves, x - 1, y + h + 2, z + 0);
+    setVisible(world, Blocks.leaves, x + 0, y + h + 2, z + 0);
+    setVisible(world, Blocks.leaves, x + 0, y + h + 2, z + 1);
+    setVisible(world, Blocks.leaves, x + 0, y + h + 2, z - 1);
+    setVisible(world, Blocks.leaves, x + 1, y + h + 2, z + 0);
+    setVisible(world, Blocks.leaves, x - 1, y + h + 2, z + 0);
 
     for (int i = 0; i < h + 2; i++) {
-      set(world, Blocks.log, x, y + i, z);
+      setVisible(world, Blocks.log, x, y + i, z);
     }
   }
 
