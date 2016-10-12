@@ -92,10 +92,11 @@ public class WorldTasks {
     AtomicReference<Object> features = area.features;
 
     if (features.compareAndSet(null, Thread.currentThread())) {
-      world.getTerrainGenerator().features(area, world);
+      WorldSection section = new WorldSection(area);
+      world.getTerrainGenerator().features(area, world, section);
       new FeaturesEvent(area, areaReference).post();
       area.initialUpdate();
-      SunLight.initialSunlight(area);
+      SunLight.initialSunlight(area, section);
       new AreaLoadedEvent(area, areaReference).post();
       return 1;
     }

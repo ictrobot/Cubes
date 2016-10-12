@@ -4,6 +4,7 @@ import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.server.WorldServer;
 import ethanjones.cubes.world.storage.Area;
+import ethanjones.cubes.world.thread.WorldSection;
 
 public class BasicTerrainGenerator extends TerrainGenerator {
 
@@ -27,7 +28,7 @@ public class BasicTerrainGenerator extends TerrainGenerator {
   }
 
   @Override
-  public void features(Area area, WorldServer world) {
+  public void features(Area area, WorldServer world, WorldSection section) {
 
   }
 

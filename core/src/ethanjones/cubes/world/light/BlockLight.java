@@ -1,6 +1,5 @@
 package ethanjones.cubes.world.light;
 
-import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.storage.Area;
 
@@ -13,11 +12,9 @@ public class BlockLight {
 
   public static final byte FULL_LIGHT = (byte) 0xFF;
 
-  public static void spreadLight(int x, int y, int z) {
-    Area area = Sided.getCubes().world.getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
+  public static void spreadLight(int x, int y, int z, Area area, LightWorldSection w) {
     if (y >= 0 && y <= area.maxY) {
       ArrayDeque<LightNode> lightQueue = new ArrayDeque<LightNode>(1000);
-      LightWorldSection w = new LightWorldSection(area);
 
       if (y <= w.maxY(x + 1, z) && (w.transparent(x + 1, y, z) || w.isLightSource(x + 1, y, z)))
         lightQueue.add(new LightNode(x + 1, y, z, w.getLight(x + 1, y, z)));
@@ -35,20 +32,16 @@ public class BlockLight {
         lightQueue.add(new LightNode(x, y, z - 1, w.getLight(x, y, z - 1)));
 
       propagateAdd(lightQueue, w);
-      w.unlock();
     }
   }
 
-  public static void addLight(int x, int y, int z, int l) {
-    Area area = Sided.getCubes().world.getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
+  public static void addLight(int x, int y, int z, int l, Area area, LightWorldSection lws) {
     if (y > 0 && y <= area.maxY) {
       ArrayDeque<LightNode> lightQueue = new ArrayDeque<LightNode>(1000);
-      LightWorldSection lightWorldSection = new LightWorldSection(area);
 
       area.setLight(x - area.minBlockX, y, z - area.minBlockZ, l);
       lightQueue.add(new LightNode(x, y, z, l));
-      propagateAdd(lightQueue, lightWorldSection);
-      lightWorldSection.unlock();
+      propagateAdd(lightQueue, lws);
     }
   }
 
@@ -86,19 +79,16 @@ public class BlockLight {
     }
   }
 
-  public static void removeLight(int x, int y, int z) {
-    Area area = Sided.getCubes().world.getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
+  public static void removeLight(int x, int y, int z, Area area, LightWorldSection lws) {
     if (y > 0 && y <= area.maxY) {
       ArrayDeque<LightNode> removeQueue = new ArrayDeque<LightNode>(1000);
       ArrayDeque<LightNode> addQueue = new ArrayDeque<LightNode>(1000);
-      LightWorldSection lightWorldSection = new LightWorldSection(area);
 
       int prev = area.getLight(x - area.minBlockX, y, z - area.minBlockZ);
       area.setLight(x - area.minBlockX, y, z - area.minBlockZ, 0);
       removeQueue.add(new LightNode(x, y, z, prev));
-      propagateRemove(removeQueue, addQueue, lightWorldSection);
-      propagateAdd(addQueue, lightWorldSection);
-      lightWorldSection.unlock();
+      propagateRemove(removeQueue, addQueue, lws);
+      propagateAdd(addQueue, lws);
     }
   }
 

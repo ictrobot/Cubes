@@ -355,7 +355,7 @@ public class Area implements Lock.HasLock {
 
     //Must be after lock released to prevent dead locks
     doUpdatesOtherAreas(x, y, z, ref);
-    new BlockChangedEvent(new BlockReference().setFromBlockCoordinates(x + minBlockX, y, z + minBlockZ), old, (b >> 20) & 0xFF, block, meta).post();
+    new BlockChangedEvent(new BlockReference().setFromBlockCoordinates(x + minBlockX, y, z + minBlockZ), old, (b >> 20) & 0xFF, block, meta, this).post();
   }
 
   public BlockData removeBlockData(int x, int y, int z) {

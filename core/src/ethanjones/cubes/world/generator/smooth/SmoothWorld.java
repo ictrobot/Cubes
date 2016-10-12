@@ -7,6 +7,7 @@ import ethanjones.cubes.world.generator.TerrainGenerator;
 import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.server.WorldServer;
 import ethanjones.cubes.world.storage.Area;
+import ethanjones.cubes.world.thread.WorldSection;
 
 import java.util.Random;
 
@@ -66,7 +67,7 @@ public class SmoothWorld extends TerrainGenerator {
   }
 
   @Override
-  public void features(Area area, WorldServer world) {
+  public void features(Area area, WorldServer world, WorldSection section) {
     if (area.areaX == 0 && area.areaZ == 0) return; // no trees on spawnpoint
     for (int x = 0; x < Area.SIZE_BLOCKS; x++) {
       for (int z = 0; z < Area.SIZE_BLOCKS; z++) {
@@ -74,7 +75,7 @@ public class SmoothWorld extends TerrainGenerator {
         if (t > 0.5d) {
           int trees = 100 - ((int) ((t - 0.4d) / 0.05d));
           if (pseudorandomInt(x + area.minBlockX, z + area.minBlockZ, trees) == 0) {
-            genTree(area, world, x, z);
+            genTree(area, section, x, z);
           }
         }
       }
@@ -86,7 +87,7 @@ public class SmoothWorld extends TerrainGenerator {
     return new BlockReference().setFromBlockCoordinates(0, getSurfaceHeight(0, 0) + 1, 0);
   }
 
-  public void genTree(Area area, WorldServer world, int aX, int aZ) {
+  public void genTree(Area area, WorldSection section, int aX, int aZ) {
     int x = aX + area.minBlockX;
     int z = aZ + area.minBlockZ;
     int ground = getSurfaceHeight(x, z);
@@ -99,65 +100,65 @@ public class SmoothWorld extends TerrainGenerator {
     int y = ground + 1;
     int h = getTreeHeight(x, z) + 1;
 
-    //setVisible(world, Blocks.leaves, x - 2, y + h, z - 2);
-    setVisible(world, Blocks.leaves, x - 1, y + h, z - 2);
-    setVisible(world, Blocks.leaves, x + 0, y + h, z - 2);
-    setVisible(world, Blocks.leaves, x + 1, y + h, z - 2);
-    //setVisible(world, Blocks.leaves, x + 2, y + h, z - 2);
+    //setVisible(section, Blocks.leaves, x - 2, y + h, z - 2);
+    setVisible(section, Blocks.leaves, x - 1, y + h, z - 2);
+    setVisible(section, Blocks.leaves, x + 0, y + h, z - 2);
+    setVisible(section, Blocks.leaves, x + 1, y + h, z - 2);
+    //setVisible(section, Blocks.leaves, x + 2, y + h, z - 2);
 
-    setVisible(world, Blocks.leaves, x - 2, y + h, z - 1);
-    setVisible(world, Blocks.leaves, x - 1, y + h, z - 1);
-    setVisible(world, Blocks.leaves, x + 0, y + h, z - 1);
-    setVisible(world, Blocks.leaves, x + 1, y + h, z - 1);
-    setVisible(world, Blocks.leaves, x + 2, y + h, z - 1);
+    setVisible(section, Blocks.leaves, x - 2, y + h, z - 1);
+    setVisible(section, Blocks.leaves, x - 1, y + h, z - 1);
+    setVisible(section, Blocks.leaves, x + 0, y + h, z - 1);
+    setVisible(section, Blocks.leaves, x + 1, y + h, z - 1);
+    setVisible(section, Blocks.leaves, x + 2, y + h, z - 1);
 
-    setVisible(world, Blocks.leaves, x - 2, y + h, z + 0);
-    setVisible(world, Blocks.leaves, x - 1, y + h, z + 0);
-    setVisible(world, Blocks.leaves, x + 0, y + h, z + 0);
-    setVisible(world, Blocks.leaves, x + 1, y + h, z + 0);
-    setVisible(world, Blocks.leaves, x + 2, y + h, z + 0);
+    setVisible(section, Blocks.leaves, x - 2, y + h, z + 0);
+    setVisible(section, Blocks.leaves, x - 1, y + h, z + 0);
+    setVisible(section, Blocks.leaves, x + 0, y + h, z + 0);
+    setVisible(section, Blocks.leaves, x + 1, y + h, z + 0);
+    setVisible(section, Blocks.leaves, x + 2, y + h, z + 0);
 
-    setVisible(world, Blocks.leaves, x - 2, y + h, z + 1);
-    setVisible(world, Blocks.leaves, x - 1, y + h, z + 1);
-    setVisible(world, Blocks.leaves, x + 0, y + h, z + 1);
-    setVisible(world, Blocks.leaves, x + 1, y + h, z + 1);
-    setVisible(world, Blocks.leaves, x + 2, y + h, z + 1);
+    setVisible(section, Blocks.leaves, x - 2, y + h, z + 1);
+    setVisible(section, Blocks.leaves, x - 1, y + h, z + 1);
+    setVisible(section, Blocks.leaves, x + 0, y + h, z + 1);
+    setVisible(section, Blocks.leaves, x + 1, y + h, z + 1);
+    setVisible(section, Blocks.leaves, x + 2, y + h, z + 1);
 
-    //setVisible(world, Blocks.leaves, x - 2, y + h, z + 2);
-    setVisible(world, Blocks.leaves, x - 1, y + h, z + 2);
-    setVisible(world, Blocks.leaves, x + 0, y + h, z + 2);
-    setVisible(world, Blocks.leaves, x + 1, y + h, z + 2);
-    //setVisible(world, Blocks.leaves, x + 2, y + h, z + 2);
+    //setVisible(section, Blocks.leaves, x - 2, y + h, z + 2);
+    setVisible(section, Blocks.leaves, x - 1, y + h, z + 2);
+    setVisible(section, Blocks.leaves, x + 0, y + h, z + 2);
+    setVisible(section, Blocks.leaves, x + 1, y + h, z + 2);
+    //setVisible(section, Blocks.leaves, x + 2, y + h, z + 2);
 
     //Second layer
 
-    setVisible(world, Blocks.leaves, x - 2, y + h + 1, z + 0);
-    setVisible(world, Blocks.leaves, x - 1, y + h + 1, z + 0);
-    setVisible(world, Blocks.leaves, x + 0, y + h + 1, z + 0);
-    setVisible(world, Blocks.leaves, x + 1, y + h + 1, z + 0);
-    setVisible(world, Blocks.leaves, x + 2, y + h + 1, z + 0);
+    setVisible(section, Blocks.leaves, x - 2, y + h + 1, z + 0);
+    setVisible(section, Blocks.leaves, x - 1, y + h + 1, z + 0);
+    setVisible(section, Blocks.leaves, x + 0, y + h + 1, z + 0);
+    setVisible(section, Blocks.leaves, x + 1, y + h + 1, z + 0);
+    setVisible(section, Blocks.leaves, x + 2, y + h + 1, z + 0);
 
-    setVisible(world, Blocks.leaves, x + 0, y + h + 1, z - 2);
-    setVisible(world, Blocks.leaves, x + 0, y + h + 1, z - 1);
-    setVisible(world, Blocks.leaves, x + 0, y + h + 1, z + 0);
-    setVisible(world, Blocks.leaves, x + 0, y + h + 1, z + 1);
-    setVisible(world, Blocks.leaves, x + 0, y + h + 1, z + 2);
+    setVisible(section, Blocks.leaves, x + 0, y + h + 1, z - 2);
+    setVisible(section, Blocks.leaves, x + 0, y + h + 1, z - 1);
+    setVisible(section, Blocks.leaves, x + 0, y + h + 1, z + 0);
+    setVisible(section, Blocks.leaves, x + 0, y + h + 1, z + 1);
+    setVisible(section, Blocks.leaves, x + 0, y + h + 1, z + 2);
 
-    setVisible(world, Blocks.leaves, x + 1, y + h + 1, z + 1);
-    setVisible(world, Blocks.leaves, x + 1, y + h + 1, z - 1);
-    setVisible(world, Blocks.leaves, x - 1, y + h + 1, z + 1);
-    setVisible(world, Blocks.leaves, x - 1, y + h + 1, z - 1);
+    setVisible(section, Blocks.leaves, x + 1, y + h + 1, z + 1);
+    setVisible(section, Blocks.leaves, x + 1, y + h + 1, z - 1);
+    setVisible(section, Blocks.leaves, x - 1, y + h + 1, z + 1);
+    setVisible(section, Blocks.leaves, x - 1, y + h + 1, z - 1);
 
     // Third layer
 
-    setVisible(world, Blocks.leaves, x + 0, y + h + 2, z + 0);
-    setVisible(world, Blocks.leaves, x + 0, y + h + 2, z + 1);
-    setVisible(world, Blocks.leaves, x + 0, y + h + 2, z - 1);
-    setVisible(world, Blocks.leaves, x + 1, y + h + 2, z + 0);
-    setVisible(world, Blocks.leaves, x - 1, y + h + 2, z + 0);
+    setVisible(section, Blocks.leaves, x + 0, y + h + 2, z + 0);
+    setVisible(section, Blocks.leaves, x + 0, y + h + 2, z + 1);
+    setVisible(section, Blocks.leaves, x + 0, y + h + 2, z - 1);
+    setVisible(section, Blocks.leaves, x + 1, y + h + 2, z + 0);
+    setVisible(section, Blocks.leaves, x - 1, y + h + 2, z + 0);
 
     for (int i = 0; i < h + 2; i++) {
-      setVisible(world, Blocks.log, x, y + i, z);
+      setVisible(section, Blocks.log, x, y + i, z);
     }
   }
 

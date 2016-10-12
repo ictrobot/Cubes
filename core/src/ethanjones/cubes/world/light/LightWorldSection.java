@@ -4,37 +4,21 @@ import ethanjones.cubes.core.IDManager.TransparencyManager;
 import ethanjones.cubes.core.util.Lock;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.world.CoordinateConverter;
-import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.storage.Area;
-import ethanjones.cubes.world.thread.AreaNotLoadedException;
+import ethanjones.cubes.world.thread.WorldSection;
 
-class LightWorldSection {
-  public final int initialAreaX;
-  public final int initialAreaZ;
-  public final Area[][] areas = new Area[3][3];
+class LightWorldSection extends WorldSection {
   private final TransparencyManager transparency;
 
   LightWorldSection(Area initial) {
+    super(initial);
     this.transparency = Sided.getIDManager().transparencyManager;
-    initialAreaX = initial.areaX;
-    initialAreaZ = initial.areaZ;
+    Lock.waitToLockAll(true, areas[0][0], areas[0][1], areas[0][2], areas[1][0], areas[1][1], areas[1][2], areas[2][0], areas[2][1], areas[2][2]);
+  }
 
-    World world = initial.world;
-    areas[0][0] = world.getArea(initialAreaX - 1, initialAreaZ - 1);
-    areas[0][1] = world.getArea(initialAreaX - 1, initialAreaZ);
-    areas[0][2] = world.getArea(initialAreaX - 1, initialAreaZ + 1);
-    areas[1][0] = world.getArea(initialAreaX, initialAreaZ - 1);
-    areas[1][1] = initial;
-    areas[1][2] = world.getArea(initialAreaX, initialAreaZ + 1);
-    areas[2][0] = world.getArea(initialAreaX + 1, initialAreaZ - 1);
-    areas[2][1] = world.getArea(initialAreaX + 1, initialAreaZ);
-    areas[2][2] = world.getArea(initialAreaX + 1, initialAreaZ + 1);
-
-    for (Area[] areaArr : areas) {
-      for (Area area : areaArr) {
-        if (area == null) throw new AreaNotLoadedException();
-      }
-    }
+  LightWorldSection(WorldSection section) {
+    super(section);
+    this.transparency = Sided.getIDManager().transparencyManager;
     Lock.waitToLockAll(true, areas[0][0], areas[0][1], areas[0][2], areas[1][0], areas[1][1], areas[1][2], areas[2][0], areas[2][1], areas[2][2]);
   }
 
@@ -75,12 +59,6 @@ class LightWorldSection {
 
   protected int maxY(int x, int z) {
     return getArea(CoordinateConverter.area(x), CoordinateConverter.area(z)).maxY;
-  }
-
-  protected Area getArea(int areaX, int areaZ) {
-    int dX = areaX - initialAreaX;
-    int dZ = areaZ - initialAreaZ;
-    return areas[dX + 1][dZ + 1];
   }
 
   protected void unlock() {

@@ -1,8 +1,8 @@
 package ethanjones.cubes.world.light;
 
-import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.storage.Area;
+import ethanjones.cubes.world.thread.WorldSection;
 
 import java.util.ArrayDeque;
 import java.util.concurrent.locks.ReentrantLock;
@@ -13,9 +13,9 @@ public class SunLight {
   public static ReentrantLock initalSunlight = new ReentrantLock();
   public static final int MAX_SUNLIGHT = 0xF0;
 
-  public static void initialSunlight(Area area) {
+  public static void initialSunlight(Area area, WorldSection ws) {
     initalSunlight.lock(); // used to prevent all the World Generation threads grabbing different areas and deadlocking
-    LightWorldSection worldSection = new LightWorldSection(area);
+    LightWorldSection worldSection = new LightWorldSection(ws);
     initalSunlight.unlock();
 
     ArrayDeque<LightNode> lightQueue = new ArrayDeque<>();
@@ -38,11 +38,9 @@ public class SunLight {
     worldSection.unlock();
   }
 
-  public static void addSunlight(int x, int y, int z) {
-    Area area = Sided.getCubes().world.getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
+  public static void addSunlight(int x, int y, int z, Area area, LightWorldSection w) {
     if (y > 0 && y <= area.maxY) {
       ArrayDeque<LightNode> lightQueue = new ArrayDeque<LightNode>(1000);
-      LightWorldSection w = new LightWorldSection(area);
 
       if (y <= w.maxY(x + 1, z) && w.transparent(x + 1, y, z))
         lightQueue.add(new LightNode(x + 1, y, z, w.getSunlight(x + 1, y, z)));
@@ -57,7 +55,6 @@ public class SunLight {
         lightQueue.add(new LightNode(x, y, z - 1, w.getSunlight(x, y, z - 1)));
 
       propagateAdd(lightQueue, w);
-      w.unlock();
     }
   }
 
@@ -97,19 +94,16 @@ public class SunLight {
     }
   }
 
-  public static void removeSunlight(int x, int y, int z) {
-    Area area = Sided.getCubes().world.getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
+  public static void removeSunlight(int x, int y, int z, Area area, LightWorldSection lws) {
     if (y > 0 && y <= area.maxY) {
       ArrayDeque<LightNode> removeQueue = new ArrayDeque<LightNode>(1000);
       ArrayDeque<LightNode> addQueue = new ArrayDeque<LightNode>(1000);
-      LightWorldSection lightWorldSection = new LightWorldSection(area);
 
       int prev = area.getSunlight(x - area.minBlockX, y, z - area.minBlockZ);
       area.setSunlight(x - area.minBlockX, y, z - area.minBlockZ, 0);
       removeQueue.add(new LightNode(x, y, z, prev));
-      propagateRemove(removeQueue, addQueue, lightWorldSection);
-      propagateAdd(addQueue, lightWorldSection);
-      lightWorldSection.unlock();
+      propagateRemove(removeQueue, addQueue, lws);
+      propagateAdd(addQueue, lws);
     }
   }
 
