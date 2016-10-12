@@ -23,7 +23,7 @@ public class Fonts {
     generator = new FreeTypeFontGenerator(Assets.getAsset("core:font/font.ttf").getFileHandle());
 
     title = getFont(64);
-    menu = getFont(42);
+    menu = getFont(40);
     hud = getFont(32);
     smallHUD = getFont(20);
     debug = getFont(32);
