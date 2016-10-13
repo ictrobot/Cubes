@@ -59,8 +59,8 @@ public class WorldGenerationRunnable implements Runnable {
         }
 
         if (queue.remove(task) && task.parameter.afterCompletion != null) {
-          task.parameter.afterCompletion.run();
           task.printStatistics();
+          task.parameter.afterCompletion.run();
         }
       } catch (CubesException e) {
         if (e.className.equals(Sided.class.getName())) {
