@@ -110,7 +110,6 @@ public class Sided {
     data.eventBus = new EventBus();
     data.timing = new Timing();
     data.idManager = new IDManager();
-    if (side == Side.Server) data.idManager.generateDefault(); //TODO Need to store with world
   }
 
   public static boolean isSetup(Side side) {

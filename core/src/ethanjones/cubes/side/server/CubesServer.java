@@ -43,6 +43,7 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
   public void create() {
     if (state.isSetup()) return;
     super.create();
+    save.readIDManager();
     CommandManager.reset();
     NetworkingManager.serverInit();
 

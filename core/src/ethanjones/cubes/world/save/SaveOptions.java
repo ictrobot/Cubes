@@ -10,6 +10,7 @@ public class SaveOptions implements DataParser {
   public long worldSeed = MathUtils.random.nextLong();
   public String worldType = "core:smooth";
   public Gamemode worldGamemode = Gamemode.survival;
+  public DataGroup idManager = new DataGroup();
 
   @Override
   public DataGroup write() {
@@ -17,6 +18,7 @@ public class SaveOptions implements DataParser {
     dataGroup.put("worldSeed", worldSeed);
     dataGroup.put("worldType", worldType);
     dataGroup.put("worldGamemode", worldGamemode.name());
+    dataGroup.put("idManager", idManager);
     return dataGroup;
   }
 
@@ -25,5 +27,6 @@ public class SaveOptions implements DataParser {
     worldSeed = dataGroup.getLong("worldSeed");
     worldType = dataGroup.getString("worldType");
     worldGamemode = Gamemode.valueOf(dataGroup.getString("worldGamemode"));
+    idManager = dataGroup.getGroup("idManager");
   }
 }

@@ -122,7 +122,7 @@ public class IDManager implements DataParser {
 
   public void generateDefault() {
     if (integerToBlock.size() > 0) return;
-
+    Log.debug("Generating default ID manager");
     int i = 1;
     for (Block block : blockList) {
       if (i > MAX_BLOCK_ID) {
@@ -190,26 +190,62 @@ public class IDManager implements DataParser {
   @Override
   public void read(DataGroup data) {
     if (integerToBlock.size() > 0) return;
+    Log.debug("Reading ID manager");
+    HashMap<String, Block> blockMapCopy = new HashMap<String, Block>();
+    HashMap<String, Item> itemMapCopy = new HashMap<String, Item>();
+    blockMapCopy.putAll(idToBlock);
+    itemMapCopy.putAll(idToItem);
+
+    nextFree = data.getInteger("next");
 
     DataGroup blocks = data.getGroup("blocks");
     for (Map.Entry<String, Object> entry : blocks.entrySet()) {
-      Block block = idToBlock.get(entry.getKey());
-      if (block == null) throw new CubesException("No such block: " + entry.getKey());
+      Block block = blockMapCopy.remove(entry.getKey());
+      if (block == null) {
+        Log.error("No such block: " + entry.getKey());
+        continue;
+      }
       int i = (Integer) entry.getValue();
       integerToBlock.put(i, block);
       blockToInteger.put(block, i);
     }
 
+    for (Block block : blockMapCopy.values()) {
+      if (nextFree > MAX_BLOCK_ID) {
+        Debug.crash(new CubesException("No more block ids"));
+      }
+      Log.debug("Adding block " + block.id + " " + nextFree);
+      ItemBlock itemBlock = block.getItemBlock();
+      integerToBlock.put(nextFree, block);
+      blockToInteger.put(block, nextFree);
+      integerToItem.put(nextFree, itemBlock);
+      itemToInteger.put(itemBlock, nextFree);
+      nextFree++;
+    }
+
     DataGroup items = data.getGroup("items");
     for (Map.Entry<String, Object> entry : items.entrySet()) {
-      Item item = idToItem.get(entry.getKey());
-      if (item == null) throw new CubesException("No such item: " + entry.getKey());
+      Item item = itemMapCopy.remove(entry.getKey());
+      if (item == null) {
+        Log.error("No such item: " + entry.getKey());
+        continue;
+      }
       int i = (Integer) entry.getValue();
       integerToItem.put(i, item);
       itemToInteger.put(item, i);
     }
 
-    nextFree = data.getInteger("next");
+    for (Item item : itemMapCopy.values()) {
+      if (nextFree < 0) {
+        Debug.crash(new CubesException("No more items ids"));
+      } else if (item instanceof ItemBlock) {
+        continue;
+      }
+      Log.debug("Adding item " + item.id + " " + nextFree);
+      integerToItem.put(nextFree, item);
+      itemToInteger.put(item, nextFree);
+      nextFree++;
+    }
 
     unmodifiable();
   }

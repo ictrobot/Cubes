@@ -1,8 +1,10 @@
 package ethanjones.cubes.world.save;
 
+import ethanjones.cubes.core.IDManager;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.networking.server.ClientIdentifier;
+import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.generator.smooth.Cave;
 import ethanjones.cubes.world.reference.AreaReference;
@@ -200,5 +202,17 @@ public class Save {
   @Override
   public String toString() {
     return name;
+  }
+
+  public void readIDManager() {
+    SaveOptions saveOptions = getSaveOptions();
+    IDManager idManager = Sided.getIDManager();
+    if (saveOptions.idManager.size() == 0) {
+      idManager.generateDefault();
+    } else {
+      idManager.read(saveOptions.idManager);
+    }
+    saveOptions.idManager = idManager.write();
+    writeSaveOptions();
   }
 }
