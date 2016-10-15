@@ -49,9 +49,7 @@ public class Inventory implements DataParser {
     for (int i = 0; i < itemStacks.length; i++) {
       DataGroup d = groups[i];
       if (d.size() > 0) {
-        itemStacks[i] = new ItemStack();
-        itemStacks[i].read(d);
-        if (itemStacks[i].item == null) itemStacks[i] = null;
+        itemStacks[i] = ItemStack.readItemStack(d);
       } else {
         itemStacks[i] = null;
       }

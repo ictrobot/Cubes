@@ -44,8 +44,7 @@ public class ItemEntity extends Entity implements RenderableProvider {
   @Override
   public void read(DataGroup data) {
     super.read(data);
-    itemStack = new ItemStack();
-    itemStack.read(data.getGroup("itemstack"));
+    itemStack = ItemStack.readItemStack(data.getGroup("itemstack"));
     age = data.getInteger("age");
   }
 

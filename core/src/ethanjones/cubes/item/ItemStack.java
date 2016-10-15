@@ -1,5 +1,6 @@
 package ethanjones.cubes.item;
 
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.side.Sided;
 import ethanjones.data.DataGroup;
 import ethanjones.data.DataParser;
@@ -48,5 +49,15 @@ public class ItemStack implements DataParser {
 
   public ItemStack copy() {
     return new ItemStack(item, count, meta);
+  }
+
+  public static ItemStack readItemStack(DataGroup dataGroup) {
+    ItemStack stack = new ItemStack();
+    stack.read(dataGroup);
+    if (stack.item == null) {
+      Log.debug("Null item after reading itemstack");
+      return null;
+    }
+    return stack;
   }
 }
