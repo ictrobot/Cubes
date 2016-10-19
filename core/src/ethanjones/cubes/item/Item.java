@@ -36,4 +36,9 @@ public class Item {
   public int getStackCountMax() {
     return 64;
   }
+
+  @Override
+  public String toString() {
+    return id;
+  }
 }
