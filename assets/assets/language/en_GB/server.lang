@@ -1,3 +1,4 @@
 server.console_capitals=CONSOLE
 server.chat=Chat
 server.server_loaded=Server loaded
+server.server_port=Listening on port %s

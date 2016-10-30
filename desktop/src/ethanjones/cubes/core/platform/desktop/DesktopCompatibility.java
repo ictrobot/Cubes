@@ -94,4 +94,9 @@ public abstract class DesktopCompatibility extends Compatibility {
   public boolean functionModifier() {
     return Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT);
   }
+
+  @Override
+  public String[] getCommandLineArgs() {
+    return arg;
+  }
 }

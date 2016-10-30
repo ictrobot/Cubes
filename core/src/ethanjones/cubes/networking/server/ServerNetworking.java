@@ -84,4 +84,8 @@ public class ServerNetworking extends Networking {
     sockets.add(new SocketMonitor(socket, this, Side.Server));
     Log.info("Successfully connected to " + socket.getRemoteAddress());
   }
+
+  public int getPort() {
+    return serverNetworkingParameter.port;
+  }
 }

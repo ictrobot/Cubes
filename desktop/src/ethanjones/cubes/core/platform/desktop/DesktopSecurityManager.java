@@ -2,6 +2,7 @@ package ethanjones.cubes.core.platform.desktop;
 
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.logging.LogLevel;
+import ethanjones.cubes.side.common.Cubes;
 
 import java.security.Permission;
 
@@ -23,6 +24,7 @@ public class DesktopSecurityManager extends SecurityManager {
   @Override
   public synchronized void checkPermission(Permission perm) {
     if (perm.getName().startsWith("exitVM.")) {
+      if (!Cubes.cubesSetup()) return;
       if (getClassContext().length < 5) throw new SecurityException();
       String c = getClassContext()[4].getName();
       if (c.startsWith("com.badlogic.gdx.backends.lwjgl.Lwjgl") || c.equals("ethanjones.cubes.side.common.Cubes") || c.equals("ethanjones.cubes.core.system.Debug") || c.equals("ethanjones.cubes.core.platform.Adapter")) {

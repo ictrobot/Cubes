@@ -30,10 +30,6 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
   private static final int SAVE_TIME = 60000;
   private final Save save;
 
-  public CubesServer() {
-    this(null);
-  }
-
   public CubesServer(Save save) {
     super(Side.Server);
     this.save = save;

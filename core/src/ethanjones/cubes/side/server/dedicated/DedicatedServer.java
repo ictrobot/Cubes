@@ -1,8 +1,12 @@
 package ethanjones.cubes.side.server.dedicated;
 
+import ethanjones.cubes.core.platform.Compatibility;
+import ethanjones.cubes.core.platform.ServerCmdLineOptions;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.networking.socket.SocketMonitor;
 import ethanjones.cubes.side.server.CubesServer;
+import ethanjones.cubes.world.save.Save;
+import ethanjones.cubes.world.save.SaveOptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,6 +18,21 @@ public class DedicatedServer extends CubesServer {
   private final HashMap<SocketMonitor, ClientIdentifier> clients = new HashMap<SocketMonitor, ClientIdentifier>();
   private final ArrayList<ClientIdentifier> disconnected = new ArrayList<ClientIdentifier>();
   private ConsoleCommandSender consoleCommandSender;
+
+  public DedicatedServer(ServerCmdLineOptions options) {
+    super(getSave(options));
+  }
+
+  private static Save getSave(ServerCmdLineOptions options) {
+    Save save = new Save("world", Compatibility.get().getBaseFolder().child("world"));
+    if (save.readSaveOptions() == null) {
+      SaveOptions saveOptions = save.getSaveOptions();
+      if (options.worldSeed != null) saveOptions.worldSeed = options.worldSeed;
+      if (options.worldGenerator != null) saveOptions.worldType = options.worldGenerator;
+      if (options.worldGamemode != null) saveOptions.worldGamemode = options.worldGamemode;
+    }
+    return save;
+  }
 
   @Override
   public void create() {

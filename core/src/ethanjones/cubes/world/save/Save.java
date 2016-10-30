@@ -122,6 +122,20 @@ public class Save {
     }
   }
 
+  public synchronized SaveOptions readSaveOptions() {
+    if (saveOptions == null) {
+      saveOptions = new SaveOptions();
+      try {
+        DataGroup dataGroup = (DataGroup) Data.input(fileHandle.child("options").file());
+        saveOptions.read(dataGroup);
+        return saveOptions;
+      } catch (Exception e) {
+        saveOptions = null;
+      }
+    }
+    return saveOptions;
+  }
+
   public synchronized SaveOptions getSaveOptions() {
     if (saveOptions == null) {
       saveOptions = new SaveOptions();

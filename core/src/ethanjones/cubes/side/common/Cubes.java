@@ -89,6 +89,10 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
     return adapterInterface.getServer();
   }
 
+  public static boolean cubesSetup() {
+    return setup;
+  }
+
   private final Side side;
   public World world;
   public Thread thread;

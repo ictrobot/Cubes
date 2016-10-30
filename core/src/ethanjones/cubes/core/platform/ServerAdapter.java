@@ -5,6 +5,7 @@ import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.networking.NetworkingManager;
+import ethanjones.cubes.networking.server.ServerNetworking;
 import ethanjones.cubes.networking.server.ServerNetworkingParameter;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.client.CubesClient;
@@ -15,6 +16,7 @@ import ethanjones.cubes.side.server.dedicated.DedicatedServer;
 public class ServerAdapter implements AdapterInterface {
 
   private DedicatedServer cubesServer;
+  private ServerCmdLineOptions options;
   private Thread thread;
 
   public ServerAdapter() {
@@ -26,11 +28,20 @@ public class ServerAdapter implements AdapterInterface {
     try {
       thread = Thread.currentThread();
       thread.setName(getSide().name());
+
+      options = new ServerCmdLineOptions();
+      options.parse();
+
       Cubes.setup(this);
-      NetworkingManager.serverPreInit(new ServerNetworkingParameter());
-      cubesServer = new DedicatedServer();
+      if (options.port != null) {
+        NetworkingManager.serverPreInit(new ServerNetworkingParameter(options.port));
+      } else {
+        NetworkingManager.serverPreInit(new ServerNetworkingParameter());
+      }
+      cubesServer = new DedicatedServer(options);
       cubesServer.create();
       Log.info(Localization.get("server.server_loaded"));
+      Log.info(Localization.get("server.server_port", ((ServerNetworking) NetworkingManager.getNetworking(Side.Server)).getPort()));
     } catch (Exception e) {
       Debug.crash(e);
     }

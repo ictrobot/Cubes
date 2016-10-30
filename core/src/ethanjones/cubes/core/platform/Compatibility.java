@@ -125,4 +125,8 @@ public abstract class Compatibility {
     return null;
   }
 
+  public String[] getCommandLineArgs() {
+    return new String[]{};
+  }
+
 }

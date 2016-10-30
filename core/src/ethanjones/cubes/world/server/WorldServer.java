@@ -3,7 +3,6 @@ package ethanjones.cubes.world.server;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.performance.Performance;
 import ethanjones.cubes.core.performance.PerformanceTags;
-import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.entity.Entity;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketEntityAdd;
@@ -26,7 +25,8 @@ import java.util.UUID;
 public class WorldServer extends World {
 
   public WorldServer(Save save) {
-    super(save == null ? getDefaultSave() : save);
+    super(save);
+    if (save == null) throw new IllegalArgumentException("Null save on server");
     Log.info("Save '" + this.save.name + "' in '" + this.save.fileHandle.file().getAbsolutePath() + "'");
     spawnpoint.setFromBlockReference(terrainGenerator.spawnPoint(this));
   }
@@ -103,9 +103,5 @@ public class WorldServer extends World {
   public void setTime(int time) {
     super.setTime(time);
     NetworkingManager.sendPacketToAllClients(new PacketWorldTime(this.time));
-  }
-
-  private static Save getDefaultSave() {
-    return new Save("world", Compatibility.get().getBaseFolder().child("world"));
   }
 }
