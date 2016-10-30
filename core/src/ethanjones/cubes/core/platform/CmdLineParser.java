@@ -34,6 +34,7 @@ package ethanjones.cubes.core.platform;
 
 /*
  * Edited Ethan Jones 2016
+ * From https://github.com/purcell/jargs
  */
 
 import java.text.NumberFormat;
