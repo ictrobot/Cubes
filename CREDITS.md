@@ -9,8 +9,8 @@ Cubes Credits
 
 * [OpenSimplexNoise.java](https://gist.github.com/KdotJPG/b1270127455a94ac5d19)
 
-* [minimal-json library](https://github.com/ralfstx/minimal-json)
+* [ralfstx/minimal-json library](https://github.com/ralfstx/minimal-json)
 
 * InventoryActor, SlotActor and SlotTooltipListener based on [PixelScientists/libgdx-utils](https://github.com/PixelScientists/libgdx-utils)
 
-* Modified version of [jargs](https://github.com/purcell/jargs) to parse command line arguments
+* Modified version of [purcell/jargs](https://github.com/purcell/jargs) to parse command line arguments
