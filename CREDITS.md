@@ -9,7 +9,7 @@ Cubes Credits
 
 * [OpenSimplexNoise.java](https://gist.github.com/KdotJPG/b1270127455a94ac5d19)
 
-* [ralfstx/minimal-json library](https://github.com/ralfstx/minimal-json)
+* [ralfstx/minimal-json](https://github.com/ralfstx/minimal-json) library
 
 * InventoryActor, SlotActor and SlotTooltipListener based on [PixelScientists/libgdx-utils](https://github.com/PixelScientists/libgdx-utils)
 
