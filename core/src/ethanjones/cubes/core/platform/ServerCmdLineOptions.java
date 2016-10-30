@@ -32,6 +32,9 @@ public class ServerCmdLineOptions {
     port = clp.getOptionValue("port", null);
     worldSeed = clp.getOptionValue("seed", null);
     worldGenerator = clp.getOptionValue("generator", null);
+    if (worldGenerator != null && !worldGenerator.contains(":")) {
+      worldGenerator = "core:" + worldGenerator;
+    }
     String gamemode = clp.getOptionValue("gamemode", null);
     if (gamemode != null) {
       worldGamemode = Gamemode.valueOf(gamemode);
