@@ -1,10 +1,10 @@
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
         maven { url 'https://jitpack.io' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.5.0'
+        classpath 'com.android.tools.build:gradle:2.2.2'
         classpath 'com.github.rusmonster:sdk-manager-plugin:a35a7b1c2a41a8945fbd69c6187285bd6927a63f'
     }
 }
@@ -65,7 +65,7 @@ allprojects {
 
     repositories {
         mavenLocal()
-        mavenCentral()
+        jcenter()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
         maven { url "http://ethanjones.me/maven/snapshots/" }
