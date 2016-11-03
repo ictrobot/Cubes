@@ -110,10 +110,10 @@ public class MenuTools {
   }
 
   public static void arrangeX(float y, boolean centerY, Actor... actors) {
-    float w = (GUI_WIDTH / (actors.length + 1));
+    float w = GUI_WIDTH / actors.length;
     for (int i = 0; i < actors.length; i++) {
       Actor a = actors[i];
-      a.setPosition(((i + 1) * w) - (a.getWidth() / 2f), y - (centerY ? (a.getWidth() / 2f) : 0));
+      a.setPosition(((i + 0.5f) * w) - (a.getWidth() / 2f), y - (centerY ? (a.getWidth() / 2f) : 0));
     }
   }
 
@@ -121,7 +121,7 @@ public class MenuTools {
     float w = (GUI_HEIGHT / (actors.length + 1));
     for (int i = 0; i < actors.length; i++) {
       Actor a = actors[i];
-      a.setPosition(x - (centerX ? (a.getWidth() / 2f) : 0), ((i + 1) * w) - (a.getHeight() / 2f));
+      a.setPosition(x - (centerX ? (a.getWidth() / 2f) : 0), ((i + 0.5f) * w) - (a.getHeight() / 2f));
     }
   }
 
