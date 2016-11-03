@@ -6,7 +6,7 @@ addons:
     - lib32stdc++6
     - lib32z1
 jdk:
-- oraclejdk7
+- oraclejdk8
 before_install:
 - openssl aes-256-cbc -K $encrypted_65bd786e7d9d_key -iv $encrypted_65bd786e7d9d_iv
   -in build.properties.enc -out build.properties -d
