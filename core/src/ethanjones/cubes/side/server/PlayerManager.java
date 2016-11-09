@@ -4,6 +4,7 @@ import ethanjones.cubes.core.event.EventHandler;
 import ethanjones.cubes.core.event.entity.living.player.PlayerMovementEvent;
 import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
 import ethanjones.cubes.core.event.world.generation.AreaLoadedEvent;
+import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.entity.ItemEntity;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.entity.living.player.PlayerInventory;
@@ -11,8 +12,10 @@ import ethanjones.cubes.item.ItemStack;
 import ethanjones.cubes.item.ItemTool;
 import ethanjones.cubes.item.inv.InventoryHelper;
 import ethanjones.cubes.networking.NetworkingManager;
+import ethanjones.cubes.networking.client.ClientNetworking;
 import ethanjones.cubes.networking.packets.*;
 import ethanjones.cubes.networking.server.ClientIdentifier;
+import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.CoordinateConverter;
@@ -34,6 +37,8 @@ import java.util.ArrayList;
 public class PlayerManager {
 
   public final ClientIdentifier client;
+  public double connectionPing = -1;
+  public double lastPingNano = -1;
   private final CubesServer server;
   private final AreaReference playerArea;
   private final ArrayList<Integer> keys;
@@ -333,6 +338,10 @@ public class PlayerManager {
         NetworkingManager.sendPacketToClient(packet, client);
 
         if (doneFeatures == totalFeatures && doneGenerate == totalGenerate) initialGenerationTask = null;
+      }
+  
+      if (lastPingNano != -1 && System.nanoTime() - lastPingNano >= ClientNetworking.PING_NANOSECONDS * 2) {
+        NetworkingManager.getNetworking(Side.Server).disconnected(client.getSocketMonitor(), new CubesException("No ping received"));
       }
     }
   }

@@ -2,13 +2,16 @@ package ethanjones.cubes.networking.client;
 
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Adapter;
+import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.networking.Networking;
 import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.networking.packet.PacketDirection;
 import ethanjones.cubes.networking.packet.PacketQueue;
 import ethanjones.cubes.networking.packets.PacketConnect;
+import ethanjones.cubes.networking.packets.PacketPingRequest;
 import ethanjones.cubes.networking.socket.SocketMonitor;
 import ethanjones.cubes.side.Side;
+import ethanjones.cubes.side.common.Cubes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.Protocol;
@@ -16,9 +19,12 @@ import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class ClientNetworking extends Networking {
-
+  
+  public static final int PING_SECONDS = 10;
+  public static final int PING_TICKS = PING_SECONDS * (1000 / Cubes.tickMS);
+  public static final long PING_NANOSECONDS = PING_SECONDS * 1000000000L;
+  
   //TODO: Send packet when disconnecting and log better
-
   public static PingResult ping(ClientNetworkingParameter clientNetworkingParameter) {
     Log.debug("Pinging Host:" + clientNetworkingParameter.host + " Port:" + clientNetworkingParameter.port);
     Socket socket;
@@ -36,6 +42,10 @@ public class ClientNetworking extends Networking {
   private final ClientNetworkingParameter clientNetworkingParameter;
   private SocketMonitor socketMonitor;
   private Socket socket;
+  
+  private int tickCount;
+  public double ping = -1;
+  public boolean awaitingPingResponse = false;
 
   public ClientNetworking(ClientNetworkingParameter clientNetworkingParameter) {
     this.clientNetworkingParameter = clientNetworkingParameter;
@@ -76,6 +86,15 @@ public class ClientNetworking extends Networking {
   public synchronized void update() {
     if (getNetworkingState() != NetworkingState.Running) {
       Adapter.gotoMainMenu();
+    }
+    tickCount++;
+    if (tickCount % PING_TICKS == 0) {
+      if (awaitingPingResponse) {
+        disconnected(socketMonitor, new CubesException("No ping response"));
+      } else {
+        awaitingPingResponse = true;
+        sendPacketToServer(new PacketPingRequest());
+      }
     }
   }
 

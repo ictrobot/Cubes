@@ -10,7 +10,8 @@ import com.badlogic.gdx.utils.Disposable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SocketMonitor implements Disposable {
-
+  
+  public final String remoteAddress;
   protected final AtomicBoolean running;
   private final Networking networking;
   private final Side side;
@@ -23,11 +24,12 @@ public class SocketMonitor implements Disposable {
     this.socket = socket;
     this.networking = networking;
     this.side = side;
+    this.remoteAddress = socket.getRemoteAddress();
     running = new AtomicBoolean(true);
     socketInput = new SocketInput(this);
     socketOutput = new SocketOutput(this);
-    socketInput.start("Socket Input: " + socket.getRemoteAddress());
-    socketOutput.start("Socket Output: " + socket.getRemoteAddress());
+    socketInput.start("Socket Input: " + remoteAddress);
+    socketOutput.start("Socket Output: " + remoteAddress);
     this.packetIDDatabase = new PacketIDDatabase();
   }
 
