@@ -16,6 +16,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class IDManager implements DataParser {
@@ -255,6 +256,15 @@ public class IDManager implements DataParser {
     blockToInteger = Collections.unmodifiableMap(blockToInteger);
     integerToItem = Collections.unmodifiableMap(integerToItem);
     itemToInteger = Collections.unmodifiableMap(itemToInteger);
+  
+    for (Entry<Block, Integer> entry : blockToInteger.entrySet()) {
+      entry.getKey().intID = entry.getValue();
+    }
+  
+    for (Entry<Item, Integer> entry : itemToInteger.entrySet()) {
+      entry.getKey().intID = entry.getValue();
+    }
+    
     transparencyManager.setup(this);
   }
 

@@ -323,8 +323,8 @@ public class Area implements Lock.HasLock {
 
   public void setBlock(Block block, int x, int y, int z, int meta) {
     if (y < 0) return;
-
-    int n = Sided.getIDManager().toInt(block);
+  
+    int n = block == null ? 0 : block.intID;
     n += (meta & 0xFF) << 20;
 
     lock.writeLock();

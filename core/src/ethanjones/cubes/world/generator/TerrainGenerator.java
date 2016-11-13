@@ -1,7 +1,6 @@
 package ethanjones.cubes.world.generator;
 
 import ethanjones.cubes.block.Block;
-import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.server.WorldServer;
@@ -21,7 +20,7 @@ public abstract class TerrainGenerator {
 
     area.lock.writeLock();
     area.setupArrays(y);
-    area.blocks[ref] = Sided.getIDManager().toInt(block);
+    area.blocks[ref] = (block == null ? 0 : block.intID);
     area.lock.writeUnlock();
   }
 
@@ -48,7 +47,7 @@ public abstract class TerrainGenerator {
 
     area.lock.writeLock();
     area.setupArrays(y);
-    area.blocks[ref] = Sided.getIDManager().toInt(block) | Area.BLOCK_VISIBLE;
+    area.blocks[ref] = (block == null ? 0 : block.intID | Area.BLOCK_VISIBLE);
     area.lock.writeUnlock();
   }
 

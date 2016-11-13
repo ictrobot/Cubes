@@ -15,6 +15,7 @@ public class Block {
   private static final int[] ONE_ZERO = new int[]{0};
 
   public String id;
+  public int intID;
   protected ItemBlock itemBlock;
   protected BlockTextureHandler[] textureHandlers;
   // block mining

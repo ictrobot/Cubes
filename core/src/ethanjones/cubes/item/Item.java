@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class Item {
 
   public String id;
+  public int intID;
 
   protected TextureRegion texture;
 
