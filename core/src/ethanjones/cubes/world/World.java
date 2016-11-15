@@ -66,7 +66,8 @@ public abstract class World implements Disposable {
     }
 
     Area old = map.put(areaReference.clone(), area);
-
+  
+    area.world = this;
     lock.writeUnlock();
 
     synchronized (map) {
@@ -77,7 +78,6 @@ public abstract class World implements Disposable {
       old.world = null;
       old.unload();
     }
-    area.world = this;
     return area;
   }
 

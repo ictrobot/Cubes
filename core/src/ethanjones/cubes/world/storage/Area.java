@@ -405,7 +405,7 @@ public class Area implements Lock.HasLock {
 
   public void tick() {
     if (Sided.getSide() == Side.Server) {
-      if (!features()) return;
+      if (!features() || world == null) return;
       ThreadLocalRandom random = ThreadLocalRandom.current();
       lock.writeLock();
       int updates = NUM_RANDOM_UPDATES * height;
