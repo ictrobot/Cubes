@@ -51,7 +51,7 @@ public class SaveAreaIO {
       dataInputStream.close();
       return area;
     } catch (Exception e) {
-      Log.error("Failed to read area", e);
+      Log.error("Failed to read area " + x + "," + z, e);
       return null;
     }
   }
@@ -76,7 +76,7 @@ public class SaveAreaIO {
       deflaterStream.finish();
       stream.close();
     } catch (Exception e) {
-      Log.error(e);
+      Log.error("Failed to write area " + area.areaX + "," + area.areaZ, e);
       return false;
     }
 
