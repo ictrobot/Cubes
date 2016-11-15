@@ -1,8 +1,10 @@
 package ethanjones.cubes.block;
 
 import ethanjones.cubes.core.util.BlockFace;
+import ethanjones.cubes.core.util.Lock;
 import ethanjones.cubes.graphics.world.BlockTextureHandler;
 import ethanjones.cubes.item.ItemTool.ToolType;
+import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.storage.Area;
 
@@ -27,12 +29,51 @@ public class BlockGrass extends Block {
   @Override
   public void randomTick(World world, Area area, int x, int y, int z, int meta) {
     if (y < area.maxY) {
-      Block above = area.getBlock(x, y + 1, z);
-      if (above != null) {
-        int aboveMeta = area.getMeta(x, y + 1, z);
-        if (!above.isTransparent(aboveMeta)) {
-          area.setBlock(Blocks.dirt, x, y, z, 0);
+      if (!validGrass(area, x, y, z)) {
+        area.setBlock(Blocks.dirt, x, y, z, 0);
+      }
+    }
+  
+    for (int i = y - 1; i <= y + 1; i++) {
+      checkDirt(world, area, x + 1, i, z + 1);
+      checkDirt(world, area, x + 1, i, z);
+      checkDirt(world, area, x + 1, i, z - 1);
+      checkDirt(world, area, x, i, z + 1);
+      checkDirt(world, area, x, i, z - 1);
+      checkDirt(world, area, x - 1, i, z + 1);
+      checkDirt(world, area, x - 1, i, z);
+      checkDirt(world, area, x - 1, i, z - 1);
+    }
+  }
+  
+  private boolean validGrass(Area area, int x, int y, int z) {
+    Block above = area.getBlock(x, y + 1, z);
+    int aboveMeta = area.getMeta(x, y + 1, z);
+    if (above != null && !above.isTransparent(aboveMeta)) {
+      return false;
+    } else if (area.getSunlight(x, y + 1, z) >= 10 || area.getLight(x, y + 1, z) >= 10) {
+      return true;
+    }
+    return false;
+  }
+  
+  private void checkDirt(World world, Area area, int x, int y, int z) {
+    if ((x < 0 || x >= Area.SIZE_BLOCKS) || (z < 0 || z >= Area.SIZE_BLOCKS)) {
+      x += area.minBlockX;
+      z += area.minBlockZ;
+      Area a = world.getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
+      if (a == null) return;
+      if (Lock.tryToLock(true, a)) {
+        int bX = x - a.minBlockX;
+        int bZ = z - a.minBlockZ;
+        if (a.getBlock(bX, y, bZ) == Blocks.dirt && validGrass(area, bX, y, bZ)) {
+          a.setBlock(Blocks.grass, bX, y, bZ, 0);
         }
+        a.lock.writeUnlock();
+      }
+    } else {
+      if (area.getBlock(x, y, z) == Blocks.dirt && validGrass(area, x, y, z)) {
+        area.setBlock(Blocks.grass, x, y, z, 0);
       }
     }
   }

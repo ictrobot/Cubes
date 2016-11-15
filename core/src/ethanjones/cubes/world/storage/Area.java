@@ -354,7 +354,8 @@ public class Area implements Lock.HasLock {
     lock.writeUnlock();
 
     //Must be after lock released to prevent dead locks
-    doUpdatesOtherAreas(x, y, z, ref);
+    if (transparency.isTransparent(b) != transparency.isTransparent(n))
+      doUpdatesOtherAreas(x, y, z, ref);
     new BlockChangedEvent(new BlockReference().setFromBlockCoordinates(x + minBlockX, y, z + minBlockZ), old, (b >> 20) & 0xFF, block, meta, this).post();
   }
 
@@ -404,6 +405,7 @@ public class Area implements Lock.HasLock {
 
   public void tick() {
     if (Sided.getSide() == Side.Server) {
+      if (!features()) return;
       ThreadLocalRandom random = ThreadLocalRandom.current();
       lock.writeLock();
       int updates = NUM_RANDOM_UPDATES * height;

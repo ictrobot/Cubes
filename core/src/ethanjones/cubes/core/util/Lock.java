@@ -39,6 +39,11 @@ public class Lock {
     write.unlock();
     return t;
   }
+  
+  public static boolean tryToLock(boolean write, HasLock lock) {
+    java.util.concurrent.locks.Lock l = write ? lock.getLock().write : lock.getLock().read;
+    return l.tryLock();
+  }
 
   public static void waitToLock(boolean write, HasLock lock) {
     java.util.concurrent.locks.Lock l = write ? lock.getLock().write : lock.getLock().read;
