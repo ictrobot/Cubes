@@ -10,7 +10,6 @@ import ethanjones.cubes.networking.packets.PacketEntityRemove;
 import ethanjones.cubes.networking.packets.PacketEntityUpdate;
 import ethanjones.cubes.networking.packets.PacketWorldTime;
 import ethanjones.cubes.world.World;
-import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
 import ethanjones.cubes.world.save.Save;
 import ethanjones.cubes.world.storage.Area;
@@ -19,7 +18,6 @@ import ethanjones.cubes.world.thread.WorldRequestParameter;
 import ethanjones.cubes.world.thread.WorldTasks;
 import ethanjones.data.DataGroup;
 
-import java.util.Map.Entry;
 import java.util.UUID;
 
 public class WorldServer extends World {
@@ -38,9 +36,11 @@ public class WorldServer extends World {
     super.tick();
 
     Performance.start(PerformanceTags.SERVER_WORLD_AREA_TICK);
-    for (Entry<AreaReference, Area> entry : map.entrySet()) {
-      entry.getValue().tick();
+    map.lock.readLock();
+    for (Area area : map) {
+      area.tick();
     }
+    map.lock.readUnlock();
     Performance.stop(PerformanceTags.SERVER_WORLD_AREA_TICK);
 
     lock.writeUnlock();

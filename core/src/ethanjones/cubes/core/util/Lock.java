@@ -40,6 +40,14 @@ public class Lock {
     return t;
   }
   
+  public boolean ownedByCurrentThread() {
+    return lock.isWriteLockedByCurrentThread();
+  }
+  
+  public boolean readLocked() {
+    return lock.getReadLockCount() > 0;
+  }
+  
   public static boolean tryToLock(boolean write, HasLock lock) {
     java.util.concurrent.locks.Lock l = write ? lock.getLock().write : lock.getLock().read;
     return l.tryLock();

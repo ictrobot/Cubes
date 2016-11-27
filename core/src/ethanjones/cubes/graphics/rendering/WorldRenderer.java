@@ -10,9 +10,10 @@ import ethanjones.cubes.input.CameraController;
 import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.CoordinateConverter;
-import ethanjones.cubes.world.client.WorldClient;
+import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.storage.Area;
+import ethanjones.cubes.world.storage.AreaMap;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -33,7 +34,6 @@ public class WorldRenderer implements Disposable {
   private static ArrayDeque<AreaNode> poolNode = new ArrayDeque<AreaNode>();
 
   public PerspectiveCamera camera;
-  private AreaReference fastGet = new AreaReference();
   private ArrayList<AreaRenderer> needToRefresh = new ArrayList<AreaRenderer>();
   private ArrayDeque<AreaNode> queue = new ArrayDeque<AreaNode>();
   private HashSet<AreaNode> renderedNodes = new HashSet<AreaNode>();
@@ -70,12 +70,13 @@ public class WorldRenderer implements Disposable {
     int renderDistance = Settings.getIntegerSettingValue(Settings.GRAPHICS_VIEW_DISTANCE);
 
     Performance.start(PerformanceTags.CLIENT_RENDER_WORLD_AREAS);
-    WorldClient world = (WorldClient) CubesClient.getClient().world;
-    world.lock.readLock();
+    World world = Cubes.getClient().world;
+    AreaMap areaMap = world.map;
+    areaMap.lock.readLock();
 
     AreaReference pos = Pools.obtainAreaReference().setFromPositionVector3(Cubes.getClient().player.position);
     int yPos = CoordinateConverter.area(Cubes.getClient().player.position.y);
-    queue.add(get(fastGet(world, pos.areaX, pos.areaZ), pos.areaX, pos.areaZ, yPos));
+    queue.add(get(areaMap.getArea(pos.areaX, pos.areaZ), pos.areaX, pos.areaZ, yPos));
 
     while (!queue.isEmpty()) {
       AreaNode node = queue.pop();
@@ -101,7 +102,7 @@ public class WorldRenderer implements Disposable {
         int status = area.renderStatus[ySection];
         if (status == AreaRenderStatus.UNKNOWN) status = AreaRenderStatus.update(area, ySection);
         traverse = status == AreaRenderStatus.EMPTY ? 0 : status;
-        boolean render = status != AreaRenderStatus.EMPTY && !complete(area, ySection, world, status);
+        boolean render = status != AreaRenderStatus.EMPTY && !complete(area, ySection, areaMap, status);
 
         if (render) {
           if (area.areaRenderer[ySection] == null) Pools.obtain(AreaRenderer.class).set(area, ySection);
@@ -121,16 +122,16 @@ public class WorldRenderer implements Disposable {
       if (traverse != AreaRenderStatus.COMPLETE) {
         Area a;
         if ((traverse & AreaRenderStatus.COMPLETE_MAX_X) == 0 && further(pos.areaX, pos.areaZ, areaX, areaZ, areaX + 1, areaZ)) {
-          if ((a = fastGet(world, areaX + 1, areaZ)) != null) queue.add(get(a, areaX + 1, areaZ, ySection));
+          if ((a = areaMap.lockedGetArea(areaX + 1, areaZ)) != null) queue.add(get(a, areaX + 1, areaZ, ySection));
         }
         if ((traverse & AreaRenderStatus.COMPLETE_MIN_X) == 0 && further(pos.areaX, pos.areaZ, areaX, areaZ, areaX - 1, areaZ)) {
-          if ((a = fastGet(world, areaX - 1, areaZ)) != null) queue.add(get(a, areaX - 1, areaZ, ySection));
+          if ((a = areaMap.lockedGetArea(areaX - 1, areaZ)) != null) queue.add(get(a, areaX - 1, areaZ, ySection));
         }
         if ((traverse & AreaRenderStatus.COMPLETE_MAX_Z) == 0 && further(pos.areaX, pos.areaZ, areaX, areaZ, areaX, areaZ + 1)) {
-          if ((a = fastGet(world, areaX, areaZ + 1)) != null) queue.add(get(a, areaX, areaZ + 1, ySection));
+          if ((a = areaMap.lockedGetArea(areaX, areaZ + 1)) != null) queue.add(get(a, areaX, areaZ + 1, ySection));
         }
         if ((traverse & AreaRenderStatus.COMPLETE_MIN_Z) == 0 && further(pos.areaX, pos.areaZ, areaX, areaZ, areaX, areaZ - 1)) {
-          if ((a = fastGet(world, areaX, areaZ - 1)) != null) queue.add(get(a, areaX, areaZ - 1, ySection));
+          if ((a = areaMap.lockedGetArea(areaX, areaZ - 1)) != null) queue.add(get(a, areaX, areaZ - 1, ySection));
         }
         if ((traverse & AreaRenderStatus.COMPLETE_MAX_Y) == 0 && !nullArea && ySection >= yPos) {
           queue.add(get(area, areaX, areaZ, ySection + 1));
@@ -140,6 +141,7 @@ public class WorldRenderer implements Disposable {
         }
       }
     }
+    areaMap.lock.readUnlock();
     poolNode.addAll(renderedNodes);
     for (Area lockedArea : lockedAreas) {
       lockedArea.lock.writeUnlock();
@@ -159,10 +161,12 @@ public class WorldRenderer implements Disposable {
 
     Performance.start(PerformanceTags.CLIENT_RENDER_WORLD_ENTITY);
     float deltaTime = Gdx.graphics.getDeltaTime();
+    world.lock.readLock();
     for (Entity entity : world.entities.values()) {
       entity.updatePosition(deltaTime);
       if (entity instanceof RenderableProvider) modelBatch.render(((RenderableProvider) entity));
     }
+    world.lock.readUnlock();
     Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_ENTITY);
 
     Renderable selected = SelectedBlock.draw();
@@ -170,8 +174,6 @@ public class WorldRenderer implements Disposable {
     Renderable breaking = BreakingRenderer.draw();
     if (breaking != null) modelBatch.render(breaking);
     SunRenderer.draw(modelBatch);
-
-    world.lock.readUnlock();
     modelBatch.end();
 
     Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD);
@@ -185,36 +187,31 @@ public class WorldRenderer implements Disposable {
     return frustum.boundsInFrustum((areaX * Area.SIZE_BLOCKS) + Area.HALF_SIZE_BLOCKS, (ySection * Area.SIZE_BLOCKS) + Area.HALF_SIZE_BLOCKS, (areaZ * Area.SIZE_BLOCKS) + Area.HALF_SIZE_BLOCKS, Area.HALF_SIZE_BLOCKS, Area.HALF_SIZE_BLOCKS, Area.HALF_SIZE_BLOCKS);
   }
 
-  public boolean complete(Area area, int ySection, WorldClient world, int status) {
+  public boolean complete(Area area, int ySection, AreaMap areaMap, int status) {
     if (status == AreaRenderStatus.COMPLETE) {
       if (ySection > 0 && (area.renderStatus[ySection - 1] & AreaRenderStatus.COMPLETE_MAX_Y) != AreaRenderStatus.COMPLETE_MAX_Y)
         return false;
       if (ySection < area.renderStatus.length - 1 && (area.renderStatus[ySection + 1] & AreaRenderStatus.COMPLETE_MIN_Y) != AreaRenderStatus.COMPLETE_MIN_Y)
         return false;
-      Area maxX = fastGet(world, area.areaX + 1, area.areaZ);
+      Area maxX = areaMap.lockedGetArea(area.areaX + 1, area.areaZ);
       if (maxX != null && !maxX.isBlank())
         if (maxX.renderStatus.length < ySection - 1 || (maxX.renderStatus[ySection] & AreaRenderStatus.COMPLETE_MIN_X) != AreaRenderStatus.COMPLETE_MIN_X)
           return false;
-      Area minX = fastGet(world, area.areaX - 1, area.areaZ);
+      Area minX = areaMap.lockedGetArea(area.areaX - 1, area.areaZ);
       if (minX != null && !minX.isBlank())
         if (minX.renderStatus.length < ySection - 1 || (minX.renderStatus[ySection] & AreaRenderStatus.COMPLETE_MAX_X) != AreaRenderStatus.COMPLETE_MAX_X)
           return false;
-      Area maxZ = fastGet(world, area.areaX, area.areaZ + 1);
+      Area maxZ = areaMap.lockedGetArea(area.areaX, area.areaZ + 1);
       if (maxZ != null && !maxZ.isBlank())
         if (maxZ.renderStatus.length < ySection - 1 || (maxZ.renderStatus[ySection] & AreaRenderStatus.COMPLETE_MIN_Z) != AreaRenderStatus.COMPLETE_MIN_Z)
           return false;
-      Area minZ = fastGet(world, area.areaX, area.areaZ - 1);
+      Area minZ = areaMap.lockedGetArea(area.areaX, area.areaZ - 1);
       if (minZ != null && !minZ.isBlank())
         if (minZ.renderStatus.length < ySection - 1 || (minZ.renderStatus[ySection] & AreaRenderStatus.COMPLETE_MAX_Z) != AreaRenderStatus.COMPLETE_MAX_Z)
           return false;
       return true;
     }
     return false;
-  }
-
-  private Area fastGet(WorldClient worldClient, int x, int z) {
-    fastGet.setFromAreaCoordinates(x, z);
-    return worldClient.map.get(fastGet);
   }
 
   private static boolean inRange(int areaX, int areaZ, int posAreaX, int posAreaZ, int renderDistance) {

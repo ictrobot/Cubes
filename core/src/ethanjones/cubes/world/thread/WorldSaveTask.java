@@ -1,5 +1,6 @@
 package ethanjones.cubes.world.thread;
 
+import ethanjones.cubes.world.storage.AreaMap;
 import ethanjones.cubes.world.save.Save;
 import ethanjones.cubes.world.storage.Area;
 
@@ -17,6 +18,16 @@ public class WorldSaveTask {
   public WorldSaveTask(Save save, Collection<Area> areas) {
     this.save = save;
     this.saveQueue.addAll(areas);
+    this.length = saveQueue.size();
+  }
+  
+  public WorldSaveTask(Save save, AreaMap areas) {
+    this.save = save;
+    areas.lock.readLock();
+    for (Area area : areas) {
+      this.saveQueue.add(area);
+    }
+    areas.lock.readUnlock();
     this.length = saveQueue.size();
   }
 }

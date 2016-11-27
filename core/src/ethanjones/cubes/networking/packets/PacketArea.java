@@ -31,7 +31,7 @@ public class PacketArea extends Packet {
 
   @Override
   public void handlePacket() {
-    Cubes.getClient().world.setAreaInternal(area);
+    Cubes.getClient().world.setArea(area);
   }
 
   @Override

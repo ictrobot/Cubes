@@ -7,6 +7,7 @@ import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.ThreadPool;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.world.light.SunLight;
+import ethanjones.cubes.world.storage.AreaMap;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
 import ethanjones.cubes.world.save.Save;
@@ -49,6 +50,11 @@ public class WorldTasks {
     WorldSaveTask saveTask = new WorldSaveTask(s, areas);
     save.queue.add(saveTask);
   }
+  
+  public static void save(Save s, AreaMap areas) {
+    WorldSaveTask saveTask = new WorldSaveTask(s, areas);
+    save.queue.add(saveTask);
+  }
 
   public static boolean currentlySaving() {
     return save.queue.size() > 0;
@@ -71,7 +77,7 @@ public class WorldTasks {
     if (area != null) return 0;
     area = world.save.readArea(areaReference.areaX, areaReference.areaZ);
     if (area != null) {
-      world.setAreaInternal(area);
+      world.setArea(area);
       if (area.features.get() != null) new AreaLoadedEvent(area, areaReference).post();
       return 1;
     }
@@ -81,7 +87,7 @@ public class WorldTasks {
     new GenerationEvent(area, areaReference).post();
     area.modify();
 
-    world.setAreaInternal(area);
+    world.setArea(area);
     return 2;
   }
 

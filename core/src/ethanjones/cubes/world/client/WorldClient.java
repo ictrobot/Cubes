@@ -14,7 +14,6 @@ import com.badlogic.gdx.graphics.Color;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Map;
 
 public class WorldClient extends World {
 
@@ -33,11 +32,10 @@ public class WorldClient extends World {
     playerArea.setFromPositionVector3(Cubes.getClient().player.position);
     removed.clear();
 
-    lock.writeLock();
-    Iterator<Map.Entry<AreaReference, Area>> iterator = map.entrySet().iterator();
+    map.lock.writeLock();
+    Iterator<Area> iterator = map.iterator();
     while (iterator.hasNext()) {
-      Map.Entry<AreaReference, Area> entry = iterator.next();
-      Area area = entry.getValue();
+      Area area = iterator.next();
       int dist = Math.max(Math.abs(area.areaX - playerArea.areaX), Math.abs(area.areaZ - playerArea.areaZ));
       if (dist > renderDistance + 3) {
         removed.add(area);
@@ -46,10 +44,10 @@ public class WorldClient extends World {
         AreaRenderer.free(area.areaRenderer);
       }
     }
-    lock.writeUnlock();
+    map.lock.writeUnlock();
 
     for (Area area : removed) {
-      if (!area.shared) area.unload();
+      area.unload();
     }
   }
 

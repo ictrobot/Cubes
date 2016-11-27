@@ -1,9 +1,10 @@
 package ethanjones.cubes.world.thread;
 
 import ethanjones.cubes.world.CoordinateConverter;
-import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.storage.Area;
+import ethanjones.cubes.world.storage.AreaMap;
 
+//TODO remove?
 public class WorldSection {
   public final int initialAreaX;
   public final int initialAreaZ;
@@ -22,17 +23,17 @@ public class WorldSection {
     initialMaxBlockX = initial.minBlockX + Area.SIZE_BLOCKS;
     initialMaxBlockZ = initial.minBlockZ + Area.SIZE_BLOCKS;
     this.initial = initial;
-
-    World world = initial.world;
-    areas[0][0] = world.getArea(initialAreaX - 1, initialAreaZ - 1);
-    areas[0][1] = world.getArea(initialAreaX - 1, initialAreaZ);
-    areas[0][2] = world.getArea(initialAreaX - 1, initialAreaZ + 1);
-    areas[1][0] = world.getArea(initialAreaX, initialAreaZ - 1);
+  
+    AreaMap map = initial.areaMap();
+    areas[0][0] = map.getArea(initialAreaX - 1, initialAreaZ - 1);
+    areas[0][1] = map.getArea(initialAreaX - 1, initialAreaZ);
+    areas[0][2] = map.getArea(initialAreaX - 1, initialAreaZ + 1);
+    areas[1][0] = map.getArea(initialAreaX, initialAreaZ - 1);
     areas[1][1] = initial;
-    areas[1][2] = world.getArea(initialAreaX, initialAreaZ + 1);
-    areas[2][0] = world.getArea(initialAreaX + 1, initialAreaZ - 1);
-    areas[2][1] = world.getArea(initialAreaX + 1, initialAreaZ);
-    areas[2][2] = world.getArea(initialAreaX + 1, initialAreaZ + 1);
+    areas[1][2] = map.getArea(initialAreaX, initialAreaZ + 1);
+    areas[2][0] = map.getArea(initialAreaX + 1, initialAreaZ - 1);
+    areas[2][1] = map.getArea(initialAreaX + 1, initialAreaZ);
+    areas[2][2] = map.getArea(initialAreaX + 1, initialAreaZ + 1);
 
     for (Area[] areaArr : areas) {
       for (Area area : areaArr) {

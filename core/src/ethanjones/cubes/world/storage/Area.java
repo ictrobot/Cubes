@@ -14,9 +14,8 @@ import ethanjones.cubes.networking.singleplayer.SingleplayerNetworking;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
-import ethanjones.cubes.world.World;
+import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.light.SunLight;
-import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.data.Data;
 import ethanjones.data.DataGroup;
@@ -81,12 +80,13 @@ public class Area implements Lock.HasLock {
   public int[] renderStatus = new int[0];
 
   private volatile boolean unloaded;
-
-  public World world;
+  
+  private volatile Area[] neighboursClient = new Area[8];
+  private volatile Area[] neighboursServer = new Area[8];
+  private AreaMap areaMapClient;
+  private AreaMap areaMapServer;
+  private TransparencyManager transparency = Sided.getIDManager().transparencyManager; // TODO fix transparency
   public final boolean shared;
-
-  private AreaReference tempReference = new AreaReference();
-  private TransparencyManager transparency = Sided.getIDManager().transparencyManager;
 
   public Area(int areaX, int areaZ) {
     this.areaX = areaX;
@@ -220,17 +220,9 @@ public class Area implements Lock.HasLock {
   }
 
   public void unload() {
+    if (shared && Sided.getSide() == Side.Client) return;
     lock.writeLock();
-
-    removeArrays();
-    unloaded = true;
-
-    lock.writeUnlock();
-  }
-
-  public void ensureUnload() {
-    lock.writeLock();
-
+  
     if (!unloaded) removeArrays();
 
     lock.writeUnlock();
@@ -252,7 +244,8 @@ public class Area implements Lock.HasLock {
     maxY = 0;
     height = 0;
     Arrays.fill(heightmap, 0);
-
+    
+    unloaded = true;
     lock.writeUnlock();
   }
 
@@ -402,10 +395,58 @@ public class Area implements Lock.HasLock {
 
     lock.writeUnlock();
   }
-
+  
+  public Area neighbourBlockCoordinates(int blockX, int blockZ) {
+    return neighbour(CoordinateConverter.area(blockX), CoordinateConverter.area(blockZ));
+  }
+  
+  public Area neighbour(final int areaX, final int areaZ) {
+    Side side = Sided.getSide();
+    if (side == Side.Client) {
+      if (areaMapClient == null) return null;
+      int aX = areaX - this.areaX;
+      int aZ = areaZ - this.areaZ;
+      if (aX < -1 || aX > 1 || aZ < -1 || aZ > 1) return areaMapClient.getArea(areaX, areaZ);
+      int n = (aX + 1) + ((aZ + 1) * 3);
+      lock.readLock();
+      Area a = neighboursClient[n];
+      if (a != null && a.areaMapClient == areaMapClient) return a;
+      neighboursClient[n] = a = areaMapClient.getArea(areaX, areaZ);
+      if (a != null && a.areaMapClient == areaMapClient) return a;
+      lock.readUnlock();
+    } else if (side == Side.Server) {
+      if (areaMapServer == null) return null;
+      int aX = areaX - this.areaX;
+      int aZ = areaZ - this.areaZ;
+      if (aX < -1 || aX > 1 || aZ < -1 || aZ > 1) return areaMapServer.getArea(areaX, areaZ);
+      int n = (aX + 1) + ((aZ + 1) * 3);
+      lock.readLock();
+      Area a = neighboursServer[n];
+      if (a != null && a.areaMapServer == areaMapServer) return a;
+      neighboursServer[n] = a = areaMapServer.getArea(areaX, areaZ);
+      if (a != null && a.areaMapServer == areaMapServer) return a;
+      lock.readUnlock();
+    }
+    return null;
+  }
+  
+  public AreaMap areaMap() {
+    Side side = Sided.getSide();
+    if (side == Side.Client) return areaMapClient;
+    else if (side == Side.Server) return areaMapServer;
+    return null;
+  }
+  
+  protected void setAreaMap(AreaMap areaMap) {
+    Side side = Sided.getSide();
+    if (side == Side.Client) areaMapClient = areaMap;
+    else if (side == Side.Server) areaMapServer = areaMap;
+  }
+  
   public void tick() {
     if (Sided.getSide() == Side.Server) {
-      if (!features() || world == null) return;
+      AreaMap areaMap = areaMap();
+      if (!features() || areaMap == null) return;
       ThreadLocalRandom random = ThreadLocalRandom.current();
       lock.writeLock();
       int updates = NUM_RANDOM_UPDATES * height;
@@ -413,7 +454,7 @@ public class Area implements Lock.HasLock {
         int randomX = random.nextInt(SIZE_BLOCKS);
         int randomZ = random.nextInt(SIZE_BLOCKS);
         int randomY = random.nextInt(maxY + 1);
-        randomTick(randomX, randomY, randomZ);
+        randomTick(randomX, randomY, randomZ, areaMap);
       }
       for (BlockData blockData : blockDataList) {
         blockData.update();
@@ -422,13 +463,13 @@ public class Area implements Lock.HasLock {
     }
   }
 
-  private void randomTick(int x, int y, int z) {
+  private void randomTick(int x, int y, int z, AreaMap areaMap) {
     int b = blocks[getRef(x, y, z)];
     int blockID = b & 0xFFFFF;
     int blockMeta = (b >> 20) & 0xFF;
     Block block = Sided.getIDManager().toBlock(blockID);
     if (block == null) return;
-    block.randomTick(world, this, x, y, z, blockMeta);
+    block.randomTick(areaMap.world, this, x, y, z, blockMeta);
   }
 
   public void doUpdatesThisArea(int x, int y, int z, int ref) {
@@ -448,12 +489,12 @@ public class Area implements Lock.HasLock {
     boolean updateRender = Sided.getSide() == Side.Client || shared;
     int section = y / SIZE_BLOCKS;
 
-    if (world != null && (x == 0 || x == SIZE_BLOCKS - 1 || z == 0 || z == SIZE_BLOCKS - 1)) {
+    AreaMap areaMap = areaMap();
+    if (areaMap != null && (x == 0 || x == SIZE_BLOCKS - 1 || z == 0 || z == SIZE_BLOCKS - 1)) {
       Area area;
-      world.lock.readLock();
+      areaMap.lock.readLock();
       if (x == 0) {
-        tempReference.setFromAreaCoordinates(areaX - 1, areaZ);
-        area = world.getArea(tempReference, false);
+        area = neighbour(areaX - 1, areaZ);
         if (area != null) {
           Lock.waitToLock(true, area);
           if (area.isReady()) area.update(SIZE_BLOCKS - 1, y, z, getRef(SIZE_BLOCKS - 1, y, z));
@@ -461,8 +502,7 @@ public class Area implements Lock.HasLock {
           area.lock.writeUnlock();
         }
       } else if (x == SIZE_BLOCKS - 1) {
-        tempReference.setFromAreaCoordinates(areaX + 1, areaZ);
-        area = world.getArea(tempReference, false);
+        area = neighbour(areaX + 1, areaZ);
         if (area != null) {
           Lock.waitToLock(true, area);
           if (area.isReady()) area.update(0, y, z, getRef(0, y, z));
@@ -471,8 +511,7 @@ public class Area implements Lock.HasLock {
         }
       }
       if (z == 0) {
-        tempReference.setFromAreaCoordinates(areaX, areaZ - 1);
-        area = world.getArea(tempReference, false);
+        area = neighbour(areaX, areaZ - 1);
         if (area != null) {
           Lock.waitToLock(true, area);
           if (area.isReady()) area.update(x, y, SIZE_BLOCKS - 1, getRef(x, y, SIZE_BLOCKS - 1));
@@ -480,8 +519,7 @@ public class Area implements Lock.HasLock {
           area.lock.writeUnlock();
         }
       } else if (z == SIZE_BLOCKS - 1) {
-        tempReference.setFromAreaCoordinates(areaX, areaZ + 1);
-        area = world.getArea(tempReference, false);
+        area = neighbour(areaX, areaZ + 1);
         if (area != null) {
           Lock.waitToLock(true, area);
           if (area.isReady()) area.update(x, y, 0, getRef(x, y, 0));
@@ -489,7 +527,7 @@ public class Area implements Lock.HasLock {
           area.lock.writeUnlock();
         }
       }
-      world.lock.readUnlock();
+      areaMap.lock.readUnlock();
     }
   }
 
@@ -968,7 +1006,12 @@ public class Area implements Lock.HasLock {
   public Lock getLock() {
     return lock;
   }
-
+  
+  @Override
+  public String toString() {
+    return areaX + "," + areaZ;
+  }
+  
   /**
    * Crucial to call this so changes are written to disk.
    * Area should be write locked

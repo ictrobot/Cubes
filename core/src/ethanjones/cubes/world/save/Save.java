@@ -7,6 +7,7 @@ import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.generator.smooth.Cave;
+import ethanjones.cubes.world.storage.AreaMap;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.storage.Area;
 import ethanjones.cubes.world.thread.WorldTasks;
@@ -16,7 +17,6 @@ import ethanjones.data.DataGroup;
 import com.badlogic.gdx.files.FileHandle;
 
 import java.io.*;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -49,7 +49,7 @@ public class Save {
     return SaveAreaIO.write(this, area);
   }
 
-  public void writeAreas(Collection<Area> areas) {
+  public void writeAreas(AreaMap areas) {
     WorldTasks.save(this, areas);
   }
 

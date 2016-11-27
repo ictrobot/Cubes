@@ -5,14 +5,15 @@ import ethanjones.cubes.block.data.BlockData;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.lua.LuaMapping;
 import ethanjones.cubes.core.lua.LuaMappingWorld;
-import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.core.util.Lock;
+import ethanjones.cubes.core.util.Lock.HasLock;
 import ethanjones.cubes.entity.Entity;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.generator.GeneratorManager;
 import ethanjones.cubes.world.generator.TerrainGenerator;
+import ethanjones.cubes.world.storage.AreaMap;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
@@ -33,12 +34,12 @@ import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public abstract class World implements Disposable {
+public abstract class World implements Disposable, HasLock {
 
   public static final int MAX_TIME = (1000 / Cubes.tickMS) * 60 * 10;
 
   public final Lock lock = new Lock();
-  public final HashMap<AreaReference, Area> map;
+  public final AreaMap map;
   public final TerrainGenerator terrainGenerator;
   public final Save save;
   public final AtomicBoolean disposed = new AtomicBoolean(false);
@@ -51,34 +52,17 @@ public abstract class World implements Disposable {
     this.save = save;
     this.terrainGenerator = save == null ? null : GeneratorManager.getTerrainGenerator(save.getSaveOptions());
     this.time = save == null ? 0 : save.getSaveState().worldTime;
-    map = new HashMap<AreaReference, Area>(1024);
+    map = new AreaMap(this);
     lua = LuaMapping.mapping(new LuaMappingWorld(this));
   }
-
-  public Area setAreaInternal(Area area) {
-    lock.writeLock();
-
-    AreaReference areaReference = new AreaReference().setFromArea(area);
-
-    if (map.containsKey(areaReference)) {
-      Log.debug("World already contains " + area.areaX + "," + area.areaZ);
-      return lock.writeUnlock(map.get(areaReference));
-    }
-
-    Area old = map.put(areaReference.clone(), area);
   
-    area.world = this;
-    lock.writeUnlock();
+  public Area setArea(Area area) {
+    if (area == null) throw new IllegalArgumentException("Null");
+    return setArea(area.areaX, area.areaZ, area);
+  }
 
-    synchronized (map) {
-      map.notifyAll();
-    }
-
-    if (old != null) {
-      old.world = null;
-      old.unload();
-    }
-    return area;
+  public Area setArea(int areaX, int areaZ, Area area) {
+    return map.setArea(areaX, areaZ, area);
   }
 
   public Block getBlock(int x, int y, int z) {
@@ -111,28 +95,26 @@ public abstract class World implements Disposable {
     return area == null || y < 0 || y > area.maxY ? 0 : area.getLightRaw(x - area.minBlockX, y, z - area.minBlockZ);
   }
 
-  public Area getArea(int areaX, int areaZ) {
-    AreaReference areaReference = Pools.obtainAreaReference().setFromAreaCoordinates(areaX, areaZ);
-    Area area = getArea(areaReference);
-    Pools.free(AreaReference.class, areaReference);
-    return area;
-  }
-
-  public Area getArea(AreaReference areaReference) {
-    return getArea(areaReference, true);
-  }
-
-  public Area getArea(AreaReference areaReference, boolean request) {
-    lock.readLock();
-    Area area = map.get(areaReference);
-    lock.readUnlock();
-
+  public Area getArea(int areaX, int areaZ, boolean request) {
+    Area area = map.getArea(areaX, areaZ);
     if (area != null) {
       return area;
     } else if (request) {
-      requestRegion(new WorldRegion(areaReference), null);
+      requestRegion(new WorldRegion(new AreaReference().setFromAreaCoordinates(areaX, areaZ)), null);
     }
     return null;
+  }
+  
+  public Area getArea(int areaX, int areaZ) {
+    return getArea(areaX, areaZ, false);
+  }
+
+  public Area getArea(AreaReference areaReference, boolean request) {
+    return getArea(areaReference.areaX, areaReference.areaZ, request);
+  }
+  
+  public Area getArea(AreaReference areaReference) {
+    return getArea(areaReference.areaX, areaReference.areaZ, false);
   }
 
   public abstract GenerationTask requestRegion(MultiAreaReference references, WorldRequestParameter parameter);
@@ -197,25 +179,31 @@ public abstract class World implements Disposable {
   public TerrainGenerator getTerrainGenerator() {
     return terrainGenerator;
   }
-
+  
+  @Override
+  public Lock getLock() {
+    return lock;
+  }
+  
   @Override
   public void dispose() {
     WorldTasks.waitSaveFinish();
-    lock.writeLock();
-
+    Lock.lockAll(true, this, map);
+    
     disposed.set(true);
-
+    
     if (Sided.getSide() == Side.Server || !Area.isShared()) {
-      for (Entry<AreaReference, Area> entry : map.entrySet()) {
-        entry.getValue().ensureUnload();
+      for (Area area : map) {
+        area.unload();
       }
     }
-    map.clear();
+    map.empty();
     for (Entity entity : entities.values()) {
       entity.dispose();
     }
     entities.clear();
-
+  
+    map.lock.writeUnlock();
     lock.writeUnlock();
   }
 
@@ -260,7 +248,7 @@ public abstract class World implements Disposable {
     // players
     save.writePlayers();
     // areas
-    save.writeAreas(map.values());
+    save.writeAreas(map);
     // state
     save.getSaveState().worldTime = time;
     save.writeSaveState();
