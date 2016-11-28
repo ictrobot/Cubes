@@ -89,7 +89,6 @@ public class AssetFinder {
       }
     } catch (IOException ignored) {
     }
-    ;
     is.close();
 
     InputStream finalIS = jar.openStream();

@@ -130,6 +130,6 @@ public class BlockIntersection {
   }
 
   private enum XYZ {
-    x, y, z;
+    x, y, z
   }
 }

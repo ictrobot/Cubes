@@ -12,7 +12,7 @@ import ethanjones.cubes.world.reference.BlockReference;
 
 public class ItemTool extends Item {
   public static enum ToolType {
-    pickaxe, axe, shovel, none;
+    pickaxe, axe, shovel, none
   }
 
   public static class MiningTarget {
