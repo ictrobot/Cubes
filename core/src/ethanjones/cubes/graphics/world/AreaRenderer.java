@@ -8,7 +8,6 @@ import ethanjones.cubes.core.util.Lock;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
-import ethanjones.cubes.world.client.WorldClient;
 import ethanjones.cubes.world.storage.Area;
 
 import com.badlogic.gdx.graphics.g3d.Renderable;
@@ -70,13 +69,10 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
     float[] vertices = AreaMesh.vertices;
 
     TransparencyManager tm = Sided.getIDManager().transparencyManager;
-    WorldClient worldClient = (WorldClient) Cubes.getClient().world; // TODO area.neighbour
-    worldClient.lock.readLock();
-    Area maxX = worldClient.map.getArea(area.areaX + 1, area.areaZ);
-    Area minX = worldClient.map.getArea(area.areaX - 1, area.areaZ);
-    Area maxZ = worldClient.map.getArea(area.areaX, area.areaZ + 1);
-    Area minZ = worldClient.map.getArea(area.areaX, area.areaZ - 1);
-    worldClient.lock.readUnlock();
+    Area maxX = area.neighbour(area.areaX + 1, area.areaZ);
+    Area minX = area.neighbour(area.areaX - 1, area.areaZ);
+    Area maxZ = area.neighbour(area.areaX, area.areaZ + 1);
+    Area minZ = area.neighbour(area.areaX, area.areaZ - 1);
     if (maxX == null || minX == null || maxZ == null || minZ == null) return false;
 
     free(meshs);

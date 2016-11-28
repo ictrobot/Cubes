@@ -410,9 +410,9 @@ public class Area implements Lock.HasLock {
       int n = (aX + 1) + ((aZ + 1) * 3);
       lock.readLock();
       Area a = neighboursClient[n];
-      if (a != null && a.areaMapClient == areaMapClient) return a;
+      if (a != null && a.areaMapClient == areaMapClient) return lock.readUnlock(a);
       neighboursClient[n] = a = areaMapClient.getArea(areaX, areaZ);
-      if (a != null && a.areaMapClient == areaMapClient) return a;
+      if (a != null && a.areaMapClient == areaMapClient) return lock.readUnlock(a);
       lock.readUnlock();
     } else if (side == Side.Server) {
       if (areaMapServer == null) return null;
@@ -422,9 +422,9 @@ public class Area implements Lock.HasLock {
       int n = (aX + 1) + ((aZ + 1) * 3);
       lock.readLock();
       Area a = neighboursServer[n];
-      if (a != null && a.areaMapServer == areaMapServer) return a;
+      if (a != null && a.areaMapServer == areaMapServer) return lock.readUnlock(a);
       neighboursServer[n] = a = areaMapServer.getArea(areaX, areaZ);
-      if (a != null && a.areaMapServer == areaMapServer) return a;
+      if (a != null && a.areaMapServer == areaMapServer) return lock.readUnlock(a);
       lock.readUnlock();
     }
     return null;
