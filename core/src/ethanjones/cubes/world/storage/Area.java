@@ -401,6 +401,7 @@ public class Area implements Lock.HasLock {
   }
   
   public Area neighbour(final int areaX, final int areaZ) {
+    if (areaX == this.areaX && areaZ == this.areaZ) return this;
     Side side = Sided.getSide();
     if (side == Side.Client) {
       if (areaMapClient == null) return null;
