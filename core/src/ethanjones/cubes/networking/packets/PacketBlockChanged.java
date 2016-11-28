@@ -1,9 +1,9 @@
 package ethanjones.cubes.networking.packets;
 
+import ethanjones.cubes.core.id.IDManager;
 import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.networking.packet.PacketDirection;
 import ethanjones.cubes.networking.packet.PacketDirection.Direction;
-import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 
 import java.io.DataInputStream;
@@ -38,7 +38,7 @@ public class PacketBlockChanged extends Packet {
 
   @Override
   public void handlePacket() {
-    Cubes.getClient().world.setBlock(Sided.getIDManager().toBlock(block), x, y, z);
+    Cubes.getClient().world.setBlock(IDManager.toBlock(block), x, y, z);
   }
 
   @Override

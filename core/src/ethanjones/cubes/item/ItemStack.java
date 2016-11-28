@@ -1,7 +1,7 @@
 package ethanjones.cubes.item;
 
+import ethanjones.cubes.core.id.IDManager;
 import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.side.Sided;
 import ethanjones.data.DataGroup;
 import ethanjones.data.DataParser;
 
@@ -34,7 +34,7 @@ public class ItemStack implements DataParser {
   @Override
   public DataGroup write() {
     DataGroup dataGroup = new DataGroup();
-    dataGroup.put("item", Sided.getIDManager().toInt(item));
+    dataGroup.put("item", IDManager.toInt(item));
     dataGroup.put("count", count);
     if (meta != 0) dataGroup.put("meta", meta);
     return dataGroup;
@@ -42,7 +42,7 @@ public class ItemStack implements DataParser {
 
   @Override
   public void read(DataGroup dataGroup) {
-    item = Sided.getIDManager().toItem(dataGroup.getInteger("item"));
+    item = IDManager.toItem(dataGroup.getInteger("item"));
     count = dataGroup.getInteger("count");
     meta = dataGroup.containsKey("meta") ? dataGroup.getInteger("meta") : 0;
   }

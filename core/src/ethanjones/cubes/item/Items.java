@@ -1,6 +1,6 @@
 package ethanjones.cubes.item;
 
-import ethanjones.cubes.core.IDManager.GetItem;
+import ethanjones.cubes.core.id.GetInstances.GetItem;
 
 public class Items {
 

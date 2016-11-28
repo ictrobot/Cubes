@@ -2,8 +2,9 @@ package ethanjones.cubes.world.storage;
 
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.block.data.BlockData;
-import ethanjones.cubes.core.IDManager.TransparencyManager;
 import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
+import ethanjones.cubes.core.id.IDManager;
+import ethanjones.cubes.core.id.TransparencyManager;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.Executor;
 import ethanjones.cubes.core.util.Lock;
@@ -85,7 +86,6 @@ public class Area implements Lock.HasLock {
   private volatile Area[] neighboursServer = new Area[8];
   private AreaMap areaMapClient;
   private AreaMap areaMapServer;
-  private TransparencyManager transparency = Sided.getIDManager().transparencyManager; // TODO fix transparency
   public final boolean shared;
 
   public Area(int areaX, int areaZ) {
@@ -127,7 +127,7 @@ public class Area implements Lock.HasLock {
     if (unreadyReadLock(y)) return null;
     int b = blocks[getRef(x, y, z)] & 0xFFFFF;
 
-    return lock.readUnlock(Sided.getIDManager().toBlock(b));
+    return lock.readUnlock(IDManager.toBlock(b));
   }
 
   public int getMeta(int x, int y, int z) {
@@ -259,7 +259,7 @@ public class Area implements Lock.HasLock {
     blocks[i] &= 0xFFFFFFF; // keep block id and meta
 
     if (x < SIZE_BLOCKS - 1) {
-      if (transparency.isTransparent(blocks[i + MAX_X_OFFSET])) {
+      if (TransparencyManager.isTransparent(blocks[i + MAX_X_OFFSET])) {
         blocks[i] |= BLOCK_VISIBLE;
         return;
       }
@@ -268,7 +268,7 @@ public class Area implements Lock.HasLock {
       return;
     }
     if (x > 0) {
-      if (transparency.isTransparent(blocks[i + MIN_X_OFFSET])) {
+      if (TransparencyManager.isTransparent(blocks[i + MIN_X_OFFSET])) {
         blocks[i] |= BLOCK_VISIBLE;
         return;
       }
@@ -277,7 +277,7 @@ public class Area implements Lock.HasLock {
       return;
     }
     if (y < maxY) {
-      if (transparency.isTransparent(blocks[i + MAX_Y_OFFSET])) {
+      if (TransparencyManager.isTransparent(blocks[i + MAX_Y_OFFSET])) {
         blocks[i] |= BLOCK_VISIBLE;
         return;
       }
@@ -286,7 +286,7 @@ public class Area implements Lock.HasLock {
       return;
     }
     if (y > 0) {
-      if (transparency.isTransparent(blocks[i + MIN_Y_OFFSET])) {
+      if (TransparencyManager.isTransparent(blocks[i + MIN_Y_OFFSET])) {
         blocks[i] |= BLOCK_VISIBLE;
         return;
       }
@@ -295,7 +295,7 @@ public class Area implements Lock.HasLock {
       return;
     }
     if (z < SIZE_BLOCKS - 1) {
-      if (transparency.isTransparent(blocks[i + MAX_Z_OFFSET])) {
+      if (TransparencyManager.isTransparent(blocks[i + MAX_Z_OFFSET])) {
         blocks[i] |= BLOCK_VISIBLE;
         return;
       }
@@ -304,7 +304,7 @@ public class Area implements Lock.HasLock {
       return;
     }
     if (z > 0) {
-      if (transparency.isTransparent(blocks[i + MIN_Z_OFFSET])) {
+      if (TransparencyManager.isTransparent(blocks[i + MIN_Z_OFFSET])) {
         blocks[i] |= BLOCK_VISIBLE;
         return;
       }
@@ -328,7 +328,7 @@ public class Area implements Lock.HasLock {
     int b = blocks[ref];
     blocks[ref] = n;
 
-    Block old = Sided.getIDManager().toBlock(b & 0xFFFFF);
+    Block old = IDManager.toBlock(b & 0xFFFFF);
 
     if (old != null && old.blockData()) {
       removeBlockData(x, y, z);
@@ -347,7 +347,7 @@ public class Area implements Lock.HasLock {
     lock.writeUnlock();
 
     //Must be after lock released to prevent dead locks
-    if (transparency.isTransparent(b) != transparency.isTransparent(n))
+    if (TransparencyManager.isTransparent(b) != TransparencyManager.isTransparent(n))
       doUpdatesOtherAreas(x, y, z, ref);
     new BlockChangedEvent(new BlockReference().setFromBlockCoordinates(x + minBlockX, y, z + minBlockZ), old, (b >> 20) & 0xFF, block, meta, this).post();
   }
@@ -467,7 +467,7 @@ public class Area implements Lock.HasLock {
     int b = blocks[getRef(x, y, z)];
     int blockID = b & 0xFFFFF;
     int blockMeta = (b >> 20) & 0xFF;
-    Block block = Sided.getIDManager().toBlock(blockID);
+    Block block = IDManager.toBlock(blockID);
     if (block == null) return;
     block.randomTick(areaMap.world, this, x, y, z, blockMeta);
   }
@@ -580,7 +580,7 @@ public class Area implements Lock.HasLock {
       int height = -1;
       for (int y = 0; y <= maxY; y++) {
         int ref = (z * SIZE_BLOCKS) + (y * SIZE_BLOCKS_SQUARED);
-        if (transparency.isTransparent(blocks[ref])) {
+        if (TransparencyManager.isTransparent(blocks[ref])) {
           if (blocks[ref + MAX_X_OFFSET] != 0) blocks[ref + MAX_X_OFFSET] |= BLOCK_VISIBLE;
         } else {
           blocks[ref] |= BLOCK_VISIBLE;
@@ -594,7 +594,7 @@ public class Area implements Lock.HasLock {
       int height = -1;
       for (int y = 0; y <= maxY; y++) {
         int ref = (SIZE_BLOCKS - 1) + (z * SIZE_BLOCKS) + (y * SIZE_BLOCKS_SQUARED);
-        if (transparency.isTransparent(blocks[ref])) {
+        if (TransparencyManager.isTransparent(blocks[ref])) {
           if (blocks[ref + MIN_X_OFFSET] != 0) blocks[ref + MIN_X_OFFSET] |= BLOCK_VISIBLE;
         } else {
           blocks[ref] |= BLOCK_VISIBLE;
@@ -608,7 +608,7 @@ public class Area implements Lock.HasLock {
       int height = -1;
       for (int y = 0; y <= maxY; y++) {
         int ref = x + (y * SIZE_BLOCKS_SQUARED);
-        if (transparency.isTransparent(blocks[ref])) {
+        if (TransparencyManager.isTransparent(blocks[ref])) {
           if (blocks[ref + MAX_Z_OFFSET] != 0) blocks[ref + MAX_Z_OFFSET] |= BLOCK_VISIBLE;
         } else {
           blocks[ref] |= BLOCK_VISIBLE;
@@ -622,7 +622,7 @@ public class Area implements Lock.HasLock {
       int height = -1;
       for (int y = 0; y <= maxY; y++) {
         int ref = x + (SIZE_BLOCKS_SQUARED - SIZE_BLOCKS) + (y * SIZE_BLOCKS_SQUARED);
-        if (transparency.isTransparent(blocks[ref])) {
+        if (TransparencyManager.isTransparent(blocks[ref])) {
           if (blocks[ref + MIN_Z_OFFSET] != 0) blocks[ref + MIN_Z_OFFSET] |= BLOCK_VISIBLE;
         } else {
           blocks[ref] |= BLOCK_VISIBLE;
@@ -637,7 +637,7 @@ public class Area implements Lock.HasLock {
         int height = -1;
         for (int y = 0; y <= maxY; y++) {
           int ref = x + z * SIZE_BLOCKS + y * SIZE_BLOCKS_SQUARED;
-          if (transparency.isTransparent(blocks[ref])) {
+          if (TransparencyManager.isTransparent(blocks[ref])) {
             if (blocks[ref + MAX_X_OFFSET] != 0) blocks[ref + MAX_X_OFFSET] |= BLOCK_VISIBLE;
             if (blocks[ref + MIN_X_OFFSET] != 0) blocks[ref + MIN_X_OFFSET] |= BLOCK_VISIBLE;
             if (blocks[ref + MAX_Z_OFFSET] != 0) blocks[ref + MAX_Z_OFFSET] |= BLOCK_VISIBLE;

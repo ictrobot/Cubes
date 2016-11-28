@@ -1,5 +1,6 @@
 package ethanjones.cubes.world.light;
 
+import ethanjones.cubes.core.id.TransparencyManager;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.storage.Area;
 
@@ -71,7 +72,7 @@ public class BlockLight {
     int dZ = CoordinateConverter.area(z) - w.initialAreaZ;
     Area a = w.areas[dX + 1][dZ + 1];
     int ref = getRef(x - a.minBlockX, y, z - a.minBlockZ);
-    if (!a.isReady() || y > a.maxY || !w.transparent(a, ref)) return;
+    if (!a.isReady() || y > a.maxY || !TransparencyManager.isTransparent(a.blocks[ref])) return;
     if ((a.light[ref] & 0xF) + 2 <= l) {
       a.light[ref] = (byte) ((a.light[ref] & 0xF0) | (l - 1));
       a.updateRender(y / SIZE_BLOCKS);
@@ -118,7 +119,7 @@ public class BlockLight {
     int dZ = CoordinateConverter.area(z) - w.initialAreaZ;
     Area a = w.areas[dX + 1][dZ + 1];
     int ref = getRef(x - a.minBlockX, y, z - a.minBlockZ);
-    if (!a.isReady() || y > a.maxY || !w.transparent(a, ref)) return;
+    if (!a.isReady() || y > a.maxY || !TransparencyManager.isTransparent(a.blocks[ref])) return;
     int p = a.light[ref] & 0xF;
     if (p != 0 && p < l) {
       a.light[ref] = (byte) (a.light[ref] & 0xF0); // same as ((a.light[ref] & 0xF0) | 0)

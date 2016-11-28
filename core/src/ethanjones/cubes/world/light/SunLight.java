@@ -1,5 +1,6 @@
 package ethanjones.cubes.world.light;
 
+import ethanjones.cubes.core.id.TransparencyManager;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.storage.Area;
 import ethanjones.cubes.world.thread.WorldSection;
@@ -85,7 +86,7 @@ public class SunLight {
     int dZ = CoordinateConverter.area(z) - w.initialAreaZ;
     Area a = w.areas[dX + 1][dZ + 1];
     int ref = getRef(x - a.minBlockX, y, z - a.minBlockZ);
-    if (!a.isReady() || y > a.maxY || !w.transparent(a, ref)) return;
+    if (!a.isReady() || y > a.maxY || !TransparencyManager.isTransparent(a.blocks[ref])) return;
     int i = ((a.light[ref] >> 4) & 0xF);
     if (i + 1 <= ln) { // DIFFERENT + 1 instead of + 2
       a.light[ref] = (byte) ((a.light[ref] & 0xF) | (ln << 4));
@@ -134,7 +135,7 @@ public class SunLight {
     int dZ = CoordinateConverter.area(z) - w.initialAreaZ;
     Area a = w.areas[dX + 1][dZ + 1];
     int ref = getRef(x - a.minBlockX, y, z - a.minBlockZ);
-    if (!a.isReady() || y > a.maxY || !w.transparent(a, ref)) return;
+    if (!a.isReady() || y > a.maxY || !TransparencyManager.isTransparent(a.blocks[ref])) return;
     int p = ((a.light[ref] >> 4) & 0xF);
     if (p != 0 && p < l) {
       a.light[ref] = (byte) (a.light[ref] & 0xF); // same as ((a.light[ref] & 0xF0) | (0 << 4))

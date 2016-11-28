@@ -1,7 +1,7 @@
 package ethanjones.cubes.core.lua;
 
 import ethanjones.cubes.block.Block;
-import ethanjones.cubes.core.IDManager;
+import ethanjones.cubes.core.id.IDManager;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.system.Branding;

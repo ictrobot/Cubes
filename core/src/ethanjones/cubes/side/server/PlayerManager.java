@@ -4,6 +4,7 @@ import ethanjones.cubes.core.event.EventHandler;
 import ethanjones.cubes.core.event.entity.living.player.PlayerMovementEvent;
 import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
 import ethanjones.cubes.core.event.world.generation.AreaLoadedEvent;
+import ethanjones.cubes.core.id.IDManager;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.entity.ItemEntity;
 import ethanjones.cubes.entity.living.player.Player;
@@ -64,7 +65,7 @@ public class PlayerManager {
     Sided.getEventBus().register(this);
 
     PacketConnected packetConnected = new PacketConnected();
-    packetConnected.idManager = Sided.getIDManager().write();
+    packetConnected.idManager = IDManager.writeMapping();
     packetConnected.player = client.getPlayer().uuid;
     packetConnected.worldTime = server.world.time;
     packetConnected.gamemode = server.world.save.getSaveOptions().worldGamemode;
@@ -203,7 +204,7 @@ public class PlayerManager {
       packet.y = blockReference.blockY;
       packet.z = blockReference.blockZ;
       packet.meta = event.getNewMeta();
-      packet.block = Sided.getIDManager().toInt(event.getNewBlock());
+      packet.block = IDManager.toInt(event.getNewBlock());
       NetworkingManager.sendPacketToClient(packet, client);
     }
   }

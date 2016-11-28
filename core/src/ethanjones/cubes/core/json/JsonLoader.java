@@ -1,7 +1,7 @@
 package ethanjones.cubes.core.json;
 
 import ethanjones.cubes.block.Blocks;
-import ethanjones.cubes.core.IDManager;
+import ethanjones.cubes.core.id.GetInstances;
 import ethanjones.cubes.core.mod.json.JsonModInstance;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.util.Multimap;
@@ -66,8 +66,8 @@ public class JsonLoader {
     doStage(JsonStage.BLOCK);
     doStage(JsonStage.ITEM);
 
-    IDManager.getInstances(Blocks.class);
-    IDManager.getInstances(Items.class);
+    GetInstances.get(Blocks.class);
+    GetInstances.get(Items.class);
   }
 
   public static void secondStage() {

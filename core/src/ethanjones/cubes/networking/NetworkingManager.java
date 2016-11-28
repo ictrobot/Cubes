@@ -85,4 +85,8 @@ public class NetworkingManager {
     }
     return null;
   }
+  
+  public static boolean isSingleplayer() {
+    return SingleplayerNetworking.class.isInstance(clientNetworking);
+  }
 }

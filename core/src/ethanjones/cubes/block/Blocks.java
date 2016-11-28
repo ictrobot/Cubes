@@ -1,7 +1,7 @@
 package ethanjones.cubes.block;
 
-import ethanjones.cubes.core.IDManager;
-import ethanjones.cubes.core.IDManager.GetBlock;
+import ethanjones.cubes.core.id.GetInstances.GetBlock;
+import ethanjones.cubes.core.id.IDManager;
 
 public class Blocks {
 

@@ -1,15 +1,14 @@
 package ethanjones.cubes.world.save;
 
-import ethanjones.cubes.core.IDManager;
+import ethanjones.cubes.core.id.IDManager;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.networking.server.ClientIdentifier;
-import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.generator.smooth.Cave;
-import ethanjones.cubes.world.storage.AreaMap;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.storage.Area;
+import ethanjones.cubes.world.storage.AreaMap;
 import ethanjones.cubes.world.thread.WorldTasks;
 import ethanjones.data.Data;
 import ethanjones.data.DataGroup;
@@ -220,13 +219,13 @@ public class Save {
 
   public void readIDManager() {
     SaveOptions saveOptions = getSaveOptions();
-    IDManager idManager = Sided.getIDManager();
+    IDManager.resetMapping();
     if (saveOptions.idManager.size() == 0) {
-      idManager.generateDefault();
+      IDManager.generateDefaultMappings();
     } else {
-      idManager.read(saveOptions.idManager);
+      IDManager.readMapping(saveOptions.idManager);
     }
-    saveOptions.idManager = idManager.write();
+    saveOptions.idManager = IDManager.writeMapping();
     writeSaveOptions();
   }
 }

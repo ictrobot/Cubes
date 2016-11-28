@@ -1,6 +1,6 @@
 package ethanjones.cubes.block;
 
-import ethanjones.cubes.core.IDManager;
+import ethanjones.cubes.core.id.IDManager;
 import ethanjones.cubes.core.json.JsonException;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.util.BlockFace;
@@ -222,8 +222,8 @@ public class BlockJson {
     }
   }
 
-  public static interface MetaElementParser<E> {
-    public E parse(JsonValue prop);
+  public interface MetaElementParser<E> {
+    E parse(JsonValue prop);
   }
 
   private static final MetaElementParser<Integer> integerParser = new MetaElementParser<Integer>() {

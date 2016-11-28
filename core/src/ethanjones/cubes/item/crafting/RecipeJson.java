@@ -1,6 +1,6 @@
 package ethanjones.cubes.item.crafting;
 
-import ethanjones.cubes.core.IDManager;
+import ethanjones.cubes.core.id.IDManager;
 import ethanjones.cubes.core.json.JsonException;
 import ethanjones.cubes.item.Item;
 import ethanjones.cubes.item.ItemStack;

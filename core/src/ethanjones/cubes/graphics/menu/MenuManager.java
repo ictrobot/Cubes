@@ -1,7 +1,7 @@
 package ethanjones.cubes.graphics.menu;
 
 import ethanjones.cubes.block.Block;
-import ethanjones.cubes.core.IDManager;
+import ethanjones.cubes.core.id.IDManager;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.graphics.world.BlockTextureHandler;
 

@@ -1,4 +1,4 @@
-package ethanjones.cubes.core;
+package ethanjones.cubes.core.id;
 
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.logging.Log;
@@ -9,17 +9,12 @@ import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.item.Item;
 import ethanjones.cubes.item.ItemBlock;
 import ethanjones.data.DataGroup;
-import ethanjones.data.DataParser;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class IDManager implements DataParser {
+public class IDManager {
 
   public static final int MAX_BLOCK_ID = 1048575;
 
@@ -105,24 +100,28 @@ public class IDManager implements DataParser {
   public static boolean isLoaded() {
     return loaded.get();
   }
-
-  private Map<Integer, Block> integerToBlock;
-  private Map<Block, Integer> blockToInteger;
-  private Map<Integer, Item> integerToItem;
-  private Map<Item, Integer> itemToInteger;
-  public TransparencyManager transparencyManager;
-  private int nextFree;
-
-  public IDManager() {
-    integerToBlock = new HashMap<Integer, Block>();
-    blockToInteger = new HashMap<Block, Integer>();
-    integerToItem = new HashMap<Integer, Item>();
-    itemToInteger = new HashMap<Item, Integer>();
-    transparencyManager = new TransparencyManager();
+  
+  // Mappings
+  
+  protected static final Map<Integer, Block> integerToBlock = new HashMap<Integer, Block>();
+  private static final Map<Block, Integer> blockToInteger = new HashMap<Block, Integer>();
+  private static final Map<Integer, Item> integerToItem = new HashMap<Integer, Item>();
+  private static final Map<Item, Integer> itemToInteger = new HashMap<Item, Integer>();
+  private static final AtomicBoolean setup = new AtomicBoolean(false);
+  private static int nextFree = 0;
+  
+  public static void resetMapping() {
+    if (!setup.compareAndSet(true, false)) return;
+    Log.debug("Resetting ID Manager");
+    integerToBlock.clear();
+    blockToInteger.clear();
+    integerToItem.clear();
+    itemToInteger.clear();
+    nextFree = 0;
   }
 
-  public void generateDefault() {
-    if (integerToBlock.size() > 0) return;
+  public static void generateDefaultMappings() {
+    if (!setup.compareAndSet(false, true)) return;
     Log.debug("Generating default ID manager");
     int i = 1;
     for (Block block : blockList) {
@@ -146,33 +145,74 @@ public class IDManager implements DataParser {
       itemToInteger.put(item, i);
       i++;
     }
-    this.nextFree = i;
-
-    unmodifiable();
+    nextFree = i;
+  
+    finishMappingSetup();
   }
-
-  public int toInt(Block block) {
-    if (block == null) return 0;
-    return blockToInteger.get(block);
+  
+  public static void readMapping(DataGroup data) {
+    if (!setup.compareAndSet(false, true)) return;
+    Log.debug("Reading ID manager");
+    HashMap<String, Block> blockMapCopy = new HashMap<String, Block>();
+    HashMap<String, Item> itemMapCopy = new HashMap<String, Item>();
+    blockMapCopy.putAll(idToBlock);
+    itemMapCopy.putAll(idToItem);
+    
+    nextFree = data.getInteger("next");
+    
+    DataGroup blocks = data.getGroup("blocks");
+    for (Map.Entry<String, Object> entry : blocks.entrySet()) {
+      Block block = blockMapCopy.remove(entry.getKey());
+      if (block == null) {
+        Log.error("No such block: " + entry.getKey());
+        continue;
+      }
+      int i = (Integer) entry.getValue();
+      integerToBlock.put(i, block);
+      blockToInteger.put(block, i);
+    }
+    
+    for (Block block : blockMapCopy.values()) {
+      if (nextFree > MAX_BLOCK_ID) {
+        Debug.crash(new CubesException("No more block ids"));
+      }
+      Log.debug("Adding block " + block.id + " " + nextFree);
+      ItemBlock itemBlock = block.getItemBlock();
+      integerToBlock.put(nextFree, block);
+      blockToInteger.put(block, nextFree);
+      integerToItem.put(nextFree, itemBlock);
+      itemToInteger.put(itemBlock, nextFree);
+      nextFree++;
+    }
+    
+    DataGroup items = data.getGroup("items");
+    for (Map.Entry<String, Object> entry : items.entrySet()) {
+      Item item = itemMapCopy.remove(entry.getKey());
+      if (item == null) {
+        Log.error("No such item: " + entry.getKey());
+        continue;
+      }
+      int i = (Integer) entry.getValue();
+      integerToItem.put(i, item);
+      itemToInteger.put(item, i);
+    }
+    
+    for (Item item : itemMapCopy.values()) {
+      if (nextFree < 0) {
+        Debug.crash(new CubesException("No more items ids"));
+      } else if (item instanceof ItemBlock) {
+        continue;
+      }
+      Log.debug("Adding item " + item.id + " " + nextFree);
+      integerToItem.put(nextFree, item);
+      itemToInteger.put(item, nextFree);
+      nextFree++;
+    }
+    
+    finishMappingSetup();
   }
-
-  public int toInt(Item item) {
-    if (item == null) return 0;
-    return itemToInteger.get(item);
-  }
-
-  public Block toBlock(int i) {
-    if (i == 0) return null;
-    return integerToBlock.get(i);
-  }
-
-  public Item toItem(int i) {
-    if (i == 0) return null;
-    return integerToItem.get(i);
-  }
-
-  @Override
-  public DataGroup write() {
+  
+  public static DataGroup writeMapping() {
     DataGroup blocks = new DataGroup();
     for (Map.Entry<Block, Integer> entry : blockToInteger.entrySet()) {
       blocks.put(entry.getKey().id, entry.getValue());
@@ -187,157 +227,42 @@ public class IDManager implements DataParser {
     dataGroup.put("next", nextFree);
     return dataGroup;
   }
-
-  @Override
-  public void read(DataGroup data) {
-    if (integerToBlock.size() > 0) return;
-    Log.debug("Reading ID manager");
-    HashMap<String, Block> blockMapCopy = new HashMap<String, Block>();
-    HashMap<String, Item> itemMapCopy = new HashMap<String, Item>();
-    blockMapCopy.putAll(idToBlock);
-    itemMapCopy.putAll(idToItem);
-
-    nextFree = data.getInteger("next");
-
-    DataGroup blocks = data.getGroup("blocks");
-    for (Map.Entry<String, Object> entry : blocks.entrySet()) {
-      Block block = blockMapCopy.remove(entry.getKey());
-      if (block == null) {
-        Log.error("No such block: " + entry.getKey());
-        continue;
-      }
-      int i = (Integer) entry.getValue();
-      integerToBlock.put(i, block);
-      blockToInteger.put(block, i);
-    }
-
-    for (Block block : blockMapCopy.values()) {
-      if (nextFree > MAX_BLOCK_ID) {
-        Debug.crash(new CubesException("No more block ids"));
-      }
-      Log.debug("Adding block " + block.id + " " + nextFree);
-      ItemBlock itemBlock = block.getItemBlock();
-      integerToBlock.put(nextFree, block);
-      blockToInteger.put(block, nextFree);
-      integerToItem.put(nextFree, itemBlock);
-      itemToInteger.put(itemBlock, nextFree);
-      nextFree++;
-    }
-
-    DataGroup items = data.getGroup("items");
-    for (Map.Entry<String, Object> entry : items.entrySet()) {
-      Item item = itemMapCopy.remove(entry.getKey());
-      if (item == null) {
-        Log.error("No such item: " + entry.getKey());
-        continue;
-      }
-      int i = (Integer) entry.getValue();
-      integerToItem.put(i, item);
-      itemToInteger.put(item, i);
-    }
-
-    for (Item item : itemMapCopy.values()) {
-      if (nextFree < 0) {
-        Debug.crash(new CubesException("No more items ids"));
-      } else if (item instanceof ItemBlock) {
-        continue;
-      }
-      Log.debug("Adding item " + item.id + " " + nextFree);
-      integerToItem.put(nextFree, item);
-      itemToInteger.put(item, nextFree);
-      nextFree++;
-    }
-
-    unmodifiable();
-  }
-
-  private void unmodifiable() {
-    integerToBlock = Collections.unmodifiableMap(integerToBlock);
-    blockToInteger = Collections.unmodifiableMap(blockToInteger);
-    integerToItem = Collections.unmodifiableMap(integerToItem);
-    itemToInteger = Collections.unmodifiableMap(itemToInteger);
   
+  
+  private static void finishMappingSetup() {
     for (Entry<Block, Integer> entry : blockToInteger.entrySet()) {
       entry.getKey().intID = entry.getValue();
     }
-  
+    
     for (Entry<Item, Integer> entry : itemToInteger.entrySet()) {
       entry.getKey().intID = entry.getValue();
     }
     
-    transparencyManager.setup(this);
+    TransparencyManager.setup();
   }
 
-  public static class TransparencyManager {
-    private BitSet bitSet;
-    private Map<Integer, Block> integerToBlock;
-    private boolean setup = false;
-
-    public TransparencyManager() {
-      bitSet = new BitSet(getBlocks().size() * 2);
-    }
-
-    public void setup(IDManager idManager) {
-      if (setup) return;
-      this.integerToBlock = idManager.integerToBlock;
-      for (Map.Entry<Integer, Block> entry : integerToBlock.entrySet()) {
-        bitSet.set(entry.getKey() * 2, entry.getValue().canBeTransparent());
-        bitSet.set((entry.getKey() * 2) + 1, entry.getValue().alwaysTransparent());
-      }
-      setup = true;
-    }
-
-    public boolean isTransparent(int idAndMeta) {
-      int blockID = idAndMeta & 0xFFFFF;
-      int blockMeta = (idAndMeta >> 20) & 0xFF;
-      // air || (canBeTransparent && (alwaysTransparent || lookup))
-      return blockID == 0 || (bitSet.get(blockID * 2) && (bitSet.get((blockID * 2) + 1) || integerToBlock.get(blockID).isTransparent(blockMeta)));
-    }
-
-    public boolean isTransparent(int blockID, int blockMeta) {
-      blockID &= 0xFFFFF;
-      // air || (canBeTransparent && (alwaysTransparent || lookup))
-      return blockID == 0 || (bitSet.get(blockID * 2) && (bitSet.get((blockID * 2) + 1) || integerToBlock.get(blockID).isTransparent(blockMeta)));
-    }
-
-    public boolean isTransparent(Block block, int meta) {
-      return block == null || block.isTransparent(meta);
-    }
+  public static int toInt(Block block) {
+    if (block == null) return 0;
+    return blockToInteger.get(block);
   }
 
-  @Retention(RetentionPolicy.RUNTIME)
-  @Target(ElementType.FIELD)
-  public @interface GetBlock {
-    public String value();
+  public static int toInt(Item item) {
+    if (item == null) return 0;
+    return itemToInteger.get(item);
   }
 
-  @Retention(RetentionPolicy.RUNTIME)
-  @Target(ElementType.FIELD)
-  public @interface GetItem {
-    public String value();
+  public static Block toBlock(int i) {
+    if (i == 0) return null;
+    return integerToBlock.get(i);
   }
 
-  public static void getInstances(Class<?> c) {
-    for (java.lang.reflect.Field field : c.getDeclaredFields()) {
-      if (java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
-        if (field.isAnnotationPresent(GetBlock.class)) {
-          GetBlock g = field.getAnnotation(GetBlock.class);
-          Block block = IDManager.idToBlock.get(g.value());
-          try {
-            field.set(null, block);
-          } catch (IllegalAccessException e) {
-            throw new CubesException("Failed to getInstances()", e);
-          }
-        } else if (field.isAnnotationPresent(GetItem.class)) {
-          GetItem g = field.getAnnotation(GetItem.class);
-          Item item = IDManager.idToItem.get(g.value());
-          try {
-            field.set(null, item);
-          } catch (IllegalAccessException e) {
-            throw new CubesException("Failed to getInstances()", e);
-          }
-        }
-      }
-    }
+  public static Item toItem(int i) {
+    if (i == 0) return null;
+    return integerToItem.get(i);
   }
+  
+  private IDManager() {
+    
+  }
+  
 }
