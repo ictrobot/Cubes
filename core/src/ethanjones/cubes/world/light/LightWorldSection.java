@@ -5,18 +5,50 @@ import ethanjones.cubes.core.id.TransparencyManager;
 import ethanjones.cubes.core.util.Lock;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.storage.Area;
-import ethanjones.cubes.world.thread.WorldSection;
+import ethanjones.cubes.world.thread.AreaNotLoadedException;
 
-class LightWorldSection extends WorldSection {
-
-  LightWorldSection(Area initial) {
-    super(initial);
+class LightWorldSection {
+  public final int initialAreaX;
+  public final int initialAreaZ;
+  public final int initialMinBlockX;
+  public final int initialMinBlockZ;
+  public final int initialMaxBlockX;
+  public final int initialMaxBlockZ;
+  public final Area[][] areas = new Area[3][3];
+  public final Area initial;
+  
+  public LightWorldSection(Area initial) {
+    initialAreaX = initial.areaX;
+    initialAreaZ = initial.areaZ;
+    initialMinBlockX = initial.minBlockX;
+    initialMinBlockZ = initial.minBlockZ;
+    initialMaxBlockX = initial.minBlockX + Area.SIZE_BLOCKS;
+    initialMaxBlockZ = initial.minBlockZ + Area.SIZE_BLOCKS;
+    this.initial = initial;
+    
+    areas[0][0] = initial.neighbour(initialAreaX - 1, initialAreaZ - 1);
+    areas[0][1] = initial.neighbour(initialAreaX - 1, initialAreaZ);
+    areas[0][2] = initial.neighbour(initialAreaX - 1, initialAreaZ + 1);
+    areas[1][0] = initial.neighbour(initialAreaX, initialAreaZ - 1);
+    areas[1][1] = initial;
+    areas[1][2] = initial.neighbour(initialAreaX, initialAreaZ + 1);
+    areas[2][0] = initial.neighbour(initialAreaX + 1, initialAreaZ - 1);
+    areas[2][1] = initial.neighbour(initialAreaX + 1, initialAreaZ);
+    areas[2][2] = initial.neighbour(initialAreaX + 1, initialAreaZ + 1);
+    
+    for (Area[] areaArr : areas) {
+      for (Area area : areaArr) {
+        if (area == null) throw new AreaNotLoadedException();
+      }
+    }
+    
     Lock.waitToLockAll(true, areas[0][0], areas[0][1], areas[0][2], areas[1][0], areas[1][1], areas[1][2], areas[2][0], areas[2][1], areas[2][2]);
   }
-
-  LightWorldSection(WorldSection section) {
-    super(section);
-    Lock.waitToLockAll(true, areas[0][0], areas[0][1], areas[0][2], areas[1][0], areas[1][1], areas[1][2], areas[2][0], areas[2][1], areas[2][2]);
+  
+  public Area getArea(int areaX, int areaZ) {
+    int dX = areaX - initialAreaX;
+    int dZ = areaZ - initialAreaZ;
+    return areas[dX + 1][dZ + 1];
   }
 
   protected boolean transparent(int x, int y, int z) {

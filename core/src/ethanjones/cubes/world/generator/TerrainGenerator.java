@@ -1,17 +1,15 @@
 package ethanjones.cubes.world.generator;
 
 import ethanjones.cubes.block.Block;
-import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.server.WorldServer;
 import ethanjones.cubes.world.storage.Area;
-import ethanjones.cubes.world.thread.WorldSection;
 
 public abstract class TerrainGenerator {
 
   public abstract void generate(Area area);
 
-  public abstract void features(Area area, WorldServer world, WorldSection section);
+  public abstract void features(Area area, WorldServer world);
 
   public abstract BlockReference spawnPoint(WorldServer world);
 
@@ -23,23 +21,10 @@ public abstract class TerrainGenerator {
     area.blocks[ref] = (block == null ? 0 : block.intID);
     area.lock.writeUnlock();
   }
-
-  public static void set(WorldServer world, Block block, int x, int y, int z) {
-    AreaReference areaReference = new AreaReference().setFromBlockCoordinates(x, z);
-    world.lock.readLock();
-    Area area = world.getArea(areaReference, false);
-    if (area == null) {
-      world.lock.readUnlock();
-      throw new IllegalStateException(areaReference.toString());
-    }
-    world.lock.readUnlock();
-
-    set(area, block, x - area.minBlockX, y, z - area.minBlockZ);
-  }
-
-  public static void set(WorldSection section, Block block, int x, int y, int z) {
-    Area area = section.getAreaBlockCoordinates(x, z);
-    set(area, block, x - area.minBlockX, y, z - area.minBlockZ);
+  
+  public static void setNeighbour(Area area, Block block, int x, int y, int z) {
+    Area a = area.neighbourBlockCoordinates(x, z);
+    set(a, block, x - a.minBlockX, y, z - a.minBlockZ);
   }
 
   public static void setVisible(Area area, Block block, int x, int y, int z) {
@@ -51,21 +36,8 @@ public abstract class TerrainGenerator {
     area.lock.writeUnlock();
   }
 
-  public static void setVisible(WorldServer world, Block block, int x, int y, int z) {
-    AreaReference areaReference = new AreaReference().setFromBlockCoordinates(x, z);
-    world.lock.readLock();
-    Area area = world.getArea(areaReference, false);
-    if (area == null) {
-      world.lock.readUnlock();
-      throw new IllegalStateException(areaReference.toString());
-    }
-    world.lock.readUnlock();
-
-    setVisible(area, block, x - area.minBlockX, y, z - area.minBlockZ);
-  }
-
-  public static void setVisible(WorldSection section, Block block, int x, int y, int z) {
-    Area area = section.getAreaBlockCoordinates(x, z);
-    setVisible(area, block, x - area.minBlockX, y, z - area.minBlockZ);
+  public static void setVisibleNeighbour(Area area, Block block, int x, int y, int z) {
+    Area a = area.neighbourBlockCoordinates(x, z);
+    setVisible(a, block, x - a.minBlockX, y, z - a.minBlockZ);
   }
 }

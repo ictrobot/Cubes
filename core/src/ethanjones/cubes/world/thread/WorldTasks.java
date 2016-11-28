@@ -7,12 +7,12 @@ import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.ThreadPool;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.world.light.SunLight;
-import ethanjones.cubes.world.storage.AreaMap;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
 import ethanjones.cubes.world.save.Save;
 import ethanjones.cubes.world.server.WorldServer;
 import ethanjones.cubes.world.storage.Area;
+import ethanjones.cubes.world.storage.AreaMap;
 
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicReference;
@@ -98,11 +98,10 @@ public class WorldTasks {
     AtomicReference<Object> features = area.features;
 
     if (features.compareAndSet(null, Thread.currentThread())) {
-      WorldSection section = new WorldSection(area);
-      world.getTerrainGenerator().features(area, world, section);
+      world.getTerrainGenerator().features(area, world);
       new FeaturesEvent(area, areaReference).post();
       area.initialUpdate();
-      SunLight.initialSunlight(area, section);
+      SunLight.initialSunlight(area);
       new AreaLoadedEvent(area, areaReference).post();
       return 1;
     }

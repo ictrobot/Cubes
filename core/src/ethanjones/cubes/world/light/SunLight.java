@@ -3,7 +3,6 @@ package ethanjones.cubes.world.light;
 import ethanjones.cubes.core.id.TransparencyManager;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.storage.Area;
-import ethanjones.cubes.world.thread.WorldSection;
 
 import java.util.ArrayDeque;
 import java.util.concurrent.locks.ReentrantLock;
@@ -14,9 +13,9 @@ public class SunLight {
   public static ReentrantLock initalSunlight = new ReentrantLock();
   public static final int MAX_SUNLIGHT = 0xF0;
 
-  public static void initialSunlight(Area area, WorldSection ws) {
+  public static void initialSunlight(Area area) {
     initalSunlight.lock(); // used to prevent all the World Generation threads grabbing different areas and deadlocking
-    LightWorldSection worldSection = new LightWorldSection(ws);
+    LightWorldSection worldSection = new LightWorldSection(area);
     initalSunlight.unlock();
 
     ArrayDeque<LightNode> lightQueue = new ArrayDeque<>();

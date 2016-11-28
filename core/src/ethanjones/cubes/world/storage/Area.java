@@ -82,8 +82,8 @@ public class Area implements Lock.HasLock {
 
   private volatile boolean unloaded;
   
-  private volatile Area[] neighboursClient = new Area[8];
-  private volatile Area[] neighboursServer = new Area[8];
+  private volatile Area[] neighboursClient = new Area[9];
+  private volatile Area[] neighboursServer = new Area[9];
   private AreaMap areaMapClient;
   private AreaMap areaMapServer;
   public final boolean shared;
