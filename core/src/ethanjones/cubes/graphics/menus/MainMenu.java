@@ -11,6 +11,7 @@ import ethanjones.cubes.graphics.menu.Menu;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
@@ -83,6 +84,14 @@ public class MainMenu extends Menu {
     stage.addActor(version);
     stage.addActor(author);
     stage.addActor(buttons);
+    
+    logo.addListener(new ActorGestureListener() {
+      @Override
+      public boolean longPress(Actor actor, float x, float y) {
+        Adapter.setMenu(new LogMenu());
+        return true;
+      }
+    });
   }
 
   @Override

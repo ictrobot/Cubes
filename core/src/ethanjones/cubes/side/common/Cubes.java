@@ -49,6 +49,7 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
     Compatibility.get().getBaseFolder().mkdirs();
 
     Log.info(Branding.DEBUG); //Can't log till base folder setup
+    Log.info("https://github.com/ictrobot/Cubes");
     Debug.printProperties();
 
     Compatibility.get().logEnvironment();
