@@ -5,16 +5,17 @@ import ethanjones.cubes.core.settings.VisualSettingManager;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menus.SettingsMenu;
-import ethanjones.data.DataGroup;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonValue;
 
 public class FloatSetting extends Setting {
 
-  public static enum Type {
+  public enum Type {
     TextField, Slider
   }
 
@@ -55,6 +56,7 @@ public class FloatSetting extends Setting {
 
   public void set(float i) {
     this.f = i;
+    onChange();
   }
 
   @Override
@@ -72,7 +74,7 @@ public class FloatSetting extends Setting {
   public String toString() {
     return Float.toString(f);
   }
-
+  
   private TextField getTextField() {
     final TextField textField = new TextField(f + "", Menu.skin);
     textField.addListener(new EventListener() {
@@ -84,7 +86,7 @@ public class FloatSetting extends Setting {
           if (hasRange && (n < rangeStart || n > rangeEnd)) {
             throw new NumberFormatException();
           } else {
-            f = n;
+            set(n);
             return true;
           }
         } catch (Exception e) {
@@ -116,7 +118,7 @@ public class FloatSetting extends Setting {
           slider.setValue(f);
           return false;
         }
-        f = n;
+        set(n);
         return true;
       }
     });
@@ -128,17 +130,17 @@ public class FloatSetting extends Setting {
     });
     return slider;
   }
-
+  
+  
   @Override
-  public DataGroup write() {
-    DataGroup dataGroup = new DataGroup();
-    dataGroup.put("data", f);
-    return dataGroup;
+  public JsonValue toJson() {
+    return Json.value(this.f);
   }
-
+  
   @Override
-  public void read(DataGroup data) {
-    f = data.getFloat("data");
+  public void readJson(JsonValue json) {
+    this.f = json.asFloat();
     if (hasRange) MathUtils.clamp(f, rangeStart, rangeEnd);
+    onChange();
   }
 }

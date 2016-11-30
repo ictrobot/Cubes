@@ -4,13 +4,17 @@ import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.settings.type.*;
-import ethanjones.data.Data;
-import ethanjones.data.DataGroup;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonObject.Member;
+import com.eclipsesource.json.WriterConfig;
 
+import java.io.Reader;
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,21 +45,16 @@ public class Settings {
     addSetting(GRAPHICS_VIEW_DISTANCE, new IntegerSetting(2, 2, 16, IntegerSetting.Type.Slider));
     addSetting(GRAPHICS_FOV, new IntegerSetting(70, 10, 120, IntegerSetting.Type.Slider));
     addSetting(GRAPHICS_VSYNC, new BooleanSetting(false) {
+  
+      @Override
+      public void onChange() {
+        super.onChange();
+        Gdx.graphics.setVSync(get());
+      }
+  
       @Override
       public boolean shouldDisplay() {
         return Compatibility.get().getApplicationType() == Application.ApplicationType.Desktop;
-      }
-
-      @Override
-      public void set(boolean b) {
-        super.set(b);
-        Gdx.graphics.setVSync(get());
-      }
-
-      @Override
-      public void read(DataGroup data) {
-        super.read(data);
-        Gdx.graphics.setVSync(get());
       }
     });
 
@@ -87,6 +86,7 @@ public class Settings {
             .add(GROUP_DEBUG, new SettingGroup().add(DEBUG_FRAMETIME_GRAPH));
 
     if (!read()) {
+      Log.info("Creating new settings file");
       write();
     }
   }
@@ -96,31 +96,36 @@ public class Settings {
   }
 
   public static boolean read() {
-    FileHandle fileHandle = Compatibility.get().getBaseFolder().child("settings.data");
-    DataGroup dataGroup;
+    FileHandle fileHandle = Compatibility.get().getBaseFolder().child("settings.json");
+    
     try {
-      dataGroup = (DataGroup) Data.input(fileHandle.file());
+      Reader reader = fileHandle.reader();
+      JsonObject json = Json.parse(reader).asObject();
+      reader.close();
+  
+      for (Member member : json) {
+        Setting setting = settings.get(member.getName());
+        setting.readJson(member.getValue());
+      }
+      
+      return true;
     } catch (Exception e) {
       Log.error("Failed to read settings", e);
+      fileHandle.delete();
       return false;
     }
-    for (Map.Entry<String, Object> entry : dataGroup.entrySet()) {
-      Setting setting = settings.get(entry.getKey());
-      if (setting != null && entry.getValue() instanceof DataGroup) {
-        setting.read((DataGroup) entry.getValue());
-      }
-    }
-    return true;
   }
 
   public static boolean write() {
-    FileHandle fileHandle = Compatibility.get().getBaseFolder().child("settings.data");
-    DataGroup dataGroup = new DataGroup();
+    FileHandle fileHandle = Compatibility.get().getBaseFolder().child("settings.json");
+    JsonObject json = new JsonObject();
     for (Map.Entry<String, Setting> entry : settings.entrySet()) {
-      dataGroup.put(entry.getKey(), entry.getValue().write());
+      json.set(entry.getKey(), entry.getValue().toJson());
     }
     try {
-      Data.output(dataGroup, fileHandle.file());
+      Writer writer = fileHandle.writer(false);
+      json.writeTo(writer, WriterConfig.PRETTY_PRINT);
+      writer.close();
     } catch (Exception e) {
       Log.error("Failed to write settings", e);
       fileHandle.delete();

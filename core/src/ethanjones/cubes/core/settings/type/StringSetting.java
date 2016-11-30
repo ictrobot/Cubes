@@ -4,12 +4,13 @@ import ethanjones.cubes.core.settings.Setting;
 import ethanjones.cubes.core.settings.VisualSettingManager;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menus.SettingsMenu;
-import ethanjones.data.DataGroup;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonValue;
 
 public class StringSetting extends Setting {
 
@@ -43,22 +44,24 @@ public class StringSetting extends Setting {
 
   public void set(String s) {
     this.s = s;
+    onChange();
   }
 
   @Override
   public String toString() {
     return s;
   }
-
+  
   @Override
-  public DataGroup write() {
-    DataGroup dataGroup = new DataGroup();
-    dataGroup.put("data", s);
-    return dataGroup;
+  public JsonValue toJson() {
+    return Json.value(s);
   }
-
+  
   @Override
-  public void read(DataGroup data) {
-    s = data.getString("data");
+  public void readJson(JsonValue json) {
+    String str = json.asString();
+    if (str != null) this.s = str;
+    onChange();
   }
+  
 }

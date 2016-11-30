@@ -3,11 +3,12 @@ package ethanjones.cubes.core.settings.type;
 import ethanjones.cubes.core.settings.Setting;
 import ethanjones.cubes.core.settings.VisualSettingManager;
 import ethanjones.cubes.graphics.menu.Menu;
-import ethanjones.data.DataGroup;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonValue;
 
 public class BooleanSetting extends Setting {
 
@@ -36,6 +37,7 @@ public class BooleanSetting extends Setting {
 
   public void set(boolean b) {
     this.b = b;
+    onChange();
   }
 
   public boolean get() {
@@ -46,16 +48,15 @@ public class BooleanSetting extends Setting {
   public String toString() {
     return Boolean.toString(b);
   }
-
+  
   @Override
-  public DataGroup write() {
-    DataGroup dataGroup = new DataGroup();
-    dataGroup.put("data", b);
-    return dataGroup;
+  public JsonValue toJson() {
+    return Json.value(this.b);
   }
-
+  
   @Override
-  public void read(DataGroup data) {
-    b = data.getBoolean("data");
+  public void readJson(JsonValue json) {
+    this.b = json.asBoolean();
+    onChange();
   }
 }

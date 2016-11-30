@@ -5,16 +5,17 @@ import ethanjones.cubes.core.settings.VisualSettingManager;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menus.SettingsMenu;
-import ethanjones.data.DataGroup;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonValue;
 
 public class IntegerSetting extends Setting {
 
-  public static enum Type {
+  public enum Type {
     TextField, Slider
   }
 
@@ -54,6 +55,7 @@ public class IntegerSetting extends Setting {
 
   public void set(int i) {
     this.i = i;
+    onChange();
   }
 
   @Override
@@ -71,7 +73,7 @@ public class IntegerSetting extends Setting {
   public String toString() {
     return Integer.toString(i);
   }
-
+  
   private TextField getTextField() {
     final TextField textField = new TextField(i + "", Menu.skin);
     textField.addListener(new EventListener() {
@@ -83,7 +85,7 @@ public class IntegerSetting extends Setting {
           if (hasRange && (n < rangeStart || n > rangeEnd)) {
             throw new NumberFormatException();
           } else {
-            i = n;
+            set(n);
             return true;
           }
         } catch (Exception e) {
@@ -110,7 +112,7 @@ public class IntegerSetting extends Setting {
           slider.setValue(i);
           return false;
         }
-        i = n;
+        set(n);
         return true;
       }
     });
@@ -122,17 +124,17 @@ public class IntegerSetting extends Setting {
     });
     return slider;
   }
-
+  
+  
   @Override
-  public DataGroup write() {
-    DataGroup dataGroup = new DataGroup();
-    dataGroup.put("data", i);
-    return dataGroup;
+  public JsonValue toJson() {
+    return Json.value(this.i);
   }
-
+  
   @Override
-  public void read(DataGroup data) {
-    i = data.getInteger("data");
+  public void readJson(JsonValue json) {
+    this.i = json.asInt();
     if (hasRange) MathUtils.clamp(i, rangeStart, rangeEnd);
+    onChange();
   }
 }
