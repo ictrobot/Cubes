@@ -3,13 +3,19 @@ package ethanjones.cubes.core.settings.type;
 import ethanjones.cubes.core.settings.Setting;
 import ethanjones.cubes.core.settings.VisualSettingManager;
 import ethanjones.cubes.core.system.CubesException;
+import ethanjones.cubes.graphics.menu.Fonts;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menus.SettingsMenu;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.utils.Align;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonValue;
 
@@ -101,7 +107,7 @@ public class IntegerSetting extends Setting {
 
   public Slider getSlider() {
     if (!hasRange) throw new CubesException("Range required");
-    final Slider slider = new Slider(rangeStart, rangeEnd, 1f, false, Menu.skin);
+    final Slider slider = new SliderWithValue(rangeStart, rangeEnd, 1f, false, Menu.skin, "%.0f");
     slider.setValue(i);
     slider.addListener(new EventListener() {
       @Override
@@ -136,5 +142,35 @@ public class IntegerSetting extends Setting {
     this.i = json.asInt();
     if (hasRange) MathUtils.clamp(i, rangeStart, rangeEnd);
     onChange();
+  }
+  
+  public static class SliderWithValue extends Slider {
+  
+    private final String format;
+  
+    public SliderWithValue(float min, float max, float stepSize, boolean vertical, Skin skin, String format) {
+      super(min, max, stepSize, vertical, skin);
+      this.format = format;
+    }
+  
+    public SliderWithValue(float min, float max, float stepSize, boolean vertical, Skin skin, String styleName, String format) {
+      super(min, max, stepSize, vertical, skin, styleName);
+      this.format = format;
+    }
+  
+    public SliderWithValue(float min, float max, float stepSize, boolean vertical, SliderStyle style, String format) {
+      super(min, max, stepSize, vertical, style);
+      this.format = format;
+    }
+  
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+      super.draw(batch, parentAlpha);
+      BitmapFontCache cache = Fonts.hud.getCache();
+      cache.clear();
+      GlyphLayout layout = cache.addText(String.format(format, getValue()), getX(), getY(), getWidth(), Align.center, false);
+      cache.translate(0, (layout.height / 2) + (getHeight() / 2));
+      cache.draw(batch);
+    }
   }
 }

@@ -2,6 +2,7 @@ package ethanjones.cubes.core.settings.type;
 
 import ethanjones.cubes.core.settings.Setting;
 import ethanjones.cubes.core.settings.VisualSettingManager;
+import ethanjones.cubes.core.settings.type.IntegerSetting.SliderWithValue;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menus.SettingsMenu;
@@ -107,7 +108,7 @@ public class FloatSetting extends Setting {
 
   public Slider getSlider() {
     if (!hasRange) throw new CubesException("Range required");
-    final Slider slider = new Slider(rangeStart, rangeEnd, sliderSteps, false, Menu.skin);
+    final Slider slider = new SliderWithValue(rangeStart, rangeEnd, sliderSteps, false, Menu.skin, "%.3f");
     slider.setValue(f);
     slider.addListener(new EventListener() {
       @Override
