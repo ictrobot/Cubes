@@ -20,11 +20,11 @@ import static ethanjones.cubes.world.generator.smooth.SmoothWorld.murmurHash3;
 public class CaveGenerator {
   public static final int roomNodesMin = 25;
   public static final int roomNodesMax = 100;
-  public static final int roomChangeXZConstant = 15;
-  public static final int roomChangeXZRandom = 15;
-  public static final int roomChangeY = 10;
-  public static final int roomConnectDistanceMin = 5;
-  public static final int roomConnectDistanceMax = 75;
+  public static final int roomChangeXZConstant = 10;
+  public static final int roomChangeXZRandom = 20;
+  public static final int roomChangeY = 15;
+  public static final int roomConnectDistance2Min = 20 * 20;
+  public static final int roomConnectDistance2Max = 40 * 40;
 
   public final int caveStartX;
   public final int caveStartY;
@@ -85,10 +85,10 @@ public class CaveGenerator {
       int finalZ = randomNode.location.blockZ + getRoomChangeXZ(randomNode.location.blockZ - caveStartZ);
 
       if (inRange(finalX, finalZ)) {
-        int offsetY = numbers.nextInt((roomChangeY * 2) + 1) - roomChangeY;
+        int offsetY = roomChangeY - numbers.nextInt((int) ((roomChangeY * 2.5f) + 1));
         int finalY = undergroundY(finalX, finalZ, randomNode.location.blockY, offsetY, allowSurface);
 
-        rooms.add(new RoomNode(finalX, finalY, finalZ, 1 + numbers.nextInt(2), randomNode));
+        rooms.add(new RoomNode(finalX, finalY, finalZ, 2 + numbers.nextInt(2), randomNode));
       }
       if (num >= roomNodesMin && numbers.nextInt((roomNodesMax - roomNodesMin) - num) == 0) break;
       num++;
@@ -97,15 +97,19 @@ public class CaveGenerator {
     ArrayList<TunnelNode> straightTunnels = new ArrayList<TunnelNode>();
     for (int i = 0; i < rooms.size(); i++) {
       RoomNode roomNode = rooms.get(i);
-      if (roomNode.connect != null) straightTunnels.add(new TunnelNode(roomNode.location, roomNode.connect.location));
-
       int roomConnections = 0;
-      for (int j = 0; j < 25; j++) {
+      
+      if (roomNode.connect != null) {
+        straightTunnels.add(new TunnelNode(roomNode.location, roomNode.connect.location));
+        roomConnections++;
+      }
+      
+      for (int j = 0; j < 10; j++) {
         RoomNode other = rooms.get(numbers.nextInt(rooms.size()));
         if (other == roomNode || other == roomNode.connect) continue;
 
-        float roomDistance = distance(roomNode.location, other.location);
-        if (roomDistance < roomConnectDistanceMin || roomDistance > roomConnectDistanceMax) continue;
+        float roomDistance = distance2(roomNode.location, other.location);
+        if (roomDistance < roomConnectDistance2Min || roomDistance > roomConnectDistance2Max) continue;
 
         straightTunnels.add(new TunnelNode(roomNode.location, other.location));
         roomConnections++;
@@ -123,8 +127,7 @@ public class CaveGenerator {
       int dZ = a.blockZ - b.blockZ;
       int dist = (int) Math.sqrt(dX * dX + dY * dX + dZ * dZ);
 
-      int numTurns = 1 + (dist / 10) + (dist / 5 == 0 ? 0 : numbers.nextInt(dist / 5));
-      float turnXZChange = (float) Math.sqrt(dX * dX + dZ * dZ) / (float) numTurns;
+      int numTurns = 1 + (dist / 7 == 0 ? 0 : numbers.nextInt(dist / 7));
 
       tunnelSections.clear();
       tunnelSections.add(a);
@@ -134,9 +137,9 @@ public class CaveGenerator {
         int y = b.blockY + (int) (dY * f);
         int z = b.blockZ + (int) (dZ * f);
 
-        int randomX = (int) (((4 * numbers.nextFloat()) - 2f) * turnXZChange);
-        int randomY = numbers.nextInt(3) - 1;
-        int randomZ = (int) (((4 * numbers.nextFloat()) - 2f) * turnXZChange);
+        int randomX = (int) (((4 * numbers.nextFloat()) - 2f) * 4);
+        int randomY = numbers.nextInt(5) - 2;
+        int randomZ = (int) (((4 * numbers.nextFloat()) - 2f) * 4);
 
         int finalX = x + randomX;
         int finalY = y + randomY;
@@ -176,33 +179,46 @@ public class CaveGenerator {
 
     for (TunnelNode tunnel : tunnels) {
       int r = 2;
-
-      int cX = tunnel.end.blockX - tunnel.start.blockX >= 0 ? 1 : -1;
-      int cY = tunnel.end.blockY - tunnel.start.blockY >= 0 ? 1 : -1;
-      int cZ = tunnel.end.blockZ - tunnel.start.blockZ >= 0 ? 1 : -1;
-
-      int startX = tunnel.start.blockX - (cX * r);
-      int startY = tunnel.start.blockY - (cY * r);
-      int startZ = tunnel.start.blockZ - (cZ * r);
-
-      int endX = tunnel.end.blockX + (cX * r);
-      int endY = tunnel.end.blockY + (cY * r);
-      int endZ = tunnel.end.blockZ + (cZ * r);
-
-      BlockReference temp = new BlockReference();
-      for (int x = startX; x <= endX; x += cX) {
-        for (int y = startY; y <= endY; y += cY) {
-          for (int z = startZ; z <= endZ; z += cZ) {
-            temp.setFromBlockCoordinates(x, y, z);
-            float radius;
-            if (distance(tunnel.start, temp) < distance(tunnel.end, temp)) {
-              radius = tunnel.startRadius;
-            } else {
-              radius = tunnel.endRadius;
-            }
-            if (distanceFromLine(tunnel.start, tunnel.end, temp.setFromBlockCoordinates(x, y, z)) <= radius) {
-              clear(x, y, z);
-            }
+      
+      BlockReference start = tunnel.start, end = tunnel.end;
+      
+      int x1, x2, y1, y2, z1, z2;
+      if (start.blockX < end.blockX) {
+        x1 = start.blockX;
+        x2 = end.blockX;
+      } else {
+        x1 = end.blockX;
+        x2 = start.blockX;
+      }
+      if (start.blockY < end.blockY) {
+        y1 = start.blockY;
+        y2 = end.blockY;
+      } else {
+        y1 = end.blockY;
+        y2 = start.blockY;
+      }
+      if (start.blockZ < end.blockZ) {
+        z1 = start.blockZ;
+        z2 = end.blockZ;
+      } else {
+        z1 = end.blockZ;
+        z2 = start.blockZ;
+      }
+      
+      for (int x = x1; x <= x2; x ++) {
+        for (int y = y1; y <= y2; y ++) {
+          for (int z = z1; z <= z2; z ++) {
+            float a = distance(tunnel.start, x, y, z);
+            float b = distance(tunnel.end, x, y, z);
+            float c = distance(tunnel.start, tunnel.end);
+  
+            float s = (a + b + c) / 2f;
+            float area = (float) Math.sqrt(s * (s - a) * (s - b) * (s - c));
+  
+            float distanceFromLine = (area * 2) / c;
+            
+            float radius = a < b ? tunnel.startRadius : tunnel.endRadius;
+            if (distanceFromLine <= radius) clear(x, y, z);
           }
         }
       }
@@ -212,13 +228,11 @@ public class CaveGenerator {
   private int getRoomChangeXZ(int distance) {
     int sign = distance < 0 ? -1 : 1;
 
-    float factor = 1f - ((float) (distance * sign) / (float) CaveManager.caveSafeBlockRadius);
-    factor *= 0.6f;
+    float safe = Math.min(CaveManager.caveSafeBlockRadius - (distance * sign), roomChangeXZRandom * 1.5f);
+    float rand = numbers.nextFloat();
+    float value = ((safe + roomChangeXZRandom) * rand) - roomChangeXZRandom;
 
-    int randRange = (int) (roomChangeXZRandom * (2f + factor));
-    int rand = sign * (numbers.nextInt(randRange) - roomChangeXZRandom);
-
-    return rand + (sign * roomChangeXZConstant);
+    return sign * (roomChangeXZConstant + (int) value);
   }
 
   private int undergroundY(int x, int z, int prevY, int changeY, boolean allowSurface) {
@@ -238,28 +252,31 @@ public class CaveGenerator {
     return dX < CaveManager.caveSafeBlockRadius && dZ < CaveManager.caveSafeBlockRadius;
   }
 
-  private static float distanceFromLine(BlockReference start, BlockReference end, BlockReference location) {
-    float a = distance(start, location);
-    float b = distance(end, location);
-    float c = distance(start, end);
-
-    float s = (a + b + c) / 2f;
-    float area = (float) Math.sqrt(s * (s - a) * (s - b) * (s - c));
-
-    return (area * 2) / c;
-  }
-
   public float distanceFromSpawn(int x, int z) {
     BlockReference spawnPoint = smoothWorld.spawnPoint(((WorldServer) Cubes.getServer().world));
     int dX = x - spawnPoint.blockX;
     int dZ = z - spawnPoint.blockZ;
     return (float) Math.sqrt(dX * dX + dZ * dZ);
   }
+  
+  private static float distance2(BlockReference a, BlockReference b) {
+    int dX = a.blockX - b.blockX;
+    int dY = a.blockY - b.blockY;
+    int dZ = a.blockZ - b.blockZ;
+    return dX * dX + dY * dY + dZ * dZ;
+  }
 
   private static float distance(BlockReference a, BlockReference b) {
     int dX = a.blockX - b.blockX;
     int dY = a.blockY - b.blockY;
     int dZ = a.blockZ - b.blockZ;
+    return (float) Math.sqrt(dX * dX + dY * dY + dZ * dZ);
+  }
+  
+  private static float distance(BlockReference a, int x2, int y2, int z2) {
+    int dX = a.blockX - x2;
+    int dY = a.blockY - y2;
+    int dZ = a.blockZ - z2;
     return (float) Math.sqrt(dX * dX + dY * dY + dZ * dZ);
   }
 
