@@ -51,6 +51,7 @@ public class GuiRenderer implements Disposable {
 
   Touchpad touchpad;
   ImageButton jumpButton;
+  ImageButton downButton;
   ImageButton debugButton;
   ImageButton chatButton;
   ImageButton blockSelectorButton;
@@ -125,9 +126,11 @@ public class GuiRenderer implements Disposable {
     if (Compatibility.get().isTouchScreen()) {
       touchpad = new Touchpad(0, skin);
       jumpButton = new ImageButton(ImageButtons.jumpButton());
+      downButton = new ImageButton(ImageButtons.downButton());
 
       Cubes.getClient().inputChain.cameraController.touchpad = touchpad;
       Cubes.getClient().inputChain.cameraController.jumpButton = jumpButton;
+      Cubes.getClient().inputChain.cameraController.downButton = downButton;
 
       debugButton = new ImageButton(ImageButtons.debugButton());
       debugButton.addListener(new ChangeListener() {
@@ -160,6 +163,7 @@ public class GuiRenderer implements Disposable {
       InventoryManager.GROUP_HIDDEN.addActor(jumpButton);
       InventoryManager.GROUP_HIDDEN.addActor(debugButton);
       InventoryManager.GROUP_HIDDEN.addActor(chatButton);
+      InventoryManager.GROUP_HIDDEN.addActor(downButton);
 
       stage.addActor(blockSelectorButton);
 
@@ -178,6 +182,7 @@ public class GuiRenderer implements Disposable {
 
   public void render() {
     FrametimeGraph.update();
+    downButton.setVisible(Cubes.getClient().gamemode == Gamemode.creative);
 
     stage.act();
     stage.draw();
@@ -208,10 +213,12 @@ public class GuiRenderer implements Disposable {
       float size = GUI_HEIGHT * Settings.getFloatSettingValue(Settings.INPUT_TOUCHPAD_SIZE);
       if (Settings.getBooleanSettingValue(Settings.INPUT_TOUCHPAD_LEFT)) {
         touchpad.setBounds(padding, hbSize + padding, size, size);
-        jumpButton.setBounds(GUI_WIDTH - hbSize - padding, hbSize, hbSize, hbSize);
+        jumpButton.setBounds(GUI_WIDTH - hbSize - padding, hbSize * 2 + padding, hbSize, hbSize);
+        downButton.setBounds(GUI_WIDTH - hbSize - padding, hbSize + padding, hbSize, hbSize);
       } else {
         touchpad.setBounds(GUI_WIDTH - size - padding, hbSize, size, size);
-        jumpButton.setBounds(padding, hbSize + padding, hbSize, hbSize);
+        jumpButton.setBounds(padding, hbSize * 2 + padding, hbSize, hbSize);
+        downButton.setBounds(padding, hbSize + padding, hbSize, hbSize);
       }
     }
     if (chatButton != null && debugButton != null && blockSelectorButton != null) {

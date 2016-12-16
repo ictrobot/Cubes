@@ -94,7 +94,7 @@ public class Player extends LivingEntity implements CommandSender, RenderablePro
 
   @Override
   public void updatePosition(float time) {
-    if (Sided.getSide() == Side.Client) {
+    if (Sided.getSide() == Side.Client && !Cubes.getClient().inputChain.cameraController.flying) {
       if (!inLoadedArea()) return;
       Side side = Sided.getSide();
       World world = Sided.getCubes().world;

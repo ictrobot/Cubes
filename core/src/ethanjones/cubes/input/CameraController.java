@@ -14,9 +14,11 @@ import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.collision.BlockIntersection;
 import ethanjones.cubes.world.gravity.WorldGravity;
 import ethanjones.cubes.world.reference.BlockReference;
+import ethanjones.cubes.world.save.Gamemode;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
@@ -28,24 +30,32 @@ public class CameraController extends InputAdapter {
 
   public static final float JUMP_START_VELOCITY = 5f;
   public static final float JUMP_RELEASE_VELOCITY = 2f;
-  public boolean jumping = false;
-
-  public Touchpad touchpad; //movement on android
-  public ImageButton jumpButton;
-
-  private final Camera camera;
-  private final IntIntMap keys = new IntIntMap();
-  private final IntIntMap buttons = new IntIntMap();
-  private final Vector3 tmp = new Vector3();
-  private final Vector3 tmpMovement = new Vector3();
+  public static final float walkSpeed = 4.5f;
+  public static final float flySpeed = 10f;
+  
+  private float degreesPerPixel = Settings.getFloatSettingValue(Settings.INPUT_MOUSE_SENSITIVITY) / 3;
   private int STRAFE_LEFT = Input.Keys.A;
   private int STRAFE_RIGHT = Input.Keys.D;
   private int FORWARD = Input.Keys.W;
   private int BACKWARD = Input.Keys.S;
-  private float speed = 4f;
-  private float degreesPerPixel = Settings.getFloatSettingValue(Settings.INPUT_MOUSE_SENSITIVITY) / 3;
+  
+  public Touchpad touchpad; //movement on android
+  public ImageButton jumpButton;
+  public ImageButton downButton;
+  
+  private final IntIntMap keys = new IntIntMap();
+  private final IntIntMap buttons = new IntIntMap();
+  
+  private final Vector3 tmp = new Vector3();
+  private final Vector3 tmpMovement = new Vector3();
   private Vector3 prevPosition = new Vector3();
   private Vector3 prevDirection = new Vector3();
+  
+  private final Camera camera;
+  public boolean jumping = false;
+  public boolean flying = false;
+  private long lastJumpDown = 0;
+  private boolean wasJumpDown = false;
 
   public CameraController(Camera camera) {
     this.camera = camera;
@@ -156,13 +166,9 @@ public class CameraController extends InputAdapter {
     return !(oldX != newX && oldZ != newZ);
   }
 
-  public void setSpeed(float speed) {
-    this.speed = speed;
-  }
-
   public void update() {
     if (Cubes.getClient().renderer.guiRenderer.noCursorCatching()) {
-      update(0f, 0f, 0f, 0f, false);
+      update(0f, 0f, 0f, 0f, false, false);
     } else if (touchpad != null) {
       float knobPercentY = touchpad.getKnobPercentY();
       float up = knobPercentY > 0 ? knobPercentY : 0;
@@ -171,16 +177,18 @@ public class CameraController extends InputAdapter {
       float knobPercentX = touchpad.getKnobPercentX();
       float right = knobPercentX > 0 ? knobPercentX : 0;
       float left = knobPercentX < 0 ? -knobPercentX : 0;
-      update(up, down, left, right, jumpButton.getClickListener().isPressed());
+      update(up, down, left, right, jumpButton.getClickListener().isPressed(), downButton.getClickListener().isPressed());
     } else {
-      boolean j = Gdx.input.isKeyPressed(Input.Keys.SPACE);
-      update(keys.containsKey(FORWARD) ? 1f : 0f, keys.containsKey(BACKWARD) ? 1f : 0f, keys.containsKey(STRAFE_LEFT) ? 1f : 0f, keys.containsKey(STRAFE_RIGHT) ? 1f : 0f, j);
+      boolean up = Gdx.input.isKeyPressed(Input.Keys.SPACE);
+      boolean down = Gdx.input.isKeyPressed(Keys.SHIFT_LEFT);
+      update(keys.containsKey(FORWARD) ? 1f : 0f, keys.containsKey(BACKWARD) ? 1f : 0f, keys.containsKey(STRAFE_LEFT) ? 1f : 0f, keys.containsKey(STRAFE_RIGHT) ? 1f : 0f, up, down);
     }
   }
 
-  private void update(float forward, float backward, float left, float right, boolean jump) {
+  private void update(float forward, float backward, float left, float right, boolean jump, boolean down) {
     float deltaTime = Gdx.graphics.getRawDeltaTime();
     if (deltaTime == 0f) return;
+    float speed = flying ? flySpeed : walkSpeed;
     tmpMovement.setZero();
     if (forward > 0) {
       tmp.set(camera.direction.x, 0, camera.direction.z).nor().nor().scl(deltaTime * speed * forward);
@@ -198,28 +206,55 @@ public class CameraController extends InputAdapter {
       tmp.set(camera.direction.x, 0, camera.direction.z).crs(camera.up).nor().scl(deltaTime * speed * right);
       tmpMovement.add(tmp);
     }
-    if (!tmpMovement.isZero()) tryMove();
+    tryMove();
+    boolean onBlock = WorldGravity.onBlock(Cubes.getClient().world, Cubes.getClient().player.position, Player.PLAYER_HEIGHT, Player.PLAYER_RADIUS);
 
-    if (!jumping && jump && WorldGravity.onBlock(Cubes.getClient().world, Cubes.getClient().player.position, Player.PLAYER_HEIGHT, Player.PLAYER_RADIUS)) {
-      Cubes.getClient().player.motion.y = JUMP_START_VELOCITY;
-      jumping = true;
+    if (flying) {
+      if (jump) {
+        tmpMovement.set(0, flySpeed * deltaTime, 0);
+        tryMove();
+      } else if (down) {
+        tmpMovement.set(0, -flySpeed * deltaTime, 0);
+        tryMove();
+      } else if (onBlock) {
+        flying = false;
+      }
+    } else if (jumping) {
+      if (!jump) {
+        Cubes.getClient().player.motion.y = Math.min(JUMP_RELEASE_VELOCITY, Cubes.getClient().player.motion.y);
+        jumping = false;
+      }
+    } else {
+      if (jump && onBlock) {
+        Cubes.getClient().player.motion.y = JUMP_START_VELOCITY;
+        jumping = true;
+      }
     }
-    if (jumping && !jump) {
-      Cubes.getClient().player.motion.y = Math.min(JUMP_RELEASE_VELOCITY, Cubes.getClient().player.motion.y);
-      jumping = false;
+    if (jump && !wasJumpDown && Cubes.getClient().gamemode == Gamemode.creative) {
+      long time = System.currentTimeMillis();
+      long delta = time - lastJumpDown;
+      if (delta <= 500) {
+        flying = !flying;
+        lastJumpDown = 0;
+      } else {
+        lastJumpDown = time;
+      }
     }
+    wasJumpDown = jump;
+    
     if (Cubes.getClient().player.motion.y <= 0) jumping = false;
-
     Cubes.getClient().player.updatePosition(deltaTime);
 
     camera.update(true);
   }
 
   private void tryMove() {
+    if (tmpMovement.isZero()) return;
     tmpMovement.add(camera.position);
     if (!new PlayerMovementEvent(Cubes.getClient().player, tmpMovement).post().isCanceled()) {
       camera.position.set(tmpMovement);
     }
+    tmpMovement.setZero();
   }
 
   public void tick() {
