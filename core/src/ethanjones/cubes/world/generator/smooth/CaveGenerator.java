@@ -9,6 +9,7 @@ import ethanjones.cubes.world.storage.Area;
 
 import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.utils.IntSet;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +33,7 @@ public class CaveGenerator {
 
   private final SmoothWorld smoothWorld;
   private final RandomXS128 numbers;
+  private final IntSet intSet;
 
   private final HashMap<AreaReference, IntArray> blocks = new HashMap<AreaReference, IntArray>();
   private final ArrayList<RoomNode> rooms = new ArrayList<RoomNode>();
@@ -45,6 +47,7 @@ public class CaveGenerator {
     this.smoothWorld = smoothWorld;
     long l = x + z + (x * (x - 1)) + (z * (z + 1)) + (long) Math.pow(x, z > 0 ? z : (z < 0 ? -z : 1));
     this.numbers = new RandomXS128(smoothWorld.baseSeed, murmurHash3(smoothWorld.baseSeed + murmurHash3(l)));
+    this.intSet = new IntSet(roomNodesMax);
   }
 
   public Cave generate() {
@@ -87,8 +90,10 @@ public class CaveGenerator {
       if (inRange(finalX, finalZ)) {
         int offsetY = roomChangeY - numbers.nextInt((int) ((roomChangeY * 2.5f) + 1));
         int finalY = undergroundY(finalX, finalZ, randomNode.location.blockY, offsetY, allowSurface);
-
-        rooms.add(new RoomNode(finalX, finalY, finalZ, 2 + numbers.nextInt(2), randomNode));
+        
+        if (checkRoom(finalX, finalY, finalZ)) {
+          rooms.add(new RoomNode(finalX, finalY, finalZ, 2 + numbers.nextInt(2), randomNode));
+        }
       }
       if (num >= roomNodesMin && numbers.nextInt((roomNodesMax - roomNodesMin) - num) == 0) break;
       num++;
@@ -223,6 +228,14 @@ public class CaveGenerator {
         }
       }
     }
+  }
+  
+  private boolean checkRoom(int x, int y, int z) {
+    int hashCode = 7;
+    hashCode = 31 * hashCode + (x / 20);
+    hashCode = 31 * hashCode + (y / 20);
+    hashCode = 31 * hashCode + (z / 20);
+    return intSet.add(hashCode);
   }
 
   private int getRoomChangeXZ(int distance) {
