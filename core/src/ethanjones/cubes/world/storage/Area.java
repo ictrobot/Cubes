@@ -244,6 +244,8 @@ public class Area implements Lock.HasLock {
     maxY = 0;
     height = 0;
     Arrays.fill(heightmap, 0);
+    Arrays.fill(neighboursClient, null);
+    Arrays.fill(neighboursServer, null);
     
     unloaded = true;
     lock.writeUnlock();
@@ -409,24 +411,20 @@ public class Area implements Lock.HasLock {
       int aZ = areaZ - this.areaZ;
       if (aX < -1 || aX > 1 || aZ < -1 || aZ > 1) return areaMapClient.getArea(areaX, areaZ);
       int n = (aX + 1) + ((aZ + 1) * 3);
-      lock.readLock();
       Area a = neighboursClient[n];
-      if (a != null && a.areaMapClient == areaMapClient) return lock.readUnlock(a);
+      if (a != null && a.areaMapClient == areaMapClient) return a;
       neighboursClient[n] = a = areaMapClient.getArea(areaX, areaZ);
-      if (a != null && a.areaMapClient == areaMapClient) return lock.readUnlock(a);
-      lock.readUnlock();
+      if (a != null && a.areaMapClient == areaMapClient) return a;
     } else if (side == Side.Server) {
       if (areaMapServer == null) return null;
       int aX = areaX - this.areaX;
       int aZ = areaZ - this.areaZ;
       if (aX < -1 || aX > 1 || aZ < -1 || aZ > 1) return areaMapServer.getArea(areaX, areaZ);
       int n = (aX + 1) + ((aZ + 1) * 3);
-      lock.readLock();
       Area a = neighboursServer[n];
-      if (a != null && a.areaMapServer == areaMapServer) return lock.readUnlock(a);
+      if (a != null && a.areaMapServer == areaMapServer) return a;
       neighboursServer[n] = a = areaMapServer.getArea(areaX, areaZ);
-      if (a != null && a.areaMapServer == areaMapServer) return lock.readUnlock(a);
-      lock.readUnlock();
+      if (a != null && a.areaMapServer == areaMapServer) return a;
     }
     return null;
   }
