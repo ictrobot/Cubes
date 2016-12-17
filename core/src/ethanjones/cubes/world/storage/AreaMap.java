@@ -62,6 +62,10 @@ public class AreaMap implements Iterable<Area>, HasLock {
     int nZ = areaZ - node.minAreaZ;
     int n = nX + nZ * AREA_NODE_SIZE;
     Area old = node.areas[n];
+    if (old == area) {
+      lock.writeUnlock();
+      return old;
+    }
     node.areas[n] = area;
     if (old == null && area != null) node.storedAreas++;
     if (old != null && area == null) node.storedAreas--;
