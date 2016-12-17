@@ -68,6 +68,7 @@ public class MenuManager {
       }
     }
     spriteBatch.begin();
+    spriteBatch.setColor(1,1,1,1);
     float width = texture.getRegionWidth();
     float height = texture.getRegionHeight();
     int xTimes = (int) Math.floor(GUI_WIDTH / width);
