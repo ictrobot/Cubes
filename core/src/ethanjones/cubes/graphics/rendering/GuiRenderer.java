@@ -182,7 +182,7 @@ public class GuiRenderer implements Disposable {
 
   public void render() {
     FrametimeGraph.update();
-    downButton.setVisible(Cubes.getClient().gamemode == Gamemode.creative);
+    if (downButton != null) downButton.setVisible(Cubes.getClient().gamemode == Gamemode.creative);
 
     stage.act();
     stage.draw();
