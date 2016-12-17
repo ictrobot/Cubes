@@ -4,7 +4,7 @@ buildscript {
         maven { url 'https://jitpack.io' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.2'
+        classpath 'com.android.tools.build:gradle:2.2.3'
         classpath 'com.github.rusmonster:sdk-manager-plugin:a35a7b1c2a41a8945fbd69c6187285bd6927a63f'
     }
 }
@@ -17,8 +17,8 @@ ext {
         println "VERSION: " + buildProperties.version
     }
 
-    build = "";
-    hash = "";
+    build = ""
+    hash = ""
     if (hasGit()) {
         build = shell("git rev-list HEAD --count").text.trim()
         hash = shell("git rev-parse HEAD").text.trim()
@@ -53,7 +53,7 @@ allprojects {
 
     ext {
         appName = 'Cubes'
-        gdxVersion = '1.9.4'
+        gdxVersion = '1.9.5'
         androidBuildToolsVersion = '23.0.3'
         androidSdkVersion = 21
         dataVersion = '2.2'
@@ -143,15 +143,15 @@ task travis(dependsOn: ['core:publish', 'server:publish', 'client:publish', 'and
 
 }
 
-def String getMavenVersionString() {
-    def str = buildProperties.version;
+String getMavenVersionString() {
+    def str = buildProperties.version
     if (!isRelease) {
         str = str + "-SNAPSHOT"
     }
     return str
 }
 
-def String getMavenRepo() {
+String getMavenRepo() {
     def str = localProperties.MAVEN_REPO_PATH
     if (isRelease) {
         str = str + "releases"
@@ -161,17 +161,17 @@ def String getMavenRepo() {
     return str
 }
 
-def boolean hasGit() {
+boolean hasGit() {
     try {
         def proc = "git rev-parse --short HEAD".execute()
         proc.waitFor()
-        return proc.exitValue() == 0;
+        return proc.exitValue() == 0
     } catch (Throwable t) {
         return false
     }
 }
 
-def Process shell(String str) {
+Process shell(String str) {
     def proc = str.execute()
     proc.waitFor()
     return proc
