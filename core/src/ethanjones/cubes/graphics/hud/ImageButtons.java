@@ -12,8 +12,8 @@ public class ImageButtons {
     return new ImageButton.ImageButtonStyle(t, t, null, null, null, null);
   }
 
-  public static ImageButton.ImageButtonStyle downButton() {
-    TextureRegionDrawable t = new TextureRegionDrawable(Assets.getTextureRegion("core:hud/touch/DownButton.png"));
+  public static ImageButton.ImageButtonStyle descendButton() {
+    TextureRegionDrawable t = new TextureRegionDrawable(Assets.getTextureRegion("core:hud/touch/DescendButton.png"));
     return new ImageButton.ImageButtonStyle(t, t, null, null, null, null);
   }
 

@@ -2,6 +2,7 @@ package ethanjones.cubes.graphics.rendering;
 
 import ethanjones.cubes.core.performance.Performance;
 import ethanjones.cubes.core.platform.Compatibility;
+import ethanjones.cubes.core.settings.Keybinds;
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.core.util.Toggle;
 import ethanjones.cubes.graphics.Graphics;
@@ -51,7 +52,7 @@ public class GuiRenderer implements Disposable {
 
   Touchpad touchpad;
   ImageButton jumpButton;
-  ImageButton downButton;
+  ImageButton descendButton;
   ImageButton debugButton;
   ImageButton chatButton;
   ImageButton blockSelectorButton;
@@ -126,11 +127,11 @@ public class GuiRenderer implements Disposable {
     if (Compatibility.get().isTouchScreen()) {
       touchpad = new Touchpad(0, skin);
       jumpButton = new ImageButton(ImageButtons.jumpButton());
-      downButton = new ImageButton(ImageButtons.downButton());
+      descendButton = new ImageButton(ImageButtons.descendButton());
 
       Cubes.getClient().inputChain.cameraController.touchpad = touchpad;
       Cubes.getClient().inputChain.cameraController.jumpButton = jumpButton;
-      Cubes.getClient().inputChain.cameraController.downButton = downButton;
+      Cubes.getClient().inputChain.cameraController.descendButton = descendButton;
 
       debugButton = new ImageButton(ImageButtons.debugButton());
       debugButton.addListener(new ChangeListener() {
@@ -163,7 +164,7 @@ public class GuiRenderer implements Disposable {
       InventoryManager.GROUP_HIDDEN.addActor(jumpButton);
       InventoryManager.GROUP_HIDDEN.addActor(debugButton);
       InventoryManager.GROUP_HIDDEN.addActor(chatButton);
-      InventoryManager.GROUP_HIDDEN.addActor(downButton);
+      InventoryManager.GROUP_HIDDEN.addActor(descendButton);
 
       stage.addActor(blockSelectorButton);
 
@@ -182,7 +183,7 @@ public class GuiRenderer implements Disposable {
 
   public void render() {
     FrametimeGraph.update();
-    if (downButton != null) downButton.setVisible(Cubes.getClient().gamemode == Gamemode.creative);
+    if (descendButton != null) descendButton.setVisible(Cubes.getClient().gamemode == Gamemode.creative);
 
     stage.act();
     stage.draw();
@@ -214,11 +215,11 @@ public class GuiRenderer implements Disposable {
       if (Settings.getBooleanSettingValue(Settings.INPUT_TOUCHPAD_LEFT)) {
         touchpad.setBounds(padding, hbSize + padding, size, size);
         jumpButton.setBounds(GUI_WIDTH - hbSize - padding, hbSize * 2 + padding, hbSize, hbSize);
-        downButton.setBounds(GUI_WIDTH - hbSize - padding, hbSize + padding, hbSize, hbSize);
+        descendButton.setBounds(GUI_WIDTH - hbSize - padding, hbSize + padding, hbSize, hbSize);
       } else {
         touchpad.setBounds(GUI_WIDTH - size - padding, hbSize, size, size);
         jumpButton.setBounds(padding, hbSize * 2 + padding, hbSize, hbSize);
-        downButton.setBounds(padding, hbSize + padding, hbSize, hbSize);
+        descendButton.setBounds(padding, hbSize + padding, hbSize, hbSize);
       }
     }
     if (chatButton != null && debugButton != null && blockSelectorButton != null) {
@@ -268,11 +269,11 @@ public class GuiRenderer implements Disposable {
 
   private class Input extends InputAdapter {
 
-    static final int hideGUI = Keys.F1;
-    static final int screenshot = Keys.F2;
-    static final int debug = Keys.F3;
-    static final int chat = Keys.F4;
-    static final int blocksMenu = Keys.E;
+    int hideGUI = Keybinds.getCode(Keybinds.KEYBIND_HIDEGUI);
+    int screenshot = Keybinds.getCode(Keybinds.KEYBIND_SCREENSHOT);
+    int debug = Keybinds.getCode(Keybinds.KEYBIND_DEBUG);
+    int chat = Keybinds.getCode(Keybinds.KEYBIND_CHAT);
+    int blocksMenu = Keybinds.getCode(Keybinds.KEYBIND_INVENTORY);
 
     private boolean functionKeys(int keycode) {
       if (keycode == hideGUI) {

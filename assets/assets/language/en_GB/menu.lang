@@ -41,6 +41,7 @@ menu.connection_failed.failed_exception=Failed to connect:
 
 menu.settings.title=Settings
 menu.settings.open_group=Open
+menu.settings.keybind_press=Press key
 
 menu.pause.resume=Resume
 menu.pause.quit=Quit

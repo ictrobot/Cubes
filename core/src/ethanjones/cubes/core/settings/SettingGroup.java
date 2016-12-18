@@ -9,15 +9,16 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class SettingGroup {
 
   private final ArrayList<String> children;
-  private final HashMap<String, SettingGroup> childGroups;
+  private final LinkedHashMap<String, SettingGroup> childGroups;
 
   public SettingGroup() {
     children = new ArrayList<String>();
-    childGroups = new HashMap<String, SettingGroup>();
+    childGroups = new LinkedHashMap<String, SettingGroup>();
   }
 
   public SettingGroup add(String notLocalised) {
@@ -32,11 +33,10 @@ public class SettingGroup {
 
   public Actor getActor(final VisualSettingManager visualSettingManager) {
     final TextButton textButton = new TextButton(Localization.get("menu.settings.open_group"), Menu.skin);
-    final SettingGroup settingGroup = this;
     textButton.addListener(new ChangeListener() {
       @Override
       public void changed(ChangeEvent event, Actor actor) {
-        visualSettingManager.setSettingGroup(settingGroup);
+        visualSettingManager.setSettingGroup(SettingGroup.this);
       }
     });
     return textButton;

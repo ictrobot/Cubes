@@ -78,10 +78,13 @@ public class Settings {
 
     addSetting(NETWORKING_PORT, new IntegerSetting(24842));
     addSetting(DEBUG_FRAMETIME_GRAPH, new BooleanSetting(false));
-
+  
+    String keybindsGroup = Keybinds.KEYBIND_GROUP;
+    SettingGroup keybinds = Keybinds.init();
+  
     base.add(USERNAME)
             .add(GROUP_GRAPHICS, new SettingGroup().add(GRAPHICS_VIEW_DISTANCE).add(GRAPHICS_FOV).add(GRAPHICS_VSYNC))
-            .add(GROUP_INPUT, new SettingGroup().add(INPUT_MOUSE_SENSITIVITY).add(INPUT_TOUCHPAD_SIZE).add(INPUT_TOUCHPAD_LEFT))
+            .add(GROUP_INPUT, new SettingGroup().add(keybindsGroup, keybinds).add(INPUT_MOUSE_SENSITIVITY).add(INPUT_TOUCHPAD_SIZE).add(INPUT_TOUCHPAD_LEFT))
             .add(GROUP_NETWORKING, new SettingGroup().add(NETWORKING_PORT))
             .add(GROUP_DEBUG, new SettingGroup().add(DEBUG_FRAMETIME_GRAPH));
 

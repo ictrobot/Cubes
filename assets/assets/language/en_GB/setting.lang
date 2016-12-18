@@ -11,6 +11,20 @@ setting.input.mouseSensitivity=Input Sensitivity
 setting.input.touchpadSize=Touchpad Size
 setting.input.touchpadLeft=Touchpad on Left
 
+setting.input.keybind=Keybinds
+setting.input.keybind.forward=Forward
+setting.input.keybind.back=Backwards
+setting.input.keybind.left=Left
+setting.input.keybind.right=Right
+setting.input.keybind.jump=Jump
+setting.input.keybind.descend=Descend
+setting.input.keybind.inventory=Inventory
+setting.input.keybind.chat=Chat
+setting.input.keybind.fullscreen=Toggle fullscreen
+setting.input.keybind.hidegui=Hide GUI
+setting.input.keybind.screenshot=Take screenshot
+setting.input.keybind.debug=Show debug info
+
 setting.networking=Networking
 setting.networking.port=Port
 

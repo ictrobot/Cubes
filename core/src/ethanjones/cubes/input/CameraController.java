@@ -2,6 +2,7 @@ package ethanjones.cubes.input;
 
 import ethanjones.cubes.core.event.entity.living.player.PlayerMovementEvent;
 import ethanjones.cubes.core.platform.Compatibility;
+import ethanjones.cubes.core.settings.Keybinds;
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.item.ItemStack;
@@ -18,7 +19,6 @@ import ethanjones.cubes.world.save.Gamemode;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
@@ -34,14 +34,14 @@ public class CameraController extends InputAdapter {
   public static final float flySpeed = 10f;
   
   private float degreesPerPixel = Settings.getFloatSettingValue(Settings.INPUT_MOUSE_SENSITIVITY) / 3;
-  private int STRAFE_LEFT = Input.Keys.A;
-  private int STRAFE_RIGHT = Input.Keys.D;
-  private int FORWARD = Input.Keys.W;
-  private int BACKWARD = Input.Keys.S;
+  private int STRAFE_LEFT = Keybinds.getCode(Keybinds.KEYBIND_LEFT);
+  private int STRAFE_RIGHT = Keybinds.getCode(Keybinds.KEYBIND_RIGHT);
+  private int FORWARD = Keybinds.getCode(Keybinds.KEYBIND_FORWARD);
+  private int BACKWARD = Keybinds.getCode(Keybinds.KEYBIND_BACK);
   
   public Touchpad touchpad; //movement on android
   public ImageButton jumpButton;
-  public ImageButton downButton;
+  public ImageButton descendButton;
   
   private final IntIntMap keys = new IntIntMap();
   private final IntIntMap buttons = new IntIntMap();
@@ -177,15 +177,15 @@ public class CameraController extends InputAdapter {
       float knobPercentX = touchpad.getKnobPercentX();
       float right = knobPercentX > 0 ? knobPercentX : 0;
       float left = knobPercentX < 0 ? -knobPercentX : 0;
-      update(up, down, left, right, jumpButton.getClickListener().isPressed(), downButton.getClickListener().isPressed());
+      update(up, down, left, right, jumpButton.getClickListener().isPressed(), descendButton.getClickListener().isPressed());
     } else {
-      boolean up = Gdx.input.isKeyPressed(Input.Keys.SPACE);
-      boolean down = Gdx.input.isKeyPressed(Keys.SHIFT_LEFT);
-      update(keys.containsKey(FORWARD) ? 1f : 0f, keys.containsKey(BACKWARD) ? 1f : 0f, keys.containsKey(STRAFE_LEFT) ? 1f : 0f, keys.containsKey(STRAFE_RIGHT) ? 1f : 0f, up, down);
+      boolean up = Keybinds.isPressed(Keybinds.KEYBIND_JUMP);
+      boolean desend = Keybinds.isPressed(Keybinds.KEYBIND_DESCEND);
+      update(keys.containsKey(FORWARD) ? 1f : 0f, keys.containsKey(BACKWARD) ? 1f : 0f, keys.containsKey(STRAFE_LEFT) ? 1f : 0f, keys.containsKey(STRAFE_RIGHT) ? 1f : 0f, up, desend);
     }
   }
 
-  private void update(float forward, float backward, float left, float right, boolean jump, boolean down) {
+  private void update(float forward, float backward, float left, float right, boolean jump, boolean descend) {
     float deltaTime = Gdx.graphics.getRawDeltaTime();
     if (deltaTime == 0f) return;
     float speed = flying ? flySpeed : walkSpeed;
@@ -213,7 +213,7 @@ public class CameraController extends InputAdapter {
       if (jump) {
         tmpMovement.set(0, flySpeed * deltaTime, 0);
         tryMove();
-      } else if (down) {
+      } else if (descend) {
         tmpMovement.set(0, -flySpeed * deltaTime, 0);
         tryMove();
       } else if (onBlock) {
