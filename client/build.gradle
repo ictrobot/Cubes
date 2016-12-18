@@ -15,15 +15,31 @@ sourceCompatibility = 1.7
 sourceSets.main.java.srcDirs = ["src/"]
 
 project.ext.mainClassName = "ethanjones.cubes.core.platform.desktop.ClientLauncher"
-project.ext.assetsDir = new File("../assets");
+project.ext.assetsDir = new File("../assets")
 
 task dist(dependsOn: classes, type: Jar) {
     from files(sourceSets.main.output.classesDir)
     from files(sourceSets.main.output.resourcesDir)
     from { configurations.compile.collect { zipTree(it) } }
-    from files(project.assetsDir);
+    from files(project.assetsDir)
 
     archiveName = 'client.jar'
+
+    manifest {
+        attributes 'Main-Class': project.mainClassName
+    }
+}
+
+task distWin(dependsOn: classes, type: Jar) {
+    from files(sourceSets.main.output.classesDir)
+    from files(sourceSets.main.output.resourcesDir)
+    from { configurations.compile.collect { zipTree(it) } }
+    from files(project.assetsDir)
+
+    exclude("*.dylib")
+    exclude("*.so")
+
+    archiveName = 'client-win.jar'
 
     manifest {
         attributes 'Main-Class': project.mainClassName
@@ -54,10 +70,10 @@ launch4j {
     textVersion = project.ext.buildProperties.version
 
     icon = project.getRootDir().absolutePath + "/assets/assets/icon.ico"
-    copyConfigurable = project.tasks.dist.outputs.files
-    jar = new File(project.buildDir, "/libs/client.jar")
+    copyConfigurable = project.tasks.distWin.outputs.files
+    jar = new File(project.buildDir, "/libs/client-win.jar")
 }
-copyL4jLib.dependsOn dist
+copyL4jLib.dependsOn distWin
 
 eclipse {
     project {
@@ -69,7 +85,7 @@ eclipse {
 task afterEclipseImport(description: "Post processing after project generation", group: "IDE") {
     doLast {
         def classpath = new XmlParser().parse(file(".classpath"))
-        new Node(classpath, "classpathentry", [kind: 'src', path: 'assets']);
+        new Node(classpath, "classpathentry", [kind: 'src', path: 'assets'])
         def writer = new FileWriter(file(".classpath"))
         def printer = new XmlNodePrinter(new PrintWriter(writer))
         printer.setPreserveWhitespace(true)
