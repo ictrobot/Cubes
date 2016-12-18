@@ -25,7 +25,7 @@ public class PacketConnected extends DataPacket {
 
   @Override
   public void handlePacket() {
-    if (NetworkingManager.isSingleplayer()) {
+    if (!NetworkingManager.isSingleplayer()) {
       IDManager.resetMapping();
       IDManager.readMapping(idManager);
     }
