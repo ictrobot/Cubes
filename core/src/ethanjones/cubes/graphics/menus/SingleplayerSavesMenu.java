@@ -8,10 +8,12 @@ import ethanjones.cubes.world.client.ClientSaveManager;
 import ethanjones.cubes.world.save.Save;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 public class SingleplayerSavesMenu extends Menu {
@@ -28,6 +30,12 @@ public class SingleplayerSavesMenu extends Menu {
   public SingleplayerSavesMenu() {
     title = new Label(Localization.get("menu.singleplayer.title"), skin.get("title", Label.LabelStyle.class));
     listLabel = new List<Save>(skin);
+    listLabel.addListener(new ActorGestureListener() {
+      @Override
+      public void tap(InputEvent event, float x, float y, int count, int button) {
+        if (count == 2) play.toggle();
+      }
+    });
 
     scrollPane = new ScrollPane(listLabel, skin);
     scrollPane.setScrollingDisabled(true, false);
