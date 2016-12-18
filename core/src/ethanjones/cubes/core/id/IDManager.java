@@ -103,20 +103,20 @@ public class IDManager {
   
   // Mappings
   
-  protected static final Map<Integer, Block> integerToBlock = new HashMap<Integer, Block>();
   private static final Map<Block, Integer> blockToInteger = new HashMap<Block, Integer>();
-  private static final Map<Integer, Item> integerToItem = new HashMap<Integer, Item>();
   private static final Map<Item, Integer> itemToInteger = new HashMap<Item, Integer>();
+  protected static Block[] integerToBlock;
+  private static Item[] integerToItem;
   private static final AtomicBoolean setup = new AtomicBoolean(false);
   private static int nextFree = 0;
   
   public static void resetMapping() {
     if (!setup.compareAndSet(true, false)) return;
     Log.debug("Resetting ID Manager");
-    integerToBlock.clear();
     blockToInteger.clear();
-    integerToItem.clear();
     itemToInteger.clear();
+    integerToBlock = new Block[0];
+    integerToItem = new Item[0];
     nextFree = 0;
   }
 
@@ -130,9 +130,7 @@ public class IDManager {
       }
 
       ItemBlock itemBlock = block.getItemBlock();
-      integerToBlock.put(i, block);
       blockToInteger.put(block, i);
-      integerToItem.put(i, itemBlock);
       itemToInteger.put(itemBlock, i);
       i++;
     }
@@ -141,7 +139,6 @@ public class IDManager {
         Debug.crash(new CubesException("No more item ids"));
       }
 
-      integerToItem.put(i, item);
       itemToInteger.put(item, i);
       i++;
     }
@@ -168,7 +165,6 @@ public class IDManager {
         continue;
       }
       int i = (Integer) entry.getValue();
-      integerToBlock.put(i, block);
       blockToInteger.put(block, i);
     }
     
@@ -178,9 +174,7 @@ public class IDManager {
       }
       Log.debug("Adding block " + block.id + " " + nextFree);
       ItemBlock itemBlock = block.getItemBlock();
-      integerToBlock.put(nextFree, block);
       blockToInteger.put(block, nextFree);
-      integerToItem.put(nextFree, itemBlock);
       itemToInteger.put(itemBlock, nextFree);
       nextFree++;
     }
@@ -193,7 +187,6 @@ public class IDManager {
         continue;
       }
       int i = (Integer) entry.getValue();
-      integerToItem.put(i, item);
       itemToInteger.put(item, i);
     }
     
@@ -204,7 +197,6 @@ public class IDManager {
         continue;
       }
       Log.debug("Adding item " + item.id + " " + nextFree);
-      integerToItem.put(nextFree, item);
       itemToInteger.put(item, nextFree);
       nextFree++;
     }
@@ -230,12 +222,24 @@ public class IDManager {
   
   
   private static void finishMappingSetup() {
+    int maxBlock = 0;
     for (Entry<Block, Integer> entry : blockToInteger.entrySet()) {
       entry.getKey().intID = entry.getValue();
+      if (entry.getValue() > maxBlock) maxBlock = entry.getValue();
+    }
+    integerToBlock = new Block[maxBlock + 1];
+    for (Entry<Block, Integer> entry : blockToInteger.entrySet()) {
+      integerToBlock[entry.getValue()] = entry.getKey();
     }
     
+    int maxItem = 0;
     for (Entry<Item, Integer> entry : itemToInteger.entrySet()) {
       entry.getKey().intID = entry.getValue();
+      if (entry.getValue() > maxItem) maxItem = entry.getValue();
+    }
+    integerToItem = new Item[maxItem + 1];
+    for (Entry<Item, Integer> entry : itemToInteger.entrySet()) {
+      integerToItem[entry.getValue()] = entry.getKey();
     }
     
     TransparencyManager.setup();
@@ -252,13 +256,13 @@ public class IDManager {
   }
 
   public static Block toBlock(int i) {
-    if (i == 0) return null;
-    return integerToBlock.get(i);
+    if (i <= 0 || i >= integerToBlock.length) return null;
+    return integerToBlock[i];
   }
 
   public static Item toItem(int i) {
-    if (i == 0) return null;
-    return integerToItem.get(i);
+    if (i <= 0 || i >= integerToItem.length) return null;
+    return integerToItem[i];
   }
   
   private IDManager() {
