@@ -6,12 +6,10 @@ import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
 import ethanjones.cubes.core.event.world.generation.AreaLoadedEvent;
 import ethanjones.cubes.core.id.IDManager;
 import ethanjones.cubes.core.system.CubesException;
-import ethanjones.cubes.entity.ItemEntity;
 import ethanjones.cubes.entity.living.player.Player;
-import ethanjones.cubes.entity.living.player.PlayerInventory;
+import ethanjones.cubes.input.ClickType;
 import ethanjones.cubes.item.ItemStack;
 import ethanjones.cubes.item.ItemTool;
-import ethanjones.cubes.item.inv.InventoryHelper;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.client.ClientNetworking;
 import ethanjones.cubes.networking.packets.*;
@@ -29,11 +27,7 @@ import ethanjones.cubes.world.storage.Area;
 import ethanjones.cubes.world.thread.GenerationTask;
 import ethanjones.cubes.world.thread.WorldRequestParameter;
 
-import com.badlogic.gdx.Input.Buttons;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector3;
-
-import java.util.ArrayList;
 
 public class PlayerManager {
 
@@ -42,22 +36,15 @@ public class PlayerManager {
   public double lastPingNano = -1;
   private final CubesServer server;
   private final AreaReference playerArea;
-  private final ArrayList<Integer> keys;
-  private final ArrayList<Integer> buttons;
-  private final ArrayList<Integer> recentKeys;
-  private final ArrayList<Integer> recentButtons;
   private GenerationTask initialGenerationTask;
   private int renderDistance;
   private int loadDistance;
-
+  public ClickType clickType;
+  
   public PlayerManager(ClientIdentifier clientIdentifier, PacketConnect packetConnect) {
     this.server = Cubes.getServer();
     this.client = clientIdentifier;
     this.playerArea = new AreaReference().setFromPositionVector3(client.getPlayer().position);
-    this.keys = new ArrayList<Integer>();
-    this.buttons = new ArrayList<Integer>();
-    this.recentKeys = new ArrayList<Integer>();
-    this.recentButtons = new ArrayList<Integer>();
 
     renderDistance = packetConnect.renderDistance;
     loadDistance = renderDistance + 1;
@@ -234,100 +221,25 @@ public class PlayerManager {
     }
   }
 
-  public void handlePacket(PacketButton packetButton) {
-    synchronized (buttons) {
-      switch (packetButton.action) {
-        case PacketButton.BUTTON_DOWN:
-          if (!buttons.contains(packetButton.button)) buttons.add(packetButton.button);
-          if (!recentButtons.contains(packetButton.button)) recentButtons.add(packetButton.button);
-          return;
-        case PacketButton.BUTTON_UP:
-          buttons.remove((Integer) packetButton.button);
-          return;
-      }
-    }
-  }
-
-  public void handlePacket(PacketKey packetKey) {
-    synchronized (keys) {
-      switch (packetKey.action) {
-        case PacketKey.KEY_DOWN:
-          if (!keys.contains(packetKey.key)) buttons.add(packetKey.key);
-          if (!recentKeys.contains(packetKey.key)) recentKeys.add(packetKey.key);
-          return;
-        case PacketKey.KEY_UP:
-          keys.remove((Integer) packetKey.key);
-          return;
-      }
-    }
-  }
-
-  public boolean keyDown(int key) {
-    synchronized (keys) {
-      return keys.contains(key);
-    }
-  }
-
-  public boolean keyDownRecent(int key) {
-    synchronized (keys) {
-      return recentKeys.contains(key);
-    }
-  }
-
-  public boolean keyUp(int key) {
-    synchronized (keys) {
-      return !keys.contains(key);
-    }
-  }
-
-  public boolean buttonDown(int button) {
-    synchronized (buttons) {
-      return buttons.contains(button);
-    }
-  }
-
-  public boolean buttonUp(int button) {
-    synchronized (buttons) {
-      return !buttons.contains(button);
-    }
-  }
-
   protected void update() {
-    ItemTool.mine(client.getPlayer(), buttonDown(Buttons.LEFT));
-    if (keyDownRecent(Keys.Q)) {
-      PlayerInventory inventory = client.getPlayer().getInventory();
-      ItemStack itemStack = InventoryHelper.reduceCount(inventory, inventory.hotbarSelected);
-      if (itemStack != null) {
-        ItemEntity itemEntity = new ItemEntity();
-        itemEntity.itemStack = itemStack;
-        itemEntity.position.set(client.getPlayer().position);
-        itemEntity.motion.set(client.getPlayer().angle);
-        itemEntity.age = -3000 / Cubes.tickMS;
-        Cubes.getServer().world.addEntity(itemEntity);
-      }
-    }
-    synchronized (buttons) {
-      for (Integer recentButton : recentButtons) {
+    synchronized (this) {
+      if (clickType != ClickType.none) {
+        ItemTool.mine(client.getPlayer(), clickType == ClickType.mine);
+        
         ItemStack itemStack = client.getPlayer().getInventory().selectedItemStack();
         boolean b = true;
-        if (itemStack != null) {
-          b = !itemStack.item.onButtonPress(recentButton, itemStack, client.getPlayer(), client.getPlayer().getInventory().hotbarSelected);
+        BlockIntersection blockIntersection = BlockIntersection.getBlockIntersection(client.getPlayer().position, client.getPlayer().angle, server.world);
+        if (blockIntersection != null) {
+          BlockReference r = blockIntersection.getBlockReference();
+          b = !server.world.getBlock(r.blockX, r.blockY, r.blockZ).onButtonPress(clickType, client.getPlayer(), r.blockX, r.blockY, r.blockZ);
         }
-        if (b) {
-          BlockIntersection blockIntersection = BlockIntersection.getBlockIntersection(client.getPlayer().position, client.getPlayer().angle, server.world);
-          if (blockIntersection != null) {
-            BlockReference r = blockIntersection.getBlockReference();
-            server.world.getBlock(r.blockX, r.blockY, r.blockZ).onButtonPress(recentButton, client.getPlayer(), r.blockX, r.blockY, r.blockZ);
-          }
+        if (b && itemStack != null) {
+          b = !itemStack.item.onButtonPress(clickType, itemStack, client.getPlayer(), client.getPlayer().getInventory().hotbarSelected);
         }
+        
+        if (clickType == ClickType.place) clickType = ClickType.none;
       }
-
-      recentButtons.clear();
-    }
-    synchronized (keys) {
-      recentKeys.clear();
-    }
-    synchronized (this) {
+      
       if (initialGenerationTask != null) {
         int doneGenerate = initialGenerationTask.doneGenerate();
         int doneFeatures = initialGenerationTask.doneFeatures();
@@ -344,12 +256,6 @@ public class PlayerManager {
       if (lastPingNano != -1 && System.nanoTime() - lastPingNano >= ClientNetworking.PING_NANOSECONDS * 2) {
         NetworkingManager.getNetworking(Side.Server).disconnected(client.getSocketMonitor(), new CubesException("No ping received"));
       }
-    }
-  }
-
-  public boolean buttonDownRecent(int button) {
-    synchronized (buttons) {
-      return recentButtons.contains(button);
     }
   }
 

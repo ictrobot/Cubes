@@ -4,6 +4,7 @@ import ethanjones.cubes.block.data.BlockData;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.graphics.world.BlockTextureHandler;
+import ethanjones.cubes.input.ClickType;
 import ethanjones.cubes.item.ItemBlock;
 import ethanjones.cubes.item.ItemStack;
 import ethanjones.cubes.item.ItemTool;
@@ -91,7 +92,7 @@ public class Block {
     return itemTool.getToolLevel() * 2;
   }
 
-  public boolean onButtonPress(int button, Player player, int blockX, int blockY, int blockZ) {
+  public boolean onButtonPress(ClickType type, Player player, int blockX, int blockY, int blockZ) {
     return false;
   }
 

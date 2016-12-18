@@ -1,5 +1,6 @@
 package ethanjones.cubes.input;
 
+import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.input.keyboard.KeyboardHelper;
 
@@ -34,6 +35,8 @@ public class InputChain implements Disposable {
   public Stage stageHud;
   public InputProcessor hud;
   public CameraController cameraController;
+  public DesktopController desktopController;
+  public TouchController touchController;
 
 
   public void setup() {
@@ -43,14 +46,30 @@ public class InputChain implements Disposable {
     inputMultiplexer.addProcessor(hud);
     inputMultiplexer.addProcessor(KeyboardHelper.inputProcessor);
     inputMultiplexer.addProcessor(cameraController);
+    if (Compatibility.get().isTouchScreen()) {
+      touchController = new TouchController();
+      inputMultiplexer.addProcessor(touchController);
+      desktopController = null;
+    } else {
+      desktopController = new DesktopController();
+      inputMultiplexer.addProcessor(desktopController);
+      touchController = null;
+    }
   }
 
   public void beforeRender() {
     cameraController.update();
+    if (touchController != null) touchController.update();
   }
 
   public void afterRender() {
 
+  }
+  
+  public void tick() {
+    cameraController.tick();
+    if (desktopController != null) desktopController.tick();
+    if (touchController != null) touchController.tick();
   }
 
   @Override
@@ -60,5 +79,7 @@ public class InputChain implements Disposable {
     inputMultiplexer.removeProcessor(hud);
     inputMultiplexer.removeProcessor(KeyboardHelper.inputProcessor);
     inputMultiplexer.removeProcessor(cameraController);
+    if (desktopController != null) inputMultiplexer.removeProcessor(desktopController);
+    if (touchController != null) inputMultiplexer.removeProcessor(touchController);
   }
 }

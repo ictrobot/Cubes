@@ -4,14 +4,13 @@ import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.event.entity.living.player.PlayerPlaceBlockEvent;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.entity.living.player.Player;
+import ethanjones.cubes.input.ClickType;
 import ethanjones.cubes.item.inv.InventoryHelper;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.collision.BlockIntersection;
 import ethanjones.cubes.world.reference.BlockReference;
-
-import com.badlogic.gdx.Input;
 
 public class ItemBlock extends Item {
   public final Block block;
@@ -31,8 +30,8 @@ public class ItemBlock extends Item {
   }
 
   @Override
-  public boolean onButtonPress(int button, ItemStack itemStack, Player player, int stack) {
-    if (Sided.getSide() == Side.Server && button == Input.Buttons.RIGHT) {
+  public boolean onButtonPress(ClickType type, ItemStack itemStack, Player player, int stack) {
+    if (Sided.getSide() == Side.Server && type == ClickType.place) {
       BlockIntersection blockIntersection = BlockIntersection.getBlockIntersection(player.position, player.angle, Cubes.getServer().world);
       if (blockIntersection == null || blockIntersection.getBlockFace() == null) return false;
       BlockReference blockReference = blockIntersection.getBlockReference();

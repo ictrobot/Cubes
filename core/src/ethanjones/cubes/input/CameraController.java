@@ -1,30 +1,22 @@
 package ethanjones.cubes.input;
 
 import ethanjones.cubes.core.event.entity.living.player.PlayerMovementEvent;
-import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.settings.Keybinds;
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.entity.living.player.Player;
-import ethanjones.cubes.item.ItemStack;
-import ethanjones.cubes.item.ItemTool;
 import ethanjones.cubes.networking.NetworkingManager;
-import ethanjones.cubes.networking.packets.PacketButton;
-import ethanjones.cubes.networking.packets.PacketKey;
 import ethanjones.cubes.networking.packets.PacketPlayerMovement;
+import ethanjones.cubes.networking.packets.PacketThrowItem;
 import ethanjones.cubes.side.common.Cubes;
-import ethanjones.cubes.world.collision.BlockIntersection;
 import ethanjones.cubes.world.gravity.WorldGravity;
-import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.save.Gamemode;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
-import com.badlogic.gdx.utils.IntIntMap;
 
 public class CameraController extends InputAdapter {
 
@@ -34,17 +26,10 @@ public class CameraController extends InputAdapter {
   public static final float flySpeed = 10f;
   
   private float degreesPerPixel = Settings.getFloatSettingValue(Settings.INPUT_MOUSE_SENSITIVITY) / 3;
-  private int STRAFE_LEFT = Keybinds.getCode(Keybinds.KEYBIND_LEFT);
-  private int STRAFE_RIGHT = Keybinds.getCode(Keybinds.KEYBIND_RIGHT);
-  private int FORWARD = Keybinds.getCode(Keybinds.KEYBIND_FORWARD);
-  private int BACKWARD = Keybinds.getCode(Keybinds.KEYBIND_BACK);
   
   public Touchpad touchpad; //movement on android
   public ImageButton jumpButton;
   public ImageButton descendButton;
-  
-  private final IntIntMap keys = new IntIntMap();
-  private final IntIntMap buttons = new IntIntMap();
   
   private final Vector3 tmp = new Vector3();
   private final Vector3 tmpMovement = new Vector3();
@@ -63,109 +48,50 @@ public class CameraController extends InputAdapter {
     camera.direction.set(1, 0, 0);
     camera.update();
   }
-
-  @Override
-  public boolean keyDown(int keycode) {
-    keys.put(keycode, keycode);
-
-    PacketKey packetKey = new PacketKey();
-    packetKey.action = PacketKey.KEY_DOWN;
-    packetKey.key = keycode;
-    NetworkingManager.sendPacketToServer(packetKey);
-    return true;
-  }
-
-  @Override
-  public boolean keyUp(int keycode) {
-    keys.remove(keycode, 0);
-    PacketKey packetKey = new PacketKey();
-    packetKey.action = PacketKey.KEY_UP;
-    packetKey.key = keycode;
-    NetworkingManager.sendPacketToServer(packetKey);
-    return true;
-  }
-
-  @Override
-  public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-    if (Compatibility.get().isTouchScreen()) {
-      if (screenX < Gdx.graphics.getWidth() / 3) {
-        button = Input.Buttons.LEFT;
-      } else if (screenX > Gdx.graphics.getWidth() / 3 * 2) {
-        button = Input.Buttons.RIGHT;
-      } else {
-        return false;
-      }
-    }
-    buttons.put(button, button);
-    PacketButton packetButton = new PacketButton();
-    packetButton.action = PacketButton.BUTTON_DOWN;
-    packetButton.button = button;
-    NetworkingManager.sendPacketToServer(packetButton);
-
-    Player player = Cubes.getClient().player;
-    ItemStack itemStack = player.getInventory().selectedItemStack();
-    boolean b = true;
-    if (itemStack != null) {
-      b = !itemStack.item.onButtonPress(button, itemStack, player, player.getInventory().hotbarSelected);
-    }
-    if (b) {
-      BlockIntersection blockIntersection = BlockIntersection.getBlockIntersection(camera.position, camera.direction, Cubes.getClient().world);
-      if (blockIntersection != null) {
-        BlockReference r = blockIntersection.getBlockReference();
-        Cubes.getClient().world.getBlock(r.blockX, r.blockY, r.blockZ).onButtonPress(button, player, r.blockX, r.blockY, r.blockZ);
-      }
-    }
-    return true;
-  }
-
-  @Override
-  public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-    if (Compatibility.get().isTouchScreen()) {
-      if (screenX < Gdx.graphics.getWidth() / 3) {
-        button = Input.Buttons.LEFT;
-      } else if (screenX > Gdx.graphics.getWidth() / 3 * 2) {
-        button = Input.Buttons.RIGHT;
-      } else {
-        return false;
-      }
-    }
-    buttons.remove(button, 0);
-    PacketButton packetButton = new PacketButton();
-    packetButton.action = PacketButton.BUTTON_UP;
-    packetButton.button = button;
-    NetworkingManager.sendPacketToServer(packetButton);
-    return true;
-  }
-
+  
   @Override
   public boolean touchDragged(int screenX, int screenY, int pointer) {
     if (Cubes.getClient().renderer.guiRenderer.noCursorCatching()) return false;
     float deltaX = -Gdx.input.getDeltaX(pointer) * degreesPerPixel;
     float deltaY = -Gdx.input.getDeltaY(pointer) * degreesPerPixel;
-  
+    
     tmpMovement.set(camera.direction);
     tmpMovement.rotate(camera.up, deltaX);
     tmp.set(tmpMovement).crs(camera.up).nor();
     tmpMovement.rotate(tmp, deltaY);
-  
+    
     if (preventFlicker(tmpMovement)) camera.direction.set(tmpMovement);
     return true;
   }
-
+  
   @Override
   public boolean mouseMoved(int screenX, int screenY) {
     return touchDragged(screenX, screenY, 0);
   }
-
+  
   private boolean preventFlicker(Vector3 newDirection) {
     float oldX = Math.signum(camera.direction.x);
     float oldZ = Math.signum(camera.direction.z);
     float newX = Math.signum(newDirection.x);
     float newZ = Math.signum(newDirection.z);
-
+    
     return !(oldX != newX && oldZ != newZ);
   }
-
+  
+  @Override
+  public boolean keyDown(int keycode) {
+    return handled(keycode);
+  }
+  
+  @Override
+  public boolean keyUp(int keycode) {
+    return handled(keycode);
+  }
+  
+  private boolean handled(int keycode) {
+    return keycode == Keybinds.getCode(Keybinds.KEYBIND_FORWARD) || keycode == Keybinds.getCode(Keybinds.KEYBIND_BACK) || keycode == Keybinds.getCode(Keybinds.KEYBIND_LEFT) || keycode == Keybinds.getCode(Keybinds.KEYBIND_RIGHT) || keycode == Keybinds.getCode(Keybinds.KEYBIND_JUMP) || keycode == Keybinds.getCode(Keybinds.KEYBIND_DESCEND);
+  }
+  
   public void update() {
     if (Cubes.getClient().renderer.guiRenderer.noCursorCatching()) {
       update(0f, 0f, 0f, 0f, false, false);
@@ -179,9 +105,14 @@ public class CameraController extends InputAdapter {
       float left = knobPercentX < 0 ? -knobPercentX : 0;
       update(up, down, left, right, jumpButton.getClickListener().isPressed(), descendButton.getClickListener().isPressed());
     } else {
+      boolean forward = Keybinds.isPressed(Keybinds.KEYBIND_FORWARD);
+      boolean back = Keybinds.isPressed(Keybinds.KEYBIND_BACK);
+      boolean left = Keybinds.isPressed(Keybinds.KEYBIND_LEFT);
+      boolean right = Keybinds.isPressed(Keybinds.KEYBIND_RIGHT);
+      
       boolean up = Keybinds.isPressed(Keybinds.KEYBIND_JUMP);
       boolean desend = Keybinds.isPressed(Keybinds.KEYBIND_DESCEND);
-      update(keys.containsKey(FORWARD) ? 1f : 0f, keys.containsKey(BACKWARD) ? 1f : 0f, keys.containsKey(STRAFE_LEFT) ? 1f : 0f, keys.containsKey(STRAFE_RIGHT) ? 1f : 0f, up, desend);
+      update(forward ? 1f : 0f, back ? 1f : 0f, left ? 1f : 0f, right ? 1f : 0f, up, desend);
     }
   }
 
@@ -244,6 +175,8 @@ public class CameraController extends InputAdapter {
     
     if (Cubes.getClient().player.motion.y <= 0) jumping = false;
     Cubes.getClient().player.updatePosition(deltaTime);
+    
+    if (Keybinds.isJustPressed(Keybinds.KEYBIND_THROW)) NetworkingManager.sendPacketToServer(new PacketThrowItem());
 
     camera.update(true);
   }
@@ -264,7 +197,6 @@ public class CameraController extends InputAdapter {
       prevPosition.set(player.position);
       prevDirection.set(player.angle);
     }
-    ItemTool.mine(player, buttons.containsKey(Input.Buttons.LEFT));
   }
 }
 

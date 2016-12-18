@@ -9,6 +9,7 @@ import ethanjones.cubes.graphics.hud.inv.InventoryActor;
 import ethanjones.cubes.graphics.hud.inv.InventoryManager;
 import ethanjones.cubes.graphics.hud.inv.InventoryWindow;
 import ethanjones.cubes.graphics.world.BlockTextureHandler;
+import ethanjones.cubes.input.ClickType;
 import ethanjones.cubes.item.ItemTool.ToolType;
 import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.Sided;
@@ -51,8 +52,8 @@ public class BlockChest extends Block {
   }
 
   @Override
-  public boolean onButtonPress(int button, Player player, int blockX, int blockY, int blockZ) {
-    if (Sided.getSide() == Side.Server) return false;
+  public boolean onButtonPress(ClickType type, Player player, int blockX, int blockY, int blockZ) {
+    if (Sided.getSide() == Side.Server || type != ClickType.place) return false;
     BlockData blockData = Sided.getCubes().world.getBlockData(blockX, blockY, blockZ);
     if (blockData instanceof BlockDataChest) {
       InventoryActor inventoryActor = new InventoryActor(((BlockDataChest) blockData).inventory);

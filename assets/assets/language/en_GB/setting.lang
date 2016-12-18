@@ -18,6 +18,7 @@ setting.input.keybind.left=Left
 setting.input.keybind.right=Right
 setting.input.keybind.jump=Jump
 setting.input.keybind.descend=Descend
+setting.input.keybind.throw=Throw
 setting.input.keybind.inventory=Inventory
 setting.input.keybind.chat=Chat
 setting.input.keybind.fullscreen=Toggle fullscreen

@@ -3,6 +3,7 @@ package ethanjones.cubes.item;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.graphics.assets.Assets;
+import ethanjones.cubes.input.ClickType;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -30,7 +31,7 @@ public class Item {
     return Localization.get("item." + id.replaceFirst(":", "."));
   }
 
-  public boolean onButtonPress(int button, ItemStack itemStack, Player player, int stack) {
+  public boolean onButtonPress(ClickType type, ItemStack itemStack, Player player, int stack) {
     return false;
   }
 

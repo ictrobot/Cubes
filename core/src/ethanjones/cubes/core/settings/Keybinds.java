@@ -19,6 +19,7 @@ public class Keybinds {
   public static final String KEYBIND_JUMP = KEYBIND_BASE + "jump";
   public static final String KEYBIND_DESCEND = KEYBIND_BASE + "descend";
   
+  public static final String KEYBIND_THROW = KEYBIND_BASE + "throw";
   public static final String KEYBIND_INVENTORY = KEYBIND_BASE + "inventory";
   public static final String KEYBIND_CHAT = KEYBIND_BASE + "chat";
   
@@ -38,6 +39,7 @@ public class Keybinds {
       Settings.addSetting(KEYBIND_JUMP, new KeybindSetting(Keys.SPACE));
       Settings.addSetting(KEYBIND_DESCEND, new KeybindSetting(Keys.SHIFT_LEFT));
       
+      Settings.addSetting(KEYBIND_THROW, new KeybindSetting(Keys.Q));
       Settings.addSetting(KEYBIND_INVENTORY, new KeybindSetting(Keys.E));
       Settings.addSetting(KEYBIND_CHAT, new KeybindSetting(Keys.F4));
       
