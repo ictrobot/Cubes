@@ -139,22 +139,22 @@ public class CameraController extends InputAdapter {
 
   @Override
   public boolean touchDragged(int screenX, int screenY, int pointer) {
-    return mouseMoved(screenX, screenY);
-  }
-
-  @Override
-  public boolean mouseMoved(int screenX, int screenY) {
     if (Cubes.getClient().renderer.guiRenderer.noCursorCatching()) return false;
-    float deltaX = -Gdx.input.getDeltaX() * degreesPerPixel;
-    float deltaY = -Gdx.input.getDeltaY() * degreesPerPixel;
-
+    float deltaX = -Gdx.input.getDeltaX(pointer) * degreesPerPixel;
+    float deltaY = -Gdx.input.getDeltaY(pointer) * degreesPerPixel;
+  
     tmpMovement.set(camera.direction);
     tmpMovement.rotate(camera.up, deltaX);
     tmp.set(tmpMovement).crs(camera.up).nor();
     tmpMovement.rotate(tmp, deltaY);
-
+  
     if (preventFlicker(tmpMovement)) camera.direction.set(tmpMovement);
     return true;
+  }
+
+  @Override
+  public boolean mouseMoved(int screenX, int screenY) {
+    return touchDragged(screenX, screenY, 0);
   }
 
   private boolean preventFlicker(Vector3 newDirection) {
