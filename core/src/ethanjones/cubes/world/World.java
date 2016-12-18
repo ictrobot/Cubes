@@ -13,13 +13,13 @@ import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.generator.GeneratorManager;
 import ethanjones.cubes.world.generator.TerrainGenerator;
-import ethanjones.cubes.world.storage.AreaMap;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
 import ethanjones.cubes.world.reference.multi.WorldRegion;
 import ethanjones.cubes.world.save.Save;
 import ethanjones.cubes.world.storage.Area;
+import ethanjones.cubes.world.storage.AreaMap;
 import ethanjones.cubes.world.thread.GenerationTask;
 import ethanjones.cubes.world.thread.WorldRequestParameter;
 import ethanjones.cubes.world.thread.WorldTasks;
@@ -168,6 +168,13 @@ public abstract class World implements Disposable, HasLock {
     float f = ((float) t) / (((float) MAX_TIME) / 2f);
     lock.readUnlock();
     return f;
+  }
+  
+  public boolean isDay() {
+    lock.readLock();
+    int time = this.time;
+    lock.readUnlock();
+    return time >= MAX_TIME / 4 && time < MAX_TIME * 3 / 4;
   }
 
   public void setTime(int time) {

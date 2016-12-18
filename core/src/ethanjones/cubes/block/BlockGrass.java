@@ -29,7 +29,7 @@ public class BlockGrass extends Block {
   @Override
   public void randomTick(World world, Area area, int x, int y, int z, int meta) {
     if (y < area.maxY) {
-      if (!validGrass(area, x, y, z)) {
+      if (!validGrass(world, area, x, y, z, true)) {
         area.setBlock(Blocks.dirt, x, y, z, 0);
       }
     }
@@ -46,12 +46,12 @@ public class BlockGrass extends Block {
     }
   }
   
-  private boolean validGrass(Area area, int x, int y, int z) {
+  private boolean validGrass(World world, Area area, int x, int y, int z, boolean skipTimeCheck) {
     Block above = area.getBlock(x, y + 1, z);
     int aboveMeta = area.getMeta(x, y + 1, z);
     if (above != null && !above.isTransparent(aboveMeta)) {
       return false;
-    } else if (area.getSunlight(x, y + 1, z) >= 10 || area.getLight(x, y + 1, z) >= 10) {
+    } else if (((skipTimeCheck || world.isDay()) && area.getSunlight(x, y + 1, z) >= 10) || area.getLight(x, y + 1, z) >= 10) {
       return true;
     }
     return false;
@@ -66,13 +66,13 @@ public class BlockGrass extends Block {
       if (Lock.tryToLock(true, a)) {
         int bX = x - a.minBlockX;
         int bZ = z - a.minBlockZ;
-        if (a.getBlock(bX, y, bZ) == Blocks.dirt && validGrass(area, bX, y, bZ)) {
+        if (a.getBlock(bX, y, bZ) == Blocks.dirt && validGrass(world, area, bX, y, bZ, false)) {
           a.setBlock(Blocks.grass, bX, y, bZ, 0);
         }
         a.lock.writeUnlock();
       }
     } else {
-      if (area.getBlock(x, y, z) == Blocks.dirt && validGrass(area, x, y, z)) {
+      if (area.getBlock(x, y, z) == Blocks.dirt && validGrass(world, area, x, y, z, false)) {
         area.setBlock(Blocks.grass, x, y, z, 0);
       }
     }
