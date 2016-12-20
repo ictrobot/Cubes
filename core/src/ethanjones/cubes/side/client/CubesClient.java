@@ -1,5 +1,6 @@
 package ethanjones.cubes.side.client;
 
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.mod.ModManager;
 import ethanjones.cubes.core.mod.event.StartingClientEvent;
 import ethanjones.cubes.core.mod.event.StoppingClientEvent;
@@ -37,6 +38,8 @@ public class CubesClient extends Cubes implements ApplicationListener {
   public long frameStart;
   public float worldProgress = 0f;
   public boolean worldReady = false;
+  private long nextTickTime;
+  private int behindTicks;
 
   public CubesClient() {
     super(Side.Client);
@@ -61,7 +64,9 @@ public class CubesClient extends Cubes implements ApplicationListener {
 
     ModManager.postModEvent(new StartingClientEvent());
     Sided.getEventBus().register(new PlayerCollision());
-
+    
+    nextTickTime = System.currentTimeMillis() + tickMS;
+    
     state.setup();
   }
 
@@ -83,13 +88,46 @@ public class CubesClient extends Cubes implements ApplicationListener {
       }
     }
     Performance.start(PerformanceTags.CLIENT_FRAME);
-    super.render();
+    
+    long diff = nextTickTime - System.currentTimeMillis();
+    if (diff < -16) {
+      int change = 1 + (int) (-(diff + 16)  / tickMS);
+      behindTicks += change;
+      nextTickTime += change * tickMS;
+      diff = nextTickTime - System.currentTimeMillis();
+    }
+    if (diff < 2) {
+      tick();
+      nextTickTime += tickMS;
+    } else if (behindTicks > 0) {
+      tick();
+      behindTicks--;
+    }
+    if (behindTicks >= (1000 / tickMS)) {
+      Log.warning("Skipping " + behindTicks + " ticks");
+      behindTicks = 0;
+      nextTickTime += behindTicks * tickMS;
+    }
+    
+    this.update();
+    ClientDebug.frame();
     inputChain.beforeRender();
     renderer.render();
     inputChain.afterRender();
     Performance.stop(PerformanceTags.CLIENT_FRAME);
   }
-
+  
+  @Override
+  protected void update() {
+    super.update();
+  }
+  
+  @Override
+  protected void tick() {
+    super.tick();
+    inputChain.tick();
+  }
+  
   @Override
   public void stop() {
     if (state.hasStopped() || !state.isSetup()) return;
@@ -97,18 +135,6 @@ public class CubesClient extends Cubes implements ApplicationListener {
     super.stop();
     renderer.dispose();
     inputChain.dispose();
-  }
-
-  @Override
-  public void time(int interval) {
-    if (shouldReturn()) return;
-    super.time(interval);
-  }
-
-  @Override
-  protected void tick() {
-    super.tick();
-    inputChain.tick();
   }
 
   @Override

@@ -103,7 +103,7 @@ public class ClientAdapter implements AdapterInterface {
       if (cubesClient == null && menu == null) { //Nothing to render
         Debug.crash(new CubesException("CubesClient and Menu both null"));
       }
-      Compatibility.get().render();
+      Compatibility.get().update();
       glClear();
       if (cubesClient != null) {
         if (setupClient.getAndSet(false)) {

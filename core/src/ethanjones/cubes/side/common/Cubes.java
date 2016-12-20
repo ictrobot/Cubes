@@ -17,7 +17,7 @@ import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.core.system.Executor;
-import ethanjones.cubes.core.timing.TimeHandler;
+import ethanjones.cubes.core.util.PerSecond;
 import ethanjones.cubes.entity.EntityManager;
 import ethanjones.cubes.graphics.Graphics;
 import ethanjones.cubes.graphics.assets.Assets;
@@ -33,7 +33,7 @@ import ethanjones.cubes.world.light.WorldLightHandler;
 
 import com.badlogic.gdx.Gdx;
 
-public abstract class Cubes implements SimpleApplication, TimeHandler {
+public abstract class Cubes implements SimpleApplication {
 
   public static final int tickMS = 25;
   private static boolean setup;
@@ -98,6 +98,7 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
   public World world;
   public Thread thread;
   protected State state = new State();
+  public final PerSecond ticksPerSecond = new PerSecond(10);
 
   public Cubes(Side side) {
     this.side = side;
@@ -110,13 +111,24 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
     Compatibility.get().sideInit(side);
     Sided.getEventBus().register(this);
     Sided.getEventBus().register(new WorldLightHandler());
-    Sided.getTiming().addHandler(this, tickMS);
   }
 
-  @Override
-  public void render() {
+  // call as often as possible
+  protected void update() {
     NetworkingManager.getNetworking(side).processPackets();
     Sided.getTiming().update();
+  }
+  
+  // call once every tickMS
+  protected void tick() {
+    ticksPerSecond.tick();
+    world.tick();
+    NetworkingManager.getNetworking(side).update();
+  }
+  
+  public void write() {
+    world.save();
+    Settings.write();
   }
 
   @Override
@@ -160,20 +172,6 @@ public abstract class Cubes implements SimpleApplication, TimeHandler {
           break;
       }
     }
-  }
-
-  public void write() {
-    world.save();
-    Settings.write();
-  }
-
-  public void time(int interval) {
-    if (interval == tickMS) tick();
-  }
-
-  protected void tick() {
-    world.tick();
-    NetworkingManager.getNetworking(side).update();
   }
 
   public Thread getThread() {

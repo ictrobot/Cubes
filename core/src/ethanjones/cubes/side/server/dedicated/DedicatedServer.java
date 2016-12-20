@@ -38,13 +38,16 @@ public class DedicatedServer extends CubesServer {
   public void create() {
     super.create();
     consoleCommandSender = new ConsoleCommandSender();
+    
+    loop();
   }
-
+  
   @Override
-  public void render() {
-    super.render();
+  protected void update() {
+    super.update();
+    
     consoleCommandSender.update();
-
+    
     synchronized (clients) {
       Iterator<ClientIdentifier> iterator = disconnected.iterator();
       while (iterator.hasNext()) {
@@ -55,7 +58,12 @@ public class DedicatedServer extends CubesServer {
       }
     }
   }
-
+  
+  @Override
+  protected void tick() {
+    super.tick();
+  }
+  
   @Override
   public boolean isDedicated() {
     return true;

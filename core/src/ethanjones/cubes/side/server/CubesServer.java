@@ -4,10 +4,12 @@ import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.core.event.EventHandler;
 import ethanjones.cubes.core.event.entity.living.player.PlayerBreakBlockEvent;
 import ethanjones.cubes.core.event.entity.living.player.PlayerPlaceBlockEvent;
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.mod.ModManager;
 import ethanjones.cubes.core.mod.event.StartingServerEvent;
 import ethanjones.cubes.core.mod.event.StoppingServerEvent;
 import ethanjones.cubes.core.platform.Adapter;
+import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.timing.TimeHandler;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.core.util.VectorUtil;
@@ -46,20 +48,61 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
     world = new WorldServer(save);
 
     Sided.getTiming().addHandler(this, SAVE_TIME);
-    //Sided.getTiming().addHandler(this, 250);
 
     ModManager.postModEvent(new StartingServerEvent());
 
     state.setup();
   }
-
+  
+  public void loop() {
+    long nextTickTime = System.currentTimeMillis() + tickMS;
+    int behindTicks = 0;
+    while (state.isRunning()) {
+      long diff = nextTickTime - System.currentTimeMillis();
+      if (diff < 0) {
+        behindTicks += 1 + (-diff / tickMS);
+      }
+      if (behindTicks == 0) {
+        while (diff > 1) {
+          if (diff > 3) update();
+          try {
+            Thread.sleep(1);
+          } catch (InterruptedException e) {
+            Log.error(e);
+            break;
+          }
+          diff = nextTickTime - System.currentTimeMillis();
+        }
+      } else if (behindTicks >= (1000 / tickMS)) {
+        Log.warning("Skipping " + behindTicks + " ticks");
+        behindTicks = 0;
+        nextTickTime += behindTicks * tickMS;
+      } else {
+        behindTicks--;
+      }
+      update();
+      tick();
+      nextTickTime += tickMS;
+    }
+  }
+  
   @Override
-  public void render() {
-    if (shouldReturn()) return;
-    super.render();
+  protected void tick() {
+    super.tick();
     for (ClientIdentifier clientIdentifier : getAllClients()) {
       clientIdentifier.getPlayerManager().update();
     }
+  }
+  
+  @Override
+  protected void update() {
+    super.update();
+    Compatibility.get().update();
+  }
+  
+  @Override
+  public void render() {
+    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -73,10 +116,7 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
   @Override
   public void time(int interval) {
     if (shouldReturn()) return;
-    super.time(interval);
     if (interval == SAVE_TIME) world.save();
-    //if (interval != 250) return;
-    //world.setBlock(Blocks.dirt, (int) (Math.random() * 16), (int) (8 + (Math.random() * 7)), (int) (Math.random() * 16));
   }
 
   @EventHandler

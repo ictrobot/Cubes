@@ -96,7 +96,7 @@ public class AndroidCompatibility extends Compatibility {
   }
 
   @Override
-  public void render() {
+  public void update() {
     if (back) {
       back = false;
       Menu current = Adapter.getMenu();

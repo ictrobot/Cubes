@@ -109,7 +109,7 @@ public abstract class Compatibility {
 
   public abstract ModLoader getModLoader();
 
-  public void render() {
+  public void update() {
 
   }
 

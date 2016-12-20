@@ -54,12 +54,8 @@ public class ServerAdapter implements AdapterInterface {
 
   @Override
   public void render() {
-    try {
-      Compatibility.get().render();
-      cubesServer.render();
-    } catch (Exception e) {
-      Debug.crash(e);
-    }
+    // Uses internal loop
+    throw new UnsupportedOperationException();
   }
 
   @Override

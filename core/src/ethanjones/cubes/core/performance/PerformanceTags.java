@@ -2,6 +2,7 @@ package ethanjones.cubes.core.performance;
 
 public class PerformanceTags {
   public static final String CLIENT_FRAME = "frame";
+  public static final String CLIENT_TICK = "tick";
   public static final String CLIENT_RENDER = "render";
   public static final String CLIENT_RENDER_WORLD = "render_world";
   public static final String CLIENT_RENDER_WORLD_AREAS = "render_world_area";

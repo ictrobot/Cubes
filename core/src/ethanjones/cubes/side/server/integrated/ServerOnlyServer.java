@@ -19,8 +19,8 @@ public class ServerOnlyServer extends IntegratedServer {
   }
 
   @Override
-  public void render() {
-    super.render();
+  public void update() {
+    super.update();
 
     synchronized (clients) {
       Iterator<ClientIdentifier> iterator = disconnected.iterator();

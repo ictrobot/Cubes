@@ -66,6 +66,7 @@ public class ServerNetworking extends Networking {
   public synchronized void disconnected(SocketMonitor socketMonitor, Exception e) {
     if (getNetworkingState() == NetworkingState.Stopping) return;
     Log.info("Disconnected from " + socketMonitor.getSocket().getRemoteAddress(), e);
+    socketMonitor.dispose();
     Cubes.getServer().removeClient(socketMonitor);
   }
 

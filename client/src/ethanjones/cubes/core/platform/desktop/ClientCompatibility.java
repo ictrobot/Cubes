@@ -59,8 +59,8 @@ public class ClientCompatibility extends DesktopCompatibility {
   }
 
   @Override
-  public void render() {
-    super.render();
+  public void update() {
+    super.update();
     if (Keybinds.isJustPressed(Keybinds.KEYBIND_FULLSCREEN)) {
       if (fullscreen) {
         if (windowedMode()) fullscreen = false;
