@@ -3,14 +3,14 @@ package ethanjones.cubes.world.collision;
 import ethanjones.cubes.core.event.EventHandler;
 import ethanjones.cubes.core.event.entity.living.player.PlayerMovementEvent;
 import ethanjones.cubes.entity.living.player.Player;
-import ethanjones.cubes.side.Sided;
+import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.World;
 
 import com.badlogic.gdx.math.Vector3;
 
 public class PlayerCollision {
-  private World world = Sided.getCubes().world;
+  private World world = Side.getCubes().world;
   private static final float r = 0.25f;
 
   @EventHandler

@@ -7,8 +7,7 @@ import ethanjones.cubes.core.lua.convert.LuaConversion;
 import ethanjones.cubes.core.mod.ModInstance;
 import ethanjones.cubes.core.mod.ModManager;
 import ethanjones.cubes.core.mod.ModState;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
+import ethanjones.cubes.side.common.Side;
 
 import org.luaj.vm2.*;
 import org.luaj.vm2.lib.TwoArgFunction;
@@ -83,7 +82,7 @@ public class LuaMappingMod {
     public static ZeroArgFunction getSide = new ZeroArgFunction() {
       @Override
       public LuaValue call() {
-        Side s = Sided.getSide();
+        Side s = Side.getSide();
         if (s == Side.Client) return client;
         if (s == Side.Server) return server;
         return NIL;

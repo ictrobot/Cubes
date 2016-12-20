@@ -2,8 +2,7 @@ package ethanjones.cubes.networking.server;
 
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.networking.Networking;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
+import ethanjones.cubes.side.common.Side;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.Protocol;
@@ -30,7 +29,7 @@ public class ServerSocketMonitor implements Runnable, Disposable {
 
   @Override
   public void run() {
-    Sided.setSide(Side.Server);
+    Side.setSide(Side.Server);
     while (running.get()) {
       try {
         Socket accept = serverSocket.accept(Networking.socketHints);

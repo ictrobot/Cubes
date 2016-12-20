@@ -11,10 +11,8 @@ import ethanjones.cubes.core.util.Lock;
 import ethanjones.cubes.graphics.world.AreaRenderStatus;
 import ethanjones.cubes.graphics.world.AreaRenderer;
 import ethanjones.cubes.networking.NetworkingManager;
-import ethanjones.cubes.networking.singleplayer.SingleplayerNetworking;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.light.SunLight;
 import ethanjones.cubes.world.reference.BlockReference;
@@ -220,7 +218,7 @@ public class Area implements Lock.HasLock {
   }
 
   public void unload() {
-    if (shared && Sided.getSide() == Side.Client) return;
+    if (shared && Side.isClient()) return;
     lock.writeLock();
   
     if (!unloaded) removeArrays();
@@ -404,7 +402,7 @@ public class Area implements Lock.HasLock {
   
   public Area neighbour(final int areaX, final int areaZ) {
     if (areaX == this.areaX && areaZ == this.areaZ) return this;
-    Side side = Sided.getSide();
+    Side side = Side.getSide();
     if (side == Side.Client) {
       if (areaMapClient == null) return null;
       int aX = areaX - this.areaX;
@@ -430,20 +428,20 @@ public class Area implements Lock.HasLock {
   }
   
   public AreaMap areaMap() {
-    Side side = Sided.getSide();
+    Side side = Side.getSide();
     if (side == Side.Client) return areaMapClient;
     else if (side == Side.Server) return areaMapServer;
     return null;
   }
   
   protected void setAreaMap(AreaMap areaMap) {
-    Side side = Sided.getSide();
+    Side side = Side.getSide();
     if (side == Side.Client) areaMapClient = areaMap;
     else if (side == Side.Server) areaMapServer = areaMap;
   }
   
   public void tick() {
-    if (Sided.getSide() == Side.Server) {
+    if (Side.isServer()) {
       AreaMap areaMap = areaMap();
       if (!features() || areaMap == null) return;
       ThreadLocalRandom random = ThreadLocalRandom.current();
@@ -474,7 +472,7 @@ public class Area implements Lock.HasLock {
   public void doUpdatesThisArea(int x, int y, int z, int ref) {
     updateSurrounding(x, y, z, ref);
 
-    boolean updateRender = Sided.getSide() == Side.Client || shared;
+    boolean updateRender = Side.isClient() || shared;
     int section = y / SIZE_BLOCKS;
 
     if (updateRender) {
@@ -485,7 +483,7 @@ public class Area implements Lock.HasLock {
   }
 
   public void doUpdatesOtherAreas(int x, int y, int z, int ref) {
-    boolean updateRender = Sided.getSide() == Side.Client || shared;
+    boolean updateRender = Side.isClient() || shared;
     int section = y / SIZE_BLOCKS;
 
     AreaMap areaMap = areaMap();
@@ -667,7 +665,7 @@ public class Area implements Lock.HasLock {
       blocks = new int[SIZE_BLOCKS_CUBED * height];
       light = new byte[SIZE_BLOCKS_CUBED * height];
       AreaRenderer.free(areaRenderer);
-      if (Sided.getSide() == Side.Client || isShared()) {
+      if (Side.isClient() || isShared()) {
         areaRenderer = new AreaRenderer[height];
         renderStatus = AreaRenderStatus.create(height);
       }
@@ -745,7 +743,7 @@ public class Area implements Lock.HasLock {
     if (features()) Arrays.fill(light, oldLight.length, light.length, (byte) SunLight.MAX_SUNLIGHT);
 
     AreaRenderer.free(areaRenderer);
-    if (Sided.getSide() == Side.Client || shared) {
+    if (Side.isClient() || shared) {
       areaRenderer = new AreaRenderer[height];
       if (renderStatus.length < height) {
         renderStatus = AreaRenderStatus.create(height);
@@ -801,7 +799,7 @@ public class Area implements Lock.HasLock {
     System.arraycopy(oldLight, 0, light, 0, light.length);
 
     AreaRenderer.free(areaRenderer);
-    if (Sided.getSide() == Side.Client || isShared()) {
+    if (Side.isClient() || isShared()) {
       areaRenderer = new AreaRenderer[usedHeight];
       renderStatus = AreaRenderStatus.create(usedHeight);
     } else {
@@ -998,7 +996,7 @@ public class Area implements Lock.HasLock {
   }
 
   public static boolean isShared() {
-    return NetworkingManager.getNetworking(Sided.getSide()) instanceof SingleplayerNetworking;
+    return NetworkingManager.isSingleplayer();
   }
 
   @Override

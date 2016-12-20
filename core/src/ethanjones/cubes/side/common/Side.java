@@ -1,22 +1,16 @@
-package ethanjones.cubes.side;
+package ethanjones.cubes.side.common;
 
 import ethanjones.cubes.core.event.EventBus;
 import ethanjones.cubes.core.system.CubesException;
-import ethanjones.cubes.core.system.CubesSecurity;
 import ethanjones.cubes.core.timing.Timing;
 import ethanjones.cubes.networking.Networking;
 import ethanjones.cubes.networking.NetworkingManager;
-import ethanjones.cubes.side.common.Cubes;
 
-public class Sided {
-
-  private static class SidedData {
-    EventBus eventBus;
-    Timing timing;
-  }
-
-  private static SidedData clientData;
-  private static SidedData serverData;
+public enum Side {
+  Client, Server;
+  
+  private static SideData clientData;
+  private static SideData serverData;
   private static ThreadLocal<Side> sideLocal = new ThreadLocal<Side>();
   private static ThreadLocal<Boolean> mainLocal = new ThreadLocal<Boolean>() {
     @Override
@@ -24,29 +18,27 @@ public class Sided {
       return false;
     }
   };
-
+  
   public static EventBus getEventBus() {
     return getData().eventBus;
   }
-
-  private static SidedData getData() {
-    Side side = getSide();
-    if (side == null) {
-      throw new CubesException("Sided objects cannot be accessed from thread: " + Thread.currentThread().getName());
-    }
-    SidedData data = getData(side);
-    if (data == null) throw new CubesException("Sided objects are not setup");
-    return data;
-  }
-
+  
   public static Side getSide() {
     return sideLocal.get();
   }
-
+  
+  public static boolean isClient() {
+    return sideLocal.get() == Client;
+  }
+  
+  public static boolean isServer() {
+    return sideLocal.get() == Server;
+  }
+  
   public static boolean isMainThread(Side side) {
     return mainLocal.get() && sideLocal.get() == side;
   }
-
+  
   /**
    * Allow network threads etc. to access sided objects
    */
@@ -54,8 +46,8 @@ public class Sided {
     if (mainLocal.get()) return;
     sideLocal.set(side);
   }
-
-  private static SidedData getData(Side side) {
+  
+  private static SideData getData(Side side) {
     switch (side) {
       case Client:
         return clientData;
@@ -64,15 +56,15 @@ public class Sided {
     }
     return null;
   }
-
+  
   public static Timing getTiming() {
     return getData().timing;
   }
-
+  
   public static Networking getNetworking() {
     return NetworkingManager.getNetworking(getSide());
   }
-
+  
   public static Cubes getCubes() {
     switch (getSide()) {
       case Client:
@@ -82,16 +74,18 @@ public class Sided {
     }
     throw new IllegalStateException();
   }
-
-  public static void setup(Side side) {
-    CubesSecurity.checkSidedSetup();
-
+  
+  public static boolean isSetup(Side side) {
+    return side != null && getData(side) != null;
+  }
+  
+  static void setup(Side side) {
     if (side == null || getData(side) != null) return;
-
+  
     sideLocal.set(side);
     mainLocal.set(true);
-
-    SidedData data = new SidedData();
+  
+    SideData data = new SideData();
     switch (side) {
       case Client:
         clientData = data;
@@ -100,18 +94,12 @@ public class Sided {
         serverData = data;
         break;
     }
-
+  
     data.eventBus = new EventBus();
     data.timing = new Timing();
   }
-
-  public static boolean isSetup(Side side) {
-    return side != null && getData(side) != null;
-  }
-
-  public static void reset(Side side) {
-    CubesSecurity.checkSidedReset();
-
+  
+  static void reset(Side side) {
     if (side == null) return;
 
     switch (side) {
@@ -122,5 +110,20 @@ public class Sided {
         serverData = null;
         break;
     }
+  }
+  
+  private static SideData getData() {
+    Side side = getSide();
+    if (side == null) {
+      throw new CubesException("Sided objects cannot be accessed from thread: " + Thread.currentThread().getName());
+    }
+    SideData data = getData(side);
+    if (data == null) throw new CubesException("Sided objects are not setup");
+    return data;
+  }
+  
+  private static class SideData {
+    EventBus eventBus;
+    Timing timing;
   }
 }

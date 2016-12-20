@@ -7,9 +7,8 @@ import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.networking.packet.PacketDirection;
 import ethanjones.cubes.networking.packet.PacketDirection.Direction;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.side.server.command.CommandManager;
 
 import java.io.DataInputStream;
@@ -32,7 +31,7 @@ public class PacketChat extends Packet {
 
   @Override
   public void handlePacket() {
-    if (Sided.getSide() == Side.Server) {
+    if (Side.isServer()) {
       Player player = Cubes.getServer().getClient(getSocketMonitor()).getPlayer();
       Log.info("[" + Localization.get("server.chat") + "] [" + player.username + "] " + msg);
       if (msg.startsWith("/")) {

@@ -8,9 +8,8 @@ import ethanjones.cubes.core.lua.LuaMappingWorld;
 import ethanjones.cubes.core.util.Lock;
 import ethanjones.cubes.core.util.Lock.HasLock;
 import ethanjones.cubes.entity.Entity;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.generator.GeneratorManager;
 import ethanjones.cubes.world.generator.TerrainGenerator;
 import ethanjones.cubes.world.reference.AreaReference;
@@ -199,7 +198,7 @@ public abstract class World implements Disposable, HasLock {
     
     disposed.set(true);
     
-    if (Sided.getSide() == Side.Server || !Area.isShared()) {
+    if (Side.isServer()|| !Area.isShared()) {
       for (Area area : map) {
         area.unload();
       }

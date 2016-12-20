@@ -2,7 +2,7 @@ package ethanjones.cubes.networking.socket;
 
 import ethanjones.cubes.networking.Networking;
 import ethanjones.cubes.networking.packet.PacketIDDatabase;
-import ethanjones.cubes.side.Side;
+import ethanjones.cubes.side.common.Side;
 
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.utils.Disposable;

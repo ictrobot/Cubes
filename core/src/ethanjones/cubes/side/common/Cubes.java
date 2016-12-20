@@ -22,10 +22,6 @@ import ethanjones.cubes.entity.EntityManager;
 import ethanjones.cubes.graphics.Graphics;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.networking.NetworkingManager;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
-import ethanjones.cubes.side.SimpleApplication;
-import ethanjones.cubes.side.State;
 import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.server.CubesServer;
 import ethanjones.cubes.world.World;
@@ -33,7 +29,7 @@ import ethanjones.cubes.world.light.WorldLightHandler;
 
 import com.badlogic.gdx.Gdx;
 
-public abstract class Cubes implements SimpleApplication {
+public abstract class Cubes {
 
   public static final int tickMS = 25;
   private static boolean setup;
@@ -104,19 +100,18 @@ public abstract class Cubes implements SimpleApplication {
     this.side = side;
   }
 
-  @Override
   public void create() {
     thread = Thread.currentThread();
-    Sided.setup(side);
+    Side.setup(side);
     Compatibility.get().sideInit(side);
-    Sided.getEventBus().register(this);
-    Sided.getEventBus().register(new WorldLightHandler());
+    Side.getEventBus().register(this);
+    Side.getEventBus().register(new WorldLightHandler());
   }
 
   // call as often as possible
   protected void update() {
     NetworkingManager.getNetworking(side).processPackets();
-    Sided.getTiming().update();
+    Side.getTiming().update();
   }
   
   // call once every tickMS
@@ -131,7 +126,6 @@ public abstract class Cubes implements SimpleApplication {
     Settings.write();
   }
 
-  @Override
   public void dispose() {
     if (!state.canDispose()) return;
     state.stopping();
@@ -159,7 +153,7 @@ public abstract class Cubes implements SimpleApplication {
       write();
       NetworkingManager.getNetworking(side).stop();
       world.dispose();
-      Sided.reset(side);
+      Side.reset(side);
       state.stopped();
     }
     if (!Adapter.isDedicatedServer()) {

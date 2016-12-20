@@ -10,8 +10,8 @@ import ethanjones.cubes.networking.packet.PacketQueue;
 import ethanjones.cubes.networking.packets.PacketConnect;
 import ethanjones.cubes.networking.packets.PacketPingRequest;
 import ethanjones.cubes.networking.socket.SocketMonitor;
-import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.side.common.Side;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.Protocol;

@@ -1,6 +1,6 @@
 package ethanjones.cubes.networking.packet;
 
-import ethanjones.cubes.side.Side;
+import ethanjones.cubes.side.common.Side;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -34,7 +34,7 @@ public enum PacketDirection {
 
   @Retention(RetentionPolicy.RUNTIME)
   @Target(ElementType.TYPE)
-  public static @interface Direction {
-    public PacketDirection value();
+  public @interface Direction {
+    PacketDirection value();
   }
 }

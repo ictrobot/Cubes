@@ -4,9 +4,8 @@ import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.networking.packet.DataPacket;
 import ethanjones.cubes.networking.packet.PacketDirection;
 import ethanjones.cubes.networking.packet.PacketDirection.Direction;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.side.common.Side;
 import ethanjones.data.DataGroup;
 
 @Direction(PacketDirection.OMNIDIRECTIONAL)
@@ -16,12 +15,10 @@ public class PacketPlayerInventory extends DataPacket {
   @Override
   public void handlePacket() {
     Player player;
-    if (Sided.getSide() == Side.Server) {
+    if (Side.isServer()) {
       player = Cubes.getServer().getClient(getSocketMonitor()).getPlayer();
-    } else if (Sided.getSide() == Side.Client) {
-      player = Cubes.getClient().player;
     } else {
-      return;
+      player = Cubes.getClient().player;
     }
     player.getInventory().read(inv);
   }

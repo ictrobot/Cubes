@@ -1,4 +1,4 @@
-package ethanjones.cubes.side;
+package ethanjones.cubes.side.common;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

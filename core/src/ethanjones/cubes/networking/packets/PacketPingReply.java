@@ -9,7 +9,7 @@ import ethanjones.cubes.networking.packet.PacketDirection;
 import ethanjones.cubes.networking.packet.PacketDirection.Direction;
 import ethanjones.cubes.networking.packet.PacketPriority;
 import ethanjones.cubes.networking.packet.PacketPriority.Priority;
-import ethanjones.cubes.side.Side;
+import ethanjones.cubes.side.common.Side;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

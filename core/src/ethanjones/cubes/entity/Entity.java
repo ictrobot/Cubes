@@ -2,9 +2,8 @@ package ethanjones.cubes.entity;
 
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.core.util.VectorUtil;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.gravity.WorldGravity;
@@ -50,7 +49,7 @@ public class Entity implements DataParser, Disposable {
    * @return true to be removed
    */
   public boolean update() {
-    if (Sided.getSide() == Side.Server) updatePosition(Cubes.tickMS / 1000f);
+    if (Side.isServer()) updatePosition(Cubes.tickMS / 1000f);
     motion.scl(0.9f, 1f, 0.9f);
     if (motion.len2() < 0.01f) motion.set(0f, 0f, 0f);
 
@@ -59,8 +58,7 @@ public class Entity implements DataParser, Disposable {
 
   public void updatePosition(float time) {
     if (!inLoadedArea()) return;
-    Side side = Sided.getSide();
-    World world = Sided.getCubes().world;
+    World world = Side.getCubes().world;
     float r = 0f;
 
     if (!motion.isZero() || !WorldGravity.onBlock(world, tmpVector, height, r)) {
@@ -72,12 +70,12 @@ public class Entity implements DataParser, Disposable {
         motion.y = 0f;
       }
 
-      if (side == Side.Server) world.syncEntity(uuid);
+      if (Side.isServer()) world.syncEntity(uuid);
     }
   }
 
   public boolean inLoadedArea() {
-    Area area = Sided.getCubes().world.getArea(CoordinateConverter.area(position.x), CoordinateConverter.area(position.z));
+    Area area = Side.getCubes().world.getArea(CoordinateConverter.area(position.x), CoordinateConverter.area(position.z));
     return area != null && !area.isUnloaded();
   }
 

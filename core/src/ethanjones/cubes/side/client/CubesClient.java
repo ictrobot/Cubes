@@ -15,9 +15,8 @@ import ethanjones.cubes.graphics.menus.WorldLoadingMenu;
 import ethanjones.cubes.graphics.rendering.Renderer;
 import ethanjones.cubes.input.InputChain;
 import ethanjones.cubes.networking.NetworkingManager;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.client.WorldClient;
 import ethanjones.cubes.world.collision.PlayerCollision;
 import ethanjones.cubes.world.save.Gamemode;
@@ -63,7 +62,7 @@ public class CubesClient extends Cubes implements ApplicationListener {
     world = new WorldClient();
 
     ModManager.postModEvent(new StartingClientEvent());
-    Sided.getEventBus().register(new PlayerCollision());
+    Side.getEventBus().register(new PlayerCollision());
     
     nextTickTime = System.currentTimeMillis() + tickMS;
     

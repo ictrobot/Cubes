@@ -2,7 +2,7 @@ package ethanjones.cubes.core.event;
 
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.CubesException;
-import ethanjones.cubes.side.Sided;
+import ethanjones.cubes.side.common.Side;
 
 public class Event {
 
@@ -17,7 +17,7 @@ public class Event {
   }
 
   public Event post() {
-    return Sided.getEventBus().post(this);
+    return Side.getEventBus().post(this);
   }
 
   public boolean isCancelable() {

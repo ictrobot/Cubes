@@ -5,6 +5,7 @@ import ethanjones.cubes.core.id.IDManager;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.graphics.world.BlockTextureHandler;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
@@ -68,7 +69,7 @@ public class MenuManager {
       }
     }
     spriteBatch.begin();
-    spriteBatch.setColor(1,1,1,1);
+    spriteBatch.setColor(Color.WHITE);
     float width = texture.getRegionWidth();
     float height = texture.getRegionHeight();
     int xTimes = (int) Math.floor(GUI_WIDTH / width);

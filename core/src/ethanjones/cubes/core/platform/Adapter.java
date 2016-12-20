@@ -6,8 +6,8 @@ import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menus.MainMenu;
 import ethanjones.cubes.graphics.menus.RunnableMenu;
 import ethanjones.cubes.input.InputChain;
-import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.client.CubesClient;
+import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.side.server.CubesServer;
 
 public class Adapter {

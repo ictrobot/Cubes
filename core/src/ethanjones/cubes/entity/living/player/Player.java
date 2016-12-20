@@ -8,10 +8,9 @@ import ethanjones.cubes.item.ItemTool;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketChat;
 import ethanjones.cubes.networking.server.ClientIdentifier;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.side.server.command.CommandPermission;
 import ethanjones.cubes.side.server.command.CommandSender;
 import ethanjones.cubes.world.CoordinateConverter;
@@ -86,7 +85,7 @@ public class Player extends LivingEntity implements CommandSender, RenderablePro
   }
 
   public void addToWorld() {
-    World world = Sided.getCubes().world;
+    World world = Side.getCubes().world;
     world.lock.writeLock();
     world.entities.put(uuid, this);
     world.lock.writeUnlock();
@@ -94,10 +93,10 @@ public class Player extends LivingEntity implements CommandSender, RenderablePro
 
   @Override
   public void updatePosition(float time) {
-    if (Sided.getSide() == Side.Client && !Cubes.getClient().inputChain.cameraController.flying) {
+    if (Side.isClient() && !Cubes.getClient().inputChain.cameraController.flying) {
       if (!inLoadedArea()) return;
-      Side side = Sided.getSide();
-      World world = Sided.getCubes().world;
+      Side side = Side.getSide();
+      World world = Side.getCubes().world;
       tmpVector.set(position);
 
       if (!motion.isZero() || !WorldGravity.onBlock(world, tmpVector, height, PLAYER_RADIUS)) {
@@ -115,7 +114,7 @@ public class Player extends LivingEntity implements CommandSender, RenderablePro
         }
       }
     }
-    World world = Sided.getCubes().world;
+    World world = Side.getCubes().world;
     if (world.getArea(CoordinateConverter.area(position.x), CoordinateConverter.area(position.z)) != null) {
       if (world.getBlock(CoordinateConverter.block(position.x), CoordinateConverter.block(position.y - height), CoordinateConverter.block(position.z)) != null) {
         position.set(previousPosition);
@@ -127,7 +126,7 @@ public class Player extends LivingEntity implements CommandSender, RenderablePro
 
   @Override
   public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
-    if (Sided.getSide() == Side.Server || this == Cubes.getClient().player) return;
+    if (Side.isServer()|| this == Cubes.getClient().player) return;
     PlayerRenderer.getRenderables(renderables, pool, this);
   }
 

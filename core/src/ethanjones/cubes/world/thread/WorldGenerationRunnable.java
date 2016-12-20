@@ -1,7 +1,7 @@
 package ethanjones.cubes.world.thread;
 
 import ethanjones.cubes.core.system.CubesException;
-import ethanjones.cubes.side.Sided;
+import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.reference.AreaReference;
 
 import java.util.concurrent.LinkedBlockingQueue;
@@ -63,7 +63,7 @@ public class WorldGenerationRunnable implements Runnable {
           task.parameter.afterCompletion.run();
         }
       } catch (CubesException e) {
-        if (e.className.equals(Sided.class.getName())) {
+        if (e.className.equals(Side.class.getName())) {
           queue.clear();
         } else {
           throw e;

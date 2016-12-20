@@ -4,9 +4,8 @@ import ethanjones.cubes.block.data.BlockData;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packet.DataPacket;
 import ethanjones.cubes.networking.server.ClientIdentifier;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.storage.Area;
 import ethanjones.data.DataGroup;
 
@@ -16,12 +15,12 @@ public class PacketBlockData extends DataPacket {
 
   @Override
   public void handlePacket() {
-    Area area = Sided.getCubes().world.getArea(areaX, areaZ);
+    Area area = Side.getCubes().world.getArea(areaX, areaZ);
     if (area != null) {
       BlockData blockData = area.getBlockData(blockX, blockY, blockZ);
       blockData.read(dataGroup);
     }
-    if (Sided.getSide() == Side.Server) {
+    if (Side.isServer()) {
       ClientIdentifier client = Cubes.getServer().getClient(getSocketMonitor());
       if (client != null) {
         PacketBlockData n = new PacketBlockData();

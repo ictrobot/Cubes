@@ -1,30 +1,30 @@
 package ethanjones.cubes.core.platform;
 
 import ethanjones.cubes.graphics.menu.Menu;
-import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.client.CubesClient;
+import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.side.server.CubesServer;
 
 import com.badlogic.gdx.ApplicationListener;
 
 public interface AdapterInterface extends ApplicationListener {
 
-  public CubesClient getClient();
+  CubesClient getClient();
 
-  public void setClient(CubesClient cubesClient) throws UnsupportedOperationException;
+  void setClient(CubesClient cubesClient) throws UnsupportedOperationException;
 
-  public CubesServer getServer();
+  CubesServer getServer();
 
-  public void setServer(CubesServer cubesServer) throws UnsupportedOperationException;
+  void setServer(CubesServer cubesServer) throws UnsupportedOperationException;
 
-  public Menu getMenu();
+  Menu getMenu();
 
-  public void setMenu(Menu menu) throws UnsupportedOperationException;
+  void setMenu(Menu menu) throws UnsupportedOperationException;
 
-  public Side getSide();
+  Side getSide();
 
   //Call Adapter.dispose()
-  public void dispose();
+  void dispose();
 
-  public Thread getThread();
+  Thread getThread();
 }

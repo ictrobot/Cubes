@@ -6,7 +6,7 @@ import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.item.Item;
-import ethanjones.cubes.side.Sided;
+import ethanjones.cubes.side.common.Side;
 
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaUserdata;
@@ -47,7 +47,7 @@ public class LuaMappingCubes {
   public static ZeroArgFunction world = new ZeroArgFunction() {
     @Override
     public LuaValue call() {
-      return Sided.getCubes().world.lua;
+      return Side.getCubes().world.lua;
     }
   };
 

@@ -6,8 +6,7 @@ import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.networking.packet.PacketQueue;
 import ethanjones.cubes.networking.packet.PriorityPacketQueue;
 import ethanjones.cubes.networking.stream.PairedStreams;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
+import ethanjones.cubes.side.common.Side;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -45,16 +44,16 @@ public class SingleplayerNetworkingThread extends Thread {
         if (packet == null) continue;
         if (!packet.shouldSend()) continue;
 
-        Sided.setSide(sideOut);
+        Side.setSide(sideOut);
         Packet copy = packet.copy();
         if (copy == packet) throw new IllegalStateException(packet.getClass().getName());
 
         if (copy == null) {
-          Sided.setSide(sideIn);
+          Side.setSide(sideIn);
           pair.reset();
           packet.write(dataOutputStream);
 
-          Sided.setSide(sideOut);
+          Side.setSide(sideOut);
           pair.updateInput();
           copy = packet.getClass().newInstance();
           copy.read(dataInputStream);

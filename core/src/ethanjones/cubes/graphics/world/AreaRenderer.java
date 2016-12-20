@@ -6,9 +6,8 @@ import ethanjones.cubes.core.id.TransparencyManager;
 import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.core.util.Lock;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.storage.Area;
 
 import com.badlogic.gdx.graphics.g3d.Renderable;
@@ -215,7 +214,7 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
   // checks if client thread
   public static void free(AreaRenderer[] areaRenderer) {
     if (areaRenderer == null) return;
-    boolean isClient = Sided.getSide() == Side.Client;
+    boolean isClient = Side.isMainThread(Side.Client);
     for (int i = 0; i < areaRenderer.length; i++) {
       if (areaRenderer[i] == null) continue;
       if (isClient) {

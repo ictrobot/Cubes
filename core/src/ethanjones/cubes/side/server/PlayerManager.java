@@ -14,9 +14,8 @@ import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.client.ClientNetworking;
 import ethanjones.cubes.networking.packets.*;
 import ethanjones.cubes.networking.server.ClientIdentifier;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.collision.BlockIntersection;
 import ethanjones.cubes.world.reference.AreaReference;
@@ -49,7 +48,7 @@ public class PlayerManager {
     renderDistance = packetConnect.renderDistance;
     loadDistance = renderDistance + 1;
 
-    Sided.getEventBus().register(this);
+    Side.getEventBus().register(this);
 
     PacketConnected packetConnected = new PacketConnected();
     packetConnected.idManager = IDManager.writeMapping();

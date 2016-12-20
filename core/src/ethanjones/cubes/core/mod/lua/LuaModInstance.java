@@ -12,7 +12,7 @@ import ethanjones.cubes.core.mod.event.StartingServerEvent;
 import ethanjones.cubes.core.mod.lua.LuaMappingMod.LuaEventListener;
 import ethanjones.cubes.core.util.Multimap;
 import ethanjones.cubes.graphics.assets.AssetManager;
-import ethanjones.cubes.side.Sided;
+import ethanjones.cubes.side.common.Side;
 
 import com.badlogic.gdx.files.FileHandle;
 import org.luaj.vm2.Globals;
@@ -73,12 +73,12 @@ public class LuaModInstance extends ModInstance {
       chunk.call();
     } else {
       if (modEvent instanceof StartingClientEvent) {
-        EventBus bus = Sided.getEventBus();
+        EventBus bus = Side.getEventBus();
         for (LuaEventListener lel : clientEventListeners) {
           bus.register(lel);
         }
       } else if (modEvent instanceof StartingServerEvent) {
-        EventBus bus = Sided.getEventBus();
+        EventBus bus = Side.getEventBus();
         for (LuaEventListener lel : serverEventListeners) {
           bus.register(lel);
         }

@@ -3,8 +3,8 @@ package ethanjones.cubes.networking.server;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.core.system.Executor;
-import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.side.common.Side;
 
 import com.badlogic.gdx.net.NetJavaSocketImpl;
 
@@ -77,7 +77,7 @@ public class ServerConnectionInitializer {
 
   private static void connect(Socket javaSocket, NetJavaSocketImpl gdxSocket, DataOutputStream dataOutputStream, DataInputStream dataInputStream) throws Exception {
     javaSocket.setSoTimeout(0);
-    ((ServerNetworking) Sided.getNetworking()).accepted(gdxSocket);
+    ((ServerNetworking) Side.getNetworking()).accepted(gdxSocket);
   }
 
   private static void ping(Socket javaSocket, NetJavaSocketImpl gdxSocket, DataOutputStream dataOutputStream, DataInputStream dataInputStream) throws Exception {

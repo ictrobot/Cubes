@@ -2,8 +2,7 @@ package ethanjones.cubes.block.data;
 
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketBlockData;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
+import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.storage.Area;
 import ethanjones.data.DataParser;
 
@@ -43,7 +42,7 @@ public abstract class BlockData implements DataParser {
     packet.blockY = y;
     packet.blockZ = z;
     packet.dataGroup = write();
-    if (Sided.getSide() == Side.Client) {
+    if (Side.isClient()) {
       NetworkingManager.sendPacketToServer(packet);
     } else {
       NetworkingManager.sendPacketToAllClients(packet);

@@ -7,9 +7,9 @@ import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.server.ServerNetworking;
 import ethanjones.cubes.networking.server.ServerNetworkingParameter;
-import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.side.server.CubesServer;
 import ethanjones.cubes.side.server.dedicated.DedicatedServer;
 

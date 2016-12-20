@@ -6,8 +6,8 @@ import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.networking.packet.PacketDirection;
 import ethanjones.cubes.networking.packet.PacketQueue;
 import ethanjones.cubes.networking.socket.SocketMonitor;
-import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.side.common.Side;
 
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.utils.Array;

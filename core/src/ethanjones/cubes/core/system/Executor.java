@@ -1,8 +1,7 @@
 package ethanjones.cubes.core.system;
 
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.side.common.Side;
 
 import java.util.ArrayList;
 import java.util.concurrent.*;
@@ -175,7 +174,7 @@ public class Executor {
     private final Callable<T> callable;
 
     public SidedCallableWrapper(Callable<T> callable) {
-      this.side = Sided.getSide();
+      this.side = Side.getSide();
       this.cubes = getCubes(side);
       this.callable = callable;
     }
@@ -184,9 +183,9 @@ public class Executor {
     public T call() throws Exception {
       if (shouldReturn(cubes)) return null;
       try {
-        Sided.setSide(side);
+        Side.setSide(side);
         T t = callable.call();
-        Sided.setSide(null);
+        Side.setSide(null);
         return t;
       } catch (Exception e) {
         Debug.crash(new ExecutorException(e));
@@ -202,7 +201,7 @@ public class Executor {
     private final Runnable runnable;
 
     public SidedRunnableWrapper(Runnable runnable) {
-      this.side = Sided.getSide();
+      this.side = Side.getSide();
       this.cubes = getCubes(side);
       this.runnable = runnable;
     }
@@ -211,9 +210,9 @@ public class Executor {
     public void run() {
       if (shouldReturn(cubes)) return;
       try {
-        Sided.setSide(side);
+        Side.setSide(side);
         runnable.run();
-        Sided.setSide(null);
+        Side.setSide(null);
       } catch (Exception e) {
         Debug.crash(new ExecutorException(e));
       }

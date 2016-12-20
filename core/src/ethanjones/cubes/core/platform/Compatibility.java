@@ -7,8 +7,7 @@ import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.Debug.UncaughtExceptionHandler;
 import ethanjones.cubes.graphics.assets.AssetFinder;
 import ethanjones.cubes.graphics.assets.Assets;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
+import ethanjones.cubes.side.common.Side;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Application.ApplicationType;
@@ -46,7 +45,7 @@ public abstract class Compatibility {
   }
 
   public void sideInit(Side side) {
-    if (side != null) Sided.getEventBus().register(this);
+    if (side != null) Side.getEventBus().register(this);
   }
 
   public final Launcher getLauncher() {

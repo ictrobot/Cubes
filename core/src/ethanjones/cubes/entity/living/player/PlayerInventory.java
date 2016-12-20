@@ -5,8 +5,7 @@ import ethanjones.cubes.item.Items;
 import ethanjones.cubes.item.inv.Inventory;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketPlayerInventory;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
+import ethanjones.cubes.side.common.Side;
 import ethanjones.data.DataGroup;
 
 public class PlayerInventory extends Inventory {
@@ -31,7 +30,7 @@ public class PlayerInventory extends Inventory {
   public void sync() {
     PacketPlayerInventory packet = new PacketPlayerInventory();
     packet.inv = write();
-    if (Sided.getSide() == Side.Client) {
+    if (Side.isClient()) {
       NetworkingManager.sendPacketToServer(packet);
     } else {
       NetworkingManager.sendPacketToClient(packet, player.clientIdentifier);

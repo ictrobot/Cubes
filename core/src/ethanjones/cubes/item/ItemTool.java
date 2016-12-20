@@ -4,14 +4,13 @@ import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.event.entity.living.player.PlayerBreakBlockEvent;
 import ethanjones.cubes.entity.ItemEntity;
 import ethanjones.cubes.entity.living.player.Player;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.collision.BlockIntersection;
 import ethanjones.cubes.world.reference.BlockReference;
 
 public class ItemTool extends Item {
-  public static enum ToolType {
+  public enum ToolType {
     pickaxe, axe, shovel, none
   }
 
@@ -45,11 +44,11 @@ public class ItemTool extends Item {
   public static void mine(Player player, boolean mine) {
     if (mine) {
       ItemStack itemStack = player.getInventory().selectedItemStack(); // may be null
-      BlockIntersection blockIntersection = BlockIntersection.getBlockIntersection(player.position, player.angle, Sided.getCubes().world);
+      BlockIntersection blockIntersection = BlockIntersection.getBlockIntersection(player.position, player.angle, Side.getCubes().world);
       if (blockIntersection != null) {
         BlockReference blockReference = blockIntersection.getBlockReference();
-        Block block = Sided.getCubes().world.getBlock(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
-        int meta = Sided.getCubes().world.getMeta(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
+        Block block = Side.getCubes().world.getBlock(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
+        int meta = Side.getCubes().world.getMeta(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
 
         if (block != null) {
           MiningTarget target = player.getCurrentlyMining();
@@ -63,7 +62,7 @@ public class ItemTool extends Item {
           target.time += block.getMiningSpeed(itemStack) * (Cubes.tickMS / 1000f);
           if (target.time >= target.totalTime) {
             player.setCurrentlyMining(null);
-            if (Sided.getSide() == Side.Server) {
+            if (Side.isServer()) {
               Cubes.getServer().world.setBlock(null, blockReference.blockX, blockReference.blockY, blockReference.blockZ);
               if (block.canMine(itemStack)) {
                 PlayerBreakBlockEvent event = new PlayerBreakBlockEvent(player, block, meta, blockIntersection, blockReference);

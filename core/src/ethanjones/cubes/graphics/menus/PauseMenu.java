@@ -36,7 +36,7 @@ public class PauseMenu extends Menu {
       }
     });
     background = new Image(Assets.getTextureRegion("core:hud/PauseBackground.png"));
-
+    
     stage.addActor(background);
     stage.addActor(resume);
     stage.addActor(quit);

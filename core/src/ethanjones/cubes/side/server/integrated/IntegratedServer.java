@@ -1,7 +1,7 @@
 package ethanjones.cubes.side.server.integrated;
 
 import ethanjones.cubes.core.system.Debug;
-import ethanjones.cubes.side.Side;
+import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.side.server.CubesServer;
 import ethanjones.cubes.world.save.Save;
 

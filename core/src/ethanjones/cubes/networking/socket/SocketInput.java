@@ -3,8 +3,7 @@ package ethanjones.cubes.networking.socket;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.networking.stream.PairedStreams;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
+import ethanjones.cubes.side.common.Side;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -39,7 +38,7 @@ public class SocketInput extends SocketIO {
 
   @Override
   public void run() {
-    Sided.setSide(socketMonitor.getSide());
+    Side.setSide(socketMonitor.getSide());
     while (socketMonitor.running.get()) {
       try {
         Class<? extends Packet> packetClass;

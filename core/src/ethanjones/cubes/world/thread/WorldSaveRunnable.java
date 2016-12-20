@@ -2,7 +2,7 @@ package ethanjones.cubes.world.thread;
 
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.CubesException;
-import ethanjones.cubes.side.Sided;
+import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.save.SaveAreaIO;
 import ethanjones.cubes.world.storage.Area;
 
@@ -38,7 +38,7 @@ public class WorldSaveRunnable implements Runnable {
           Log.debug("Saved areas: wrote " + task.written + " total " + task.length);
         }
       } catch (CubesException e) {
-        if (e.className.equals(Sided.class.getName())) {
+        if (e.className.equals(Side.class.getName())) {
           queue.clear();
         } else {
           throw e;

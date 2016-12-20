@@ -5,9 +5,8 @@ import ethanjones.cubes.graphics.entity.ItemEntityRenderer;
 import ethanjones.cubes.item.ItemStack;
 import ethanjones.cubes.item.inv.InventoryHelper;
 import ethanjones.cubes.networking.server.ClientIdentifier;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.side.common.Side;
 import ethanjones.data.DataGroup;
 
 import com.badlogic.gdx.graphics.g3d.Renderable;
@@ -25,7 +24,7 @@ public class ItemEntity extends Entity implements RenderableProvider {
   public ItemEntity() {
     super("core:item");
     this.motion.set(randomMotion(), 0, randomMotion());
-    if (Sided.getSide() == Side.Client) renderer = new ItemEntityRenderer(this);
+    if (Side.isClient()) renderer = new ItemEntityRenderer(this);
   }
 
   private float randomMotion() {
@@ -61,7 +60,7 @@ public class ItemEntity extends Entity implements RenderableProvider {
 
   public boolean update() {
     super.update();
-    if (Sided.getSide() == Side.Server) {
+    if (Side.isServer()) {
       if (age >= (600000 / Cubes.tickMS)) return true;
       if (age >= 0) {
         for (ClientIdentifier clientIdentifier : Cubes.getServer().getAllClients()) {

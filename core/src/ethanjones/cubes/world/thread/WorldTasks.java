@@ -5,7 +5,7 @@ import ethanjones.cubes.core.event.world.generation.FeaturesEvent;
 import ethanjones.cubes.core.event.world.generation.GenerationEvent;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.ThreadPool;
-import ethanjones.cubes.side.Side;
+import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.light.SunLight;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;

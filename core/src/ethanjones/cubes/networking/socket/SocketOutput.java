@@ -5,8 +5,7 @@ import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.networking.packet.PacketQueue;
 import ethanjones.cubes.networking.stream.DirectByteArrayOutputStream;
 import ethanjones.cubes.networking.stream.NoCloseDataOutputStream;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
+import ethanjones.cubes.side.common.Side;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -43,7 +42,7 @@ public class SocketOutput extends SocketIO {
 
   @Override
   public void run() {
-    Sided.setSide(socketMonitor.getSide());
+    Side.setSide(socketMonitor.getSide());
     while (socketMonitor.running.get()) {
       try {
         Packet packet = packetQueue.waitAndGet();

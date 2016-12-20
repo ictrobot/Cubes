@@ -6,9 +6,8 @@ import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.input.ClickType;
 import ethanjones.cubes.item.inv.InventoryHelper;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.collision.BlockIntersection;
 import ethanjones.cubes.world.reference.BlockReference;
 
@@ -31,7 +30,7 @@ public class ItemBlock extends Item {
 
   @Override
   public boolean onButtonPress(ClickType type, ItemStack itemStack, Player player, int stack) {
-    if (Sided.getSide() == Side.Server && type == ClickType.place) {
+    if (Side.isServer() && type == ClickType.place) {
       BlockIntersection blockIntersection = BlockIntersection.getBlockIntersection(player.position, player.angle, Cubes.getServer().world);
       if (blockIntersection == null || blockIntersection.getBlockFace() == null) return false;
       BlockReference blockReference = blockIntersection.getBlockReference();

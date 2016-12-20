@@ -1,7 +1,6 @@
 package ethanjones.cubes.core.system;
 
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
+import ethanjones.cubes.side.common.Side;
 
 public class ThreadPool {
 
@@ -44,7 +43,7 @@ public class ThreadPool {
       Thread thread = new Thread(group, name + "-" + (i + 1)) {
         @Override
         public void run() {
-          if (side != null) Sided.setSide(side);
+          if (side != null) Side.setSide(side);
           runnable.run();
         }
       };

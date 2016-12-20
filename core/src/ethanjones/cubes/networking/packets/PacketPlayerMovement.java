@@ -7,9 +7,8 @@ import ethanjones.cubes.networking.packet.PacketDirection;
 import ethanjones.cubes.networking.packet.PacketDirection.Direction;
 import ethanjones.cubes.networking.packet.PacketPriority;
 import ethanjones.cubes.networking.packet.PacketPriority.Priority;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.side.common.Side;
 
 import com.badlogic.gdx.math.Vector3;
 
@@ -46,7 +45,7 @@ public class PacketPlayerMovement extends Packet {
 
   @Override
   public void handlePacket() {
-    if (Sided.getSide() == Side.Server) {
+    if (Side.isServer()) {
       Cubes.getServer().getClient(getSocketMonitor()).getPlayerManager().handlePacket(this);
     } else {
       Cubes.getClient().player.angle.set(angle);

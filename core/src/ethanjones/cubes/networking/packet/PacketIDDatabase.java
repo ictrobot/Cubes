@@ -3,14 +3,13 @@ package ethanjones.cubes.networking.packet;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.networking.packets.PacketID;
 import ethanjones.cubes.networking.socket.SocketMonitor;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
+import ethanjones.cubes.side.common.Side;
 
 import java.util.HashMap;
 
 public class PacketIDDatabase {
 
-  private static enum State {
+  private enum State {
     Waiting, Confirmed
   }
 
@@ -61,7 +60,7 @@ public class PacketIDDatabase {
   public void process(PacketID packetID) {
     if (packetID.c == null) return;
     Class<? extends Packet> c = getPacketClass(packetID.c);
-    if (Sided.getSide() == Side.Client) {
+    if (Side.isClient()) {
       synchronized (lock) {
         if (states.get(c) == State.Confirmed) return;
         intClass.put(packetID.id, c);

@@ -8,8 +8,8 @@ import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.networking.server.ServerNetworking;
 import ethanjones.cubes.networking.server.ServerNetworkingParameter;
 import ethanjones.cubes.networking.singleplayer.SingleplayerNetworking;
-import ethanjones.cubes.side.Side;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.side.common.Side;
 
 public class NetworkingManager {
 

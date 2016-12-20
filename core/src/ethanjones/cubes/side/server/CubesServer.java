@@ -16,9 +16,8 @@ import ethanjones.cubes.core.util.VectorUtil;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.networking.socket.SocketMonitor;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.side.server.command.CommandManager;
 import ethanjones.cubes.world.save.Save;
 import ethanjones.cubes.world.server.WorldServer;
@@ -47,7 +46,7 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
 
     world = new WorldServer(save);
 
-    Sided.getTiming().addHandler(this, SAVE_TIME);
+    Side.getTiming().addHandler(this, SAVE_TIME);
 
     ModManager.postModEvent(new StartingServerEvent());
 
@@ -100,11 +99,6 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
     Compatibility.get().update();
   }
   
-  @Override
-  public void render() {
-    throw new UnsupportedOperationException();
-  }
-
   @Override
   protected void stop() {
     if (state.hasStopped() || !state.isSetup()) return;

@@ -7,8 +7,7 @@ import ethanjones.cubes.networking.packet.PacketDirection;
 import ethanjones.cubes.networking.packet.PacketQueue;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.networking.socket.SocketMonitor;
-import ethanjones.cubes.side.Side;
-import ethanjones.cubes.side.Sided;
+import ethanjones.cubes.side.common.Side;
 
 public class SingleplayerNetworking extends Networking {
 
@@ -72,7 +71,7 @@ public class SingleplayerNetworking extends Networking {
 
   @Override
   public void processPackets() {
-    Side side = Sided.getSide();
+    Side side = Side.getSide();
     PacketQueue packetQueue;
     switch (side) {
       case Client:
