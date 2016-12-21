@@ -9,8 +9,6 @@ import ethanjones.cubes.core.mod.ModState;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.Compatibility;
 
-import com.badlogic.gdx.Version;
-
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -43,7 +41,7 @@ public class Debug {
     Log.debug("OS Name:            " + System.getProperty("os.name"));
     Log.debug("OS Architecture:    " + System.getProperty("os.arch"));
     Log.debug("OS Version:         " + System.getProperty("os.version"));
-    Log.debug("libGDX version      " + Version.VERSION);
+    Log.debug("libGDX version:     " + com.badlogic.gdx.Version.VERSION);
     Log.debug("User Home:          " + System.getProperty("user.home"));
     Log.debug("Working Directory:  " + System.getProperty("user.dir"));
     Log.debug("Base Directory:     " + Compatibility.get().getBaseFolder().file().getAbsolutePath());

@@ -15,7 +15,7 @@ import com.eclipsesource.json.WriterConfig;
 
 import java.io.Reader;
 import java.io.Writer;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Settings {
@@ -37,7 +37,7 @@ public class Settings {
   public static final String GROUP_DEBUG = "debug";
 
   protected static SettingGroup base = new SettingGroup();
-  protected static HashMap<String, Setting> settings = new HashMap<String, Setting>();
+  protected static LinkedHashMap<String, Setting> settings = new LinkedHashMap<String, Setting>();
 
   public static void init() {
     addSetting(USERNAME, new StringSetting("User"));
