@@ -43,15 +43,21 @@ public class Assets {
   }
 
   public static TextureRegion getTextureRegion(String assetName) {
-    Texture texture = getTexture(assetName);
-    if (texture == null) return null;
-    return new TextureRegion(texture);
+    Asset asset = getAsset(assetName);
+    if (asset == null) return null;
+    return asset.getTextureRegion();
   }
 
   public static Texture getTexture(String assetName) {
     Asset asset = getAsset(assetName);
     if (asset == null) return null;
-    return new Texture(asset.getFileHandle());
+    return asset.getTexture();
+  }
+  
+  public static Material getMaterial(String assetName) {
+    Asset asset = getAsset(assetName);
+    if (asset == null) return null;
+    return asset.getMaterial();
   }
 
   public static Asset getAsset(String name) {
@@ -63,12 +69,6 @@ public class Assets {
     String assetName = name.substring(index + 1);
     Asset asset = assetManager.getAsset(assetName);
     return asset;
-  }
-
-  public static Material getMaterial(String assetName) {
-    Texture texture = getTexture(assetName);
-    if (texture == null) return null;
-    return new Material(TextureAttribute.createDiffuse(texture));
   }
 
   public static void preInit() {
@@ -97,7 +97,9 @@ public class Assets {
         for (Asset asset : assets) {
           try {
             if (!asset.getFileHandle().extension().equals("png")) continue;
-            texturePacker.insertImage(entry.getKey() + ":" + asset.getPath(), new Pixmap(asset.getFileHandle()));
+            Pixmap pixmap = new Pixmap(asset.getFileHandle());
+            texturePacker.insertImage(entry.getKey() + ":" + asset.getPath(), pixmap);
+            pixmap.dispose();
           } catch (Exception e) {
             Log.error("Failed to read file: " + asset.getPath(), e);
           }
