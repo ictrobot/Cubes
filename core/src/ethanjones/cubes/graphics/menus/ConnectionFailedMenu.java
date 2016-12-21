@@ -16,8 +16,8 @@ public class ConnectionFailedMenu extends InfoMenu {
   }
 
   private static String getString(Exception e) {
-    if (e.getCause() == null) return System.lineSeparator() + e.getClass().getSimpleName();
-    return System.lineSeparator() + e.getClass().getSimpleName() + System.lineSeparator() + e.getCause();
+    if (e.getCause() == null) return "\n" + e.getClass().getSimpleName();
+    return "\n" + e.getClass().getSimpleName() + "\n" + e.getCause();
   }
 
   public ConnectionFailedMenu() {

@@ -8,6 +8,7 @@ import ethanjones.cubes.core.id.TransparencyManager;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.Executor;
 import ethanjones.cubes.core.util.Lock;
+import ethanjones.cubes.core.util.ThreadRandom;
 import ethanjones.cubes.graphics.world.AreaRenderStatus;
 import ethanjones.cubes.graphics.world.AreaRenderer;
 import ethanjones.cubes.networking.NetworkingManager;
@@ -25,7 +26,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Area implements Lock.HasLock {
@@ -444,7 +444,7 @@ public class Area implements Lock.HasLock {
     if (Side.isServer()) {
       AreaMap areaMap = areaMap();
       if (!features() || areaMap == null) return;
-      ThreadLocalRandom random = ThreadLocalRandom.current();
+      ThreadRandom random = ThreadRandom.get();
       lock.writeLock();
       int updates = NUM_RANDOM_UPDATES * height;
       for (int i = 0; i < updates; i++) {
