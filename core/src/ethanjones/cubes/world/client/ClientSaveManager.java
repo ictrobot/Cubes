@@ -5,7 +5,6 @@ import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.world.save.Gamemode;
 import ethanjones.cubes.world.save.Save;
 import ethanjones.cubes.world.save.SaveOptions;
-import ethanjones.cubes.world.save.SaveState;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.MathUtils;
@@ -51,9 +50,6 @@ public class ClientSaveManager {
     options.worldType = generatorID;
     options.worldGamemode = gamemode;
     s.setSaveOptions(options);
-  
-    SaveState state = new SaveState();
-    s.setSaveState(state);
 
     return s;
   }

@@ -50,7 +50,7 @@ public abstract class World implements Disposable, HasLock {
   public World(Save save) {
     this.save = save;
     this.terrainGenerator = save == null ? null : GeneratorManager.getTerrainGenerator(save.getSaveOptions());
-    this.time = save == null ? 0 : save.getSaveState().worldTime;
+    this.time = save == null ? 0 : save.getSaveOptions().worldTime;
     map = new AreaMap(this);
     lua = LuaMapping.mapping(new LuaMappingWorld(this));
   }
@@ -256,8 +256,8 @@ public abstract class World implements Disposable, HasLock {
     // areas
     save.writeAreas(map);
     // state
-    save.getSaveState().worldTime = time;
-    save.writeSaveState();
+    save.getSaveOptions().worldTime = time;
+    save.writeSaveOptions();
 
     lock.readUnlock();
   }
