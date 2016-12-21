@@ -9,6 +9,7 @@ menu.main.settings=Settings
 menu.main.quit=Quit
 
 menu.singleplayer.title=Singleplayer
+menu.singleplayer.nosave=No saves exist
 menu.singleplayer.play=Play
 menu.singleplayer.server_only=Server
 menu.singleplayer.delete=Delete

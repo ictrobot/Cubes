@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Align;
 
 public class ServerSetupMenu extends Menu {
 
@@ -25,6 +26,7 @@ public class ServerSetupMenu extends Menu {
     super();
     title = new Label(Localization.get("menu.server.title"), skin.get("title", Label.LabelStyle.class));
     saveLabel = new Label(Localization.get("menu.server.save", save.name), skin);
+    saveLabel.setAlignment(Align.center);
     port = new TextField("", skin);
     port.setMessageText(Localization.get("menu.server.port", Settings.getIntegerSettingValue(Settings.NETWORKING_PORT)));
     port.setTextFieldFilter(new TextField.TextFieldFilter.DigitsOnlyFilter());

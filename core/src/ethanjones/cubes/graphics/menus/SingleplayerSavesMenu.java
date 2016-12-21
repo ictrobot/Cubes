@@ -19,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 public class SingleplayerSavesMenu extends Menu {
 
   Label title;
+  Label noSaves;
   ScrollPane scrollPane;
   List<Save> listLabel;
   TextButton back;
@@ -29,6 +30,8 @@ public class SingleplayerSavesMenu extends Menu {
 
   public SingleplayerSavesMenu() {
     title = new Label(Localization.get("menu.singleplayer.title"), skin.get("title", Label.LabelStyle.class));
+    noSaves = new Label(Localization.get("menu.singleplayer.nosave"), skin);
+    
     listLabel = new List<Save>(skin);
     listLabel.addListener(new ActorGestureListener() {
       @Override
@@ -83,6 +86,7 @@ public class SingleplayerSavesMenu extends Menu {
     });
 
     stage.addActor(title);
+    stage.addActor(noSaves);
     stage.addActor(scrollPane);
     stage.addActor(back);
     stage.addActor(delete);
@@ -93,6 +97,13 @@ public class SingleplayerSavesMenu extends Menu {
 
   public void updateSavesList() {
     listLabel.setItems(ClientSaveManager.getSaves());
+    if (listLabel.getItems().size > 0) {
+      noSaves.setVisible(false);
+      noSaves.toBack();
+    } else {
+      noSaves.setVisible(true);
+      noSaves.toFront();
+    }
   }
 
   @Override
@@ -106,5 +117,6 @@ public class SingleplayerSavesMenu extends Menu {
 
     float w = listLabel.getPrefWidth();
     scrollPane.setBounds((width / 2) - (w / 2), back.getTop() + 1f, w, title.getY() - back.getTop() - 2f);
+    MenuTools.center(noSaves);
   }
 }
