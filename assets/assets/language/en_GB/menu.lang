@@ -40,6 +40,9 @@ menu.server.stop=Stop
 menu.connection_failed.failed=Failed to connect
 menu.connection_failed.failed_exception=Failed to connect:
 
+menu.disconnected.disconnected=Disconnected
+menu.disconnected.disconnected_exception=Disconnected:
+
 menu.settings.title=Settings
 menu.settings.open_group=Open
 menu.settings.keybind_press=Press key

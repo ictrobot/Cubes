@@ -38,4 +38,18 @@ public class ConnectionFailedMenu extends InfoMenu {
     });
     firstRender = false;
   }
+  
+  public static class DisconnectedMenu extends ConnectionFailedMenu {
+    
+    public DisconnectedMenu(Exception e) {
+      super(e);
+      text.setText(Localization.get("menu.disconnected.disconnected_exception") + getString(e));
+    }
+  
+    public DisconnectedMenu() {
+      super();
+      text.setText(Localization.get("menu.disconnected.disconnected"));
+    }
+    
+  }
 }

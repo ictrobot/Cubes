@@ -3,6 +3,7 @@ package ethanjones.cubes.networking.client;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.system.CubesException;
+import ethanjones.cubes.graphics.menus.ConnectionFailedMenu.DisconnectedMenu;
 import ethanjones.cubes.networking.Networking;
 import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.networking.packet.PacketDirection;
@@ -42,6 +43,7 @@ public class ClientNetworking extends Networking {
   private final ClientNetworkingParameter clientNetworkingParameter;
   private SocketMonitor socketMonitor;
   private Socket socket;
+  private Exception exception;
   
   private int tickCount;
   public double ping = -1;
@@ -85,7 +87,7 @@ public class ClientNetworking extends Networking {
   @Override
   public synchronized void update() {
     if (getNetworkingState() != NetworkingState.Running) {
-      Adapter.gotoMainMenu();
+      Adapter.gotoMenu(exception != null ? new DisconnectedMenu(exception) : new DisconnectedMenu());
     }
     tickCount++;
     if (tickCount % PING_TICKS == 0) {
@@ -119,6 +121,7 @@ public class ClientNetworking extends Networking {
   @Override
   public synchronized void disconnected(SocketMonitor socketMonitor, Exception e) {
     if (getNetworkingState() == NetworkingState.Stopping) return;
+    this.exception = e;
     Log.info("Disconnected from " + socketMonitor.getSocket().getRemoteAddress(), e);
     stop();
   }

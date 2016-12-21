@@ -163,18 +163,23 @@ public class Adapter {
     }
   }
 
+  public static void gotoMainMenu() {
+    gotoMenu(new MainMenu());
+  }
+  
+  
   /**
    * Will exit if server
    */
-  public static void gotoMainMenu() {
+  public static void gotoMenu(final Menu menu) {
     if (isDedicatedServer()) quit();
-    if (adapter.getMenu() instanceof RunnableMenu || adapter.getMenu() instanceof MainMenu) return;
-
+    if (menu == null || adapter.getMenu() instanceof RunnableMenu || menu.getClass().isInstance(adapter.getMenu())) return;
+  
     adapter.setMenu(new RunnableMenu(new Runnable() {
       @Override
       public void run() {
         if (adapter.getClient() == null && adapter.getServer() == null) {
-          adapter.setMenu(new MainMenu());
+          adapter.setMenu(menu);
         }
       }
     }));
