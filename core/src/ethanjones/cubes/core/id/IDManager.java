@@ -259,6 +259,11 @@ public class IDManager {
     if (i <= 0 || i >= integerToBlock.length) return null;
     return integerToBlock[i];
   }
+  
+  public static boolean validBlock(int i) {
+    i &= 0xFFFFF;
+    return (i == 0) || (i > 0 && i < integerToBlock.length && integerToBlock[i] != null);
+  }
 
   public static Item toItem(int i) {
     if (i <= 0 || i >= integerToItem.length) return null;

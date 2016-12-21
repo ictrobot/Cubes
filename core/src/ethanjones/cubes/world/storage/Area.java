@@ -5,6 +5,7 @@ import ethanjones.cubes.block.data.BlockData;
 import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
 import ethanjones.cubes.core.id.IDManager;
 import ethanjones.cubes.core.id.TransparencyManager;
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.Executor;
 import ethanjones.cubes.core.util.Lock;
@@ -931,12 +932,21 @@ public class Area implements Lock.HasLock {
     }
 
     int counter = 0;
+    boolean invalidBlocks = false;
     while (counter < (SIZE_BLOCKS_CUBED * height)) {
       int a = dataInputStream.readInt();
       if (a >= 0) {
+        if (!IDManager.validBlock(a)) {
+          invalidBlocks = true;
+          a = 0;
+        }
         blocks[counter++] = a;
       } else {
         int block = dataInputStream.readInt();
+        if (!IDManager.validBlock(block)) {
+          invalidBlocks = true;
+          block = 0;
+        }
         for (int i = 0; i < -a; i++) {
           blocks[counter++] = block;
         }
@@ -961,6 +971,11 @@ public class Area implements Lock.HasLock {
       if (data == null) continue;
       data.read(dataGroup);
       blockDataList.add(data);
+    }
+    
+    if (invalidBlocks) {
+      Log.warning("Invalid blocks in " + toString());
+      updateAll();
     }
 
     saveModCount();
