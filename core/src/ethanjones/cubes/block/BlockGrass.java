@@ -59,14 +59,12 @@ public class BlockGrass extends Block {
   
   private void checkDirt(World world, Area area, int x, int y, int z) {
     if ((x < 0 || x >= Area.SIZE_BLOCKS) || (z < 0 || z >= Area.SIZE_BLOCKS)) {
-      x += area.minBlockX;
-      z += area.minBlockZ;
-      Area a = world.getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
+      Area a = world.getArea(CoordinateConverter.area(x + area.minBlockX), CoordinateConverter.area(z + area.minBlockZ));
       if (a == null) return;
       if (Lock.tryToLock(true, a)) {
-        int bX = x - a.minBlockX;
-        int bZ = z - a.minBlockZ;
-        if (a.getBlock(bX, y, bZ) == Blocks.dirt && validGrass(world, area, bX, y, bZ, false)) {
+        int bX = (x + area.minBlockX) - a.minBlockX;
+        int bZ = (z + area.minBlockZ) - a.minBlockZ;
+        if (a.getBlock(bX, y, bZ) == Blocks.dirt && validGrass(world, a, bX, y, bZ, false)) {
           a.setBlock(Blocks.grass, bX, y, bZ, 0);
         }
         a.lock.writeUnlock();
