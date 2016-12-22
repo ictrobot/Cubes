@@ -4,6 +4,7 @@ import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.StopLoopException;
+import ethanjones.cubes.graphics.menus.ClientErrorMenu.FailedStartingServerMenu;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.server.ServerNetworkingParameter;
 import ethanjones.cubes.side.server.integrated.ServerOnlyServer;
@@ -50,7 +51,7 @@ public class ServerRunningMenu extends InfoMenu {
       Adapter.setClient(null);
     } catch (Exception e) {
       Log.error("Failed to start server", e);
-      Adapter.setMenu(new ConnectionFailedMenu(e));
+      Adapter.setMenu(new FailedStartingServerMenu(e));
       Adapter.setClient(null);
       Adapter.setServer(null);
       return;

@@ -3,6 +3,7 @@ package ethanjones.cubes.graphics.menus;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Adapter;
+import ethanjones.cubes.graphics.menus.ClientErrorMenu.ConnectionFailedMenu;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.client.ClientNetworkingParameter;
 import ethanjones.cubes.side.client.CubesClient;

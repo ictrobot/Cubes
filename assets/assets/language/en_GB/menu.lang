@@ -37,11 +37,17 @@ menu.server.start=Start
 menu.server.running=Running
 menu.server.stop=Stop
 
-menu.connection_failed.failed=Failed to connect
-menu.connection_failed.failed_exception=Failed to connect:
+menu.connection_failed.message=Failed to connect
+menu.connection_failed.exception_message=Failed to connect:
 
-menu.disconnected.disconnected=Disconnected
-menu.disconnected.disconnected_exception=Disconnected:
+menu.disconnected.message=Disconnected
+menu.disconnected.exception_message=Disconnected:
+
+menu.unresponsive_integrated_server.message=Internal Server is not responding
+
+menu.failed_starting_singleplayer.exception_message=Failed to start singleplayer
+
+menu.failed_starting_server.exception_message=Failed to start server
 
 menu.settings.title=Settings
 menu.settings.open_group=Open

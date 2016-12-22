@@ -3,7 +3,7 @@ package ethanjones.cubes.networking.client;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.system.CubesException;
-import ethanjones.cubes.graphics.menus.ConnectionFailedMenu.DisconnectedMenu;
+import ethanjones.cubes.graphics.menus.ClientErrorMenu.DisconnectedMenu;
 import ethanjones.cubes.networking.Networking;
 import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.networking.packet.PacketDirection;

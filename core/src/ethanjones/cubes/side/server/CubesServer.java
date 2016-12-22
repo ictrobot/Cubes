@@ -25,10 +25,12 @@ import ethanjones.cubes.world.server.WorldServer;
 import com.badlogic.gdx.math.Vector3;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 public abstract class CubesServer extends Cubes implements TimeHandler {
 
   private static final int SAVE_TIME = 60000;
+  private static final AtomicLong lastUpdateTime = new AtomicLong(System.currentTimeMillis());
   private final Save save;
 
   public CubesServer(Save save) {
@@ -95,6 +97,7 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
   
   @Override
   protected void update() {
+    lastUpdateTime.set(System.currentTimeMillis());
     super.update();
     Compatibility.get().update();
   }
@@ -164,4 +167,8 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
   public abstract void addClient(ClientIdentifier clientIdentifier);
 
   public abstract void removeClient(SocketMonitor socketMonitor);
+  
+  public static long lastUpdateTime() {
+    return lastUpdateTime.get();
+  }
 }

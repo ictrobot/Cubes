@@ -3,6 +3,7 @@ package ethanjones.cubes.graphics.menus;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Adapter;
+import ethanjones.cubes.graphics.menus.ClientErrorMenu.FailedStartingSingleplayerMenu;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.server.integrated.SingleplayerServer;
@@ -34,7 +35,7 @@ public class SingleplayerLoadingMenu extends InfoMenu {
       }
     } catch (Exception e) {
       Log.error("Failed to start singleplayer", e);
-      Adapter.setMenu(new ConnectionFailedMenu(e));
+      Adapter.setMenu(new FailedStartingSingleplayerMenu(e));
       Adapter.setClient(null);
       Adapter.setServer(null);
     }

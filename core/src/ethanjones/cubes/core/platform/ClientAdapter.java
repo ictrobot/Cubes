@@ -8,6 +8,7 @@ import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.graphics.Graphics;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menu.MenuManager;
+import ethanjones.cubes.graphics.menus.ClientErrorMenu.UnresponsiveIntegratedServerMenu;
 import ethanjones.cubes.graphics.menus.MainMenu;
 import ethanjones.cubes.input.InputChain;
 import ethanjones.cubes.side.client.CubesClient;
@@ -124,6 +125,9 @@ public class ClientAdapter implements AdapterInterface {
         Gdx.input.setCursorCatched(false);
       } else {
         Gdx.input.setCursorCatched(true);
+      }
+      if (cubesClient != null && cubesServer != null && cubesServer.isRunning() && CubesServer.lastUpdateTime() + 2500 < System.currentTimeMillis()) {
+        Adapter.gotoMenu(new UnresponsiveIntegratedServerMenu());
       }
     } catch (StopLoopException e) {
       Log.debug(e);
