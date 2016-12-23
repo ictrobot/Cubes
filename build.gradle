@@ -60,7 +60,7 @@ allprojects {
         buildProperties = getRootProject().buildProperties
         build = getRootProject().build
         localProperties = getRootProject().localProperties
-        isRelease = true
+        isRelease = false
     }
 
     repositories {
