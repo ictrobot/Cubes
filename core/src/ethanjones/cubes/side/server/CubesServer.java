@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public abstract class CubesServer extends Cubes implements TimeHandler {
 
   private static final int SAVE_TIME = 60000;
-  private static final AtomicLong lastUpdateTime = new AtomicLong(System.currentTimeMillis());
+  private static final AtomicLong lastUpdateTime = new AtomicLong();
   private final Save save;
 
   public CubesServer(Save save) {
@@ -52,6 +52,7 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
 
     ModManager.postModEvent(new StartingServerEvent());
 
+    lastUpdateTime.set(System.currentTimeMillis());
     state.setup();
   }
   

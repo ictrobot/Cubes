@@ -149,8 +149,8 @@ public class Player extends LivingEntity implements CommandSender, RenderablePro
 
   public void read(DataGroup dataGroup) {
     super.read(dataGroup);
-    if (!username.equals(dataGroup.getString("username"))) {
-      throw new IllegalStateException("Player username does not match");
+    if (!uuid.equals(dataGroup.get("uuid"))) {
+      throw new IllegalStateException("Player uuid does not match");
     }
     inventory.read(dataGroup.getGroup("inventory"));
   }
