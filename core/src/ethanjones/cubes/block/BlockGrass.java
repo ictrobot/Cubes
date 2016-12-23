@@ -4,7 +4,6 @@ import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.core.util.Lock;
 import ethanjones.cubes.graphics.world.BlockTextureHandler;
 import ethanjones.cubes.item.ItemTool.ToolType;
-import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.storage.Area;
 
@@ -59,7 +58,7 @@ public class BlockGrass extends Block {
   
   private void checkDirt(World world, Area area, int x, int y, int z) {
     if ((x < 0 || x >= Area.SIZE_BLOCKS) || (z < 0 || z >= Area.SIZE_BLOCKS)) {
-      Area a = world.getArea(CoordinateConverter.area(x + area.minBlockX), CoordinateConverter.area(z + area.minBlockZ));
+      Area a = area.neighbourBlockCoordinates(x + area.minBlockX, z + area.minBlockZ);
       if (a == null) return;
       if (Lock.tryToLock(true, a)) {
         int bX = (x + area.minBlockX) - a.minBlockX;
