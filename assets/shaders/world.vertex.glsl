@@ -29,6 +29,11 @@ uniform float u_lightoverride;
 attribute float a_voxellight;
 varying float v_voxellight;
 
+#ifdef fogflag
+uniform vec3 u_cameraposition;
+varying float v_distance;
+#endif
+
 void main() {
 	v_diffuseUV = u_diffuseUVTransform.xy + a_texCoord0 * u_diffuseUVTransform.zw;
 
@@ -71,4 +76,8 @@ void main() {
   float float_voxellight = (1.0 - float_sunlight) * (float(int_blocklight) / 15.0);
   float float_light = float_sunlight + float_voxellight;
   v_voxellight = float_light * (1.0 - (float(int_side) * 0.04));
+  
+  #ifdef fogflag
+  v_distance = length(u_cameraposition.xyz - pos.xyz);
+  #endif
 }

@@ -5,6 +5,7 @@ setting.graphics=Graphics
 setting.graphics.viewDistance=Rendering Distance
 setting.graphics.fieldOfView=FOV
 setting.graphics.vsync=VSync
+setting.graphics.fog=Fog
 
 setting.input=Input
 setting.input.mouseSensitivity=Input Sensitivity
