@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
+import com.badlogic.gdx.math.MathUtils;
 
 public class WorldShaderProvider implements ShaderProvider {
   
@@ -127,8 +128,8 @@ public class WorldShaderProvider implements ShaderProvider {
     public void begin(Camera camera, RenderContext context) {
       super.begin(camera, context);
       WorldClient worldClient = ((WorldClient) Cubes.getClient().world);
-      float distance = (Settings.getIntegerSettingValue(Settings.GRAPHICS_VIEW_DISTANCE) - 1) * Area.SIZE_BLOCKS;
-      float fogDistance = Math.min(distance * 0.1f, 16f);
+      float distance = Settings.getIntegerSettingValue(Settings.GRAPHICS_VIEW_DISTANCE) * Area.SIZE_BLOCKS;
+      float fogDistance = MathUtils.clamp(distance * 0.1f, 8f, 16f);
     
       program.setUniformf(u_cameraposition, Cubes.getClient().player.position);
       program.setUniformf(u_skycolor, worldClient.getSkyColour());
