@@ -6,11 +6,9 @@ import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.graphics.world.AreaMesh;
 import ethanjones.cubes.graphics.world.BlockTextureHandler;
 import ethanjones.cubes.graphics.world.FaceVertices;
+import ethanjones.cubes.graphics.world.RenderingSettings;
 import ethanjones.cubes.item.Item;
 import ethanjones.cubes.item.ItemBlock;
-import ethanjones.cubes.side.common.Cubes;
-import ethanjones.cubes.world.CoordinateConverter;
-import ethanjones.cubes.world.light.LightNode;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
@@ -109,11 +107,8 @@ public class ItemEntityRenderer implements RenderableProvider, Disposable {
     renderable.meshPart.size = item instanceof ItemBlock ? 6 * 6 : 6 * 2;
     renderable.meshPart.mesh = mesh;
     renderable.material = Assets.packedTextureSheet.getMaterial();
-
-    LightNode lightNode = new LightNode(CoordinateConverter.block(itemEntity.position.x), CoordinateConverter.block(itemEntity.position.y), CoordinateConverter.block(itemEntity.position.z), 0);
-    lightNode.l = Cubes.getClient().world.getLightRaw(lightNode.x, lightNode.y, lightNode.z);
-
-    renderable.userData = lightNode;
+    
+    renderable.userData = new RenderingSettings().setLightOverride(itemEntity.position);
     renderables.add(renderable);
   }
 

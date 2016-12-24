@@ -61,6 +61,7 @@ public class SunRenderer {
     sun.meshPart.size = 6;
     sun.meshPart.mesh = mesh;
     sun.material = sunMaterial;
+    sun.userData = new RenderingSettings().setFogEnabled(false);
     modelBatch.render(sun);
 
     Renderable moon = new Renderable().set(sun);

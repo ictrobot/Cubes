@@ -3,7 +3,6 @@ package ethanjones.cubes.graphics.world;
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.client.WorldClient;
-import ethanjones.cubes.world.light.LightNode;
 import ethanjones.cubes.world.storage.Area;
 
 import com.badlogic.gdx.Gdx;
@@ -25,6 +24,7 @@ public class WorldShaderProvider implements ShaderProvider {
   @Override
   public Shader getShader (Renderable renderable) {
     boolean fogFlag = Settings.getBooleanSettingValue(Settings.GRAPHICS_FOG);
+    if (renderable.userData instanceof RenderingSettings) fogFlag &= ((RenderingSettings) renderable.userData).fogEnabled;
     if (fogFlag) {
       if (fogShader == null) {
         fogShader = new CubesFogShader(renderable);
@@ -75,8 +75,8 @@ public class WorldShaderProvider implements ShaderProvider {
   
     @Override
     public void render(Renderable renderable) {
-      if (renderable.userData instanceof LightNode) {
-        program.setUniformf(u_lightoverride, ((LightNode) renderable.userData).l);
+      if (renderable.userData instanceof RenderingSettings && ((RenderingSettings) renderable.userData).lightOverride != -1) {
+        program.setUniformf(u_lightoverride, ((RenderingSettings) renderable.userData).lightOverride);
         lightoverride = true;
       } else if (lightoverride) {
         program.setUniformf(u_lightoverride, -1f);

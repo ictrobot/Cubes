@@ -4,6 +4,7 @@ import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.graphics.world.AreaMesh;
 import ethanjones.cubes.graphics.world.FaceVertices;
+import ethanjones.cubes.graphics.world.RenderingSettings;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.light.LightNode;
@@ -66,8 +67,8 @@ public class PlayerRenderer {
 
     LightNode lightNode = new LightNode(CoordinateConverter.block(player.position.x), CoordinateConverter.block(player.position.y), CoordinateConverter.block(player.position.z), 0);
     lightNode.l = Cubes.getClient().world.getLightRaw(lightNode.x, lightNode.y, lightNode.z);
-
-    renderable.userData = lightNode;
+  
+    renderable.userData = new RenderingSettings().setLightOverride(player.position);
     renderables.add(renderable);
   }
 }
