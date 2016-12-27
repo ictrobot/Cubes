@@ -1,9 +1,14 @@
 package ethanjones.cubes.side.server.dedicated;
 
+import ethanjones.cubes.core.localization.Localization;
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.platform.ServerCmdLineOptions;
+import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.server.ClientIdentifier;
+import ethanjones.cubes.networking.server.ServerNetworking;
 import ethanjones.cubes.networking.socket.SocketMonitor;
+import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.side.server.CubesServer;
 import ethanjones.cubes.world.save.Save;
 import ethanjones.cubes.world.save.SaveOptions;
@@ -39,6 +44,8 @@ public class DedicatedServer extends CubesServer {
     super.create();
     consoleCommandSender = new ConsoleCommandSender();
     
+    Log.info(Localization.get("server.server_loaded"));
+    Log.info(Localization.get("server.server_port", ((ServerNetworking) NetworkingManager.getNetworking(Side.Server)).getPort()));
     loop();
   }
   

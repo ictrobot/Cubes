@@ -1,11 +1,8 @@
 package ethanjones.cubes.core.platform;
 
-import ethanjones.cubes.core.localization.Localization;
-import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.networking.NetworkingManager;
-import ethanjones.cubes.networking.server.ServerNetworking;
 import ethanjones.cubes.networking.server.ServerNetworkingParameter;
 import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.common.Cubes;
@@ -40,8 +37,6 @@ public class ServerAdapter implements AdapterInterface {
       }
       cubesServer = new DedicatedServer(options);
       cubesServer.create();
-      Log.info(Localization.get("server.server_loaded"));
-      Log.info(Localization.get("server.server_port", ((ServerNetworking) NetworkingManager.getNetworking(Side.Server)).getPort()));
     } catch (Exception e) {
       Debug.crash(e);
     }
