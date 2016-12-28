@@ -109,4 +109,8 @@ public class Block {
   public void randomTick(World world, Area area, int x, int y, int z, int meta) {
 
   }
+  
+  public BlockRenderType renderType(int meta) {
+    return BlockRenderType.DEFAULT;
+  }
 }

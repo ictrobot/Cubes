@@ -23,7 +23,7 @@ public class BlockTextureHandler {
   }
 
   public TextureRegion getSide(BlockFace blockFace) {
-    return getSide(blockFace.index);
+    return getSide(blockFace == null ? 0 : blockFace.index);
   }
 
   public TextureRegion getSide(int direction) {
