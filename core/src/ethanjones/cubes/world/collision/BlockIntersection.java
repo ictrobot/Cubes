@@ -11,10 +11,14 @@ public class BlockIntersection {
 
   private final BlockReference blockReference;
   private final BlockFace blockFace;
-
-  public BlockIntersection(BlockReference blockReference, BlockFace blockFace) {
+  private final Block block;
+  private final int blockMeta;
+  
+  private BlockIntersection(BlockReference blockReference, BlockFace blockFace, Block block, int blockMeta) {
     this.blockReference = blockReference;
     this.blockFace = blockFace;
+    this.block = block;
+    this.blockMeta = blockMeta;
   }
 
   public BlockReference getBlockReference() {
@@ -24,7 +28,15 @@ public class BlockIntersection {
   public BlockFace getBlockFace() {
     return blockFace;
   }
-
+  
+  public Block getBlock() {
+    return block;
+  }
+  
+  public int getBlockMeta() {
+    return blockMeta;
+  }
+  
   public static BlockIntersection getBlockIntersection(Vector3 origin, Vector3 direction, World world) {
     return intersection(origin, direction, 6, world);
   }
@@ -121,7 +133,8 @@ public class BlockIntersection {
             if (stepZ > 0) blockFace = BlockFace.negZ;
             if (stepZ < 0) blockFace = BlockFace.posZ;
           }
-          return new BlockIntersection(blockReference, blockFace);
+          int blockMeta = world.getMeta(blockReference.blockX, blockReference.blockY, blockReference.blockZ);
+          return new BlockIntersection(blockReference, blockFace, block, blockMeta);
         }
       }
     } while (rayLength < radius);
