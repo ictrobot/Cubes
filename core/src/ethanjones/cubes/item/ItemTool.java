@@ -2,7 +2,6 @@ package ethanjones.cubes.item;
 
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.event.entity.living.player.PlayerBreakBlockEvent;
-import ethanjones.cubes.entity.ItemEntity;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.common.Side;
@@ -67,13 +66,7 @@ public class ItemTool extends Item {
               if (block.canMine(itemStack)) {
                 PlayerBreakBlockEvent event = new PlayerBreakBlockEvent(player, block, meta, blockIntersection, blockReference);
                 if (event.post().isCanceled()) return;
-                ItemStack[] drops = block.drops(Cubes.getServer().world, blockReference.blockX, blockReference.blockY, blockReference.blockZ, meta);
-                for (ItemStack drop : drops) {
-                  ItemEntity itemEntity = new ItemEntity();
-                  itemEntity.itemStack = drop;
-                  itemEntity.position.set(blockReference.blockX + 0.5f, blockReference.blockY, blockReference.blockZ + 0.5f);
-                  Cubes.getServer().world.addEntity(itemEntity);
-                }
+                block.dropItems(Cubes.getServer().world, blockReference.blockX, blockReference.blockY, blockReference.blockZ, meta);
               }
             }
           }

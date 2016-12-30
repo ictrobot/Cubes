@@ -58,7 +58,7 @@ public class BlockGrass extends Block {
   }
   
   private void checkDirt(World world, Area area, int x, int y, int z) {
-    if ((x < 0 || x >= Area.SIZE_BLOCKS) || (z < 0 || z >= Area.SIZE_BLOCKS)) {
+    if (x < 0 || x >= Area.SIZE_BLOCKS || z < 0 || z >= Area.SIZE_BLOCKS) {
       Area a = area.neighbourBlockCoordinates(x + area.minBlockX, z + area.minBlockZ);
       if (a == null) return;
       if (Lock.tryToLock(true, a)) {

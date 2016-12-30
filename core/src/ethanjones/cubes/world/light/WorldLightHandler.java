@@ -3,6 +3,7 @@ package ethanjones.cubes.world.light;
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.event.EventHandler;
 import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
+import ethanjones.cubes.core.id.TransparencyManager;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.performance.Performance;
 import ethanjones.cubes.core.performance.PerformanceTags;
@@ -19,7 +20,7 @@ public class WorldLightHandler {
     int oldMeta = event.getOldMeta();
     int newMeta = event.getNewMeta();
 
-    if ((oldBlock == null && newBlock == null) || (oldBlock != null && newBlock != null && oldBlock.getLightLevel(oldMeta) == newBlock.getLightLevel(newMeta) && oldBlock.isTransparent(oldMeta) == newBlock.isTransparent(newMeta))) {
+    if ((oldBlock == null ? 0 : oldBlock.getLightLevel(oldMeta)) == (newBlock == null ? 0 : newBlock.getLightLevel(newMeta)) && TransparencyManager.isTransparent(oldBlock, oldMeta) == TransparencyManager.isTransparent(newBlock, newMeta)) {
       return;
     }
 

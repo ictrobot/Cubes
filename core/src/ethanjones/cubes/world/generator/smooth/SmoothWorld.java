@@ -86,7 +86,7 @@ public class SmoothWorld extends TerrainGenerator {
     int z = aZ + area.minBlockZ;
     int ground = getSurfaceHeight(x, z);
     if (area.getBlock(aX, ground, aZ) == Blocks.grass) {
-      set(area, Blocks.dirt, aX, ground, aZ);
+      set(area, Blocks.dirt, aX, ground, aZ, 0);
     } else {
       return;
     }
@@ -96,8 +96,8 @@ public class SmoothWorld extends TerrainGenerator {
 
     new TreeGenerator() {
       @Override
-      protected void setBlock(Area area, Block block, int x, int y, int z) {
-        setVisibleNeighbour(area, block, x, y, z);
+      protected void setBlock(Area area, Block block, int x, int y, int z, int meta) {
+        setVisibleNeighbour(area, block, x, y, z, meta);
       }
     }.generateTree(x, y, z, h, area);
   }

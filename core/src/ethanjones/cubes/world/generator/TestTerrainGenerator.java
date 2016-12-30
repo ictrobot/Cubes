@@ -15,15 +15,15 @@ public class TestTerrainGenerator extends TerrainGenerator {
         for (int z = 0; z < Area.SIZE_BLOCKS; z++) {
           if (y % 2 == 0) {
             if (x % 2 == 0) {
-              if (z % 2 == 0) set(area, Blocks.grass, x, y, z);
+              if (z % 2 == 0) set(area, Blocks.grass, x, y, z, 0);
             } else {
-              if (z % 2 == 1) set(area, Blocks.grass, x, y, z);
+              if (z % 2 == 1) set(area, Blocks.grass, x, y, z, 0);
             }
           } else {
             if (x % 2 == 1) {
-              if (z % 2 == 0) set(area, Blocks.grass, x, y, z);
+              if (z % 2 == 0) set(area, Blocks.grass, x, y, z, 0);
             } else {
-              if (z % 2 == 1) set(area, Blocks.grass, x, y, z);
+              if (z % 2 == 1) set(area, Blocks.grass, x, y, z, 0);
             }
           }
         }

@@ -2,12 +2,14 @@ package ethanjones.cubes.block;
 
 import ethanjones.cubes.block.data.BlockData;
 import ethanjones.cubes.core.localization.Localization;
+import ethanjones.cubes.entity.ItemEntity;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.graphics.world.BlockTextureHandler;
 import ethanjones.cubes.input.ClickType;
 import ethanjones.cubes.item.ItemBlock;
 import ethanjones.cubes.item.ItemStack;
 import ethanjones.cubes.item.ItemTool;
+import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.storage.Area;
 import ethanjones.data.DataGroup;
@@ -108,6 +110,17 @@ public class Block {
   // coordinates inside area, return new meta
   public int randomTick(World world, Area area, int x, int y, int z, int meta) {
     return meta;
+  }
+  
+  public void dropItems(World world, int x, int y, int z, int meta) {
+    if (Side.isClient()) return;
+    ItemStack[] drops = drops(world, x, y, z, meta);
+    for (ItemStack drop : drops) {
+      ItemEntity itemEntity = new ItemEntity();
+      itemEntity.itemStack = drop;
+      itemEntity.position.set(x + 0.5f, y, z + 0.5f);
+      world.addEntity(itemEntity);
+    }
   }
   
   public ItemStack[] drops(World world, int x, int y, int z, int meta) {
