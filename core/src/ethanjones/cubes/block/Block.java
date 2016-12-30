@@ -53,7 +53,7 @@ public class Block {
   }
 
   public boolean canBeTransparent() {
-    return false; // should be true if it is possible for isTransparent to return true
+    return alwaysTransparent(); // should be true if it is possible for isTransparent to return true
   }
 
   public boolean alwaysTransparent() {
@@ -105,9 +105,13 @@ public class Block {
     return false; // true if in any state the block has blockdata
   }
 
-  // coordinates inside area
-  public void randomTick(World world, Area area, int x, int y, int z, int meta) {
-
+  // coordinates inside area, return new meta
+  public int randomTick(World world, Area area, int x, int y, int z, int meta) {
+    return meta;
+  }
+  
+  public ItemStack[] drops(World world, int x, int y, int z, int meta) {
+    return new ItemStack[]{new ItemStack(getItemBlock(), 1, meta)};
   }
   
   public BlockRenderType renderType(int meta) {

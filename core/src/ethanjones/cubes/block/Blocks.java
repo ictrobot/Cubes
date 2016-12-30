@@ -15,7 +15,7 @@ public class Blocks {
   public static Block grass;
   @GetBlock("core:log")
   public static Block log;
-  @GetBlock("core:leaves")
+  
   public static Block leaves;
   @GetBlock("core:glow")
   public static Block glow;
@@ -23,11 +23,17 @@ public class Blocks {
   public static Block glass;
 
   public static Block chest;
+  
+  public static Block sapling;
 
   public static void init() {
     grass = new BlockGrass();
     IDManager.register(grass);
+    leaves = new BlockLeaves();
+    IDManager.register(leaves);
     chest = new BlockChest();
     IDManager.register(chest);
+    sapling = new BlockSapling();
+    IDManager.register(sapling);
   }
 }

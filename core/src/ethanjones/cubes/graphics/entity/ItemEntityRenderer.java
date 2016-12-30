@@ -1,5 +1,6 @@
 package ethanjones.cubes.graphics.entity;
 
+import ethanjones.cubes.block.BlockRenderType;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.entity.ItemEntity;
 import ethanjones.cubes.graphics.assets.Assets;
@@ -71,7 +72,7 @@ public class ItemEntityRenderer implements RenderableProvider, Disposable {
     if (mesh == null) {
       item = itemEntity.itemStack.item;
       meta = itemEntity.itemStack.meta;
-      if (item instanceof ItemBlock) {
+      if (item instanceof ItemBlock && ((ItemBlock) item).block.renderType(meta) == BlockRenderType.DEFAULT) {
         mesh = new Mesh(false, 4 * 6, 6 * 6, AreaMesh.vertexAttributes);
         mesh.setIndices(blockIndices);
         int vertexOffset = 0;

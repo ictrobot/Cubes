@@ -19,7 +19,7 @@ public class WorldLightHandler {
     int oldMeta = event.getOldMeta();
     int newMeta = event.getNewMeta();
 
-    if (oldBlock != null && newBlock != null && oldBlock.getLightLevel(oldMeta) == 0 && newBlock.getLightLevel(newMeta) == 0 && !oldBlock.isTransparent(oldMeta) && !newBlock.isTransparent(newMeta)) {
+    if ((oldBlock == null && newBlock == null) || (oldBlock != null && newBlock != null && oldBlock.getLightLevel(oldMeta) == newBlock.getLightLevel(newMeta) && oldBlock.isTransparent(oldMeta) == newBlock.isTransparent(newMeta))) {
       return;
     }
 

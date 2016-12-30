@@ -67,10 +67,13 @@ public class ItemTool extends Item {
               if (block.canMine(itemStack)) {
                 PlayerBreakBlockEvent event = new PlayerBreakBlockEvent(player, block, meta, blockIntersection, blockReference);
                 if (event.post().isCanceled()) return;
-                ItemEntity itemEntity = new ItemEntity();
-                itemEntity.itemStack = new ItemStack(block.getItemBlock(), 1, event.getMeta());
-                itemEntity.position.set(blockReference.blockX + 0.5f, blockReference.blockY, blockReference.blockZ + 0.5f);
-                Cubes.getServer().world.addEntity(itemEntity);
+                ItemStack[] drops = block.drops(Cubes.getServer().world, blockReference.blockX, blockReference.blockY, blockReference.blockZ, meta);
+                for (ItemStack drop : drops) {
+                  ItemEntity itemEntity = new ItemEntity();
+                  itemEntity.itemStack = drop;
+                  itemEntity.position.set(blockReference.blockX + 0.5f, blockReference.blockY, blockReference.blockZ + 0.5f);
+                  Cubes.getServer().world.addEntity(itemEntity);
+                }
               }
             }
           }

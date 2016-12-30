@@ -1,5 +1,6 @@
 package ethanjones.cubes.entity;
 
+import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.core.util.VectorUtil;
 import ethanjones.cubes.graphics.entity.ItemEntityRenderer;
 import ethanjones.cubes.item.ItemStack;
@@ -7,6 +8,7 @@ import ethanjones.cubes.item.inv.InventoryHelper;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.common.Side;
+import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.data.DataGroup;
 
 import com.badlogic.gdx.graphics.g3d.Renderable;
@@ -61,7 +63,15 @@ public class ItemEntity extends Entity implements RenderableProvider {
   public boolean update() {
     super.update();
     if (Side.isServer()) {
-      if (age >= (600000 / Cubes.tickMS)) return true;
+      if (age >= (600000 / Cubes.tickMS)) {
+        if (itemStack.item == Blocks.sapling.getItemBlock() && itemStack.count == 1) {
+          int x = CoordinateConverter.block(position.x), y = CoordinateConverter.block(position.y), z = CoordinateConverter.block(position.z);
+          if (Cubes.getServer().world.getBlock(x, y - 1, z) == Blocks.grass) {
+            Cubes.getServer().world.setBlock(Blocks.sapling, x, y, z);
+          }
+        }
+        return true;
+      }
       if (age >= 0) {
         for (ClientIdentifier clientIdentifier : Cubes.getServer().getAllClients()) {
           float distance2 = VectorUtil.distance2(this.position, clientIdentifier.getPlayer().position.cpy().sub(0, clientIdentifier.getPlayer().height, 0));

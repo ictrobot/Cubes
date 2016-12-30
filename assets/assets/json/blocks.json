@@ -53,15 +53,6 @@
     }
   },
   {
-    "id": "core:leaves",
-    "transparent": true,
-    "mining": {
-      "speed": 0.25,
-      "tool": "none",
-      "other": true
-    }
-  },
-  {
     "id": "core:planks",
     "mining": {
       "speed": 3,

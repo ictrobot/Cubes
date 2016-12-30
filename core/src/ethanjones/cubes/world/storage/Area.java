@@ -331,7 +331,7 @@ public class Area implements Lock.HasLock {
 
     Block old = IDManager.toBlock(b & 0xFFFFF);
 
-    if (old != null && old.blockData()) {
+    if (old != null && old.blockData() && old != block) {
       removeBlockData(x, y, z);
     }
     if (block != null && block.blockData()) {
@@ -467,7 +467,8 @@ public class Area implements Lock.HasLock {
     int blockMeta = (b >> 20) & 0xFF;
     Block block = IDManager.toBlock(blockID);
     if (block == null) return;
-    block.randomTick(areaMap.world, this, x, y, z, blockMeta);
+    int newMeta = block.randomTick(areaMap.world, this, x, y, z, blockMeta);
+    if (newMeta != blockMeta) setBlock(block, x, y, z, newMeta);
   }
 
   public void doUpdatesThisArea(int x, int y, int z, int ref) {

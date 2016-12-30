@@ -26,7 +26,7 @@ public class BlockGrass extends Block {
   }
 
   @Override
-  public void randomTick(World world, Area area, int x, int y, int z, int meta) {
+  public int randomTick(World world, Area area, int x, int y, int z, int meta) {
     if (y < area.maxY) {
       if (!validGrass(world, area, x, y, z, true)) {
         area.setBlock(Blocks.dirt, x, y, z, 0);
@@ -43,6 +43,7 @@ public class BlockGrass extends Block {
       checkDirt(world, area, x - 1, i, z);
       checkDirt(world, area, x - 1, i, z - 1);
     }
+    return meta;
   }
   
   private boolean validGrass(World world, Area area, int x, int y, int z, boolean skipTimeCheck) {

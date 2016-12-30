@@ -1,5 +1,6 @@
 package ethanjones.cubes.world.generator.smooth;
 
+import ethanjones.cubes.block.Block;
 import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.world.generator.TerrainGenerator;
@@ -93,66 +94,12 @@ public class SmoothWorld extends TerrainGenerator {
     int y = ground + 1;
     int h = getTreeHeight(x, z) + 1;
 
-    //setVisibleNeighbour(area, Blocks.leaves, x - 2, y + h, z - 2);
-    setVisibleNeighbour(area, Blocks.leaves, x - 1, y + h, z - 2);
-    setVisibleNeighbour(area, Blocks.leaves, x + 0, y + h, z - 2);
-    setVisibleNeighbour(area, Blocks.leaves, x + 1, y + h, z - 2);
-    //setVisibleNeighbour(area, Blocks.leaves, x + 2, y + h, z - 2);
-
-    setVisibleNeighbour(area, Blocks.leaves, x - 2, y + h, z - 1);
-    setVisibleNeighbour(area, Blocks.leaves, x - 1, y + h, z - 1);
-    setVisibleNeighbour(area, Blocks.leaves, x + 0, y + h, z - 1);
-    setVisibleNeighbour(area, Blocks.leaves, x + 1, y + h, z - 1);
-    setVisibleNeighbour(area, Blocks.leaves, x + 2, y + h, z - 1);
-
-    setVisibleNeighbour(area, Blocks.leaves, x - 2, y + h, z + 0);
-    setVisibleNeighbour(area, Blocks.leaves, x - 1, y + h, z + 0);
-    setVisibleNeighbour(area, Blocks.leaves, x + 0, y + h, z + 0);
-    setVisibleNeighbour(area, Blocks.leaves, x + 1, y + h, z + 0);
-    setVisibleNeighbour(area, Blocks.leaves, x + 2, y + h, z + 0);
-
-    setVisibleNeighbour(area, Blocks.leaves, x - 2, y + h, z + 1);
-    setVisibleNeighbour(area, Blocks.leaves, x - 1, y + h, z + 1);
-    setVisibleNeighbour(area, Blocks.leaves, x + 0, y + h, z + 1);
-    setVisibleNeighbour(area, Blocks.leaves, x + 1, y + h, z + 1);
-    setVisibleNeighbour(area, Blocks.leaves, x + 2, y + h, z + 1);
-
-    //setVisibleNeighbour(area, Blocks.leaves, x - 2, y + h, z + 2);
-    setVisibleNeighbour(area, Blocks.leaves, x - 1, y + h, z + 2);
-    setVisibleNeighbour(area, Blocks.leaves, x + 0, y + h, z + 2);
-    setVisibleNeighbour(area, Blocks.leaves, x + 1, y + h, z + 2);
-    //setVisibleNeighbour(area, Blocks.leaves, x + 2, y + h, z + 2);
-
-    //Second layer
-
-    setVisibleNeighbour(area, Blocks.leaves, x - 2, y + h + 1, z + 0);
-    setVisibleNeighbour(area, Blocks.leaves, x - 1, y + h + 1, z + 0);
-    setVisibleNeighbour(area, Blocks.leaves, x + 0, y + h + 1, z + 0);
-    setVisibleNeighbour(area, Blocks.leaves, x + 1, y + h + 1, z + 0);
-    setVisibleNeighbour(area, Blocks.leaves, x + 2, y + h + 1, z + 0);
-
-    setVisibleNeighbour(area, Blocks.leaves, x + 0, y + h + 1, z - 2);
-    setVisibleNeighbour(area, Blocks.leaves, x + 0, y + h + 1, z - 1);
-    setVisibleNeighbour(area, Blocks.leaves, x + 0, y + h + 1, z + 0);
-    setVisibleNeighbour(area, Blocks.leaves, x + 0, y + h + 1, z + 1);
-    setVisibleNeighbour(area, Blocks.leaves, x + 0, y + h + 1, z + 2);
-
-    setVisibleNeighbour(area, Blocks.leaves, x + 1, y + h + 1, z + 1);
-    setVisibleNeighbour(area, Blocks.leaves, x + 1, y + h + 1, z - 1);
-    setVisibleNeighbour(area, Blocks.leaves, x - 1, y + h + 1, z + 1);
-    setVisibleNeighbour(area, Blocks.leaves, x - 1, y + h + 1, z - 1);
-
-    // Third layer
-
-    setVisibleNeighbour(area, Blocks.leaves, x + 0, y + h + 2, z + 0);
-    setVisibleNeighbour(area, Blocks.leaves, x + 0, y + h + 2, z + 1);
-    setVisibleNeighbour(area, Blocks.leaves, x + 0, y + h + 2, z - 1);
-    setVisibleNeighbour(area, Blocks.leaves, x + 1, y + h + 2, z + 0);
-    setVisibleNeighbour(area, Blocks.leaves, x - 1, y + h + 2, z + 0);
-
-    for (int i = 0; i < h + 2; i++) {
-      setVisibleNeighbour(area, Blocks.log, x, y + i, z);
-    }
+    new TreeGenerator() {
+      @Override
+      protected void setBlock(Area area, Block block, int x, int y, int z) {
+        setVisibleNeighbour(area, block, x, y, z);
+      }
+    }.generateTree(x, y, z, h, area);
   }
 
   public int getSurfaceHeight(int x, int z) {
