@@ -7,7 +7,6 @@ import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.entity.Entity;
 import ethanjones.cubes.graphics.world.*;
 import ethanjones.cubes.input.CameraController;
-import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.World;
@@ -37,7 +36,6 @@ public class WorldRenderer implements Disposable {
   private ArrayList<AreaRenderer> needToRefresh = new ArrayList<AreaRenderer>();
   private ArrayDeque<AreaNode> queue = new ArrayDeque<AreaNode>();
   private HashSet<AreaNode> renderedNodes = new HashSet<AreaNode>();
-  private HashSet<Area> lockedAreas = new HashSet<Area>();
 
   public WorldRenderer() {
     camera = new PerspectiveCamera(Settings.getIntegerSettingValue(Settings.GRAPHICS_FOV), Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) {
@@ -63,7 +61,6 @@ public class WorldRenderer implements Disposable {
     needToRefresh.clear();
     queue.clear();
     renderedNodes.clear();
-    lockedAreas.clear();
     
     modelBatch.begin(camera);
 
@@ -96,9 +93,6 @@ public class WorldRenderer implements Disposable {
       int traverse = 0;
 
       if (!nullArea && ySection >= 0) {
-        if (lockedAreas.add(area)) {
-          area.lock.writeLock();
-        }
         int status = area.renderStatus[ySection];
         if (status == AreaRenderStatus.UNKNOWN) status = AreaRenderStatus.update(area, ySection);
         traverse = status == AreaRenderStatus.EMPTY ? 0 : status;
@@ -143,9 +137,6 @@ public class WorldRenderer implements Disposable {
     }
     areaMap.lock.readUnlock();
     poolNode.addAll(renderedNodes);
-    for (Area lockedArea : lockedAreas) {
-      lockedArea.lock.writeUnlock();
-    }
     Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_AREAS);
 
     if (needToRefresh.size() > 0) {
