@@ -1,6 +1,7 @@
 package ethanjones.cubes.core.platform.desktop;
 
 import ethanjones.cubes.core.settings.Keybinds;
+import ethanjones.cubes.side.common.Side;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
@@ -61,7 +62,7 @@ public class ClientCompatibility extends DesktopCompatibility {
   @Override
   public void update() {
     super.update();
-    if (Keybinds.isJustPressed(Keybinds.KEYBIND_FULLSCREEN)) {
+    if (Side.isClient() && Keybinds.isJustPressed(Keybinds.KEYBIND_FULLSCREEN)) {
       if (fullscreen) {
         if (windowedMode()) fullscreen = false;
       } else {
