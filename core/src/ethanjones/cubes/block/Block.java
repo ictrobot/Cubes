@@ -1,7 +1,9 @@
 package ethanjones.cubes.block;
 
 import ethanjones.cubes.block.data.BlockData;
+import ethanjones.cubes.core.id.TransparencyManager;
 import ethanjones.cubes.core.localization.Localization;
+import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.entity.ItemEntity;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.graphics.world.BlockTextureHandler;
@@ -54,16 +56,16 @@ public class Block {
     return 0;
   }
 
-  public boolean canBeTransparent() {
-    return alwaysTransparent(); // should be true if it is possible for isTransparent to return true
-  }
-
   public boolean alwaysTransparent() {
     return false; // should be true if isTransparent always return true
   }
-
+  
+  public boolean canBeTransparent() {
+    return alwaysTransparent(); // should be true if it is possible for isTransparent to return true
+  }
+  
   public boolean isTransparent(int meta) {
-    return false;
+    return alwaysTransparent();
   }
 
   public int[] displayMetaValues() {
@@ -129,5 +131,9 @@ public class Block {
   
   public BlockRenderType renderType(int meta) {
     return BlockRenderType.DEFAULT;
+  }
+  
+  public boolean renderFace(BlockFace blockFace, int neighbourIDAndMeta) {
+    return TransparencyManager.isTransparent(neighbourIDAndMeta);
   }
 }

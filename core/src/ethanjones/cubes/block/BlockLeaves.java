@@ -26,11 +26,6 @@ public class BlockLeaves extends Block {
   }
   
   @Override
-  public boolean isTransparent(int meta) {
-    return true;
-  }
-  
-  @Override
   public int randomTick(World world, Area area, final int blockX, final int blockY, final int blockZ, int meta) {
     if (meta == 1) {
       HashSet<BlockReference> checked = new HashSet<BlockReference>();

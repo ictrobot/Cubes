@@ -35,7 +35,7 @@ public class WorldRenderer implements Disposable {
   public PerspectiveCamera camera;
   private ArrayList<AreaRenderer> needToRefresh = new ArrayList<AreaRenderer>();
   private ArrayDeque<AreaNode> queue = new ArrayDeque<AreaNode>();
-  private HashSet<AreaNode> renderedNodes = new HashSet<AreaNode>();
+  private HashSet<AreaNode> checkedNodes = new HashSet<AreaNode>();
 
   public WorldRenderer() {
     camera = new PerspectiveCamera(Settings.getIntegerSettingValue(Settings.GRAPHICS_FOV), Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) {
@@ -51,7 +51,7 @@ public class WorldRenderer implements Disposable {
 
     Cubes.getClient().inputChain.cameraController = new CameraController(camera);
   }
-
+  
   public void render() {
     WorldGraphicsPools.free();
 
@@ -60,7 +60,7 @@ public class WorldRenderer implements Disposable {
     AreaRenderer.renderedMeshesThisFrame = 0;
     needToRefresh.clear();
     queue.clear();
-    renderedNodes.clear();
+    checkedNodes.clear();
     
     modelBatch.begin(camera);
 
@@ -82,7 +82,7 @@ public class WorldRenderer implements Disposable {
       int areaX = node.areaX;
       int areaZ = node.areaZ;
 
-      if (!renderedNodes.add(node)) {
+      if (!checkedNodes.add(node)) {
         poolNode.add(node);
         continue;
       }
@@ -136,7 +136,7 @@ public class WorldRenderer implements Disposable {
       }
     }
     areaMap.lock.readUnlock();
-    poolNode.addAll(renderedNodes);
+    poolNode.addAll(checkedNodes);
     Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_AREAS);
 
     if (needToRefresh.size() > 0) {
@@ -149,7 +149,7 @@ public class WorldRenderer implements Disposable {
       }
       Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_UPDATES);
     }
-
+    
     Performance.start(PerformanceTags.CLIENT_RENDER_WORLD_ENTITY);
     float deltaTime = Gdx.graphics.getDeltaTime();
     world.lock.readLock();
@@ -159,7 +159,7 @@ public class WorldRenderer implements Disposable {
     }
     world.lock.readUnlock();
     Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_ENTITY);
-
+  
     Renderable selected = SelectedBlock.draw();
     if (selected != null) modelBatch.render(selected);
     Renderable breaking = BreakingRenderer.draw();

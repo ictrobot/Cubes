@@ -19,7 +19,7 @@ public class Blocks {
   public static Block leaves;
   @GetBlock("core:glow")
   public static Block glow;
-  @GetBlock("core:glass")
+  
   public static Block glass;
 
   public static Block chest;
@@ -31,6 +31,8 @@ public class Blocks {
     IDManager.register(grass);
     leaves = new BlockLeaves();
     IDManager.register(leaves);
+    glass = new BlockGlass();
+    IDManager.register(glass);
     chest = new BlockChest();
     IDManager.register(chest);
     sapling = new BlockSapling();

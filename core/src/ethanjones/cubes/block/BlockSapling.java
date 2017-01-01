@@ -25,11 +25,6 @@ public class BlockSapling extends Block {
   }
   
   @Override
-  public boolean isTransparent(int meta) {
-    return true;
-  }
-  
-  @Override
   public int randomTick(World world, Area area, int x, int y, int z, int meta) {
     if ((world.isDay() && area.getSunlight(x, y + 1, z) >= 10) || area.getLight(x, y + 1, z) >= 10) {
       if (meta >= 7) {

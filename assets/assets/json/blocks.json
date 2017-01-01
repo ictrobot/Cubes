@@ -68,14 +68,5 @@
       "tool": "none",
       "other": true
     }
-  },
-  {
-    "id": "core:glass",
-    "transparent": true,
-    "mining": {
-      "speed": 0.25,
-      "tool": "none",
-      "other": false
-    }
   }
 ]
