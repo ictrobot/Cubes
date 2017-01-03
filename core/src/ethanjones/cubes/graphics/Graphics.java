@@ -5,6 +5,7 @@ import ethanjones.cubes.core.id.IDManager;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.system.CubesException;
+import ethanjones.cubes.graphics.hud.inv.BlockIcons;
 import ethanjones.cubes.graphics.world.WorldGraphicsPools;
 import ethanjones.cubes.graphics.world.WorldShaderProvider;
 import ethanjones.cubes.item.Item;
@@ -45,6 +46,7 @@ public class Graphics {
       item.loadGraphics();
     }
     WorldGraphicsPools.init();
+    BlockIcons.renderIcons();
   }
 
   public static void resize() {

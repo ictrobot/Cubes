@@ -1,15 +1,19 @@
 package ethanjones.cubes.item;
 
 import ethanjones.cubes.block.Block;
+import ethanjones.cubes.block.BlockRenderType;
 import ethanjones.cubes.core.event.entity.living.player.PlayerPlaceBlockEvent;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.entity.living.player.Player;
+import ethanjones.cubes.graphics.hud.inv.BlockIcons;
 import ethanjones.cubes.input.ClickType;
 import ethanjones.cubes.item.inv.InventoryHelper;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.collision.BlockIntersection;
 import ethanjones.cubes.world.reference.BlockReference;
+
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class ItemBlock extends Item {
   public final Block block;
@@ -20,9 +24,18 @@ public class ItemBlock extends Item {
   }
 
   public void loadGraphics() {
-    this.texture = block.getTextureHandler(0).getSide(BlockFace.posX);
+    
   }
-
+  
+  @Override
+  public TextureRegion getTextureRegion() { //TODO: meta
+    if (block.renderType(0) == BlockRenderType.DEFAULT) {
+      return BlockIcons.getIcon(block.id, 0);
+    } else {
+      return block.getTextureHandler(0).getSide(BlockFace.posX);
+    }
+  }
+  
   @Override
   public String getName() {
     return block.getName();

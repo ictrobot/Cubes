@@ -21,9 +21,9 @@ public class AreaMesh implements Pool.Poolable {
   public static final int MAX_VERTICES = 65532;
   public static final int SAFE_VERTICES = MAX_VERTICES - (6 * 4 * VERTEX_SIZE);
   public static final int MAX_INDICES = MAX_VERTICES / 4 * 6;
-
-  protected static short[] indices;
-  protected static float[] vertices;
+  
+  public static short[] indices;
+  public static float[] vertices;
 
   static {
     vertices = new float[MAX_VERTICES];
