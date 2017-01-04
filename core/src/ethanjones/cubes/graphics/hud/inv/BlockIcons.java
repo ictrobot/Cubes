@@ -8,6 +8,7 @@ import ethanjones.cubes.graphics.Graphics;
 import ethanjones.cubes.graphics.world.AreaMesh;
 import ethanjones.cubes.graphics.world.BlockTextureHandler;
 import ethanjones.cubes.graphics.world.FaceVertices;
+import ethanjones.cubes.graphics.world.RenderingSettings;
 import ethanjones.cubes.world.light.BlockLight;
 
 import com.badlogic.gdx.Gdx;
@@ -61,6 +62,10 @@ public class BlockIcons {
     Pixmap pixmap = new Pixmap(size * numberBlock, size * numberBlock, Format.RGBA8888);
     int number = 0;
     HashMap<BlockID, Location> map = new HashMap<BlockID, Location>();
+  
+    final RenderingSettings renderingSettings = new RenderingSettings();
+    renderingSettings.setLightOverride(BlockLight.FULL_LIGHT);
+    renderingSettings.setFogEnabled(false);
             
     for (Block block : blocks) {
       for (int meta : block.displayMetaValues()) {
@@ -76,7 +81,9 @@ public class BlockIcons {
         Graphics.modelBatch.render(new RenderableProvider() {
           @Override
           public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
-            renderables.add(mesh.renderable(pool));
+            Renderable renderable = mesh.renderable(pool);
+            renderable.userData = renderingSettings;
+            renderables.add(renderable);
           }
         });
         Graphics.modelBatch.end();
