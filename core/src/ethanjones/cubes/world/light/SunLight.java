@@ -90,6 +90,7 @@ public class SunLight {
     if (i + 1 <= ln) { // DIFFERENT + 1 instead of + 2
       a.light[ref] = (byte) ((a.light[ref] & 0xF) | (ln << 4));
       a.updateRender(y / SIZE_BLOCKS);
+      a.modify();
       lightQueue.add(new LightNode(x, y, z, ln));
     }
   }
@@ -139,6 +140,7 @@ public class SunLight {
     if (p != 0 && p < l) {
       a.light[ref] = (byte) (a.light[ref] & 0xF); // same as ((a.light[ref] & 0xF0) | (0 << 4))
       a.updateRender(y / SIZE_BLOCKS);
+      a.modify();
       removeQueue.add(new LightNode(x, y, z, p));
     } else if (p >= l) {
       addQueue.add(new LightNode(x, y, z, p));

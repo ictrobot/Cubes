@@ -76,6 +76,7 @@ public class BlockLight {
     if ((a.light[ref] & 0xF) + 2 <= l) {
       a.light[ref] = (byte) ((a.light[ref] & 0xF0) | (l - 1));
       a.updateRender(y / SIZE_BLOCKS);
+      a.modify();
       lightQueue.add(new LightNode(x, y, z, l - 1));
     }
   }
@@ -124,6 +125,7 @@ public class BlockLight {
     if (p != 0 && p < l) {
       a.light[ref] = (byte) (a.light[ref] & 0xF0); // same as ((a.light[ref] & 0xF0) | 0)
       a.updateRender(y / SIZE_BLOCKS);
+      a.modify();
       removeQueue.add(new LightNode(x, y, z, p));
     } else if (p >= l) {
       addQueue.add(new LightNode(x, y, z, p));
