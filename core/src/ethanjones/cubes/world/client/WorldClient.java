@@ -1,8 +1,10 @@
 package ethanjones.cubes.world.client;
 
 import ethanjones.cubes.core.settings.Settings;
+import ethanjones.cubes.entity.Entity;
 import ethanjones.cubes.graphics.world.AreaRenderer;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
@@ -14,6 +16,8 @@ import com.badlogic.gdx.graphics.Color;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Map.Entry;
+import java.util.UUID;
 
 public class WorldClient extends World {
 
@@ -33,13 +37,13 @@ public class WorldClient extends World {
     removed.clear();
 
     map.lock.writeLock();
-    Iterator<Area> iterator = map.iterator();
-    while (iterator.hasNext()) {
-      Area area = iterator.next();
+    Iterator<Area> areaIterator = map.iterator();
+    while (areaIterator.hasNext()) {
+      Area area = areaIterator.next();
       int dist = Math.max(Math.abs(area.areaX - playerArea.areaX), Math.abs(area.areaZ - playerArea.areaZ));
       if (dist > renderDistance + 3) {
         removed.add(area);
-        iterator.remove();
+        areaIterator.remove();
       } else if (dist > renderDistance + 1) {
         AreaRenderer.free(area.areaRenderer);
       }
@@ -49,6 +53,21 @@ public class WorldClient extends World {
     for (Area area : removed) {
       area.unload();
     }
+    
+    lock.writeLock();
+    Iterator<Entry<UUID, Entity>> entityIterator = entities.entrySet().iterator();
+    while (entityIterator.hasNext()) {
+      Entry<UUID, Entity> entry = entityIterator.next();
+      Entity entity = entry.getValue();
+      int aX = CoordinateConverter.area(entity.position.x);
+      int aZ = CoordinateConverter.area(entity.position.z);
+      int dist = Math.max(Math.abs(aX - playerArea.areaX), Math.abs(aZ - playerArea.areaZ));
+      if (dist > renderDistance + 1) {
+        entity.dispose();
+        entityIterator.remove();
+      }
+    }
+    lock.writeUnlock();
   }
 
   public Color getSkyColour() {

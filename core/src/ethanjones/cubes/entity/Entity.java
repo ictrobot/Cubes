@@ -61,7 +61,7 @@ public class Entity implements DataParser, Disposable {
     World world = Side.getCubes().world;
     float r = 0f;
 
-    if (!motion.isZero() || !WorldGravity.onBlock(world, tmpVector, height, r)) {
+    if (!motion.isZero() || !WorldGravity.onBlock(world, position, height, r)) {
       position.add(motion.x * time, motion.y * time, motion.z * time);
       motion.y -= GRAVITY * time;
 

@@ -9,6 +9,8 @@ import ethanjones.cubes.networking.packets.PacketEntityAdd;
 import ethanjones.cubes.networking.packets.PacketEntityRemove;
 import ethanjones.cubes.networking.packets.PacketEntityUpdate;
 import ethanjones.cubes.networking.packets.PacketWorldTime;
+import ethanjones.cubes.networking.server.ClientIdentifier;
+import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
 import ethanjones.cubes.world.save.Save;
@@ -94,9 +96,13 @@ public class WorldServer extends World {
   public void syncEntity(UUID uuid) {
     Entity entity = getEntity(uuid);
     if (entity == null) return;
-    PacketEntityUpdate packet = new PacketEntityUpdate();
-    packet.data = entity.write();
-    NetworkingManager.sendPacketToAllClients(packet);
+    for (ClientIdentifier clientIdentifier : Cubes.getServer().getAllClients()) {
+      if (clientIdentifier.getPlayerManager().positionInLoadRange(entity.position)) {
+        PacketEntityUpdate packet = new PacketEntityUpdate();
+        packet.data = entity.write();
+        NetworkingManager.sendPacketToClient(packet, clientIdentifier);
+      }
+    }
   }
 
   @Override

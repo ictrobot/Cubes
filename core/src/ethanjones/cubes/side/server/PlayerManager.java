@@ -6,6 +6,7 @@ import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
 import ethanjones.cubes.core.event.world.generation.AreaLoadedEvent;
 import ethanjones.cubes.core.id.IDManager;
 import ethanjones.cubes.core.system.CubesException;
+import ethanjones.cubes.entity.Entity;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.input.ClickType;
 import ethanjones.cubes.item.ItemStack;
@@ -29,7 +30,7 @@ import ethanjones.cubes.world.thread.WorldRequestParameter;
 import com.badlogic.gdx.math.Vector3;
 
 public class PlayerManager {
-
+  
   public final ClientIdentifier client;
   public double connectionPing = -1;
   public double lastPingNano = -1;
@@ -44,37 +45,37 @@ public class PlayerManager {
     this.server = Cubes.getServer();
     this.client = clientIdentifier;
     this.playerArea = new AreaReference().setFromPositionVector3(client.getPlayer().position);
-
+    
     renderDistance = packetConnect.renderDistance;
     loadDistance = renderDistance + 1;
-
+    
     Side.getEventBus().register(this);
-
+    
     PacketConnected packetConnected = new PacketConnected();
     packetConnected.idManager = IDManager.writeMapping();
     packetConnected.player = client.getPlayer().uuid;
     packetConnected.worldTime = server.world.time;
     packetConnected.gamemode = server.world.save.getSaveOptions().worldGamemode;
     NetworkingManager.sendPacketToClient(packetConnected, client);
-
+    
     PacketPlayerInventory packetPlayerInventory = new PacketPlayerInventory();
     packetPlayerInventory.inv = clientIdentifier.getPlayer().getInventory().write();
     NetworkingManager.sendPacketToClient(packetPlayerInventory, client);
-
+    
     if (clientIdentifier.getPlayer().position.isZero()) teleportToSpawn();
     else setPosition(null, null, false);
-
+    
     PacketChat packetChat = new PacketChat(); //TODO server should log connecting and disconnecting messages
     packetChat.msg = packetConnect.username + " joined the game";
     NetworkingManager.sendPacketToAllClients(packetChat);
-
+    
     PacketOtherPlayerConnected packetOtherPlayerConnected = new PacketOtherPlayerConnected();
     packetOtherPlayerConnected.username = packetConnect.username;
     packetOtherPlayerConnected.uuid = client.getPlayer().uuid;
     packetOtherPlayerConnected.position = client.getPlayer().position;
     packetOtherPlayerConnected.angle = client.getPlayer().angle;
     NetworkingManager.sendPacketToOtherClients(packetOtherPlayerConnected, client);
-
+    
     for (ClientIdentifier c : Cubes.getServer().getAllClients()) {
       if (c == client || c == null) continue;
       PacketOtherPlayerConnected popc = new PacketOtherPlayerConnected();
@@ -84,12 +85,12 @@ public class PlayerManager {
       popc.angle = c.getPlayer().angle;
       NetworkingManager.sendPacketToClient(popc, client);
     }
-
+    
     clientIdentifier.getPlayer().addToWorld();
-
+    
     initialLoadAreas();
   }
-
+  
   private void initialLoadAreas() {
     AreaReference check = new AreaReference();
     synchronized (this) {
@@ -109,20 +110,28 @@ public class PlayerManager {
         }
       });
       initialGenerationTask = server.world.requestRegion(new WorldRegion(playerArea, loadDistance), parameter);
+      
+      for (Entity entity : Cubes.getServer().world.entities.values()) {
+        if (positionInLoadRange(entity.position) && !(entity instanceof Player)) {
+          PacketEntityAdd packet = new PacketEntityAdd();
+          packet.entity = entity;
+          NetworkingManager.sendPacketToClient(packet, client);
+        }
+      }
     }
   }
-
+  
   private void teleportToSpawn() {
     BlockReference spawn = server.world.spawnpoint;
     if (spawn.blockY < 0)
       throw new IllegalStateException("The spawn point y coordinate must be greater than 0. " + spawn.blockY + " < 0");
     setPosition(spawn.asVector3().add(0.5f, Player.PLAYER_HEIGHT, 0.5f), null, false);
   }
-
+  
   public void handlePacket(PacketPlayerMovement packetPlayerMovement) {
     setPosition(packetPlayerMovement.position, packetPlayerMovement.angle, true);
   }
-
+  
   public void setPosition(Vector3 newPosition, Vector3 newAngle, boolean clientKnows) {
     synchronized (this) {
       if (newPosition != null) {
@@ -139,10 +148,10 @@ public class PlayerManager {
           clientKnows = false;
         }
       }
-
+      
       if (newPosition == null) newPosition = client.getPlayer().position.cpy();
       if (newAngle == null) newAngle = client.getPlayer().angle.cpy();
-
+      
       AreaReference newRef = new AreaReference().setFromPositionVector3(newPosition);
       AreaReference oldRef = new AreaReference().setFromPositionVector3(client.getPlayer().position);
       if (!newRef.equals(oldRef)) {
@@ -151,26 +160,35 @@ public class PlayerManager {
         AreaReferenceSet difference = new AreaReferenceSet();
         difference.addAll(newRegion.getAreaReferences());
         difference.removeAll(oldRegion.getAreaReferences());
-
+        
         for (AreaReference areaReference : difference) {
           Area area = server.world.getArea(areaReference, false); //don't request individually, request in a batch
           if (area != null && area.features()) sendArea(area);
         }
-
+        
         server.world.requestRegion(difference, null);
+        
+        for (Entity entity : Cubes.getServer().world.entities.values()) {
+          if (!(entity instanceof Player) && newRegion.contains(entity.position) && !oldRegion.contains(entity.position)) {
+            PacketEntityAdd packet = new PacketEntityAdd();
+            packet.entity = entity;
+            NetworkingManager.sendPacketToClient(packet, client);
+          }
+        }
+        
         playerArea.setFromAreaReference(newRef);
       }
-
+      
       client.getPlayer().position.set(newPosition);
       client.getPlayer().angle.set(newAngle);
-
+      
       if (client.getPlayer().position.y < -10f) teleportToSpawn();
-
+      
       if (!clientKnows) NetworkingManager.sendPacketToClient(new PacketPlayerMovement(client.getPlayer()), client);
       NetworkingManager.sendPacketToOtherClients(new PacketOtherPlayerMovement(client.getPlayer()), client);
     }
   }
-
+  
   @EventHandler
   public void blockChanged(BlockChangedEvent event) {
     BlockReference blockReference = event.getBlockReference();
@@ -194,7 +212,7 @@ public class PlayerManager {
       NetworkingManager.sendPacketToClient(packet, client);
     }
   }
-
+  
   @EventHandler
   public void areaLoaded(AreaLoadedEvent event) {
     Area area = event.getArea();
@@ -204,13 +222,13 @@ public class PlayerManager {
     }
     sendArea(area);
   }
-
+  
   public boolean shouldSendArea(int areaX, int areaZ) {
     synchronized (this) {
       return !(Math.abs(areaX - playerArea.areaX) > loadDistance || Math.abs(areaZ - playerArea.areaZ) > loadDistance);
     }
   }
-
+  
   public void sendArea(Area area) {
     synchronized (this) {
       PacketArea packet = new PacketArea();
@@ -219,7 +237,7 @@ public class PlayerManager {
       NetworkingManager.sendPacketToClient(packet, client);
     }
   }
-
+  
   protected void update() {
     synchronized (this) {
       if (clickType != ClickType.none) {
@@ -244,26 +262,32 @@ public class PlayerManager {
         int doneFeatures = initialGenerationTask.doneFeatures();
         int totalGenerate = initialGenerationTask.totalGenerate();
         int totalFeatures = initialGenerationTask.totalFeatures();
-
+        
         PacketInitialAreasProgress packet = new PacketInitialAreasProgress();
         packet.progress = ((float) (doneGenerate + doneFeatures)) / ((float) (totalGenerate + totalGenerate));
         NetworkingManager.sendPacketToClient(packet, client);
-
+        
         if (doneFeatures == totalFeatures && doneGenerate == totalGenerate) initialGenerationTask = null;
       }
-  
+      
       if (lastPingNano != -1 && System.nanoTime() - lastPingNano >= ClientNetworking.PING_NANOSECONDS * 2) {
         NetworkingManager.getNetworking(Side.Server).disconnected(client.getSocketMonitor(), new CubesException("No ping received"));
       }
     }
   }
-
+  
   public void disconnected() {
     Cubes.getServer().world.save.writePlayer(client.getPlayer());
     Cubes.getServer().world.removeEntity(client.getPlayer().uuid);
-
+    
     PacketChat packetChat = new PacketChat();
     packetChat.msg = client.getPlayer().username + " disconnected";
     NetworkingManager.sendPacketToAllClients(packetChat);
+  }
+  
+  public boolean positionInLoadRange(Vector3 position) {
+    int areaX = CoordinateConverter.area(position.x);
+    int areaZ = CoordinateConverter.area(position.z);
+    return areaX >= (playerArea.areaX - loadDistance) && areaX <= (playerArea.areaX + loadDistance) && areaZ >= (playerArea.areaZ - loadDistance) && areaZ <= (playerArea.areaZ + loadDistance);
   }
 }

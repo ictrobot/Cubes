@@ -239,6 +239,7 @@ public abstract class World implements Disposable, HasLock {
       entity.read(data);
     } else {
       Log.warning("No entity with uuid " + uuid.toString());
+      addEntity(Entity.readType(data));
     }
     lock.writeUnlock();
   }
