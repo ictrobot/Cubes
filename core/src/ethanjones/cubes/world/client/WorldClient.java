@@ -31,6 +31,7 @@ public class WorldClient extends World {
 
   @Override
   public void tick() {
+    updateLock.writeLock();
     super.tick();
 
     playerArea.setFromPositionVector3(Cubes.getClient().player.position);
@@ -54,7 +55,7 @@ public class WorldClient extends World {
       area.unload();
     }
     
-    lock.writeLock();
+    entities.lock.writeLock();
     Iterator<Entry<UUID, Entity>> entityIterator = entities.entrySet().iterator();
     while (entityIterator.hasNext()) {
       Entry<UUID, Entity> entry = entityIterator.next();
@@ -67,7 +68,8 @@ public class WorldClient extends World {
         entityIterator.remove();
       }
     }
-    lock.writeUnlock();
+    entities.lock.writeUnlock();
+    updateLock.writeUnlock();
   }
 
   public Color getSkyColour() {

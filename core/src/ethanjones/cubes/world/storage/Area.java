@@ -75,7 +75,7 @@ public class Area implements Lock.HasLock {
   public volatile int maxY;
   public volatile int height;
   public volatile ArrayList<BlockData> blockDataList = new ArrayList<BlockData>(0);
-  private volatile int modCount = 0, saveModCount = -1;
+  private volatile int modCount = 0, saveModCount = -1, saveEntities = 0;
 
   public int[] renderStatus = new int[0];
 
@@ -841,8 +841,16 @@ public class Area implements Lock.HasLock {
   public int hashCode() {
     return hashCode;
   }
+  
+  public void writeNetworking(DataOutputStream dataOutputStream) throws IOException {
+    write(dataOutputStream, false, true, false, null);
+  }
+  
+  public void writeSave(DataOutputStream dataOutputStream, DataGroup[] entities) throws IOException {
+    write(dataOutputStream, false, false, true, entities); //TODO resize when writing
+  }
 
-  public void write(DataOutputStream dataOutputStream, boolean resize, boolean writeCoordinates) throws IOException {
+  private void write(DataOutputStream dataOutputStream, boolean resize, boolean writeCoordinates, boolean writeEntities, DataGroup[] entities) throws IOException {
     lock.readLock();
     if (writeCoordinates) {
       dataOutputStream.writeInt(areaX);
@@ -889,8 +897,19 @@ public class Area implements Lock.HasLock {
     for (int i = 0; i < (SIZE_BLOCKS_CUBED * usedHeight); i++) {
       dataOutputStream.writeByte(light[i]);
     }
-
-    dataOutputStream.writeInt(blockDataList.size());
+    
+    if (writeEntities && entities != null) {
+      dataOutputStream.writeShort(entities.length);
+      dataOutputStream.writeShort(blockDataList.size());
+  
+      for (DataGroup entity : entities) {
+        Data.output(entity, dataOutputStream);
+      }
+    } else {
+      dataOutputStream.writeShort(0);
+      dataOutputStream.writeShort(blockDataList.size());
+    }
+    
     for (BlockData blockData : blockDataList) {
       dataOutputStream.writeInt(getRef(blockData.getX(), blockData.getY(), blockData.getZ()));
       Data.output(blockData.write(), dataOutputStream);
@@ -911,13 +930,7 @@ public class Area implements Lock.HasLock {
     lock.readUnlock();
   }
 
-  public void read(DataInputStream dataInputStream, boolean readCoordinates) throws IOException {
-    if (readCoordinates) {
-      if (areaX != dataInputStream.readInt() || areaZ != dataInputStream.readInt()) {
-        throw new IllegalStateException("Area x/z does not match");
-      }
-    }
-
+  public void read(DataInputStream dataInputStream) throws IOException {
     int height = dataInputStream.readInt();
     if (height == 0) return;
 
@@ -958,7 +971,14 @@ public class Area implements Lock.HasLock {
       light[i] = dataInputStream.readByte();
     }
 
-    int dataSize = dataInputStream.readInt();
+    int entitiesSize = dataInputStream.readShort();
+    int dataSize = dataInputStream.readShort();
+    for (int i = 0; i < entitiesSize; i++) {
+      DataGroup dataGroup = (DataGroup) Data.input(dataInputStream);
+      Side.getCubes().world.addEntityFromSave(dataGroup);
+    }
+    saveEntities = entitiesSize;
+    
     blockDataList.clear();
     blockDataList.ensureCapacity(dataSize);
     for (int i = 0; i < dataSize; i++) {
@@ -982,12 +1002,12 @@ public class Area implements Lock.HasLock {
     saveModCount();
   }
 
-  public static Area read(DataInputStream dataInputStream) throws IOException {
+  public static Area readArea(DataInputStream dataInputStream) throws IOException {
     int areaX = dataInputStream.readInt();
     int areaZ = dataInputStream.readInt();
     Area area = new Area(areaX, areaZ);
 
-    area.read(dataInputStream, false);
+    area.read(dataInputStream);
     return area;
   }
 
@@ -1033,8 +1053,8 @@ public class Area implements Lock.HasLock {
     modCount++;
   }
 
-  public boolean modifiedSinceSave() {
-    return saveModCount != modCount;
+  public boolean modifiedSinceSave(DataGroup[] entities) {
+    return (entities != null && entities.length > 0) || saveEntities > 0 || saveModCount != modCount;
   }
 
   public void saveModCount() {

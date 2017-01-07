@@ -2,6 +2,8 @@ package ethanjones.cubes.world.save;
 
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.world.storage.Area;
+import ethanjones.cubes.world.storage.AreaMap;
+import ethanjones.data.DataGroup;
 
 import com.badlogic.gdx.files.FileHandle;
 
@@ -47,7 +49,7 @@ public class SaveAreaIO {
       BufferedInputStream bufferedInputStream = new BufferedInputStream(inflaterInputStream);
       DataInputStream dataInputStream = new DataInputStream(bufferedInputStream);
       Area area = new Area(x, z);
-      area.read(dataInputStream, false);
+      area.read(dataInputStream);
       dataInputStream.close();
       return area;
     } catch (Exception e) {
@@ -59,7 +61,15 @@ public class SaveAreaIO {
   public static boolean write(Save save, Area area) {
     if (save.readOnly) return false;
     if (!area.isReady()) return false;
-    if (!area.modifiedSinceSave()) return false;
+  
+    AreaMap map = area.areaMap();
+    DataGroup[] dataGroups;
+    if (map == null || map.world == null || map.world.entities == null) {
+      dataGroups = new DataGroup[0];
+    } else {
+      dataGroups = map.world.entities.getEntitiesForSave(area.areaX, area.areaZ);
+    }
+    if (!area.modifiedSinceSave(dataGroups)) return false;
     area.saveModCount();
 
     Deflater deflater = deflaterThreadLocal.get();
@@ -71,7 +81,7 @@ public class SaveAreaIO {
       DeflaterOutputStream deflaterStream = new DeflaterOutputStream(stream, deflater);
       BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(deflaterStream);
       DataOutputStream dataOutputStream = new DataOutputStream(bufferedOutputStream);
-      area.write(dataOutputStream, false, false); //TODO resize when writing
+      area.writeSave(dataOutputStream, dataGroups);
       bufferedOutputStream.flush();
       deflaterStream.finish();
       stream.close();

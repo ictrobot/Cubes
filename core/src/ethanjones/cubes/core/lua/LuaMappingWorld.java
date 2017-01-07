@@ -100,7 +100,7 @@ public final class LuaMappingWorld {
   public ZeroArgFunction getTime = new ZeroArgFunction() {
     @Override
     public LuaValue call() {
-      return LuaValue.valueOf(world.time);
+      return LuaValue.valueOf(world.getTime());
     }
   };
 }

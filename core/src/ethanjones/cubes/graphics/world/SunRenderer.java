@@ -73,7 +73,7 @@ public class SunRenderer {
   public static void setWorldTransform(Renderable renderable, boolean isMoon) {
     Vector3 pos = Cubes.getClient().player.position;
     int r = 512;
-    float f = (float) (Cubes.getClient().world.time - (World.MAX_TIME / 4)) / (float) World.MAX_TIME;
+    float f = (float) (Cubes.getClient().world.getTime() - (World.MAX_TIME / 4)) / (float) World.MAX_TIME;
     if (isMoon) f += 0.5f;
     f %= 1;
 

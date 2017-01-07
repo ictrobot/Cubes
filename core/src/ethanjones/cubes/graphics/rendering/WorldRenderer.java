@@ -152,12 +152,12 @@ public class WorldRenderer implements Disposable {
     
     Performance.start(PerformanceTags.CLIENT_RENDER_WORLD_ENTITY);
     float deltaTime = Gdx.graphics.getDeltaTime();
-    world.lock.readLock();
+    world.entities.lock.readLock();
     for (Entity entity : world.entities.values()) {
       entity.updatePosition(deltaTime);
       if (entity instanceof RenderableProvider) modelBatch.render(((RenderableProvider) entity));
     }
-    world.lock.readUnlock();
+    world.entities.lock.readUnlock();
     Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_ENTITY);
   
     Renderable selected = SelectedBlock.draw();

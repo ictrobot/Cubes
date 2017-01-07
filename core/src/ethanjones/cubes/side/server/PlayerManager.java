@@ -23,6 +23,7 @@ import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.reference.multi.AreaReferenceSet;
 import ethanjones.cubes.world.reference.multi.WorldRegion;
+import ethanjones.cubes.world.server.WorldServer;
 import ethanjones.cubes.world.storage.Area;
 import ethanjones.cubes.world.thread.GenerationTask;
 import ethanjones.cubes.world.thread.WorldRequestParameter;
@@ -54,7 +55,7 @@ public class PlayerManager {
     PacketConnected packetConnected = new PacketConnected();
     packetConnected.idManager = IDManager.writeMapping();
     packetConnected.player = client.getPlayer().uuid;
-    packetConnected.worldTime = server.world.time;
+    packetConnected.worldTime = server.world.getTime();
     packetConnected.gamemode = server.world.save.getSaveOptions().worldGamemode;
     NetworkingManager.sendPacketToClient(packetConnected, client);
     
@@ -122,7 +123,7 @@ public class PlayerManager {
   }
   
   private void teleportToSpawn() {
-    BlockReference spawn = server.world.spawnpoint;
+    BlockReference spawn = ((WorldServer) server.world).getSpawnPoint();
     if (spawn.blockY < 0)
       throw new IllegalStateException("The spawn point y coordinate must be greater than 0. " + spawn.blockY + " < 0");
     setPosition(spawn.asVector3().add(0.5f, Player.PLAYER_HEIGHT, 0.5f), null, false);

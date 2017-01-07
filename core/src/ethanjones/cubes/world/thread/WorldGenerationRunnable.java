@@ -23,7 +23,7 @@ public class WorldGenerationRunnable implements Runnable {
           task = queue.peek();
         }
 
-        if (task.world.disposed.get()) {
+        if (task.world.isDisposed()) {
           queue.remove(task);
           continue;
         }

@@ -32,7 +32,7 @@ public class PacketConnected extends DataPacket {
     Player player = Cubes.getClient().player;
     player.uuid = this.player;
     player.addToWorld();
-    Cubes.getClient().world.time = worldTime;
+    Cubes.getClient().world.setTime(worldTime);
     Cubes.getClient().gamemode = gamemode;
   }
 

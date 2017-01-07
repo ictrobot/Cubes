@@ -12,6 +12,7 @@ import ethanjones.cubes.networking.packets.PacketWorldTime;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.World;
+import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
 import ethanjones.cubes.world.save.Save;
 import ethanjones.cubes.world.storage.Area;
@@ -28,13 +29,16 @@ public class WorldServer extends World {
     super(save);
     if (save == null) throw new IllegalArgumentException("Null save on server");
     Log.info("Save '" + this.save.name + "' in '" + this.save.fileHandle.file().getAbsolutePath() + "'");
-    spawnpoint.setFromBlockReference(terrainGenerator.spawnPoint(this));
+  }
+  
+  public BlockReference getSpawnPoint() {
+    return terrainGenerator.spawnPoint(this);
   }
 
   @Override
   public void tick() {
     Performance.start(PerformanceTags.SERVER_WORLD_UPDATE);
-    lock.writeLock();
+    updateLock.writeLock();
     super.tick();
 
     Performance.start(PerformanceTags.SERVER_WORLD_AREA_TICK);
@@ -44,8 +48,8 @@ public class WorldServer extends World {
     }
     map.lock.readUnlock();
     Performance.stop(PerformanceTags.SERVER_WORLD_AREA_TICK);
-
-    lock.writeUnlock();
+  
+    updateLock.writeUnlock();
     Performance.stop(PerformanceTags.SERVER_WORLD_UPDATE);
   }
 
@@ -61,35 +65,35 @@ public class WorldServer extends World {
 
   @Override
   public void addEntity(Entity entity) {
-    lock.writeLock();
+    entities.lock.writeLock();
     super.addEntity(entity);
 
     PacketEntityAdd packet = new PacketEntityAdd();
     packet.entity = entity;
     NetworkingManager.sendPacketToAllClients(packet);
-    lock.writeUnlock();
+    entities.lock.writeUnlock();
   }
 
   @Override
   public void removeEntity(UUID uuid) {
-    lock.writeLock();
+    entities.lock.writeLock();
     super.removeEntity(uuid);
 
     PacketEntityRemove packet = new PacketEntityRemove();
     packet.uuid = uuid;
     NetworkingManager.sendPacketToAllClients(packet);
-    lock.writeUnlock();
+    entities.lock.writeUnlock();
   }
 
   @Override
   public void updateEntity(DataGroup data) {
-    lock.writeLock();
+    entities.lock.writeLock();
     super.updateEntity(data);
 
     PacketEntityUpdate packet = new PacketEntityUpdate();
     packet.data = data;
     NetworkingManager.sendPacketToAllClients(packet);
-    lock.writeUnlock();
+    entities.lock.writeUnlock();
   }
 
   @Override

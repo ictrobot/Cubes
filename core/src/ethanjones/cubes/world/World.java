@@ -13,12 +13,12 @@ import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.generator.GeneratorManager;
 import ethanjones.cubes.world.generator.TerrainGenerator;
 import ethanjones.cubes.world.reference.AreaReference;
-import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
 import ethanjones.cubes.world.reference.multi.WorldRegion;
 import ethanjones.cubes.world.save.Save;
 import ethanjones.cubes.world.storage.Area;
 import ethanjones.cubes.world.storage.AreaMap;
+import ethanjones.cubes.world.storage.Entities;
 import ethanjones.cubes.world.thread.GenerationTask;
 import ethanjones.cubes.world.thread.WorldRequestParameter;
 import ethanjones.cubes.world.thread.WorldTasks;
@@ -27,7 +27,6 @@ import ethanjones.data.DataGroup;
 import com.badlogic.gdx.utils.Disposable;
 import org.luaj.vm2.LuaTable;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.UUID;
@@ -37,14 +36,14 @@ public abstract class World implements Disposable, HasLock {
 
   public static final int MAX_TIME = (1000 / Cubes.tickMS) * 60 * 10;
 
-  public final Lock lock = new Lock();
+  public final Lock updateLock = new Lock();
   public final AreaMap map;
+  public final Entities entities;
   public final TerrainGenerator terrainGenerator;
   public final Save save;
-  public final AtomicBoolean disposed = new AtomicBoolean(false);
-  public final BlockReference spawnpoint = new BlockReference();
-  public final HashMap<UUID, Entity> entities = new HashMap<UUID, Entity>();
-  public int time;
+  
+  protected int time;
+  protected final AtomicBoolean disposed = new AtomicBoolean(false);
   public final LuaTable lua;
 
   public World(Save save) {
@@ -52,6 +51,7 @@ public abstract class World implements Disposable, HasLock {
     this.terrainGenerator = save == null ? null : GeneratorManager.getTerrainGenerator(save.getSaveOptions());
     this.time = save == null ? 0 : save.getSaveOptions().worldTime;
     map = new AreaMap(this);
+    entities = new Entities(this);
     lua = LuaMapping.mapping(new LuaMappingWorld(this));
   }
   
@@ -145,7 +145,8 @@ public abstract class World implements Disposable, HasLock {
   }
 
   public void tick() {
-    lock.writeLock();
+    updateLock.writeLock();
+    entities.lock.writeLock();
     Iterator<Entry<UUID, Entity>> iterator = entities.entrySet().iterator();
     while (iterator.hasNext()) {
       Entry<UUID, Entity> entry = iterator.next();
@@ -158,28 +159,34 @@ public abstract class World implements Disposable, HasLock {
     }
     time++;
     if (time >= MAX_TIME) time = 0;
-    lock.writeUnlock();
+    entities.lock.writeUnlock();
+    updateLock.writeUnlock();
   }
 
   public float getSunlight() {
-    lock.readLock();
+    updateLock.readLock();
     int t = time < MAX_TIME / 2 ? time : MAX_TIME - time;
     float f = ((float) t) / (((float) MAX_TIME) / 2f);
-    lock.readUnlock();
+    updateLock.readUnlock();
     return f;
   }
   
   public boolean isDay() {
-    lock.readLock();
+    updateLock.readLock();
     int time = this.time;
-    lock.readUnlock();
+    updateLock.readUnlock();
     return time >= MAX_TIME / 4 && time < MAX_TIME * 3 / 4;
   }
 
   public void setTime(int time) {
-    lock.writeLock();
+    updateLock.writeLock();
     this.time = time % MAX_TIME;
-    lock.writeUnlock();
+    updateLock.writeUnlock();
+  }
+  
+  public int getTime() {
+    updateLock.readLock();
+    return updateLock.readUnlock(time);
   }
 
   public TerrainGenerator getTerrainGenerator() {
@@ -188,15 +195,15 @@ public abstract class World implements Disposable, HasLock {
   
   @Override
   public Lock getLock() {
-    return lock;
+    return updateLock;
   }
   
   @Override
   public void dispose() {
-    WorldTasks.waitSaveFinish();
-    Lock.lockAll(true, this, map);
+    if (!disposed.compareAndSet(false, true)) return;
     
-    disposed.set(true);
+    WorldTasks.waitSaveFinish();
+    Lock.lockAll(true, this, map, entities);
     
     if (Side.isServer()|| !Area.isShared()) {
       for (Area area : map) {
@@ -208,31 +215,36 @@ public abstract class World implements Disposable, HasLock {
       entity.dispose();
     }
     entities.clear();
-  
+    
     map.lock.writeUnlock();
-    lock.writeUnlock();
+    entities.lock.writeUnlock();
+    updateLock.writeUnlock();
+  }
+  
+  public boolean isDisposed() {
+    return disposed.get();
   }
 
   public Entity getEntity(UUID uuid) {
-    lock.readLock();
-    return lock.readUnlock(entities.get(uuid));
+    entities.lock.readLock();
+    return entities.lock.readUnlock(entities.get(uuid));
   }
 
   public void addEntity(Entity entity) {
-    lock.writeLock();
+    entities.lock.writeLock();
     entities.put(entity.uuid, entity);
-    lock.writeUnlock();
+    entities.lock.writeUnlock();
   }
 
   public void removeEntity(UUID uuid) {
-    lock.writeLock();
+    entities.lock.writeLock();
     Entity remove = entities.remove(uuid);
     if (remove != null) remove.dispose();
-    lock.writeUnlock();
+    entities.lock.writeUnlock();
   }
 
   public void updateEntity(DataGroup data) {
-    lock.writeLock();
+    entities.lock.writeLock();
     UUID uuid = (UUID) data.get("uuid");
     Entity entity = entities.get(uuid);
     if (entity != null) {
@@ -241,16 +253,25 @@ public abstract class World implements Disposable, HasLock {
       Log.warning("No entity with uuid " + uuid.toString());
       addEntity(Entity.readType(data));
     }
-    lock.writeUnlock();
+    entities.lock.writeUnlock();
   }
 
   public void syncEntity(UUID uuid) {
 
   }
+  
+  public void addEntityFromSave(DataGroup dataGroup) {
+    entities.lock.writeLock();
+    Entity entity = Entity.readType(dataGroup);
+    if (entity != null && !entities.containsKey(entity.uuid)) {
+      addEntity(entity);
+    }
+    entities.lock.writeUnlock();
+  }
 
   public void save() {
     if (save == null) return;
-    lock.readLock();
+    updateLock.readLock();
 
     // players
     save.writePlayers();
@@ -260,6 +281,6 @@ public abstract class World implements Disposable, HasLock {
     save.getSaveOptions().worldTime = time;
     save.writeSaveOptions();
 
-    lock.readUnlock();
+    updateLock.readUnlock();
   }
 }

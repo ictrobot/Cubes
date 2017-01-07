@@ -86,9 +86,9 @@ public class Player extends LivingEntity implements CommandSender, RenderablePro
 
   public void addToWorld() {
     World world = Side.getCubes().world;
-    world.lock.writeLock();
+    world.entities.lock.writeLock();
     world.entities.put(uuid, this);
-    world.lock.writeUnlock();
+    world.entities.lock.writeUnlock();
   }
 
   @Override
