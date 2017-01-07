@@ -126,7 +126,7 @@ public class ClientAdapter implements AdapterInterface {
       } else {
         Gdx.input.setCursorCatched(true);
       }
-      if (cubesClient != null && cubesServer != null && cubesServer.isRunning() && CubesServer.lastUpdateTime() + 2500 < System.currentTimeMillis()) {
+      if (!Branding.IS_DEBUG && cubesClient != null && cubesServer != null && cubesServer.isRunning() && CubesServer.lastUpdateTime() + 2500 < System.currentTimeMillis()) {
         Adapter.gotoMenu(new UnresponsiveIntegratedServerMenu());
       }
     } catch (StopLoopException e) {
