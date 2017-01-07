@@ -6,8 +6,8 @@ import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.graphics.hud.inv.BlockIcons;
+import ethanjones.cubes.graphics.world.CubesModelBatch;
 import ethanjones.cubes.graphics.world.WorldGraphicsPools;
-import ethanjones.cubes.graphics.world.WorldShaderProvider;
 import ethanjones.cubes.item.Item;
 import ethanjones.cubes.item.ItemBlock;
 
@@ -33,7 +33,7 @@ public class Graphics {
 
   public static void init() {
     spriteBatch = new SpriteBatch();
-    modelBatch = new ModelBatch(new WorldShaderProvider());
+    modelBatch = new CubesModelBatch();
     screenViewport = new ScreenViewport();
 
     for (Block block : IDManager.getBlocks()) {
