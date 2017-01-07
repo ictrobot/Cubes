@@ -33,7 +33,14 @@ public class WorldSaveRunnable implements Runnable {
           }
           area = task.saveQueue.poll();
         }
-
+  
+        task.saveComplete.countDown();
+        try {
+          task.saveComplete.await();
+        } catch (InterruptedException e) {
+          return;
+        }
+  
         if (queue.remove(task)) {
           Log.debug("Saved areas: wrote " + task.written + " total " + task.length);
         }
