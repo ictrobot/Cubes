@@ -26,6 +26,7 @@ setting.input.keybind.fullscreen=Toggle fullscreen
 setting.input.keybind.hidegui=Hide GUI
 setting.input.keybind.screenshot=Take screenshot
 setting.input.keybind.debug=Show debug info
+setting.input.keybind.areaboundaries=Toggle area boundaries
 
 setting.networking=Networking
 setting.networking.port=Port

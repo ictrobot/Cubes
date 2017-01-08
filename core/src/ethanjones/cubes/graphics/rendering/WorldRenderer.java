@@ -65,6 +65,7 @@ public class WorldRenderer implements Disposable {
     modelBatch.begin(camera);
 
     int renderDistance = Settings.getIntegerSettingValue(Settings.GRAPHICS_VIEW_DISTANCE);
+    AreaBoundaries.update();
 
     Performance.start(PerformanceTags.CLIENT_RENDER_WORLD_AREAS);
     World world = Cubes.getClient().world;
@@ -106,6 +107,7 @@ public class WorldRenderer implements Disposable {
             needToRefresh.add(areaRenderer);
           } else {
             modelBatch.render(areaRenderer);
+            renderIfNotNull(AreaBoundaries.drawArea(areaX, ySection, areaZ));
           }
         } else if (area.areaRenderer[ySection] != null) {
           AreaRenderer.free(area.areaRenderer[ySection]);
@@ -160,14 +162,17 @@ public class WorldRenderer implements Disposable {
     world.entities.lock.readUnlock();
     Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_ENTITY);
   
-    Renderable selected = SelectedBlock.draw();
-    if (selected != null) modelBatch.render(selected);
-    Renderable breaking = BreakingRenderer.draw();
-    if (breaking != null) modelBatch.render(breaking);
+    renderIfNotNull(SelectedBlock.draw());
+    renderIfNotNull(BreakingRenderer.draw());
+    renderIfNotNull(AreaBoundaries.drawCurrent(pos.areaX, yPos, pos.areaZ));
     SunRenderer.draw(modelBatch);
     modelBatch.end();
 
     Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD);
+  }
+  
+  private void renderIfNotNull(Renderable r) {
+    if (r != null) modelBatch.render(r);
   }
 
   public boolean areaInFrustum(Area area, Frustum frustum) {
