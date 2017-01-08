@@ -32,7 +32,7 @@ public class DedicatedServer extends CubesServer {
     Save save = new Save("world", Compatibility.get().getBaseFolder().child("world"));
     if (save.readSaveOptions() == null) {
       SaveOptions saveOptions = save.getSaveOptions();
-      if (options.worldSeed != null) saveOptions.worldSeed = options.worldSeed;
+      if (options.worldSeedString != null) saveOptions.setWorldSeed(options.worldSeedString);
       if (options.worldGenerator != null) saveOptions.worldType = options.worldGenerator;
       if (options.worldGamemode != null) saveOptions.worldGamemode = options.worldGamemode;
     }

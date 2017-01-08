@@ -26,7 +26,7 @@ public class ClientSaveManager {
     return saves;
   }
 
-  public static Save createSave(String name, String generatorID, Gamemode gamemode, String stringSeed) {
+  public static Save createSave(String name, String generatorID, Gamemode gamemode, String seedString) {
     if (name != null) name = name.trim();
     if (name == null || name.isEmpty()) name = "world-" + Integer.toHexString(MathUtils.random.nextInt());
     FileHandle folder = getSavesFolder();
@@ -34,19 +34,8 @@ public class ClientSaveManager {
     handle.mkdirs();
     Save s = new Save(name, handle);
 
-    long seed = 0;
-    try {
-      seed = Long.parseLong(stringSeed);
-    } catch (NumberFormatException e) {
-      if (stringSeed.isEmpty()) {
-        seed = MathUtils.random.nextLong();
-      } else {
-        seed = stringSeed.hashCode();
-      }
-    }
-
     SaveOptions options = new SaveOptions();
-    options.worldSeed = seed;
+    options.setWorldSeed(seedString);
     options.worldType = generatorID;
     options.worldGamemode = gamemode;
     s.setSaveOptions(options);

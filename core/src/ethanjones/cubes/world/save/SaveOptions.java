@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.MathUtils;
 public class SaveOptions implements DataParser {
 
   public long worldSeed = MathUtils.random.nextLong();
+  public String worldSeedString = String.valueOf(worldSeed);
   public int worldTime = World.MAX_TIME / 4;
   public String worldType = "core:smooth";
   public Gamemode worldGamemode = Gamemode.survival;
@@ -25,6 +26,7 @@ public class SaveOptions implements DataParser {
     DataGroup dataGroup = new DataGroup();
     dataGroup.put("saveVersion", 0);
     dataGroup.put("worldSeed", worldSeed);
+    dataGroup.put("worldSeedStr", worldSeedString);
     dataGroup.put("worldTime", worldTime);
     dataGroup.put("worldType", worldType);
     dataGroup.put("worldGamemode", worldGamemode.name());
@@ -46,6 +48,7 @@ public class SaveOptions implements DataParser {
   public void read(DataGroup dataGroup) {
     if (dataGroup.getInteger("saveVersion") != 0) throw new CubesException("Invalid save version");
     worldSeed = dataGroup.getLong("worldSeed");
+    worldSeedString = dataGroup.getString("worldSeedStr");
     worldTime = dataGroup.getInteger("worldTime");
     worldType = dataGroup.getString("worldType");
     worldGamemode = Gamemode.valueOf(dataGroup.getString("worldGamemode"));
@@ -59,5 +62,20 @@ public class SaveOptions implements DataParser {
     lastVersionPoint = version.getInteger("point");
     lastVersionBuild = version.getInteger("build");
     lastVersionHash = version.getString("hash");
+  }
+  
+  public void setWorldSeed(String seedString) {
+    long seed = 0;
+    try {
+      seed = Long.parseLong(seedString);
+    } catch (NumberFormatException e) {
+      if (seedString.isEmpty()) {
+        seed = MathUtils.random.nextLong();
+      } else {
+        seed = seedString.hashCode();
+      }
+    }
+    this.worldSeed = seed;
+    this.worldSeedString = seedString;
   }
 }
