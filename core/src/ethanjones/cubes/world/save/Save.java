@@ -52,6 +52,7 @@ public class Save {
   }
 
   public Area readArea(int x, int z) {
+    if (fileHandle == null) return null;
     return SaveAreaIO.read(this, x, z);
   }
 
@@ -75,6 +76,7 @@ public class Save {
   }
 
   public Player readPlayer(UUID uuid, ClientIdentifier clientIdentifier) {
+    if (fileHandle == null) return null;
     FileHandle folder = folderPlayer();
     FileHandle file = folder.child(uuid.toString());
     if (!file.exists()) return null;
@@ -105,6 +107,7 @@ public class Save {
   }
 
   public Cave readCave(AreaReference areaReference) {
+    if (fileHandle == null) return null;
     FileHandle folder = folderCave();
     FileHandle file = folder.child(areaReference.areaX + "_" + areaReference.areaZ);
     if (!file.exists()) return null;

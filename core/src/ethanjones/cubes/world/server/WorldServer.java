@@ -28,7 +28,9 @@ public class WorldServer extends World {
   public WorldServer(Save save) {
     super(save);
     if (save == null) throw new IllegalArgumentException("Null save on server");
-    Log.info("Save '" + this.save.name + "' in '" + this.save.fileHandle.file().getAbsolutePath() + "'");
+    
+    if (this.save.fileHandle != null) Log.info("Save '" + this.save.name + "' in '" + this.save.fileHandle.file().getAbsolutePath() + "'");
+    else Log.info("Save '" + this.save.name + "'");
   }
   
   public BlockReference getSpawnPoint() {

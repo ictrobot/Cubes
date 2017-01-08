@@ -42,6 +42,18 @@ public class ClientSaveManager {
 
     return s;
   }
+  
+  public static Save createTemporarySave(String generatorID, Gamemode gamemode, String seedString) {
+    Save s = new Save("Temporary", null, true);
+    
+    SaveOptions options = new SaveOptions();
+    options.setWorldSeed(seedString);
+    options.worldType = generatorID;
+    options.worldGamemode = gamemode;
+    s.setSaveOptions(options);
+    
+    return s;
+  }
 
   public static void deleteSave(Save save) {
     if (save.fileHandle.deleteDirectory()) {

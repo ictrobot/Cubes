@@ -24,6 +24,8 @@ public class SingleplayerSaveCreateMenu extends Menu {
   TextField seed;
   TextButton start;
   TextButton back;
+  
+  ChangeListener startListener;
 
   public SingleplayerSaveCreateMenu() {
     super();
@@ -54,7 +56,7 @@ public class SingleplayerSaveCreateMenu extends Menu {
     start = new TextButton(Localization.get("menu.singleplayer.create.start"), skin);
     back = MenuTools.getBackButton(this);
 
-    start.addListener(new ChangeListener() {
+    start.addListener(startListener = new ChangeListener() {
       @Override
       public void changed(ChangeEvent event, Actor actor) {
         Adapter.setMenu(new SingleplayerLoadingMenu(ClientSaveManager.createSave(name.getText(), generator.getSelected().id, mode.getSelected(), seed.getText())));
@@ -79,7 +81,7 @@ public class SingleplayerSaveCreateMenu extends Menu {
     back.setY(0);
   }
 
-  private static class SaveTypeDisplay {
+  protected static class SaveTypeDisplay {
     public final String id;
 
     public SaveTypeDisplay(String id) {

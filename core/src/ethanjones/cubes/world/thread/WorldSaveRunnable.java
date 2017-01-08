@@ -10,7 +10,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class WorldSaveRunnable implements Runnable {
   public LinkedBlockingQueue<WorldSaveTask> queue = new LinkedBlockingQueue<WorldSaveTask>();
-
+  
   @Override
   public void run() {
     while (!Thread.interrupted()) {
@@ -24,23 +24,25 @@ public class WorldSaveRunnable implements Runnable {
           }
           task = queue.peek();
         }
-
-        Area area = task.saveQueue.poll();
-        while (area != null) {
-          if (SaveAreaIO.write(task.save, area)) {
-            int written = task.written.incrementAndGet();
-            if (written % 100 == 0) Log.debug("Written " + written + " areas");
+        
+        if (!task.save.readOnly) {
+          Area area = task.saveQueue.poll();
+          while (area != null) {
+            if (SaveAreaIO.write(task.save, area)) {
+              int written = task.written.incrementAndGet();
+              if (written % 100 == 0) Log.debug("Written " + written + " areas");
+            }
+            area = task.saveQueue.poll();
           }
-          area = task.saveQueue.poll();
+          
+          task.saveComplete.countDown();
+          try {
+            task.saveComplete.await();
+          } catch (InterruptedException e) {
+            return;
+          }
         }
-  
-        task.saveComplete.countDown();
-        try {
-          task.saveComplete.await();
-        } catch (InterruptedException e) {
-          return;
-        }
-  
+        
         if (queue.remove(task)) {
           Log.debug("Saved areas: wrote " + task.written + " total " + task.length);
         }
