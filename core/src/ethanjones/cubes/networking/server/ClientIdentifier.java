@@ -14,7 +14,7 @@ public class ClientIdentifier {
 
   public ClientIdentifier(SocketMonitor socketMonitor, PacketConnect packetConnect) {
     this.socketMonitor = socketMonitor;
-    this.player = Cubes.getServer().world.save.readPlayer(packetConnect.uuid);
+    this.player = Cubes.getServer().world.save.readPlayer(packetConnect.uuid, this);
     if (player == null) player = new Player(packetConnect.username, packetConnect.uuid, this);
     this.playerManager = new PlayerManager(this, packetConnect);
   }

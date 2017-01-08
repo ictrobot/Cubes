@@ -74,13 +74,13 @@ public class Save {
     }
   }
 
-  public Player readPlayer(UUID uuid) {
+  public Player readPlayer(UUID uuid, ClientIdentifier clientIdentifier) {
     FileHandle folder = folderPlayer();
     FileHandle file = folder.child(uuid.toString());
     if (!file.exists()) return null;
     try {
       DataGroup data = (DataGroup) Data.input(file.file());
-      Player player = new Player(data.getString("username"), uuid);
+      Player player = new Player(data.getString("username"), uuid, clientIdentifier);
       player.read(data);
       return player;
     } catch (Exception e) {
