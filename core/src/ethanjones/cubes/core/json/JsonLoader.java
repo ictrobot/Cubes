@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class JsonLoader {
 
-  private static Multimap<JsonStage, JsonValue> multimap = new Multimap<JsonStage, JsonValue>();
+  private static Multimap<JsonStage, JsonValue> coreMap = new Multimap<JsonStage, JsonValue>();
 
   public static void loadCore() {
     AssetManager core = Assets.getCoreAssetManager();
@@ -30,17 +30,18 @@ public class JsonLoader {
       map.put(j.getPath().substring(5), j.getFileHandle());
     }
     try {
-      load(map);
+      coreMap = load(map);
     } catch (IOException e) {
       throw new CubesException("Failed to load core json", e);
     }
   }
 
-  public static void load(JsonModInstance mod) throws IOException {
-    load(mod.jsonFiles);
+  public static Multimap<JsonStage, JsonValue> load(JsonModInstance mod) throws IOException {
+    return load(mod.jsonFiles);
   }
 
-  private static void load(Map<String, FileHandle> map) throws IOException {
+  private static Multimap<JsonStage, JsonValue> load(Map<String, FileHandle> map) throws IOException {
+    Multimap<JsonStage, JsonValue> m = new Multimap<JsonStage, JsonValue>();
     for (Map.Entry<String, FileHandle> entry : map.entrySet()) {
       JsonStage stage = null;
       if (entry.getKey().startsWith("block")) {
@@ -55,27 +56,36 @@ public class JsonLoader {
 
       Reader reader = entry.getValue().reader();
       try {
-        multimap.put(stage, Json.parse(reader));
+        m.put(stage, Json.parse(reader));
       } finally {
         reader.close();
       }
     }
+    return m;
   }
-
+  
   public static void firstStage() {
-    doStage(JsonStage.BLOCK);
-    doStage(JsonStage.ITEM);
-
+    firstStage(coreMap);
+  
     GetInstances.get(Blocks.class);
     GetInstances.get(Items.class);
   }
 
+  public static void firstStage(Multimap<JsonStage, JsonValue> map) {
+    doStage(map, JsonStage.BLOCK);
+    doStage(map, JsonStage.ITEM);
+  }
+  
   public static void secondStage() {
-    doStage(JsonStage.RECIPE);
+    secondStage(coreMap);
   }
 
-  private static void doStage(JsonStage stage) {
-    for (JsonValue value : multimap.remove(stage)) {
+  public static void secondStage(Multimap<JsonStage, JsonValue> map) {
+    doStage(map, JsonStage.RECIPE);
+  }
+
+  private static void doStage(Multimap<JsonStage, JsonValue> map, JsonStage stage) {
+    for (JsonValue value : map.remove(stage)) {
       stage.load(value);
     }
   }

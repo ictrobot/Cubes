@@ -54,9 +54,9 @@ public abstract class Cubes {
     Assets.preInit();
     JsonLoader.loadCore();
     Blocks.init();
-    JsonLoader.firstStage();
-
     ModManager.init();
+    JsonLoader.firstStage();
+    
     Compatibility.get().preInit();
     ModManager.postModEvent(new PreInitializationEvent());
 

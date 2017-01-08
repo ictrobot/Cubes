@@ -1,12 +1,17 @@
 package ethanjones.cubes.core.mod.json;
 
 import ethanjones.cubes.core.json.JsonLoader;
+import ethanjones.cubes.core.json.JsonStage;
 import ethanjones.cubes.core.mod.ModInstance;
 import ethanjones.cubes.core.mod.ModState;
+import ethanjones.cubes.core.mod.event.InitializationEvent;
 import ethanjones.cubes.core.mod.event.ModEvent;
+import ethanjones.cubes.core.mod.event.PreInitializationEvent;
+import ethanjones.cubes.core.util.Multimap;
 import ethanjones.cubes.graphics.assets.AssetManager;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.eclipsesource.json.JsonValue;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +22,7 @@ public class JsonModInstance extends ModInstance {
   
   public final Map<String, FileHandle> jsonFiles;
   private List<ModState> modStates;
+  private Multimap<JsonStage, JsonValue> map;
 
   public JsonModInstance(String name, FileHandle file, AssetManager assetManager, Map<String, FileHandle> jsonFiles) {
     super(name, file, assetManager);
@@ -28,12 +34,13 @@ public class JsonModInstance extends ModInstance {
 
   @Override
   protected void init() throws Exception {
-    JsonLoader.load(this);
+    map = JsonLoader.load(this);
   }
 
   @Override
   protected void event(ModEvent modEvent) throws Exception {
-
+    if (modEvent instanceof PreInitializationEvent) JsonLoader.firstStage(map);
+    if (modEvent instanceof InitializationEvent) JsonLoader.secondStage(map);
   }
 
   @Override
