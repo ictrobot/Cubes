@@ -37,7 +37,7 @@ public class Area implements Lock.HasLock {
   public static final int SIZE_BLOCKS_SQUARED = SIZE_BLOCKS * SIZE_BLOCKS;
   public static final int SIZE_BLOCKS_CUBED = SIZE_BLOCKS * SIZE_BLOCKS * SIZE_BLOCKS;
   public static final int HALF_SIZE_BLOCKS = SIZE_BLOCKS / 2;
-  public static final int MAX_Y = Integer.MAX_VALUE / SIZE_BLOCKS_SQUARED;
+  public static final int MAX_Y = ((Integer.MAX_VALUE - 8) / SIZE_BLOCKS_CUBED) * SIZE_BLOCKS;
 
   // update every block about once a minute
   public static final int NUM_RANDOM_UPDATES = SIZE_BLOCKS_CUBED / (1000 / Cubes.tickMS) / 60;
