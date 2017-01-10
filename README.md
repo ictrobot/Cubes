@@ -9,6 +9,10 @@ Summer project started in 2014 by Ethan Jones.
 
 [***Builds***](https://cubes.ethanjones.me/)
 
+Mods
+--------
+For sample json and lua mods, see mod_sample/json and mod_sample/lua respectively. [CubesSampleMod](https://github.com/ictrobot/CubesSampleMod) is a sample java mod, which uses [CubesModPlugin](https://github.com/ictrobot/CubesModPlugin), a gradle plugin to build .cm files automatically. [CubesEquationTerrainGenerator](https://github.com/ictrobot/CubesEquationTerrainGenerator) is an example of a mod that actually does something (add terrain generators based off mathematical expressions).  
+
 Building
 --------
 
