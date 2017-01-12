@@ -34,6 +34,7 @@ public class Area implements Lock.HasLock {
   public static final int BLOCK_VISIBLE = 1 << 28;
 
   public static final int SIZE_BLOCKS = 32;
+  public static final int SIZE_BLOCKS_POW2 = 5;
   public static final int SIZE_BLOCKS_SQUARED = SIZE_BLOCKS * SIZE_BLOCKS;
   public static final int SIZE_BLOCKS_CUBED = SIZE_BLOCKS * SIZE_BLOCKS * SIZE_BLOCKS;
   public static final int HALF_SIZE_BLOCKS = SIZE_BLOCKS / 2;
