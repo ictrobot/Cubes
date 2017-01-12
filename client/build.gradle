@@ -23,6 +23,8 @@ task dist(dependsOn: classes, type: Jar) {
     from { configurations.compile.collect { zipTree(it) } }
     from files(project.assetsDir)
 
+    exclude("META-INF/", "lua*.class")
+
     archiveName = 'client.jar'
 
     manifest {
@@ -36,8 +38,7 @@ task distWin(dependsOn: classes, type: Jar) {
     from { configurations.compile.collect { zipTree(it) } }
     from files(project.assetsDir)
 
-    exclude("*.dylib")
-    exclude("*.so")
+    exclude("META-INF/", "lua*.class", "*.dylib", "*.so")
 
     archiveName = 'client-win.jar'
 

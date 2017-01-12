@@ -4,13 +4,15 @@ sourceCompatibility = 1.7
 sourceSets.main.java.srcDirs = ["src/"]
 
 project.ext.mainClassName = "ethanjones.cubes.core.platform.desktop.ServerLauncher"
-project.ext.assetsDir = new File("../assets");
+project.ext.assetsDir = new File("../assets")
 
 task dist(dependsOn: classes, type: Jar) {
     from files(sourceSets.main.output.classesDir)
     from files(sourceSets.main.output.resourcesDir)
     from { configurations.compile.collect { zipTree(it) } }
-    from files(project.assetsDir);
+    from files(project.assetsDir)
+
+    exclude("META-INF/", "lua*.class")
 
     archiveName = 'server.jar'
 
@@ -42,7 +44,7 @@ eclipse {
 task afterEclipseImport(description: "Post processing after project generation", group: "IDE") {
     doLast {
         def classpath = new XmlParser().parse(file(".classpath"))
-        new Node(classpath, "classpathentry", [kind: 'src', path: 'assets']);
+        new Node(classpath, "classpathentry", [kind: 'src', path: 'assets'])
         def writer = new FileWriter(file(".classpath"))
         def printer = new XmlNodePrinter(new PrintWriter(writer))
         printer.setPreserveWhitespace(true)
