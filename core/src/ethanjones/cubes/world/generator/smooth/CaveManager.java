@@ -38,7 +38,7 @@ public class CaveManager {
           } else if (o == null) { // this thread
             cave = loadCave(areaReference);
             if (cave == null) cave = generateCave(areaReference);
-            if (!caves.replace(areaReference.clone(), Thread.currentThread(), cave)) throw new IllegalStateException();
+            if (!caves.replace(areaReference.copy(), Thread.currentThread(), cave)) throw new IllegalStateException();
             synchronized (caves) {
               caves.notifyAll();
             }

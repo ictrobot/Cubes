@@ -18,20 +18,37 @@ public class PerformanceAnalysis {
     if (!file.exists()) throw new IllegalArgumentException("File does not exist");
     if (file.isDirectory()) throw new IllegalArgumentException("Path is a directory");
 
-    FileInputStream fileInputStream = new FileInputStream(file);
-    DataInputStream data = new DataInputStream(fileInputStream);
-
-    if (data.readUnsignedByte() == 0xEE && data.readUnsignedByte() == 0xCE) {
-      System.out.println("Valid file");
-    } else {
-      throw new IllegalArgumentException("Not a Cubes Performance file");
+    FileInputStream fileInputStream = null;
+    PrintWriter out = null;
+    try {
+      fileInputStream = new FileInputStream(file);
+      DataInputStream data = new DataInputStream(fileInputStream);
+  
+      if (data.readUnsignedByte() == 0xEE && data.readUnsignedByte() == 0xCE) {
+        System.out.println("Valid file");
+      } else {
+        throw new IllegalArgumentException("Not a Cubes Performance file");
+      }
+      out = new PrintWriter(file.getAbsolutePath() + ".txt");
+      while (data.readUnsignedByte() != 0xFF) {
+        read(data, out, 0);
+      }
+    } finally {
+      if (fileInputStream != null) {
+        try {
+          fileInputStream.close();
+        } catch (Exception ignored) {
+          
+        }
+      }
+      if (out != null) {
+        try {
+          out.close();
+        } catch (Exception ignored) {
+      
+        }
+      }
     }
-    PrintWriter out = new PrintWriter(file.getAbsolutePath() + ".txt");
-    while (data.readUnsignedByte() != 0xFF) {
-      read(data, out, 0);
-    }
-    fileInputStream.close();
-    out.close();
   }
 
   private static void read(DataInputStream in, PrintWriter out, int i) throws IOException {

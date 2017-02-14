@@ -40,7 +40,7 @@ public class CraftingInventory extends Inventory {
     public CraftingOutputInventory() {
       super("core:craftOutput", 1);
       cancelInputItems = true;
-      output = true;
+      outputOnly = true;
     }
 
     public void sync() {

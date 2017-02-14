@@ -10,8 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 
 public class InventoryWindow extends Window {
-  private static final NinePatchDrawable background = new NinePatchDrawable(new NinePatch(Assets.getTextureRegion("core:hud/inv/Background.png"), 4, 4, 4, 4));
-  public static final WindowStyle style = new WindowStyle(Fonts.hud, Color.BLACK, background);
+  private static final NinePatchDrawable windowBackground = new NinePatchDrawable(new NinePatch(Assets.getTextureRegion("core:hud/inv/Background.png"), 4, 4, 4, 4));
+  private static final WindowStyle style = new WindowStyle(Fonts.hud, Color.BLACK, windowBackground);
 
   public InventoryWindow(Actor actor) {
     super("", style);

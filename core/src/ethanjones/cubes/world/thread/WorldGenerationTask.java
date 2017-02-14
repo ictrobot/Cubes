@@ -50,14 +50,14 @@ public class WorldGenerationTask implements GenerationTask {
     } else {
       generate = new HashSet<AreaReference>();
       for (AreaReference reference : references.getAreaReferences()) {
-        generate.add(reference.clone().offset(0, 1));
-        generate.add(reference.clone().offset(0, -1));
-        generate.add(reference.clone().offset(1, 0));
-        generate.add(reference.clone().offset(1, 1));
-        generate.add(reference.clone().offset(1, -1));
-        generate.add(reference.clone().offset(-1, 0));
-        generate.add(reference.clone().offset(-1, 1));
-        generate.add(reference.clone().offset(-1, -1));
+        generate.add(reference.copy().offset(0, 1));
+        generate.add(reference.copy().offset(0, -1));
+        generate.add(reference.copy().offset(1, 0));
+        generate.add(reference.copy().offset(1, 1));
+        generate.add(reference.copy().offset(1, -1));
+        generate.add(reference.copy().offset(-1, 0));
+        generate.add(reference.copy().offset(-1, 1));
+        generate.add(reference.copy().offset(-1, -1));
       }
     }
 

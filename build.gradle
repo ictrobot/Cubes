@@ -8,6 +8,10 @@ buildscript {
         classpath 'com.github.rusmonster:sdk-manager-plugin:a35a7b1c2a41a8945fbd69c6187285bd6927a63f'
     }
 }
+plugins {
+    id "org.sonarqube" version "2.2"
+}
+
 
 ext {
     buildProperties = new Properties()
@@ -43,6 +47,8 @@ ext {
     if (localProperties.MAVEN_REPO_PATH == null) localProperties.MAVEN_REPO_PATH = getRootProject().getProjectDir().absolutePath + "/repo/"
     if (localProperties.MAVEN_REPO_USERNAME == null) localProperties.MAVEN_REPO_USERNAME = ""
     if (localProperties.MAVEN_REPO_PASSWORD == null) localProperties.MAVEN_REPO_PASSWORD = ""
+    if (localProperties.SONAR_HOST_URL == null) localProperties.SONAR_HOST_URL = "https://sonarqube.com"
+    if (localProperties.SONAR_LOGIN == null) localProperties.SONAR_LOGIN = "abcdef0123456789"
 }
 
 allprojects {
@@ -70,6 +76,13 @@ allprojects {
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
         maven { url "http://ethanjones.me/maven/snapshots/" }
         maven { url "http://ethanjones.me/maven/releases/" }
+    }
+
+    sonarqube {
+        properties {
+            property "sonar.host.url", localProperties.SONAR_HOST_URL
+            property "sonar.login", localProperties.SONAR_LOGIN
+        }
     }
 }
 

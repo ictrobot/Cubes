@@ -59,8 +59,8 @@ public class SlotTooltipListener extends InputListener {
 
   private static class SlotTooltip extends Window {
 
-    private static final NinePatchDrawable background = new NinePatchDrawable(new NinePatch(Assets.getTextureRegion("core:hud/inv/Tooltip.png"), 4, 4, 4, 4));
-    private static final WindowStyle style = new WindowStyle(Fonts.hud, Color.WHITE, background);
+    private static final NinePatchDrawable slotBackground = new NinePatchDrawable(new NinePatch(Assets.getTextureRegion("core:hud/inv/Tooltip.png"), 4, 4, 4, 4));
+    private static final WindowStyle style = new WindowStyle(Fonts.hud, Color.WHITE, slotBackground);
     private Label label = new Label("", new LabelStyle(Fonts.hud, Color.WHITE));
 
     public SlotTooltip() {

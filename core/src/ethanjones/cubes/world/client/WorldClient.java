@@ -73,7 +73,7 @@ public class WorldClient extends World {
   }
 
   public Color getSkyColour() {
-    float light = getSunlight();
+    float light = getWorldSunlight();
     if (light <= 0.3f) return Color.BLACK;
     if (light >= 0.7f) return Color.SKY;
     return Color.BLACK.cpy().lerp(Color.SKY, (light - 0.3f) * 2.5f);

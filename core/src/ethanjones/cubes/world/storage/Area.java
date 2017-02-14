@@ -445,7 +445,7 @@ public class Area implements Lock.HasLock {
   public void tick() {
     if (Side.isServer()) {
       AreaMap areaMap = areaMap();
-      if (!features() || areaMap == null) return;
+      if (!featuresGenerated() || areaMap == null) return;
       ThreadRandom random = ThreadRandom.get();
       lock.writeLock();
       int updates = NUM_RANDOM_UPDATES * height;
@@ -743,7 +743,7 @@ public class Area implements Lock.HasLock {
     byte[] oldLight = light;
     light = new byte[SIZE_BLOCKS_CUBED * height];
     System.arraycopy(oldLight, 0, light, 0, oldLight.length);
-    if (features()) Arrays.fill(light, oldLight.length, light.length, (byte) SunLight.MAX_SUNLIGHT);
+    if (featuresGenerated()) Arrays.fill(light, oldLight.length, light.length, (byte) SunLight.MAX_SUNLIGHT);
 
     AreaRenderer.free(areaRenderer);
     if (Side.isClient() || shared) {
@@ -766,7 +766,7 @@ public class Area implements Lock.HasLock {
     lock.writeUnlock();
   }
 
-  public boolean features() {
+  public boolean featuresGenerated() {
     return features.get() != null;
   }
 
@@ -864,7 +864,7 @@ public class Area implements Lock.HasLock {
     }
 
     int usedHeight = resize ? usedHeight() : height;
-    dataOutputStream.writeInt(features() ? usedHeight : -usedHeight);
+    dataOutputStream.writeInt(featuresGenerated() ? usedHeight : -usedHeight);
 
     for (int i = 0; i < SIZE_BLOCKS_SQUARED; i++) {
       dataOutputStream.writeInt(heightmap[i]);

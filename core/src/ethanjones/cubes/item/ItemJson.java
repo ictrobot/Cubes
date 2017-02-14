@@ -29,9 +29,9 @@ public class ItemJson {
 
     prop = json.get("texture");
     if (prop != null) {
-      item.texture = prop.asString();
+      item.textureString = prop.asString();
     } else {
-      item.texture = id;
+      item.textureString = id;
     }
 
     for (JsonObject.Member member : json) {
@@ -70,9 +70,9 @@ public class ItemJson {
 
     prop = json.get("texture");
     if (prop != null) {
-      item.texture = prop.asString();
+      item.textureString = prop.asString();
     } else {
-      item.texture = id;
+      item.textureString = id;
     }
 
     for (JsonObject.Member member : json) {
@@ -109,7 +109,7 @@ public class ItemJson {
   }
 
   private static class JItem extends Item {
-    protected String texture;
+    protected String textureString;
 
     public JItem(String id) {
       super(id);
@@ -117,12 +117,12 @@ public class ItemJson {
 
     @Override
     public void loadGraphics() {
-      ((Item) this).texture = Assets.getPackedTextureFromID(texture, "item");
+      this.texture = Assets.getPackedTextureFromID(textureString, "item");
     }
   }
 
   private static class JItemTool extends ItemTool {
-    protected String texture;
+    protected String textureString;
 
     public JItemTool(String id) {
       super(id);
@@ -130,7 +130,7 @@ public class ItemJson {
 
     @Override
     public void loadGraphics() {
-      ((Item) this).texture = Assets.getPackedTextureFromID(texture, "item");
+      this.texture = Assets.getPackedTextureFromID(textureString, "item");
     }
 
     protected void setToolType(ToolType type) {

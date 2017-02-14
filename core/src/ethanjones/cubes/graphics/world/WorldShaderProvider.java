@@ -92,7 +92,7 @@ public class WorldShaderProvider implements ShaderProvider {
       if (Cubes.getClient() == null) {
         program.setUniformf(u_sunlight, 1f);
       } else {
-        program.setUniformf(u_sunlight, Cubes.getClient().world.getSunlight());
+        program.setUniformf(u_sunlight, Cubes.getClient().world.getWorldSunlight());
       }
       program.setUniformf(u_lightoverride, -1f);
     }

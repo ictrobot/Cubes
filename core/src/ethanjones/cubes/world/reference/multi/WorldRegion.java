@@ -54,7 +54,7 @@ public class WorldRegion implements MultiAreaReference {
     AreaReference base = new AreaReference().setFromAreaCoordinates(minAreaX, minAreaZ);
     for (int x = 0; x <= (maxAreaX - minAreaX); x++) {
       for (int z = 0; z <= (maxAreaZ - minAreaZ); z++) {
-        set.add(base.clone().offset(x, z));
+        set.add(base.copy().offset(x, z));
       }
     }
     return set;

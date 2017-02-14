@@ -101,10 +101,10 @@ public class PlayerManager {
           check.areaZ = areaZ;
           check.modified();
           Area area = server.world.getArea(check, false); //don't request individually, request in a batch
-          if (area != null && area.features()) sendArea(area);
+          if (area != null && area.featuresGenerated()) sendArea(area);
         }
       }
-      WorldRequestParameter parameter = new WorldRequestParameter(playerArea.clone(), new Runnable() {
+      WorldRequestParameter parameter = new WorldRequestParameter(playerArea.copy(), new Runnable() {
         @Override
         public void run() {
           NetworkingManager.sendPacketToClient(new PacketInitialAreasLoaded(), client);
@@ -164,7 +164,7 @@ public class PlayerManager {
         
         for (AreaReference areaReference : difference) {
           Area area = server.world.getArea(areaReference, false); //don't request individually, request in a batch
-          if (area != null && area.features()) sendArea(area);
+          if (area != null && area.featuresGenerated()) sendArea(area);
         }
         
         server.world.requestRegion(difference, null);

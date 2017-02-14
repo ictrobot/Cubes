@@ -163,7 +163,7 @@ public abstract class World implements Disposable, HasLock {
     updateLock.writeUnlock();
   }
 
-  public float getSunlight() {
+  public float getWorldSunlight() {
     updateLock.readLock();
     int t = time < MAX_TIME / 2 ? time : MAX_TIME - time;
     float f = ((float) t) / (((float) MAX_TIME) / 2f);

@@ -7,8 +7,6 @@ import ethanjones.cubes.world.save.Save;
 
 public abstract class IntegratedServer extends CubesServer implements Runnable {
 
-  private Thread thread = null;
-
   public IntegratedServer(Save save) {
     super(save);
   }

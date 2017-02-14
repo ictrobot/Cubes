@@ -41,8 +41,9 @@ public class ModManager {
       Map<String, FileHandle> jsonFiles = new HashMap<String, FileHandle>();
       Map<String, FileHandle> luaFiles = new HashMap<String, FileHandle>();
       FileHandle modAssets = Assets.assetsFolder.child(fileHandle.name());
+      InputStream inputStream = null;
       try {
-        InputStream inputStream = new FileInputStream(fileHandle.file());
+        inputStream = new FileInputStream(fileHandle.file());
         ZipInputStream zipInputStream = new ZipInputStream(inputStream);
         ZipEntry entry;
         while ((entry = zipInputStream.getNextEntry()) != null) {
@@ -139,6 +140,14 @@ public class ModManager {
 
       } catch (Exception e) {
         throw new CubesException("Failed to make instance of mod: " + name, e);
+      } finally {
+        if (inputStream != null) {
+          try {
+            inputStream.close();
+          } catch (Exception ignored) {
+            
+          }
+        }
       }
     }
     ModManager.mods = Collections.unmodifiableList(mods);

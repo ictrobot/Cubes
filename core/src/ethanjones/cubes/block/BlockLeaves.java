@@ -31,12 +31,12 @@ public class BlockLeaves extends Block {
       HashSet<BlockReference> checked = new HashSet<BlockReference>();
       ArrayDeque<BlockReference> todo = new ArrayDeque<BlockReference>();
       BlockReference start = new BlockReference().setFromBlockCoordinates(blockX, blockY, blockZ);
-      todo.add(start.clone().offset(-1, 0, 0));
-      todo.add(start.clone().offset(1, 0, 0));
-      todo.add(start.clone().offset(0, -1, 0));
-      todo.add(start.clone().offset(0, 1, 0));
-      todo.add(start.clone().offset(0, 0, -1));
-      todo.add(start.clone().offset(0, 0, 1));
+      todo.add(start.copy().offset(-1, 0, 0));
+      todo.add(start.copy().offset(1, 0, 0));
+      todo.add(start.copy().offset(0, -1, 0));
+      todo.add(start.copy().offset(0, 1, 0));
+      todo.add(start.copy().offset(0, 0, -1));
+      todo.add(start.copy().offset(0, 0, 1));
       while (!todo.isEmpty()) {
         BlockReference poll = todo.poll();
         int x = poll.blockX, y = poll.blockY, z = poll.blockZ;
@@ -67,7 +67,7 @@ public class BlockLeaves extends Block {
   }
   
   private void add(HashSet<BlockReference> checked, ArrayDeque<BlockReference> todo, BlockReference start, BlockReference b, int x, int y, int z) {
-    b = b.clone().offset(x, y, z);
+    b = b.copy().offset(x, y, z);
     int dX = start.blockX - b.blockX;
     int dY = start.blockY - b.blockY;
     int dZ = start.blockZ - b.blockZ;

@@ -71,7 +71,7 @@ public class BlockReference implements Pool.Poolable {
     return false;
   }
 
-  public BlockReference clone() {
+  public BlockReference copy() {
     return new BlockReference().setFromBlockReference(this);
   }
 

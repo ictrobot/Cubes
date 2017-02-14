@@ -105,7 +105,7 @@ public class AreaReference implements Pool.Poolable, Cloneable {
     return false;
   }
 
-  public AreaReference clone() {
+  public AreaReference copy() {
     return new AreaReference().setFromAreaReference(this);
   }
 

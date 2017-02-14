@@ -120,18 +120,28 @@ public class Performance {
 
   public static synchronized void save(File file) throws IOException {
     if (!file.exists()) file.createNewFile();
-    FileOutputStream fileOutputStream = new FileOutputStream(file);
-    DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
-    dataOutputStream.writeByte(0xEE);
-    dataOutputStream.writeByte(0xCE);
-    synchronized (nodes) {
-      for (ThreadPerformance threadN : nodes) {
-        dataOutputStream.writeByte(0x00);
-        write(threadN, dataOutputStream);
+    FileOutputStream fileOutputStream = null;
+    try {
+      fileOutputStream = new FileOutputStream(file);
+      DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
+      dataOutputStream.writeByte(0xEE);
+      dataOutputStream.writeByte(0xCE);
+      synchronized (nodes) {
+        for (ThreadPerformance threadN : nodes) {
+          dataOutputStream.writeByte(0x00);
+          write(threadN, dataOutputStream);
+        }
+      }
+      dataOutputStream.writeByte(0xFF);
+    } finally {
+      if (fileOutputStream != null) {
+        try {
+          fileOutputStream.close();
+        } catch (Exception ignored) {
+      
+        }
       }
     }
-    dataOutputStream.writeByte(0xFF);
-    fileOutputStream.close();
     Log.info("Saved performance information '" + file.getAbsolutePath() + "'");
   }
 

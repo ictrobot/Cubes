@@ -46,7 +46,7 @@ public class ClientNetworking extends Networking {
   private Exception exception;
   
   private int tickCount;
-  public double ping = -1;
+  public double pingTime = -1;
   public boolean awaitingPingResponse = false;
 
   public ClientNetworking(ClientNetworkingParameter clientNetworkingParameter) {

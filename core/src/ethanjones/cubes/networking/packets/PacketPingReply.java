@@ -43,11 +43,11 @@ public class PacketPingReply extends Packet {
     if (clientPing < 0) Log.error("Negative ping time! " + clientPing);
     ClientNetworking networking = (ClientNetworking) NetworkingManager.getNetworking(Side.Client);
     networking.awaitingPingResponse = false;
-    if (networking.ping < 0) {
-      networking.ping = clientPing;
+    if (networking.pingTime < 0) {
+      networking.pingTime = clientPing;
     } else {
-      networking.ping = (networking.ping * 0.6d) + (clientPing * 0.4d);
+      networking.pingTime = (networking.pingTime * 0.6d) + (clientPing * 0.4d);
     }
-    if (Networking.NETWORKING_DEBUG) Log.debug("Ping: " + networking.ping + " current: " + clientPing);
+    if (Networking.NETWORKING_DEBUG) Log.debug("Ping: " + networking.pingTime + " current: " + clientPing);
   }
 }
