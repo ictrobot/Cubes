@@ -152,7 +152,7 @@ tasks.eclipse.doLast {
     delete ".project"
 }
 
-task travis(dependsOn: ['core:publish', 'server:publish', 'client:publish', 'android:publish']) {
+task travis(dependsOn: ['core:publish', 'server:publish', 'client:publish', 'android:publish', 'sonarqube']) {
 
 }
 
