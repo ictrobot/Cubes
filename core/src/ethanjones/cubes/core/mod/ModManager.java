@@ -98,6 +98,14 @@ public class ModManager {
         }
       } catch (Exception e) {
         Log.error("Failed to load mod: " + name, e);
+      } finally {
+        if (inputStream != null) {
+          try {
+            inputStream.close();
+          } catch (Exception ignored) {
+      
+          }
+        }
       }
       try {
         Log.debug("Mod file: \"" + fileHandle.name() + "\" Name: \"" + name + "\"");
@@ -140,14 +148,6 @@ public class ModManager {
 
       } catch (Exception e) {
         throw new CubesException("Failed to make instance of mod: " + name, e);
-      } finally {
-        if (inputStream != null) {
-          try {
-            inputStream.close();
-          } catch (Exception ignored) {
-            
-          }
-        }
       }
     }
     ModManager.mods = Collections.unmodifiableList(mods);
