@@ -23,9 +23,11 @@ public class CrashActivity extends Activity {
 
   private static String getLog(String file) {
     StringBuilder output = new StringBuilder();
+    FileInputStream stream = null;
     InputStreamReader reader = null;
     try {
-      reader = new InputStreamReader(new FileInputStream(file));
+      stream = new FileInputStream(file);
+      reader = new InputStreamReader(stream);
       char[] buffer = new char[512];
 
       while (true) {
@@ -36,6 +38,10 @@ public class CrashActivity extends Activity {
     } catch (IOException ex) {
       throw new RuntimeException(ex);
     } finally {
+      try {
+        if (stream != null) stream.close();
+      } catch (IOException ignored) {
+      }
       try {
         if (reader != null) reader.close();
       } catch (IOException ignored) {
