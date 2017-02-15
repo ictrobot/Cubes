@@ -13,8 +13,8 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class Entities extends HashMap<UUID, Entity> implements HasLock {
-  public final Lock lock = new Lock();
-  public final World world;
+  public transient final Lock lock = new Lock();
+  public transient final World world;
   
   public Entities(World world) {
     this.world = world;
