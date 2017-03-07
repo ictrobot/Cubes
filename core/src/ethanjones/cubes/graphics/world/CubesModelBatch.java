@@ -15,13 +15,17 @@ public class CubesModelBatch extends ModelBatch {
     @Override
     public Renderable obtain () {
       Renderable renderable = super.obtain();
-      renderable.environment = null;
-      renderable.material = null;
-      renderable.meshPart.set("", null, 0, 0, 0);
-      renderable.shader = null;
+      // super.obtain resets the following
+      //renderable.environment = null;
+      //renderable.material = null;
+      //renderable.meshPart.set("", null, 0, 0, 0);
+      //renderable.shader = null;
+  
+      // renderable.userData = null;
+      // built in as of libgdx 1.9.6
+      // https://github.com/libgdx/libgdx/pull/4550
       
       // custom
-      renderable.userData = null;
       renderable.worldTransform.idt();
       
       return renderable;
