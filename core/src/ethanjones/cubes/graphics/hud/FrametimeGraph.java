@@ -27,20 +27,22 @@ public class FrametimeGraph {
   public static void drawLines(SpriteBatch batch) {
     if (!Settings.getBooleanSettingValue(Settings.DEBUG_FRAMETIME_GRAPH)) return;
 
-    while (frametimes.size() < GUI_WIDTH) {
+    float width = width();
+    
+    while (frametimes.size() < width) {
       frametimes.addFirst(0f);
     }
     for (int i = 0; i <= 16; i++) {
-      batch.draw(textureLine, 0, yOffset + (scale * i), GUI_WIDTH, 1);
+      batch.draw(textureLine, 0, yOffset + (scale * i), width, 1);
     }
-    batch.draw(textureLine60, 0, yOffset + (scale * 16.666666f), GUI_WIDTH, 1);
+    batch.draw(textureLine60, 0, yOffset + (scale * 16.666666f), width, 1);
   }
 
   public static void drawPoints() {
     if (!Settings.getBooleanSettingValue(Settings.DEBUG_FRAMETIME_GRAPH)) return;
 
     renderer.begin(Graphics.screenViewport.getCamera().combined, GL20.GL_POINTS);
-    for (int x = 0; x < frametimes.size(); x++) {
+    for (int x = 0; x < Math.min(frametimes.size(), width()); x++) {
       float y = yOffset + (frametimes.get(x) * scale);
       renderer.vertex(x, y, 0);
     }
@@ -49,9 +51,13 @@ public class FrametimeGraph {
 
   public static void update() {
     frametimes.addLast(Gdx.graphics.getRawDeltaTime() * 1000f);
-    while (frametimes.size() > GUI_WIDTH) {
+    while (frametimes.size() > width()) {
       frametimes.removeFirst();
     }
+  }
+  
+  private static float width() {
+    return Math.min(GUI_WIDTH, 2000);
   }
 
   private static ShaderProgram createShaderProgram() {
