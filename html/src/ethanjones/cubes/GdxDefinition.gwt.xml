@@ -4,7 +4,8 @@
 	<inherits name='com.badlogic.gdx.backends.gdx_backends_gwt' />
 
 	<inherits name='Cubes' />
+	<inherits name='Data' />
 	<entry-point class='ethanjones.cubes.client.HtmlLauncher' />
 	<set-configuration-property name='xsiframe.failIfScriptTag' value='FALSE'/>
-	<set-configuration-property name="gdx.assetpath" value="../core/assets" />
+	<set-configuration-property name="gdx.assetpath" value="../assets" />
 </module>

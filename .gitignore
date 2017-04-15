@@ -105,3 +105,5 @@ assets/log.txt
 hs_err_pid*.log
 replay_pid*.log
 log.txt
+
+html/war/assets

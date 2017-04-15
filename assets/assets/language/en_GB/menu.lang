@@ -16,7 +16,7 @@ menu.singleplayer.delete=Delete
 menu.singleplayer.create=Create
 
 menu.singleplayer.create.title=New Save
-menu.singleplayer.create.temporary_title=Temporary World
+menu.singleplayer.create.temporary_title=Singleplayer
 menu.singleplayer.create.name=Save name
 menu.singleplayer.create.seed=Terrain seed
 menu.singleplayer.create.start=Start
