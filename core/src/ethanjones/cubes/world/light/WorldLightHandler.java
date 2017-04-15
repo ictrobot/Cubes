@@ -5,8 +5,6 @@ import ethanjones.cubes.core.event.EventHandler;
 import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
 import ethanjones.cubes.core.id.TransparencyManager;
 import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.core.performance.Performance;
-import ethanjones.cubes.core.performance.PerformanceTags;
 import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.storage.Area;
 import ethanjones.cubes.world.thread.AreaNotLoadedException;
@@ -24,7 +22,6 @@ public class WorldLightHandler {
       return;
     }
 
-    Performance.start(PerformanceTags.LIGHT_UPDATE);
     Area area = event.getArea();
     LightWorldSection lws = new LightWorldSection(area);
     try {
@@ -44,6 +41,5 @@ public class WorldLightHandler {
       Log.error("Failed to update light", e);
     }
     lws.unlock();
-    Performance.stop(PerformanceTags.LIGHT_UPDATE);
   }
 }

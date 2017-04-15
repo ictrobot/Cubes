@@ -32,7 +32,7 @@ public class Save {
   public Save(String name, FileHandle fileHandle, boolean readOnly) {
     this.name = name;
     this.fileHandle = fileHandle;
-    this.readOnly = readOnly;
+    this.readOnly = true;
 
     if (!this.readOnly) {
       this.fileHandle.mkdirs();
@@ -43,8 +43,7 @@ public class Save {
   }
 
   public boolean writeArea(Area area) {
-    if (readOnly) return false;
-    return SaveAreaIO.write(this, area);
+    return false;
   }
 
   public void writeAreas(AreaMap areas) {
@@ -52,8 +51,7 @@ public class Save {
   }
 
   public Area readArea(int x, int z) {
-    if (fileHandle == null) return null;
-    return SaveAreaIO.read(this, x, z);
+    return null;
   }
 
   public void writePlayer(Player player) {

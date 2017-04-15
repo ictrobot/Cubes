@@ -5,15 +5,11 @@ import ethanjones.cubes.core.event.EventHandler;
 import ethanjones.cubes.core.event.entity.living.player.PlayerBreakBlockEvent;
 import ethanjones.cubes.core.event.entity.living.player.PlayerPlaceBlockEvent;
 import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.core.mod.ModManager;
-import ethanjones.cubes.core.mod.event.StartingServerEvent;
-import ethanjones.cubes.core.mod.event.StoppingServerEvent;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.timing.TimeHandler;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.core.util.VectorUtil;
-import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.networking.socket.SocketMonitor;
 import ethanjones.cubes.side.common.Cubes;
@@ -44,13 +40,10 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
     super.create();
     save.readIDManager();
     CommandManager.reset();
-    NetworkingManager.serverInit();
 
     world = new WorldServer(save);
 
     Side.getTiming().addHandler(this, SAVE_TIME);
-
-    ModManager.postModEvent(new StartingServerEvent());
 
     lastUpdateTime.set(System.currentTimeMillis());
     state.setup();
@@ -106,7 +99,6 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
   @Override
   protected void stop() {
     if (state.hasStopped() || !state.isSetup()) return;
-    ModManager.postModEvent(new StoppingServerEvent());
     super.stop();
     if (isDedicated()) Adapter.quit();
   }

@@ -3,7 +3,6 @@ package ethanjones.cubes.world.thread;
 import ethanjones.cubes.core.event.world.generation.AreaLoadedEvent;
 import ethanjones.cubes.core.event.world.generation.FeaturesEvent;
 import ethanjones.cubes.core.event.world.generation.GenerationEvent;
-import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.ThreadPool;
 import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.light.SunLight;
@@ -20,12 +19,9 @@ import java.util.concurrent.atomic.AtomicReference;
 public class WorldTasks {
 
   public static final int GENERATION_THREADS = 8;
-  public static final int SAVE_THREADS = 8;
 
   private static final WorldGenerationRunnable gen = new WorldGenerationRunnable();
-  private static final WorldSaveRunnable save = new WorldSaveRunnable();
   private static final ThreadPool genThreadPool;
-  private static final ThreadPool saveThreadPool;
 
   static {
     genThreadPool = new ThreadPool("WorldGeneration", gen, GENERATION_THREADS);
@@ -33,11 +29,6 @@ public class WorldTasks {
     genThreadPool.setPriority(Thread.MIN_PRIORITY);
     genThreadPool.setDaemon(true);
     genThreadPool.start();
-    saveThreadPool = new ThreadPool("Save", save, SAVE_THREADS);
-    saveThreadPool.setSide(Side.Server);
-    saveThreadPool.setPriority(Thread.MIN_PRIORITY + 1);
-    saveThreadPool.setDaemon(true);
-    saveThreadPool.start();
   }
 
   public static GenerationTask request(WorldServer worldServer, MultiAreaReference references, WorldRequestParameter parameter) {
@@ -47,28 +38,18 @@ public class WorldTasks {
   }
 
   public static void save(Save s, Collection<Area> areas) {
-    WorldSaveTask saveTask = new WorldSaveTask(s, areas);
-    save.queue.add(saveTask);
+    
   }
   
   public static void save(Save s, AreaMap areas) {
-    WorldSaveTask saveTask = new WorldSaveTask(s, areas);
-    save.queue.add(saveTask);
+    
   }
 
   public static boolean currentlySaving() {
-    return save.queue.size() > 0;
+    return false;
   }
 
   public static boolean waitSaveFinish() {
-    while (currentlySaving()) {
-      try {
-        Thread.sleep(100);
-      } catch (InterruptedException e) {
-        Log.debug(e);
-        return false;
-      }
-    }
     return true;
   }
 

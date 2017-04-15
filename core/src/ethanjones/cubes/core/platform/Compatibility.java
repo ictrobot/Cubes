@@ -2,7 +2,6 @@ package ethanjones.cubes.core.platform;
 
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.logging.LogWriter;
-import ethanjones.cubes.core.mod.ModLoader;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.Debug.UncaughtExceptionHandler;
 import ethanjones.cubes.graphics.assets.AssetFinder;
@@ -86,11 +85,7 @@ public abstract class Compatibility {
     Thread.currentThread().setUncaughtExceptionHandler(UncaughtExceptionHandler.instance);
 
     try {
-      if (applicationType == ApplicationType.HeadlessDesktop) {
-        run(new ServerAdapter());
-      } else {
-        run(new ClientAdapter());
-      }
+      run(new ClientAdapter());
     } catch (Exception e) {
       try {
         Log.error("Failed to start", CubesException.get(e));
@@ -105,8 +100,6 @@ public abstract class Compatibility {
   }
 
   protected abstract void run(ApplicationListener applicationListener);
-
-  public abstract ModLoader getModLoader();
 
   public void update() {
 

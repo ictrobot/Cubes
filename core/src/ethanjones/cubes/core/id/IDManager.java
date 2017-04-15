@@ -2,8 +2,6 @@ package ethanjones.cubes.core.id;
 
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.core.mod.ModInstance;
-import ethanjones.cubes.core.mod.ModManager;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.item.Item;
@@ -23,7 +21,6 @@ public class IDManager {
   private static List<ItemBlock> itemBlockList = new ArrayList<ItemBlock>();
   private static List<Item> itemList = new ArrayList<Item>();
   private static Map<String, Item> idToItem = new HashMap<String, Item>();
-  private static Map<String, ModInstance> idToMod = new HashMap<String, ModInstance>();
   private static AtomicBoolean loaded = new AtomicBoolean(false);
 
   public static void register(Block block) {
@@ -34,7 +31,6 @@ public class IDManager {
     ItemBlock itemBlock = block.getItemBlock();
     itemBlockList.add(itemBlock);
     idToItem.put(itemBlock.id, itemBlock);
-    idToMod.put(block.id, ModManager.getCurrentMod());
     if (!itemBlock.id.equals(block.id)) throw new IllegalArgumentException(itemBlock.id);
   }
 
@@ -43,14 +39,11 @@ public class IDManager {
     checkID(item.id);
     itemList.add(item);
     idToItem.put(item.id, item);
-    idToMod.put(item.id, ModManager.getCurrentMod());
   }
 
   private static void checkID(String id) {
     if (!id.contains(":")) throw new IllegalArgumentException(id + " is not in the correct format");
     String i = id.substring(0, id.indexOf(":")).toLowerCase();
-    String m = ModManager.getCurrentModName().toLowerCase();
-    if (!i.equals(m)) throw new IllegalArgumentException("\"" + m + "\" cannot register id \"" + id + "\"");
   }
 
   public static Block toBlock(String id) {
@@ -61,11 +54,6 @@ public class IDManager {
   public static Item toItem(String id) {
     if (id == null || id.isEmpty()) return null;
     return idToItem.get(id);
-  }
-
-  public static ModInstance getMod(String id) {
-    if (id == null || id.isEmpty()) return null;
-    return idToMod.get(id);
   }
 
   public static List<Block> getBlocks() {
@@ -85,15 +73,13 @@ public class IDManager {
 
     idToBlock = Collections.unmodifiableMap(idToBlock);
     idToItem = Collections.unmodifiableMap(idToItem);
-    idToMod = Collections.unmodifiableMap(idToMod);
     blockList = Collections.unmodifiableList(blockList);
     itemBlockList = Collections.unmodifiableList(itemBlockList);
     itemList = Collections.unmodifiableList(itemList);
 
     Log.debug("IDs:");
-    for (Map.Entry<String, ModInstance> entry : idToMod.entrySet()) {
-      ModInstance m = entry.getValue();
-      Log.debug(String.format("%1$-" + 32 + "s", entry.getKey()) + "- " + (m != null ? m.getName() : "core"));
+    for (Block b: blockList) {
+      Log.debug(b.id);
     }
   }
 

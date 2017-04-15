@@ -5,10 +5,6 @@ import ethanjones.cubes.core.id.IDManager;
 import ethanjones.cubes.core.json.JsonLoader;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.core.mod.ModManager;
-import ethanjones.cubes.core.mod.event.InitializationEvent;
-import ethanjones.cubes.core.mod.event.PostInitializationEvent;
-import ethanjones.cubes.core.mod.event.PreInitializationEvent;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.AdapterInterface;
 import ethanjones.cubes.core.platform.Compatibility;
@@ -54,22 +50,18 @@ public abstract class Cubes {
     Assets.preInit();
     JsonLoader.loadCore();
     Blocks.init();
-    ModManager.init();
     JsonLoader.firstStage();
     
     Compatibility.get().preInit();
-    ModManager.postModEvent(new PreInitializationEvent());
 
     JsonLoader.secondStage();
     Settings.init();
     Compatibility.get().init();
-    ModManager.postModEvent(new InitializationEvent());
 
     Assets.init();
     Localization.load();
     Settings.print();
     Compatibility.get().postInit();
-    ModManager.postModEvent(new PostInitializationEvent());
     IDManager.loaded();
     EntityManager.loaded();
 

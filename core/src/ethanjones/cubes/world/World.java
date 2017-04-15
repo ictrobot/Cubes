@@ -3,8 +3,6 @@ package ethanjones.cubes.world;
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.block.data.BlockData;
 import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.core.lua.LuaMapping;
-import ethanjones.cubes.core.lua.LuaMappingWorld;
 import ethanjones.cubes.core.util.Lock;
 import ethanjones.cubes.core.util.Lock.HasLock;
 import ethanjones.cubes.entity.Entity;
@@ -25,7 +23,6 @@ import ethanjones.cubes.world.thread.WorldTasks;
 import ethanjones.data.DataGroup;
 
 import com.badlogic.gdx.utils.Disposable;
-import org.luaj.vm2.LuaTable;
 
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -44,7 +41,6 @@ public abstract class World implements Disposable, HasLock {
   
   protected int time;
   protected final AtomicBoolean disposed = new AtomicBoolean(false);
-  public final LuaTable lua;
 
   public World(Save save) {
     this.save = save;
@@ -52,7 +48,6 @@ public abstract class World implements Disposable, HasLock {
     this.time = save == null ? 0 : save.getSaveOptions().worldTime;
     map = new AreaMap(this);
     entities = new Entities(this);
-    lua = LuaMapping.mapping(new LuaMappingWorld(this));
   }
   
   public Area setArea(Area area) {

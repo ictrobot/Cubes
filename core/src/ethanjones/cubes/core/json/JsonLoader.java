@@ -2,7 +2,6 @@ package ethanjones.cubes.core.json;
 
 import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.core.id.GetInstances;
-import ethanjones.cubes.core.mod.json.JsonModInstance;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.util.Multimap;
 import ethanjones.cubes.graphics.assets.Asset;
@@ -34,10 +33,6 @@ public class JsonLoader {
     } catch (IOException e) {
       throw new CubesException("Failed to load core json", e);
     }
-  }
-
-  public static Multimap<JsonStage, JsonValue> load(JsonModInstance mod) throws IOException {
-    return load(mod.jsonFiles);
   }
 
   private static Multimap<JsonStage, JsonValue> load(Map<String, FileHandle> map) throws IOException {

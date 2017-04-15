@@ -120,16 +120,6 @@ project(":client") {
     }
 }
 
-project(":server") {
-    apply plugin: "java"
-    apply plugin: "maven-publish"
-
-    dependencies {
-        compile project(":desktop")
-        compile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
-    }
-}
-
 project(":android") {
     apply plugin: "android-sdk-manager"
     apply plugin: "android"

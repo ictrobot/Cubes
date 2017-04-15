@@ -1,6 +1,5 @@
 package ethanjones.cubes.graphics.rendering;
 
-import ethanjones.cubes.core.performance.Performance;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.settings.Keybinds;
 import ethanjones.cubes.core.settings.Settings;
@@ -137,11 +136,7 @@ public class GuiRenderer implements Disposable {
       debugButton.addListener(new ChangeListener() {
         @Override
         public void changed(ChangeEvent event, Actor actor) {
-          if (Compatibility.get().functionModifier()) {
-            Performance.toggleTracking();
-          } else {
-            debugEnabled = !debugEnabled;
-          }
+          debugEnabled = !debugEnabled;
         }
       });
       chatButton = new ImageButton(ImageButtons.chatButton());
@@ -286,11 +281,7 @@ public class GuiRenderer implements Disposable {
         return true;
       }
       if (keycode == debug) {
-        if (Compatibility.get().functionModifier()) {
-          Performance.toggleTracking();
-        } else {
-          debugEnabled = !debugEnabled;
-        }
+        debugEnabled = !debugEnabled;
         return true;
       }
       if (keycode == chat) {

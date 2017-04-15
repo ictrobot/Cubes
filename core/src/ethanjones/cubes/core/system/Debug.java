@@ -1,15 +1,10 @@
 package ethanjones.cubes.core.system;
 
 import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.core.logging.LogLevel;
 import ethanjones.cubes.core.logging.loggers.FileLogWriter;
-import ethanjones.cubes.core.mod.ModInstance;
-import ethanjones.cubes.core.mod.ModManager;
-import ethanjones.cubes.core.mod.ModState;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.Compatibility;
 
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Debug {
@@ -96,37 +91,11 @@ public class Debug {
     } catch (Exception e) {
       throwable.printStackTrace();
     }
-    if (crashedNum == 1) {
-      try {
-        printMods(LogLevel.error);
-      } catch (Exception e) {
-
-      }
-    }
   }
 
   protected static void errorExit() {
     System.out.flush();
     System.exit(1);
-  }
-
-  private static synchronized void printMods(LogLevel logLevel) {
-    if (ModManager.getMods().size() > 0) {
-      Log.log(logLevel, "Mods:");
-      for (ModInstance modInstance : ModManager.getMods()) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(modInstance.getName());
-        List<ModState> modStates = modInstance.getModStates();
-        if (modStates.size() > 0) builder.append(" - ");
-        for (int i = 0; i < modStates.size(); i++) {
-          builder.append(modStates.get(i).name());
-          if (i != modStates.size() - 1) builder.append(" > ");
-        }
-        Log.log(logLevel, builder.toString());
-      }
-    } else {
-      Log.log(logLevel, "No Mods");
-    }
   }
 
   public static boolean stackContain(Class<?> c) {

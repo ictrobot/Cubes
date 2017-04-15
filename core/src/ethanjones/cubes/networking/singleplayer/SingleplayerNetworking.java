@@ -28,11 +28,12 @@ public class SingleplayerNetworking extends Networking {
     setNetworkingState(NetworkingState.Starting);
     cloneToServer.start();
     cloneToClient.start();
+    setNetworkingState(NetworkingState.Running);
   }
 
   @Override
   public void init() {
-    setNetworkingState(NetworkingState.Running);
+    
   }
 
   @Override

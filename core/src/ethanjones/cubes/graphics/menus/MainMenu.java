@@ -3,7 +3,6 @@ package ethanjones.cubes.graphics.menus;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Adapter;
-import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.graphics.menu.Fonts;
@@ -55,18 +54,7 @@ public class MainMenu extends Menu {
     singleplayer.addListener(new ChangeListener() {
       @Override
       public void changed(ChangeEvent event, Actor actor) {
-        if (Compatibility.get().functionModifier()) {
-          Adapter.setMenu(new SingleplayerTemporarySaveMenu());
-        } else {
-          Adapter.setMenu(new SingleplayerSavesMenu());
-        }
-      }
-    });
-    buttons.add(multiplayer = new TextButton(Localization.get("menu.main.multiplayer"), skin)).row();
-    multiplayer.addListener(new ChangeListener() {
-      @Override
-      public void changed(ChangeEvent event, Actor actor) {
-        Adapter.setMenu(new MultiplayerConnectMenu());
+        Adapter.setMenu(new SingleplayerTemporarySaveMenu());
       }
     });
     buttons.add(settings = new TextButton(Localization.get("menu.main.settings"), skin)).row();

@@ -1,12 +1,8 @@
 package ethanjones.cubes.networking;
 
 import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.networking.client.ClientNetworking;
-import ethanjones.cubes.networking.client.ClientNetworkingParameter;
 import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.networking.server.ClientIdentifier;
-import ethanjones.cubes.networking.server.ServerNetworking;
-import ethanjones.cubes.networking.server.ServerNetworkingParameter;
 import ethanjones.cubes.networking.singleplayer.SingleplayerNetworking;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.common.Side;
@@ -15,24 +11,6 @@ public class NetworkingManager {
 
   private static Networking clientNetworking;
   private static Networking serverNetworking;
-
-  public static void clientPreInit(ClientNetworkingParameter clientNetworkingParameter) throws Exception {
-    clientNetworking = new ClientNetworking(clientNetworkingParameter);
-    clientNetworking.preInit();
-  }
-
-  public static void clientInit() {
-    clientNetworking.init();
-  }
-
-  public static void serverPreInit(ServerNetworkingParameter serverNetworkingParameter) throws Exception {
-    serverNetworking = new ServerNetworking(serverNetworkingParameter);
-    serverNetworking.preInit();
-  }
-
-  public static void serverInit() {
-    serverNetworking.init();
-  }
 
   public static void singleplayerPreInit() throws Exception {
     clientNetworking = new SingleplayerNetworking();

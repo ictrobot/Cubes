@@ -1,11 +1,6 @@
 package ethanjones.cubes.side.client;
 
 import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.core.mod.ModManager;
-import ethanjones.cubes.core.mod.event.StartingClientEvent;
-import ethanjones.cubes.core.mod.event.StoppingClientEvent;
-import ethanjones.cubes.core.performance.Performance;
-import ethanjones.cubes.core.performance.PerformanceTags;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.entity.living.player.Player;
@@ -14,7 +9,6 @@ import ethanjones.cubes.graphics.menus.PauseMenu;
 import ethanjones.cubes.graphics.menus.WorldLoadingMenu;
 import ethanjones.cubes.graphics.rendering.Renderer;
 import ethanjones.cubes.input.InputChain;
-import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.client.WorldClient;
@@ -49,7 +43,6 @@ public class CubesClient extends Cubes implements ApplicationListener {
   public void create() {
     if (state.isSetup()) return;
     super.create();
-    NetworkingManager.clientInit();
 
     inputChain = new InputChain();
     renderer = new Renderer();
@@ -61,7 +54,6 @@ public class CubesClient extends Cubes implements ApplicationListener {
 
     world = new WorldClient();
 
-    ModManager.postModEvent(new StartingClientEvent());
     Side.getEventBus().register(new PlayerCollision());
     
     nextTickTime = System.currentTimeMillis() + tickMS;
@@ -86,7 +78,6 @@ public class CubesClient extends Cubes implements ApplicationListener {
         Adapter.setMenu(new PauseMenu());
       }
     }
-    Performance.start(PerformanceTags.CLIENT_FRAME);
     
     long diff = nextTickTime - System.currentTimeMillis();
     if (diff < -16) {
@@ -113,7 +104,6 @@ public class CubesClient extends Cubes implements ApplicationListener {
     inputChain.beforeRender();
     renderer.render();
     inputChain.afterRender();
-    Performance.stop(PerformanceTags.CLIENT_FRAME);
   }
   
   @Override
@@ -130,7 +120,6 @@ public class CubesClient extends Cubes implements ApplicationListener {
   @Override
   public void stop() {
     if (state.hasStopped() || !state.isSetup()) return;
-    ModManager.postModEvent(new StoppingClientEvent());
     super.stop();
     renderer.dispose();
     inputChain.dispose();

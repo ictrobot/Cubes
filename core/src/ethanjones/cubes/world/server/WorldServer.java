@@ -1,8 +1,6 @@
 package ethanjones.cubes.world.server;
 
 import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.core.performance.Performance;
-import ethanjones.cubes.core.performance.PerformanceTags;
 import ethanjones.cubes.entity.Entity;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketEntityAdd;
@@ -39,20 +37,16 @@ public class WorldServer extends World {
 
   @Override
   public void tick() {
-    Performance.start(PerformanceTags.SERVER_WORLD_UPDATE);
     updateLock.writeLock();
     super.tick();
 
-    Performance.start(PerformanceTags.SERVER_WORLD_AREA_TICK);
     map.lock.readLock();
     for (Area area : map) {
       area.tick();
     }
     map.lock.readUnlock();
-    Performance.stop(PerformanceTags.SERVER_WORLD_AREA_TICK);
   
     updateLock.writeUnlock();
-    Performance.stop(PerformanceTags.SERVER_WORLD_UPDATE);
   }
 
   @Override

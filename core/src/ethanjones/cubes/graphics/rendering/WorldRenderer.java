@@ -1,7 +1,5 @@
 package ethanjones.cubes.graphics.rendering;
 
-import ethanjones.cubes.core.performance.Performance;
-import ethanjones.cubes.core.performance.PerformanceTags;
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.entity.Entity;
@@ -55,7 +53,6 @@ public class WorldRenderer implements Disposable {
   public void render() {
     WorldGraphicsPools.free();
 
-    Performance.start(PerformanceTags.CLIENT_RENDER_WORLD);
     AreaRenderer.renderedThisFrame = 0;
     AreaRenderer.renderedMeshesThisFrame = 0;
     needToRefresh.clear();
@@ -67,7 +64,6 @@ public class WorldRenderer implements Disposable {
     int renderDistance = Settings.getIntegerSettingValue(Settings.GRAPHICS_VIEW_DISTANCE);
     AreaBoundaries.update();
 
-    Performance.start(PerformanceTags.CLIENT_RENDER_WORLD_AREAS);
     World world = Cubes.getClient().world;
     AreaMap areaMap = world.map;
     areaMap.lock.readLock();
@@ -139,20 +135,14 @@ public class WorldRenderer implements Disposable {
     }
     areaMap.lock.readUnlock();
     poolNode.addAll(checkedNodes);
-    Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_AREAS);
 
     if (needToRefresh.size() > 0) {
-      Performance.start(PerformanceTags.CLIENT_RENDER_WORLD_UPDATES);
       Collections.sort(needToRefresh, new AreaRendererSorter());
       for (AreaRenderer areaRenderer : needToRefresh) {
-        Performance.start(PerformanceTags.CLIENT_RENDER_WORLD_UPDATE);
         modelBatch.render(areaRenderer);
-        Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_UPDATE);
       }
-      Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_UPDATES);
     }
     
-    Performance.start(PerformanceTags.CLIENT_RENDER_WORLD_ENTITY);
     float deltaTime = Gdx.graphics.getDeltaTime();
     world.entities.lock.readLock();
     for (Entity entity : world.entities.values()) {
@@ -160,15 +150,12 @@ public class WorldRenderer implements Disposable {
       if (entity instanceof RenderableProvider) modelBatch.render(((RenderableProvider) entity));
     }
     world.entities.lock.readUnlock();
-    Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_ENTITY);
   
     renderIfNotNull(SelectedBlock.draw());
     renderIfNotNull(BreakingRenderer.draw());
     renderIfNotNull(AreaBoundaries.drawCurrent(pos.areaX, yPos, pos.areaZ));
     SunRenderer.draw(modelBatch);
     modelBatch.end();
-
-    Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD);
   }
   
   private void renderIfNotNull(Renderable r) {

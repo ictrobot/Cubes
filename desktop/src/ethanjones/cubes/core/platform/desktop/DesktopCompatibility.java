@@ -1,7 +1,6 @@
 package ethanjones.cubes.core.platform.desktop;
 
 import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.core.mod.ModLoader;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.system.Branding;
@@ -21,7 +20,6 @@ public abstract class DesktopCompatibility extends Compatibility {
 
   public final OS os;
   private final String[] arg;
-  protected DesktopModLoader modLoader;
 
   protected DesktopCompatibility(DesktopLauncher desktopLauncher, Application.ApplicationType applicationType, String[] arg) {
     super(desktopLauncher, applicationType);
@@ -37,8 +35,6 @@ public abstract class DesktopCompatibility extends Compatibility {
     } else {
       os = OS.Unknown;
     }
-
-    modLoader = new DesktopModLoader();
   }
 
   public FileHandle getBaseFolder() {
@@ -74,11 +70,6 @@ public abstract class DesktopCompatibility extends Compatibility {
   @Override
   public boolean isTouchScreen() {
     return false;
-  }
-
-  @Override
-  public ModLoader getModLoader() {
-    return modLoader;
   }
 
   @Override
