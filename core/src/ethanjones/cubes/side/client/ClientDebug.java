@@ -14,8 +14,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.WindowedMean;
 
-import java.text.DecimalFormat;
-
 public class ClientDebug {
 
   private static final String lineSeparator = System.getProperty("line.separator");
@@ -23,8 +21,22 @@ public class ClientDebug {
   private static PerSecond fps = new PerSecond(10);
   private static StringBuilder builder = new StringBuilder(250).append(Branding.DEBUG).append(lineSeparator);
   private static int brandingDebugLength = builder.length();
-  private static DecimalFormat twoDP = new DecimalFormat("0.00");
-  private static DecimalFormat oneDP = new DecimalFormat("0.0");
+  
+  private static String twoDP(double d) {
+    int i = (int) Math.ceil(d);
+    int f = (int) ((d * 10) % 10);
+    if (f < 0) f *= -1;
+    int s = (int) ((d * 100) % 10);
+    if (s < 0) s *= -1;
+    return i + "." + f + s;
+  }
+  
+  private static String oneDP(double d) {
+    int i = (int) Math.ceil(d);
+    int f = (int) ((d * 10) % 10);
+    if (f < 0) f *= -1;
+    return i + "." + f;
+  }
   
   protected static void frame() {
     fps.tick();
@@ -35,12 +47,12 @@ public class ClientDebug {
     ms.addValue(Gdx.graphics.getRawDeltaTime() * 1000f);
 
     builder.setLength(brandingDebugLength);
-    builder.append("FPS:").append(Gdx.graphics.getFramesPerSecond()).append(" MS:").append(twoDP.format(ms.getMean())).append(" MEM:").append(Compatibility.get().getFreeMemory()).append("MB").append(lineSeparator);
-    builder.append("TPS C:").append(Cubes.getClient().ticksPerSecond.last()).append(" A:").append(oneDP.format(Cubes.getClient().ticksPerSecond.average()));
-    if (Cubes.getServer() != null) builder.append(" S:").append(Cubes.getServer().ticksPerSecond.last()).append(" A:").append(oneDP.format(Cubes.getServer().ticksPerSecond.average()));
+    builder.append("FPS:").append(Gdx.graphics.getFramesPerSecond()).append(" MS:").append(twoDP(ms.getMean())).append(" MEM:").append(Compatibility.get().getFreeMemory()).append("MB").append(lineSeparator);
+    builder.append("TPS C:").append(Cubes.getClient().ticksPerSecond.last()).append(" A:").append(oneDP(Cubes.getClient().ticksPerSecond.average()));
+    if (Cubes.getServer() != null) builder.append(" S:").append(Cubes.getServer().ticksPerSecond.last()).append(" A:").append(oneDP(Cubes.getServer().ticksPerSecond.average()));
     builder.append(lineSeparator);
-    builder.append("POS X:").append(twoDP.format(p.x)).append("(").append(CoordinateConverter.area(p.x)).append(")").append(" Y:").append(twoDP.format(p.y)).append("(").append(CoordinateConverter.area(p.y)).append(")").append(" Z:").append(twoDP.format(p.z)).append("(").append(CoordinateConverter.area(p.z)).append(")").append(lineSeparator);
-    builder.append("DIR X:").append(twoDP.format(Cubes.getClient().player.angle.x)).append(" Y:").append(twoDP.format(Cubes.getClient().player.angle.y)).append(" Z:").append(twoDP.format(Cubes.getClient().player.angle.z)).append(lineSeparator);
+    builder.append("POS X:").append(twoDP(p.x)).append("(").append(CoordinateConverter.area(p.x)).append(")").append(" Y:").append(twoDP(p.y)).append("(").append(CoordinateConverter.area(p.y)).append(")").append(" Z:").append(twoDP(p.z)).append("(").append(CoordinateConverter.area(p.z)).append(")").append(lineSeparator);
+    builder.append("DIR X:").append(twoDP(Cubes.getClient().player.angle.x)).append(" Y:").append(twoDP(Cubes.getClient().player.angle.y)).append(" Z:").append(twoDP(Cubes.getClient().player.angle.z)).append(lineSeparator);
     builder.append("R A:").append(AreaRenderer.renderedThisFrame).append(" M:").append(AreaRenderer.renderedMeshesThisFrame).append(lineSeparator);
     builder.append("W B:").append(getBlockLight()).append(" S:").append(getSunlight()).append(" T:").append(Cubes.getClient().world.getTime());
     BlockIntersection blockIntersection = BlockIntersection.getBlockIntersection(Cubes.getClient().player.position, Cubes.getClient().player.angle, Cubes.getClient().world);

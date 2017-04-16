@@ -1,5 +1,6 @@
 package ethanjones.cubes.networking.singleplayer;
 
+import ethanjones.cubes.core.gwt.FakeAtomic.AtomicBoolean;
 import ethanjones.cubes.core.gwt.Task;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.Debug;
@@ -9,9 +10,10 @@ import ethanjones.cubes.networking.packet.PriorityPacketQueue;
 import ethanjones.cubes.networking.stream.PairedStreams;
 import ethanjones.cubes.side.common.Side;
 
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import ethanjones.cubes.core.gwt.FakeAtomic.AtomicBoolean;
 
 import static ethanjones.cubes.networking.Networking.NETWORKING_DEBUG;
 
@@ -63,7 +65,7 @@ public class SingleplayerNetworkingTask extends Task {
 
           setSide(sideOut);
           pair.updateInput();
-          copy = packet.getClass().newInstance();
+          copy = ClassReflection.newInstance(packet.getClass());
           copy.read(dataInputStream);
         }
 

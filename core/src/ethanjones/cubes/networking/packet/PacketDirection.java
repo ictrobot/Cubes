@@ -2,6 +2,9 @@ package ethanjones.cubes.networking.packet;
 
 import ethanjones.cubes.side.common.Side;
 
+import com.badlogic.gdx.utils.reflect.Annotation;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -13,7 +16,9 @@ public enum PacketDirection {
   OMNIDIRECTIONAL;
 
   public static boolean checkPacketSend(Class<? extends Packet> packet, Side side) {
-    Direction annotation = packet.getAnnotation(Direction.class);
+    Annotation ann = ClassReflection.getAnnotation(packet.getClass(), Direction.class);
+    if (ann == null) return true;
+    Direction annotation = ann.getAnnotation(Direction.class);
     if (annotation == null) return true;
     PacketDirection dir = annotation.value();
     if (dir == OMNIDIRECTIONAL || (side == Side.Client && dir == TO_SERVER) || (side == Side.Server && dir == TO_CLIENT)) {
@@ -23,7 +28,9 @@ public enum PacketDirection {
   }
 
   public static boolean checkPacketReceive(Class<? extends Packet> packet, Side side) {
-    Direction annotation = packet.getAnnotation(Direction.class);
+    Annotation ann = ClassReflection.getAnnotation(packet.getClass(), Direction.class);
+    if (ann == null) return true;
+    Direction annotation = ann.getAnnotation(Direction.class);
     if (annotation == null) return true;
     PacketDirection dir = annotation.value();
     if (dir == OMNIDIRECTIONAL || (side == Side.Client && dir == TO_CLIENT) || (side == Side.Server && dir == TO_SERVER)) {

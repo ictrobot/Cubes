@@ -3,6 +3,7 @@ package ethanjones.cubes.world.thread;
 import ethanjones.cubes.core.event.world.generation.AreaLoadedEvent;
 import ethanjones.cubes.core.event.world.generation.FeaturesEvent;
 import ethanjones.cubes.core.event.world.generation.GenerationEvent;
+import ethanjones.cubes.core.gwt.FakeAtomic.AtomicReference;
 import ethanjones.cubes.world.light.SunLight;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
@@ -12,7 +13,6 @@ import ethanjones.cubes.world.storage.Area;
 import ethanjones.cubes.world.storage.AreaMap;
 
 import java.util.Collection;
-import ethanjones.cubes.core.gwt.FakeAtomic.AtomicReference;
 
 public class WorldTasks {
 
@@ -69,7 +69,7 @@ public class WorldTasks {
 
     AtomicReference<Object> features = area.features;
 
-    if (features.compareAndSet(null, Thread.currentThread())) {
+    if (features.compareAndSet(null, true)) {
       world.getTerrainGenerator().features(area, world);
       new FeaturesEvent(area, areaReference).post();
       area.initialUpdate();

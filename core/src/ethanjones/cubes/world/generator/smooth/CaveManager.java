@@ -31,27 +31,24 @@ public class CaveManager {
           Cave cave = null;
 
           AreaReference areaReference = new AreaReference().setFromAreaCoordinates(aX, aZ);
-          Object o = caves.putIfAbsent(areaReference, Thread.currentThread());
+          Object o = caves.putIfAbsent(areaReference, 0);
           if (o instanceof Cave) {
             cave = (Cave) o;
           } else if (o == null) { // this thread
             cave = loadCave(areaReference);
             if (cave == null) cave = generateCave(areaReference);
-            if (!caves.replace(areaReference.copy(), Thread.currentThread(), cave)) throw new IllegalStateException();
-            synchronized (caves) {
-              caves.notifyAll();
-            }
-          } else if (o instanceof Thread) { // wait for another thread
-            while (cave == null) {
-              synchronized (caves) {
-                try {
-                  caves.wait();
-                } catch (InterruptedException ignored) {
-                }
-              }
-              o = caves.get(areaReference);
-              if (o instanceof Cave) cave = (Cave) o;
-            }
+            if (!caves.replace(areaReference.copy(), 0, cave)) throw new IllegalStateException();
+//          } else if (o instanceof Thread) { // wait for another thread - not possible singlethreaded
+//            while (cave == null) {
+//              synchronized (caves) {
+//                try {
+//                  caves.wait();
+//                } catch (InterruptedException ignored) {
+//                }
+//              }
+//              o = caves.get(areaReference);
+//              if (o instanceof Cave) cave = (Cave) o;
+//            }
           } else {
             throw new IllegalStateException(o.getClass().getName());
           }

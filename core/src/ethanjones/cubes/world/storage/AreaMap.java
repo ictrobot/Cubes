@@ -72,9 +72,6 @@ public class AreaMap implements Iterable<Area>, HasLock {
     if (node.storedAreas == 0) removeNode(node);
     lock.writeUnlock();
     if (area != null) area.setAreaMap(this);
-    synchronized (this) {
-      this.notifyAll();
-    }
     if (old != null) {
       old.setAreaMap(null);
       old.unload();
@@ -206,9 +203,6 @@ public class AreaMap implements Iterable<Area>, HasLock {
         currentN = -1;
       }
   
-      synchronized (this) {
-        this.notifyAll();
-      }
       if (old != null) {
         old.setAreaMap(null);
         old.unload();

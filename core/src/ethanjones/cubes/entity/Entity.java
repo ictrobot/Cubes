@@ -1,7 +1,7 @@
 package ethanjones.cubes.entity;
 
-import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.core.gwt.UUID;
+import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.core.util.VectorUtil;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.common.Side;
@@ -14,6 +14,7 @@ import ethanjones.data.DataParser;
 
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 
 public class Entity implements DataParser, Disposable {
 
@@ -102,7 +103,7 @@ public class Entity implements DataParser, Disposable {
   public static Entity readType(DataGroup data) {
     try {
       Class<? extends Entity> c = EntityManager.toClass(data.getString("id"));
-      Entity entity = c.newInstance();
+      Entity entity = ClassReflection.newInstance(c);
       entity.read(data);
       return entity;
     } catch (Exception e) {
