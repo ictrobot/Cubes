@@ -1,12 +1,17 @@
-package ethanjones.cubes.client;
+package ethanjones.cubes.core.platform.html;
 
-import ethanjones.cubes.core.platform.ClientAdapter;
+import ethanjones.cubes.core.platform.Launcher;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
 
-public class HtmlLauncher extends GwtApplication {
+public class HtmlLauncher extends GwtApplication implements Launcher {
+  private HtmlCompatibility compatibility;
+  
+  public HtmlLauncher() {
+    compatibility = new HtmlCompatibility(this);
+  }
   
   @Override
   public GwtApplicationConfiguration getConfig() {
@@ -15,6 +20,6 @@ public class HtmlLauncher extends GwtApplication {
   
   @Override
   public ApplicationListener createApplicationListener() {
-    return new ClientAdapter();
+    return compatibility.applicationListener;
   }
 }
