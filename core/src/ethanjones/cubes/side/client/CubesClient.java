@@ -62,7 +62,7 @@ public class CubesClient extends Cubes implements ApplicationListener {
 
   @Override
   public void render() {
-    frameStart = System.nanoTime();
+    frameStart = System.currentTimeMillis();
     if (shouldReturn()) return;
     if (worldReady) {
       Adapter.setMenu(null);

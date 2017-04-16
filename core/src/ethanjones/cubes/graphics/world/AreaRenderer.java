@@ -38,7 +38,7 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
   
   public boolean update() {
     if (refresh) {
-      if ((System.nanoTime() - Cubes.getClient().frameStart) < 3000000 && calculateVertices()) {
+      if ((System.currentTimeMillis() - Cubes.getClient().frameStart) < 3 && calculateVertices()) {
         refresh = false;
         return true;
       } else {

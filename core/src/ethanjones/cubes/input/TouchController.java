@@ -10,7 +10,7 @@ import com.badlogic.gdx.InputAdapter;
 
 public class TouchController extends InputAdapter {
   
-  public static final long TAP_TIME = 200000000L;
+  public static final long TAP_TIME = 200L;
   
   private boolean down = false;
   private int pointer;
@@ -20,7 +20,7 @@ public class TouchController extends InputAdapter {
   public boolean touchDown (int screenX, int screenY, int pointer, int button) {
     if (!down) {
       this.pointer = pointer;
-      this.timestamp = System.nanoTime();
+      this.timestamp = System.currentTimeMillis();
       down = true;
       return true;
     }
@@ -31,7 +31,7 @@ public class TouchController extends InputAdapter {
     if (down && this.pointer == pointer) {
       this.down = false;
       this.mine = false;
-      long diff = System.nanoTime() - timestamp;
+      long diff = System.currentTimeMillis() - timestamp;
       if (diff < TAP_TIME) {
         NetworkingManager.sendPacketToServer(new PacketClick(ClickType.place));
         DesktopController.handleClick(ClickType.place);
@@ -45,7 +45,7 @@ public class TouchController extends InputAdapter {
   
   public void update() {
     if (down) {
-      long diff = System.nanoTime() - timestamp;
+      long diff = System.currentTimeMillis() - timestamp;
       if (diff >= TAP_TIME) {
         if (!mine) {
           NetworkingManager.sendPacketToServer(new PacketClick(ClickType.mine));
