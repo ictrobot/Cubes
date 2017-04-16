@@ -1,10 +1,10 @@
 package ethanjones.cubes.core.system;
 
+import ethanjones.cubes.core.gwt.ExitException;
+import ethanjones.cubes.core.gwt.FakeAtomic.AtomicInteger;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.Compatibility;
-
-import ethanjones.cubes.core.gwt.FakeAtomic.AtomicInteger;
 
 public class Debug {
 
@@ -18,6 +18,7 @@ public class Debug {
 
     @Override
     public void uncaughtException(Thread thread, Throwable throwable) {
+      if (throwable instanceof ExitException) return;
       crash(throwable);
     }
   }
@@ -45,7 +46,7 @@ public class Debug {
   }
 
   public static synchronized void criticalMemory() {
-    crash(new OutOfMemoryError("Detected! " + Compatibility.get().getFreeMemory() + "MB Free!"));
+    crash(new RuntimeException("Detected OOM! " + Compatibility.get().getFreeMemory() + "MB Free!"));
   }
 
   public static void crash(Throwable throwable) {
@@ -91,7 +92,11 @@ public class Debug {
   }
 
   protected static void errorExit() {
-    System.out.flush();
-    System.exit(1);
+    try {
+      System.out.flush();
+    } catch (Exception ignored) {
+      
+    }
+    Compatibility.get()._exit(1);
   }
 }

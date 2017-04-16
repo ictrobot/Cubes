@@ -110,5 +110,7 @@ public abstract class Compatibility {
   public String[] getCommandLineArgs() {
     return new String[]{};
   }
+  
+  public abstract void _exit(int status);
 
 }

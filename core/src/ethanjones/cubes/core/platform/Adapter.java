@@ -10,6 +10,8 @@ import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.side.server.CubesServer;
 
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+
 public class Adapter {
 
   private static AdapterInterface adapter;
@@ -82,7 +84,7 @@ public class Adapter {
    */
   public static void gotoMenu(final Menu menu) {
     if (isDedicatedServer()) quit();
-    if (menu == null || adapter.getMenu() instanceof RunnableMenu || menu.getClass().isInstance(adapter.getMenu())) return;
+    if (menu == null || adapter.getMenu() instanceof RunnableMenu || ClassReflection.isInstance(menu.getClass(), adapter.getMenu())) return;
   
     adapter.setMenu(new RunnableMenu(new Runnable() {
       @Override
@@ -96,7 +98,7 @@ public class Adapter {
   }
 
   public static void quit() {
-    System.exit(0); // Force android to exit vm
+    Compatibility.get()._exit(0); // Force android to exit vm
     //Gdx.app.exit();
   }
 }

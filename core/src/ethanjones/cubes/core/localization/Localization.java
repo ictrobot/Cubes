@@ -7,9 +7,9 @@ import ethanjones.cubes.graphics.assets.AssetManager;
 import ethanjones.cubes.graphics.assets.AssetType;
 import ethanjones.cubes.graphics.assets.Assets;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Scanner;
 
 public class Localization {
 
@@ -53,9 +53,8 @@ public class Localization {
   }
 
   private static void load(Language language, String string) throws Exception {
-    Scanner scanner = new Scanner(string);
-    while (scanner.hasNextLine()) {
-      String line = scanner.nextLine();
+    for (String line : string.split("\n")) {
+      line = line.trim();
       if (line.startsWith("#")) continue;
       int index = line.indexOf("=");
       if (index == -1) continue;
@@ -63,7 +62,6 @@ public class Localization {
       String localization = line.substring(index + 1);
       language.add(str, localization);
     }
-    scanner.close();
   }
 
   public static String get(String str, Object... format) {
@@ -78,7 +76,8 @@ public class Localization {
 
   private static String format(String str, Object[] format) {
     if (format.length == 0) return str;
-    return String.format(str, format);
+    String f = Arrays.deepToString(format);
+    return str + " " + f.substring(1, f.length() - 1);
   }
 
   public static void add(String lang, String unlocalized, String localized) {

@@ -22,7 +22,7 @@ public class ClientDebug {
   private static StringBuilder builder = new StringBuilder(250).append(Branding.DEBUG).append(lineSeparator);
   private static int brandingDebugLength = builder.length();
   
-  private static String twoDP(double d) {
+  public static String twoDP(double d) {
     int i = (int) Math.ceil(d);
     int f = (int) ((d * 10) % 10);
     if (f < 0) f *= -1;
@@ -31,7 +31,7 @@ public class ClientDebug {
     return i + "." + f + s;
   }
   
-  private static String oneDP(double d) {
+  public static String oneDP(double d) {
     int i = (int) Math.ceil(d);
     int f = (int) ((d * 10) % 10);
     if (f < 0) f *= -1;

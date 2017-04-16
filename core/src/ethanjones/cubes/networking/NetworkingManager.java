@@ -7,6 +7,8 @@ import ethanjones.cubes.networking.singleplayer.SingleplayerNetworking;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.common.Side;
 
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+
 public class NetworkingManager {
 
   private static Networking clientNetworking;
@@ -65,6 +67,6 @@ public class NetworkingManager {
   }
   
   public static boolean isSingleplayer() {
-    return SingleplayerNetworking.class.isInstance(clientNetworking);
+    return ClassReflection.isInstance(SingleplayerNetworking.class, clientNetworking);
   }
 }

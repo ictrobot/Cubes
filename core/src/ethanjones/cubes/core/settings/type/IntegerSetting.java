@@ -6,6 +6,7 @@ import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.graphics.menu.Fonts;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menus.SettingsMenu;
+import ethanjones.cubes.side.client.ClientDebug;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
@@ -107,7 +108,7 @@ public class IntegerSetting extends Setting {
 
   public Slider getSlider() {
     if (!hasRange) throw new CubesException("Range required");
-    final Slider slider = new SliderWithValue(rangeStart, rangeEnd, 1f, false, Menu.skin, "%.0f");
+    final Slider slider = new SliderWithValue(rangeStart, rangeEnd, 1f, false, Menu.skin, false);
     slider.setValue(i);
     slider.addListener(new EventListener() {
       @Override
@@ -146,21 +147,11 @@ public class IntegerSetting extends Setting {
   
   public static class SliderWithValue extends Slider {
   
-    private final String format;
+    private final boolean dp;
   
-    public SliderWithValue(float min, float max, float stepSize, boolean vertical, Skin skin, String format) {
+    public SliderWithValue(float min, float max, float stepSize, boolean vertical, Skin skin, boolean dp) {
       super(min, max, stepSize, vertical, skin);
-      this.format = format;
-    }
-  
-    public SliderWithValue(float min, float max, float stepSize, boolean vertical, Skin skin, String styleName, String format) {
-      super(min, max, stepSize, vertical, skin, styleName);
-      this.format = format;
-    }
-  
-    public SliderWithValue(float min, float max, float stepSize, boolean vertical, SliderStyle style, String format) {
-      super(min, max, stepSize, vertical, style);
-      this.format = format;
+      this.dp = dp;
     }
   
     @Override
@@ -168,7 +159,7 @@ public class IntegerSetting extends Setting {
       super.draw(batch, parentAlpha);
       BitmapFontCache cache = Fonts.hud.getCache();
       cache.clear();
-      GlyphLayout layout = cache.addText(String.format(format, getValue()), getX(), getY(), getWidth(), Align.center, false);
+      GlyphLayout layout = cache.addText("" + (dp ? ClientDebug.twoDP(getValue()) : ((int) getValue())), getX(), getY(), getWidth(), Align.center, false);
       cache.translate(0, (layout.height / 2) + (getHeight() / 2));
       cache.draw(batch);
     }

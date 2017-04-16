@@ -74,4 +74,9 @@ public abstract class DesktopCompatibility extends Compatibility {
   public String[] getCommandLineArgs() {
     return arg;
   }
+  
+  @Override
+  public void _exit(int status) {
+    System.exit(status);
+  }
 }

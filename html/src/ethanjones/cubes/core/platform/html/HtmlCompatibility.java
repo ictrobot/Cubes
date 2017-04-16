@@ -1,5 +1,6 @@
 package ethanjones.cubes.core.platform.html;
 
+import ethanjones.cubes.core.gwt.ExitException;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.platform.Launcher;
 
@@ -26,5 +27,10 @@ public class HtmlCompatibility extends Compatibility {
   @Override
   public boolean functionModifier() {
     return false;
+  }
+  
+  @Override
+  public void _exit(int status) {
+    throw new ExitException();
   }
 }

@@ -114,4 +114,9 @@ public class AndroidCompatibility extends Compatibility {
   public LogWriter getCustomLogWriter() {
     return new AndroidLogWriter();
   }
+  
+  @Override
+  public void _exit(int status) {
+    System.exit(status);
+  }
 }
