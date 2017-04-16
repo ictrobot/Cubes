@@ -1,7 +1,6 @@
 package ethanjones.cubes.core.system;
 
 import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.core.logging.loggers.FileLogWriter;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.Compatibility;
 
@@ -39,8 +38,6 @@ public class Debug {
     Log.debug("libGDX version:     " + com.badlogic.gdx.Version.VERSION);
     Log.debug("User Home:          " + System.getProperty("user.home"));
     Log.debug("Working Directory:  " + System.getProperty("user.dir"));
-    Log.debug("Base Directory:     " + Compatibility.get().getBaseFolder().file().getAbsolutePath());
-    if (FileLogWriter.file != null) Log.debug("Log file:           " + FileLogWriter.file.getAbsolutePath());
   }
 
   public static synchronized void lowMemory() {

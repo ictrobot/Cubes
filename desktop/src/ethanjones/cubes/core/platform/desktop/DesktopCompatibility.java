@@ -1,15 +1,12 @@
 package ethanjones.cubes.core.platform.desktop;
 
 import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.Compatibility;
-import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.graphics.assets.AssetFinder;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.files.FileHandle;
 
 public abstract class DesktopCompatibility extends Compatibility {
 
@@ -34,19 +31,6 @@ public abstract class DesktopCompatibility extends Compatibility {
       os = OS.Linux;
     } else {
       os = OS.Unknown;
-    }
-  }
-
-  public FileHandle getBaseFolder() {
-    if (Adapter.isDedicatedServer()) return getWorkingFolder();
-    FileHandle homeDir = Gdx.files.absolute(System.getProperty("user.home"));
-    switch (os) {
-      case Windows:
-        return Gdx.files.absolute(System.getenv("APPDATA")).child(Branding.NAME);
-      case Mac:
-        return homeDir.child("Library").child("Application Support").child(Branding.NAME);
-      default:
-        return homeDir.child("." + Branding.NAME);
     }
   }
 

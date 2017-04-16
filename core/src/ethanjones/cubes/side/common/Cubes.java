@@ -38,8 +38,6 @@ public abstract class Cubes {
     }
     Cubes.adapterInterface = adapterInterface;
 
-    Compatibility.get().getBaseFolder().mkdirs();
-
     Log.info(Branding.DEBUG); //Can't log till base folder setup
     Log.info("https://github.com/ictrobot/Cubes");
     Debug.printProperties();

@@ -1,5 +1,6 @@
 package ethanjones.cubes.core.settings;
 
+import com.badlogic.gdx.Preferences;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Compatibility;
@@ -7,14 +8,10 @@ import ethanjones.cubes.core.settings.type.*;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonObject.Member;
-import com.eclipsesource.json.WriterConfig;
 
-import java.io.Reader;
-import java.io.Writer;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -101,39 +98,36 @@ public class Settings {
   }
 
   public static boolean read() {
-    FileHandle fileHandle = Compatibility.get().getBaseFolder().child("settings.json");
-    
+    Preferences preferences = Gdx.app.getPreferences("ethanjones-cubes-settings");
+    String jsonStr = preferences.getString("settings", "");
+    if (jsonStr == null || jsonStr.isEmpty()) return false;
+
     try {
-      Reader reader = fileHandle.reader();
-      JsonObject json = Json.parse(reader).asObject();
-      reader.close();
-  
+      JsonObject json = Json.parse(jsonStr).asObject();
+
       for (Member member : json) {
-        Setting setting = settings.get(member.getName());
+        Setting setting = Settings.settings.get(member.getName());
         setting.readJson(member.getValue());
       }
       
       return true;
     } catch (Exception e) {
       Log.error("Failed to read settings", e);
-      fileHandle.delete();
       return false;
     }
   }
 
   public static boolean write() {
-    FileHandle fileHandle = Compatibility.get().getBaseFolder().child("settings.json");
+    Preferences preferences = Gdx.app.getPreferences("ethanjones-cubes-settings");
     JsonObject json = new JsonObject();
     for (Map.Entry<String, Setting> entry : settings.entrySet()) {
       json.set(entry.getKey(), entry.getValue().toJson());
     }
     try {
-      Writer writer = fileHandle.writer(false);
-      json.writeTo(writer, WriterConfig.PRETTY_PRINT);
-      writer.close();
+      preferences.putString("settings", json.toString());
+      preferences.flush();
     } catch (Exception e) {
       Log.error("Failed to write settings", e);
-      fileHandle.delete();
       return false;
     }
     return true;

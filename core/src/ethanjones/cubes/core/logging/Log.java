@@ -1,15 +1,11 @@
 package ethanjones.cubes.core.logging;
 
-import ethanjones.cubes.core.logging.loggers.FileLogWriter;
 import ethanjones.cubes.core.logging.loggers.SysOutLogWriter;
 import ethanjones.cubes.core.platform.Compatibility;
-
-import java.io.File;
 
 public class Log {
 
   private static LogWriter output;
-  private static LogWriter file;
 
   static {
     try {
@@ -26,16 +22,6 @@ public class Log {
     } catch (Exception e) {
       e.printStackTrace();
     }
-    try {
-      file = new FileLogWriter(new File(Compatibility.get().getBaseFolder().file(), "log.txt"));
-    } catch (Exception e) {
-      e.printStackTrace();
-      try {
-        file = new FileLogWriter(new File(System.getProperty("user.dir"), "log.txt"));
-      } catch (Exception ex) {
-        e.printStackTrace();
-      }
-    }
   }
 
   //ERROR
@@ -47,13 +33,6 @@ public class Log {
     try {
       synchronized (output) {
         output.log(level, message);
-      }
-    } catch (Exception e) {
-
-    }
-    try {
-      synchronized (file) {
-        file.log(level, message);
       }
     } catch (Exception e) {
 
@@ -72,13 +51,6 @@ public class Log {
     } catch (Exception e) {
 
     }
-    try {
-      synchronized (file) {
-        file.log(level, message, throwable);
-      }
-    } catch (Exception e) {
-
-    }
   }
 
   public static void error(Throwable throwable) {
@@ -89,13 +61,6 @@ public class Log {
     try {
       synchronized (output) {
         output.log(level, throwable);
-      }
-    } catch (Exception e) {
-
-    }
-    try {
-      synchronized (file) {
-        file.log(level, throwable);
       }
     } catch (Exception e) {
 
@@ -144,11 +109,6 @@ public class Log {
   public static void dispose() {
     try {
       output.dispose();
-    } catch (Exception e) {
-
-    }
-    try {
-      file.dispose();
     } catch (Exception e) {
 
     }

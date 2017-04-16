@@ -25,7 +25,6 @@ public class Keybinds {
   
   public static final String KEYBIND_FULLSCREEN = KEYBIND_BASE + "fullscreen";
   public static final String KEYBIND_HIDEGUI = KEYBIND_BASE + "hidegui";
-  public static final String KEYBIND_SCREENSHOT = KEYBIND_BASE + "screenshot";
   public static final String KEYBIND_DEBUG = KEYBIND_BASE + "debug";
   public static final String KEYBIND_AREABOUNDARIES = KEYBIND_BASE + "areaboundaries";
   
@@ -46,7 +45,6 @@ public class Keybinds {
       
       Settings.addSetting(KEYBIND_FULLSCREEN, new KeybindSetting(Keys.F11));
       Settings.addSetting(KEYBIND_HIDEGUI, new KeybindSetting(Keys.F1));
-      Settings.addSetting(KEYBIND_SCREENSHOT, new KeybindSetting(Keys.F2));
       Settings.addSetting(KEYBIND_DEBUG, new KeybindSetting(Keys.F3));
       Settings.addSetting(KEYBIND_AREABOUNDARIES, new KeybindSetting(Keys.F7));
       
@@ -58,7 +56,7 @@ public class Keybinds {
       };
       settingGroup.add(KEYBIND_FORWARD).add(KEYBIND_BACK).add(KEYBIND_LEFT).add(KEYBIND_RIGHT).add(KEYBIND_JUMP).add(KEYBIND_DESCEND);
       settingGroup.add(KEYBIND_INVENTORY).add(KEYBIND_CHAT);
-      settingGroup.add(KEYBIND_FULLSCREEN).add(KEYBIND_HIDEGUI).add(KEYBIND_SCREENSHOT).add(KEYBIND_DEBUG).add(KEYBIND_AREABOUNDARIES);
+      settingGroup.add(KEYBIND_FULLSCREEN).add(KEYBIND_HIDEGUI).add(KEYBIND_DEBUG).add(KEYBIND_AREABOUNDARIES);
     }
     return settingGroup;
   }

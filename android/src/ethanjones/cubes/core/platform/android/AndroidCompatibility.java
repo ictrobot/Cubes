@@ -2,11 +2,9 @@ package ethanjones.cubes.core.platform.android;
 
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.logging.LogWriter;
-import ethanjones.cubes.core.mod.ModLoader;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.settings.Settings;
-import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menu.MenuManager;
 import ethanjones.cubes.graphics.menus.MainMenu;
@@ -16,18 +14,13 @@ import ethanjones.cubes.side.common.Cubes;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.MemoryInfo;
-import android.content.Intent;
 import android.os.Build;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.badlogic.gdx.files.FileHandle;
-
 public class AndroidCompatibility extends Compatibility {
 
   public AndroidLauncher androidLauncher;
-  protected AndroidModLoader modLoader;
   protected boolean back = false;
   protected boolean modifier = false;
 
@@ -37,7 +30,6 @@ public class AndroidCompatibility extends Compatibility {
   protected AndroidCompatibility(AndroidLauncher androidLauncher) {
     super(androidLauncher, Application.ApplicationType.Android);
     this.androidLauncher = androidLauncher;
-    modLoader = new AndroidModLoader(this);
 
     activityManager = (ActivityManager) androidLauncher.getSystemService(Activity.ACTIVITY_SERVICE);
     memoryInfo = new MemoryInfo();
@@ -47,16 +39,6 @@ public class AndroidCompatibility extends Compatibility {
   public void postInit() {
     super.postInit();
     Settings.getIntegerSetting(Settings.GRAPHICS_VIEW_DISTANCE).rangeEnd = 4;
-  }
-
-  @Override
-  public FileHandle getBaseFolder() {
-    return Gdx.files.external(Branding.NAME);
-  }
-
-  @Override
-  public FileHandle getWorkingFolder() {
-    return Gdx.files.internal(".");
   }
 
   @Override
@@ -88,11 +70,6 @@ public class AndroidCompatibility extends Compatibility {
     config.useWakelock = true;
     config.useImmersiveMode = true;
     androidLauncher.initialize(applicationListener, config);
-  }
-
-  @Override
-  public ModLoader getModLoader() {
-    return modLoader;
   }
 
   @Override
@@ -136,16 +113,5 @@ public class AndroidCompatibility extends Compatibility {
   @Override
   public LogWriter getCustomLogWriter() {
     return new AndroidLogWriter();
-  }
-
-  @Override
-  public boolean handleCrash(Throwable throwable) {
-    Intent intent = new Intent(androidLauncher, CrashActivity.class);
-    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-    intent.putExtra("ethanjones.cubes.core.platform.android.LOG_FILE", Compatibility.get().getBaseFolder().child("log.txt").file().getAbsolutePath());
-    androidLauncher.startActivity(intent);
-    System.exit(1);
-    return false;
   }
 }

@@ -79,7 +79,7 @@ public class Save {
     FileHandle file = folder.child(uuid.toString());
     if (!file.exists()) return null;
     try {
-      DataGroup data = (DataGroup) Data.input(file.file());
+      DataGroup data = (DataGroup) Data.input(file.readBytes());
       Player player = new Player(data.getString("username"), uuid, clientIdentifier);
       player.read(data);
       return player;

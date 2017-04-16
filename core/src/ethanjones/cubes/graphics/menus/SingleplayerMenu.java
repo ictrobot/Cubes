@@ -15,7 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
-public class SingleplayerSaveCreateMenu extends Menu {
+public class SingleplayerMenu extends Menu {
 
   Label title;
   TextField name;
@@ -27,7 +27,7 @@ public class SingleplayerSaveCreateMenu extends Menu {
   
   ChangeListener startListener;
 
-  public SingleplayerSaveCreateMenu() {
+  public SingleplayerMenu() {
     super();
     title = new Label(Localization.get("menu.singleplayer.create.title"), skin.get("title", Label.LabelStyle.class));
     name = new TextField("", skin);
@@ -56,10 +56,13 @@ public class SingleplayerSaveCreateMenu extends Menu {
     start = new TextButton(Localization.get("menu.singleplayer.create.start"), skin);
     back = MenuTools.getBackButton(this);
 
+    // temporary save menu
+    name.setVisible(false);
+
     start.addListener(startListener = new ChangeListener() {
       @Override
       public void changed(ChangeEvent event, Actor actor) {
-        Adapter.setMenu(new SingleplayerLoadingMenu(ClientSaveManager.createSave(name.getText(), generator.getSelected().id, mode.getSelected(), seed.getText())));
+        Adapter.setMenu(new SingleplayerLoadingMenu(ClientSaveManager.createTemporarySave(generator.getSelected().id, mode.getSelected(), seed.getText())));
       }
     });
 

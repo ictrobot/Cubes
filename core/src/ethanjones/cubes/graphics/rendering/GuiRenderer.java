@@ -266,7 +266,6 @@ public class GuiRenderer implements Disposable {
   private class Input extends InputAdapter {
 
     int hideGUI = Keybinds.getCode(Keybinds.KEYBIND_HIDEGUI);
-    int screenshot = Keybinds.getCode(Keybinds.KEYBIND_SCREENSHOT);
     int debug = Keybinds.getCode(Keybinds.KEYBIND_DEBUG);
     int chat = Keybinds.getCode(Keybinds.KEYBIND_CHAT);
     int blocksMenu = Keybinds.getCode(Keybinds.KEYBIND_INVENTORY);
@@ -274,10 +273,6 @@ public class GuiRenderer implements Disposable {
     private boolean functionKeys(int keycode) {
       if (keycode == hideGUI) {
         hideGuiEnabled = !hideGuiEnabled;
-        return true;
-      }
-      if (keycode == screenshot) {
-        Graphics.takeScreenshot();
         return true;
       }
       if (keycode == debug) {

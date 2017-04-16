@@ -5,16 +5,13 @@ import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.system.CubesException;
 
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +22,6 @@ public class Assets {
 
   public static final String CORE = "core";
   public static PackedTextureSheet packedTextureSheet;
-  public static FileHandle assetsFolder = Compatibility.get().getBaseFolder().child("assets");
   protected static HashMap<String, AssetManager> assetManagers = new HashMap<String, AssetManager>();
 
   public static AssetManager getCoreAssetManager() {
@@ -72,12 +68,6 @@ public class Assets {
   }
 
   public static void preInit() {
-    if (assetsFolder.isDirectory()) { //Empty directory
-      assetsFolder.deleteDirectory();
-    } else {
-      assetsFolder.delete();
-    }
-    assetsFolder.mkdirs();
     Compatibility.get().setupAssets();
 
     if (getAssetManager(CORE) == null) throw new CubesException("No core asset manager");
@@ -106,17 +96,8 @@ public class Assets {
         }
       }
     }
-    FileHandle fileHandle = assetsFolder.child("packed");
-    fileHandle.mkdirs();
-    fileHandle = fileHandle.child(assetType[0].name() + ".cim");
 
-    try {
-      PixmapIO.writeCIM(fileHandle, texturePacker.getPixmap());
-    } catch (GdxRuntimeException e) {
-      Log.error("Failed to write packed image", e);
-    }
-
-    Texture texture = new Texture(fileHandle);
+    Texture texture = new Texture(texturePacker.getPixmap());
     texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
     PackedTextureSheet packedTextureSheet = new PackedTextureSheet(new Material(TextureAttribute.createDiffuse(texture)));
     packedTextureSheet.getMaterial().set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
