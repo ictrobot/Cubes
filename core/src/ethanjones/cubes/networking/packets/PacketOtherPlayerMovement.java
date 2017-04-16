@@ -1,6 +1,7 @@
 package ethanjones.cubes.networking.packets;
 
 import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.util.UUID;
 import ethanjones.cubes.core.util.VectorUtil;
 import ethanjones.cubes.entity.Entity;
 import ethanjones.cubes.entity.living.player.Player;
@@ -13,7 +14,6 @@ import com.badlogic.gdx.math.Vector3;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.util.UUID;
 
 @Direction(PacketDirection.TO_CLIENT)
 public class PacketOtherPlayerMovement extends Packet {

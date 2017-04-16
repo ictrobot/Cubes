@@ -1,9 +1,11 @@
 package ethanjones.cubes.core.event;
 
+import com.badlogic.gdx.utils.reflect.Annotation;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.Method;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.CubesException;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -15,8 +17,8 @@ public class EventBus {
 
   public EventBus register(Object instance) {
     try {
-      for (Method method : instance.getClass().getMethods()) {
-        EventHandler eventHandler = method.getAnnotation(EventHandler.class);
+      for (Method method : ClassReflection.getMethods(instance.getClass())) {
+        Annotation eventHandler = method.getDeclaredAnnotation(EventHandler.class);
         if (eventHandler != null) {
           Class<?>[] parameterTypes = method.getParameterTypes();
           if (parameterTypes.length == 1 && Event.class.isAssignableFrom(parameterTypes[0])) {

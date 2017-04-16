@@ -6,8 +6,7 @@ import ethanjones.cubes.core.settings.VisualSettingManager;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonValue;
-
-import java.util.UUID;
+import ethanjones.cubes.core.util.UUID;
 
 import static ethanjones.cubes.side.client.CubesClient.uuid;
 

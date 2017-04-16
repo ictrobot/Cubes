@@ -1,12 +1,11 @@
 package ethanjones.cubes.networking.packets;
 
+import ethanjones.cubes.core.util.UUID;
 import ethanjones.cubes.networking.packet.DataPacket;
 import ethanjones.cubes.networking.packet.PacketDirection;
 import ethanjones.cubes.networking.packet.PacketDirection.Direction;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.data.DataGroup;
-
-import java.util.UUID;
 
 @Direction(PacketDirection.TO_CLIENT)
 public class PacketEntityRemove extends DataPacket {

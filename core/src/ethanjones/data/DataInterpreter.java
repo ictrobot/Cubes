@@ -1,14 +1,15 @@
 package ethanjones.data;
 
+import com.badlogic.gdx.utils.reflect.ArrayReflection;
+import ethanjones.cubes.core.util.UUID;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.UUID;
 
 public abstract class DataInterpreter<T> {
 
@@ -219,14 +220,14 @@ public abstract class DataInterpreter<T> {
       int length = input.readInt();
       if (length <= 0) {
         length = -length;
-        Object[] array = (Object[]) Array.newInstance(interpreter.tClass(), length);
+        Object[] array = (Object[]) ArrayReflection.newInstance(interpreter.tClass(), length);
         for (int i = 0; i < length; i++) {
           array[i] = interpreter.input(input);
         }
         return array;
       } else {
         Object first = input(input, interpreter);
-        Object[] array = (Object[]) Array.newInstance(first.getClass(), length);
+        Object[] array = (Object[]) ArrayReflection.newInstance(first.getClass(), length);
         array[0] = first;
         for (int i = 1; i < length; i++) {
           array[i] = input(input, interpreter);

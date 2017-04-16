@@ -1,6 +1,7 @@
 package ethanjones.cubes.networking.packets;
 
 import ethanjones.cubes.core.settings.Settings;
+import ethanjones.cubes.core.util.UUID;
 import ethanjones.cubes.networking.packet.DataPacket;
 import ethanjones.cubes.networking.packet.PacketDirection;
 import ethanjones.cubes.networking.packet.PacketDirection.Direction;
@@ -10,8 +11,6 @@ import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.data.DataGroup;
-
-import java.util.UUID;
 
 @Direction(PacketDirection.TO_SERVER)
 @Priority(PacketPriority.HIGH)

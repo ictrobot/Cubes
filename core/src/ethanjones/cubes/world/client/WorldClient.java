@@ -1,6 +1,7 @@
 package ethanjones.cubes.world.client;
 
 import ethanjones.cubes.core.settings.Settings;
+import ethanjones.cubes.core.util.UUID;
 import ethanjones.cubes.entity.Entity;
 import ethanjones.cubes.graphics.world.AreaRenderer;
 import ethanjones.cubes.side.common.Cubes;
@@ -17,7 +18,6 @@ import com.badlogic.gdx.graphics.Color;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map.Entry;
-import java.util.UUID;
 
 public class WorldClient extends World {
 

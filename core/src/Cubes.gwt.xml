@@ -2,4 +2,5 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit trunk//EN" "http://google-web-toolkit.googlecode.com/svn/trunk/distro-source/core/src/gwt-module.dtd">
 <module>
 	<source path="ethanjones/cubes" />
+	<extend-configuration-property name="gdx.reflect.include" value="ethanjones.cubes" />
 </module>

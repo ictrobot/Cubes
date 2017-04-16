@@ -5,6 +5,7 @@ import ethanjones.cubes.block.data.BlockData;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.util.Lock;
 import ethanjones.cubes.core.util.Lock.HasLock;
+import ethanjones.cubes.core.util.UUID;
 import ethanjones.cubes.entity.Entity;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.common.Side;
@@ -26,7 +27,6 @@ import com.badlogic.gdx.utils.Disposable;
 
 import java.util.Iterator;
 import java.util.Map.Entry;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class World implements Disposable, HasLock {

@@ -2,6 +2,7 @@ package ethanjones.cubes.world.save;
 
 import ethanjones.cubes.core.id.IDManager;
 import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.util.UUID;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.side.common.Cubes;
@@ -17,7 +18,6 @@ import com.badlogic.gdx.files.FileHandle;
 
 import java.io.*;
 import java.util.List;
-import java.util.UUID;
 
 public class Save {
   public final String name;

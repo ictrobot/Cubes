@@ -1,6 +1,7 @@
 package ethanjones.data;
 
-import java.lang.reflect.Array;
+import com.badlogic.gdx.utils.reflect.ArrayReflection;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -84,7 +85,7 @@ public class DataGroup {
       }
       if (root == tClass) return (T[]) obj;
     }
-    return (T[]) Array.newInstance(tClass, 0);
+    return (T[]) ArrayReflection.newInstance(tClass, 0);
   }
 
   public Boolean getBoolean(String key) {

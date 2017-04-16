@@ -2,6 +2,7 @@ package ethanjones.cubes.entity.living.player;
 
 import ethanjones.cubes.core.event.entity.living.player.PlayerMovementEvent;
 import ethanjones.cubes.core.settings.Settings;
+import ethanjones.cubes.core.util.UUID;
 import ethanjones.cubes.entity.living.LivingEntity;
 import ethanjones.cubes.graphics.entity.PlayerRenderer;
 import ethanjones.cubes.item.ItemTool;
@@ -24,8 +25,6 @@ import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
-
-import java.util.UUID;
 
 public class Player extends LivingEntity implements CommandSender, RenderableProvider {
 

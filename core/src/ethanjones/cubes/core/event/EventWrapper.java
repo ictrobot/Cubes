@@ -1,10 +1,10 @@
 package ethanjones.cubes.core.event;
 
+import com.badlogic.gdx.utils.reflect.Annotation;
+import com.badlogic.gdx.utils.reflect.Method;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.Debug;
-
-import java.lang.reflect.Method;
 
 class EventWrapper {
 
@@ -12,10 +12,10 @@ class EventWrapper {
   public final Object instance;
   private final EventHandler eventHandler;
 
-  public EventWrapper(Method method, Object instance, EventHandler eventHandler) {
+  public EventWrapper(Method method, Object instance, Annotation eventHandler) {
     this.method = method;
     this.instance = instance;
-    this.eventHandler = eventHandler;
+    this.eventHandler = eventHandler.getAnnotation(EventHandler.class);
   }
 
   public boolean run(Event event) {

@@ -1,17 +1,16 @@
 package ethanjones.cubes.core.json;
 
 import ethanjones.cubes.block.Blocks;
-import ethanjones.cubes.core.id.GetInstances;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.util.Multimap;
 import ethanjones.cubes.graphics.assets.Asset;
 import ethanjones.cubes.graphics.assets.AssetManager;
 import ethanjones.cubes.graphics.assets.Assets;
-import ethanjones.cubes.item.Items;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonValue;
+import ethanjones.cubes.item.Items;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -62,8 +61,8 @@ public class JsonLoader {
   public static void firstStage() {
     firstStage(coreMap);
   
-    GetInstances.get(Blocks.class);
-    GetInstances.get(Items.class);
+    Blocks.getInstances();
+    Items.getInstances();
   }
 
   public static void firstStage(Multimap<JsonStage, JsonValue> map) {

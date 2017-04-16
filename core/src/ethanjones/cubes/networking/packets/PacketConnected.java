@@ -1,6 +1,7 @@
 package ethanjones.cubes.networking.packets;
 
 import ethanjones.cubes.core.id.IDManager;
+import ethanjones.cubes.core.util.UUID;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packet.DataPacket;
@@ -11,8 +12,6 @@ import ethanjones.cubes.networking.packet.PacketPriority.Priority;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.save.Gamemode;
 import ethanjones.data.DataGroup;
-
-import java.util.UUID;
 
 @Direction(PacketDirection.TO_CLIENT)
 @Priority(PacketPriority.HIGH)

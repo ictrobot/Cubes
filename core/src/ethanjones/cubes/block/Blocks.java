@@ -1,29 +1,18 @@
 package ethanjones.cubes.block;
 
-import ethanjones.cubes.core.id.GetInstances.GetBlock;
 import ethanjones.cubes.core.id.IDManager;
 
 public class Blocks {
 
-  @GetBlock("core:bedrock")
   public static Block bedrock;
-  @GetBlock("core:stone")
   public static Block stone;
-  @GetBlock("core:dirt")
   public static Block dirt;
-
   public static Block grass;
-  @GetBlock("core:log")
   public static Block log;
-  
   public static Block leaves;
-  @GetBlock("core:glow")
   public static Block glow;
-  
   public static Block glass;
-
   public static Block chest;
-  
   public static Block sapling;
 
   public static void init() {
@@ -37,5 +26,13 @@ public class Blocks {
     IDManager.register(chest);
     sapling = new BlockSapling();
     IDManager.register(sapling);
+  }
+
+  public static void getInstances() {
+    bedrock = IDManager.toBlock("core:bedrock");
+    stone = IDManager.toBlock("core:stone");
+    dirt = IDManager.toBlock("core:dirt");
+    log = IDManager.toBlock("core:log");
+    glow = IDManager.toBlock("core:glow");
   }
 }

@@ -3,6 +3,7 @@ package ethanjones.cubes.side.client;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.system.CubesException;
+import ethanjones.cubes.core.util.UUID;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.graphics.hud.inv.InventoryManager;
 import ethanjones.cubes.graphics.menus.PauseMenu;
@@ -18,8 +19,6 @@ import ethanjones.cubes.world.save.Gamemode;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-
-import java.util.UUID;
 
 public class CubesClient extends Cubes implements ApplicationListener {
   public static UUID uuid;

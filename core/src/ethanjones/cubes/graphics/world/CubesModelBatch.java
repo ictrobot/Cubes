@@ -1,12 +1,12 @@
 package ethanjones.cubes.graphics.world;
 
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.Field;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.Debug;
 
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.Renderable;
-
-import java.lang.reflect.Field;
 
 public class CubesModelBatch extends ModelBatch {
   
@@ -36,7 +36,7 @@ public class CubesModelBatch extends ModelBatch {
     super(new WorldShaderProvider());
     
     try {
-      Field field = ModelBatch.class.getDeclaredField("renderablesPool");
+      Field field = ClassReflection.getDeclaredField(ModelBatch.class, "renderablesPool");
       field.setAccessible(true);
       field.set(this, new CubesRenderablePool());
       if (!(renderablesPool instanceof CubesRenderablePool)) throw new CubesException("Failed");

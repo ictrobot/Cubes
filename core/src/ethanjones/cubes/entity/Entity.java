@@ -1,6 +1,7 @@
 package ethanjones.cubes.entity;
 
 import ethanjones.cubes.core.system.Debug;
+import ethanjones.cubes.core.util.UUID;
 import ethanjones.cubes.core.util.VectorUtil;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.common.Side;
@@ -13,8 +14,6 @@ import ethanjones.data.DataParser;
 
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
-
-import java.util.UUID;
 
 public class Entity implements DataParser, Disposable {
 

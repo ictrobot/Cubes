@@ -1,14 +1,16 @@
 package ethanjones.cubes.item;
 
-import ethanjones.cubes.core.id.GetInstances.GetItem;
+import ethanjones.cubes.core.id.IDManager;
 
 public class Items {
 
-  @GetItem("core:pickaxe")
   public static ItemTool pickaxe;
-  @GetItem("core:axe")
   public static ItemTool axe;
-  @GetItem("core:shovel")
   public static ItemTool shovel;
 
+  public static void getInstances() {
+    pickaxe = (ItemTool) IDManager.toItem("core:pickaxe");
+    axe = (ItemTool) IDManager.toItem("core:axe");
+    shovel = (ItemTool) IDManager.toItem("core:shovel");
+  }
 }

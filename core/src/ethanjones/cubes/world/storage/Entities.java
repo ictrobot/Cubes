@@ -2,6 +2,7 @@ package ethanjones.cubes.world.storage;
 
 import ethanjones.cubes.core.util.Lock;
 import ethanjones.cubes.core.util.Lock.HasLock;
+import ethanjones.cubes.core.util.UUID;
 import ethanjones.cubes.entity.Entity;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.world.CoordinateConverter;
@@ -10,7 +11,6 @@ import ethanjones.data.DataGroup;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.UUID;
 
 public class Entities extends HashMap<UUID, Entity> implements HasLock {
   public transient final Lock lock = new Lock();
