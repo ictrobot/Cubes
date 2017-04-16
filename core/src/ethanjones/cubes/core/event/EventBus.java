@@ -21,9 +21,8 @@ public class EventBus {
         Annotation eventHandler = method.getDeclaredAnnotation(EventHandler.class);
         if (eventHandler != null) {
           Class<?>[] parameterTypes = method.getParameterTypes();
-          if (parameterTypes.length == 1 && Event.class.isAssignableFrom(parameterTypes[0])) {
-            Class<? extends Event> eventClass = parameterTypes[0].asSubclass(Event.class);
-            final List<EventWrapper> list = getList(eventClass);
+          if (parameterTypes.length == 1 && ClassReflection.isAssignableFrom(Event.class, parameterTypes[0])) {
+            final List<EventWrapper> list = getList(parameterTypes[0]);
             synchronized (list) {
               list.add(new EventWrapper(method, instance, eventHandler));
             }
@@ -38,7 +37,7 @@ public class EventBus {
     return this;
   }
 
-  public List<EventWrapper> getList(Class<? extends Event> eventClass) {
+  public List<EventWrapper> getList(Class eventClass) {
     synchronized (this) {
       List<EventWrapper> eventHandlers = data.get(eventClass);
       if (eventHandlers == null) {
@@ -50,10 +49,10 @@ public class EventBus {
   }
 
   public <E extends Event> E post(E event) {
-    Class<?> c = event.getClass();
+    Class c = event.getClass();
     final List<EventWrapper> posted = new ArrayList<EventWrapper>(); //Prevents being posted multiple times to same EventHandler
-    while (c != null && Event.class.isAssignableFrom(c)) {
-      Class<? extends Event> eventClass = c.asSubclass(Event.class);
+    while (c != null && ClassReflection.isAssignableFrom(Event.class, c)) {
+      Class eventClass = c;
       final List<EventWrapper> list = getList(eventClass);
       synchronized (list) {
         Iterator<EventWrapper> iterator = list.iterator();
