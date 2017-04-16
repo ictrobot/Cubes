@@ -10,7 +10,7 @@ import ethanjones.cubes.side.common.Side;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.util.concurrent.atomic.AtomicBoolean;
+import ethanjones.cubes.core.gwt.FakeAtomic.AtomicBoolean;
 
 import static ethanjones.cubes.networking.Networking.NETWORKING_DEBUG;
 

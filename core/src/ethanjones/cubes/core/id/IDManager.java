@@ -10,7 +10,7 @@ import ethanjones.data.DataGroup;
 
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicBoolean;
+import ethanjones.cubes.core.gwt.FakeAtomic.AtomicBoolean;
 
 public class IDManager {
 

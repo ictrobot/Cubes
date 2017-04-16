@@ -1,7 +1,7 @@
 package ethanjones.cubes.entity;
 
 import ethanjones.cubes.core.system.Debug;
-import ethanjones.cubes.core.util.UUID;
+import ethanjones.cubes.core.gwt.UUID;
 import ethanjones.cubes.core.util.VectorUtil;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.common.Side;

@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.concurrent.atomic.AtomicReference;
+import ethanjones.cubes.core.gwt.FakeAtomic.AtomicReference;
 
 public class Area implements Lock.HasLock {
 

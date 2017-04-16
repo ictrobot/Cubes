@@ -14,7 +14,7 @@ import ethanjones.cubes.world.storage.Area;
 import ethanjones.cubes.world.storage.AreaMap;
 
 import java.util.Collection;
-import java.util.concurrent.atomic.AtomicReference;
+import ethanjones.cubes.core.gwt.FakeAtomic.AtomicReference;
 
 public class WorldTasks {
 

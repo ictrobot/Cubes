@@ -2,7 +2,7 @@ package ethanjones.cubes.world.storage;
 
 import ethanjones.cubes.core.util.Lock;
 import ethanjones.cubes.core.util.Lock.HasLock;
-import ethanjones.cubes.core.util.UUID;
+import ethanjones.cubes.core.gwt.UUID;
 import ethanjones.cubes.entity.Entity;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.world.CoordinateConverter;

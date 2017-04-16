@@ -1,4 +1,4 @@
-package ethanjones.cubes.core.util;
+package ethanjones.cubes.core.gwt;
 
 import com.badlogic.gdx.math.RandomXS128;
 

@@ -1,7 +1,7 @@
 package ethanjones.cubes.world.client;
 
 import ethanjones.cubes.core.settings.Settings;
-import ethanjones.cubes.core.util.UUID;
+import ethanjones.cubes.core.gwt.UUID;
 import ethanjones.cubes.entity.Entity;
 import ethanjones.cubes.graphics.world.AreaRenderer;
 import ethanjones.cubes.side.common.Cubes;

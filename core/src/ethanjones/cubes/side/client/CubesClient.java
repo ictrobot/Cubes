@@ -3,7 +3,7 @@ package ethanjones.cubes.side.client;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.system.CubesException;
-import ethanjones.cubes.core.util.UUID;
+import ethanjones.cubes.core.gwt.UUID;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.graphics.hud.inv.InventoryManager;
 import ethanjones.cubes.graphics.menus.PauseMenu;

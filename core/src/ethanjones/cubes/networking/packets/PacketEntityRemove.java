@@ -1,6 +1,6 @@
 package ethanjones.cubes.networking.packets;
 
-import ethanjones.cubes.core.util.UUID;
+import ethanjones.cubes.core.gwt.UUID;
 import ethanjones.cubes.networking.packet.DataPacket;
 import ethanjones.cubes.networking.packet.PacketDirection;
 import ethanjones.cubes.networking.packet.PacketDirection.Direction;

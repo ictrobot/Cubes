@@ -1,7 +1,7 @@
 package ethanjones.cubes.world.save;
 
 import ethanjones.cubes.core.id.IDManager;
-import ethanjones.cubes.core.util.UUID;
+import ethanjones.cubes.core.gwt.UUID;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.world.generator.smooth.Cave;

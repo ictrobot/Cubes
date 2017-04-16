@@ -2,7 +2,7 @@ package ethanjones.cubes.networking.packet;
 
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
+import ethanjones.cubes.core.gwt.FakeAtomic.AtomicLong;
 
 public class PriorityPacketQueue extends PacketQueue {
   private PriorityBlockingQueue<FIFOEntry> queue = new PriorityBlockingQueue<FIFOEntry>();

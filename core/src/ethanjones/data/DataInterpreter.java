@@ -1,7 +1,7 @@
 package ethanjones.data;
 
 import com.badlogic.gdx.utils.reflect.ArrayReflection;
-import ethanjones.cubes.core.util.UUID;
+import ethanjones.cubes.core.gwt.UUID;
 
 import java.io.DataInput;
 import java.io.DataOutput;

@@ -21,7 +21,7 @@ import ethanjones.cubes.world.server.WorldServer;
 import com.badlogic.gdx.math.Vector3;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
+import ethanjones.cubes.core.gwt.FakeAtomic.AtomicLong;
 
 public abstract class CubesServer extends Cubes implements TimeHandler {
 

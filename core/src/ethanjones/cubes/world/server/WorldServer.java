@@ -1,7 +1,7 @@
 package ethanjones.cubes.world.server;
 
 import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.core.util.UUID;
+import ethanjones.cubes.core.gwt.UUID;
 import ethanjones.cubes.entity.Entity;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketEntityAdd;

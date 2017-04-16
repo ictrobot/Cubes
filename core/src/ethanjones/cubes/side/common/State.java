@@ -1,6 +1,6 @@
 package ethanjones.cubes.side.common;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import ethanjones.cubes.core.gwt.FakeAtomic.AtomicBoolean;
 
 public final class State {
 

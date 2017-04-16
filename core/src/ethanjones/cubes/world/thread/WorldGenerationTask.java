@@ -14,8 +14,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
+import ethanjones.cubes.core.gwt.FakeAtomic.AtomicInteger;
+import ethanjones.cubes.core.gwt.FakeAtomic.AtomicLong;
 
 public class WorldGenerationTask implements GenerationTask {
 

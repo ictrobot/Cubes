@@ -1,7 +1,7 @@
 package ethanjones.cubes.networking.packets;
 
 import ethanjones.cubes.core.id.IDManager;
-import ethanjones.cubes.core.util.UUID;
+import ethanjones.cubes.core.gwt.UUID;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packet.DataPacket;

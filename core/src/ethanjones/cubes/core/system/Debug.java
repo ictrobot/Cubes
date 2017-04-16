@@ -4,7 +4,7 @@ import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.Compatibility;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import ethanjones.cubes.core.gwt.FakeAtomic.AtomicInteger;
 
 public class Debug {
 
