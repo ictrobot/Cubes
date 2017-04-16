@@ -1,5 +1,6 @@
 package ethanjones.cubes.core.platform.android;
 
+import ethanjones.cubes.core.gwt.Task;
 import ethanjones.cubes.core.logging.LogLevel;
 import ethanjones.cubes.core.logging.LogWriter;
 
@@ -11,16 +12,16 @@ public class AndroidLogWriter implements LogWriter {
   public void log(LogLevel level, String message) {
     switch (level) {
       case error:
-        Log.e(Thread.currentThread().getName(), message);
+        Log.e(Task.currentTaskName(), message);
         break;
       case warning:
-        Log.w(Thread.currentThread().getName(), message);
+        Log.w(Task.currentTaskName(), message);
         break;
       case info:
-        Log.i(Thread.currentThread().getName(), message);
+        Log.i(Task.currentTaskName(), message);
         break;
       case debug:
-        Log.d(Thread.currentThread().getName(), message);
+        Log.d(Task.currentTaskName(), message);
         break;
     }
   }
@@ -29,16 +30,16 @@ public class AndroidLogWriter implements LogWriter {
   public void log(LogLevel level, String message, Throwable throwable) {
     switch (level) {
       case error:
-        Log.e(Thread.currentThread().getName(), message, throwable);
+        Log.e(Task.currentTaskName(), message, throwable);
         break;
       case warning:
-        Log.w(Thread.currentThread().getName(), message, throwable);
+        Log.w(Task.currentTaskName(), message, throwable);
         break;
       case info:
-        Log.i(Thread.currentThread().getName(), message, throwable);
+        Log.i(Task.currentTaskName(), message, throwable);
         break;
       case debug:
-        Log.d(Thread.currentThread().getName(), message, throwable);
+        Log.d(Task.currentTaskName(), message, throwable);
         break;
     }
   }
@@ -47,16 +48,16 @@ public class AndroidLogWriter implements LogWriter {
   public void log(LogLevel level, Throwable throwable) {
     switch (level) {
       case error:
-        Log.e(Thread.currentThread().getName(), "", throwable);
+        Log.e(Task.currentTaskName(), "", throwable);
         break;
       case warning:
-        Log.w(Thread.currentThread().getName(), "", throwable);
+        Log.w(Task.currentTaskName(), "", throwable);
         break;
       case info:
-        Log.i(Thread.currentThread().getName(), "", throwable);
+        Log.i(Task.currentTaskName(), "", throwable);
         break;
       case debug:
-        Log.d(Thread.currentThread().getName(), "", throwable);
+        Log.d(Task.currentTaskName(), "", throwable);
         break;
     }
   }

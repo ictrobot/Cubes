@@ -94,13 +94,4 @@ public class Debug {
     System.out.flush();
     System.exit(1);
   }
-
-  public static boolean stackContain(Class<?> c) {
-    StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-    String name = c.getName();
-    for (StackTraceElement stackTraceElement : stackTrace) {
-      if (stackTraceElement.getClassName().equals(name)) return true;
-    }
-    return false;
-  }
 }

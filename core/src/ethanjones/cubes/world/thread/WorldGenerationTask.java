@@ -23,7 +23,6 @@ public class WorldGenerationTask implements GenerationTask {
   public final MultiAreaReference references;
   public final WorldRequestParameter parameter;
   public final ConcurrentLinkedQueue<AreaReference> generateQueue = new ConcurrentLinkedQueue<AreaReference>();
-  public final CountDownLatch generationComplete = new CountDownLatch(WorldTasks.GENERATION_THREADS);
   public final ConcurrentLinkedQueue<AreaReference> featuresQueue = new ConcurrentLinkedQueue<AreaReference>();
   public final AtomicLong timeStarted = new AtomicLong(0);
   public final AtomicInteger generateCounter = new AtomicInteger(0);

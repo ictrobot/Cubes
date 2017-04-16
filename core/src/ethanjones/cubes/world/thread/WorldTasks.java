@@ -3,8 +3,6 @@ package ethanjones.cubes.world.thread;
 import ethanjones.cubes.core.event.world.generation.AreaLoadedEvent;
 import ethanjones.cubes.core.event.world.generation.FeaturesEvent;
 import ethanjones.cubes.core.event.world.generation.GenerationEvent;
-import ethanjones.cubes.core.system.ThreadPool;
-import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.light.SunLight;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
@@ -18,17 +16,10 @@ import ethanjones.cubes.core.gwt.FakeAtomic.AtomicReference;
 
 public class WorldTasks {
 
-  public static final int GENERATION_THREADS = 8;
-
   private static final WorldGenerationRunnable gen = new WorldGenerationRunnable();
-  private static final ThreadPool genThreadPool;
 
   static {
-    genThreadPool = new ThreadPool("WorldGeneration", gen, GENERATION_THREADS);
-    genThreadPool.setSide(Side.Server);
-    genThreadPool.setPriority(Thread.MIN_PRIORITY);
-    genThreadPool.setDaemon(true);
-    genThreadPool.start();
+    gen.start();
   }
 
   public static GenerationTask request(WorldServer worldServer, MultiAreaReference references, WorldRequestParameter parameter) {

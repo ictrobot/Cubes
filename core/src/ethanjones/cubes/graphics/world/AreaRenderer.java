@@ -157,18 +157,12 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
   public static void free(AreaRenderer areaRenderer) {
     if (areaRenderer != null) Pools.free(AreaRenderer.class, areaRenderer);
   }
-  
-  // checks if client thread
+
   public static void free(AreaRenderer[] areaRenderer) {
     if (areaRenderer == null) return;
-    boolean isClient = Side.isMainThread(Side.Client);
     for (int i = 0; i < areaRenderer.length; i++) {
       if (areaRenderer[i] == null) continue;
-      if (isClient) {
-        Pools.free(AreaRenderer.class, areaRenderer[i]);
-      } else {
-        WorldGraphicsPools.toFree.add(areaRenderer[i]);
-      }
+      Pools.free(AreaRenderer.class, areaRenderer[i]);
       areaRenderer[i] = null;
     }
   }

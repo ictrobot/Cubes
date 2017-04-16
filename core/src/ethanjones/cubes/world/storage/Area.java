@@ -7,7 +7,6 @@ import ethanjones.cubes.core.id.IDManager;
 import ethanjones.cubes.core.id.TransparencyManager;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.CubesException;
-import ethanjones.cubes.core.system.Executor;
 import ethanjones.cubes.core.util.Lock;
 import ethanjones.cubes.core.util.ThreadRandom;
 import ethanjones.cubes.graphics.world.AreaRenderStatus;
@@ -914,18 +913,6 @@ public class Area implements Lock.HasLock {
     for (BlockData blockData : blockDataList) {
       dataOutputStream.writeInt(getRef(blockData.getX(), blockData.getY(), blockData.getZ()));
       Data.output(blockData.write(), dataOutputStream);
-    }
-
-    if (usedHeight != height) {
-      Executor.execute(new Runnable() {
-        @Override
-        public void run() {
-          lock.writeLock();
-          if (!unloaded)
-            shrink();
-          lock.writeUnlock();
-        }
-      });
     }
 
     lock.readUnlock();

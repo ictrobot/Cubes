@@ -12,7 +12,6 @@ import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.Debug;
-import ethanjones.cubes.core.system.Executor;
 import ethanjones.cubes.core.util.PerSecond;
 import ethanjones.cubes.entity.EntityManager;
 import ethanjones.cubes.graphics.Graphics;
@@ -43,7 +42,6 @@ public abstract class Cubes {
     Debug.printProperties();
 
     Compatibility.get().logEnvironment();
-    Executor.init();
 
     Assets.preInit();
     JsonLoader.loadCore();
@@ -82,7 +80,6 @@ public abstract class Cubes {
 
   private final Side side;
   public World world;
-  public Thread thread;
   protected State state = new State();
   public final PerSecond ticksPerSecond = new PerSecond(10);
 
@@ -91,7 +88,6 @@ public abstract class Cubes {
   }
 
   public void create() {
-    thread = Thread.currentThread();
     Side.setup(side);
     Compatibility.get().sideInit(side);
     Side.getEventBus().register(this);
@@ -119,7 +115,7 @@ public abstract class Cubes {
   public void dispose() {
     if (!state.canDispose()) return;
     state.stopping();
-    if (state.isSetup() && Thread.currentThread() == thread) {
+    if (state.isSetup()) {
       stop();
     }
   }
@@ -138,7 +134,6 @@ public abstract class Cubes {
   }
 
   protected void stop() {
-    if (Thread.currentThread() != thread) return;
     synchronized (this) {
       write();
       NetworkingManager.getNetworking(side).stop();
@@ -156,10 +151,6 @@ public abstract class Cubes {
           break;
       }
     }
-  }
-
-  public Thread getThread() {
-    return thread;
   }
 
   public boolean isRunning() {

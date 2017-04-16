@@ -1,5 +1,6 @@
 package ethanjones.cubes.networking.singleplayer;
 
+import ethanjones.cubes.core.gwt.Task;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.networking.packet.Packet;
@@ -14,7 +15,7 @@ import ethanjones.cubes.core.gwt.FakeAtomic.AtomicBoolean;
 
 import static ethanjones.cubes.networking.Networking.NETWORKING_DEBUG;
 
-public class SingleplayerNetworkingThread extends Thread {
+public class SingleplayerNetworkingTask extends Task {
 
   public final AtomicBoolean running = new AtomicBoolean(true);
   public final PacketQueue input;
@@ -22,38 +23,45 @@ public class SingleplayerNetworkingThread extends Thread {
   private final Side sideIn;
   private final Side sideOut;
 
-  public SingleplayerNetworkingThread(PacketQueue output, Side sideOut) {
+  PairedStreams pair;
+  DataOutputStream dataOutputStream;
+  DataInputStream dataInputStream;
+
+  public SingleplayerNetworkingTask(PacketQueue output, Side sideOut) {
+    super(1);
     this.input = new PriorityPacketQueue();
     this.output = output;
     this.sideIn = sideOut == Side.Client ? Side.Server : Side.Client;
     this.sideOut = sideOut;
-    setName("SingleplayerNetworkingThread-" + sideIn.name() + "To" + sideOut.name());
-    this.setDaemon(true);
-    this.setPriority(Thread.NORM_PRIORITY - 1);
+    setName("SingleplayerNetworkingTask-" + sideIn.name() + "To" + sideOut.name());
+
+    pair = new PairedStreams();
+    dataOutputStream = new DataOutputStream(pair.output);
+    dataInputStream = new DataInputStream(pair.input);
   }
 
   @Override
   public void run() {
-    PairedStreams pair = new PairedStreams();
-    DataOutputStream dataOutputStream = new DataOutputStream(pair.output);
-    DataInputStream dataInputStream = new DataInputStream(pair.input);
+    if (!running.get()) stop();
 
     while (running.get()) {
+      checkTime();
+
       try {
-        Packet packet = input.waitAndGet();
-        if (packet == null) continue;
+        Packet packet = input.get();
+        if (packet == null) throw new TimelimitException();
         if (!packet.shouldSend()) continue;
 
-        Side.setSide(sideOut);
+        setSide(sideOut);
         Packet copy = packet.copy();
         if (copy == packet) throw new IllegalStateException(packet.getClass().getName());
 
         if (copy == null) {
-          Side.setSide(sideIn);
+          setSide(sideIn);
           pair.reset();
           packet.write(dataOutputStream);
 
-          Side.setSide(sideOut);
+          setSide(sideOut);
           pair.updateInput();
           copy = packet.getClass().newInstance();
           copy.read(dataInputStream);
@@ -63,6 +71,7 @@ public class SingleplayerNetworkingThread extends Thread {
 
         output.add(copy);
       } catch (Exception e) {
+        if (e instanceof TimelimitException) throw (TimelimitException) e;
         Debug.crash(e);
       }
     }

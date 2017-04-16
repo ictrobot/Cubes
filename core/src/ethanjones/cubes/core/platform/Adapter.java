@@ -12,7 +12,6 @@ import ethanjones.cubes.side.server.CubesServer;
 
 public class Adapter {
 
-  private static final int JOIN_TIMEOUT = 60000;
   private static AdapterInterface adapter;
 
   public static void setClient(CubesClient cubesClient) throws UnsupportedOperationException {
@@ -48,23 +47,16 @@ public class Adapter {
   private static void stop() {
     final CubesClient cubesClient = adapter.getClient();
     final CubesServer cubesServer = adapter.getServer();
-    final Thread currentThread = Thread.currentThread();
 
-    if (!isDedicatedServer()) {
-      if (Adapter.getInterface().getThread() == currentThread) {
-        stopFromClientThread(cubesClient, cubesServer);
-      } else if (cubesServer != null && cubesServer.getThread() == currentThread) {
-        stopFromServerThread(cubesClient, cubesServer);
-      } else {
-        stopFromOtherThread(cubesClient, cubesServer);
+    try {
+      if (cubesServer != null) {
+        cubesServer.dispose();
       }
-      throw new StopLoopException();
-    } else {
-      if (Adapter.getInterface().getThread() == currentThread) {
-        stopFromServerThread(cubesClient, cubesServer);
-      } else {
-        stopFromOtherThread(cubesClient, cubesServer);
+      if (cubesClient != null) {
+        cubesClient.dispose();
       }
+    } catch (Exception e) {
+      Debug.crash(e);
     }
   }
 
@@ -78,89 +70,6 @@ public class Adapter {
 
   public static void setInterface(AdapterInterface adapterInterface) {
     if (adapter == null && adapterInterface != null) adapter = adapterInterface;
-  }
-
-  private static void stopFromClientThread(final CubesClient cubesClient, final CubesServer cubesServer) {
-    try {
-      if (cubesServer != null) {
-        cubesServer.dispose();
-      }
-      if (cubesClient != null) {
-        cubesClient.dispose();
-      }
-      if (cubesServer != null) {
-        try {
-          cubesServer.getThread().join(JOIN_TIMEOUT);
-        } catch (InterruptedException e) {
-        }
-        if (cubesServer.getThread().isAlive()) {
-          failedToStopThread(cubesServer.getThread());
-        }
-      }
-    } catch (Exception e) {
-      Debug.crash(e);
-    }
-  }
-
-  private static void stopFromServerThread(final CubesClient cubesClient, final CubesServer cubesServer) {
-    try {
-      if (cubesClient != null) {
-        cubesClient.dispose();
-      }
-      if (cubesServer != null) {
-        cubesServer.dispose();
-      }
-      if (cubesClient != null) {
-        try {
-          cubesClient.getThread().join(JOIN_TIMEOUT);
-        } catch (InterruptedException e) {
-        }
-        if (cubesClient.getThread().isAlive()) {
-          failedToStopThread(cubesClient.getThread());
-        }
-      }
-    } catch (Exception e) {
-      Debug.crash(e);
-    }
-  }
-
-  private static void stopFromOtherThread(final CubesClient cubesClient, final CubesServer cubesServer) {
-    try {
-      if (cubesClient != null) {
-        cubesClient.dispose();
-      }
-      if (cubesServer != null) {
-        cubesServer.dispose();
-      }
-      if (cubesClient != null) {
-        try {
-          cubesClient.getThread().join(JOIN_TIMEOUT);
-        } catch (InterruptedException e) {
-        }
-        if (cubesClient.getThread().isAlive()) {
-          failedToStopThread(cubesClient.getThread());
-        }
-      }
-      if (cubesServer != null) {
-        try {
-          cubesServer.getThread().join(JOIN_TIMEOUT);
-        } catch (InterruptedException e) {
-        }
-        if (cubesServer.getThread().isAlive()) {
-          failedToStopThread(cubesServer.getThread());
-        }
-      }
-    } catch (Exception e) {
-      Debug.crash(e);
-    }
-  }
-
-  private static synchronized void failedToStopThread(Thread thread) {
-    StackTraceElement[] stackTrace = thread.getStackTrace();
-    Log.error("Failed to stop " + thread.getName() + " thread");
-    for (StackTraceElement stackTraceElement : stackTrace) {
-      Log.error("  " + stackTraceElement.toString());
-    }
   }
 
   public static void gotoMainMenu() {

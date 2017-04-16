@@ -1,30 +1,66 @@
 package ethanjones.cubes.side.server.integrated;
 
+import ethanjones.cubes.core.gwt.Task;
 import ethanjones.cubes.core.system.Debug;
+import ethanjones.cubes.networking.server.ClientIdentifier;
+import ethanjones.cubes.networking.socket.SocketMonitor;
 import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.side.server.CubesServer;
 import ethanjones.cubes.world.save.Save;
 
-public abstract class IntegratedServer extends CubesServer implements Runnable {
+import java.util.ArrayList;
+import java.util.List;
+
+public class IntegratedServer extends CubesServer implements Runnable {
+
+  public final Task task;
 
   public IntegratedServer(Save save) {
     super(save);
+    this.task = new Task(this);
+    this.task.setName("Server");
+    this.task.setSide(Side.Server);
+  }
+
+  public void start() {
+    task.start();
   }
 
   @Override
   public void run() {
+    if (!state.isSetup()) {
+      try {
+        create();
+      } catch (Exception e) {
+        Debug.crash(e);
+      }
+    }
+
+    if (state.isStopping()) {
+      try {
+        stop();
+      } catch (Exception e) {
+        Debug.crash(e);
+      }
+      return;
+    }
+
     try {
-      create();
       loop();
       stop();
     } catch (Exception e) {
-      Debug.crash(e);
+      if (e instanceof Task.TimelimitException) {
+        throw e;
+      } else {
+        Debug.crash(e);
+      }
     }
   }
 
   @Override
-  public void create() {
-    super.create();
+  protected void update() {
+    super.update();
+    task.checkTime();
   }
 
   @Override
@@ -32,12 +68,39 @@ public abstract class IntegratedServer extends CubesServer implements Runnable {
     return false;
   }
 
-  public Thread start() {
-    if (thread != null) return thread;
-    thread = new Thread(this);
-    thread.setName(Side.Server.name());
-    thread.setUncaughtExceptionHandler(Debug.UncaughtExceptionHandler.instance);
-    thread.start();
-    return thread;
+  private SingleplayerClientIdentifier singleplayerClientIdentifier;
+
+  public void create() {
+    super.create();
+    singleplayerClientIdentifier = new SingleplayerClientIdentifier();
   }
+
+  @Override
+  public List<ClientIdentifier> getAllClients() {
+    List<ClientIdentifier> list = new ArrayList<ClientIdentifier>(1);
+    if (singleplayerClientIdentifier != null) list.add(singleplayerClientIdentifier); // don't add if not yet created
+    return list;
+  }
+
+  @Override
+  public ClientIdentifier getClient(SocketMonitor socketMonitor) {
+    return singleplayerClientIdentifier;
+  }
+
+  @Override
+  public ClientIdentifier getClient(String username) {
+    if (username.equals(singleplayerClientIdentifier.getPlayer().username)) return singleplayerClientIdentifier;
+    return null;
+  }
+
+  @Override
+  public void addClient(ClientIdentifier clientIdentifier) {
+
+  }
+
+  @Override
+  public void removeClient(SocketMonitor socketMonitor) {
+
+  }
+
 }

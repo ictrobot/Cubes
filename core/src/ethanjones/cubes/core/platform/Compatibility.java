@@ -73,7 +73,6 @@ public abstract class Compatibility {
     compatibility = this;
 
     Thread.setDefaultUncaughtExceptionHandler(UncaughtExceptionHandler.instance);
-    Thread.currentThread().setUncaughtExceptionHandler(UncaughtExceptionHandler.instance);
 
     try {
       run(new ClientAdapter());

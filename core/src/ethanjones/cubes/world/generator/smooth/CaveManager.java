@@ -1,6 +1,5 @@
 package ethanjones.cubes.world.generator.smooth;
 
-import ethanjones.cubes.core.system.Executor;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.save.Save;
@@ -89,12 +88,6 @@ public class CaveManager {
     CaveGenerator caveGenerator = new CaveGenerator(x, z, smoothWorld);
     final Cave cave = caveGenerator.generate();
     final Save save = Cubes.getServer().world.save;
-    Executor.executeNotSided(new Runnable() {
-      @Override
-      public void run() {
-        save.writeCave(a, cave);
-      }
-    });
     return cave;
   }
 }

@@ -4,6 +4,7 @@ import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.core.event.EventHandler;
 import ethanjones.cubes.core.event.entity.living.player.PlayerBreakBlockEvent;
 import ethanjones.cubes.core.event.entity.living.player.PlayerPlaceBlockEvent;
+import ethanjones.cubes.core.gwt.Task;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.Compatibility;
@@ -28,6 +29,8 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
   private static final int SAVE_TIME = 60000;
   private static final AtomicLong lastUpdateTime = new AtomicLong();
   private final Save save;
+  private  long nextTickTime = System.currentTimeMillis() + tickMS;
+  private  int behindTicks = 0;
 
   public CubesServer(Save save) {
     super(Side.Server);
@@ -50,24 +53,13 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
   }
   
   public void loop() {
-    long nextTickTime = System.currentTimeMillis() + tickMS;
-    int behindTicks = 0;
     while (state.isRunning()) {
       long diff = nextTickTime - System.currentTimeMillis();
       if (diff < 0) {
         behindTicks += 1 + (-diff / tickMS);
       }
       if (behindTicks == 0) {
-        while (diff > 1) {
-          if (diff > 3) update();
-          try {
-            Thread.sleep(1);
-          } catch (InterruptedException e) {
-            Log.error(e);
-            break;
-          }
-          diff = nextTickTime - System.currentTimeMillis();
-        }
+        throw new Task.TimelimitException();
       } else if (behindTicks >= (1000 / tickMS)) {
         Log.warning("Skipping " + behindTicks + " ticks");
         behindTicks = 0;
@@ -75,9 +67,9 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
       } else {
         behindTicks--;
       }
-      update();
-      tick();
       nextTickTime += tickMS;
+      tick();
+      update();
     }
   }
   

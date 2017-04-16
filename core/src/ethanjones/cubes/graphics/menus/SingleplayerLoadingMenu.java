@@ -6,7 +6,7 @@ import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.graphics.menus.ClientErrorMenu.FailedStartingSingleplayerMenu;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.side.client.CubesClient;
-import ethanjones.cubes.side.server.integrated.SingleplayerServer;
+import ethanjones.cubes.side.server.integrated.IntegratedServer;
 import ethanjones.cubes.world.save.Save;
 
 public class SingleplayerLoadingMenu extends InfoMenu {
@@ -27,7 +27,7 @@ public class SingleplayerLoadingMenu extends InfoMenu {
     try {
       try {
         NetworkingManager.singleplayerPreInit();
-        Adapter.setServer(new SingleplayerServer(save));
+        Adapter.setServer(new IntegratedServer(save));
         Adapter.setClient(new CubesClient());
         Adapter.setMenu(new WorldLoadingMenu());
       } catch (Exception e) {

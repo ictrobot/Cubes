@@ -1,5 +1,6 @@
 package ethanjones.cubes.core.platform;
 
+import ethanjones.cubes.core.gwt.Task;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.Branding;
@@ -29,7 +30,6 @@ public class ClientAdapter implements AdapterInterface {
   private Menu menu;
   private IntegratedServer cubesServer;
   private CubesClient cubesClient;
-  private Thread thread;
 
   private AtomicBoolean setupClient = new AtomicBoolean(false);
   private AtomicBoolean setupMenu = new AtomicBoolean(false);
@@ -42,8 +42,6 @@ public class ClientAdapter implements AdapterInterface {
   public void create() {
     try {
       Gdx.graphics.setTitle(Branding.DEBUG);
-      thread = Thread.currentThread();
-      thread.setName(getSide().name());
       Cubes.setup(this);
       setMenu(new MainMenu());
       Log.info(Localization.get("client.client_loaded"));
@@ -126,9 +124,7 @@ public class ClientAdapter implements AdapterInterface {
       } else {
         Gdx.input.setCursorCatched(true);
       }
-      if (!Branding.IS_DEBUG && cubesClient != null && cubesServer != null && cubesServer.isRunning() && CubesServer.lastUpdateTime() + 2500 < System.currentTimeMillis()) {
-        Adapter.gotoMenu(new UnresponsiveIntegratedServerMenu());
-      }
+      Task.runTasks();
     } catch (StopLoopException e) {
       Log.debug(e);
     } catch (Exception e) {
@@ -215,10 +211,5 @@ public class ClientAdapter implements AdapterInterface {
     } catch (StopLoopException ignored) {
 
     }
-  }
-
-  @Override
-  public Thread getThread() {
-    return thread;
   }
 }

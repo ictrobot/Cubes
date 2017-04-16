@@ -1,50 +1,35 @@
 package ethanjones.cubes.side.common;
 
 import ethanjones.cubes.core.event.EventBus;
+import ethanjones.cubes.core.gwt.Task;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.timing.Timing;
 import ethanjones.cubes.networking.Networking;
 import ethanjones.cubes.networking.NetworkingManager;
+
+import java.util.Objects;
 
 public enum Side {
   Client, Server;
   
   private static SideData clientData;
   private static SideData serverData;
-  private static ThreadLocal<Side> sideLocal = new ThreadLocal<Side>();
-  private static ThreadLocal<Boolean> mainLocal = new ThreadLocal<Boolean>() {
-    @Override
-    public Boolean initialValue() {
-      return false;
-    }
-  };
   
   public static EventBus getEventBus() {
     return getData().eventBus;
   }
   
   public static Side getSide() {
-    return sideLocal.get();
+    Side s = Task.getCurrentSide();
+    return s == null ? Client : s;
   }
   
   public static boolean isClient() {
-    return sideLocal.get() == Client;
+    return getSide() == Client;
   }
   
   public static boolean isServer() {
-    return sideLocal.get() == Server;
-  }
-  
-  public static boolean isMainThread(Side side) {
-    return mainLocal.get() && sideLocal.get() == side;
-  }
-  
-  /**
-   * Allow network threads etc. to access sided objects
-   */
-  public static void setSide(Side side) {
-    if (mainLocal.get()) return;
-    sideLocal.set(side);
+    return getSide() == Server;
   }
   
   private static SideData getData(Side side) {
@@ -82,9 +67,6 @@ public enum Side {
   static void setup(Side side) {
     if (side == null || getData(side) != null) return;
   
-    sideLocal.set(side);
-    mainLocal.set(true);
-  
     SideData data = new SideData();
     switch (side) {
       case Client:
@@ -115,10 +97,10 @@ public enum Side {
   private static SideData getData() {
     Side side = getSide();
     if (side == null) {
-      throw new CubesException("Sided objects cannot be accessed from thread: " + Thread.currentThread().getName());
+      throw new CubesException("Current side is null");
     }
     SideData data = getData(side);
-    if (data == null) throw new CubesException("Sided objects are not setup");
+    if (data == null) throw new CubesException("Sided objects are not setup for " + Objects.toString(side));
     return data;
   }
   

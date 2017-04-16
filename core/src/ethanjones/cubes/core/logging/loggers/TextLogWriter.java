@@ -1,5 +1,6 @@
 package ethanjones.cubes.core.logging.loggers;
 
+import ethanjones.cubes.core.gwt.Task;
 import ethanjones.cubes.core.logging.LogLevel;
 import ethanjones.cubes.core.logging.LogWriter;
 
@@ -43,7 +44,7 @@ public abstract class TextLogWriter implements LogWriter {
     stringBuilder.append(" [");
     stringBuilder.append(level.name().toUpperCase());
     stringBuilder.append("] [");
-    stringBuilder.append(Thread.currentThread().getName());
+    stringBuilder.append(Task.currentTaskName());
     stringBuilder.append("] ");
     stringBuilder.append(message);
     return stringBuilder.toString();

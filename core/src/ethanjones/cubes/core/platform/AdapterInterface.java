@@ -25,6 +25,4 @@ public interface AdapterInterface extends ApplicationListener {
 
   //Call Adapter.dispose()
   void dispose();
-
-  Thread getThread();
 }

@@ -13,14 +13,14 @@ public class SingleplayerNetworking extends Networking {
 
   PacketQueue toServer;
   PacketQueue toClient;
-  SingleplayerNetworkingThread cloneToServer;
-  SingleplayerNetworkingThread cloneToClient;
+  SingleplayerNetworkingTask cloneToServer;
+  SingleplayerNetworkingTask cloneToClient;
   
   public SingleplayerNetworking() {
     toServer = new PacketQueue();
     toClient = new PacketQueue();
-    cloneToServer = new SingleplayerNetworkingThread(toServer, Side.Server);
-    cloneToClient = new SingleplayerNetworkingThread(toClient, Side.Client);
+    cloneToServer = new SingleplayerNetworkingTask(toServer, Side.Server);
+    cloneToClient = new SingleplayerNetworkingTask(toClient, Side.Client);
   }
 
   @Override
@@ -61,7 +61,7 @@ public class SingleplayerNetworking extends Networking {
     send(packet, cloneToClient);
   }
 
-  private void send(Packet packet, SingleplayerNetworkingThread cloneThread) {
+  private void send(Packet packet, SingleplayerNetworkingTask cloneThread) {
     cloneThread.input.add(packet);
   }
 
