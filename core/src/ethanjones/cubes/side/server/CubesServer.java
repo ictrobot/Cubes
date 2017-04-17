@@ -4,6 +4,7 @@ import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.core.event.EventHandler;
 import ethanjones.cubes.core.event.entity.living.player.PlayerBreakBlockEvent;
 import ethanjones.cubes.core.event.entity.living.player.PlayerPlaceBlockEvent;
+import ethanjones.cubes.core.gwt.FakeAtomic.AtomicLong;
 import ethanjones.cubes.core.gwt.Task;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Adapter;
@@ -22,7 +23,6 @@ import ethanjones.cubes.world.server.WorldServer;
 import com.badlogic.gdx.math.Vector3;
 
 import java.util.List;
-import ethanjones.cubes.core.gwt.FakeAtomic.AtomicLong;
 
 public abstract class CubesServer extends Cubes implements TimeHandler {
 
@@ -62,8 +62,8 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
         throw new Task.TimelimitException();
       } else if (behindTicks >= (1000 / tickMS)) {
         Log.warning("Skipping " + behindTicks + " ticks");
-        behindTicks = 0;
         nextTickTime += behindTicks * tickMS;
+        behindTicks = 0;
       } else {
         behindTicks--;
       }

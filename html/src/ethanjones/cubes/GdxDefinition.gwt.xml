@@ -4,7 +4,6 @@
 	<inherits name='com.badlogic.gdx.backends.gdx_backends_gwt' />
 
 	<inherits name='Cubes' />
-	<inherits name='Data' />
 	<inherits name='Json' />
 	<entry-point class='ethanjones.cubes.core.platform.html.HtmlLauncher' />
 	<set-configuration-property name='xsiframe.failIfScriptTag' value='FALSE'/>
