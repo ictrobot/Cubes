@@ -77,8 +77,8 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
         }
       } else if (behindTicks >= (1000 / tickMS)) {
         Log.warning("Skipping " + behindTicks + " ticks");
-        behindTicks = 0;
         nextTickTime += behindTicks * tickMS;
+        behindTicks = 0;
       } else {
         behindTicks--;
       }
