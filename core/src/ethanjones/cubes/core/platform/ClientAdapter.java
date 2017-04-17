@@ -1,5 +1,6 @@
 package ethanjones.cubes.core.platform;
 
+import ethanjones.cubes.core.gwt.FakeAtomic.AtomicBoolean;
 import ethanjones.cubes.core.gwt.Task;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
@@ -9,7 +10,6 @@ import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.graphics.Graphics;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menu.MenuManager;
-import ethanjones.cubes.graphics.menus.ClientErrorMenu.UnresponsiveIntegratedServerMenu;
 import ethanjones.cubes.graphics.menus.MainMenu;
 import ethanjones.cubes.input.InputChain;
 import ethanjones.cubes.side.client.CubesClient;
@@ -22,8 +22,6 @@ import ethanjones.cubes.world.client.WorldClient;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-
-import ethanjones.cubes.core.gwt.FakeAtomic.AtomicBoolean;
 
 public class ClientAdapter implements AdapterInterface {
 

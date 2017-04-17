@@ -25,7 +25,7 @@ public class Branding {
 
   static {
     try {
-      NAME = "Cubes";
+      NAME = "Cubes Minimized";
       AUTHOR = "Ethan Jones";
       PLATFORM = Gdx.app.getType().name();
 

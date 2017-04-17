@@ -11,6 +11,7 @@ public class HtmlLauncher extends GwtApplication implements Launcher {
   
   public HtmlLauncher() {
     compatibility = new HtmlCompatibility(this);
+    compatibility.startCubes();
   }
   
   @Override
