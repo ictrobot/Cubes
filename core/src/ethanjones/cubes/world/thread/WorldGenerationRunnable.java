@@ -4,10 +4,10 @@ import ethanjones.cubes.core.gwt.Task;
 import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.reference.AreaReference;
 
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.ArrayDeque;
 
 public class WorldGenerationRunnable extends Task {
-  public LinkedBlockingQueue<WorldGenerationTask> queue = new LinkedBlockingQueue<WorldGenerationTask>();
+  public ArrayDeque<WorldGenerationTask> queue = new ArrayDeque<WorldGenerationTask>();
 
   public WorldGenerationRunnable() {
     super(2);

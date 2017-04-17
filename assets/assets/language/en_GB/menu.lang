@@ -15,7 +15,7 @@ menu.singleplayer.server_only=Server
 menu.singleplayer.delete=Delete
 menu.singleplayer.create=Create
 
-menu.singleplayer.create.title=New Save
+menu.singleplayer.create.title=Singleplayer
 menu.singleplayer.create.temporary_title=Singleplayer
 menu.singleplayer.create.name=Save name
 menu.singleplayer.create.seed=Terrain seed

@@ -16,7 +16,7 @@ public class Asset {
   private TextureRegion textureRegion;
   private Material material;
 
-  protected Asset(AssetManager assetManager, String path, FileHandle fileHandle) {
+  public Asset(AssetManager assetManager, String path, FileHandle fileHandle) {
     this.assetManager = assetManager;
     this.path = path;
     this.fileHandle = fileHandle;

@@ -1,15 +1,13 @@
 package ethanjones.cubes.networking.packet;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayDeque;
 
 public class PacketQueue {
 
-  private BlockingQueue<Packet> queue;
+  private ArrayDeque<Packet> queue;
 
   public PacketQueue() {
-    queue = new LinkedBlockingQueue<Packet>();
+    queue = new ArrayDeque<Packet>();
   }
 
   public void add(Packet packet) {
@@ -19,14 +17,6 @@ public class PacketQueue {
 
   public Packet get() {
     return queue.poll();
-  }
-
-  public Packet waitAndGet() {
-    try {
-      return queue.poll(5, TimeUnit.SECONDS);
-    } catch (InterruptedException e) {
-      return null;
-    }
   }
 
 }

@@ -5,7 +5,7 @@ import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.save.Save;
 import ethanjones.cubes.world.storage.Area;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
 
 public class CaveManager {
   public static final int caveAreaRadius = 4;
@@ -14,7 +14,7 @@ public class CaveManager {
 
   private final SmoothWorld smoothWorld;
   private Cave spawnCave;
-  private final ConcurrentHashMap<AreaReference, Object> caves = new ConcurrentHashMap<AreaReference, Object>();
+  private final HashMap<AreaReference, Object> caves = new HashMap<AreaReference, Object>();
 
   public CaveManager(SmoothWorld smoothWorld) {
     this.smoothWorld = smoothWorld;

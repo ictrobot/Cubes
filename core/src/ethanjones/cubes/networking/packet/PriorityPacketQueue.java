@@ -1,14 +1,14 @@
 package ethanjones.cubes.networking.packet;
 
-import java.util.concurrent.PriorityBlockingQueue;
-import java.util.concurrent.TimeUnit;
 import ethanjones.cubes.core.gwt.FakeAtomic.AtomicLong;
 
+import java.util.PriorityQueue;
+
 public class PriorityPacketQueue extends PacketQueue {
-  private PriorityBlockingQueue<FIFOEntry> queue = new PriorityBlockingQueue<FIFOEntry>();
+  private PriorityQueue<FIFOEntry> queue = new PriorityQueue<FIFOEntry>();
 
   public PriorityPacketQueue() {
-    queue = new PriorityBlockingQueue<FIFOEntry>(16);
+    queue = new PriorityQueue<FIFOEntry>(16);
   }
 
   @Override
@@ -20,16 +20,6 @@ public class PriorityPacketQueue extends PacketQueue {
   public Packet get() {
     FIFOEntry entry = queue.poll();
     return entry == null ? null : entry.packet;
-  }
-
-  @Override
-  public Packet waitAndGet() {
-    try {
-      FIFOEntry entry = queue.poll(5, TimeUnit.SECONDS);
-      return entry == null ? null : entry.packet;
-    } catch (InterruptedException e) {
-      return null;
-    }
   }
 
   private static final class FIFOEntry implements Comparable<FIFOEntry> {

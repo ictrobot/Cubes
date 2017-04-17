@@ -1,13 +1,9 @@
 package ethanjones.cubes.core.system;
 
-import ethanjones.cubes.core.logging.Log;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
+import java.util.HashMap;
 
 public class Branding {
 
@@ -33,51 +29,21 @@ public class Branding {
       AUTHOR = "Ethan Jones";
       PLATFORM = Gdx.app.getType().name();
 
-      Properties properties = new Properties();
-      InputStream input = null;
-      try {
-        input = getFile("version").read();
-        properties.load(input);
-      } catch (IOException ex) {
-        Log.error("Failed to load version", ex);
-      } finally {
-        if (input != null) {
-          try {
-            input.close();
-          } catch (IOException e) {
-
-          }
-        }
-      }
-
+      HashMap<String, String> properties = map(getFile("version"));
       FileHandle buildFile = getFile("build");
       if (buildFile.exists()) {
-        try {
-          Properties buildProperties = new Properties();
-          input = buildFile.read();
-          buildProperties.load(input);
-          if (buildProperties.getProperty("build") != null) {
-            properties.setProperty("build", buildProperties.getProperty("build"));
-            properties.setProperty("hash", buildProperties.getProperty("hash"));
-          }
-        } catch (IOException ex) {
-          Log.error("Failed to load build", ex);
-        } finally {
-          if (input != null) {
-            try {
-              input.close();
-            } catch (IOException e) {
-
-            }
-          }
+        HashMap<String, String> buildProperties = map(buildFile);
+        if (buildProperties.get("build") != null) {
+          properties.put("build", buildProperties.get("build"));
+          properties.put("hash", buildProperties.get("hash"));
         }
       }
 
-      VERSION_MAJOR = Integer.parseInt(properties.getProperty("major"));
-      VERSION_MINOR = Integer.parseInt(properties.getProperty("minor"));
-      VERSION_POINT = Integer.parseInt(properties.getProperty("point"));
-      VERSION_BUILD = properties.getProperty("build") != null ? Integer.parseInt(properties.getProperty("build")) : -1;
-      VERSION_HASH = properties.getProperty("hash") != null ? properties.getProperty("hash") : "";
+      VERSION_MAJOR = Integer.parseInt(properties.get("major"));
+      VERSION_MINOR = Integer.parseInt(properties.get("minor"));
+      VERSION_POINT = Integer.parseInt(properties.get("point"));
+      VERSION_BUILD = properties.get("build") != null ? Integer.parseInt(properties.get("build")) : -1;
+      VERSION_HASH = properties.get("hash") != null ? properties.get("hash") : "";
 
       if (VERSION_BUILD == -1) {
         VERSION_FULL = VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_POINT;
@@ -96,6 +62,22 @@ public class Branding {
       e.printStackTrace();
       throw new CubesException(e);
     }
+  }
+  
+  private static HashMap<String, String> map(FileHandle fileHandle) {
+    String file = fileHandle.readString();
+    String[] split = file.split("\n");
+    HashMap<String, String> map = new HashMap<String, String>();
+    for (String line: split) {
+      line = line.trim();
+      if (line.startsWith("#")) continue;
+      int index = line.indexOf("=");
+      if (index == -1) continue;
+      String k = line.substring(0, index).toLowerCase();
+      String v = line.substring(index + 1);
+      map.put(k, v);
+    }
+    return map;
   }
 
   private static FileHandle getFile(String file) {

@@ -1,5 +1,7 @@
 package ethanjones.cubes.world.thread;
 
+import ethanjones.cubes.core.gwt.FakeAtomic.AtomicInteger;
+import ethanjones.cubes.core.gwt.FakeAtomic.AtomicLong;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
@@ -8,22 +10,15 @@ import ethanjones.cubes.world.server.WorldServer;
 
 import com.badlogic.gdx.math.MathUtils;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.CountDownLatch;
-import ethanjones.cubes.core.gwt.FakeAtomic.AtomicInteger;
-import ethanjones.cubes.core.gwt.FakeAtomic.AtomicLong;
+import java.util.*;
 
 public class WorldGenerationTask implements GenerationTask {
 
   public final WorldServer world;
   public final MultiAreaReference references;
   public final WorldRequestParameter parameter;
-  public final ConcurrentLinkedQueue<AreaReference> generateQueue = new ConcurrentLinkedQueue<AreaReference>();
-  public final ConcurrentLinkedQueue<AreaReference> featuresQueue = new ConcurrentLinkedQueue<AreaReference>();
+  public final ArrayDeque<AreaReference> generateQueue = new ArrayDeque<AreaReference>();
+  public final ArrayDeque<AreaReference> featuresQueue = new ArrayDeque<AreaReference>();
   public final AtomicLong timeStarted = new AtomicLong(0);
   public final AtomicInteger generateCounter = new AtomicInteger(0);
   public final AtomicInteger featureCounter = new AtomicInteger(0);

@@ -112,5 +112,8 @@ public abstract class Compatibility {
   }
   
   public abstract void _exit(int status);
-
+  
+  public abstract String timestamp();
+  
+  public abstract String line_separator();
 }

@@ -6,10 +6,10 @@ import java.util.Map;
 
 public class AssetManager {
 
-  protected final HashMap<String, Asset> assets;
+  public final HashMap<String, Asset> assets;
   private final String name;
 
-  protected AssetManager(String name) {
+  public AssetManager(String name) {
     this.name = name.toLowerCase().replace(" ", "");
     this.assets = new HashMap<String, Asset>();
   }

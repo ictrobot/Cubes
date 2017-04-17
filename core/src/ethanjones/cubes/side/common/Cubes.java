@@ -33,7 +33,7 @@ public abstract class Cubes {
   public static void setup(AdapterInterface adapterInterface) {
     if (setup) return;
     if (Compatibility.get() == null) {
-      Log.error(new CubesException("No Compatibility module for this platform: " + Gdx.app.getType().name() + ", OS: " + System.getProperty("os.name") + ", Arch:" + System.getProperty("os.arch")));
+      Log.error(new CubesException("No Compatibility module for this platform: " + Gdx.app.getType().name()));
     }
     Cubes.adapterInterface = adapterInterface;
 

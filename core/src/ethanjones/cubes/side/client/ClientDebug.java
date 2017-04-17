@@ -16,7 +16,7 @@ import com.badlogic.gdx.math.WindowedMean;
 
 public class ClientDebug {
 
-  private static final String lineSeparator = System.getProperty("line.separator");
+  private static final String lineSeparator = Compatibility.get().line_separator();
   static WindowedMean ms = new WindowedMean(50);
   private static PerSecond fps = new PerSecond(10);
   private static StringBuilder builder = new StringBuilder(250).append(Branding.DEBUG).append(lineSeparator);

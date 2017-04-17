@@ -29,16 +29,7 @@ public class Debug {
     if (Branding.VERSION_HASH != null && !Branding.VERSION_HASH.isEmpty()) {
       Log.debug("Hash:               " + Branding.VERSION_HASH);
     }
-    Log.debug("Java Home:          " + System.getProperty("java.home"));
-    Log.debug("Java Vendor:        " + System.getProperty("java.vendor"));
-    Log.debug("Java Vendor URL:    " + System.getProperty("java.vendor.url"));
-    Log.debug("Java Version:       " + System.getProperty("java.version"));
-    Log.debug("OS Name:            " + System.getProperty("os.name"));
-    Log.debug("OS Architecture:    " + System.getProperty("os.arch"));
-    Log.debug("OS Version:         " + System.getProperty("os.version"));
     Log.debug("libGDX version:     " + com.badlogic.gdx.Version.VERSION);
-    Log.debug("User Home:          " + System.getProperty("user.home"));
-    Log.debug("Working Directory:  " + System.getProperty("user.dir"));
   }
 
   public static synchronized void lowMemory() {

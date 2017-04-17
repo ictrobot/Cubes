@@ -18,6 +18,10 @@ import android.os.Build;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class AndroidCompatibility extends Compatibility {
 
   public AndroidLauncher androidLauncher;
@@ -48,6 +52,15 @@ public class AndroidCompatibility extends Compatibility {
 
   @Override
   public void logEnvironment() {
+    Log.debug("Java Home:          " + System.getProperty("java.home"));
+    Log.debug("Java Vendor:        " + System.getProperty("java.vendor"));
+    Log.debug("Java Vendor URL:    " + System.getProperty("java.vendor.url"));
+    Log.debug("Java Version:       " + System.getProperty("java.version"));
+    Log.debug("OS Name:            " + System.getProperty("os.name"));
+    Log.debug("OS Architecture:    " + System.getProperty("os.arch"));
+    Log.debug("OS Version:         " + System.getProperty("os.version"));
+    Log.debug("User Home:          " + System.getProperty("user.home"));
+    Log.debug("Working Directory:  " + System.getProperty("user.dir"));
     Log.debug("Android Version:    " + Build.VERSION.RELEASE);
     Log.debug("Android SDK:        " + Build.VERSION.SDK_INT);
     Log.debug("Brand:              " + Build.BRAND);
@@ -118,5 +131,17 @@ public class AndroidCompatibility extends Compatibility {
   @Override
   public void _exit(int status) {
     System.exit(status);
+  }
+  
+  private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yy HH:mm:ss");
+  
+  @Override
+  public String timestamp() {
+    return dateFormat.format(new Date());
+  }
+  
+  @Override
+  public String line_separator() {
+    return System.getProperty("line.separator");
   }
 }
