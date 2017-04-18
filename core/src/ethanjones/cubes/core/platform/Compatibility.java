@@ -121,4 +121,16 @@ public abstract class Compatibility {
   public abstract String timestamp();
   
   public abstract String line_separator();
+  
+  public void setCursorCatched(boolean b) {
+    Gdx.input.setCursorCatched(b);
+  }
+  
+  public int getDeltaX(int pointer) {
+    return Gdx.input.getDeltaX(pointer);
+  }
+  
+  public int getDeltaY(int pointer) {
+    return Gdx.input.getDeltaY(pointer);
+  }
 }

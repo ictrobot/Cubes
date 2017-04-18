@@ -56,6 +56,54 @@ public class HtmlCompatibility extends Compatibility {
 }-*/;
   
   @Override
+  public native void setCursorCatched(boolean b)
+/*-{
+    $wnd.cubesCursorCatched = b;
+    if (!b) {
+        try {
+            if ($wnd.document.exitPointerLock) {
+                $wnd.document.exitPointerLock();
+            }
+        } catch (e) {
+            $wnd.console.log("setCursorCatched", e);
+        }
+    }
+}-*/;
+  
+  @Override
+  public native void update()
+/*-{
+    if ($wnd.cubesEsc) {
+        $wnd.cubesEsc = false;
+        @ethanjones.cubes.side.client.CubesClient::escape()();
+    }
+}-*/;
+  
+  @Override
+  public int getDeltaX(int pointer) {
+    int js = _getDeltaX();
+    if (js != 0) return js;
+    return super.getDeltaX(pointer);
+  }
+  
+  @Override
+  public int getDeltaY(int pointer) {
+    int js = _getDeltaY();
+    if (js != 0) return js;
+    return super.getDeltaY(pointer);
+  }
+  
+  public native int _getDeltaX()
+/*-{
+    return $wnd.cubesMovementX || 0;
+}-*/;
+  
+  public native int _getDeltaY()
+/*-{
+    return $wnd.cubesMovementY || 0;
+}-*/;
+  
+  @Override
   public void _exit(int status) {
     throw new ExitException();
   }
@@ -104,5 +152,4 @@ public class HtmlCompatibility extends Compatibility {
     }
     addAssetManager(assetManager);
   }
-  
 }

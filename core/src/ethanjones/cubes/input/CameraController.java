@@ -1,6 +1,7 @@
 package ethanjones.cubes.input;
 
 import ethanjones.cubes.core.event.entity.living.player.PlayerMovementEvent;
+import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.settings.Keybinds;
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.entity.living.player.Player;
@@ -52,8 +53,8 @@ public class CameraController extends InputAdapter {
   @Override
   public boolean touchDragged(int screenX, int screenY, int pointer) {
     if (Cubes.getClient().renderer.guiRenderer.noCursorCatching()) return false;
-    float deltaX = -Gdx.input.getDeltaX(pointer) * degreesPerPixel;
-    float deltaY = -Gdx.input.getDeltaY(pointer) * degreesPerPixel;
+    float deltaX = -Compatibility.get().getDeltaX(pointer) * degreesPerPixel;
+    float deltaY = -Compatibility.get().getDeltaY(pointer) * degreesPerPixel;
     
     tmpMovement.set(camera.direction);
     tmpMovement.rotate(camera.up, deltaX);

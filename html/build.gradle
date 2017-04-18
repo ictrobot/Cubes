@@ -47,6 +47,15 @@ task dist(dependsOn: [clean, compileGwt]) {
             from "war"
             into "build/dist"
         }
+        delete "build/dist/index.html"
+        file("build/dist/play.html").renameTo(file("build/dist/index.html"))
+        delete "build/dist/html/logo.png"
+        copy {
+            from ("../assets/assets/") {
+                include "logo.png"
+            }
+            into "build/dist/html/"
+        }
     }
 }
 

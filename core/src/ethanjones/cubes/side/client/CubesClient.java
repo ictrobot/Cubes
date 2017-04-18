@@ -1,9 +1,9 @@
 package ethanjones.cubes.side.client;
 
+import ethanjones.cubes.core.gwt.UUID;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.system.CubesException;
-import ethanjones.cubes.core.gwt.UUID;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.graphics.hud.inv.InventoryManager;
 import ethanjones.cubes.graphics.menus.PauseMenu;
@@ -68,15 +68,7 @@ public class CubesClient extends Cubes implements ApplicationListener {
       Adapter.setMenu(null);
       worldReady = false;
     }
-    if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) && !(Adapter.getMenu() instanceof WorldLoadingMenu)) {
-      if (InventoryManager.isInventoryOpen()) {
-        InventoryManager.hideInventory();
-      } else if (Adapter.getMenu() instanceof PauseMenu) {
-        Adapter.setMenu(null);
-      } else {
-        Adapter.setMenu(new PauseMenu());
-      }
-    }
+    if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) escape();
     
     long diff = nextTickTime - System.currentTimeMillis();
     if (diff < -16) {
@@ -138,5 +130,17 @@ public class CubesClient extends Cubes implements ApplicationListener {
   @Override
   public void resume() {
 
+  }
+  
+  public static void escape() {
+    if (!(Adapter.getMenu() instanceof WorldLoadingMenu)) {
+      if (InventoryManager.isInventoryOpen()) {
+        InventoryManager.hideInventory();
+      } else if (Adapter.getMenu() instanceof PauseMenu) {
+        Adapter.setMenu(null);
+      } else {
+        Adapter.setMenu(new PauseMenu());
+      }
+    }
   }
 }

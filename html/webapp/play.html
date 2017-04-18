@@ -3,7 +3,7 @@
 <head>
     <title>Cubes</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1"/>
     <link href="styles.css" rel="stylesheet" type="text/css">
     <script src="soundmanager2-setup.js"></script>
     <script src="soundmanager2-jsmin.js"></script>
@@ -18,7 +18,12 @@
         }
 
         canvas {
+            position: absolute;
             display: block;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
         }
     </style>
 </head>
@@ -30,6 +35,14 @@
 
 <script>
     function handleMouseDown(evt) {
+        if (evt.target instanceof HTMLCanvasElement && window.cubesCursorCatched) {
+            //pointer lock
+            var canvas = evt.target;
+            canvas.requestPointerLock = canvas.requestPointerLock || canvas.mozRequestPointerLock || canvas.webkitRequestPointerLock;
+            if (canvas.requestPointerLock) {
+                canvas.requestPointerLock();
+            }
+        }
         evt.preventDefault();
         evt.stopPropagation();
         evt.target.style.cursor = 'default';
@@ -49,9 +62,33 @@
     });
 
     document.querySelector('body').onkeydown = function (e) {
-        if ( !e.metaKey && e.keyCode != 122) {
+        if (event.keyCode >= 48 && event.keyCode <= 57) return;
+        if (event.keyCode >= 65 && event.keyCode <= 90) return;
+        if (!e.metaKey && e.keyCode != 122 && e.keyCode != 13) {
             e.preventDefault();
         }
     };
+
+    // pointer lock
+    function moveCallback(e) {
+        window.cubesMovementX = e.movementX || e.mozMovementX || e.webkitMovementX || 0;
+        window.cubesMovementY = e.movementY || e.mozMovementY || e.webkitMovementY || 0;
+    }
+
+    function changeCallback() {
+        var canvas = document.getElementsByTagName("canvas")[0];
+        if (document.pointerLockElement === canvas || document.mozPointerLockElement === canvas || document.webkitPointerLockElement === canvas) {
+            document.addEventListener("mousemove", moveCallback, false);
+        } else {
+            document.removeEventListener("mousemove", moveCallback, false);
+            window.cubesMovementX = 0;
+            window.cubesMovementY = 0;
+            window.cubesEsc = true;
+        }
+    }
+
+    document.addEventListener('pointerlockchange', changeCallback, false);
+    document.addEventListener('mozpointerlockchange', changeCallback, false);
+    document.addEventListener('webkitpointerlockchange', changeCallback, false);
 </script>
 </html>

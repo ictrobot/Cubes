@@ -3,11 +3,13 @@ package ethanjones.cubes.graphics.menus;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Adapter;
+import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.graphics.menu.Fonts;
 import ethanjones.cubes.graphics.menu.Menu;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -76,6 +78,8 @@ public class MainMenu extends Menu {
     stage.addActor(version);
     stage.addActor(author);
     stage.addActor(buttons);
+    
+    if (Compatibility.get().getApplicationType() == ApplicationType.WebGL) quit.remove();
   }
 
   @Override
@@ -86,7 +90,7 @@ public class MainMenu extends Menu {
     version.setAlignment(Align.left);
     author.setBounds(width - author.getPrefWidth() - 2, 2, author.getPrefWidth(), author.getPrefHeight());
     author.setAlignment(Align.right);
-    buttons.setBounds(0, 0, width, (height / 4 * 3) - 2);
+    buttons.setBounds(0, 0, width, (height / 3 * 2) - 2);
     buttons.align(Align.top);
     buttons.layout();
   }

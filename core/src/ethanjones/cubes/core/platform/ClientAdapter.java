@@ -118,9 +118,9 @@ public class ClientAdapter implements AdapterInterface {
         menu.render(); //Render menu over client
       }
       if (menu != null || (cubesClient != null && cubesClient.renderer != null && cubesClient.renderer.noCursorCatching()) || Compatibility.get().isTouchScreen()) {
-        Gdx.input.setCursorCatched(false);
+        Compatibility.get().setCursorCatched(false);
       } else {
-        Gdx.input.setCursorCatched(true);
+        Compatibility.get().setCursorCatched(true);
       }
       Task.runTasks();
     } catch (StopLoopException e) {

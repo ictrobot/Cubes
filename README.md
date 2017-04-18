@@ -1,7 +1,8 @@
 ![Cubes](/assets/assets/logo.png)
 =============
-<a href="https://travis-ci.org/ictrobot/Cubes"><img src="https://travis-ci.org/ictrobot/Cubes.svg?branch=master" alt="Build status" align="right"></a>
 A simple voxel game featuring single player, multiplayer and endless procedurally generated terrain.
+
+This branch stores the code for the cut down browser version. [Try it here](https://cubes.ethanjones.me/play/)
 
 [***License***](/LICENSE) | [***Credits***](/CREDITS.md) | [***Changes***](/CHANGES.md) | [***Builds***](https://cubes.ethanjones.me/)
 
