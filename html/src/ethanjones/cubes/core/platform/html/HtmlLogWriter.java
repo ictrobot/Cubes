@@ -72,7 +72,7 @@ public class HtmlLogWriter extends TextLogWriter {
   
   public static native void console(String text)
 /*-{
-    console.log(text);
+    $wnd.console.log(text);
 }-*/;
   
   @Override

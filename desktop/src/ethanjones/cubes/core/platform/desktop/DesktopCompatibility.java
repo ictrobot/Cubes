@@ -72,12 +72,7 @@ public abstract class DesktopCompatibility extends Compatibility {
     Runtime runtime = Runtime.getRuntime();
     Log.debug("Maximum Memory:     " + (int) (runtime.maxMemory() / 1048576) + "MB");
   }
-
-  @Override
-  public boolean isTouchScreen() {
-    return false;
-  }
-
+  
   @Override
   public int getFreeMemory() {
     Runtime runtime = Runtime.getRuntime();

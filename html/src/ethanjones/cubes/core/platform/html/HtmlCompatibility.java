@@ -46,6 +46,16 @@ public class HtmlCompatibility extends Compatibility {
   }
   
   @Override
+  public native boolean guessTouchScreen()
+/*-{
+    if ("ontouchstart" in window || navigator.maxTouchPoints || navigator.msMaxTouchPoints) {
+        return true;
+    } else {
+        return false;
+    }
+}-*/;
+  
+  @Override
   public void _exit(int status) {
     throw new ExitException();
   }

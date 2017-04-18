@@ -1,6 +1,7 @@
 package ethanjones.cubes.side.server.integrated;
 
 import ethanjones.cubes.core.gwt.Task;
+import ethanjones.cubes.core.gwt.Task.TimelimitException;
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.networking.socket.SocketMonitor;
@@ -19,6 +20,7 @@ public class IntegratedServer extends CubesServer implements Runnable {
     super(save);
     this.task = new Task(this);
     this.task.setName("Server");
+    this.task.setAbbreviation("S");
     this.task.setSide(Side.Server);
   }
 
@@ -50,7 +52,7 @@ public class IntegratedServer extends CubesServer implements Runnable {
       stop();
     } catch (Exception e) {
       if (e instanceof Task.TimelimitException) {
-        throw e;
+        throw (TimelimitException) e;
       } else {
         Debug.crash(e);
       }

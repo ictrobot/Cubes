@@ -8,6 +8,7 @@ setting.graphics.vsync=VSync
 setting.graphics.fog=Fog
 
 setting.input=Input
+setting.input.touch=Touch Screen
 setting.input.mouseSensitivity=Input Sensitivity
 setting.input.touchpadSize=Touchpad Size
 setting.input.touchpadLeft=Touchpad on Left

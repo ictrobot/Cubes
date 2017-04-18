@@ -1,6 +1,5 @@
 package ethanjones.cubes.core.settings;
 
-import com.badlogic.gdx.Preferences;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Compatibility;
@@ -8,6 +7,7 @@ import ethanjones.cubes.core.settings.type.*;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonObject.Member;
@@ -26,6 +26,7 @@ public class Settings {
   public static final String INPUT_MOUSE_SENSITIVITY = "input.mouseSensitivity";
   public static final String INPUT_TOUCHPAD_SIZE = "input.touchpadSize";
   public static final String INPUT_TOUCHPAD_LEFT = "input.touchpadLeft";
+  public static final String INPUT_TOUCH = "input.touch";
   public static final String NETWORKING_PORT = "networking.port";
   public static final String DEBUG_FRAMETIME_GRAPH = "debug.frametimeGraph";
 
@@ -56,7 +57,8 @@ public class Settings {
       }
     });
     addSetting(GRAPHICS_FOG, new BooleanSetting(true));
-
+    
+    addSetting(INPUT_TOUCH, new BooleanSetting(Compatibility.get().guessTouchScreen()));
     addSetting(INPUT_MOUSE_SENSITIVITY, new FloatSetting(0.5f, 0.05f, 1f, FloatSetting.Type.Slider));
     addSetting(INPUT_TOUCHPAD_SIZE, new FloatSetting(0.45f, 0.30f, 0.60f, FloatSetting.Type.Slider) {
       {
@@ -83,7 +85,7 @@ public class Settings {
   
     base.add(USERNAME)
             .add(GROUP_GRAPHICS, new SettingGroup().add(GRAPHICS_VIEW_DISTANCE).add(GRAPHICS_FOV).add(GRAPHICS_VSYNC).add(GRAPHICS_FOG))
-            .add(GROUP_INPUT, new SettingGroup().add(keybindsGroup, keybinds).add(INPUT_MOUSE_SENSITIVITY).add(INPUT_TOUCHPAD_SIZE).add(INPUT_TOUCHPAD_LEFT))
+            .add(GROUP_INPUT, new SettingGroup().add(keybindsGroup, keybinds).add(INPUT_TOUCH).add(INPUT_MOUSE_SENSITIVITY).add(INPUT_TOUCHPAD_SIZE).add(INPUT_TOUCHPAD_LEFT))
             .add(GROUP_NETWORKING, new SettingGroup().add(NETWORKING_PORT))
             .add(GROUP_DEBUG, new SettingGroup().add(DEBUG_FRAMETIME_GRAPH));
 

@@ -45,7 +45,7 @@ public class MainMenu extends Menu {
   public MainMenu() {
     super();
     logo = new Image(new TextureRegionDrawable(Assets.getTextureRegion("core:logo.png")), Scaling.fillY, Align.center);
-    version = new Label(Branding.DEBUG, new Label.LabelStyle(Fonts.smallHUD, Color.WHITE));
+    version = new Label(Branding.DEBUG + "\nForked from Cubes 0.0.5.1055", new Label.LabelStyle(Fonts.smallHUD, Color.WHITE));
     author = new Label(Branding.AUTHOR, new Label.LabelStyle(Fonts.smallHUD, Color.WHITE));
     buttons = new Table();
     buttons.defaults().height(cellHeight).width(cellWidth).pad(4).fillX().fillY();
@@ -82,7 +82,7 @@ public class MainMenu extends Menu {
   public void resize(float width, float height) {
     super.resize(width, height);
     logo.setBounds(0, (height / 4 * 3) + 2, width, height / 6);
-    version.setBounds(2, 2, author.getPrefWidth(), author.getPrefHeight());
+    version.setBounds(2, 2, version.getPrefWidth(), version.getPrefHeight());
     version.setAlignment(Align.left);
     author.setBounds(width - author.getPrefWidth() - 2, 2, author.getPrefWidth(), author.getPrefHeight());
     author.setAlignment(Align.right);

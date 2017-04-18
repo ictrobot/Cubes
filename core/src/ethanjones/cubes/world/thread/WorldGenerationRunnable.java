@@ -13,6 +13,7 @@ public class WorldGenerationRunnable extends Task {
     super(2);
     setSide(Side.Server);
     setName("WorldGeneration");
+    setAbbreviation("W");
   }
 
   @Override

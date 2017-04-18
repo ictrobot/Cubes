@@ -2,6 +2,7 @@ package ethanjones.cubes.core.platform;
 
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.logging.LogWriter;
+import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.Debug.UncaughtExceptionHandler;
 import ethanjones.cubes.graphics.assets.AssetFinder;
@@ -64,8 +65,12 @@ public abstract class Compatibility {
   public void logEnvironment() {
 
   }
-
+  
   public boolean isTouchScreen() {
+    return Settings.getBooleanSettingValue(Settings.INPUT_TOUCH);
+  }
+  
+  public boolean guessTouchScreen() {
     return false;
   }
 

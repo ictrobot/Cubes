@@ -27,7 +27,7 @@ public class DesktopSecurityManager extends SecurityManager {
       if (!Cubes.cubesSetup()) return;
       if (getClassContext().length < 5) throw new SecurityException();
       String c = getClassContext()[4].getName();
-      if (c.startsWith("com.badlogic.gdx.backends.lwjgl.Lwjgl") || c.equals("ethanjones.cubes.side.common.Cubes") || c.equals("ethanjones.cubes.core.system.Debug") || c.equals("ethanjones.cubes.core.platform.Adapter")) {
+      if (c.startsWith("com.badlogic.gdx.backends.lwjgl.Lwjgl") || c.equals("ethanjones.cubes.side.common.Cubes") || c.equals("ethanjones.cubes.core.system.Debug") || c.equals("ethanjones.cubes.core.platform.Adapter") || c.equals("ethanjones.cubes.core.platform.desktop.DesktopCompatibility")) {
         Log.debug("Allowing class \"" + c + "\" to exit");
         stackTrace(LogLevel.debug);
       } else {

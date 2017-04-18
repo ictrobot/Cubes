@@ -1,8 +1,11 @@
 package ethanjones.cubes.core.gwt;
 
-import com.badlogic.gdx.utils.SnapshotArray;
 import ethanjones.cubes.core.system.Debug;
+import ethanjones.cubes.side.client.ClientDebug;
 import ethanjones.cubes.side.common.Side;
+
+import com.badlogic.gdx.math.WindowedMean;
+import com.badlogic.gdx.utils.SnapshotArray;
 
 public class Task {
   private static SnapshotArray<Task> tasks = new SnapshotArray<Task>();
@@ -10,9 +13,11 @@ public class Task {
   private static Task currentTask = null;
 
   private long runStartMS;
+  private WindowedMean runTime = new WindowedMean(60);
   private int limitMS;
   private Runnable runnable;
   private String name = "Task-" + counter.getAndIncrement();
+  private String abbreviation = "";
   private Side side = Side.Client;
 
   public Task() {
@@ -58,6 +63,14 @@ public class Task {
   public String getName() {
     return this.name;
   }
+  
+  public void setAbbreviation(String abbreviation) {
+    this.abbreviation = abbreviation;
+  }
+  
+  public String getAbbreviation() {
+    return this.abbreviation;
+  }
 
   public void setSide(Side side) {
     this.side = side;
@@ -85,6 +98,7 @@ public class Task {
       } catch (Exception e) {
         Debug.crash(e);
       }
+      t.runTime.addValue((int) (System.currentTimeMillis() - t.runStartMS));
     }
     currentTask = null;
     tasks.end();
@@ -101,6 +115,20 @@ public class Task {
   public static Side getCurrentSide(){
     if (currentTask == null) return null;
     return currentTask.getSide();
+  }
+  
+  public static String debugString() {
+    String s = "";
+    for (Task t : tasks) {
+      String abbreviation = t.getAbbreviation();
+      if (abbreviation != null && !abbreviation.isEmpty()) {
+        s += abbreviation;
+        s += ":";
+        s += ClientDebug.oneDP(t.runTime.getMean());
+        s += " ";
+      }
+    }
+    return s;
   }
 
   public static class TimelimitException extends RuntimeException {
