@@ -29,8 +29,5 @@ setting.input.keybind.screenshot=Take screenshot
 setting.input.keybind.debug=Show debug info
 setting.input.keybind.areaboundaries=Toggle area boundaries
 
-setting.networking=Networking
-setting.networking.port=Port
-
 setting.debug=Debug
 setting.debug.frametimeGraph=Frametime Graph
