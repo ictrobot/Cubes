@@ -7,6 +7,8 @@ menu.main.singleplayer=Singleplayer
 menu.main.multiplayer=Multiplayer
 menu.main.settings=Settings
 menu.main.quit=Quit
+menu.main.downloadCubes=Download Cubes
+menu.main.sourceCode=Source Code
 
 menu.singleplayer.title=Singleplayer
 menu.singleplayer.nosave=No saves exist

@@ -102,6 +102,11 @@ public class HtmlCompatibility extends Compatibility {
 /*-{
     return $wnd.cubesMovementY || 0;
 }-*/;
+
+  @Override
+  public native void openURL(String url)/*-{
+    return $wnd.open(url, 'target=_blank')
+}-*/;
   
   @Override
   public void _exit(int status) {

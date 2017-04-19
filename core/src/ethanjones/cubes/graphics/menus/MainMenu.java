@@ -40,7 +40,6 @@ public class MainMenu extends Menu {
   Label author;
   Table buttons;
   TextButton singleplayer;
-  TextButton multiplayer;
   TextButton settings;
   TextButton quit;
 
@@ -65,21 +64,37 @@ public class MainMenu extends Menu {
         Adapter.setMenu(new SettingsMenu());
       }
     });
-    buttons.add(quit = new TextButton(Localization.get("menu.main.quit"), skin)).row();
-    quit.addListener(new ChangeListener() {
-      @Override
-      public void changed(ChangeEvent event, Actor actor) {
-        Log.debug("Quit pressed");
-        Adapter.quit();
-      }
-    });
+    if (Compatibility.get().getApplicationType() == ApplicationType.WebGL) {
+      TextButton download, source;
+      buttons.add(download = new TextButton(Localization.get("menu.main.downloadCubes"), skin)).row();
+      download.addListener(new ChangeListener() {
+        @Override
+        public void changed(ChangeEvent event, Actor actor) {
+          Compatibility.get().openURL("https://cubes.ethanjones.me/");
+        }
+      });
+      buttons.add(source = new TextButton(Localization.get("menu.main.sourceCode"), skin)).row();
+      source.addListener(new ChangeListener() {
+        @Override
+        public void changed(ChangeEvent event, Actor actor) {
+          Compatibility.get().openURL("https://github.com/ictrobot/cubes/");
+        }
+      });
+    } else {
+      buttons.add(quit = new TextButton(Localization.get("menu.main.quit"), skin)).row();
+      quit.addListener(new ChangeListener() {
+        @Override
+        public void changed(ChangeEvent event, Actor actor) {
+          Log.debug("Quit pressed");
+          Adapter.quit();
+        }
+      });
+    }
 
     stage.addActor(logo);
     stage.addActor(version);
     stage.addActor(author);
     stage.addActor(buttons);
-    
-    if (Compatibility.get().getApplicationType() == ApplicationType.WebGL) quit.remove();
   }
 
   @Override
@@ -90,7 +105,7 @@ public class MainMenu extends Menu {
     version.setAlignment(Align.left);
     author.setBounds(width - author.getPrefWidth() - 2, 2, author.getPrefWidth(), author.getPrefHeight());
     author.setAlignment(Align.right);
-    buttons.setBounds(0, 0, width, (height / 3 * 2) - 2);
+    buttons.setBounds(0, 0, width, (height * 3 / 4) - 2);
     buttons.align(Align.top);
     buttons.layout();
   }

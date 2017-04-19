@@ -133,4 +133,8 @@ public abstract class Compatibility {
   public int getDeltaY(int pointer) {
     return Gdx.input.getDeltaY(pointer);
   }
+  
+  public void openURL(String url) {
+  
+  }
 }
