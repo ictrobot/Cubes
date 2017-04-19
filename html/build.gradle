@@ -47,6 +47,7 @@ task dist(dependsOn: [clean, compileGwt]) {
             from "war"
             into "build/dist"
         }
+
         delete "build/dist/index.html"
         file("build/dist/play.html").renameTo(file("build/dist/index.html"))
         delete "build/dist/html/logo.png"
@@ -57,6 +58,13 @@ task dist(dependsOn: [clean, compileGwt]) {
             into "build/dist/html/"
         }
     }
+}
+
+task distZip(type: Zip) {
+    from 'build/dist/'
+    exclude 'dist.zip'
+    archiveName 'dist.zip'
+    destinationDir file('build/dist/')
 }
 
 draftWar {
@@ -77,3 +85,26 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 eclipse.project {
     name = appName + "-html"
 }
+
+publishing {
+    publications {
+        android(MavenPublication) {
+            groupId 'ethanjones.cubes'
+            artifactId 'html'
+            version getMavenVersionString()
+            artifact(new File(project.getBuildDir(), '/dist/dist.zip'))
+        }
+    }
+    repositories {
+        maven {
+            url getMavenRepo()
+            credentials {
+                username localProperties.MAVEN_REPO_USERNAME
+                password localProperties.MAVEN_REPO_PASSWORD
+            }
+        }
+    }
+}
+
+distZip.dependsOn(['dist'])
+publish.dependsOn(['distZip'])

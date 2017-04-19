@@ -93,28 +93,3 @@ task afterEclipseImport(description: "Post processing after project generation",
         printer.print(classpath)
     }
 }
-
-publishing {
-    publications {
-        jar(MavenPublication) {
-            artifact tasks.dist
-            artifact(new File(project.getBuildDir(), '/launch4j/client.exe')) {
-                classifier = 'win'
-            }
-            groupId 'ethanjones.cubes'
-            artifactId 'client'
-            version getMavenVersionString()
-        }
-    }
-    repositories {
-        maven {
-            url getMavenRepo()
-            credentials {
-                username localProperties.MAVEN_REPO_USERNAME
-                password localProperties.MAVEN_REPO_PASSWORD
-            }
-        }
-    }
-}
-
-publish.dependsOn(['dist', 'launch4j'])

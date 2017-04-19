@@ -9,10 +9,6 @@ buildscript {
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
     }
 }
-plugins {
-    id "org.sonarqube" version "2.2"
-}
-
 
 ext {
     buildProperties = new Properties()
@@ -48,8 +44,6 @@ ext {
     if (localProperties.MAVEN_REPO_PATH == null) localProperties.MAVEN_REPO_PATH = getRootProject().getProjectDir().absolutePath + "/repo/"
     if (localProperties.MAVEN_REPO_USERNAME == null) localProperties.MAVEN_REPO_USERNAME = ""
     if (localProperties.MAVEN_REPO_PASSWORD == null) localProperties.MAVEN_REPO_PASSWORD = ""
-    if (localProperties.SONAR_HOST_URL == null) localProperties.SONAR_HOST_URL = "https://sonarqube.com"
-    if (localProperties.SONAR_LOGIN == null) localProperties.SONAR_LOGIN = "abcdef0123456789"
 }
 
 allprojects {
@@ -78,18 +72,10 @@ allprojects {
         maven { url "http://ethanjones.me/maven/snapshots/" }
         maven { url "http://ethanjones.me/maven/releases/" }
     }
-
-    sonarqube {
-        properties {
-            property "sonar.host.url", localProperties.SONAR_HOST_URL
-            property "sonar.login", localProperties.SONAR_LOGIN
-        }
-    }
 }
 
 project(":core") {
     apply plugin: "java"
-    apply plugin: "maven-publish"
 
     dependencies {
         compile 'com.eclipsesource.minimal-json:minimal-json:0.9.4'
@@ -108,7 +94,6 @@ project(":desktop") {
 
 project(":client") {
     apply plugin: "java"
-    apply plugin: "maven-publish"
 
     dependencies {
         compile project(":desktop")
@@ -119,7 +104,6 @@ project(":client") {
 project(":android") {
     apply plugin: "android-sdk-manager"
     apply plugin: "android"
-    apply plugin: "maven-publish"
 
     configurations { natives }
 
@@ -135,6 +119,7 @@ project(":android") {
 project(":html") {
     apply plugin: "gwt"
     apply plugin: "war"
+    apply plugin: "maven-publish"
 
     dependencies {
         compile project(":core")
@@ -148,7 +133,7 @@ tasks.eclipse.doLast {
     delete ".project"
 }
 
-task travis(dependsOn: ['core:publish', 'server:publish', 'client:publish', 'android:publish', 'sonarqube']) {
+task travis(dependsOn: ['html:publish']) {
 
 }
 

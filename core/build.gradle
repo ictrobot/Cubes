@@ -24,7 +24,7 @@ jar.archiveName = "core.jar"
 task properitesFile() {
     Properties props = new Properties()
     File propsFile = new File(project.getBuildDir(), '/jar-extra/core.properties')
-    propsFile.delete();
+    propsFile.delete()
     props.setProperty('LIBGDX', gdxVersion.toString())
     props.setProperty('ANDROID_BUILD_TOOLS', androidBuildToolsVersion.toString())
     props.setProperty('ANDROID_SDK', androidSdkVersion.toString())
@@ -40,59 +40,5 @@ task copyFilesFromRoot(type: Copy) {
     include "LICENSE", "CREDITS.md"
     into new File(getBuildDir(), '/jar-extra/')
 }
-
-publishing {
-    publications {
-        jar(MavenPublication) {
-            artifact tasks.jar
-            artifact tasks.sourcesJar {
-                classifier = 'sources'
-            }
-            artifact(new File(project.getBuildDir(), '/jar-extra/core.properties')) {
-                classifier "properties"
-            }
-            groupId 'ethanjones.cubes'
-            artifactId 'core'
-            version getMavenVersionString()
-
-            pom.withXml {
-                def repositories = asNode().appendNode('repositories')
-                def libgdxSnapshots = repositories.appendNode('repository')
-                libgdxSnapshots.appendNode('id', 'libgdxSnapshots')
-                libgdxSnapshots.appendNode('url', 'https://oss.sonatype.org/content/repositories/snapshots/')
-                def libgdxReleases = repositories.appendNode('repository')
-                libgdxReleases.appendNode('id', 'libgdxReleases')
-                libgdxReleases.appendNode('url', 'https://oss.sonatype.org/content/repositories/releases/')
-                def dataSnapshots = repositories.appendNode('repository')
-                dataSnapshots.appendNode('id', 'dataSnapshots')
-                dataSnapshots.appendNode('url', 'http://ethanjones.me/maven/snapshots/')
-                def dataReleases = repositories.appendNode('repository')
-                dataReleases.appendNode('id', 'dataReleases')
-                dataReleases.appendNode('url', 'http://ethanjones.me/maven/releases/')
-
-                def dependencies = asNode().appendNode('dependencies')
-                def dependencyLibgdx = dependencies.appendNode('dependency')
-                dependencyLibgdx.appendNode('groupId', 'com.badlogicgames.gdx')
-                dependencyLibgdx.appendNode('artifactId', 'gdx')
-                dependencyLibgdx.appendNode('version', gdxVersion)
-                def dependencyData = dependencies.appendNode('dependency')
-                dependencyData.appendNode('groupId', 'ethanjones')
-                dependencyData.appendNode('artifactId', 'data')
-                dependencyData.appendNode('version', dataVersion)
-            }
-        }
-    }
-    repositories {
-        maven {
-            url getMavenRepo()
-            credentials {
-                username localProperties.MAVEN_REPO_USERNAME
-                password localProperties.MAVEN_REPO_PASSWORD
-            }
-        }
-    }
-}
-
-publish.dependsOn(['properitesFile'])
 
 jar.dependsOn(['properitesFile', 'copyFilesFromRoot'])
