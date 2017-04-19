@@ -51,7 +51,7 @@ public class Keybinds {
       settingGroup = new SettingGroup() {
         @Override
         public boolean shouldDisplay() {
-          return Compatibility.get().getApplicationType() == ApplicationType.Desktop;
+          return Compatibility.get().getApplicationType() != ApplicationType.Android;
         }
       };
       settingGroup.add(KEYBIND_FORWARD).add(KEYBIND_BACK).add(KEYBIND_LEFT).add(KEYBIND_RIGHT).add(KEYBIND_JUMP).add(KEYBIND_DESCEND);

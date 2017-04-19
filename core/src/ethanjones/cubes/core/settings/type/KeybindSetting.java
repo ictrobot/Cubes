@@ -6,7 +6,7 @@ import ethanjones.cubes.core.settings.Setting;
 import ethanjones.cubes.core.settings.VisualSettingManager;
 import ethanjones.cubes.graphics.menu.Menu;
 
-import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -91,6 +91,6 @@ public class KeybindSetting extends Setting {
   
   @Override
   public boolean shouldDisplay() {
-    return Compatibility.get().getApplicationType() == Application.ApplicationType.Desktop;
+    return Compatibility.get().getApplicationType() != ApplicationType.Android;
   }
 }
