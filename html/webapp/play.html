@@ -35,12 +35,15 @@
 
 <script>
     function handleMouseDown(evt) {
-        if (evt.target instanceof HTMLCanvasElement && window.cubesCursorCatched) {
-            //pointer lock
-            var canvas = evt.target;
-            canvas.requestPointerLock = canvas.requestPointerLock || canvas.mozRequestPointerLock || canvas.webkitRequestPointerLock;
-            if (canvas.requestPointerLock) {
-                canvas.requestPointerLock();
+        if (window.cubesWantsCursorCatched && !window.cubesCursorCatched) {
+            try {
+                var canvas = window.document.getElementsByTagName('canvas')[0];
+                canvas.requestPointerLock = canvas.requestPointerLock || canvas.mozRequestPointerLock || canvas.webkitRequestPointerLock;
+                if (canvas.requestPointerLock) {
+                    canvas.requestPointerLock();
+                }
+            } catch (e) {
+                console.log("requestPointerLock", e);
             }
         }
         evt.preventDefault();
@@ -56,7 +59,6 @@
 
     document.getElementById('embed-html').addEventListener('mousedown', handleMouseDown, false);
     document.getElementById('embed-html').addEventListener('mouseup', handleMouseUp, false);
-
     document.addEventListener('contextmenu', function (event) {
         event.preventDefault();
     });
@@ -79,11 +81,13 @@
         var canvas = document.getElementsByTagName("canvas")[0];
         if (document.pointerLockElement === canvas || document.mozPointerLockElement === canvas || document.webkitPointerLockElement === canvas) {
             document.addEventListener("mousemove", moveCallback, false);
+            window.cubesCursorCatched = true;
         } else {
             document.removeEventListener("mousemove", moveCallback, false);
+            window.cubesCursorCatched = false;
             window.cubesMovementX = 0;
             window.cubesMovementY = 0;
-            window.cubesEsc = true;
+            window.cubesEsc = window.cubesWantsCursorCatched;
         }
     }
 

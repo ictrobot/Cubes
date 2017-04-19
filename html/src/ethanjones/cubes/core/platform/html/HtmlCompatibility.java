@@ -58,15 +58,15 @@ public class HtmlCompatibility extends Compatibility {
   @Override
   public native void setCursorCatched(boolean b)
 /*-{
-    $wnd.cubesCursorCatched = b;
-    if (!b) {
-        try {
-            if ($wnd.document.exitPointerLock) {
-                $wnd.document.exitPointerLock();
-            }
-        } catch (e) {
-            $wnd.console.log("setCursorCatched", e);
-        }
+    $wnd.cubesWantsCursorCatched = b;
+    if ($wnd.cubesCursorCatched && !$wnd.cubesWantsCursorCatched) {
+          try {
+              if ($wnd.document.exitPointerLock) {
+                  $wnd.document.exitPointerLock();
+              }
+          } catch (e) {
+              $wnd.console.log("exitPointerLock", e);
+          }
     }
 }-*/;
   

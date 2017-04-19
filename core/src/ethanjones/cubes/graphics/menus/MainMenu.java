@@ -66,6 +66,7 @@ public class MainMenu extends Menu {
     });
     if (Compatibility.get().getApplicationType() == ApplicationType.WebGL) {
       TextButton download, source;
+      buttons.add().height(20f).row();
       buttons.add(download = new TextButton(Localization.get("menu.main.downloadCubes"), skin)).row();
       download.addListener(new ChangeListener() {
         @Override
@@ -105,7 +106,7 @@ public class MainMenu extends Menu {
     version.setAlignment(Align.left);
     author.setBounds(width - author.getPrefWidth() - 2, 2, author.getPrefWidth(), author.getPrefHeight());
     author.setAlignment(Align.right);
-    buttons.setBounds(0, 0, width, (height * 3 / 4) - 2);
+    buttons.setBounds(0, 0, width, (height * 3 / 4) - 22);
     buttons.align(Align.top);
     buttons.layout();
   }
