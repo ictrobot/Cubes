@@ -24,19 +24,19 @@ public class ClientDebug {
   private static int brandingDebugLength = builder.length();
   
   public static String twoDP(double d) {
-    int i = (int) Math.ceil(d);
+    int i = (int) (d < 0 ? Math.ceil(d) : Math.floor(d));
     int f = (int) ((d * 10) % 10);
     if (f < 0) f *= -1;
     int s = (int) ((d * 100) % 10);
     if (s < 0) s *= -1;
-    return i + "." + f + s;
+    return (d < 0 && d > -1 ? "-" : "") + i + "." + f + s;
   }
   
   public static String oneDP(double d) {
-    int i = (int) Math.ceil(d);
+    int i = (int) (d < 0 ? Math.ceil(d) : Math.floor(d));
     int f = (int) ((d * 10) % 10);
     if (f < 0) f *= -1;
-    return i + "." + f;
+    return (d < 0 && d > -1 ? "-" : "") + i + "." + f;
   }
   
   protected static void frame() {
