@@ -2,6 +2,8 @@ package ethanjones.cubes.world.save;
 
 import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.core.system.CubesException;
+import ethanjones.cubes.networking.socket.SocketMonitor;
+import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.World;
 import ethanjones.data.DataGroup;
 import ethanjones.data.DataParser;
@@ -16,6 +18,7 @@ public class SaveOptions implements DataParser {
   public String worldType = "core:smooth";
   public Gamemode worldGamemode = Gamemode.survival;
   public DataGroup idManager = new DataGroup();
+  public DataGroup player = new DataGroup();
   
   public long lastOpenedTime = 0;
   public int lastVersionMajor, lastVersionMinor, lastVersionPoint, lastVersionBuild;
@@ -31,6 +34,11 @@ public class SaveOptions implements DataParser {
     dataGroup.put("worldType", worldType);
     dataGroup.put("worldGamemode", worldGamemode.name());
     dataGroup.put("idManager", idManager);
+    if (Cubes.getServer() != null && Cubes.getServer().world != null && Cubes.getServer().world.save.getSaveOptions() == this) {
+      dataGroup.put("player", player = Cubes.getServer().getClient((SocketMonitor) null).getPlayer().write());
+    } else {
+      dataGroup.put("player", player);
+    }
   
     dataGroup.put("lastOpenedTime", System.currentTimeMillis());
   
@@ -53,6 +61,7 @@ public class SaveOptions implements DataParser {
     worldType = dataGroup.getString("worldType");
     worldGamemode = Gamemode.valueOf(dataGroup.getString("worldGamemode"));
     idManager = dataGroup.getGroup("idManager");
+    player = dataGroup.getGroup("player");
   
     lastOpenedTime = dataGroup.getLong("lastOpenedTime");
   

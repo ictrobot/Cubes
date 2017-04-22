@@ -8,6 +8,7 @@ import ethanjones.cubes.core.system.Debug.UncaughtExceptionHandler;
 import ethanjones.cubes.graphics.assets.AssetFinder;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.side.common.Side;
+import ethanjones.cubes.world.storage.WorldStorageInterface;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Application.ApplicationType;
@@ -135,6 +136,14 @@ public abstract class Compatibility {
   }
   
   public void openURL(String url) {
+  
+  }
+  
+  public WorldStorageInterface getWorldStorageInterface() {
+    return null;
+  }
+  
+  public void logCrash(Throwable throwable) {
   
   }
 }

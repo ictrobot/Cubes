@@ -3,6 +3,7 @@ package ethanjones.cubes.world.storage;
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.block.data.BlockData;
 import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
+import ethanjones.cubes.core.gwt.FakeAtomic.AtomicReference;
 import ethanjones.cubes.core.id.IDManager;
 import ethanjones.cubes.core.id.TransparencyManager;
 import ethanjones.cubes.core.logging.Log;
@@ -17,6 +18,7 @@ import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.light.SunLight;
 import ethanjones.cubes.world.reference.BlockReference;
+import ethanjones.cubes.world.storage.WorldStorageInterface.ChangedBlock;
 import ethanjones.data.Data;
 import ethanjones.data.DataGroup;
 
@@ -26,7 +28,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import ethanjones.cubes.core.gwt.FakeAtomic.AtomicReference;
 
 public class Area implements Lock.HasLock {
 
@@ -75,6 +76,7 @@ public class Area implements Lock.HasLock {
   public volatile int maxY;
   public volatile int height;
   public volatile ArrayList<BlockData> blockDataList = new ArrayList<BlockData>(0);
+  public volatile ArrayList<ChangedBlock> changedBlockList = new ArrayList<ChangedBlock>(0);
   private volatile int modCount = 0, saveModCount = -1, saveEntities = 0;
 
   public int[] renderStatus = new int[0];
@@ -221,6 +223,7 @@ public class Area implements Lock.HasLock {
   public void unload() {
     if (shared && Side.isClient()) return;
     lock.writeLock();
+    WorldStorage.storeChangedBlocks(areaX, areaZ, changedBlockList);
   
     if (!unloaded) removeArrays();
 
@@ -337,6 +340,7 @@ public class Area implements Lock.HasLock {
     if (block != null && block.blockData()) {
       addBlockData(block, x, y, z, meta);
     }
+    if ((b & 0xFFFFFFF) != n) addChangedBlock(ref, n);
 
     doUpdatesThisArea(x, y, z, ref);
 
@@ -349,6 +353,56 @@ public class Area implements Lock.HasLock {
 
     //Must be after lock released to prevent dead locks
     if (TransparencyManager.isTransparent(b) != TransparencyManager.isTransparent(n))
+      doUpdatesOtherAreas(x, y, z, ref);
+    new BlockChangedEvent(new BlockReference().setFromBlockCoordinates(x + minBlockX, y, z + minBlockZ), old, (b >> 20) & 0xFF, block, meta, this).post();
+  }
+  
+  private void addChangedBlock(int ref, int blockAndMeta) {
+    for (ChangedBlock changedBlock : changedBlockList) {
+      if (changedBlock.ref == ref) {
+        changedBlock.blockAndMeta = blockAndMeta;
+        return;
+      }
+    }
+    changedBlockList.add(new ChangedBlock(areaX, areaZ, ref, blockAndMeta));
+  }
+  
+  public void setBlock(int ref, int blockAndMeta) {
+    blockAndMeta &= 0xFFFFFFF;
+    int x = getX(ref), y = getY(ref), z = getZ(ref), meta = (blockAndMeta >> 20) & 0xFF;
+    if (y < 0) return;
+    
+    Block block = IDManager.toBlock(blockAndMeta & 0xFFFFF);
+    if (block == null) blockAndMeta = 0;
+    
+    lock.writeLock();
+    if (isUnloaded() && lock.writeUnlock(true)) return;
+    setupArrays(y); // actually call store changed blocks
+    
+    int b = blocks[ref];
+    blocks[ref] = blockAndMeta;
+    
+    Block old = IDManager.toBlock(b & 0xFFFFF);
+    
+    if (old != null && old.blockData() && old != block) {
+      removeBlockData(x, y, z);
+    }
+    if (block != null && block.blockData()) {
+      addBlockData(block, x, y, z, meta);
+    }
+    if ((b & 0xFFFFFFF) != blockAndMeta) addChangedBlock(ref, blockAndMeta);
+    
+    doUpdatesThisArea(x, y, z, ref);
+    
+    int hmRef = x + z * SIZE_BLOCKS;
+    if (y > heightmap[hmRef] && block != null) heightmap[hmRef] = y;
+    if (y == heightmap[hmRef] && block == null) calculateHeight(x, z);
+    
+    modify();
+    lock.writeUnlock();
+    
+    //Must be after lock released to prevent dead locks
+    if (TransparencyManager.isTransparent(b) != TransparencyManager.isTransparent(blockAndMeta))
       doUpdatesOtherAreas(x, y, z, ref);
     new BlockChangedEvent(new BlockReference().setFromBlockCoordinates(x + minBlockX, y, z + minBlockZ), old, (b >> 20) & 0xFF, block, meta, this).post();
   }

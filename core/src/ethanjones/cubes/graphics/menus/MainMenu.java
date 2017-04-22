@@ -8,6 +8,7 @@ import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.graphics.menu.Fonts;
 import ethanjones.cubes.graphics.menu.Menu;
+import ethanjones.cubes.world.storage.WorldStorage;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.graphics.Color;
@@ -54,7 +55,11 @@ public class MainMenu extends Menu {
     singleplayer.addListener(new ChangeListener() {
       @Override
       public void changed(ChangeEvent event, Actor actor) {
-        Adapter.setMenu(new SingleplayerMenu());
+        if (WorldStorage.getInterface() != null) {
+          Adapter.setMenu(new SingleplayerSavesMenu());
+        } else {
+          Adapter.setMenu(new SingleplayerMenu());
+        }
       }
     });
     buttons.add(settings = new TextButton(Localization.get("menu.main.settings"), skin)).row();

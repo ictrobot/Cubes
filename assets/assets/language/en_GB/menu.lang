@@ -24,18 +24,18 @@ menu.singleplayer.create.seed=Terrain seed
 menu.singleplayer.create.start=Start
 
 menu.singleplayer.delete.title=Delete Save?
-menu.singleplayer.delete.text=Do you really want to delete %s?
-menu.singleplayer.delete.delete=Delete %s
+menu.singleplayer.delete.text=Do you really want to delete
+menu.singleplayer.delete.delete=Delete
 
 menu.multiplayer.title=Multiplayer
 menu.multiplayer.address=Address
-menu.multiplayer.port=Port (%s)
+menu.multiplayer.port=Port
 menu.multiplayer.connect=Connect
 menu.multiplayer.connecting=Connecting
 
 menu.server.title=Server
-menu.server.save=Save name: %s
-menu.server.port=Port (%s)
+menu.server.save=Save name:
+menu.server.port=Port
 menu.server.start=Start
 menu.server.running=Running
 menu.server.stop=Stop

@@ -11,8 +11,7 @@ import ethanjones.cubes.world.save.Save;
 import ethanjones.cubes.world.server.WorldServer;
 import ethanjones.cubes.world.storage.Area;
 import ethanjones.cubes.world.storage.AreaMap;
-
-import java.util.Collection;
+import ethanjones.cubes.world.storage.WorldStorage;
 
 public class WorldTasks {
 
@@ -27,13 +26,14 @@ public class WorldTasks {
     gen.queue.add(generationTask);
     return generationTask;
   }
-
-  public static void save(Save s, Collection<Area> areas) {
-    
-  }
   
   public static void save(Save s, AreaMap areas) {
-    
+    for (Area area : areas) {
+      if (area.modifiedSinceSave(null)) {
+        WorldStorage.storeChangedBlocks(area.areaX, area.areaZ, area.changedBlockList);
+        area.saveModCount();
+      }
+    }
   }
 
   public static boolean currentlySaving() {
@@ -74,6 +74,7 @@ public class WorldTasks {
       new FeaturesEvent(area, areaReference).post();
       area.initialUpdate();
       SunLight.initialSunlight(area);
+      WorldStorage.requestChangedBlocks(area.areaX, area.areaZ);
       new AreaLoadedEvent(area, areaReference).post();
       return 1;
     }

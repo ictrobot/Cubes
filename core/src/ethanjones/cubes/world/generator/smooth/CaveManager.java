@@ -72,7 +72,7 @@ public class CaveManager {
   }
 
   private Cave loadCave(AreaReference a) {
-    return Cubes.getServer().world.save.readCave(a);
+    return null;
   }
 
   private Cave generateCave(final AreaReference a) {

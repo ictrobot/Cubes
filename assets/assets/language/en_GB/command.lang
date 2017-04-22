@@ -1,7 +1,7 @@
 command.common.unknownCommand=Unknown command! Type help for a list of commands
 command.common.failedPermissionCheck=You do not have permission to run this command
 command.common.onlyPlayer=Only players can run this command!
-command.common.exception=%s while running command
+command.common.exception=Error while running command
 
 command.common.value.stringValue.string=[string]
 command.common.value.floatValue.parsing=Not a number
@@ -18,7 +18,7 @@ command.common.value.command.parsing=Not a command
 command.common.value.command.string=[command]
 
 command.help.commands=Commands:
-command.help.command=Command %s:
+command.help.command=Command
 command.help.format=%1$s - %2$s
 
 command.stop.message=Stopping...

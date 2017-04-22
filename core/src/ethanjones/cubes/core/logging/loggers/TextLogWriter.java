@@ -29,7 +29,7 @@ public abstract class TextLogWriter implements LogWriter {
     println(getString(level, throwable));
   }
   
-  private String getString(LogLevel level, Throwable throwable) {
+  protected String getString(LogLevel level, Throwable throwable) {
     baos.reset();
     PrintStream ps = new PrintStream(baos);
     throwable.printStackTrace(ps);

@@ -1,7 +1,7 @@
 package ethanjones.cubes.world.server;
 
-import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.gwt.UUID;
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.entity.Entity;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketEntityAdd;
@@ -15,6 +15,7 @@ import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
 import ethanjones.cubes.world.save.Save;
 import ethanjones.cubes.world.storage.Area;
+import ethanjones.cubes.world.storage.WorldStorage;
 import ethanjones.cubes.world.thread.GenerationTask;
 import ethanjones.cubes.world.thread.WorldRequestParameter;
 import ethanjones.cubes.world.thread.WorldTasks;
@@ -27,6 +28,7 @@ public class WorldServer extends World {
     if (save == null) throw new IllegalArgumentException("Null save on server");
     
     Log.info("Save '" + this.save.name + "'");
+    if (!save.readOnly) WorldStorage.openSave(save.name);
   }
   
   public BlockReference getSpawnPoint() {

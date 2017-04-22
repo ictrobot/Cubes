@@ -65,6 +65,7 @@ public class Debug {
   }
 
   private static synchronized void logCrash(Throwable throwable) {
+    Compatibility.get().logCrash(throwable);
     final int crashedNum = crashed.get();
     try {
       if (crashedNum == 1) {

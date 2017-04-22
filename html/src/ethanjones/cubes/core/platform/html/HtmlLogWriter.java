@@ -65,6 +65,33 @@ public class HtmlLogWriter extends TextLogWriter {
     }
   }
   
+  protected String getString(LogLevel level, Throwable throwable) {
+    StringBuilder str = new StringBuilder();
+    while (throwable != null) {
+      if (throwable instanceof com.google.gwt.event.shared.UmbrellaException) {
+        for (Throwable t : ((com.google.gwt.event.shared.UmbrellaException) throwable).getCauses()) {
+          if (str.length() > 0) str.append("\nCaused by: ");
+          str.append(t.toString());
+          str.append("\n  at ").append(getString(level, t));
+        }
+      } else if (throwable instanceof com.google.web.bindery.event.shared.UmbrellaException) {
+        for (Throwable t : ((com.google.web.bindery.event.shared.UmbrellaException) throwable).getCauses()) {
+          if (str.length() > 0) str.append("\nCaused by: ");
+          str.append(t.toString());
+          str.append("\n  at ").append(getString(level, t));
+        }
+      } else {
+        if (str.length() > 0) str.append("\nCaused by: ");
+        str.append(throwable.toString());
+        for (StackTraceElement stackTraceElement : throwable.getStackTrace()) {
+          str.append("\n  at ").append(stackTraceElement);
+        }
+      }
+      throwable = throwable.getCause();
+    }
+    return str.toString();
+  }
+  
   @Override
   protected void println(String string) {
     console(string);

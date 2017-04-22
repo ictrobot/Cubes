@@ -19,15 +19,19 @@ import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.side.server.command.CommandManager;
 import ethanjones.cubes.world.save.Save;
 import ethanjones.cubes.world.server.WorldServer;
+import ethanjones.cubes.world.storage.WorldStorage;
+import ethanjones.cubes.world.storage.WorldStorage.ChangedBlockBatch;
 
 import com.badlogic.gdx.math.Vector3;
 
+import java.util.ArrayDeque;
 import java.util.List;
 
 public abstract class CubesServer extends Cubes implements TimeHandler {
 
   private static final int SAVE_TIME = 60000;
   private static final AtomicLong lastUpdateTime = new AtomicLong();
+  private ArrayDeque<ChangedBlockBatch> changedBlocksBatches = new ArrayDeque<ChangedBlockBatch>();
   private final Save save;
   private  long nextTickTime = System.currentTimeMillis() + tickMS;
   private  int behindTicks = 0;
@@ -86,6 +90,9 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
     lastUpdateTime.set(System.currentTimeMillis());
     super.update();
     Compatibility.get().update();
+    while (!changedBlocksBatches.isEmpty()) {
+      WorldStorage.processChangedBlocks(changedBlocksBatches.pop());
+    }
   }
   
   @Override
@@ -155,5 +162,9 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
   
   public static long lastUpdateTime() {
     return lastUpdateTime.get();
+  }
+  
+  public void addChangedBlocksBatch(ChangedBlockBatch changedBlockBatch) {
+    changedBlocksBatches.add(changedBlockBatch);
   }
 }

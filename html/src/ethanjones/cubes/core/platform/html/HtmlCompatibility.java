@@ -1,12 +1,14 @@
 package ethanjones.cubes.core.platform.html;
 
 import ethanjones.cubes.core.gwt.ExitException;
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.logging.LogWriter;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.platform.Launcher;
 import ethanjones.cubes.graphics.assets.Asset;
 import ethanjones.cubes.graphics.assets.AssetManager;
 import ethanjones.cubes.graphics.assets.Assets;
+import ethanjones.cubes.world.storage.WorldStorageInterface;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Application.ApplicationType;
@@ -16,6 +18,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtFileHandle;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 
 import java.util.ArrayList;
@@ -156,5 +159,17 @@ public class HtmlCompatibility extends Compatibility {
       int aas = assetManager.assets.size();
     }
     addAssetManager(assetManager);
+  }
+  
+  @Override
+  public WorldStorageInterface getWorldStorageInterface() {
+    if (!HtmlWorldStorage.unavailable()) return new HtmlWorldStorage();
+    Log.warning("html world storage unavailable: " + HtmlWorldStorage.unavailable());
+    return super.getWorldStorageInterface();
+  }
+  
+  @Override
+  public void logCrash(Throwable throwable) {
+    GWT.log("crash", throwable);
   }
 }
