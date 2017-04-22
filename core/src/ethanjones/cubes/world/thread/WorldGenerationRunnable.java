@@ -38,17 +38,20 @@ public class WorldGenerationRunnable extends Task {
         } else if (status == 2) { // generated
           task.generateCounter.incrementAndGet();
         }
-
+        
+        checkTime();
         generate = task.generateQueue.poll();
       }
-
+  
+      checkTime();
       AreaReference features = task.featuresQueue.poll();
       while (features != null) {
         int status = WorldTasks.features(features, task.world);
         if (status == 1) { // done features
           task.featureCounter.incrementAndGet();
         }
-
+  
+        checkTime();
         features = task.featuresQueue.poll();
       }
 
