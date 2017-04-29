@@ -2,6 +2,7 @@ package ethanjones.cubes.core.logging;
 
 import ethanjones.cubes.core.logging.loggers.FileLogWriter;
 import ethanjones.cubes.core.logging.loggers.SysOutLogWriter;
+import ethanjones.cubes.core.lua.convert.LuaExclude;
 import ethanjones.cubes.core.platform.Compatibility;
 
 import java.io.File;
@@ -141,6 +142,7 @@ public class Log {
     log(LogLevel.debug, throwable);
   }
 
+  @LuaExclude
   public static void dispose() {
     try {
       output.dispose();

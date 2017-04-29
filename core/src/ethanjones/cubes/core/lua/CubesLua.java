@@ -30,7 +30,7 @@ import static ethanjones.cubes.core.lua.LuaMapping.mapping;
 public class CubesLua {
 
   public static Globals globals() {
-    Globals globals = new Globals();
+    final Globals globals = new Globals();
 
     // modified default libraries
     globals.load(new CubesBaseLib());     // redefine findResource
@@ -46,7 +46,6 @@ public class CubesLua {
 
     // cubes libraries
     globals.rawset("cubes", mapping(LuaMappingCubes.class));
-    globals.rawset("log", mapping(LuaMappingLog.class));
     globals.rawset("mod", mapping(LuaMappingMod.class));
     globals.rawset("vector", LuaVector.create);
     
@@ -92,6 +91,24 @@ public class CubesLua {
         } else {
           return (Class) LuaConversion.convertToJava(Class.class, l);
         }
+      }
+    });
+    globals.rawset("Log", new LuaClass(Log.class));
+    globals.rawset("print", new VarArgFunction() {
+      @Override
+      public Varargs invoke(Varargs args) {
+        LuaValue tostring = globals.get("tostring");
+        if (args.narg() == 1) {
+          Log.info(tostring.call(args.arg1()).strvalue().tojstring());
+        } else {
+          StringBuilder out = new StringBuilder();
+          for (int i = 1, n = args.narg(); i <= n; i++) {
+            if (i > 1) out.append("\t");
+            out.append(tostring.call(args.arg(i)).strvalue().tojstring());
+          }
+          Log.info(out.toString());
+        }
+        return NIL;
       }
     });
 

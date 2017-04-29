@@ -8,18 +8,21 @@ import ethanjones.cubes.core.system.CubesException;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.ClassFileVersion;
 import net.bytebuddy.NamingStrategy.SuffixingRandom;
+import net.bytebuddy.description.method.MethodDescription;
+import net.bytebuddy.dynamic.DynamicType.Builder.MethodDefinition.ReceiverTypeDefinition;
 import net.bytebuddy.dynamic.DynamicType.Loaded;
 import net.bytebuddy.dynamic.DynamicType.Unloaded;
 import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.implementation.SuperMethodCall;
 import net.bytebuddy.implementation.bind.annotation.*;
+import net.bytebuddy.matcher.ElementMatcher;
+import net.bytebuddy.matcher.ElementMatcher.Junction;
 import org.luaj.vm2.LuaFunction;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
 import org.luaj.vm2.lib.VarArgFunction;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayDeque;
@@ -31,7 +34,7 @@ import static net.bytebuddy.matcher.ElementMatchers.*;
 public class LuaGeneration {
   private static final ByteBuddy b = new ByteBuddy(ClassFileVersion.JAVA_V6).with(new SuffixingRandom("LuaDynamic", "ethanjones.cubes.core.lua.redefined"));
   
-  public static Class extendClass(Class<?> extend, LuaTable delegations, Class<?>... inherit) {
+  public static Class extendClass(Class<?> extend, final LuaTable delegations, Class<?>... inherit) {
     long startTime = System.nanoTime();
   
     ArrayDeque<Class> toCheck = new ArrayDeque<Class>();
@@ -50,11 +53,20 @@ public class LuaGeneration {
     }
     
     try {
-      Unloaded unloaded = b.subclass(extend).implement(inherit)
-              .method(not(isConstructor().or(isAbstract())).and(isPublic())).intercept(MethodDelegation.to(new PublicInterceptor(delegations)))
-              .method(not(isConstructor()).and(isAbstract())).intercept(MethodDelegation.to(new AbstractInterceptor(delegations)))
-              .constructor(isConstructor()).intercept(SuperMethodCall.INSTANCE.andThen(MethodDelegation.to(new ConstructorInterceptor(delegations))))
-              .make();
+      ReceiverTypeDefinition<?> build = b.subclass(extend).implement(inherit)
+              .method(not(isConstructor()).and(isAbstract())).intercept(MethodDelegation.to(new AbstractInterceptor(delegations)));
+      if (!delegations.get("__new__").isnil()) {
+        build = build.constructor(isConstructor()).intercept(SuperMethodCall.INSTANCE.andThen(MethodDelegation.to(new ConstructorInterceptor(delegations))));
+      }
+      Junction<MethodDescription> publicMethods = not(isConstructor().or(isAbstract())).and(isPublic()).and(new ElementMatcher<MethodDescription>() {
+        @Override
+        public boolean matches(MethodDescription target) {
+          return !delegations.get(target.getName()).isnil();
+        }
+      });
+      build = build.method(publicMethods).intercept(MethodDelegation.to(new PublicInterceptor(delegations)));
+      
+      Unloaded unloaded = build.make();
       Loaded loaded = Compatibility.get().load(unloaded);
       Class c = loaded.getLoaded();
       Log.debug("Created dynamic class " + c.getName() + " in " + ((System.nanoTime() - startTime) / 1000000) + "ms");
@@ -124,7 +136,7 @@ public class LuaGeneration {
       this.delegations = delegations;
     }
     
-    public void constructor(@Origin Constructor constructor, @This Object o, @AllArguments Object[] objects) {
+    public void constructor(@This Object o, @AllArguments Object[] objects) { // @Origin Constructor constructor,
       LuaValue value = delegations.get("__new__");
       if (value.isnil()) return;
       if (!value.isfunction()) throw new DynamicDelegationError("__new__ for " + o.getClass().getName() + " is a " + value.typename());
