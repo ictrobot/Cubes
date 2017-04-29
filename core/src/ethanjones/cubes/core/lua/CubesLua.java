@@ -1,6 +1,10 @@
 package ethanjones.cubes.core.lua;
 
 import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.lua.convert.LuaConversion;
+import ethanjones.cubes.core.lua.generation.LuaGeneration;
+import ethanjones.cubes.core.lua.java.LuaClass;
+import ethanjones.cubes.core.lua.java.LuaPackage;
 import ethanjones.cubes.core.mod.ModInstance;
 import ethanjones.cubes.core.mod.ModManager;
 import ethanjones.cubes.core.mod.lua.LuaMappingMod;
@@ -45,6 +49,51 @@ public class CubesLua {
     globals.rawset("log", mapping(LuaMappingLog.class));
     globals.rawset("mod", mapping(LuaMappingMod.class));
     globals.rawset("vector", LuaVector.create);
+    
+    globals.rawset("_", new LuaPackage(""));
+    globals.rawset("import", new OneArgFunction() {
+      @Override
+      public LuaValue call(LuaValue arg) {
+        if (arg instanceof LuaPackage) return arg.get("class");
+        if (arg.isstring()) {
+          try {
+            Class<?> cla = Class.forName(arg.toString());
+            return new LuaClass(cla);
+          } catch (ClassNotFoundException e) {
+            throw new LuaError("No such class: " + arg.toString());
+          }
+        }
+        argerror("JPackage or String");
+        return null;
+      }
+    });
+    globals.rawset("extend", new VarArgFunction() {
+      @Override
+      public Varargs invoke(Varargs args) {
+        if (args.narg() <= 1 || (args.narg() == 2 && args.arg1().isnil())) throw new LuaError("Invalid extend arguments: " + args.toString());
+        LuaTable delegations = args.arg(args.narg()).checktable();
+        Class extend = args.arg1().isnil() ? Object.class : convertToClass(args.arg1());
+        Class[] inherit = new Class[args.narg() - 2];
+        for (int i = 0; i < inherit.length; i++) {
+          inherit[i] = convertToClass(args.arg(i + 2));
+        }
+        Class c = LuaGeneration.extendClass(extend, delegations, inherit);
+        return LuaConversion.convertToLua(c);
+      }
+      
+      private Class<?> convertToClass(LuaValue l) {
+        if (l instanceof LuaPackage) return ((LuaClass) l.get("class")).getJavaClass();
+        if (l.isstring()) {
+          try {
+            return Class.forName(l.toString());
+          } catch (ClassNotFoundException e) {
+            throw new LuaError("No such class: " + l.toString());
+          }
+        } else {
+          return (Class) LuaConversion.convertToJava(Class.class, l);
+        }
+      }
+    });
 
     LoadState.install(globals);
     LuaC.install(globals);

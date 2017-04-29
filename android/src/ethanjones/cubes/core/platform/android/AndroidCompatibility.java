@@ -16,6 +16,7 @@ import ethanjones.cubes.side.common.Cubes;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.MemoryInfo;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import com.badlogic.gdx.Application;
@@ -23,6 +24,11 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.files.FileHandle;
+import net.bytebuddy.android.AndroidClassLoadingStrategy;
+import net.bytebuddy.dynamic.DynamicType.Loaded;
+import net.bytebuddy.dynamic.DynamicType.Unloaded;
+
+import java.io.File;
 
 public class AndroidCompatibility extends Compatibility {
 
@@ -137,7 +143,14 @@ public class AndroidCompatibility extends Compatibility {
   public LogWriter getCustomLogWriter() {
     return new AndroidLogWriter();
   }
-
+  
+  @Override
+  public Loaded load(Unloaded unloaded) {
+    File dir = androidLauncher.getDir("cubes-class", Context.MODE_PRIVATE);
+    AndroidClassLoadingStrategy androidClassLoadingStrategy = new AndroidClassLoadingStrategy.Wrapping(dir);
+    return unloaded.load(getClass().getClassLoader(), androidClassLoadingStrategy);
+  }
+  
   @Override
   public boolean handleCrash(Throwable throwable) {
     Intent intent = new Intent(androidLauncher, CrashActivity.class);

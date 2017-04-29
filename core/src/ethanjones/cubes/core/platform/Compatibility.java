@@ -14,6 +14,9 @@ import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import net.bytebuddy.dynamic.DynamicType.Loaded;
+import net.bytebuddy.dynamic.DynamicType.Unloaded;
+import net.bytebuddy.dynamic.loading.ClassLoadingStrategy.Default;
 
 public abstract class Compatibility {
 
@@ -126,6 +129,10 @@ public abstract class Compatibility {
 
   public String[] getCommandLineArgs() {
     return new String[]{};
+  }
+  
+  public Loaded load(Unloaded unloaded) {
+    return unloaded.load(getClass().getClassLoader(), Default.INJECTION);
   }
 
 }

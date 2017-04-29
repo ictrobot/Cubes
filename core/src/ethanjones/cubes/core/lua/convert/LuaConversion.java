@@ -1,13 +1,14 @@
 package ethanjones.cubes.core.lua.convert;
 
-import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.core.lua.LuaMappingCubes;
 import ethanjones.cubes.core.lua.LuaVector;
+import ethanjones.cubes.core.lua.java.LuaClass;
+import ethanjones.cubes.core.lua.java.LuaObject;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
 
 import com.badlogic.gdx.math.Vector3;
+import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaTable;
 import org.luaj.vm2.LuaValue;
 
@@ -61,14 +62,20 @@ public class LuaConversion {
   }
 
   public static LuaValue convertToLua(Object o) {
+    if (o == null) return NIL;
     LuaConverter luaConverter = converter(o.getClass());
-    if (luaConverter == null) return NIL;
+    if (luaConverter == null) {
+      throw new ConversionError("Cannot convert Java to Lua: " + o.getClass().getName());
+    }
     return luaConverter.toLua(o);
   }
 
   public static Object convertToJava(Class<?> c, LuaValue o) {
+    if (o == null || o.isnil()) return null;
     LuaConverter luaConverter = converter(c);
-    if (luaConverter == null) return NIL;
+    if (luaConverter == null) {
+      throw new ConversionError("Cannot convert Lua to Java: " + c.getName());
+    }
     return luaConverter.toJava(o, c);
   }
 
@@ -89,21 +96,31 @@ public class LuaConversion {
   }
 
   static {
+    BooleanConverter booleanConverter = new BooleanConverter();
+    CharConverter charConverter = new CharConverter();
     IntConverter intConverter = new IntConverter();
     DoubleConverter doubleConverter = new DoubleConverter();
-    map.put(Boolean.class, new BooleanConverter());
+    map.put(Boolean.class, booleanConverter);
+    map.put(boolean.class, booleanConverter);
     map.put(Byte.class, intConverter);
-    map.put(Character.class, new CharConverter());
+    map.put(Character.class, charConverter);
+    map.put(char.class, charConverter);
     map.put(Short.class, intConverter);
+    map.put(short.class, intConverter);
     map.put(Integer.class, intConverter);
+    map.put(int.class, intConverter);
     map.put(Long.class, doubleConverter);
+    map.put(long.class, doubleConverter);
     map.put(Float.class, doubleConverter);
+    map.put(float.class, doubleConverter);
     map.put(Double.class, doubleConverter);
+    map.put(double.class, doubleConverter);
     map.put(String.class, new StringConverter());
-    map.put(Block.class, new BlockConverter());
+    map.put(Class.class, new LuaClassConverter());
     map.put(BlockReference.class, new BlockReferenceConverter());
     map.put(Vector3.class, new Vector3Converter());
     map.put(AreaReference.class, new AreaReferenceConverter());
+    map.put(Object.class, new LuaObjectConverter());
   }
 
   public static class BooleanConverter implements LuaConverter<Boolean> {
@@ -170,20 +187,7 @@ public class LuaConversion {
       return l.checkjstring();
     }
   }
-
-  public static class BlockConverter implements LuaConverter<Block> {
-
-    @Override
-    public LuaValue toLua(Block block) {
-      return LuaMappingCubes.blocks.get(block.id);
-    }
-
-    @Override
-    public Block toJava(LuaValue l, Class<? extends Block> c) {
-      return (Block) l.checkuserdata(Block.class);
-    }
-  }
-
+  
   public static class BlockReferenceConverter implements LuaConverter<BlockReference> {
 
     @Override
@@ -224,5 +228,58 @@ public class LuaConversion {
       return ((LuaVector) l.checkuserdata(LuaVector.class)).toAreaReference();
     }
 
+  }
+  
+  public static class LuaObjectConverter implements LuaConverter {
+    @Override
+    public LuaValue toLua(Object o) {
+      return new LuaObject(o);
+    }
+  
+    @Override
+    public Object toJava(LuaValue l, Class c) {
+      if (l instanceof LuaObject) {
+        Object o = ((LuaObject) l).getObject();
+        if (c.isInstance(o)) {
+          return o;
+        } else {
+          throw new LuaError("Cannot convert Lua to Java: " + o.getClass().getName() + " cannot be converted to " + c.getName());
+        }
+      }
+      throw new LuaError("Cannot convert Lua to Java: " + l.typename() + " cannot be converted to " + c.getName());
+    }
+  }
+  
+  public static class LuaClassConverter implements LuaConverter<Class> {
+  
+    @Override
+    public LuaValue toLua(Class aClass) {
+      return new LuaClass(aClass);
+    }
+  
+    @Override
+    public Class toJava(LuaValue l, Class<? extends Class> c) {
+      if (l instanceof LuaClass) return ((LuaClass) l).getJavaClass();
+      throw new LuaError("Cannot convert Lua to Java: " + l.typename() + " cannot be converted to " + c.getName());
+    }
+  }
+  
+  public static class ConversionError extends LuaError {
+  
+    public ConversionError(Throwable cause) {
+      super(cause);
+    }
+  
+    public ConversionError(String message) {
+      super(message);
+    }
+  
+    public ConversionError(String message, int level) {
+      super(message, level);
+    }
+  
+    public ConversionError(LuaValue message_object) {
+      super(message_object);
+    }
   }
 }

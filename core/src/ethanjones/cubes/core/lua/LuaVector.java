@@ -355,7 +355,7 @@ public class LuaVector {
         return NIL;
       }
     });
-
+    m.rawset("__metatable", LuaValue.FALSE);
     metatable = new ReadOnlyLuaTable(m);
   }
 
