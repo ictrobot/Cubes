@@ -13,6 +13,8 @@ Cubes Credits
 
 * [ralfstx/minimal-json](https://github.com/ralfstx/minimal-json) library [(MIT License)](https://github.com/ralfstx/minimal-json/blob/master/LICENSE)
 
+* [ByteBuddy](http://bytebuddy.net/) library [(Apache 2 License)](https://github.com/raphw/byte-buddy/blob/master/LICENSE)
+
 * InventoryActor, SlotActor and SlotTooltipListener based on [PixelScientists/libgdx-utils](https://github.com/PixelScientists/libgdx-utils) [(MIT License)](https://github.com/PixelScientists/libgdx-utils/blob/master/LICENSE)
 
 * Modified version of [purcell/jargs](https://github.com/purcell/jargs) to parse command line arguments [(License)](https://github.com/purcell/jargs/blob/master/LICENCE)
