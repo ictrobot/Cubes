@@ -101,6 +101,7 @@ public class ClientAdapter implements AdapterInterface {
   }
   
   private boolean splashScreen() {
+    Log.debug("Showing splash screen");
     glClear();
     
     SplashMenu splashMenu = new SplashMenu();

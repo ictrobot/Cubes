@@ -15,17 +15,14 @@ import com.badlogic.gdx.utils.Scaling;
 
 public class SplashMenu extends Menu {
   Image logo;
-  Label version;
-  Label author;
+  Label text;
   
   public SplashMenu() {
     logo = new Image(new TextureRegionDrawable(Assets.getTextureRegion("core:logo.png")), Scaling.fillY, Align.center);
-    version = new Label(Branding.DEBUG, new Label.LabelStyle(Fonts.smallHUD, Color.WHITE));
-    author = new Label(Branding.AUTHOR, new Label.LabelStyle(Fonts.smallHUD, Color.WHITE));
+    text = new Label("Loading " + Branding.DEBUG, new Label.LabelStyle(Fonts.smallHUD, Color.WHITE));
   
     stage.addActor(logo);
-    stage.addActor(version);
-    stage.addActor(author);
+    stage.addActor(text);
   }
   
   
@@ -34,9 +31,8 @@ public class SplashMenu extends Menu {
     super.resize(width, height);
     logo.setSize(width, height / 6);
     MenuTools.center(logo);
-    version.setBounds(2, 2, author.getPrefWidth(), author.getPrefHeight());
-    version.setAlignment(Align.left);
-    author.setBounds(width - author.getPrefWidth() - 2, 2, author.getPrefWidth(), author.getPrefHeight());
-    author.setAlignment(Align.right);
+    text.setSize(text.getPrefWidth(), text.getPrefHeight());
+    text.setPosition((width / 2) - (text.getWidth() / 2), 2);
+    text.setAlignment(Align.center);
   }
 }
