@@ -29,7 +29,9 @@ public class ServerAdapter implements AdapterInterface {
       options = new ServerCmdLineOptions();
       options.parse();
 
-      Cubes.setup(this);
+      Cubes.preInit(this);
+      Cubes.init();
+      
       if (options.port != null) {
         NetworkingManager.serverPreInit(new ServerNetworkingParameter(options.port));
       } else {

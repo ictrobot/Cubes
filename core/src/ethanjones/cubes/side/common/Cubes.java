@@ -32,11 +32,12 @@ import com.badlogic.gdx.Gdx;
 public abstract class Cubes {
 
   public static final int tickMS = 25;
-  private static boolean setup;
+  private static boolean preInit, init;
   private static AdapterInterface adapterInterface;
 
-  public static void setup(AdapterInterface adapterInterface) {
-    if (setup) return;
+  public static void preInit(AdapterInterface adapterInterface) {
+    if (preInit) return;
+    preInit = true;
     if (Compatibility.get() == null) {
       Log.error(new CubesException("No Compatibility module for this platform: " + Gdx.app.getType().name() + ", OS: " + System.getProperty("os.name") + ", Arch:" + System.getProperty("os.arch")));
     }
@@ -52,19 +53,27 @@ public abstract class Cubes {
     Executor.init();
 
     Assets.preInit();
+
+  }
+  
+  public static void init() {
+    if (!preInit) throw new CubesException("Cubes.init called before Cubes.preInit");
+    if (init) return;
+    init = true;
+  
     JsonLoader.loadCore();
     Blocks.init();
     ModManager.init();
     JsonLoader.firstStage();
-    
+  
     Compatibility.get().preInit();
     ModManager.postModEvent(new PreInitializationEvent());
-
+  
     JsonLoader.secondStage();
     Settings.init();
     Compatibility.get().init();
     ModManager.postModEvent(new InitializationEvent());
-
+  
     Assets.init();
     Localization.load();
     Settings.print();
@@ -72,10 +81,8 @@ public abstract class Cubes {
     ModManager.postModEvent(new PostInitializationEvent());
     IDManager.loaded();
     EntityManager.loaded();
-
+  
     if (!Adapter.isDedicatedServer()) Graphics.init();
-
-    setup = true;
   }
 
   public static CubesClient getClient() {
@@ -87,7 +94,7 @@ public abstract class Cubes {
   }
 
   public static boolean cubesSetup() {
-    return setup;
+    return init;
   }
 
   private final Side side;

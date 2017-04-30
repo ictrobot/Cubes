@@ -10,6 +10,7 @@ import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menu.MenuManager;
 import ethanjones.cubes.graphics.menus.ClientErrorMenu.UnresponsiveIntegratedServerMenu;
 import ethanjones.cubes.graphics.menus.MainMenu;
+import ethanjones.cubes.graphics.menus.SplashMenu;
 import ethanjones.cubes.input.InputChain;
 import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.common.Cubes;
@@ -31,6 +32,8 @@ public class ClientAdapter implements AdapterInterface {
   private CubesClient cubesClient;
   private Thread thread;
 
+  private AtomicBoolean shownSplash = new AtomicBoolean(false);
+  private AtomicBoolean setupCubes = new AtomicBoolean(false);
   private AtomicBoolean setupClient = new AtomicBoolean(false);
   private AtomicBoolean setupMenu = new AtomicBoolean(false);
 
@@ -44,9 +47,8 @@ public class ClientAdapter implements AdapterInterface {
       Gdx.graphics.setTitle(Branding.DEBUG);
       thread = Thread.currentThread();
       thread.setName(getSide().name());
-      Cubes.setup(this);
-      setMenu(new MainMenu());
-      Log.info(Localization.get("client.client_loaded"));
+      
+      Cubes.preInit(this);
     } catch (StopLoopException e) {
       Log.debug(e);
     } catch (Exception e) {
@@ -97,9 +99,29 @@ public class ClientAdapter implements AdapterInterface {
       Log.debug("Server set to null");
     }
   }
+  
+  private boolean splashScreen() {
+    glClear();
+    
+    SplashMenu splashMenu = new SplashMenu();
+    Graphics.resize();
+    splashMenu.resize(Graphics.GUI_WIDTH, Graphics.GUI_HEIGHT);
+    splashMenu.render();
+    
+    return true;
+  }
 
+  private boolean initCubes() {
+    Cubes.init();
+    setMenu(new MainMenu());
+    Log.info(Localization.get("client.client_loaded"));
+    return true;
+  }
+  
   @Override
   public void render() {
+    if (shownSplash.compareAndSet(false, true) && splashScreen()) return;
+    if (setupCubes.compareAndSet(false, true) && initCubes()) return;
     try {
       if (cubesClient == null && menu == null) { //Nothing to render
         Debug.crash(new CubesException("CubesClient and Menu both null"));

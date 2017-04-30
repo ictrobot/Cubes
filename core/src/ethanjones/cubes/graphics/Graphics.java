@@ -24,17 +24,16 @@ import java.io.IOException;
 
 public class Graphics {
 
-  public static SpriteBatch spriteBatch;
+  public static SpriteBatch spriteBatch = new SpriteBatch(); // needed for splash screen
+  public static ScreenViewport screenViewport = new ScreenViewport();
+  
   public static ModelBatch modelBatch;
-  public static ScreenViewport screenViewport;
 
   public static float GUI_WIDTH = 0f;
   public static float GUI_HEIGHT = 0f;
 
   public static void init() {
-    spriteBatch = new SpriteBatch();
     modelBatch = new CubesModelBatch();
-    screenViewport = new ScreenViewport();
 
     for (Block block : IDManager.getBlocks()) {
       block.loadGraphics();
