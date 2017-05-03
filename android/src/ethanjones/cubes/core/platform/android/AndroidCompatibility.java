@@ -29,6 +29,7 @@ import net.bytebuddy.dynamic.DynamicType.Loaded;
 import net.bytebuddy.dynamic.DynamicType.Unloaded;
 
 import java.io.File;
+import java.io.IOException;
 
 public class AndroidCompatibility extends Compatibility {
 
@@ -64,7 +65,16 @@ public class AndroidCompatibility extends Compatibility {
   public FileHandle getWorkingFolder() {
     return Gdx.files.internal(".");
   }
-
+  
+  @Override
+  public void nomedia(FileHandle folder) {
+    try {
+      folder.child(".nomedia").file().createNewFile();
+    } catch (IOException e) {
+      Log.debug("Failed to create .nomedia file in " + folder.toString(), e);
+    }
+  }
+  
   @Override
   public void setupAssets() {
     super.setupAssets();

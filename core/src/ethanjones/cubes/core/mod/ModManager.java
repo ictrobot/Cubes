@@ -34,6 +34,7 @@ public class ModManager {
     FileHandle temp = Compatibility.get().getBaseFolder().child("mods").child("temp");
     temp.deleteDirectory();
     temp.mkdirs();
+    Compatibility.get().nomedia(temp);
     for (FileHandle fileHandle : getModFiles()) {
       FileHandle classFile = null;
       String className = null;
@@ -156,6 +157,7 @@ public class ModManager {
   private static FileHandle[] getModFiles() {
     FileHandle base = Compatibility.get().getBaseFolder().child("mods");
     base.mkdirs();
+    Compatibility.get().nomedia(base);
     return base.list(new FileFilter() {
       @Override
       public boolean accept(File pathname) {
@@ -169,6 +171,7 @@ public class ModManager {
     FileOutputStream fileOutputStream = null;
     try {
       file.parent().mkdirs();
+      Compatibility.get().nomedia(file.parent());
       file.file().createNewFile();
       fileOutputStream = new FileOutputStream(file.file());
       int len = 0;

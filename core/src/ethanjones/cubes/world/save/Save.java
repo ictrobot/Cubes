@@ -2,6 +2,7 @@ package ethanjones.cubes.world.save;
 
 import ethanjones.cubes.core.id.IDManager;
 import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.side.common.Cubes;
@@ -36,9 +37,16 @@ public class Save {
 
     if (!this.readOnly) {
       this.fileHandle.mkdirs();
+      Compatibility.get().nomedia(this.fileHandle);
+      
       folderArea().mkdirs();
+      Compatibility.get().nomedia(folderArea());
+      
       folderPlayer().mkdirs();
+      Compatibility.get().nomedia(folderPlayer());
+      
       folderCave().mkdirs();
+      Compatibility.get().nomedia(folderCave());
     }
   }
 

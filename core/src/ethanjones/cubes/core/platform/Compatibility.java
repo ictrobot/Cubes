@@ -66,6 +66,10 @@ public abstract class Compatibility {
   public FileHandle getWorkingFolder() {
     return Gdx.files.absolute(System.getProperty("user.dir"));
   }
+  
+  public void nomedia(FileHandle folder) {
+  
+  }
 
   /**
    * Gets assets using FileHandles by default

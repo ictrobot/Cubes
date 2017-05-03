@@ -35,6 +35,7 @@ public class Fonts {
     Log.debug("Generating font");
     long time = System.currentTimeMillis();
     fontFolder.mkdirs();
+    Compatibility.get().nomedia(fontFolder);
     
     FreeTypeFontGenerator.setMaxTextureSize(2048);
 

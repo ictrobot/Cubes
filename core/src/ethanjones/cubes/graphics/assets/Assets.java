@@ -78,6 +78,7 @@ public class Assets {
       assetsFolder.delete();
     }
     assetsFolder.mkdirs();
+    Compatibility.get().nomedia(assetsFolder);
     Compatibility.get().setupAssets();
 
     if (getAssetManager(CORE) == null) throw new CubesException("No core asset manager");
@@ -108,6 +109,7 @@ public class Assets {
     }
     FileHandle fileHandle = assetsFolder.child("packed");
     fileHandle.mkdirs();
+    Compatibility.get().nomedia(fileHandle);
     fileHandle = fileHandle.child(assetType[0].name() + ".cim");
 
     try {

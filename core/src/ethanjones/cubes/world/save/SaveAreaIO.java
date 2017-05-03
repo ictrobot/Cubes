@@ -1,6 +1,7 @@
 package ethanjones.cubes.world.save;
 
 import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.world.storage.Area;
 import ethanjones.cubes.world.storage.AreaMap;
 import ethanjones.data.DataGroup;
@@ -99,6 +100,8 @@ public class SaveAreaIO {
     FileHandle xLeastSignificant = xMostSignificant.child(Integer.toString(x & 0xFFFF));
     FileHandle zMostSignificant = xLeastSignificant.child(Integer.toString(z & 0xFFFF0000));
     zMostSignificant.mkdirs();
+    Compatibility.get().nomedia(zMostSignificant);
+    
     return zMostSignificant.child(Integer.toString(z & 0xFFFF));
   }
 }

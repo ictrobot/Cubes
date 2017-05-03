@@ -98,6 +98,7 @@ public class Performance {
     if (enabled.get()) {
       stopTracking();
       FileHandle dir = Compatibility.get().getBaseFolder().child("performance");
+      Compatibility.get().nomedia(dir);
       dir.mkdirs();
       try {
         save(dir.child(System.currentTimeMillis() + ".cbpf").file());

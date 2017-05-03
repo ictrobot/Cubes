@@ -32,6 +32,7 @@ public class ClientSaveManager {
     FileHandle folder = getSavesFolder();
     FileHandle handle = folder.child(name);
     handle.mkdirs();
+    Compatibility.get().nomedia(handle);
     Save s = new Save(name, handle);
 
     SaveOptions options = new SaveOptions();
