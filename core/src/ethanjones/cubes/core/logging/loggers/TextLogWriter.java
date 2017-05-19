@@ -20,19 +20,22 @@ public abstract class TextLogWriter implements LogWriter {
   @Override
   public void log(LogLevel level, String message, Throwable throwable) {
     println(getString(level, message));
-    println(getString(level, throwable));
+    printThrowable(level, throwable);
   }
 
   @Override
   public void log(LogLevel level, Throwable throwable) {
-    println(getString(level, throwable));
+    printThrowable(level, throwable);
   }
 
-  private String getString(LogLevel level, Throwable throwable) {
+  private void printThrowable(LogLevel level, Throwable throwable) {
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
     throwable.printStackTrace(pw);
-    return sw.toString();
+    String start = getString(level, "");
+    for (String s : sw.toString().split("\n")) {
+      println(start + s);
+    }
   }
 
   protected abstract void println(String string);

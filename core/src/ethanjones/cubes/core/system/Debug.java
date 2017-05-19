@@ -10,6 +10,7 @@ import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.Compatibility;
 
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Debug {
@@ -97,10 +98,21 @@ public class Debug {
       throwable.printStackTrace();
     }
     if (crashedNum == 1) {
+      printThreads();
       try {
         printMods(LogLevel.error);
       } catch (Exception e) {
 
+      }
+    }
+  }
+  
+  private static synchronized void printThreads() {
+    Log.debug("===== THREADS =====");
+    for (Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet()) {
+      Log.debug(entry.getKey().getName() + " - " + entry.getKey().getId());
+      for (StackTraceElement stackTraceElement : entry.getValue()) {
+        Log.debug(" - " + stackTraceElement.toString());
       }
     }
   }
