@@ -71,8 +71,9 @@ public class WorldStorage {
           if (blockData != null) {
             blockData.read(b.data);
             blockData.sync();
+          } else {
+            Log.debug("processChangedBlocks block data doesn't exist");
           }
-          Log.debug("processChangedBlocks block data doesn't exist");
         }
       } else {
         Log.warning("processChangedBlocks different areaX/areaZ");
