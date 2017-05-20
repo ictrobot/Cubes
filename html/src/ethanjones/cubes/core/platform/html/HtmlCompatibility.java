@@ -5,6 +5,7 @@ import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.logging.LogWriter;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.platform.Launcher;
+import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.graphics.assets.Asset;
 import ethanjones.cubes.graphics.assets.AssetManager;
 import ethanjones.cubes.graphics.assets.Assets;
@@ -46,6 +47,12 @@ public class HtmlCompatibility extends Compatibility {
   @Override
   public boolean functionModifier() {
     return false;
+  }
+  
+  @Override
+  public void postInit() {
+    super.postInit();
+    Settings.getIntegerSetting(Settings.GRAPHICS_VIEW_DISTANCE).rangeEnd = 4;
   }
   
   @Override
