@@ -2,5 +2,15 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit trunk//EN" "http://google-web-toolkit.googlecode.com/svn/trunk/distro-source/core/src/gwt-module.dtd">
 <module>
 	<source path="ethanjones" />
-	<extend-configuration-property name="gdx.reflect.include" value="ethanjones" />
+	<extend-configuration-property name="gdx.reflect.include" value="ethanjones.data" />
+	<extend-configuration-property name="gdx.reflect.include" value="ethanjones.cubes.block" />
+	<extend-configuration-property name="gdx.reflect.include" value="ethanjones.cubes.core.event" />
+	<extend-configuration-property name="gdx.reflect.include" value="ethanjones.cubes.core.platform" />
+	<extend-configuration-property name="gdx.reflect.include" value="ethanjones.cubes.entity" />
+    <extend-configuration-property name="gdx.reflect.include" value="ethanjones.cubes.graphics.menus" />
+	<extend-configuration-property name="gdx.reflect.include" value="ethanjones.cubes.item" />
+	<extend-configuration-property name="gdx.reflect.include" value="ethanjones.cubes.networking" />
+	<extend-configuration-property name="gdx.reflect.include" value="ethanjones.cubes.side" />
+	<extend-configuration-property name="gdx.reflect.include" value="ethanjones.cubes.world.collision.PlayerCollision" />
+	<extend-configuration-property name="gdx.reflect.include" value="ethanjones.cubes.world.light.WorldLightHandler" />
 </module>
