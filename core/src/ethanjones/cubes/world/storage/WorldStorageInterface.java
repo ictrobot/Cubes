@@ -1,6 +1,8 @@
 package ethanjones.cubes.world.storage;
 
 
+import ethanjones.data.DataGroup;
+
 import java.util.List;
 
 public interface WorldStorageInterface {
@@ -24,6 +26,7 @@ public interface WorldStorageInterface {
     public int areaZ;
     public int ref;
     public int blockAndMeta;
+    public DataGroup data;
     
     public ChangedBlock() {
     }
@@ -33,6 +36,15 @@ public interface WorldStorageInterface {
       this.areaZ = areaZ;
       this.ref = ref;
       this.blockAndMeta = blockAndMeta;
+      this.data = null;
+    }
+  
+    public ChangedBlock(int areaX, int areaZ, int ref, int blockAndMeta, DataGroup data) {
+      this.areaX = areaX;
+      this.areaZ = areaZ;
+      this.ref = ref;
+      this.blockAndMeta = blockAndMeta;
+      this.data = data;
     }
   }
 }

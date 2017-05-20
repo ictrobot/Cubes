@@ -1,5 +1,6 @@
 package ethanjones.cubes.world.storage;
 
+import ethanjones.cubes.block.data.BlockData;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.side.common.Cubes;
@@ -65,10 +66,19 @@ public class WorldStorage {
     for (ChangedBlock b : changedBlocks) {
       if (b.areaX == areaX && b.areaZ == areaZ) {
         area.setBlock(b.ref, b.blockAndMeta);
+        if (b.data != null) {
+          BlockData blockData = area.getBlockData(Area.getX(b.ref), Area.getY(b.ref), Area.getZ(b.ref));
+          if (blockData != null) {
+            blockData.read(b.data);
+            blockData.sync();
+          }
+          Log.debug("processChangedBlocks block data doesn't exist");
+        }
       } else {
         Log.warning("processChangedBlocks different areaX/areaZ");
       }
     }
+    area.saveModCount();
   }
   
   /**

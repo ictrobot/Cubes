@@ -4,6 +4,8 @@ import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketBlockData;
 import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.storage.Area;
+import ethanjones.cubes.world.storage.WorldStorageInterface.ChangedBlock;
+import ethanjones.data.DataGroup;
 import ethanjones.data.DataParser;
 
 public abstract class BlockData implements DataParser {
@@ -34,6 +36,15 @@ public abstract class BlockData implements DataParser {
   }
 
   public void sync() {
+    DataGroup d = write();
+    for (ChangedBlock changedBlock : area.changedBlockList) {
+      if (changedBlock.ref == Area.getRef(x, y, z)) {
+        changedBlock.data = d;
+        break;
+      }
+    }
+    area.modify();
+    
     if (Area.isShared()) return;
     PacketBlockData packet = new PacketBlockData();
     packet.areaX = area.areaX;
@@ -41,7 +52,7 @@ public abstract class BlockData implements DataParser {
     packet.blockX = x;
     packet.blockY = y;
     packet.blockZ = z;
-    packet.dataGroup = write();
+    packet.dataGroup = d;
     if (Side.isClient()) {
       NetworkingManager.sendPacketToServer(packet);
     } else {
