@@ -664,15 +664,16 @@ public class Area implements Lock.HasLock {
       throw new CubesException("Area has been unloaded");
     }
     if (isBlank()) {
-      height = (int) Math.ceil((y + 1) / (float) SIZE_BLOCKS);
-      blocks = new int[SIZE_BLOCKS_CUBED * height];
-      light = new byte[SIZE_BLOCKS_CUBED * height];
+      int h = (int) Math.ceil((y + 1) / (float) SIZE_BLOCKS);
+      blocks = new int[SIZE_BLOCKS_CUBED * h];
+      light = new byte[SIZE_BLOCKS_CUBED * h];
       AreaRenderer.free(areaRenderer);
       if (Side.isClient() || isShared()) {
-        areaRenderer = new AreaRenderer[height];
-        renderStatus = AreaRenderStatus.create(height);
+        areaRenderer = new AreaRenderer[h];
+        renderStatus = AreaRenderStatus.create(h);
       }
-      maxY = (height * SIZE_BLOCKS) - 1;
+      height = h;
+      maxY = (h * SIZE_BLOCKS) - 1;
     } else if (y > maxY) {
       expand(y);
     }
@@ -720,42 +721,45 @@ public class Area implements Lock.HasLock {
     lock.writeUnlock();
   }
 
-  private void expand(int height) {
+  private void expand(int h) {
     lock.writeLock();
 
     if (unloaded) {
       lock.writeUnlock();
       throw new CubesException("Area has been unloaded");
     }
-    if (isBlank() || height <= maxY || height > MAX_Y) {
+    if (isBlank() || h <= maxY || h > MAX_Y) {
       lock.writeUnlock();
       return;
     }
-
-    height = (int) Math.ceil((height + 1) / (float) SIZE_BLOCKS); //Round up to multiple of SIZE_BLOCKS
-    this.height = height;
+  
     int oldMaxY = maxY;
-
     int[] oldBlocks = blocks;
-    blocks = new int[SIZE_BLOCKS_CUBED * height];
-    System.arraycopy(oldBlocks, 0, blocks, 0, oldBlocks.length);
-
     byte[] oldLight = light;
-    light = new byte[SIZE_BLOCKS_CUBED * height];
-    System.arraycopy(oldLight, 0, light, 0, oldLight.length);
-    if (featuresGenerated()) Arrays.fill(light, oldLight.length, light.length, (byte) SunLight.MAX_SUNLIGHT);
-
-    AreaRenderer.free(areaRenderer);
+    AreaRenderer[] oldAreaRenderer = areaRenderer;
+    
+    int newHeight = (int) Math.ceil((h + 1) / (float) SIZE_BLOCKS); //Round up to multiple of SIZE_BLOCKS
+    
+    int[] newBlocks = new int[SIZE_BLOCKS_CUBED * newHeight];
+    System.arraycopy(oldBlocks, 0, newBlocks, 0, oldBlocks.length);
+    
+    byte[] newLight = new byte[SIZE_BLOCKS_CUBED * newHeight];
+    System.arraycopy(oldLight, 0, newLight, 0, oldLight.length);
+    if (featuresGenerated()) Arrays.fill(newLight, oldLight.length, newLight.length, (byte) SunLight.MAX_SUNLIGHT);
+    
+    
     if (Side.isClient() || shared) {
-      areaRenderer = new AreaRenderer[height];
-      if (renderStatus.length < height) {
-        renderStatus = AreaRenderStatus.create(height);
-      }
+      this.areaRenderer = new AreaRenderer[newHeight];
+      if (renderStatus.length < newHeight) renderStatus = AreaRenderStatus.create(newHeight);
     } else {
-      areaRenderer = null;
+      this.areaRenderer = null;
     }
-
-    maxY = (height * SIZE_BLOCKS) - 1;
+    
+    this.blocks = newBlocks;
+    this.light = newLight;
+    this.height = newHeight;
+    this.maxY = (newHeight * SIZE_BLOCKS) - 1;
+    
     int i = oldMaxY * SIZE_BLOCKS_SQUARED;
     for (int z = 0; z < SIZE_BLOCKS; z++) { //update previous top
       for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
@@ -764,6 +768,8 @@ public class Area implements Lock.HasLock {
     }
 
     lock.writeUnlock();
+  
+    AreaRenderer.free(oldAreaRenderer);
   }
 
   public boolean featuresGenerated() {
