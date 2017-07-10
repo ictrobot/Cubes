@@ -4,6 +4,7 @@ import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.id.IDManager;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Compatibility;
+import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.graphics.hud.inv.BlockIcons;
 import ethanjones.cubes.graphics.world.CubesModelBatch;
@@ -83,6 +84,6 @@ public class Graphics {
   public static float scaleFactor() {
     float f = Gdx.graphics.getPpiX() / 96;
     if (f > 1) f -= (f - 1) * 0.4f;
-    return f;
+    return f * (Settings.isSetup() ? Settings.getFloatSettingValue(Settings.GRAPHICS_SCALE) : 1f);
   }
 }

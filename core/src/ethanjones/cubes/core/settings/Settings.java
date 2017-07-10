@@ -26,6 +26,7 @@ public class Settings {
   public static final String GRAPHICS_FOV = "graphics.fieldOfView";
   public static final String GRAPHICS_VSYNC = "graphics.vsync";
   public static final String GRAPHICS_FOG = "graphics.fog";
+  public static final String GRAPHICS_SCALE = "graphics.scale";
   public static final String INPUT_MOUSE_SENSITIVITY = "input.mouseSensitivity";
   public static final String INPUT_TOUCHPAD_SIZE = "input.touchpadSize";
   public static final String INPUT_TOUCHPAD_LEFT = "input.touchpadLeft";
@@ -59,6 +60,17 @@ public class Settings {
       }
     });
     addSetting(GRAPHICS_FOG, new BooleanSetting(true));
+    addSetting(GRAPHICS_SCALE, new FloatSetting(1f, 0.5f, 2f, FloatSetting.Type.Slider) {
+      {
+        this.sliderSteps = 0.125f;
+      }
+
+      @Override
+      public void onChange() {
+        super.onChange();
+        Gdx.app.getApplicationListener().resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+      }
+    });
 
     addSetting(INPUT_MOUSE_SENSITIVITY, new FloatSetting(0.5f, 0.05f, 1f, FloatSetting.Type.Slider));
     addSetting(INPUT_TOUCHPAD_SIZE, new FloatSetting(0.45f, 0.30f, 0.60f, FloatSetting.Type.Slider) {
@@ -85,7 +97,7 @@ public class Settings {
     SettingGroup keybinds = Keybinds.init();
   
     base.add(USERNAME)
-            .add(GROUP_GRAPHICS, new SettingGroup().add(GRAPHICS_VIEW_DISTANCE).add(GRAPHICS_FOV).add(GRAPHICS_VSYNC).add(GRAPHICS_FOG))
+            .add(GROUP_GRAPHICS, new SettingGroup().add(GRAPHICS_VIEW_DISTANCE).add(GRAPHICS_FOV).add(GRAPHICS_VSYNC).add(GRAPHICS_FOG).add(GRAPHICS_SCALE))
             .add(GROUP_INPUT, new SettingGroup().add(keybindsGroup, keybinds).add(INPUT_MOUSE_SENSITIVITY).add(INPUT_TOUCHPAD_SIZE).add(INPUT_TOUCHPAD_LEFT))
             .add(GROUP_NETWORKING, new SettingGroup().add(NETWORKING_PORT))
             .add(GROUP_DEBUG, new SettingGroup().add(DEBUG_FRAMETIME_GRAPH));
@@ -94,6 +106,10 @@ public class Settings {
       Log.info("Creating new settings file");
       write();
     }
+  }
+
+  public static boolean isSetup() {
+    return base.getChildGroups().size() > 0 || base.getChildren().size() > 0;
   }
 
   public static void addSetting(String notLocalised, Setting setting) {
