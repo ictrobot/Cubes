@@ -113,7 +113,7 @@ public class ModManager {
           if (className == null && classFile != null) {
             Log.error("Mod " + fileHandle.name() + " does not contain a \"mod.properties\" with a \"className\"");
             continue;
-          } else if (classFile == null) {
+          } else if (className != null && classFile == null) {
             Log.error("Mod " + fileHandle.name() + " does not contain any of " + Arrays.deepToString(modLoader.getTypes()));
             continue;
           }
