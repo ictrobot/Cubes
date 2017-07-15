@@ -1,3 +1,4 @@
 terrain.core.test=Test
 terrain.core.basic=Flat
 terrain.core.smooth=Smooth
+terrain.core.void=Void

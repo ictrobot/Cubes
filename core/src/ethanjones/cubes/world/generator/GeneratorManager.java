@@ -29,6 +29,12 @@ public class GeneratorManager {
         return new TestTerrainGenerator();
       }
     });
+    generators.put("core:void", new TerrainGeneratorFactory() {
+      @Override
+      public TerrainGenerator getTerrainGenerator(SaveOptions saveOptions) {
+        return new VoidTerrainGenerator();
+      }
+    });
   }
 
   public static void register(String str, TerrainGeneratorFactory generator) {
@@ -52,7 +58,7 @@ public class GeneratorManager {
     return strings.toArray(new String[strings.size()]);
   }
 
-  public static interface TerrainGeneratorFactory {
-    public TerrainGenerator getTerrainGenerator(SaveOptions saveOptions);
+  public interface TerrainGeneratorFactory {
+    TerrainGenerator getTerrainGenerator(SaveOptions saveOptions);
   }
 }
