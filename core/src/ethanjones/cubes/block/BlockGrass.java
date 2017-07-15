@@ -3,6 +3,7 @@ package ethanjones.cubes.block;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.core.util.Lock;
 import ethanjones.cubes.graphics.world.BlockTextureHandler;
+import ethanjones.cubes.item.ItemStack;
 import ethanjones.cubes.item.ItemTool.ToolType;
 import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.storage.Area;
@@ -24,7 +25,12 @@ public class BlockGrass extends Block {
     handler.setSide(BlockFace.negY, "core:dirt");
     textureHandlers = new BlockTextureHandler[]{handler};
   }
-
+  
+  @Override
+  public ItemStack[] drops(World world, int x, int y, int z, int meta) {
+    return new ItemStack[]{new ItemStack(Blocks.dirt.getItemBlock(), 1, 0)};
+  }
+  
   @Override
   public int randomTick(World world, Area area, int x, int y, int z, int meta) {
     if (y < area.maxY) {
