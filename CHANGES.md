@@ -3,6 +3,10 @@
 - Leaves now decay and drop saplings, which grow into trees
 - Save entities
 - Splash screen on startup
+- Keybind to show area boundaries
+- Create temporary worlds which are not saved by holding shift & clicking singleplayer
+- New system for lua mods to access java
+- Android: automatically compile jar mods to dex on device
 
 ### 0.0.4
 - World saves
