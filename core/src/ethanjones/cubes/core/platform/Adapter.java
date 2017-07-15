@@ -37,6 +37,12 @@ public class Adapter {
 
   public static void dispose() {
     Log.debug("Disposing adapter");
+    Gdx.app.postRunnable(new Runnable() {
+      @Override
+      public void run() {
+        Gdx.app.exit();
+      }
+    });
     final Menu menu = adapter.getMenu();
     try {
       if (menu != null) {
@@ -47,19 +53,13 @@ public class Adapter {
       Debug.crash(e);
     }
     stop();
+    stopBackground();
   }
 
   private static void stop() {
     final CubesClient cubesClient = adapter.getClient();
     final CubesServer cubesServer = adapter.getServer();
     final Thread currentThread = Thread.currentThread();
-  
-    Gdx.app.postRunnable(new Runnable() {
-      @Override
-      public void run() {
-        Gdx.app.exit();
-      }
-    });
 
     if (!isDedicatedServer()) {
       if (Adapter.getInterface().getThread() == currentThread) {
@@ -69,7 +69,6 @@ public class Adapter {
       } else {
         stopFromOtherThread(cubesClient, cubesServer);
       }
-      stopBackground();
       throw new StopLoopException();
     } else {
       if (Adapter.getInterface().getThread() == currentThread) {
@@ -77,7 +76,6 @@ public class Adapter {
       } else {
         stopFromOtherThread(cubesClient, cubesServer);
       }
-      stopBackground();
     }
   }
 
