@@ -3,12 +3,13 @@ package ethanjones.cubes.core.mod;
 import com.badlogic.gdx.files.FileHandle;
 
 public interface ModLoader {
-
+  
   enum ModType {
     jar, dex
   }
 
-  public ModType getType();
+  // in order of preference
+  ModType[] getTypes();
 
-  public Class<?> loadClass(FileHandle file, String className) throws Exception;
+  Class<?> loadClass(FileHandle file, String className, ModType modType) throws Exception;
 }

@@ -28,6 +28,7 @@ public class ModManager {
   public synchronized static void init() {
     if (init) return;
     init = true;
+    
     Log.debug("Loading mods");
     ArrayList<ModInstance> mods = new ArrayList<ModInstance>();
     ModLoader modLoader = Compatibility.get().getModLoader();
@@ -35,10 +36,24 @@ public class ModManager {
     temp.deleteDirectory();
     temp.mkdirs();
     Compatibility.get().nomedia(temp);
+  
+    ModType[] types = modLoader.getTypes();
+    int loadJar = -1;
+    int loadDex = -1;
+    for (int i = 0; i < types.length; i++) {
+      if (types[i] == ModType.jar) {
+        loadJar = i;
+      } else if (types[i] == ModType.dex) {
+        loadDex = i;
+      }
+    }
+    
     for (FileHandle fileHandle : getModFiles()) {
       FileHandle classFile = null;
       String className = null;
       String name = "";
+      int selectedPriority = -1;
+      ModType selectedModType = null;
       Map<String, FileHandle> jsonFiles = new HashMap<String, FileHandle>();
       Map<String, FileHandle> luaFiles = new HashMap<String, FileHandle>();
       FileHandle modAssets = Assets.assetsFolder.child(fileHandle.name());
@@ -52,14 +67,18 @@ public class ModManager {
             String entryName = entry.getName();
             FileHandle f = temp.child(fileHandle.name()).child(entry.getName());
             if (entryName.equals("mod.jar")) {
-              if (modLoader.getType() == ModType.jar) {
+              if (loadJar != -1 && (selectedPriority == -1 || loadJar < selectedPriority)) {
                 writeToFile(f, zipInputStream);
                 classFile = f;
+                selectedPriority = loadJar;
+                selectedModType = ModType.jar;
               }
             } else if (entryName.equals("mod.dex")) {
-              if (modLoader.getType() == ModType.dex) {
+              if (loadDex != -1 && (selectedPriority == -1 || loadDex < selectedPriority)) {
                 writeToFile(f, zipInputStream);
                 classFile = f;
+                selectedPriority = loadDex;
+                selectedModType = ModType.jar;
               }
             } else if (entryName.equals("mod.properties")) {
               Properties properties = new Properties();
@@ -87,18 +106,21 @@ public class ModManager {
             continue;
           }
           if (classFile == null) {
-            Log.error("Mod " + fileHandle.name() + " does not contain a " + modLoader.getType());
+            Log.error("Mod " + fileHandle.name() + " does not contain any of " + Arrays.deepToString(modLoader.getTypes()));
             continue;
           }
         } else {
           if (className == null && classFile != null) {
             Log.error("Mod " + fileHandle.name() + " does not contain a \"mod.properties\" with a \"className\"");
-          } else if (className != null && classFile == null) {
-            Log.error("Mod " + fileHandle.name() + " does not contain a " + modLoader.getType());
+            continue;
+          } else if (classFile == null) {
+            Log.error("Mod " + fileHandle.name() + " does not contain any of " + Arrays.deepToString(modLoader.getTypes()));
+            continue;
           }
         }
       } catch (Exception e) {
         Log.error("Failed to load mod: " + name, e);
+        continue;
       } finally {
         if (inputStream != null) {
           try {
@@ -136,8 +158,8 @@ public class ModManager {
           Log.info("Loaded Lua mod " + name);
         }
         if (className != null) {
-          Log.info("Trying to load Java mod " + name);
-          Class<?> c = modLoader.loadClass(classFile, className);
+          Log.info("Trying to load Java mod " + name + " [" + selectedModType + "]");
+          Class<?> c = modLoader.loadClass(classFile, className, selectedModType);
           Log.debug("Creating instance of Java mod " + name);
           Object mod = c.newInstance();
           Log.debug("Initialising JavaModInstance");

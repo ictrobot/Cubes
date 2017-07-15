@@ -9,6 +9,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 public class DesktopModLoader implements ModLoader {
+  private static final ModType[] TYPES = new ModType[]{ModType.jar};
 
   public static class ExternalJarLoader extends URLClassLoader {
 
@@ -19,12 +20,16 @@ public class DesktopModLoader implements ModLoader {
   }
 
   @Override
-  public ModType getType() {
-    return ModType.jar;
+  public ModType[] getTypes() {
+    return TYPES;
   }
 
   @Override
-  public Class<?> loadClass(FileHandle classFile, String className) throws Exception {
-    return new ExternalJarLoader(classFile).loadClass(className);
+  public Class<?> loadClass(FileHandle classFile, String className, ModType modType) throws Exception {
+    if (modType == ModType.jar) {
+      return new ExternalJarLoader(classFile).loadClass(className);
+    } else {
+      throw new IllegalStateException(String.valueOf(modType));
+    }
   }
 }
