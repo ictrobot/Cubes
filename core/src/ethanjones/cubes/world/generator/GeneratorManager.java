@@ -48,6 +48,10 @@ public class GeneratorManager {
     if (factory == null) throw new IllegalStateException("No such generator " + saveOptions.worldType);
     return factory.getTerrainGenerator(saveOptions);
   }
+  
+  public static boolean terrainGeneratorExists(String id) {
+    return generators.containsKey(id);
+  }
 
   public static String getName(String id) {
     return Localization.get("terrain." + id.replaceFirst(":", "."));

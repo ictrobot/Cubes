@@ -5,6 +5,7 @@ import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menu.MenuTools;
 import ethanjones.cubes.world.client.ClientSaveManager;
+import ethanjones.cubes.world.generator.GeneratorManager;
 import ethanjones.cubes.world.save.Save;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -81,7 +82,11 @@ public class SingleplayerSavesMenu extends Menu {
       public void changed(ChangeEvent event, Actor actor) {
         Save save = listLabel.getSelected();
         if (save == null) return;
-        Adapter.setMenu(new SingleplayerLoadingMenu(save));
+        if (GeneratorManager.terrainGeneratorExists(save.getSaveOptions().worldType)) {
+          Adapter.setMenu(new SingleplayerLoadingMenu(save));
+        } else {
+          Adapter.setMenu(new InfoMenu("Terrain generator '" + save.getSaveOptions().worldType + "' does not exist", true));
+        }
       }
     });
 
