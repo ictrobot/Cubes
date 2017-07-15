@@ -1,5 +1,17 @@
 events = require("SampleLua|events")
 
+-- java access demo
+blockClass = import("ethanjones.cubes.block.Block")
+print(blockClass)
+customBlockClass = extend(blockClass, require("SampleLua|customBlock"))
+print(customBlockClass)
+blockInstance = customBlockClass("SampleLua:sample")
+print(blockInstance)
+print(blockInstance:getLightLevel(0))
+print(blockInstance:renderType(0))
+_.ethanjones.cubes.core.id.IDManager.class.register(blockInstance)
+
+
 -- vector demo
 local a = vector(10.4, 20.5, 30.6)
 local b = vector(1, 2, 3)
