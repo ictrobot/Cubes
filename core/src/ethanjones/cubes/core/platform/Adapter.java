@@ -2,6 +2,7 @@ package ethanjones.cubes.core.platform;
 
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.Debug;
+import ethanjones.cubes.core.system.Executor;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menus.MainMenu;
 import ethanjones.cubes.graphics.menus.RunnableMenu;
@@ -9,6 +10,9 @@ import ethanjones.cubes.input.InputChain;
 import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.side.server.CubesServer;
+import ethanjones.cubes.world.thread.WorldTasks;
+
+import com.badlogic.gdx.Gdx;
 
 public class Adapter {
 
@@ -49,6 +53,13 @@ public class Adapter {
     final CubesClient cubesClient = adapter.getClient();
     final CubesServer cubesServer = adapter.getServer();
     final Thread currentThread = Thread.currentThread();
+  
+    Gdx.app.postRunnable(new Runnable() {
+      @Override
+      public void run() {
+        Gdx.app.exit();
+      }
+    });
 
     if (!isDedicatedServer()) {
       if (Adapter.getInterface().getThread() == currentThread) {
@@ -58,6 +69,7 @@ public class Adapter {
       } else {
         stopFromOtherThread(cubesClient, cubesServer);
       }
+      stopBackground();
       throw new StopLoopException();
     } else {
       if (Adapter.getInterface().getThread() == currentThread) {
@@ -65,6 +77,7 @@ public class Adapter {
       } else {
         stopFromOtherThread(cubesClient, cubesServer);
       }
+      stopBackground();
     }
   }
 
@@ -152,6 +165,14 @@ public class Adapter {
 //      }
     } catch (Exception e) {
       Debug.crash(e);
+    }
+  }
+  
+  private static void stopBackground() {
+    try {
+      Executor.stop();
+      WorldTasks.dispose();
+    } catch (Exception ignored) {
     }
   }
 

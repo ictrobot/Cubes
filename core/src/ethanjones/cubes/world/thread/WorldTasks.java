@@ -107,4 +107,10 @@ public class WorldTasks {
     }
     return 0;
   }
+  
+  public static void dispose() {
+    genThreadPool.stop(false);
+    waitSaveFinish();
+    saveThreadPool.stop(false);
+  }
 }

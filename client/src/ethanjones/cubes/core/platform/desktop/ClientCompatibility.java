@@ -1,12 +1,17 @@
 package ethanjones.cubes.core.platform.desktop;
 
+import ethanjones.cubes.core.logging.loggers.FileLogWriter;
 import ethanjones.cubes.core.settings.Keybinds;
+import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.side.common.Side;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -83,5 +88,40 @@ public class ClientCompatibility extends DesktopCompatibility {
     if (displayModes.length == 0) return false;
     Arrays.sort(displayModes, displayModeComparator);
     return Gdx.graphics.setFullscreenMode(displayModes[0]);
+  }
+  
+  @Override
+  public boolean handleCrash(Throwable throwable) {
+    if (Branding.IS_DEBUG) return false; // don't open if in debug
+    return ClientCrashHandler.handle(getLog(FileLogWriter.file.getAbsolutePath()));
+  }
+  
+  private static String getLog(String file) {
+    StringBuilder output = new StringBuilder();
+    FileInputStream stream = null;
+    InputStreamReader reader = null;
+    try {
+      stream = new FileInputStream(file);
+      reader = new InputStreamReader(stream);
+      char[] buffer = new char[512];
+      
+      while (true) {
+        int length = reader.read(buffer);
+        if (length == -1) break;
+        output.append(buffer, 0, length);
+      }
+    } catch (IOException ex) {
+      throw new RuntimeException(ex);
+    } finally {
+      try {
+        if (stream != null) stream.close();
+      } catch (IOException ignored) {
+      }
+      try {
+        if (reader != null) reader.close();
+      } catch (IOException ignored) {
+      }
+    }
+    return output.toString();
   }
 }

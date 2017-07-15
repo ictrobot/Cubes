@@ -81,7 +81,11 @@ public class Debug {
         Adapter.dispose();
       } catch (Exception e) {
       }
-      if (Compatibility.get().handleCrash(throwable)) {
+      try {
+        if (Compatibility.get().handleCrash(throwable)) {
+          errorExit();
+        }
+      } catch (Exception e) {
         errorExit();
       }
     }
@@ -124,7 +128,12 @@ public class Debug {
   }
 
   protected static void errorExit() {
-    System.out.flush();
+    if (System.out != null) {
+      try {
+        System.out.flush();
+      } catch (Exception ignored) {
+      }
+    }
     System.exit(1);
   }
 

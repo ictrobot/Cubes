@@ -55,8 +55,12 @@ public class ThreadPool {
     }
     return this;
   }
-
+  
   public ThreadPool stop() {
+    return stop(true);
+  }
+
+  public ThreadPool stop(boolean safe) {
     for (Thread thread : threads) {
       if (thread.isAlive()) {
         thread.interrupt();
@@ -67,7 +71,7 @@ public class ThreadPool {
         try {
           thread.join();
         } catch (InterruptedException e) {
-          Debug.crash(e);
+          if (safe) Debug.crash(e);
         }
       }
     }
