@@ -6,7 +6,13 @@ import ethanjones.cubes.world.server.WorldServer;
 import ethanjones.cubes.world.storage.Area;
 
 public class BasicTerrainGenerator extends TerrainGenerator {
-
+  
+  boolean old;
+  
+  public BasicTerrainGenerator(String seed) {
+    this.old = "old".equals(seed);
+  }
+  
   @Override
   public void generate(Area area) {
     for (int x = 0; x < Area.SIZE_BLOCKS; x++) {
@@ -18,7 +24,7 @@ public class BasicTerrainGenerator extends TerrainGenerator {
         set(area, Blocks.grass, x, 4, z, 0);
       }
     }
-    if (area.areaX == 0 && area.areaZ == 0) {
+    if (area.areaX == 0 && area.areaZ == 0 && old) {
       set(area, Blocks.bedrock, 1, 4, 1, 0);
       set(area, Blocks.bedrock, 1, 7, 1, 0);
       set(area, Blocks.stone, 5, 5, 3, 0);

@@ -20,7 +20,7 @@ public class GeneratorManager {
     generators.put("core:basic", new TerrainGeneratorFactory() {
       @Override
       public TerrainGenerator getTerrainGenerator(SaveOptions saveOptions) {
-        return new BasicTerrainGenerator();
+        return new BasicTerrainGenerator(saveOptions.worldSeedString);
       }
     });
     generators.put("core:test", new TerrainGeneratorFactory() {
