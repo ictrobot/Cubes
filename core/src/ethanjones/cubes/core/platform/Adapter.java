@@ -110,15 +110,15 @@ public class Adapter {
       if (cubesServer != null) {
         cubesServer.dispose();
       }
-      if (cubesClient != null) {
-        try {
-          cubesClient.getThread().join(JOIN_TIMEOUT);
-        } catch (InterruptedException e) {
-        }
-        if (cubesClient.getThread().isAlive()) {
-          failedToStopThread(cubesClient.getThread());
-        }
-      }
+//      if (cubesClient != null) {
+//        try {
+//          cubesClient.getThread().join(JOIN_TIMEOUT);
+//        } catch (InterruptedException e) {
+//        }
+//        if (cubesClient.getThread().isAlive()) {
+//          failedToStopThread(cubesClient.getThread());
+//        }
+//      }
     } catch (Exception e) {
       Debug.crash(e);
     }
@@ -132,24 +132,24 @@ public class Adapter {
       if (cubesServer != null) {
         cubesServer.dispose();
       }
-      if (cubesClient != null) {
-        try {
-          cubesClient.getThread().join(JOIN_TIMEOUT);
-        } catch (InterruptedException e) {
-        }
-        if (cubesClient.getThread().isAlive()) {
-          failedToStopThread(cubesClient.getThread());
-        }
-      }
-      if (cubesServer != null) {
-        try {
-          cubesServer.getThread().join(JOIN_TIMEOUT);
-        } catch (InterruptedException e) {
-        }
-        if (cubesServer.getThread().isAlive()) {
-          failedToStopThread(cubesServer.getThread());
-        }
-      }
+//      if (cubesClient != null) {
+//        try {
+//          cubesClient.getThread().join(JOIN_TIMEOUT);
+//        } catch (InterruptedException e) {
+//        }
+//        if (cubesClient.getThread().isAlive()) {
+//          failedToStopThread(cubesClient.getThread());
+//        }
+//      }
+//      if (cubesServer != null) {
+//        try {
+//          cubesServer.getThread().join(JOIN_TIMEOUT);
+//        } catch (InterruptedException e) {
+//        }
+//        if (cubesServer.getThread().isAlive()) {
+//          failedToStopThread(cubesServer.getThread());
+//        }
+//      }
     } catch (Exception e) {
       Debug.crash(e);
     }

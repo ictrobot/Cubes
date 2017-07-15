@@ -58,17 +58,13 @@ public class Debug {
   }
 
   public static void crash(Throwable throwable) {
+    boolean doAdapterDispose = false;
+    
     synchronized (Debug.class) {
       if (crashed.getAndIncrement() == 0) {
         //Primary Crash
         logCrash(throwable);
-        try {
-          Adapter.dispose();
-        } catch (Exception e) {
-        }
-        if (Compatibility.get().handleCrash(throwable)) {
-          errorExit();
-        }
+        doAdapterDispose = true;
       } else {
         //Secondary Crash
         if (crashed.get() > 10) {
@@ -77,6 +73,16 @@ public class Debug {
         } else {
           logCrash(throwable);
         }
+      }
+    }
+    
+    if (doAdapterDispose) {
+      try {
+        Adapter.dispose();
+      } catch (Exception e) {
+      }
+      if (Compatibility.get().handleCrash(throwable)) {
+        errorExit();
       }
     }
   }
