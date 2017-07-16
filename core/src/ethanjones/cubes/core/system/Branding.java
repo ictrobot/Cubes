@@ -26,6 +26,8 @@ public class Branding {
 
   public final static boolean IS_DEBUG;
   public final static String DEBUG;
+  
+  public final static boolean IS_RELEASE;
 
   static {
     try {
@@ -59,6 +61,7 @@ public class Branding {
           if (buildProperties.getProperty("build") != null) {
             properties.setProperty("build", buildProperties.getProperty("build"));
             properties.setProperty("hash", buildProperties.getProperty("hash"));
+            properties.setProperty("isRelease", buildProperties.getProperty("isRelease"));
           }
         } catch (IOException ex) {
           Log.error("Failed to load build", ex);
@@ -78,6 +81,7 @@ public class Branding {
       VERSION_POINT = Integer.parseInt(properties.getProperty("point"));
       VERSION_BUILD = properties.getProperty("build") != null ? Integer.parseInt(properties.getProperty("build")) : -1;
       VERSION_HASH = properties.getProperty("hash") != null ? properties.getProperty("hash") : "";
+      IS_RELEASE = properties.getProperty("isRelease") != null ? Boolean.valueOf(properties.getProperty("isRelease")) : false;
 
       if (VERSION_BUILD == -1) {
         VERSION_FULL = VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_POINT;
@@ -87,7 +91,11 @@ public class Branding {
       } else {
         VERSION_FULL = VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_POINT + "." + VERSION_BUILD;
         VERSION_MAJOR_MINOR_POINT = VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_POINT;
-        VERSION = VERSION_FULL;
+        if (IS_RELEASE) {
+          VERSION = VERSION_FULL;
+        } else {
+          VERSION = VERSION_FULL + "-dev";
+        }
         IS_DEBUG = false;
       }
 

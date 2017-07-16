@@ -26,7 +26,6 @@ ext {
     if (hasGit()) {
         build = shell("git rev-list HEAD --count").text.trim()
         hash = shell("git rev-parse HEAD").text.trim()
-        file("assets/build").write("build=" + build + System.getProperty("line.separator") + "hash=" + hash, 'UTF-8')
         println "BUILD:   " + build
         println "HASH:    " + hash
     } else {
@@ -49,6 +48,16 @@ ext {
     if (localProperties.MAVEN_REPO_PASSWORD == null) localProperties.MAVEN_REPO_PASSWORD = ""
     if (localProperties.SONAR_HOST_URL == null) localProperties.SONAR_HOST_URL = "https://sonarqube.com"
     if (localProperties.SONAR_LOGIN == null) localProperties.SONAR_LOGIN = "abcdef0123456789"
+}
+
+afterEvaluate {
+    if (hash != "") {
+        file("assets/build").write("build=" + ext.build + "\nhash=" + ext.hash + "\nisRelease=" + isRelease, 'UTF-8')
+    }
+}
+
+project.getGradle().buildFinished {
+    file("assets/build").delete()
 }
 
 allprojects {

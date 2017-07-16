@@ -108,6 +108,7 @@ public class ClientAdapter implements AdapterInterface {
     Graphics.resize();
     splashMenu.resize(Graphics.GUI_WIDTH, Graphics.GUI_HEIGHT);
     splashMenu.render();
+    Log.debug("Splash screen rendered");
     
     return true;
   }
