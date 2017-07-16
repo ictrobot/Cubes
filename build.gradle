@@ -8,7 +8,7 @@ buildscript {
     }
 }
 plugins {
-    id "org.sonarqube" version "2.5"
+    //id "org.sonarqube" version "2.5"
 }
 
 
@@ -87,12 +87,12 @@ allprojects {
         maven { url "http://ethanjones.me/maven/releases/" }
     }
 
-    sonarqube {
-        properties {
-            property "sonar.host.url", localProperties.SONAR_HOST_URL
-            property "sonar.login", localProperties.SONAR_LOGIN
-        }
-    }
+//    sonarqube {
+//        properties {
+//            property "sonar.host.url", localProperties.SONAR_HOST_URL
+//            property "sonar.login", localProperties.SONAR_LOGIN
+//        }
+//    }
 }
 
 project(":core") {
@@ -162,7 +162,7 @@ tasks.eclipse.doLast {
     delete ".project"
 }
 
-task travis(dependsOn: ['core:publish', 'server:publish', 'client:publish', 'android:publish', 'sonarqube']) {
+task travis(dependsOn: ['core:publish', 'server:publish', 'client:publish', 'android:publish']) { // , 'sonarqube'
 
 }
 
