@@ -1,13 +1,7 @@
-buildscript {
-    repositories {
-        maven {
-            url 'https://plugins.gradle.org/m2/'
-        }
-    }
-    dependencies {
-        classpath 'gradle.plugin.edu.sc.seis.gradle:launch4j:1.6.1'
-    }
+plugins {
+    id 'edu.sc.seis.launch4j' version '2.3.0'
 }
+
 apply plugin: "java"
 apply plugin: 'edu.sc.seis.launch4j'
 
@@ -74,7 +68,7 @@ launch4j {
     copyConfigurable = project.tasks.distWin.outputs.files
     jar = new File(project.buildDir, "/libs/client-win.jar")
 }
-copyL4jLib.dependsOn distWin
+createExe.dependsOn distWin
 
 eclipse {
     project {
@@ -117,4 +111,4 @@ publishing {
     }
 }
 
-publish.dependsOn(['dist', 'launch4j'])
+publish.dependsOn(['dist', 'createExe'])

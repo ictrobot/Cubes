@@ -1,15 +1,14 @@
 buildscript {
     repositories {
         jcenter()
-        maven { url 'https://jitpack.io' }
+        maven { url 'https://maven.google.com' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.3'
-        classpath 'com.github.rusmonster:sdk-manager-plugin:a35a7b1c2a41a8945fbd69c6187285bd6927a63f'
+        classpath 'com.android.tools.build:gradle:3.0.0-alpha5'
     }
 }
 plugins {
-    id "org.sonarqube" version "2.2"
+    id "org.sonarqube" version "2.5"
 }
 
 
@@ -69,7 +68,7 @@ allprojects {
     ext {
         appName = 'Cubes'
         gdxVersion = '1.9.6'
-        androidBuildToolsVersion = '23.0.3'
+        androidBuildToolsVersion = '25.0.3'
         androidSdkVersion = 21
         dataVersion = '2.2'
         byteBuddyVersion = '1.6.13'
@@ -142,7 +141,6 @@ project(":server") {
 }
 
 project(":android") {
-    apply plugin: "android-sdk-manager"
     apply plugin: "android"
     apply plugin: "maven-publish"
 
