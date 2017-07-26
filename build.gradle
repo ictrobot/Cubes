@@ -60,9 +60,6 @@ project.getGradle().buildFinished {
 }
 
 allprojects {
-    apply plugin: "eclipse"
-    apply plugin: "idea"
-
     version = System.getenv("BUILD_NUMBER")
 
     ext {
@@ -158,12 +155,20 @@ project(":android") {
         compile "net.bytebuddy:byte-buddy-android:$byteBuddyVersion"
     }
 }
-tasks.eclipse.doLast {
-    delete ".project"
-}
 
 task travis(dependsOn: ['core:publish', 'server:publish', 'client:publish', 'android:publish']) { // , 'sonarqube'
 
+}
+
+task deleteProject(type: Delete, dependsOn: getTasksByName("clean", true)) {
+	delete fileTree(dir: project.rootDir, include: '**/*.iml')
+	delete fileTree(dir: project.rootDir, include: '**/*.project')
+	delete fileTree(dir: project.rootDir, include: '**/*.classpath')
+	
+	allprojects.each { p ->
+		new File(p.projectDir, '.idea/').deleteDir()
+		new File(p.projectDir, '.settings/').deleteDir()
+	}
 }
 
 String getMavenVersionString() {
