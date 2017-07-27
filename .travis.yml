@@ -27,3 +27,4 @@ before_install:
 - android/travis_androidsdk.sh
 install: true
 script: ./gradlew travis
+after_failure: find
