@@ -1,13 +1,8 @@
-apply plugin: "java"
-
-sourceCompatibility = 1.7
-sourceSets.main.java.srcDirs = ["src/"]
-
 project.ext.mainClassName = "ethanjones.cubes.core.platform.desktop.ServerLauncher"
 project.ext.assetsDir = new File("../assets")
 
 task dist(dependsOn: classes, type: Jar) {
-    from files(sourceSets.main.output.classesDir)
+    from files(sourceSets.main.java.outputDir)
     from files(sourceSets.main.output.resourcesDir)
     from { configurations.compile.collect { zipTree(it) } }
     from files(project.assetsDir)
@@ -21,15 +16,17 @@ task dist(dependsOn: classes, type: Jar) {
     }
 }
 
-task run() << { //DOES NOT BUILD AUTOMATICALLY
-    file(project.buildDir.absolutePath + "/run").mkdirs()
-    javaexec {
-        main = "-jar"
-        args dist.archivePath
-        workingDir = project.buildDir.absolutePath + "/run"
-        ignoreExitValue = true
-        maxHeapSize = "2G"
-    }
+task run() {
+	doLast { //DOES NOT BUILD AUTOMATICALLY
+		file(project.buildDir.absolutePath + "/run").mkdirs()
+		javaexec {
+			main = "-jar"
+			args dist.archivePath
+			workingDir = project.buildDir.absolutePath + "/run"
+			ignoreExitValue = true
+			maxHeapSize = "2G"
+		}
+	}
 }
 
 run.mustRunAfter dist

@@ -2,17 +2,13 @@ plugins {
     id 'edu.sc.seis.launch4j' version '2.3.0'
 }
 
-apply plugin: "java"
 apply plugin: 'edu.sc.seis.launch4j'
-
-sourceCompatibility = 1.7
-sourceSets.main.java.srcDirs = ["src/"]
 
 project.ext.mainClassName = "ethanjones.cubes.core.platform.desktop.ClientLauncher"
 project.ext.assetsDir = new File("../assets")
 
 task dist(dependsOn: classes, type: Jar) {
-    from files(sourceSets.main.output.classesDir)
+    from files(sourceSets.main.java.outputDir)
     from files(sourceSets.main.output.resourcesDir)
     from { configurations.compile.collect { zipTree(it) } }
     from files(project.assetsDir)
@@ -27,7 +23,7 @@ task dist(dependsOn: classes, type: Jar) {
 }
 
 task distWin(dependsOn: classes, type: Jar) {
-    from files(sourceSets.main.output.classesDir)
+    from files(sourceSets.main.java.outputDir)
     from files(sourceSets.main.output.resourcesDir)
     from { configurations.compile.collect { zipTree(it) } }
     from files(project.assetsDir)
@@ -41,15 +37,17 @@ task distWin(dependsOn: classes, type: Jar) {
     }
 }
 
-task run() << { //DOES NOT BUILD AUTOMATICALLY
-    file(project.buildDir.absolutePath + "/run").mkdirs()
-    javaexec {
-        main = "-jar"
-        args dist.archivePath
-        workingDir = project.buildDir.absolutePath + "/run"
-        maxHeapSize = "2G"
-        ignoreExitValue = true
-    }
+task run() {
+	doLast { //DOES NOT BUILD AUTOMATICALLY
+		file(project.buildDir.absolutePath + "/run").mkdirs()
+		javaexec {
+			main = "-jar"
+			args dist.archivePath
+			workingDir = project.buildDir.absolutePath + "/run"
+			maxHeapSize = "2G"
+			ignoreExitValue = true
+		}
+	}
 }
 
 run.mustRunAfter dist
