@@ -1,6 +1,7 @@
 package ethanjones.cubes.core.mod;
 
 import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.mod.ModInputStream.ModFile;
 import ethanjones.cubes.core.mod.ModLoader.ModType;
 import ethanjones.cubes.core.mod.event.ModEvent;
 import ethanjones.cubes.core.mod.java.JavaModInstance;
@@ -13,11 +14,10 @@ import ethanjones.cubes.graphics.assets.AssetManager;
 import ethanjones.cubes.graphics.assets.Assets;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.StreamUtils;
 
 import java.io.*;
 import java.util.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 public class ModManager {
 
@@ -57,43 +57,48 @@ public class ModManager {
       Map<String, FileHandle> jsonFiles = new HashMap<String, FileHandle>();
       Map<String, FileHandle> luaFiles = new HashMap<String, FileHandle>();
       FileHandle modAssets = Assets.assetsFolder.child(fileHandle.name());
-      InputStream inputStream = null;
+      
+      ModInputStream mis = null;
       try {
-        inputStream = new FileInputStream(fileHandle.file());
-        ZipInputStream zipInputStream = new ZipInputStream(inputStream);
-        ZipEntry entry;
-        while ((entry = zipInputStream.getNextEntry()) != null) {
-          if (!entry.isDirectory()) {
-            String entryName = entry.getName();
-            FileHandle f = temp.child(fileHandle.name()).child(entry.getName());
-            if (entryName.equals("mod.jar")) {
-              if (loadJar != -1 && (selectedPriority == -1 || loadJar < selectedPriority)) {
-                writeToFile(f, zipInputStream);
-                classFile = f;
-                selectedPriority = loadJar;
-                selectedModType = ModType.jar;
-              }
-            } else if (entryName.equals("mod.dex")) {
-              if (loadDex != -1 && (selectedPriority == -1 || loadDex < selectedPriority)) {
-                writeToFile(f, zipInputStream);
-                classFile = f;
-                selectedPriority = loadDex;
-                selectedModType = ModType.jar;
-              }
-            } else if (entryName.equals("mod.properties")) {
-              Properties properties = new Properties();
-              properties.load(zipInputStream);
-              className = properties.getProperty("modClass");
-              name = properties.getProperty("modName");
-            } else if (entryName.startsWith("assets/")) {
-              writeToFile(modAssets.child(entry.getName().substring(7)), zipInputStream);
-            } else if (entryName.startsWith("json/") && entryName.endsWith(".json")) {
-              writeToFile(f, zipInputStream);
-              jsonFiles.put(entryName.substring(5), f);
-            } else if (entryName.startsWith("lua/") && entryName.endsWith(".lua")) {
-              writeToFile(f, zipInputStream);
-              luaFiles.put(entryName.substring(4), f);
+        mis = ModInputStream.get(fileHandle);
+        ModFile modFile;
+        while ((modFile = mis.getNextModFile()) != null) {
+          if (modFile.isFolder()) continue;
+          String modFileName = modFile.getName();
+          FileHandle f = temp.child(fileHandle.name()).child(modFileName);
+          if (modFileName.equals("mod.jar")) {
+            if (loadJar != -1 && (selectedPriority == -1 || loadJar < selectedPriority)) {
+              writeToFile(f, modFile);
+              classFile = f;
+              selectedPriority = loadJar;
+              selectedModType = ModType.jar;
             }
+          } else if (modFileName.equals("mod.dex")) {
+            if (loadDex != -1 && (selectedPriority == -1 || loadDex < selectedPriority)) {
+              writeToFile(f, modFile);
+              classFile = f;
+              selectedPriority = loadDex;
+              selectedModType = ModType.jar;
+            }
+          } else if (modFileName.equals("mod.properties")) {
+            Properties properties = new Properties();
+            InputStream propertiesStream = null;
+            try {
+              propertiesStream = modFile.getInputStream();
+              properties.load(propertiesStream);
+            } finally {
+              StreamUtils.closeQuietly(propertiesStream);
+            }
+            className = properties.getProperty("modClass");
+            name = properties.getProperty("modName");
+          } else if (modFileName.startsWith("assets/")) {
+            writeToFile(modAssets.child(modFileName.substring(7)), modFile);
+          } else if (modFileName.startsWith("json/") && modFileName.endsWith(".json")) {
+            writeToFile(f, modFile);
+            jsonFiles.put(modFileName.substring(5), f);
+          } else if (modFileName.startsWith("lua/") && modFileName.endsWith(".lua")) {
+            writeToFile(f, modFile);
+            luaFiles.put(modFileName.substring(4), f);
           }
         }
         if (name == null) {
@@ -122,13 +127,7 @@ public class ModManager {
         Log.error("Failed to load mod: " + name, e);
         continue;
       } finally {
-        if (inputStream != null) {
-          try {
-            inputStream.close();
-          } catch (Exception ignored) {
-      
-          }
-        }
+        StreamUtils.closeQuietly(mis);
       }
       try {
         Log.debug("Mod file: \"" + fileHandle.name() + "\" Name: \"" + name + "\"");
@@ -189,24 +188,23 @@ public class ModManager {
     });
   }
 
-  private static void writeToFile(FileHandle file, ZipInputStream zipInputStream) throws Exception {
+  private static void writeToFile(FileHandle file, ModFile modFile) throws Exception {
+    InputStream inputStream = null;
     FileOutputStream fileOutputStream = null;
     try {
+      inputStream = modFile.getInputStream();
+      
       file.parent().mkdirs();
       Compatibility.get().nomedia(file.parent());
       file.file().createNewFile();
+      
       fileOutputStream = new FileOutputStream(file.file());
-      int len = 0;
-      byte[] buffer = new byte[2048];
-      while ((len = zipInputStream.read(buffer)) > 0) {
-        fileOutputStream.write(buffer, 0, len);
-      }
+      StreamUtils.copyStream(inputStream, fileOutputStream);
     } catch (Exception e) {
       throw e;
     } finally {
-      if (fileOutputStream != null) {
-        fileOutputStream.close();
-      }
+      StreamUtils.closeQuietly(inputStream);
+      StreamUtils.closeQuietly(fileOutputStream);
     }
   }
 
