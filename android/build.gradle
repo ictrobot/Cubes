@@ -85,3 +85,4 @@ publishing {
 }
 
 publish.dependsOn(['assembleDebug'])
+publish.mustRunAfter(['assembleDebug'])

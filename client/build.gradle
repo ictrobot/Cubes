@@ -92,3 +92,4 @@ publishing {
 }
 
 publish.dependsOn(['dist', 'createExe'])
+publish.mustRunAfter(['dist', 'createExe'])
