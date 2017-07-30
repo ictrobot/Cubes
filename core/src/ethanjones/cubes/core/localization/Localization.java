@@ -76,6 +76,18 @@ public class Localization {
     return str;
   }
 
+  public static String getFirstAvailable(String... strings) {
+    for (String str : strings) {
+      if (language != null) {
+        String localised = language.get(str);
+        if (localised != null) return localised;
+      }
+      String defaultLocalised = defaultLanguage.get(str);
+      if (defaultLocalised != null) return defaultLocalised;
+    }
+    return strings[0];
+  }
+
   private static String format(String str, Object[] format) {
     if (format.length == 0) return str;
     return String.format(str, format);

@@ -62,7 +62,7 @@ public class HotbarActor extends Image {
           batch.draw(hotbar, x + (48f * i), y, 48f, 48f);
         }
         if (playerInventory.itemStacks[i] != null) {
-          TextureRegion region = playerInventory.itemStacks[i].item.getTextureRegion();
+          TextureRegion region = playerInventory.itemStacks[i].getTextureRegion();
           batch.draw(region, x + (48f * i) + 8f, y + 8f, 32f, 32f);
           SlotActor.drawText(batch, x + (48f * i) + 8f, y + 8f, playerInventory.itemStacks[i]);
         }

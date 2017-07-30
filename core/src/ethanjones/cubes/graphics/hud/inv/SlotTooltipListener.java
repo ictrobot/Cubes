@@ -70,7 +70,7 @@ public class SlotTooltipListener extends InputListener {
     }
 
     public void setItemStack(ItemStack itemStack) {
-      label.setText(itemStack.item.getName());
+      label.setText(itemStack.getName());
       pack();
     }
   }

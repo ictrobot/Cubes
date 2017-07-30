@@ -48,8 +48,9 @@ public class Block {
     return itemBlock;
   }
 
-  public String getName() {
-    return Localization.get("block." + id.replaceFirst(":", "."));
+  public String getName(int meta) {
+    String s = "block." + id.replaceFirst(":", ".");
+    return Localization.getFirstAvailable(s + "." + meta, s);
   }
 
   public int getLightLevel(int meta) {
