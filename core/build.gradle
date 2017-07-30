@@ -1,7 +1,7 @@
 new File(project.getBuildDir(), '/jar-extra/').mkdirs()
 
 jar {
-	archiveName = "core.jar"
+    archiveName = "core.jar"
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {

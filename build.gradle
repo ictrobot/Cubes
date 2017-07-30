@@ -96,7 +96,7 @@ allprojects {
 
 // Individual subprojects plugins & dependencies
 project(":core") {
-	apply plugin: "java"
+    apply plugin: "java"
     apply plugin: "maven-publish"
 
     dependencies {
@@ -110,7 +110,7 @@ project(":core") {
 }
 
 project(":desktop") {
-	apply plugin: "java"
+    apply plugin: "java"
 
     dependencies {
         compile project(":core")
@@ -120,7 +120,7 @@ project(":desktop") {
 }
 
 project(":client") {
-	apply plugin: "java"
+    apply plugin: "java"
     apply plugin: "maven-publish"
 
     dependencies {
@@ -131,7 +131,7 @@ project(":client") {
 }
 
 project(":server") {
-	apply plugin: "java"
+    apply plugin: "java"
     apply plugin: "maven-publish"
 
     dependencies {
@@ -161,49 +161,50 @@ project(":android") {
 
 // Setup java subprojects
 subprojects {
-	if (project.plugins.hasPlugin('org.gradle.java')) {
-		apply plugin: "idea"
-		
-		sourceCompatibility = 1.7
-		[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-		sourceSets.main.java.srcDirs = ["src/"]
-		
-		compileJava {
-			options.fork = true
-			options.incremental = true
-		}
+    if (project.plugins.hasPlugin('org.gradle.java')) {
+        apply plugin: "idea"
 
-		idea {
-			module {
-				scopes.PROVIDED.minus += [configurations.compile]
-				scopes.COMPILE.plus += [configurations.compile]
-			}
-		}
-	}
+        sourceCompatibility = 1.7
+        [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+        sourceSets.main.java.srcDirs = ["src/"]
+
+        compileJava {
+            options.fork = true
+            options.incremental = true
+        }
+
+        idea {
+            module {
+                scopes.PROVIDED.minus += [configurations.compile]
+                scopes.COMPILE.plus += [configurations.compile]
+            }
+        }
+    }
 }
 
 // Aliases
 task buildAll(dependsOn: ['core:jar', 'core:sourcesJar', 'client:dist', 'client:createExe', 'server:dist', 'android:assembleDebug'], description: "Build everything", group: "Alias") {
-	
+
 }
-
+
+
 task travis(dependsOn: ['core:publish', 'client:publish', 'server:publish', 'android:publish', 'sonarqube'], description: "Task executed on Travis CI", group: "Alias") {
 
 }
 
 // Deletes intellij & eclipse project files
-task deleteProject(type: Delete, description: "Delete intellij & eclipse project files", group: "IDE") {
-	delete fileTree(dir: project.rootDir, include: '**/*.iml')
-	delete fileTree(dir: project.rootDir, include: '**/*.ipr')
-	delete fileTree(dir: project.rootDir, include: '**/*.iws')
-	delete fileTree(dir: project.rootDir, include: '**/*.project')
-	delete fileTree(dir: project.rootDir, include: '**/*.classpath')
-	
-	allprojects.each { p ->
-		new File(p.projectDir, '.idea/').deleteDir()
-		new File(p.projectDir, '.settings/').deleteDir()
-	}
-}
+//task deleteProject(type: Delete, description: "Delete intellij & eclipse project files", group: "IDE") {
+//    delete fileTree(dir: project.rootDir, include: '**/*.iml')
+//    delete fileTree(dir: project.rootDir, include: '**/*.ipr')
+//    delete fileTree(dir: project.rootDir, include: '**/*.iws')
+//    delete fileTree(dir: project.rootDir, include: '**/*.project')
+//    delete fileTree(dir: project.rootDir, include: '**/*.classpath')
+//
+//    allprojects.each { p ->
+//        new File(p.projectDir, '.idea/').deleteDir()
+//        new File(p.projectDir, '.settings/').deleteDir()
+//    }
+//}
 
 // Helper functions
 String getMavenVersionString() {

@@ -17,16 +17,16 @@ task dist(dependsOn: classes, type: Jar) {
 }
 
 task run() {
-	doLast { //DOES NOT BUILD AUTOMATICALLY
-		file(project.buildDir.absolutePath + "/run").mkdirs()
-		javaexec {
-			main = "-jar"
-			args dist.archivePath
-			workingDir = project.buildDir.absolutePath + "/run"
-			ignoreExitValue = true
-			maxHeapSize = "2G"
-		}
-	}
+    doLast { //DOES NOT BUILD AUTOMATICALLY
+        file(project.buildDir.absolutePath + "/run").mkdirs()
+        javaexec {
+            main = "-jar"
+            args dist.archivePath
+            workingDir = project.buildDir.absolutePath + "/run"
+            ignoreExitValue = true
+            maxHeapSize = "2G"
+        }
+    }
 }
 
 run.mustRunAfter dist
