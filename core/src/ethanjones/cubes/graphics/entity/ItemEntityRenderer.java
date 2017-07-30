@@ -91,7 +91,7 @@ public class ItemEntityRenderer implements RenderableProvider, Disposable {
         mesh.setIndices(itemIndices);
         int vertexOffset = 0;
         vertices = new float[CubesVertexAttributes.COMPONENTS * 4 * 2];
-        TextureRegion textureRegion = itemEntity.itemStack.item.getTextureRegion();
+        TextureRegion textureRegion = itemEntity.itemStack.getTextureRegion();
         TextureRegion flip = new TextureRegion(textureRegion);
         flip.flip(true, false);
         vertexOffset = FaceVertices.createMinZ(new Vector3(-0.5f, 0f, 0f), textureRegion, null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);

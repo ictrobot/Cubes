@@ -5,6 +5,8 @@ import ethanjones.cubes.core.logging.Log;
 import ethanjones.data.DataGroup;
 import ethanjones.data.DataParser;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 public class ItemStack implements DataParser {
   public Item item;
   public int count;
@@ -59,5 +61,13 @@ public class ItemStack implements DataParser {
       return null;
     }
     return stack;
+  }
+
+  public TextureRegion getTextureRegion() {
+    return item.getTextureRegion(meta);
+  }
+
+  public String getName() {
+    return item.getName(meta);
   }
 }

@@ -23,12 +23,13 @@ public class Item {
     this.texture = Assets.getBlockItemTextureRegion(id, "item");
   }
 
-  public TextureRegion getTextureRegion() {
+  public TextureRegion getTextureRegion(int meta) {
     return texture;
   }
 
-  public String getName() {
-    return Localization.get("item." + id.replaceFirst(":", "."));
+  public String getName(int meta) {
+    String s = "item." + id.replaceFirst(":", ".");
+    return Localization.getFirstAvailable(s + "." + meta, s);
   }
 
   public boolean onButtonPress(ClickType type, ItemStack itemStack, Player player, int stack) {

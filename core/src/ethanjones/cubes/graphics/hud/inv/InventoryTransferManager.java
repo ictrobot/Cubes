@@ -187,11 +187,11 @@ public class InventoryTransferManager {
       if (itemStack == null) return;
       if (background) {
         batch.draw(b, x, y, width, height);
-        TextureRegion region = itemStack.item.getTextureRegion();
+        TextureRegion region = itemStack.getTextureRegion();
         batch.draw(region, x + 18f, y + 18f, 32f, 32f);
         SlotActor.drawText(batch, x + 18f, y + 18f, itemStack);
       } else {
-        TextureRegion region = itemStack.item.getTextureRegion();
+        TextureRegion region = itemStack.getTextureRegion();
         batch.draw(region, x, y, width, height);
         SlotActor.drawText(batch, x, y, itemStack);
       }

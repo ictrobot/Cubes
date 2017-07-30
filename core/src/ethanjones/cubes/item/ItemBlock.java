@@ -28,17 +28,17 @@ public class ItemBlock extends Item {
   }
   
   @Override
-  public TextureRegion getTextureRegion() { //TODO: meta
-    if (block.renderType(0) == BlockRenderType.DEFAULT) {
-      return BlockIcons.getIcon(block.id, 0);
+  public TextureRegion getTextureRegion(int meta) {
+    if (block.renderType(meta) == BlockRenderType.DEFAULT) {
+      return BlockIcons.getIcon(block.id, meta);
     } else {
-      return block.getTextureHandler(0).getSide(BlockFace.posX);
+      return block.getTextureHandler(meta).getSide(BlockFace.posX);
     }
   }
   
   @Override
-  public String getName() {
-    return block.getName();
+  public String getName(int meta) {
+    return block.getName(meta);
   }
 
   @Override

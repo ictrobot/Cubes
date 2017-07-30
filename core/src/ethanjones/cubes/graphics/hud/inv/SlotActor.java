@@ -61,7 +61,7 @@ public class SlotActor extends Button {
     public void draw(Batch batch, float x, float y, float width, float height) {
       batch.draw(blank, x, y, width, height);
       if (inventory.itemStacks[num] != null) {
-        TextureRegion region = inventory.itemStacks[num].item.getTextureRegion();
+        TextureRegion region = inventory.itemStacks[num].getTextureRegion();
         batch.draw(region, x + 2f, y + 2f, width - 4f, height - 4f);
         drawText(batch, x + 2f, y + 2f, inventory.itemStacks[num]);
       }
