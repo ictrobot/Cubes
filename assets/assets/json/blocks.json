@@ -50,6 +50,13 @@
       "speed": 2,
       "tool": "axe",
       "other": true
+    },
+    "drops": {
+      "default": {
+        "id": "core:log",
+        "count": 1,
+        "meta": 0
+      }
     }
   },
   {

@@ -30,10 +30,10 @@ public class ItemBlock extends Item {
   @Override
   public TextureRegion getTextureRegion(int meta) {
     if (block.renderType(meta) == BlockRenderType.DEFAULT) {
-      return BlockIcons.getIcon(block.id, meta);
-    } else {
-      return block.getTextureHandler(meta).getSide(BlockFace.posX);
+      TextureRegion icon = BlockIcons.getIcon(block.id, meta);
+      if (icon != null) return icon;
     }
+    return block.getTextureHandler(meta).getSide(BlockFace.posX);
   }
   
   @Override

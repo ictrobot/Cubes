@@ -5,8 +5,11 @@ import ethanjones.cubes.core.json.JsonException;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.graphics.world.BlockTextureHandler;
+import ethanjones.cubes.item.Item;
 import ethanjones.cubes.item.ItemJson;
+import ethanjones.cubes.item.ItemStack;
 import ethanjones.cubes.item.ItemTool;
+import ethanjones.cubes.world.World;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -32,6 +35,7 @@ public class BlockJson {
     block.textures = parseMetaElement(json, "texture", new String[meta][], textureParser);
     block.lightLevel = parseMetaElement(json, "lightLevel", new Integer[meta], integerParser);
     block.transparent = parseMetaElement(json, "transparent", new Boolean[meta], booleanParser);
+    block.drops = parseMetaElement(json, "drops", new ItemStackPlaceholder[meta][], itemStackArrayParser);
 
     JsonValue prop;
 
@@ -83,6 +87,7 @@ public class BlockJson {
         case "transparent":
         case "displayMeta":
         case "mining":
+        case "drops":
           break;
         default:
           throw new JsonException("Unexpected block member \"" + member.getName() + "\"");
@@ -137,6 +142,7 @@ public class BlockJson {
     protected Integer[] lightLevel;
     protected Boolean[] transparent;
     protected String[][] textures;
+    protected ItemStackPlaceholder[][] drops;
     protected int[] displayMeta;
     private final int meta;
     private boolean canBeTransparent;
@@ -203,6 +209,16 @@ public class BlockJson {
     @Override
     public int[] displayMetaValues() {
       return displayMeta;
+    }
+
+    @Override
+    public ItemStack[] drops(World world, int x, int y, int z, int meta) {
+      if (drops == null) return super.drops(world, x, y, z, meta);
+      ItemStack[] itemStacks = new ItemStack[drops[meta].length]; //TODO percentage change drops
+      for (int i = 0; i < itemStacks.length; i++) {
+        itemStacks[i] = drops[meta][i].convertToItemStack();
+      }
+      return itemStacks;
     }
 
     protected void setMiningTime(float miningTime) {
@@ -288,6 +304,48 @@ public class BlockJson {
         }
       }
       return textures;
+    }
+  };
+
+  private static class ItemStackPlaceholder {
+    final String id;
+    final int count;
+    final int meta;
+
+    private ItemStackPlaceholder(String id, int count, int meta) {
+      this.id = id;
+      this.count = count;
+      this.meta = meta;
+    }
+
+    private ItemStack convertToItemStack() {
+      Item item = IDManager.toItem(id);
+      if (item == null) throw new JsonException("Invalid id: '" + id + "'");
+      return new ItemStack(item, count, meta);
+    }
+  }
+
+  private static final MetaElementParser<ItemStackPlaceholder[]> itemStackArrayParser = new MetaElementParser<ItemStackPlaceholder[]>() {
+    @Override
+    public ItemStackPlaceholder[] parse(JsonValue prop) {
+      if (prop.isArray()) {
+        JsonArray jsonArray = prop.asArray();
+        ItemStackPlaceholder[] itemStacks = new ItemStackPlaceholder[jsonArray.size()];
+        for (int i = 0; i < itemStacks.length; i++) {
+          itemStacks[i] = parseSingle(jsonArray.get(i).asObject());
+        }
+        return itemStacks;
+      } else {
+        return new ItemStackPlaceholder[]{parseSingle(prop.asObject())};
+      }
+    }
+
+    private ItemStackPlaceholder parseSingle(JsonObject p) {
+      String id = p.getString("id", null);
+      if (id == null) throw new JsonException("No itemstack id");
+      int count = p.getInt("count", 1);
+      int meta = p.getInt("meta", 0);
+      return new ItemStackPlaceholder(id, count, meta);
     }
   };
 
