@@ -63,6 +63,8 @@ public class CubesClient extends Cubes implements ApplicationListener {
 
     ModManager.postModEvent(new StartingClientEvent());
     Side.getEventBus().register(new PlayerCollision());
+
+    ClientDebug.setup();
     
     nextTickTime = System.currentTimeMillis() + tickMS;
     
@@ -87,6 +89,8 @@ public class CubesClient extends Cubes implements ApplicationListener {
       }
     }
     Performance.start(PerformanceTags.CLIENT_FRAME);
+
+    ClientDebug.frameStart();
     
     long diff = nextTickTime - System.currentTimeMillis();
     if (diff < -16) {
@@ -109,7 +113,6 @@ public class CubesClient extends Cubes implements ApplicationListener {
     }
     
     this.update();
-    ClientDebug.frame();
     inputChain.beforeRender();
     renderer.render();
     inputChain.afterRender();

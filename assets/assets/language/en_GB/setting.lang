@@ -35,3 +35,4 @@ setting.networking.port=Port
 
 setting.debug=Debug
 setting.debug.frametimeGraph=Frametime Graph
+setting.debug.glProfiler=GL Profiler

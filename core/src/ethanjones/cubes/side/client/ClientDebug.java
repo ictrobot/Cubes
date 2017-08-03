@@ -13,6 +13,7 @@ import ethanjones.cubes.world.collision.BlockIntersection;
 import ethanjones.cubes.world.storage.Area;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.WindowedMean;
 
@@ -27,9 +28,32 @@ public class ClientDebug {
   private static int brandingDebugLength = builder.length();
   private static DecimalFormat twoDP = new DecimalFormat("0.00");
   private static DecimalFormat oneDP = new DecimalFormat("0.0");
+  private static boolean glProfiler = false;
+
+  protected static void setup() {
+    glProfiler = Settings.getBooleanSettingValue(Settings.DEBUG_GL_PROFILER);
+    if (glProfiler) {
+      GLProfiler.enable();
+    } else {
+      GLProfiler.disable();
+    }
+  }
   
-  protected static void frame() {
+  protected static void frameStart() {
     fps.tick();
+    if (glProfiler && Cubes.getClient().renderer.guiRenderer.debugEnabled) {
+      LastFrame.totalCalls = GLProfiler.calls;
+      LastFrame.drawCalls = GLProfiler.drawCalls;
+      LastFrame.textureBindings = GLProfiler.textureBindings;
+      LastFrame.shaderSwitches = GLProfiler.shaderSwitches;
+      LastFrame.vertexCount = GLProfiler.vertexCount.total;
+
+      GLProfiler.calls = 0;
+      GLProfiler.drawCalls = 0;
+      GLProfiler.textureBindings = 0;
+      GLProfiler.shaderSwitches = 0;
+      GLProfiler.vertexCount.reset();
+    }
   }
 
   public static String getDebugString() {
@@ -47,6 +71,9 @@ public class ClientDebug {
     if (Settings.getBooleanSettingValue(Settings.GRAPHICS_FOG)) builder.append(" FOG");
     if (AmbientOcclusion.isEnabled()) builder.append(" AO");
     builder.append(lineSeparator);
+    if (glProfiler) {
+      builder.append("TC:").append(LastFrame.totalCalls).append(" DG:").append(LastFrame.drawCalls).append(" TB:").append(LastFrame.textureBindings).append(" SS:").append(LastFrame.shaderSwitches).append(" VC:").append(LastFrame.vertexCount()).append(lineSeparator);
+    }
     builder.append("W B:").append(getBlockLight()).append(" S:").append(getSunlight()).append(" T:").append(Cubes.getClient().world.getTime());
     BlockIntersection blockIntersection = BlockIntersection.getBlockIntersection(Cubes.getClient().player.position, Cubes.getClient().player.angle, Cubes.getClient().world);
     if (blockIntersection != null && blockIntersection.getBlock() != null) {
@@ -79,5 +106,20 @@ public class ClientDebug {
       return area.getSunlight(x - area.minBlockX, y, z - area.minBlockZ);
     }
     return 0;
+  }
+
+  private static class LastFrame {
+    private static final DecimalFormat vertexFormat = new DecimalFormat("0.##E0");
+
+    static int totalCalls;
+    static int drawCalls;
+    static int textureBindings;
+    static int shaderSwitches;
+    static float vertexCount;
+
+    static String vertexCount() {
+      if (vertexCount < 100000) return "" + ((int) vertexCount);
+      return vertexFormat.format(vertexCount);
+    }
   }
 }

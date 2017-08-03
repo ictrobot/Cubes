@@ -34,6 +34,7 @@ public class Settings {
   public static final String INPUT_TOUCHPAD_LEFT = "input.touchpadLeft";
   public static final String NETWORKING_PORT = "networking.port";
   public static final String DEBUG_FRAMETIME_GRAPH = "debug.frametimeGraph";
+  public static final String DEBUG_GL_PROFILER = "debug.glProfiler";
 
   public static final String GROUP_GRAPHICS = "graphics";
   public static final String GROUP_INPUT = "input";
@@ -94,8 +95,10 @@ public class Settings {
     });
 
     addSetting(NETWORKING_PORT, new IntegerSetting(24842));
+
     addSetting(DEBUG_FRAMETIME_GRAPH, new BooleanSetting(false));
-  
+    addSetting(DEBUG_GL_PROFILER, new BooleanSetting(false));
+
     String keybindsGroup = Keybinds.KEYBIND_GROUP;
     SettingGroup keybinds = Keybinds.init();
   
@@ -103,7 +106,7 @@ public class Settings {
             .add(GROUP_GRAPHICS, new SettingGroup().add(GRAPHICS_VIEW_DISTANCE).add(GRAPHICS_FOV).add(GRAPHICS_VSYNC).add(GRAPHICS_FOG).add(GRAPHICS_SCALE).add(GRAPHICS_AO))
             .add(GROUP_INPUT, new SettingGroup().add(keybindsGroup, keybinds).add(INPUT_MOUSE_SENSITIVITY).add(INPUT_TOUCHPAD_SIZE).add(INPUT_TOUCHPAD_LEFT))
             .add(GROUP_NETWORKING, new SettingGroup().add(NETWORKING_PORT))
-            .add(GROUP_DEBUG, new SettingGroup().add(DEBUG_FRAMETIME_GRAPH));
+            .add(GROUP_DEBUG, new SettingGroup().add(DEBUG_FRAMETIME_GRAPH).add(DEBUG_GL_PROFILER));
 
     if (!read()) {
       Log.info("Creating new settings file");
