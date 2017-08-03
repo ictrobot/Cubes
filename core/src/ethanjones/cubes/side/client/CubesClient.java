@@ -54,7 +54,9 @@ public class CubesClient extends Cubes implements ApplicationListener {
     world = new WorldClient();
 
     Side.getEventBus().register(new PlayerCollision());
-    
+
+    ClientDebug.setup();
+
     nextTickTime = System.currentTimeMillis() + tickMS;
     
     state.setup();
@@ -69,6 +71,8 @@ public class CubesClient extends Cubes implements ApplicationListener {
       worldReady = false;
     }
     if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) escape();
+
+    ClientDebug.frameStart();
     
     long diff = nextTickTime - System.currentTimeMillis();
     if (diff < -16) {
@@ -91,7 +95,6 @@ public class CubesClient extends Cubes implements ApplicationListener {
     }
     
     this.update();
-    ClientDebug.frame();
     inputChain.beforeRender();
     renderer.render();
     inputChain.afterRender();
@@ -131,7 +134,7 @@ public class CubesClient extends Cubes implements ApplicationListener {
   public void resume() {
 
   }
-  
+
   public static void escape() {
     if (!(Adapter.getMenu() instanceof WorldLoadingMenu)) {
       if (InventoryManager.isInventoryOpen()) {

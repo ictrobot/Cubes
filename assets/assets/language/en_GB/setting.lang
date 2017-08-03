@@ -33,3 +33,4 @@ setting.input.keybind.areaboundaries=Toggle area boundaries
 
 setting.debug=Debug
 setting.debug.frametimeGraph=Frametime Graph
+setting.debug.glProfiler=GL Profiler
