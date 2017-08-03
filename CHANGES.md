@@ -1,3 +1,6 @@
+### 0.0.6
+-  Add Ambient Occlusion
+
 ### 0.0.5
 - Fog to hide terrain loading
 - Leaves now decay and drop saplings, which grow into trees
