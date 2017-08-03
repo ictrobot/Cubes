@@ -34,7 +34,7 @@ public class BreakingRenderer {
     if (texture.getHeight() % texture.getWidth() != 0) throw new CubesException("Invalid breaking texture");
     size = texture.getWidth();
     num = texture.getHeight() / size;
-    mesh = new Mesh(false, 4 * 6 * num, 6 * 6 * num, AreaMesh.vertexAttributes);
+    mesh = new Mesh(false, 4 * 6 * num, 6 * 6 * num, CubesVertexAttributes.VERTEX_ATTRIBUTES);
 
     short[] indicies = new short[6 * 6 * num];
     short j = 0;
@@ -48,16 +48,16 @@ public class BreakingRenderer {
     }
     mesh.setIndices(indicies);
 
-    float[] vertices = new float[AreaMesh.VERTEX_SIZE * 4 * 6 * num];
+    float[] vertices = new float[CubesVertexAttributes.COMPONENTS * 4 * 6 * num];
     int vertexOffset = 0;
     for (int i = 0; i < num; i++) {
       TextureRegion textureRegion = new TextureRegion(texture, 0, i * size, size, size);
-      vertexOffset = FaceVertices.createMaxX(Vector3.Zero, textureRegion, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
-      vertexOffset = FaceVertices.createMaxY(Vector3.Zero, textureRegion, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
-      vertexOffset = FaceVertices.createMaxZ(Vector3.Zero, textureRegion, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
-      vertexOffset = FaceVertices.createMinX(Vector3.Zero, textureRegion, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
-      vertexOffset = FaceVertices.createMinY(Vector3.Zero, textureRegion, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
-      vertexOffset = FaceVertices.createMinZ(Vector3.Zero, textureRegion, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+      vertexOffset = FaceVertices.createMaxX(Vector3.Zero, textureRegion, null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+      vertexOffset = FaceVertices.createMaxY(Vector3.Zero, textureRegion, null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+      vertexOffset = FaceVertices.createMaxZ(Vector3.Zero, textureRegion, null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+      vertexOffset = FaceVertices.createMinX(Vector3.Zero, textureRegion, null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+      vertexOffset = FaceVertices.createMinY(Vector3.Zero, textureRegion, null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+      vertexOffset = FaceVertices.createMinZ(Vector3.Zero, textureRegion, null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
     }
     mesh.setVertices(vertices);
   }

@@ -2,7 +2,7 @@ package ethanjones.cubes.graphics.entity;
 
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.graphics.assets.Assets;
-import ethanjones.cubes.graphics.world.AreaMesh;
+import ethanjones.cubes.graphics.world.CubesVertexAttributes;
 import ethanjones.cubes.graphics.world.FaceVertices;
 import ethanjones.cubes.graphics.world.RenderingSettings;
 import ethanjones.cubes.side.common.Cubes;
@@ -42,17 +42,17 @@ public class PlayerRenderer {
     if (mesh == null) {
       TextureRegion regionPlayer = Assets.getPackedTexture("core:block/player.png");
 
-      mesh = new Mesh(false, 4 * 6, 6 * 6, AreaMesh.vertexAttributes);
+      mesh = new Mesh(false, 4 * 6, 6 * 6, CubesVertexAttributes.VERTEX_ATTRIBUTES);
       mesh.setIndices(blockIndices);
       int vertexOffset = 0;
-      vertices = new float[AreaMesh.VERTEX_SIZE * 4 * 6];
+      vertices = new float[CubesVertexAttributes.COMPONENTS * 4 * 6];
       Vector3 offset = new Vector3(-0.5f, -0.5f, -0.5f);
-      vertexOffset = FaceVertices.createMaxX(offset, regionPlayer, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
-      vertexOffset = FaceVertices.createMaxY(offset, regionPlayer, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
-      vertexOffset = FaceVertices.createMaxZ(offset, regionPlayer, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
-      vertexOffset = FaceVertices.createMinX(offset, regionPlayer, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
-      vertexOffset = FaceVertices.createMinY(offset, regionPlayer, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
-      vertexOffset = FaceVertices.createMinZ(offset, regionPlayer, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+      vertexOffset = FaceVertices.createMaxX(offset, regionPlayer, null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+      vertexOffset = FaceVertices.createMaxY(offset, regionPlayer, null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+      vertexOffset = FaceVertices.createMaxZ(offset, regionPlayer, null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+      vertexOffset = FaceVertices.createMinX(offset, regionPlayer, null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+      vertexOffset = FaceVertices.createMinY(offset, regionPlayer, null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+      vertexOffset = FaceVertices.createMinZ(offset, regionPlayer, null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
       mesh.setVertices(vertices);
     }
     Renderable renderable = new Renderable();

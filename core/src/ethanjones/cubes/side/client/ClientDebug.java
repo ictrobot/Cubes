@@ -1,10 +1,12 @@
 package ethanjones.cubes.side.client;
 
 import ethanjones.cubes.core.platform.Compatibility;
+import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.core.util.PerSecond;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.graphics.world.AreaRenderer;
+import ethanjones.cubes.graphics.world.ao.AmbientOcclusion;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.collision.BlockIntersection;
@@ -41,7 +43,10 @@ public class ClientDebug {
     builder.append(lineSeparator);
     builder.append("POS X:").append(twoDP.format(p.x)).append("(").append(CoordinateConverter.area(p.x)).append(")").append(" Y:").append(twoDP.format(p.y)).append("(").append(CoordinateConverter.area(p.y)).append(")").append(" Z:").append(twoDP.format(p.z)).append("(").append(CoordinateConverter.area(p.z)).append(")").append(lineSeparator);
     builder.append("DIR X:").append(twoDP.format(Cubes.getClient().player.angle.x)).append(" Y:").append(twoDP.format(Cubes.getClient().player.angle.y)).append(" Z:").append(twoDP.format(Cubes.getClient().player.angle.z)).append(lineSeparator);
-    builder.append("R A:").append(AreaRenderer.renderedThisFrame).append(" M:").append(AreaRenderer.renderedMeshesThisFrame).append(lineSeparator);
+    builder.append("R A:").append(AreaRenderer.renderedThisFrame).append(" M:").append(AreaRenderer.renderedMeshesThisFrame).append(" D:").append(Settings.getIntegerSetting(Settings.GRAPHICS_VIEW_DISTANCE));
+    if (Settings.getBooleanSettingValue(Settings.GRAPHICS_FOG)) builder.append(" FOG");
+    if (AmbientOcclusion.isEnabled()) builder.append(" AO");
+    builder.append(lineSeparator);
     builder.append("W B:").append(getBlockLight()).append(" S:").append(getSunlight()).append(" T:").append(Cubes.getClient().world.getTime());
     BlockIntersection blockIntersection = BlockIntersection.getBlockIntersection(Cubes.getClient().player.position, Cubes.getClient().player.angle, Cubes.getClient().world);
     if (blockIntersection != null && blockIntersection.getBlock() != null) {

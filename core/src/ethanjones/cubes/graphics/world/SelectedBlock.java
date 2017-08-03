@@ -47,16 +47,16 @@ public class SelectedBlock {
       material = Assets.getMaterial("core:world/selected_block.png");
       material.set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
 
-      mesh = new Mesh(false, 4 * 6, 6 * 6, AreaMesh.vertexAttributes);
+      mesh = new Mesh(false, 4 * 6, 6 * 6, CubesVertexAttributes.VERTEX_ATTRIBUTES);
       mesh.setIndices(blockIndices);
       int vertexOffset = 0;
-      vertices = new float[AreaMesh.VERTEX_SIZE * 4 * 6];
-      vertexOffset = FaceVertices.createMaxX(Vector3.Zero, textureRegion, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
-      vertexOffset = FaceVertices.createMaxY(Vector3.Zero, textureRegion, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
-      vertexOffset = FaceVertices.createMaxZ(Vector3.Zero, textureRegion, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
-      vertexOffset = FaceVertices.createMinX(Vector3.Zero, textureRegion, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
-      vertexOffset = FaceVertices.createMinY(Vector3.Zero, textureRegion, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
-      vertexOffset = FaceVertices.createMinZ(Vector3.Zero, textureRegion, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+      vertices = new float[CubesVertexAttributes.COMPONENTS * 4 * 6];
+      vertexOffset = FaceVertices.createMaxX(Vector3.Zero, textureRegion, null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+      vertexOffset = FaceVertices.createMaxY(Vector3.Zero, textureRegion, null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+      vertexOffset = FaceVertices.createMaxZ(Vector3.Zero, textureRegion, null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+      vertexOffset = FaceVertices.createMinX(Vector3.Zero, textureRegion, null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+      vertexOffset = FaceVertices.createMinY(Vector3.Zero, textureRegion, null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+      vertexOffset = FaceVertices.createMinZ(Vector3.Zero, textureRegion, null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
       mesh.setVertices(vertices);
     }
     float f = 1f / 64f;

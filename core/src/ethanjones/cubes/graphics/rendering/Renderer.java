@@ -2,6 +2,7 @@ package ethanjones.cubes.graphics.rendering;
 
 import ethanjones.cubes.core.performance.Performance;
 import ethanjones.cubes.core.performance.PerformanceTags;
+import ethanjones.cubes.graphics.world.ao.AmbientOcclusion;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -15,6 +16,8 @@ public class Renderer {
   public Renderer() {
     worldRenderer = new WorldRenderer();
     guiRenderer = new GuiRenderer();
+
+    AmbientOcclusion.load();
   }
 
   public void render() {

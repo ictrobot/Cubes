@@ -7,10 +7,7 @@ import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.graphics.Graphics;
 import ethanjones.cubes.graphics.assets.Assets;
-import ethanjones.cubes.graphics.world.AreaMesh;
-import ethanjones.cubes.graphics.world.BlockTextureHandler;
-import ethanjones.cubes.graphics.world.FaceVertices;
-import ethanjones.cubes.graphics.world.RenderingSettings;
+import ethanjones.cubes.graphics.world.*;
 import ethanjones.cubes.world.light.BlockLight;
 
 import com.badlogic.gdx.Gdx;
@@ -56,7 +53,7 @@ public class BlockIcons {
     camera.update(true);
     
   
-    final AreaMesh mesh = new AreaMesh();
+    final AreaMesh mesh = new AreaMesh(CubesVertexAttributes.VERTEX_ATTRIBUTES);
     List<Block> blocks = IDManager.getBlocks();
 
     ArrayList<BlockID> blockids = new ArrayList<BlockID>();
@@ -80,9 +77,9 @@ public class BlockIcons {
       Block block = IDManager.toBlock(blockID.id);
       BlockTextureHandler textureHandler = block.getTextureHandler(blockID.meta);
       int vertexOffset = 0;
-      vertexOffset = FaceVertices.createMaxX(Vector3.Zero, textureHandler.getSide(BlockFace.posX), 0, 0, 0, BlockLight.FULL_LIGHT, AreaMesh.vertices, vertexOffset);
-      vertexOffset = FaceVertices.createMaxY(Vector3.Zero, textureHandler.getSide(BlockFace.posY), 0, 0, 0, BlockLight.FULL_LIGHT, AreaMesh.vertices, vertexOffset);
-      vertexOffset = FaceVertices.createMaxZ(Vector3.Zero, textureHandler.getSide(BlockFace.posZ), 0, 0, 0, BlockLight.FULL_LIGHT, AreaMesh.vertices, vertexOffset);
+      vertexOffset = FaceVertices.createMaxX(Vector3.Zero, textureHandler.getSide(BlockFace.posX), null, 0, 0, 0, BlockLight.FULL_LIGHT, AreaMesh.vertices, vertexOffset);
+      vertexOffset = FaceVertices.createMaxY(Vector3.Zero, textureHandler.getSide(BlockFace.posY), null, 0, 0, 0, BlockLight.FULL_LIGHT, AreaMesh.vertices, vertexOffset);
+      vertexOffset = FaceVertices.createMaxZ(Vector3.Zero, textureHandler.getSide(BlockFace.posZ), null, 0, 0, 0, BlockLight.FULL_LIGHT, AreaMesh.vertices, vertexOffset);
       mesh.saveVertices(vertexOffset);
 
       Graphics.modelBatch.begin(camera);
@@ -116,6 +113,8 @@ public class BlockIcons {
       Gdx.gl20.glClearColor(0, 0, 0, 0);
       Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
     }
+
+    mesh.dispose();
 
     if (DEBUG_OUTPUT) {
       FileHandle fileHandle = Assets.assetsFolder.child("blockicons.png");
