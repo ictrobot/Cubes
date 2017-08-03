@@ -47,10 +47,10 @@ public class SunRenderer {
       moonMaterial = Assets.getMaterial("core:world/moon.png");
       moonMaterial.set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
 
-      mesh = new Mesh(false, 4, 6, AreaMesh.vertexAttributes);
+      mesh = new Mesh(false, 4, 6, CubesVertexAttributes.VERTEX_ATTRIBUTES);
       mesh.setIndices(indicies);
-      vertices = new float[AreaMesh.VERTEX_SIZE * 4];
-      FaceVertices.createMinY(new Vector3(-0.5f, 0f, -0.5f), textureRegion, 0, 0, 0, FULL_LIGHT, vertices, 0);
+      vertices = new float[CubesVertexAttributes.COMPONENTS * 4];
+      FaceVertices.createMinY(new Vector3(-0.5f, 0f, -0.5f), textureRegion, null, 0, 0, 0, FULL_LIGHT, vertices, 0);
 
       mesh.setVertices(vertices);
     }

@@ -4,8 +4,8 @@ import ethanjones.cubes.block.BlockRenderType;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.entity.ItemEntity;
 import ethanjones.cubes.graphics.assets.Assets;
-import ethanjones.cubes.graphics.world.AreaMesh;
 import ethanjones.cubes.graphics.world.BlockTextureHandler;
+import ethanjones.cubes.graphics.world.CubesVertexAttributes;
 import ethanjones.cubes.graphics.world.FaceVertices;
 import ethanjones.cubes.graphics.world.RenderingSettings;
 import ethanjones.cubes.item.Item;
@@ -73,29 +73,29 @@ public class ItemEntityRenderer implements RenderableProvider, Disposable {
       item = itemEntity.itemStack.item;
       meta = itemEntity.itemStack.meta;
       if (item instanceof ItemBlock && ((ItemBlock) item).block.renderType(meta) == BlockRenderType.DEFAULT) {
-        mesh = new Mesh(false, 4 * 6, 6 * 6, AreaMesh.vertexAttributes);
+        mesh = new Mesh(false, 4 * 6, 6 * 6, CubesVertexAttributes.VERTEX_ATTRIBUTES);
         mesh.setIndices(blockIndices);
         int vertexOffset = 0;
-        vertices = new float[AreaMesh.VERTEX_SIZE * 4 * 6];
+        vertices = new float[CubesVertexAttributes.COMPONENTS * 4 * 6];
         BlockTextureHandler textureHandler = ((ItemBlock) itemEntity.itemStack.item).block.getTextureHandler(meta);
         Vector3 offset = new Vector3(-0.5f, 0f, -0.5f);
-        vertexOffset = FaceVertices.createMaxX(offset, textureHandler.getSide(BlockFace.posX), 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
-        vertexOffset = FaceVertices.createMaxY(offset, textureHandler.getSide(BlockFace.posY), 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
-        vertexOffset = FaceVertices.createMaxZ(offset, textureHandler.getSide(BlockFace.posZ), 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
-        vertexOffset = FaceVertices.createMinX(offset, textureHandler.getSide(BlockFace.negX), 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
-        vertexOffset = FaceVertices.createMinY(offset, textureHandler.getSide(BlockFace.negY), 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
-        vertexOffset = FaceVertices.createMinZ(offset, textureHandler.getSide(BlockFace.negZ), 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+        vertexOffset = FaceVertices.createMaxX(offset, textureHandler.getSide(BlockFace.posX), null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+        vertexOffset = FaceVertices.createMaxY(offset, textureHandler.getSide(BlockFace.posY), null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+        vertexOffset = FaceVertices.createMaxZ(offset, textureHandler.getSide(BlockFace.posZ), null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+        vertexOffset = FaceVertices.createMinX(offset, textureHandler.getSide(BlockFace.negX), null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+        vertexOffset = FaceVertices.createMinY(offset, textureHandler.getSide(BlockFace.negY), null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+        vertexOffset = FaceVertices.createMinZ(offset, textureHandler.getSide(BlockFace.negZ), null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
         mesh.setVertices(vertices);
       } else {
-        mesh = new Mesh(false, 4 * 2, 6 * 2, AreaMesh.vertexAttributes);
+        mesh = new Mesh(false, 4 * 2, 6 * 2, CubesVertexAttributes.VERTEX_ATTRIBUTES);
         mesh.setIndices(itemIndices);
         int vertexOffset = 0;
-        vertices = new float[AreaMesh.VERTEX_SIZE * 4 * 2];
+        vertices = new float[CubesVertexAttributes.COMPONENTS * 4 * 2];
         TextureRegion textureRegion = itemEntity.itemStack.item.getTextureRegion();
         TextureRegion flip = new TextureRegion(textureRegion);
         flip.flip(true, false);
-        vertexOffset = FaceVertices.createMinZ(new Vector3(-0.5f, 0f, 0f), textureRegion, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
-        vertexOffset = FaceVertices.createMaxZ(new Vector3(-0.5f, 0f, -1f), flip, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+        vertexOffset = FaceVertices.createMinZ(new Vector3(-0.5f, 0f, 0f), textureRegion, null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+        vertexOffset = FaceVertices.createMaxZ(new Vector3(-0.5f, 0f, -1f), flip, null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
         mesh.setVertices(vertices);
       }
     }

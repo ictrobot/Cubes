@@ -5,8 +5,8 @@ import ethanjones.cubes.block.BlockRenderType;
 import ethanjones.cubes.core.id.IDManager;
 import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.core.util.Lock;
+import ethanjones.cubes.graphics.world.ao.AmbientOcclusion;
 import ethanjones.cubes.side.common.Cubes;
-import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.storage.Area;
 
 import com.badlogic.gdx.graphics.g3d.Renderable;
@@ -60,7 +60,9 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
   
   public boolean calculateVertices() {
     if (area == null) return false;
-    
+
+    boolean ao = AmbientOcclusion.isEnabled();
+
     Area maxX = area.neighbour(area.areaX + 1, area.areaZ);
     Area minX = area.neighbour(area.areaX - 1, area.areaZ);
     Area maxZ = area.neighbour(area.areaX, area.areaZ + 1);
@@ -84,12 +86,14 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
         for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
           int blockInt = area.blocks[i];
           if ((blockInt & BLOCK_VISIBLE) == BLOCK_VISIBLE) {
-            vertexOffset = render(vertexOffset, blockInt, x, y, z, i, maxX, minX, maxZ, minZ);
+            vertexOffset = render(vertexOffset, blockInt, x, y, z, i, ao, maxX, minX, maxZ, minZ);
           }
         }
       }
     }
-    if (vertexOffset > 0) save(vertexOffset);
+    if (vertexOffset > 0) {
+      save(vertexOffset);
+    }
     
     area.lock.readUnlock();
     if (maxX != null) maxX.lock.readUnlock();
@@ -99,13 +103,13 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
     return true;
   }
   
-  private int render(int vertexOffset, int blockInt, int x, int y, int z, int i, Area maxX, Area minX, Area maxZ, Area minZ) {
+  private int render(int vertexOffset, int blockInt, int x, int y, int z, int i, boolean ao, Area maxX, Area minX, Area maxZ, Area minZ) {
     Block block = IDManager.toBlock(blockInt & 0xFFFFF);
     if (block != null) {
       int meta = (blockInt >> 20) & 0xFF;
       BlockRenderType renderType = block.renderType(meta);
       BlockTextureHandler textureHandler = block.getTextureHandler(meta);
-      vertexOffset = renderType.render(AreaMesh.vertices, vertexOffset, offset, block, meta, textureHandler, area, x, y, z, i, maxX, minX, maxZ, minZ);
+      vertexOffset = renderType.render(AreaMesh.vertices, vertexOffset, offset, block, meta, textureHandler, area, x, y, z, i, ao, minX, maxZ, minZ, maxX);
       
       if (vertexOffset >= SAFE_VERTICES) {
         save(vertexOffset);

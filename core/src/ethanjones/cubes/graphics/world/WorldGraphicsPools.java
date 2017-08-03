@@ -2,11 +2,42 @@ package ethanjones.cubes.graphics.world;
 
 import ethanjones.cubes.core.system.Pools;
 
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
 
 import java.util.ArrayDeque;
 
 public class WorldGraphicsPools {
+
+  public abstract static class DisposablePool<T extends Disposable> extends Pool<T> {
+
+    @Override
+    public void free(T obj) {
+      if (obj == null) throw new IllegalArgumentException("obj cannot be null");
+      if (getFree() >= max) {
+        obj.dispose();
+      } else {
+        super.free(obj);
+      }
+    }
+
+    @Override
+    public void freeAll(Array<T> array) {
+      if (array == null) throw new IllegalArgumentException("array cannot be null");
+      for (T t : array) {
+        free(t);
+      }
+    }
+
+    @Override
+    public void clear() {
+      while (getFree() > 0) {
+        obtain().dispose();
+      }
+    }
+
+  }
 
   public static final ArrayDeque<AreaRenderer> toFree = new ArrayDeque<AreaRenderer>();
 
@@ -17,7 +48,7 @@ public class WorldGraphicsPools {
         return new AreaRenderer();
       }
     });
-    Pools.registerType(AreaMesh.class, new Pool<AreaMesh>() {
+    Pools.registerType(AreaMesh.class, new DisposablePool<AreaMesh>() {
       @Override
       protected AreaMesh newObject() {
         return new AreaMesh();

@@ -38,9 +38,9 @@ public class AreaBoundaries {
       textureRegionArea = Assets.getTextureRegion("core:world/area_boundary.png");
       materialArea = Assets.getMaterial("core:world/area_boundary.png");
       
-      meshArea = new Mesh(false, 24, 0, AreaMesh.vertexAttributes);
+      meshArea = new Mesh(false, 24, 0, CubesVertexAttributes.VERTEX_ATTRIBUTES);
       int vertexOffset = 0;
-      verticesArea = new float[AreaMesh.VERTEX_SIZE * 24];
+      verticesArea = new float[CubesVertexAttributes.COMPONENTS * 24];
       float s = Area.SIZE_BLOCKS;
       
       vertexOffset = createVerticesArea(verticesArea, vertexOffset, 0, 0);
@@ -112,9 +112,9 @@ public class AreaBoundaries {
       textureRegionCurrent = Assets.getTextureRegion("core:world/current_area_boundary.png");
       materialCurrent = Assets.getMaterial("core:world/current_area_boundary.png");
       
-      meshCurrent = new Mesh(false, vertices, 0, AreaMesh.vertexAttributes);
+      meshCurrent = new Mesh(false, vertices, 0, CubesVertexAttributes.VERTEX_ATTRIBUTES);
       int vertexOffset = 0;
-      verticesCurrent = new float[AreaMesh.VERTEX_SIZE * vertices];
+      verticesCurrent = new float[CubesVertexAttributes.COMPONENTS * vertices];
       float s = Area.SIZE_BLOCKS;
       
       for (int i = 0; i <= Area.SIZE_BLOCKS; i++) {

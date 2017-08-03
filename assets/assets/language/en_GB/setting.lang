@@ -6,6 +6,8 @@ setting.graphics.viewDistance=Rendering Distance
 setting.graphics.fieldOfView=FOV
 setting.graphics.vsync=VSync
 setting.graphics.fog=Fog
+setting.graphics.scale=GUI Scale
+setting.graphics.ambientOcclusion=Ambient Occlusion
 
 setting.input=Input
 setting.input.touch=Touch Screen

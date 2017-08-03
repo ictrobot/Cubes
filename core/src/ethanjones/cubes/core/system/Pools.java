@@ -42,6 +42,18 @@ public class Pools {
     }
   }
 
+  public static boolean poolExists(Class<?> c) {
+    return pool(c) != null;
+  }
+
+  public static void clearPool(Class<?> c) {
+    Pool<?> pool = pool(c);
+    if (pool == null) throw new IllegalStateException("No pool for " + c.getSimpleName());
+    synchronized (pool) {
+      pool.clear();
+    }
+  }
+
   private static <T> Pool<T> pool(Class<T> c) {
     synchronized (pools) {
       return pools.get(c);
