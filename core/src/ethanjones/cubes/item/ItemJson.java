@@ -117,7 +117,7 @@ public class ItemJson {
 
     @Override
     public void loadGraphics() {
-      this.texture = Assets.getPackedTextureFromID(textureString, "item");
+      this.texture = Assets.getBlockItemTextureRegion(textureString, "item");
     }
   }
 
@@ -130,7 +130,7 @@ public class ItemJson {
 
     @Override
     public void loadGraphics() {
-      this.texture = Assets.getPackedTextureFromID(textureString, "item");
+      this.texture = Assets.getBlockItemTextureRegion(textureString, "item");
     }
 
     protected void setToolType(ToolType type) {

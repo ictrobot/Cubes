@@ -60,7 +60,7 @@ public class AreaMesh implements Pool.Poolable, Disposable {
 
   public Renderable renderable(Pool<Renderable> pool) {
     Renderable renderable = pool.obtain();
-    renderable.material = Assets.packedTextureSheet.getMaterial();
+    renderable.material = Assets.blockItemSheet.getMaterial();
     renderable.meshPart.set(meshPart);
     return renderable;
   }

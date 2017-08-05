@@ -40,7 +40,7 @@ public class PlayerRenderer {
 
   public static void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool, Player player) {
     if (mesh == null) {
-      TextureRegion regionPlayer = Assets.getPackedTexture("core:block/player.png");
+      TextureRegion regionPlayer = Assets.getTextureRegion("core:world/player.png");
 
       mesh = new Mesh(false, 4 * 6, 6 * 6, CubesVertexAttributes.VERTEX_ATTRIBUTES);
       mesh.setIndices(blockIndices);
@@ -63,7 +63,7 @@ public class PlayerRenderer {
     renderable.meshPart.offset = 0;
     renderable.meshPart.size = 6 * 6;
     renderable.meshPart.mesh = mesh;
-    renderable.material = Assets.packedTextureSheet.getMaterial();
+    renderable.material = Assets.getMaterial("core:world/player.png");
 
     LightNode lightNode = new LightNode(CoordinateConverter.block(player.position.x), CoordinateConverter.block(player.position.y), CoordinateConverter.block(player.position.z), 0);
     lightNode.l = Cubes.getClient().world.getLightRaw(lightNode.x, lightNode.y, lightNode.z);

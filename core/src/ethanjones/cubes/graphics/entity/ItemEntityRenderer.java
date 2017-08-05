@@ -107,7 +107,7 @@ public class ItemEntityRenderer implements RenderableProvider, Disposable {
     renderable.meshPart.offset = 0;
     renderable.meshPart.size = item instanceof ItemBlock ? 6 * 6 : 6 * 2;
     renderable.meshPart.mesh = mesh;
-    renderable.material = Assets.packedTextureSheet.getMaterial();
+    renderable.material = Assets.blockItemSheet.getMaterial();
     
     renderable.userData = new RenderingSettings().setLightOverride(itemEntity.position);
     renderables.add(renderable);

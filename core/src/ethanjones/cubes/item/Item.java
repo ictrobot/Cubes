@@ -20,7 +20,7 @@ public class Item {
   }
 
   public void loadGraphics() {
-    this.texture = Assets.getPackedTextureFromID(id, "item");
+    this.texture = Assets.getBlockItemTextureRegion(id, "item");
   }
 
   public TextureRegion getTextureRegion(int meta) {
