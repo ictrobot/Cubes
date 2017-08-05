@@ -148,6 +148,8 @@ public final class AmbientOcclusion {
       int y = (i / SQRT_TOTAL) * INDIVIDUAL_SIZE;
       loadedRegions[i] = new TextureRegion(loadedTexture, x, y, INDIVIDUAL_SIZE, INDIVIDUAL_SIZE);
     }
+
+    loadedStrength = strength;
     return true;
   }
 
