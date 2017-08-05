@@ -4,7 +4,6 @@ import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.settings.Setting;
 import ethanjones.cubes.core.settings.VisualSettingManager;
-import ethanjones.cubes.graphics.menu.Menu;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Input;
@@ -27,7 +26,7 @@ public class KeybindSetting extends Setting {
   
   @Override
   public Actor getActor(VisualSettingManager visualSettingManager) {
-    final TextButton button = new TextButton(toString(), Menu.skin) {
+    final TextButton button = new TextButton(toString(), visualSettingManager.getSkin()) {
       boolean waiting = false;
       {
         final TextButton textButton = this;

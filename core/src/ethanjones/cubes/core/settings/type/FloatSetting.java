@@ -4,7 +4,6 @@ import ethanjones.cubes.core.settings.Setting;
 import ethanjones.cubes.core.settings.VisualSettingManager;
 import ethanjones.cubes.core.settings.type.IntegerSetting.SliderWithValue;
 import ethanjones.cubes.core.system.CubesException;
-import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menus.SettingsMenu;
 
 import com.badlogic.gdx.math.MathUtils;
@@ -64,9 +63,9 @@ public class FloatSetting extends Setting {
   public Actor getActor(VisualSettingManager visualSettingManager) {
     switch (type) {
       case TextField:
-        return getTextField();
+        return getTextField(visualSettingManager);
       case Slider:
-        return getSlider();
+        return getSlider(visualSettingManager);
     }
     return null;
   }
@@ -76,8 +75,8 @@ public class FloatSetting extends Setting {
     return Float.toString(f);
   }
   
-  private TextField getTextField() {
-    final TextField textField = new TextField(f + "", Menu.skin);
+  private TextField getTextField(VisualSettingManager visualSettingManager) {
+    final TextField textField = new TextField(f + "", visualSettingManager.getSkin());
     textField.addListener(new EventListener() {
       @Override
       public boolean handle(Event event) {
@@ -106,9 +105,9 @@ public class FloatSetting extends Setting {
     return textField;
   }
 
-  public Slider getSlider() {
+  public Slider getSlider(VisualSettingManager visualSettingManager) {
     if (!hasRange) throw new CubesException("Range required");
-    final Slider slider = new SliderWithValue(rangeStart, rangeEnd, sliderSteps, false, Menu.skin, "%.3f");
+    final Slider slider = new SliderWithValue(rangeStart, rangeEnd, sliderSteps, false, visualSettingManager.getSkin(), "%.3f");
     slider.setValue(f);
     slider.addListener(new EventListener() {
       @Override

@@ -1,6 +1,12 @@
 package ethanjones.cubes.core.settings;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 public interface VisualSettingManager {
 
-  public void setSettingGroup(SettingGroup settingGroup);
+  void setSettingGroup(SettingGroup settingGroup);
+
+  Skin getSkin();
+
+
 }
