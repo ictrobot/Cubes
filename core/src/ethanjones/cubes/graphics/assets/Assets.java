@@ -21,7 +21,7 @@ import java.util.Map;
 public class Assets {
 
   public static final String CORE = "core";
-  public static PackedTextureSheet packedTextureSheet;
+  public static PackedTextureSheet blockItemSheet;
   protected static HashMap<String, AssetManager> assetManagers = new HashMap<String, AssetManager>();
 
   public static AssetManager getCoreAssetManager() {
@@ -75,7 +75,8 @@ public class Assets {
   }
 
   public static void init() {
-    packedTextureSheet = getPackedTextureSheet(AssetType.block, AssetType.item);
+    blockItemSheet = getPackedTextureSheet(AssetType.block, AssetType.item);
+    getPackedTextureSheet(AssetType.hud, AssetType.world);
   }
 
   private static PackedTextureSheet getPackedTextureSheet(AssetType... assetType) {
@@ -88,7 +89,7 @@ public class Assets {
           try {
             if (!asset.getFileHandle().extension().equals("png")) continue;
             Pixmap pixmap = new Pixmap(asset.getFileHandle());
-            texturePacker.insertImage(entry.getKey() + ":" + asset.getPath(), pixmap);
+            texturePacker.insertImage(asset, pixmap);
             pixmap.dispose();
           } catch (Exception e) {
             Log.error("Failed to read file: " + asset.getPath(), e);
@@ -102,26 +103,26 @@ public class Assets {
     PackedTextureSheet packedTextureSheet = new PackedTextureSheet(new Material(TextureAttribute.createDiffuse(texture)));
     packedTextureSheet.getMaterial().set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
 
-    Map<String, TexturePacker.PackRectangle> rectangles = texturePacker.getRectangles();
+    Map<Asset, TexturePacker.PackRectangle> rectangles = texturePacker.getRectangles();
     int num = 0;
-    for (Map.Entry<String, TexturePacker.PackRectangle> entry : rectangles.entrySet()) {
+    for (Map.Entry<Asset, TexturePacker.PackRectangle> entry : rectangles.entrySet()) {
       num++;
-      PackedTexture packedTexture = new PackedTexture(texture, new TextureRegion(texture, entry.getValue().x, entry.getValue().y, entry.getValue().width, entry.getValue().height));
-      packedTextureSheet.getPackedTextures().put(entry.getKey(), packedTexture);
+      TextureRegion textureRegion = new TextureRegion(texture, entry.getValue().x, entry.getValue().y, entry.getValue().width, entry.getValue().height);
+      entry.getKey().setPackedTextureRegion(textureRegion, packedTextureSheet);
+      packedTextureSheet.getPackedTextures().put(entry.getKey().toString(), textureRegion);
+    }
+
+    for (AssetType type : assetType) {
+      type.setPackedTextureSheet(packedTextureSheet);
     }
     return packedTextureSheet;
   }
 
-  public static TextureRegion getPackedTexture(String name) {
-    PackedTexture packedTexture = packedTextureSheet.getPackedTextures().get(name);
-    return packedTexture == null ? null : packedTexture.textureRegion;
-  }
-
-  public static TextureRegion getPackedTextureFromID(String id, String type) {
+  public static TextureRegion getBlockItemTextureRegion(String id, String type) {
     int index = id.indexOf(":");
-    if (index == -1) throw new CubesException("Invalid block id \"" + id + "\"");
-    TextureRegion packedTexture = getPackedTexture(id.substring(0, index) + ":" + type + "/" + id.substring(index + 1) + ".png");
-    if (packedTexture == null) throw new CubesException("No block texture for " + type + " \"" + id + "\"");
+    if (index == -1) throw new CubesException("Invalid " + type + " id \"" + id + "\"");
+    TextureRegion packedTexture = blockItemSheet.getPackedTexture(id.substring(0, index) + ":" + type + "/" + id.substring(index + 1) + ".png");
+    if (packedTexture == null) throw new CubesException("No " + type + " texture for " + type + " \"" + id + "\"");
     return packedTexture;
   }
 }

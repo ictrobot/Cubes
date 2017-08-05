@@ -35,13 +35,13 @@ public class TexturePacker {
     public Node leftChild;
     public Node rightChild;
     public PackRectangle rect;
-    public String leaveName;
+    public String name;
 
-    public Node(int x, int y, int width, int height, Node leftChild, Node rightChild, String leaveName) {
+    public Node(int x, int y, int width, int height, Node leftChild, Node rightChild, String name) {
       this.rect = new PackRectangle(x, y, width, height);
       this.leftChild = leftChild;
       this.rightChild = rightChild;
-      this.leaveName = leaveName;
+      this.name = name;
     }
 
     public Node() {
@@ -53,18 +53,18 @@ public class TexturePacker {
   int padding;
   boolean duplicateBorder;
   Node root;
-  Map<String, PackRectangle> rectangles;
+  Map<Asset, PackRectangle> rectangles;
 
   public TexturePacker(int width, int height, int padding, boolean duplicateBorder) {
     this.pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
     this.padding = padding;
     this.duplicateBorder = duplicateBorder;
     this.root = new Node(0, 0, width, height, null, null, null);
-    this.rectangles = new HashMap<String, PackRectangle>();
+    this.rectangles = new HashMap<Asset, PackRectangle>();
   }
 
-  public boolean insertImage(String name, Pixmap image) {
-    if (rectangles.containsKey(name)) throw new RuntimeException("Key with name \"" + name + "\" is already in map");
+  public boolean insertImage(Asset asset, Pixmap image) {
+    if (rectangles.containsKey(asset)) throw new RuntimeException("Key \"" + asset.toString() + "\" is already in map");
 
     int borderPixels = padding;
     borderPixels <<= 1;
@@ -73,14 +73,14 @@ public class TexturePacker {
 
     if (node == null) return false;
 
-    node.leaveName = name;
+    node.name = asset.toString();
     rect = new PackRectangle(node.rect);
     rect.width -= borderPixels;
     rect.height -= borderPixels;
     borderPixels >>= 1;
     rect.x += borderPixels;
     rect.y += borderPixels;
-    rectangles.put(name, rect);
+    rectangles.put(asset, rect);
     pixmap.drawPixmap(image, rect.x, rect.y);
 
     if (duplicateBorder) {
@@ -108,13 +108,13 @@ public class TexturePacker {
   }
 
   private Node insert(Node node, PackRectangle rect) {
-    if (node.leaveName == null && node.leftChild != null && node.rightChild != null) {
+    if (node.name == null && node.leftChild != null && node.rightChild != null) {
       Node newNode = insert(node.leftChild, rect);
       if (newNode == null) newNode = insert(node.rightChild, rect);
 
       return newNode;
     } else {
-      if (node.leaveName != null) return null;
+      if (node.name != null) return null;
 
       if (node.rect.width == rect.width && node.rect.height == rect.height) return node;
 
@@ -156,7 +156,7 @@ public class TexturePacker {
     return pixmap;
   }
 
-  public Map<String, PackRectangle> getRectangles() {
+  public Map<Asset, PackRectangle> getRectangles() {
     return rectangles;
   }
 }

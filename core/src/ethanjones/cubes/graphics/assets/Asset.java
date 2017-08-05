@@ -14,11 +14,13 @@ public class Asset {
   
   private Texture texture;
   private TextureRegion textureRegion;
+  private TextureRegion packedTextureRegion;
+  private PackedTextureSheet packedTextureSheet;
   private Material material;
 
   public Asset(AssetManager assetManager, String path, FileHandle fileHandle) {
     this.assetManager = assetManager;
-    this.path = path;
+    this.path = path.replace('\\', '/');
     this.fileHandle = fileHandle;
   }
   
@@ -28,11 +30,27 @@ public class Asset {
   }
   
   public TextureRegion getTextureRegion() {
+    if (packedTextureRegion != null) return packedTextureRegion;
     if (textureRegion == null) textureRegion = new TextureRegion(getTexture());
     return textureRegion;
   }
+
+  public TextureRegion getOwnTextureRegion() {
+    if (textureRegion == null) textureRegion = new TextureRegion(getTexture());
+    return textureRegion;
+  }
+
+  void setPackedTextureRegion(TextureRegion packedTextureRegion, PackedTextureSheet packedTextureSheet) {
+    this.packedTextureRegion = packedTextureRegion;
+    this.packedTextureSheet = packedTextureSheet;
+  }
+
+  public TextureRegion getPackedTextureRegion() {
+    return packedTextureRegion;
+  }
   
   public Material getMaterial() {
+    if (packedTextureSheet != null) return packedTextureSheet.getMaterial();
     if (material == null) material = new Material(TextureAttribute.createDiffuse(getTexture()));
     return material;
   }
@@ -50,6 +68,6 @@ public class Asset {
   }
 
   public String toString() {
-    return path;
+    return assetManager.getName() + ":" + path;
   }
 }

@@ -13,7 +13,7 @@ public class BlockTextureHandler {
   TextureRegion[] textureRegions;
 
   public BlockTextureHandler(String id) {
-    this(Assets.getPackedTextureFromID(id, "block"));
+    this(Assets.getBlockItemTextureRegion(id, "block"));
   }
 
   public BlockTextureHandler(TextureRegion textureRegion) {
@@ -31,12 +31,12 @@ public class BlockTextureHandler {
   }
 
   public BlockTextureHandler setSide(BlockFace blockFace, String id) {
-    textureRegions[blockFace.index] = Assets.getPackedTextureFromID(id, "block");
+    textureRegions[blockFace.index] = Assets.getBlockItemTextureRegion(id, "block");
     return this;
   }
 
   public BlockTextureHandler setSide(int blockFace, String id) {
-    textureRegions[blockFace] = Assets.getPackedTextureFromID(id, "block");
+    textureRegions[blockFace] = Assets.getBlockItemTextureRegion(id, "block");
     return this;
   }
 }
