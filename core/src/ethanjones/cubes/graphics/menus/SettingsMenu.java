@@ -61,7 +61,11 @@ public class SettingsMenu extends Menu implements VisualSettingManager {
   public SettingsMenu(SettingGroup settingGroup) {
     this.settingGroup = settingGroup;
 
-    title = new Label(Localization.get("menu.settings.title"), skin.get("title", Label.LabelStyle.class));
+    if (settingGroup.getUnlocalizedName().isEmpty()) {
+      title = new Label(Localization.get("menu.settings.title"), skin.get("title", Label.LabelStyle.class));
+    } else {
+      title = new Label(Localization.get("menu.settings.titleWithName", Settings.getLocalisedSettingGroupName(settingGroup.getUnlocalizedName())), skin.get("title", Label.LabelStyle.class));
+    }
 
     table = new Table(skin);
 
@@ -130,5 +134,10 @@ public class SettingsMenu extends Menu implements VisualSettingManager {
   @Override
   public void setSettingGroup(SettingGroup settingGroup) {
     Adapter.setMenu(new SettingsMenu(settingGroup));
+  }
+
+  @Override
+  public Skin getSkin() {
+    return Menu.skin;
   }
 }

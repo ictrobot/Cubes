@@ -3,7 +3,6 @@ package ethanjones.cubes.core.settings.type;
 import ethanjones.cubes.core.settings.Setting;
 import ethanjones.cubes.core.settings.VisualSettingManager;
 import ethanjones.cubes.core.system.CubesException;
-import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menus.SettingsMenu;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -28,7 +27,7 @@ public class DropDownSetting extends Setting {
 
   @Override
   public Actor getActor(VisualSettingManager visualSettingManager) {
-    final SelectBox<String> selectBox = new SelectBox<String>(Menu.skin);
+    final SelectBox<String> selectBox = new SelectBox<String>(visualSettingManager.getSkin());
     selectBox.setItems(options);
     selectBox.setSelected(selected);
     selectBox.addListener(new EventListener() {

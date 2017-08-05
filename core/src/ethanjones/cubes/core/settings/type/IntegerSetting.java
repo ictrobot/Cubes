@@ -4,7 +4,6 @@ import ethanjones.cubes.core.settings.Setting;
 import ethanjones.cubes.core.settings.VisualSettingManager;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.graphics.menu.Fonts;
-import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menus.SettingsMenu;
 import ethanjones.cubes.side.client.ClientDebug;
 
@@ -69,9 +68,9 @@ public class IntegerSetting extends Setting {
   public Actor getActor(VisualSettingManager visualSettingManager) {
     switch (type) {
       case TextField:
-        return getTextField();
+        return getTextField(visualSettingManager);
       case Slider:
-        return getSlider();
+        return getSlider(visualSettingManager);
     }
     return null;
   }
@@ -81,8 +80,8 @@ public class IntegerSetting extends Setting {
     return Integer.toString(i);
   }
   
-  private TextField getTextField() {
-    final TextField textField = new TextField(i + "", Menu.skin);
+  private TextField getTextField(VisualSettingManager visualSettingManager) {
+    final TextField textField = new TextField(i + "", visualSettingManager.getSkin());
     textField.addListener(new EventListener() {
       @Override
       public boolean handle(Event event) {
@@ -106,9 +105,9 @@ public class IntegerSetting extends Setting {
     return textField;
   }
 
-  public Slider getSlider() {
+  public Slider getSlider(VisualSettingManager visualSettingManager) {
     if (!hasRange) throw new CubesException("Range required");
-    final Slider slider = new SliderWithValue(rangeStart, rangeEnd, 1f, false, Menu.skin, false);
+    final Slider slider = new SliderWithValue(rangeStart, rangeEnd, 1f, false, visualSettingManager.getSkin(), false);
     slider.setValue(i);
     slider.addListener(new EventListener() {
       @Override

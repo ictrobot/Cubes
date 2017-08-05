@@ -1,7 +1,6 @@
 package ethanjones.cubes.core.settings;
 
 import ethanjones.cubes.core.localization.Localization;
-import ethanjones.cubes.graphics.menu.Menu;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -15,6 +14,7 @@ public class SettingGroup {
 
   private final ArrayList<String> children;
   private final LinkedHashMap<String, SettingGroup> childGroups;
+  private String unlocalizedName = "";
 
   public SettingGroup() {
     children = new ArrayList<String>();
@@ -28,11 +28,12 @@ public class SettingGroup {
 
   public SettingGroup add(String name, SettingGroup settingGroup) {
     childGroups.put(name, settingGroup);
+    settingGroup.unlocalizedName = name;
     return this;
   }
 
   public Actor getActor(final VisualSettingManager visualSettingManager) {
-    final TextButton textButton = new TextButton(Localization.get("menu.settings.open_group"), Menu.skin);
+    final TextButton textButton = new TextButton(Localization.get("menu.settings.open_group"), visualSettingManager.getSkin());
     textButton.addListener(new ChangeListener() {
       @Override
       public void changed(ChangeEvent event, Actor actor) {
@@ -48,6 +49,10 @@ public class SettingGroup {
 
   public HashMap<String, SettingGroup> getChildGroups() {
     return childGroups;
+  }
+
+  public String getUnlocalizedName() {
+    return unlocalizedName;
   }
 
   public boolean shouldDisplay() {

@@ -2,7 +2,6 @@ package ethanjones.cubes.core.settings.type;
 
 import ethanjones.cubes.core.settings.Setting;
 import ethanjones.cubes.core.settings.VisualSettingManager;
-import ethanjones.cubes.graphics.menu.Menu;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -24,7 +23,7 @@ public class BooleanSetting extends Setting {
 
   @Override
   public Actor getActor(VisualSettingManager visualSettingManager) {
-    final TextButton textButton = new TextButton(b ? "True" : "False", Menu.skin);
+    final TextButton textButton = new TextButton(b ? "True" : "False", visualSettingManager.getSkin());
     textButton.addListener(new ChangeListener() {
       @Override
       public void changed(ChangeEvent event, Actor actor) {//easier than SettingsMenu.SaveEvent and works
