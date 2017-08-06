@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class WorldSaveTask {
 
@@ -15,6 +16,7 @@ public class WorldSaveTask {
   public final ConcurrentLinkedQueue<Area> saveQueue = new ConcurrentLinkedQueue<Area>();
   public final CountDownLatch saveComplete = new CountDownLatch(WorldTasks.SAVE_THREADS);
   public final int length;
+  public final AtomicLong timeStarted = new AtomicLong(0);
   public final AtomicInteger written = new AtomicInteger(0);
 
   public WorldSaveTask(Save save, Collection<Area> areas) {

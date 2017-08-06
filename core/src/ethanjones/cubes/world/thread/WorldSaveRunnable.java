@@ -24,7 +24,8 @@ public class WorldSaveRunnable implements Runnable {
           }
           task = queue.peek();
         }
-        
+
+        task.timeStarted.compareAndSet(0, System.currentTimeMillis());
         if (!task.save.readOnly) {
           Area area = task.saveQueue.poll();
           while (area != null) {
@@ -44,7 +45,7 @@ public class WorldSaveRunnable implements Runnable {
         }
         
         if (queue.remove(task)) {
-          Log.debug("Saved areas: wrote " + task.written + " total " + task.length);
+          Log.debug("Saved areas: wrote " + task.written + " total " + task.length + " time " + (System.currentTimeMillis() - task.timeStarted.get()) + "ms");
         }
       } catch (CubesException e) {
         if (e.className.equals(Side.class.getName())) {
