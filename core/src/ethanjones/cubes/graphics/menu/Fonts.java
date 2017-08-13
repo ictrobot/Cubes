@@ -17,7 +17,7 @@ public class Fonts {
   public static BitmapFont debug;
 
   static {
-    Log.debug("Generating font");
+    Log.debug("Reading font");
     long time = System.currentTimeMillis();
 
     title = getFont(64);
