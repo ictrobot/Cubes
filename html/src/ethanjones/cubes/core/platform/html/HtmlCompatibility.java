@@ -52,7 +52,7 @@ public class HtmlCompatibility extends Compatibility {
   @Override
   public void postInit() {
     super.postInit();
-    Settings.getIntegerSetting(Settings.GRAPHICS_VIEW_DISTANCE).rangeEnd = 4;
+    Settings.getIntegerSetting(Settings.GRAPHICS_VIEW_DISTANCE).rangeEnd = 8;
   }
   
   @Override
