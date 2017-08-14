@@ -1,8 +1,9 @@
 package ethanjones.cubes.core.util;
 
-import com.badlogic.gdx.math.RandomXS128;
+import java.util.Random;
 
-public class ThreadRandom extends RandomXS128 {
+// Massive speed up in GWT by using Random instead of RandomXS128
+public class ThreadRandom extends Random {
   
   private static ThreadRandom random = new ThreadRandom();
   
