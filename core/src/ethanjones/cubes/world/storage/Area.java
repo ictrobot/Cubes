@@ -651,6 +651,15 @@ public class Area implements Lock.HasLock {
         heightmap[x + z * SIZE_BLOCKS] = height;
       }
     }
+    // top and bottom
+    for (int x = 0; x < SIZE_BLOCKS; x++) {
+      for (int z = 0; z < SIZE_BLOCKS; z++) {
+        int i = getRef(x, 0, z);
+        if (blocks[i] != 0) blocks[i] |= BLOCK_VISIBLE;
+        i = getRef(x, maxY, z);
+        if (blocks[i] != 0) blocks[i] |= BLOCK_VISIBLE;
+      }
+    }
 
     modify();
     lock.writeUnlock();
