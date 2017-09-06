@@ -43,7 +43,7 @@ public final class AmbientOcclusion {
 
   private static boolean exists(Area base, int x, int y, int z) {
     Area a = base.neighbour(CoordinateConverter.area(x), CoordinateConverter.area(z));
-    if (a == null) return false; //TODO fix
+    if (a == null || a.blocks == null) return false; //TODO fix
     if (y > a.maxY || y < 0) return false;
     x -= a.minBlockX;
     z -= a.minBlockZ;
