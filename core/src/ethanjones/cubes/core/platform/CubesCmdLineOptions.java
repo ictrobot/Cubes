@@ -11,18 +11,18 @@ import java.util.Locale;
 
 public class CubesCmdLineOptions {
 
-  private CmdLineParser.Option<String> modFolderOption;
+  private CmdLineParser.Option<String> modFileOption;
   private boolean parsed = false;
 
   protected CmdLineParser build() {
     CmdLineParser cmdLineParser = new CmdLineParser(true);
-    modFolderOption = cmdLineParser.addStringOption("modFolder", "Path to directory containing a Cubes mod");
+    modFileOption = cmdLineParser.addStringOption("mod", "Path to a Cubes mod");
     return cmdLineParser;
   }
 
   protected void parse(CmdLineParser cmdLineParser) {
-    for (String s : cmdLineParser.getOptionValues(modFolderOption)) {
-      ModManager.addExtraModFolder(Gdx.files.absolute(s));
+    for (String s : cmdLineParser.getOptionValues(modFileOption)) {
+      ModManager.addExtraMod(Gdx.files.absolute(s));
     }
   }
 
