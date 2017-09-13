@@ -3,7 +3,7 @@ package ethanjones.cubes.side.server.dedicated;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Compatibility;
-import ethanjones.cubes.core.platform.ServerCmdLineOptions;
+import ethanjones.cubes.core.platform.CubesCmdLineOptions;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.networking.server.ServerNetworking;
@@ -24,11 +24,11 @@ public class DedicatedServer extends CubesServer {
   private final ArrayList<ClientIdentifier> disconnected = new ArrayList<ClientIdentifier>();
   private ConsoleCommandSender consoleCommandSender;
 
-  public DedicatedServer(ServerCmdLineOptions options) {
+  public DedicatedServer(CubesCmdLineOptions.ServerCmdLineOptions options) {
     super(getSave(options));
   }
 
-  private static Save getSave(ServerCmdLineOptions options) {
+  private static Save getSave(CubesCmdLineOptions.ServerCmdLineOptions options) {
     Save save = new Save("world", Compatibility.get().getBaseFolder().child("world"));
     if (save.readSaveOptions() == null) {
       SaveOptions saveOptions = save.getSaveOptions();

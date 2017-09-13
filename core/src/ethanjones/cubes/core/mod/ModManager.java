@@ -16,14 +16,25 @@ import ethanjones.cubes.graphics.assets.Assets;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.StreamUtils;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.*;
 
 public class ModManager {
 
+  private static List<FileHandle> extraModFolders = new ArrayList<FileHandle>();
   private static boolean init = false;
   private static List<ModInstance> mods;
   private static ModInstance currentMod;
+
+  public synchronized static void addExtraModFolder(FileHandle fileHandle) {
+    if (init) throw new IllegalArgumentException("Must be run before ModManager.init()");
+    if (fileHandle == null) throw new IllegalArgumentException("Filehandle cannot be null");
+    if (!fileHandle.isDirectory()) throw new IllegalArgumentException(fileHandle.path() + " is not a directory");
+    extraModFolders.add(fileHandle);
+  }
 
   public synchronized static void init() {
     if (init) return;
@@ -49,6 +60,7 @@ public class ModManager {
     }
     
     for (FileHandle fileHandle : getModFiles()) {
+      if (extraModFolders.contains(fileHandle)) Log.warning("Loading mod from " + fileHandle.file().getAbsolutePath());
       FileHandle classFile = null;
       String className = null;
       String name = "";
@@ -175,17 +187,20 @@ public class ModManager {
     ModManager.mods = Collections.unmodifiableList(mods);
   }
 
-  private static FileHandle[] getModFiles() {
+  private static List<FileHandle> getModFiles() {
     FileHandle base = Compatibility.get().getBaseFolder().child("mods");
     base.mkdirs();
     Compatibility.get().nomedia(base);
-    return base.list(new FileFilter() {
+    ArrayList<FileHandle> fileHandles = new ArrayList<FileHandle>();
+    fileHandles.addAll(extraModFolders);
+    Collections.addAll(fileHandles, base.list(new FileFilter() {
       @Override
       public boolean accept(File pathname) {
         String s = pathname.getName().toLowerCase();
         return s.endsWith(".cm");
       }
-    });
+    }));
+    return fileHandles;
   }
 
   private static void writeToFile(FileHandle file, ModFile modFile) throws Exception {

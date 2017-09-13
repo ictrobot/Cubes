@@ -30,6 +30,7 @@ public class ClientAdapter implements AdapterInterface {
   private Menu menu;
   private IntegratedServer cubesServer;
   private CubesClient cubesClient;
+  private CubesCmdLineOptions.ClientCmdLineOptions options;
   private Thread thread;
 
   private AtomicBoolean shownSplash = new AtomicBoolean(false);
@@ -47,6 +48,9 @@ public class ClientAdapter implements AdapterInterface {
       Gdx.graphics.setTitle(Branding.DEBUG);
       thread = Thread.currentThread();
       thread.setName(getSide().name());
+
+      options = new CubesCmdLineOptions.ClientCmdLineOptions();
+      options.parse();
       
       Cubes.preInit(this);
     } catch (StopLoopException e) {

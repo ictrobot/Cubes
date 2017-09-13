@@ -13,7 +13,7 @@ import ethanjones.cubes.side.server.dedicated.DedicatedServer;
 public class ServerAdapter implements AdapterInterface {
 
   private DedicatedServer cubesServer;
-  private ServerCmdLineOptions options;
+  private CubesCmdLineOptions.ServerCmdLineOptions options;
   private Thread thread;
 
   public ServerAdapter() {
@@ -26,7 +26,7 @@ public class ServerAdapter implements AdapterInterface {
       thread = Thread.currentThread();
       thread.setName(getSide().name());
 
-      options = new ServerCmdLineOptions();
+      options = new CubesCmdLineOptions.ServerCmdLineOptions();
       options.parse();
 
       Cubes.preInit(this);
