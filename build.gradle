@@ -155,7 +155,11 @@ project(":android") {
         natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi"
         natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a"
         natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"
-        compile "net.bytebuddy:byte-buddy-android:$byteBuddyVersion"
+
+        compile("net.bytebuddy:byte-buddy-android:$byteBuddyVersion") {
+            exclude group:"com.jakewharton.android.repackaged"
+        }
+        compile "ethanjones.repackaged.android:dx:7.1.2_r33"
     }
 }
 
