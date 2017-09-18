@@ -22,3 +22,6 @@ command.help.command=Command %s:
 command.help.format=%1$s - %2$s
 
 command.stop.message=Stopping...
+
+command.save.readOnly=Save is read only!
+command.save.starting=Saving...

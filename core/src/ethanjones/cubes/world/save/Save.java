@@ -56,6 +56,7 @@ public class Save {
   }
 
   public void writeAreas(AreaMap areas) {
+    if (readOnly) return;
     WorldTasks.save(this, areas);
   }
 
@@ -77,6 +78,7 @@ public class Save {
   }
 
   public void writePlayers() {
+    if (readOnly) return;
     List<ClientIdentifier> clients = Cubes.getServer().getAllClients();
     for (ClientIdentifier client : clients) {
       writePlayer(client.getPlayer());

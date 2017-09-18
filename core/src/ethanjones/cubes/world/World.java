@@ -270,7 +270,7 @@ public abstract class World implements Disposable, HasLock {
   }
 
   public void save() {
-    if (save == null) return;
+    if (save == null || save.readOnly) return;
     updateLock.readLock();
 
     // players
