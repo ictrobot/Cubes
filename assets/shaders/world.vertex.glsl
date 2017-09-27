@@ -28,6 +28,10 @@ uniform float u_lightoverride;
 attribute float a_voxellight;
 varying float v_voxellight;
 
+#ifdef GL_ES
+#define simpleOperations
+#endif
+
 #ifdef feature_fog
 uniform vec3 u_cameraposition;
 varying float v_distance;
@@ -55,7 +59,7 @@ void main() {
 
     float voxellight = a_voxellight;
 
-    #ifdef GL_ES
+    #ifdef simpleOperations
     int int_side = int(floor(voxellight / 256.0));
     #else
     int int_voxellight = int(voxellight);
@@ -64,12 +68,12 @@ void main() {
 
     if (u_lightoverride != -1.0) {
         voxellight = u_lightoverride;
-        #ifndef GL_ES
+        #ifndef simpleOperations
         int_voxellight = int(u_lightoverride);
         #endif
     }
 
-    #ifdef GL_ES
+    #ifdef simpleOperations
     int int_sunlight = int(floor(mod(voxellight, 256.0) / 16.0));
     int int_blocklight = int(mod(voxellight, 16.0));
     #else

@@ -29,6 +29,7 @@ public class Settings {
   public static final String GRAPHICS_FOG = "graphics.fog";
   public static final String GRAPHICS_SCALE = "graphics.scale";
   public static final String GRAPHICS_AO = "graphics.ambientOcclusion";
+  public static final String GRAPHICS_SIMPLE_SHADER = "graphics.simpleShader";
   public static final String INPUT_MOUSE_SENSITIVITY = "input.mouseSensitivity";
   public static final String INPUT_TOUCHPAD_SIZE = "input.touchpadSize";
   public static final String INPUT_TOUCHPAD_LEFT = "input.touchpadLeft";
@@ -75,6 +76,12 @@ public class Settings {
       }
     });
     addSetting(GRAPHICS_AO, AmbientOcclusion.getSetting());
+    addSetting(GRAPHICS_SIMPLE_SHADER, new BooleanSetting(false) {
+      @Override
+      public boolean shouldDisplay() {
+        return Compatibility.get().getApplicationType() == Application.ApplicationType.Desktop;
+      }
+    });
 
     addSetting(INPUT_MOUSE_SENSITIVITY, new FloatSetting(0.5f, 0.05f, 1f, FloatSetting.Type.Slider));
     addSetting(INPUT_TOUCHPAD_SIZE, new FloatSetting(0.45f, 0.30f, 0.60f, FloatSetting.Type.Slider) {
@@ -103,7 +110,7 @@ public class Settings {
     SettingGroup keybinds = Keybinds.init();
   
     base.add(USERNAME)
-            .add(GROUP_GRAPHICS, new SettingGroup().add(GRAPHICS_VIEW_DISTANCE).add(GRAPHICS_FOV).add(GRAPHICS_VSYNC).add(GRAPHICS_FOG).add(GRAPHICS_SCALE).add(GRAPHICS_AO))
+            .add(GROUP_GRAPHICS, new SettingGroup().add(GRAPHICS_VIEW_DISTANCE).add(GRAPHICS_FOV).add(GRAPHICS_VSYNC).add(GRAPHICS_FOG).add(GRAPHICS_SCALE).add(GRAPHICS_AO).add(GRAPHICS_SIMPLE_SHADER))
             .add(GROUP_INPUT, new SettingGroup().add(keybindsGroup, keybinds).add(INPUT_MOUSE_SENSITIVITY).add(INPUT_TOUCHPAD_SIZE).add(INPUT_TOUCHPAD_LEFT))
             .add(GROUP_NETWORKING, new SettingGroup().add(NETWORKING_PORT))
             .add(GROUP_DEBUG, new SettingGroup().add(DEBUG_FRAMETIME_GRAPH).add(DEBUG_GL_PROFILER));
