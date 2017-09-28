@@ -139,4 +139,11 @@ public abstract class Compatibility {
     return unloaded.load(getClass().getClassLoader(), Default.INJECTION);
   }
 
+  public void setupCmdLineOptions(CmdLineParser cmdLineParser) {
+
+  }
+
+  public void parseCmdLineOptions(CmdLineParser cmdLineParser) {
+
+  }
 }

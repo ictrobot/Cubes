@@ -3,6 +3,7 @@ package ethanjones.cubes.core.platform.desktop;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.mod.ModLoader;
 import ethanjones.cubes.core.platform.Adapter;
+import ethanjones.cubes.core.platform.CmdLineParser;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.graphics.assets.AssetFinder;
@@ -69,6 +70,7 @@ public abstract class DesktopCompatibility extends Compatibility {
   public void logEnvironment() {
     Runtime runtime = Runtime.getRuntime();
     Log.debug("Maximum Memory:     " + (int) (runtime.maxMemory() / 1048576) + "MB");
+    if (!DesktopMemoryChecker.isRunning()) Log.warning("Desktop Memory Checker is disabled!");
   }
 
   @Override
@@ -98,5 +100,15 @@ public abstract class DesktopCompatibility extends Compatibility {
   @Override
   public String[] getCommandLineArgs() {
     return arg;
+  }
+
+  @Override
+  public void setupCmdLineOptions(CmdLineParser cmdLineParser) {
+    cmdLineParser.addBooleanOption("disable-memory-checker", "Disable desktop memory checker");
+  }
+
+  @Override
+  public void parseCmdLineOptions(CmdLineParser cmdLineParser) {
+    if (cmdLineParser.getOptionValue("disable-memory-checker", null) != null) DesktopMemoryChecker.disable();
   }
 }

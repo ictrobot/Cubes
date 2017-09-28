@@ -17,6 +17,7 @@ public class CubesCmdLineOptions {
   protected CmdLineParser build() {
     CmdLineParser cmdLineParser = new CmdLineParser(true);
     modFileOption = cmdLineParser.addStringOption("mod", "Path to a Cubes mod");
+    Compatibility.get().setupCmdLineOptions(cmdLineParser);
     return cmdLineParser;
   }
 
@@ -24,6 +25,7 @@ public class CubesCmdLineOptions {
     for (String s : cmdLineParser.getOptionValues(modFileOption)) {
       ModManager.addExtraMod(Gdx.files.absolute(s));
     }
+    Compatibility.get().parseCmdLineOptions(cmdLineParser);
   }
 
   public final void parse() {

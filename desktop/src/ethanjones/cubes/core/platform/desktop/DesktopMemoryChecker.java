@@ -5,21 +5,36 @@ import ethanjones.cubes.core.system.Debug;
 
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public final class DesktopMemoryChecker extends Thread {
 
   private static final int criticalMemoryThreshold = 25;
   private static final int lowMemoryThreshold = 50;
 
-  public static void setup() {
-    new DesktopMemoryChecker().start();
+  private static DesktopMemoryChecker INSTANCE = null;
+
+  static void setup() {
+    if (INSTANCE == null) {
+      INSTANCE =  new DesktopMemoryChecker();
+      INSTANCE.start();
+    }
+  }
+
+  static void disable() {
+    if (INSTANCE != null) INSTANCE.running.set(false);
+  }
+
+  public static boolean isRunning() {
+    return INSTANCE != null && INSTANCE.isAlive();
   }
 
   private final SoftReference<Object> outOfMemoryChecker = new SoftReference<Object>(new Integer[1024]);
   private WeakReference<Object> gcChecker = getGcChecker();
   private Runtime runtime = Runtime.getRuntime();
+  private AtomicBoolean running = new AtomicBoolean(true);
 
-  public DesktopMemoryChecker() {
+  private DesktopMemoryChecker() {
     setDaemon(true);
     setName(DesktopMemoryChecker.class.getSimpleName());
     setUncaughtExceptionHandler(Debug.UncaughtExceptionHandler.instance);
@@ -27,7 +42,7 @@ public final class DesktopMemoryChecker extends Thread {
 
   @Override
   public void run() {
-    while (true) {
+    while (running.get()) {
       if (outOfMemoryChecker.get() == null) {
         Debug.lowMemory();
         if (Compatibility.get().getFreeMemory() <= criticalMemoryThreshold) Debug.criticalMemory();
@@ -43,7 +58,7 @@ public final class DesktopMemoryChecker extends Thread {
       }
       try {
         Thread.sleep(50);
-      } catch (InterruptedException e) {
+      } catch (InterruptedException ignored) {
 
       }
     }
