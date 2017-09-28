@@ -2,7 +2,9 @@ package ethanjones.cubes.graphics.world;
 
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Compatibility;
+import ethanjones.cubes.core.settings.Setting;
 import ethanjones.cubes.core.settings.Settings;
+import ethanjones.cubes.core.settings.type.BooleanSetting;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.graphics.world.ao.AmbientOcclusion;
 import ethanjones.cubes.side.common.Cubes;
@@ -35,6 +37,24 @@ public class WorldShaderProvider implements ShaderProvider {
   private static final int MAX_FEATURE_FLAG = 2;
   private static final int COMBINATIONS = 2 * MAX_FEATURE_FLAG;
   private static final CubesShader[] shaders = new CubesShader[COMBINATIONS];
+
+  public static Setting getSetting() {
+    return new BooleanSetting(false) {
+      @Override
+      public boolean shouldDisplay() {
+        return Compatibility.get().getApplicationType() == Application.ApplicationType.Desktop;
+      }
+
+      @Override
+      public void onChange() {
+        Log.debug("Emptying shader cache");
+        for (int i = 0; i < shaders.length; i++) {
+          if (shaders[i] != null) shaders[i].dispose();
+          shaders[i] = null;
+        }
+      }
+    };
+  }
 
   @Override
   public Shader getShader(Renderable renderable) {

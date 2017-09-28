@@ -4,6 +4,7 @@ import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.settings.type.*;
+import ethanjones.cubes.graphics.world.WorldShaderProvider;
 import ethanjones.cubes.graphics.world.ao.AmbientOcclusion;
 
 import com.badlogic.gdx.Application;
@@ -76,12 +77,7 @@ public class Settings {
       }
     });
     addSetting(GRAPHICS_AO, AmbientOcclusion.getSetting());
-    addSetting(GRAPHICS_SIMPLE_SHADER, new BooleanSetting(false) {
-      @Override
-      public boolean shouldDisplay() {
-        return Compatibility.get().getApplicationType() == Application.ApplicationType.Desktop;
-      }
-    });
+    addSetting(GRAPHICS_SIMPLE_SHADER, WorldShaderProvider.getSetting());
 
     addSetting(INPUT_MOUSE_SENSITIVITY, new FloatSetting(0.5f, 0.05f, 1f, FloatSetting.Type.Slider));
     addSetting(INPUT_TOUCHPAD_SIZE, new FloatSetting(0.45f, 0.30f, 0.60f, FloatSetting.Type.Slider) {
