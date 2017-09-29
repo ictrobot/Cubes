@@ -1,5 +1,6 @@
 package ethanjones.cubes.graphics.world.ao;
 
+import ethanjones.cubes.core.id.TransparencyManager;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.settings.Setting;
 import ethanjones.cubes.core.settings.Settings;
@@ -47,7 +48,7 @@ public final class AmbientOcclusion {
     if (y > a.maxY || y < 0) return false;
     x -= a.minBlockX;
     z -= a.minBlockZ;
-    return a.blocks[Area.getRef(x, y, z)] != 0;
+    return !TransparencyManager.isTransparent(a.blocks[Area.getRef(x, y, z)]);
   }
 
   private static TextureRegion y(Area area, int x, int y, int z) {
