@@ -378,7 +378,7 @@ public class CmdLineParser {
     public static class HelpOption extends Option<String> {
 
       public HelpOption() {
-        super("h", "help", false, "Help", null);
+        super("h", "help", false, "Prints this help text", null);
       }
 
     }
@@ -623,7 +623,7 @@ public class CmdLineParser {
     remainingArgs = otherArgs.toArray(remainingArgs);
 
     if (helpOption != null && values.containsKey("help")) {
-      helpText();
+      printHelpText();
       help = true;
     }
   }
@@ -653,34 +653,48 @@ public class CmdLineParser {
     this.helpStartText = helpStartText;
   }
 
-  public void helpText() {
+  private void printHelpText() {
     if (helpStartText != null) {
       System.out.println(helpStartText);
       System.out.println();
     }
-    Set<Option> set = new HashSet<Option>();
+    Set<Option> set = new TreeSet<Option>(new Comparator<Option>() {
+      @Override
+      public int compare(Option o1, Option o2) {
+        return o1.longForm.compareTo(o2.longForm);
+      }
+    });
     set.addAll(options.values()); // remove duplicates
+
+    int optionLength = 0;
+    int helpLength = 0;
     for (Option<?> option : set) {
       if (option.shortForm != null) {
-        System.out.print("-");
-        System.out.print(option.shortForm);
-        System.out.print(", --");
-        System.out.print(option.longForm);
+        optionLength = Math.max(optionLength, option.shortForm.length() + option.longForm.length() + 5);
       } else {
-        System.out.print("--");
-        System.out.print(option.longForm);
+        optionLength = Math.max(optionLength, option.longForm.length() + 2);
       }
-      if (option.helpText != null) {
-        System.out.print("\t");
-        System.out.print(option.helpText);
+      if (option.helpText != null) helpLength = Math.max(helpLength, option.helpText.length());
+    }
+    optionLength += 4;
+    helpLength += 4;
+
+    for (Option<?> option : set) {
+      if (option.shortForm != null) {
+        System.out.print(pad("-" + option.shortForm + ", --" + option.longForm, optionLength));
+      } else {
+        System.out.print(pad("--" + option.longForm, optionLength));
       }
+      System.out.print(pad(option.helpText != null ? option.helpText : "", helpLength));
       if (option.typeText != null) {
-        System.out.print("\t[");
-        System.out.print(option.typeText);
-        System.out.print("]");
+        System.out.print("[" + option.typeText + "]");
       }
       System.out.println();
     }
+  }
+
+  private String pad(String str, int length) {
+    return String.format("%1$-" + length + "s", str);
   }
 
   public boolean helpCalled() {
