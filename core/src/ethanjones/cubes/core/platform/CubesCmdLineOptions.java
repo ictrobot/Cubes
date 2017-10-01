@@ -63,14 +63,16 @@ public class CubesCmdLineOptions {
     public String worldGenerator;
     public Gamemode worldGamemode;
     public Integer port;
+    public String worldFolder;
 
     protected CmdLineParser build() {
       CmdLineParser clp = super.build();
       clp.setHelpStartText("Cubes\n\nWorld options only used when generating new world");
       clp.addIntegerOption('p', "port", "Networking port");
-      clp.addStringOption('s', "seed", "World Generator Seed");
-      clp.addStringOption('g', "generator", "World Generator");
-      clp.addStringOption('m', "gamemode", "World Gamemode");
+      clp.addStringOption("seed", "World Generator Seed");
+      clp.addStringOption("generator", "World Generator");
+      clp.addStringOption("gamemode", "World Gamemode");
+      clp.addStringOption("world-folder", "World Folder");
       return clp;
     }
 
@@ -86,6 +88,7 @@ public class CubesCmdLineOptions {
       if (gamemode != null) {
         worldGamemode = Gamemode.valueOf(gamemode);
       }
+      worldFolder = clp.getOptionValue("world-folder", null);
     }
   }
 }

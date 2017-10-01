@@ -13,6 +13,9 @@ import ethanjones.cubes.side.server.CubesServer;
 import ethanjones.cubes.world.save.Save;
 import ethanjones.cubes.world.save.SaveOptions;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -29,7 +32,9 @@ public class DedicatedServer extends CubesServer {
   }
 
   private static Save getSave(CubesCmdLineOptions.ServerCmdLineOptions options) {
-    Save save = new Save("world", Compatibility.get().getBaseFolder().child("world"));
+    FileHandle worldFolder = Compatibility.get().getBaseFolder().child("world");
+    if (options.worldFolder != null) worldFolder = Gdx.files.absolute(options.worldFolder);
+    Save save = new Save("world", worldFolder);
     if (save.readSaveOptions() == null) {
       SaveOptions saveOptions = save.getSaveOptions();
       if (options.worldSeedString != null) saveOptions.setWorldSeed(options.worldSeedString);
