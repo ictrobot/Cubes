@@ -62,11 +62,6 @@ public class AndroidCompatibility extends Compatibility {
   }
 
   @Override
-  public FileHandle getWorkingFolder() {
-    return Gdx.files.internal(".");
-  }
-  
-  @Override
   public void nomedia(FileHandle folder) {
     try {
       folder.child(".nomedia").file().createNewFile();
