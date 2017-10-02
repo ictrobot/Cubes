@@ -9,6 +9,9 @@ import ethanjones.cubes.core.mod.ModState;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.Compatibility;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -163,5 +166,37 @@ public class Debug {
       if (stackTraceElement.getClassName().equals(name)) return true;
     }
     return false;
+  }
+
+  /**
+  Called after a crash to display log to user
+   */
+  public static String getLogString(String file) {
+    StringBuilder output = new StringBuilder();
+    FileInputStream stream = null;
+    InputStreamReader reader = null;
+    try {
+      stream = new FileInputStream(file);
+      reader = new InputStreamReader(stream);
+      char[] buffer = new char[512];
+
+      while (true) {
+        int length = reader.read(buffer);
+        if (length == -1) break;
+        output.append(buffer, 0, length);
+      }
+    } catch (IOException ex) {
+      throw new RuntimeException(ex);
+    } finally {
+      try {
+        if (stream != null) stream.close();
+      } catch (IOException ignored) {
+      }
+      try {
+        if (reader != null) reader.close();
+      } catch (IOException ignored) {
+      }
+    }
+    return output.toString();
   }
 }

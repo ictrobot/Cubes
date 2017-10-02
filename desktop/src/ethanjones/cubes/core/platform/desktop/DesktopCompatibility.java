@@ -15,14 +15,17 @@ import com.badlogic.gdx.files.FileHandle;
 
 public abstract class DesktopCompatibility extends Compatibility {
 
-  protected static void setup() {
+  protected static final FileHandle workingFolder = new FileHandle(System.getProperty("user.dir"));
+
+  static void setup() {
     DesktopSecurityManager.setup();
     DesktopMemoryChecker.setup();
   }
 
-  public final OS os;
+  private final OS os;
   private final String[] arg;
-  protected DesktopModLoader modLoader;
+  private DesktopModLoader modLoader;
+  protected FileHandle baseFolder = null;
 
   protected DesktopCompatibility(DesktopLauncher desktopLauncher, Application.ApplicationType applicationType, String[] arg) {
     super(desktopLauncher, applicationType);
@@ -43,7 +46,8 @@ public abstract class DesktopCompatibility extends Compatibility {
   }
 
   public FileHandle getBaseFolder() {
-    if (Adapter.isDedicatedServer()) return getWorkingFolder();
+    if (baseFolder != null) return baseFolder;
+    if (Adapter.isDedicatedServer()) return workingFolder;
     FileHandle homeDir = Gdx.files.absolute(System.getProperty("user.home"));
     switch (os) {
       case Windows:
@@ -105,10 +109,13 @@ public abstract class DesktopCompatibility extends Compatibility {
   @Override
   public void setupCmdLineOptions(CmdLineParser cmdLineParser) {
     cmdLineParser.addBooleanOption("disable-memory-checker", "Disable desktop memory checker");
+    cmdLineParser.addStringOption("base-folder", "Base Folder");
   }
 
   @Override
   public void parseCmdLineOptions(CmdLineParser cmdLineParser) {
     if (cmdLineParser.getOptionValue("disable-memory-checker", null) != null) DesktopMemoryChecker.disable();
+    String baseFolder = cmdLineParser.getOptionValue("base-folder", null);
+    if (baseFolder != null) this.baseFolder = Gdx.files.absolute(baseFolder);
   }
 }

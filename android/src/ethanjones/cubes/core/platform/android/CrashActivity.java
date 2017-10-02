@@ -1,12 +1,10 @@
 package ethanjones.cubes.core.platform.android;
 
+import ethanjones.cubes.core.system.Debug;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.TextView;
-
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 
 public class CrashActivity extends Activity {
 
@@ -18,36 +16,7 @@ public class CrashActivity extends Activity {
     String s = getIntent().getStringExtra("ethanjones.cubes.core.platform.android.LOG_FILE");
 
     TextView text = (TextView) findViewById(R.id.editText);
-    text.setText(getLog(s));
-  }
-
-  private static String getLog(String file) {
-    StringBuilder output = new StringBuilder();
-    FileInputStream stream = null;
-    InputStreamReader reader = null;
-    try {
-      stream = new FileInputStream(file);
-      reader = new InputStreamReader(stream);
-      char[] buffer = new char[512];
-
-      while (true) {
-        int length = reader.read(buffer);
-        if (length == -1) break;
-        output.append(buffer, 0, length);
-      }
-    } catch (IOException ex) {
-      throw new RuntimeException(ex);
-    } finally {
-      try {
-        if (stream != null) stream.close();
-      } catch (IOException ignored) {
-      }
-      try {
-        if (reader != null) reader.close();
-      } catch (IOException ignored) {
-      }
-    }
-    return output.toString();
+    text.setText(Debug.getLogString(s));
   }
 
 }

@@ -10,7 +10,7 @@ import com.badlogic.gdx.files.FileHandle;
 
 public class ServerCompatibility extends DesktopCompatibility {
 
-  protected ServerCompatibility(ServerLauncher serverLauncher, String[] arg) {
+  ServerCompatibility(ServerLauncher serverLauncher, String[] arg) {
     super(serverLauncher, Application.ApplicationType.HeadlessDesktop, arg);
   }
 
@@ -24,10 +24,7 @@ public class ServerCompatibility extends DesktopCompatibility {
 
   @Override
   public FileHandle getBaseFolder() {
-    FileHandle fileHandle = getWorkingFolder();
-    if (Branding.IS_DEBUG) {
-      fileHandle = fileHandle.child("server");
-    }
-    return fileHandle;
+    if (baseFolder != null) return baseFolder;
+    return Branding.IS_DEBUG ? workingFolder.child("server") : workingFolder;
   }
 }

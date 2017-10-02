@@ -3,21 +3,19 @@ package ethanjones.cubes.core.platform.desktop;
 import ethanjones.cubes.core.logging.loggers.FileLogWriter;
 import ethanjones.cubes.core.settings.Keybinds;
 import ethanjones.cubes.core.system.Branding;
+import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.side.common.Side;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Comparator;
 
 public class ClientCompatibility extends DesktopCompatibility {
 
-  public final static Comparator<Graphics.DisplayMode> displayModeComparator = new Comparator<Graphics.DisplayMode>() {
+  private final static Comparator<Graphics.DisplayMode> displayModeComparator = new Comparator<Graphics.DisplayMode>() {
     @Override
     public int compare(Graphics.DisplayMode o1, Graphics.DisplayMode o2) {
       int i1 = o1.width * o1.height;
@@ -35,11 +33,11 @@ public class ClientCompatibility extends DesktopCompatibility {
     }
   };
 
-  public boolean fullscreen = false;
-  public int windowWidth = 960; // qHD
-  public int windowHeight = 540;
+  private boolean fullscreen = false;
+  private int windowWidth = 960; // qHD
+  private int windowHeight = 540;
 
-  protected ClientCompatibility(ClientLauncher clientLauncher, String[] arg) {
+  ClientCompatibility(ClientLauncher clientLauncher, String[] arg) {
     super(clientLauncher, Application.ApplicationType.Desktop, arg);
   }
 
@@ -93,35 +91,7 @@ public class ClientCompatibility extends DesktopCompatibility {
   @Override
   public boolean handleCrash(Throwable throwable) {
     if (Branding.IS_DEBUG) return false; // don't open if in debug
-    return ClientCrashHandler.handle(getLog(FileLogWriter.file.getAbsolutePath()));
+    return ClientCrashHandler.handle(Debug.getLogString(FileLogWriter.file.getAbsolutePath()));
   }
-  
-  private static String getLog(String file) {
-    StringBuilder output = new StringBuilder();
-    FileInputStream stream = null;
-    InputStreamReader reader = null;
-    try {
-      stream = new FileInputStream(file);
-      reader = new InputStreamReader(stream);
-      char[] buffer = new char[512];
-      
-      while (true) {
-        int length = reader.read(buffer);
-        if (length == -1) break;
-        output.append(buffer, 0, length);
-      }
-    } catch (IOException ex) {
-      throw new RuntimeException(ex);
-    } finally {
-      try {
-        if (stream != null) stream.close();
-      } catch (IOException ignored) {
-      }
-      try {
-        if (reader != null) reader.close();
-      } catch (IOException ignored) {
-      }
-    }
-    return output.toString();
-  }
+
 }
