@@ -36,7 +36,10 @@ public class Debug {
 
   public static void printProperties() {
     if (Branding.VERSION_HASH != null && !Branding.VERSION_HASH.isEmpty()) {
-      Log.debug("Hash:               " + Branding.VERSION_HASH);
+      Log.debug("Build Hash:         " + Branding.VERSION_HASH);
+    }
+    if (Branding.BUILD_DATE != null) {
+      Log.debug("Build Date:         " + Branding.DISPLAY_DATE_FORMAT.format(Branding.BUILD_DATE));
     }
     Log.debug("Java Home:          " + System.getProperty("java.home"));
     Log.debug("Java Vendor:        " + System.getProperty("java.vendor"));

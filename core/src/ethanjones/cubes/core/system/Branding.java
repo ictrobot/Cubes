@@ -7,7 +7,11 @@ import com.badlogic.gdx.files.FileHandle;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
+import java.util.TimeZone;
 
 public class Branding {
 
@@ -24,16 +28,24 @@ public class Branding {
   public final static String VERSION_MAJOR_MINOR_POINT;
   public final static String VERSION;
 
+  public final static boolean IS_RELEASE;
   public final static boolean IS_DEBUG;
   public final static String DEBUG;
-  
-  public final static boolean IS_RELEASE;
+
+  public final static DateFormat DATE_FORMAT;
+  public final static DateFormat DISPLAY_DATE_FORMAT;
+  public final static Date BUILD_DATE;
 
   static {
     try {
       NAME = "Cubes";
       AUTHOR = "Ethan Jones";
       PLATFORM = Gdx.app.getType().name();
+
+      DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+      DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
+      DISPLAY_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+      DISPLAY_DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
 
       Properties properties = new Properties();
       InputStream input = null;
@@ -62,6 +74,7 @@ public class Branding {
             properties.setProperty("build", buildProperties.getProperty("build"));
             properties.setProperty("hash", buildProperties.getProperty("hash"));
             properties.setProperty("isRelease", buildProperties.getProperty("isRelease"));
+            properties.setProperty("buildDate", buildProperties.getProperty("buildDate"));
           }
         } catch (IOException ex) {
           Log.error("Failed to load build", ex);
@@ -87,6 +100,7 @@ public class Branding {
         VERSION_FULL = VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_POINT;
         VERSION_MAJOR_MINOR_POINT = VERSION_FULL;
         VERSION = "Development [" + VERSION_FULL + "]";
+        BUILD_DATE = null;
         IS_DEBUG = true;
       } else {
         VERSION_FULL = VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_POINT + "." + VERSION_BUILD;
@@ -97,6 +111,8 @@ public class Branding {
           VERSION = VERSION_FULL + "-dev";
         }
         IS_DEBUG = false;
+
+        BUILD_DATE = DATE_FORMAT.parse(properties.getProperty("buildDate"));
       }
 
       DEBUG = NAME + " " + VERSION + " for " + PLATFORM;

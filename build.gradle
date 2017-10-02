@@ -52,7 +52,7 @@ ext {
 // Write build file
 afterEvaluate {
     if (hash != "") {
-        file("assets/build").write("build=" + ext.build + "\nhash=" + ext.hash + "\nisRelease=" + isRelease, 'UTF-8')
+        file("assets/build").write("build=" + ext.build + "\nhash=" + ext.hash + "\nisRelease=" + isRelease + "\nbuildDate=" + getDateString() + "\n", 'UTF-8')
     }
 }
 // Delete build file
@@ -227,6 +227,13 @@ String getMavenRepo() {
         str = str + "snapshots"
     }
     return str
+}
+
+String getDateString() {
+    TimeZone tz = TimeZone.getTimeZone("UTC");
+    java.text.DateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    df.setTimeZone(tz);
+    return df.format(new Date());
 }
 
 boolean hasGit() {
