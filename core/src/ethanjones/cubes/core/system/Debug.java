@@ -159,15 +159,6 @@ public class Debug {
     }
   }
 
-  public static boolean stackContain(Class<?> c) {
-    StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-    String name = c.getName();
-    for (StackTraceElement stackTraceElement : stackTrace) {
-      if (stackTraceElement.getClassName().equals(name)) return true;
-    }
-    return false;
-  }
-
   /**
   Called after a crash to display log to user
    */
