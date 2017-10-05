@@ -191,9 +191,20 @@ task buildAll(dependsOn: ['core:jar', 'core:sourcesJar', 'client:dist', 'client:
 
 }
 
+task travisBuild(dependsOn: ['core:jar', 'client:dist', 'server:dist', 'android:assembleDebug']) {
 
-task travis(dependsOn: ['core:publish', 'client:publish', 'server:publish', 'android:publish', 'sonarqube'], description: "Task executed on Travis CI", group: "Alias") {
+}
 
+task travisPublish(dependsOn: ['core:publish', 'client:publish', 'server:publish', 'android:publish', 'sonarqube']) {
+
+}
+
+task travis(description: "Task executed on Travis CI", group: "Alias") {
+    if ("true".equals(System.getenv('TRAVIS_SECURE_ENV_VARS'))) {
+        dependsOn travisPublish
+    } else {
+        dependsOn travisBuild
+    }
 }
 
 // Deletes intellij & eclipse project files
