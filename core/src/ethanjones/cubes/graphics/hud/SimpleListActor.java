@@ -14,12 +14,12 @@ import java.util.Collection;
  */
 public class SimpleListActor<T> extends Widget {
 
-  private float prefHeight;
-  private float itemHeight;
-  private float prefWidth;
-  private float gap;
-  private Collection<T> items = new ArrayList<T>();
-  private final BitmapFont font;
+  protected float prefHeight;
+  protected float itemHeight;
+  protected float prefWidth;
+  protected float gap;
+  protected Collection<T> items = new ArrayList<T>();
+  protected final BitmapFont font;
 
   public SimpleListActor(BitmapFont bitmapFont) {
     this.font = bitmapFont;

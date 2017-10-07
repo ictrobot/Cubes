@@ -4,6 +4,8 @@ import ethanjones.cubes.core.util.Toggle;
 import ethanjones.cubes.graphics.menu.Fonts;
 import ethanjones.cubes.graphics.menu.Menu;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 
 import java.util.ArrayDeque;
@@ -12,10 +14,33 @@ public class ChatActor extends ScrollPane {
 
   private static final int MAX_OLD_MESSAGES = 500;
   private static final int MESSAGES_DISPLAY = 7;
+  private static final int HIDE_MSG_MS = 11000;
+  private static final int FADE_MSG_MS = 10000;
 
   private ArrayDeque<ChatMessage> history = new ArrayDeque<ChatMessage>();
   private ArrayDeque<ChatMessage> current = new ArrayDeque<ChatMessage>();
-  private SimpleListActor<ChatMessage> listActor = new SimpleListActor<ChatMessage>(Fonts.hud);
+  private SimpleListActor<ChatMessage> listActor = new SimpleListActor<ChatMessage>(Fonts.hud) {
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+      validate();
+
+      Color color = getColor();
+      batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+
+      float currentY = getItemHeight();
+      for (ChatMessage item : items) {
+        if (open.isDisabled()) {
+          long ms = System.currentTimeMillis() - item.timeReceived;
+          font.getColor().a = ms < FADE_MSG_MS ? 1 : 1f - (((float) (ms - FADE_MSG_MS)) / (HIDE_MSG_MS - FADE_MSG_MS));
+        }
+
+        font.draw(batch, item.toString(), getX(), getY() + currentY);
+        currentY += itemHeight;
+      }
+
+      font.getColor().a = 1;
+    }
+  };
 
   public Toggle open = new Toggle(false) {
     @Override
@@ -54,7 +79,7 @@ public class ChatActor extends ScrollPane {
         newMessages = false;
       }
     } else {
-      long oldestToDisplay = System.currentTimeMillis() - (10 * 1000);
+      long oldestToDisplay = System.currentTimeMillis() - HIDE_MSG_MS;
       boolean updated = newMessages;
       while (current.peekLast() != null && current.peekLast().timeReceived < oldestToDisplay) {
         current.removeLast();
