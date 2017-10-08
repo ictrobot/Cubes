@@ -145,6 +145,7 @@ public class ClientAdapter implements AdapterInterface {
         if (setupMenu.getAndSet(false)) {
           menu.resize(Graphics.GUI_WIDTH, Graphics.GUI_HEIGHT);
           InputChain.showMenu(menu);
+          menu.show();
         }
         if (menu.shouldRenderBackground()) MenuManager.renderBackground();
         menu.render(); //Render menu over client
@@ -180,7 +181,7 @@ public class ClientAdapter implements AdapterInterface {
     //CubesSecurity.checkSetMenu();
     Menu old = this.menu;
     if (old != null) {
-      old.save();
+      old.hide();
       InputChain.hideMenu(old);
     }
     this.menu = menu;

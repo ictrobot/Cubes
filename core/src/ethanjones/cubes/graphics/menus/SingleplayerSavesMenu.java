@@ -112,6 +112,11 @@ public class SingleplayerSavesMenu extends Menu {
   }
 
   @Override
+  public void show() {
+    stage.setScrollFocus(scrollPane);
+  }
+
+  @Override
   public void resize(float width, float height) {
     super.resize(width, height);
 

@@ -46,7 +46,7 @@ public class Adapter {
     final Menu menu = adapter.getMenu();
     try {
       if (menu != null) {
-        menu.save();
+        menu.hide();
         InputChain.hideMenu(menu);
       }
     } catch (Exception e) {
