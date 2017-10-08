@@ -6,6 +6,7 @@ import ethanjones.cubes.graphics.menu.Menu;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 
 import java.util.ArrayDeque;
@@ -69,6 +70,11 @@ public class ChatActor extends ScrollPane {
     super(null, Menu.skin);
     setWidget(listActor);
     listActor.setGap(4f);
+  }
+
+  @Override
+  public Touchable getTouchable() {
+    return open.isEnabled() ? Touchable.enabled : Touchable.disabled;
   }
 
   @Override
