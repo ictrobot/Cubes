@@ -1,9 +1,9 @@
 ![Cubes](/assets/assets/logo.png)
 =============
 <a href="https://travis-ci.org/ictrobot/Cubes"><img src="https://travis-ci.org/ictrobot/Cubes.svg?branch=master" alt="Build status" align="right"></a>
-A simple voxel game featuring single player, multiplayer and endless procedurally generated terrain.
+A simple voxel game featuring single player, multiplayer and endless procedurally generated terrain. It also has many backend features like mod support in Java and Lua as well as the ability to load content from JSON files. 
 
-[***License***](/LICENSE) | [***Credits***](/CREDITS.md) | [***Changes***](/CHANGES.md) | [***Builds***](https://cubes.ethanjones.me/)
+[***License***](/LICENSE) | [***Credits***](/CREDITS.md) | [***Changes***](/CHANGES.md) | [***Downloads***](https://cubes.ethanjones.me/)
 
 Screenshots
 -------
@@ -13,6 +13,11 @@ Screenshots
 Mods
 --------
 For sample json and lua mods, see mod_sample/json and mod_sample/lua respectively. [CubesSampleMod](https://github.com/ictrobot/CubesSampleMod) is a sample java mod, which uses [CubesModPlugin](https://github.com/ictrobot/CubesModPlugin), a gradle plugin to build .cm files automatically. [CubesEquationTerrainGenerator](https://github.com/ictrobot/CubesEquationTerrainGenerator) is an example of a mod that actually does something (add terrain generators based off mathematical expressions).  
+
+
+Launcher
+-------
+[Cubes Launcher](https://github.com/ictrobot/CubesLauncher) will automatically update your Cubes client and can be downloaded from the above Downloads link. 
 
 Building
 --------
