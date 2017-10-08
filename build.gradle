@@ -200,7 +200,7 @@ task travisPublish(dependsOn: ['core:publish', 'client:publish', 'server:publish
 }
 
 task travis(description: "Task executed on Travis CI", group: "Alias") {
-    if ("true".equals(System.getenv('TRAVIS_SECURE_ENV_VARS'))) {
+    if ("true".equals(System.getenv('TRAVIS_SECURE_ENV_VARS')) && "false".equals(System.getenv('TRAVIS_PULL_REQUEST'))) {
         dependsOn travisPublish
     } else {
         dependsOn travisBuild
