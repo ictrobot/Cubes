@@ -24,6 +24,7 @@ public class WorldClient extends World {
   private ArrayList<Area> removed = new ArrayList<Area>();
   private AreaReference playerArea = new AreaReference();
   private final int renderDistance = Settings.getIntegerSettingValue(Settings.GRAPHICS_VIEW_DISTANCE); //keep 3 extra
+  private int tickCounter = 0;
 
   public WorldClient() {
     super(null);
@@ -35,25 +36,28 @@ public class WorldClient extends World {
     super.tick();
 
     playerArea.setFromPositionVector3(Cubes.getClient().player.position);
-    removed.clear();
 
-    map.lock.writeLock();
-    Iterator<Area> areaIterator = map.iterator();
-    while (areaIterator.hasNext()) {
-      Area area = areaIterator.next();
-      int dist = Math.max(Math.abs(area.areaX - playerArea.areaX), Math.abs(area.areaZ - playerArea.areaZ));
-      if (dist > renderDistance + 3) {
-        removed.add(area);
-        areaIterator.remove();
-      } else if (dist > renderDistance + 1) {
-        AreaRenderer.free(area.areaRenderer);
+    if (tickCounter % (1000 / Cubes.tickMS) == 0) {
+      map.lock.writeLock();
+      Iterator<Area> areaIterator = map.iterator();
+      while (areaIterator.hasNext()) {
+        Area area = areaIterator.next();
+        int dist = Math.max(Math.abs(area.areaX - playerArea.areaX), Math.abs(area.areaZ - playerArea.areaZ));
+        if (dist > renderDistance + 3) {
+          removed.add(area);
+          areaIterator.remove();
+        } else if (dist > renderDistance + 1) {
+          AreaRenderer.free(area.areaRenderer);
+        }
       }
-    }
-    map.lock.writeUnlock();
+      map.lock.writeUnlock();
 
-    for (Area area : removed) {
-      area.unload();
+      for (Area area : removed) {
+        area.unload();
+      }
+      removed.clear();
     }
+    tickCounter += 1;
     
     entities.lock.writeLock();
     Iterator<Entry<UUID, Entity>> entityIterator = entities.entrySet().iterator();
