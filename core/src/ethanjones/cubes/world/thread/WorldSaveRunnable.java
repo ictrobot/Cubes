@@ -46,6 +46,7 @@ public class WorldSaveRunnable implements Runnable {
         
         if (queue.remove(task)) {
           Log.debug("Saved areas: wrote " + task.written + " total " + task.length + " time " + (System.currentTimeMillis() - task.timeStarted.get()) + "ms");
+          if (task.afterSave != null) task.afterSave.run();
         }
       } catch (CubesException e) {
         if (e.className.equals(Side.class.getName())) {

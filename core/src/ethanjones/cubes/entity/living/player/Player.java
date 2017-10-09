@@ -16,6 +16,9 @@ import ethanjones.cubes.side.server.command.CommandSender;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.gravity.WorldGravity;
+import ethanjones.cubes.world.reference.AreaReference;
+import ethanjones.cubes.world.server.LoadedAreaFilter;
+import ethanjones.cubes.world.server.WorldServer;
 import ethanjones.data.DataGroup;
 
 import com.badlogic.gdx.graphics.Camera;
@@ -27,7 +30,7 @@ import com.badlogic.gdx.utils.Pool;
 
 import java.util.UUID;
 
-public class Player extends LivingEntity implements CommandSender, RenderableProvider {
+public class Player extends LivingEntity implements CommandSender, RenderableProvider, LoadedAreaFilter {
 
   public static final float PLAYER_HEIGHT = 1.625f;
   public static final float PLAYER_RADIUS = 0.24f;
@@ -88,6 +91,7 @@ public class Player extends LivingEntity implements CommandSender, RenderablePro
     World world = Side.getCubes().world;
     world.entities.lock.writeLock();
     world.entities.put(uuid, this);
+    if (world instanceof WorldServer) ((WorldServer) world).addLoadedAreaFilter(this);
     world.entities.lock.writeUnlock();
   }
 
@@ -153,5 +157,10 @@ public class Player extends LivingEntity implements CommandSender, RenderablePro
       throw new IllegalStateException("Player uuid does not match");
     }
     inventory.read(dataGroup.getGroup("inventory"));
+  }
+
+  @Override
+  public boolean load(AreaReference a) {
+    return clientIdentifier.getPlayerManager().areaInLoadRange(a);
   }
 }

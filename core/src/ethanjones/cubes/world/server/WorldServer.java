@@ -12,6 +12,7 @@ import ethanjones.cubes.networking.packets.PacketWorldTime;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.World;
+import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
 import ethanjones.cubes.world.save.Save;
@@ -21,16 +22,27 @@ import ethanjones.cubes.world.thread.WorldRequestParameter;
 import ethanjones.cubes.world.thread.WorldTasks;
 import ethanjones.data.DataGroup;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class WorldServer extends World {
+
+  private static List<LoadedAreaFilter> loadedAreaFilters = new CopyOnWriteArrayList<>();
 
   public WorldServer(Save save) {
     super(save);
     if (save == null) throw new IllegalArgumentException("Null save on server");
     
-    if (this.save.fileHandle != null) Log.info("Save '" + this.save.name + "' in '" + this.save.fileHandle.file().getAbsolutePath() + "'");
-    else Log.info("Save '" + this.save.name + "'");
+    if (this.save.fileHandle != null) {
+      Log.info("Save '" + this.save.name + "' in '" + this.save.fileHandle.file().getAbsolutePath() + "'");
+    } else {
+      Log.info("Save '" + this.save.name + "'");
+    }
+
+    loadedAreaFilters.add(WorldTasks.getGenerationAreaFilter());
   }
   
   public BlockReference getSpawnPoint() {
@@ -53,6 +65,41 @@ public class WorldServer extends World {
   
     updateLock.writeUnlock();
     Performance.stop(PerformanceTags.SERVER_WORLD_UPDATE);
+  }
+
+  private void removeAreas() {
+    map.lock.writeLock();
+    Iterator<Area> areaIterator = map.iterator();
+    ArrayList<Area> removed = new ArrayList<Area>();
+    AreaReference areaReference = new AreaReference();
+    while (areaIterator.hasNext()) {
+      Area area = areaIterator.next();
+      areaReference.setFromArea(area);
+      if (!shouldAreaBeLoaded(areaReference)) {
+        removed.add(area);
+        areaIterator.remove();
+      }
+    }
+    map.lock.writeUnlock();
+
+    for (Area area : removed) {
+      area.unload();
+    }
+  }
+
+  public boolean shouldAreaBeLoaded(AreaReference areaReference) {
+    for (LoadedAreaFilter loadedAreaFilter : loadedAreaFilters) {
+      if (loadedAreaFilter.load(areaReference)) return true;
+    }
+    return false;
+  }
+
+  public void addLoadedAreaFilter(LoadedAreaFilter filter) {
+    loadedAreaFilters.add(filter);
+  }
+
+  public boolean removeLoadedAreaFilter(LoadedAreaFilter filter) {
+    return loadedAreaFilters.remove(filter);
   }
 
   @Override
@@ -115,5 +162,29 @@ public class WorldServer extends World {
   public void setTime(int time) {
     super.setTime(time);
     NetworkingManager.sendPacketToAllClients(new PacketWorldTime(this.time));
+  }
+
+  @Override
+  public void save() {
+    if (save == null || save.readOnly) {
+      removeAreas();
+      return;
+    }
+    updateLock.readLock();
+
+    // players
+    save.writePlayers();
+    // areas
+    save.writeAreas(map, new Runnable() {
+      @Override
+      public void run() {
+        removeAreas();
+      }
+    });
+    // state
+    save.getSaveOptions().worldTime = time;
+    save.writeSaveOptions();
+
+    updateLock.readUnlock();
   }
 }

@@ -5,9 +5,11 @@ import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.reference.AreaReference;
 
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class WorldGenerationRunnable implements Runnable {
   public LinkedBlockingQueue<WorldGenerationTask> queue = new LinkedBlockingQueue<WorldGenerationTask>();
+  public AtomicReference<WorldGenerationTask> current = new AtomicReference<WorldGenerationTask>();
 
   @Override
   public void run() {
@@ -28,6 +30,7 @@ public class WorldGenerationRunnable implements Runnable {
           continue;
         }
 
+        current.set(task);
         task.timeStarted.compareAndSet(0, System.currentTimeMillis());
         AreaReference generate = task.generateQueue.poll();
         while (generate != null) {
@@ -61,6 +64,7 @@ public class WorldGenerationRunnable implements Runnable {
         if (queue.remove(task) && task.parameter.afterCompletion != null) {
           task.printStatistics();
           task.parameter.afterCompletion.run();
+          current.compareAndSet(task, null);
         }
       } catch (CubesException e) {
         if (e.className.equals(Side.class.getName())) {

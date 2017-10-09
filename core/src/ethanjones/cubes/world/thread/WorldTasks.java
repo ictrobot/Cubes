@@ -10,6 +10,7 @@ import ethanjones.cubes.world.light.SunLight;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
 import ethanjones.cubes.world.save.Save;
+import ethanjones.cubes.world.server.LoadedAreaFilter;
 import ethanjones.cubes.world.server.WorldServer;
 import ethanjones.cubes.world.storage.Area;
 import ethanjones.cubes.world.storage.AreaMap;
@@ -46,13 +47,15 @@ public class WorldTasks {
     return generationTask;
   }
 
-  public static void save(Save s, Collection<Area> areas) {
+  public static void save(Save s, Collection<Area> areas, Runnable runAfter) {
     WorldSaveTask saveTask = new WorldSaveTask(s, areas);
+    saveTask.setRunAfterSave(runAfter);
     save.queue.add(saveTask);
   }
-  
-  public static void save(Save s, AreaMap areas) {
+
+  public static void save(Save s, AreaMap areas, Runnable runAfter) {
     WorldSaveTask saveTask = new WorldSaveTask(s, areas);
+    saveTask.setRunAfterSave(runAfter);
     save.queue.add(saveTask);
   }
 
@@ -106,6 +109,17 @@ public class WorldTasks {
       return 1;
     }
     return 0;
+  }
+
+  public static LoadedAreaFilter getGenerationAreaFilter() {
+    return new LoadedAreaFilter() {
+
+      @Override
+      public boolean load(AreaReference areaReference) {
+        WorldGenerationTask task = gen.current.get();
+        return task != null && task.generateReferences.contains(areaReference);
+      }
+    };
   }
   
   public static void dispose() {

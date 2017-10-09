@@ -13,11 +13,15 @@ import java.util.concurrent.atomic.AtomicLong;
 public class WorldSaveTask {
 
   public final Save save;
-  public final ConcurrentLinkedQueue<Area> saveQueue = new ConcurrentLinkedQueue<Area>();
-  public final CountDownLatch saveComplete = new CountDownLatch(WorldTasks.SAVE_THREADS);
   public final int length;
-  public final AtomicLong timeStarted = new AtomicLong(0);
-  public final AtomicInteger written = new AtomicInteger(0);
+
+  final ConcurrentLinkedQueue<Area> saveQueue = new ConcurrentLinkedQueue<Area>();
+  final CountDownLatch saveComplete = new CountDownLatch(WorldTasks.SAVE_THREADS);
+
+  final AtomicLong timeStarted = new AtomicLong(0);
+  final AtomicInteger written = new AtomicInteger(0);
+
+  Runnable afterSave = null;
 
   public WorldSaveTask(Save save, Collection<Area> areas) {
     this.save = save;
@@ -33,5 +37,9 @@ public class WorldSaveTask {
     }
     areas.lock.readUnlock();
     this.length = saveQueue.size();
+  }
+
+  public void setRunAfterSave(Runnable afterSave) {
+    if (this.afterSave == null) this.afterSave = afterSave;
   }
 }

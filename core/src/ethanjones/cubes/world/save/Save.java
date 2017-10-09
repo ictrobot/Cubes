@@ -55,9 +55,9 @@ public class Save {
     return SaveAreaIO.write(this, area);
   }
 
-  public void writeAreas(AreaMap areas) {
+  public void writeAreas(AreaMap areas, Runnable runAfter) {
     if (readOnly) return;
-    WorldTasks.save(this, areas);
+    WorldTasks.save(this, areas, runAfter);
   }
 
   public Area readArea(int x, int z) {
