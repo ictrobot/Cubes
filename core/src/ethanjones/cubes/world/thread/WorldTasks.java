@@ -47,15 +47,13 @@ public class WorldTasks {
     return generationTask;
   }
 
-  public static void save(Save s, Collection<Area> areas, Runnable runAfter) {
+  public static void save(Save s, Collection<Area> areas) {
     WorldSaveTask saveTask = new WorldSaveTask(s, areas);
-    saveTask.setRunAfterSave(runAfter);
     save.queue.add(saveTask);
   }
 
-  public static void save(Save s, AreaMap areas, Runnable runAfter) {
+  public static void save(Save s, AreaMap areas) {
     WorldSaveTask saveTask = new WorldSaveTask(s, areas);
-    saveTask.setRunAfterSave(runAfter);
     save.queue.add(saveTask);
   }
 

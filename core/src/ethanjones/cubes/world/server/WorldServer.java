@@ -23,7 +23,6 @@ import ethanjones.cubes.world.thread.WorldTasks;
 import ethanjones.data.DataGroup;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -67,24 +66,24 @@ public class WorldServer extends World {
     Performance.stop(PerformanceTags.SERVER_WORLD_UPDATE);
   }
 
-  private void removeAreas() {
-    map.lock.writeLock();
-    Iterator<Area> areaIterator = map.iterator();
+  /**
+   * Only call after saving areas
+   */
+  public void unloadDistantAreas(Iterable<Area> areas) {
     ArrayList<Area> removed = new ArrayList<Area>();
     AreaReference areaReference = new AreaReference();
-    while (areaIterator.hasNext()) {
-      Area area = areaIterator.next();
+    for (Area area : areas) {
       areaReference.setFromArea(area);
-      if (!shouldAreaBeLoaded(areaReference)) {
-        removed.add(area);
-        areaIterator.remove();
-      }
+      if (!shouldAreaBeLoaded(areaReference)) removed.add(area);
     }
-    map.lock.writeUnlock();
 
+    map.lock.writeLock();
+    int i = map.getSize();
     for (Area area : removed) {
       area.unload();
+      map.setArea(area.areaX, area.areaZ, null);
     }
+    map.lock.writeUnlock();
   }
 
   public boolean shouldAreaBeLoaded(AreaReference areaReference) {
@@ -167,7 +166,9 @@ public class WorldServer extends World {
   @Override
   public void save() {
     if (save == null || save.readOnly) {
-      removeAreas();
+      map.lock.writeLock();
+      unloadDistantAreas(map);
+      map.lock.writeUnlock();
       return;
     }
     updateLock.readLock();
@@ -175,12 +176,7 @@ public class WorldServer extends World {
     // players
     save.writePlayers();
     // areas
-    save.writeAreas(map, new Runnable() {
-      @Override
-      public void run() {
-        removeAreas();
-      }
-    });
+    save.writeAreas(map);
     // state
     save.getSaveOptions().worldTime = time;
     save.writeSaveOptions();

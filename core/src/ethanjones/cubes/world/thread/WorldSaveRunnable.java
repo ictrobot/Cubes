@@ -2,8 +2,10 @@ package ethanjones.cubes.world.thread;
 
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.CubesException;
+import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.save.SaveAreaIO;
+import ethanjones.cubes.world.server.WorldServer;
 import ethanjones.cubes.world.storage.Area;
 
 import java.util.concurrent.LinkedBlockingQueue;
@@ -46,7 +48,7 @@ public class WorldSaveRunnable implements Runnable {
         
         if (queue.remove(task)) {
           Log.debug("Saved areas: wrote " + task.written + " total " + task.length + " time " + (System.currentTimeMillis() - task.timeStarted.get()) + "ms");
-          if (task.afterSave != null) task.afterSave.run();
+          ((WorldServer) Cubes.getServer().world).unloadDistantAreas(task.saveAreas);
         }
       } catch (CubesException e) {
         if (e.className.equals(Side.class.getName())) {
