@@ -4,6 +4,7 @@ import ethanjones.cubes.core.gwt.FakeAtomic.AtomicInteger;
 import ethanjones.cubes.core.gwt.FakeAtomic.AtomicLong;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.world.reference.AreaReference;
+import ethanjones.cubes.world.reference.multi.AreaReferenceSet;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
 import ethanjones.cubes.world.reference.multi.WorldRegion;
 import ethanjones.cubes.world.server.WorldServer;
@@ -15,20 +16,25 @@ import java.util.*;
 public class WorldGenerationTask implements GenerationTask {
 
   public final WorldServer world;
-  public final MultiAreaReference references;
+  public final MultiAreaReference featuresReferences;
+  public final AreaReferenceSet generateReferences;
   public final WorldRequestParameter parameter;
+
   public final ArrayDeque<AreaReference> generateQueue = new ArrayDeque<AreaReference>();
   public final ArrayDeque<AreaReference> featuresQueue = new ArrayDeque<AreaReference>();
+
   public final AtomicLong timeStarted = new AtomicLong(0);
   public final AtomicInteger generateCounter = new AtomicInteger(0);
   public final AtomicInteger featureCounter = new AtomicInteger(0);
   public final AtomicInteger readCounter = new AtomicInteger(0);
+
   public final int generateSize;
   public final int featureSize;
 
   public WorldGenerationTask(WorldServer world, MultiAreaReference references, WorldRequestParameter parameter) {
     this.world = world;
-    this.references = references;
+    this.featuresReferences = references;
+    this.generateReferences = new AreaReferenceSet();
     this.parameter = parameter != null ? parameter : WorldRequestParameter.DEFAULT;
 
     generateSize = fillGenerateQueue();
@@ -37,13 +43,13 @@ public class WorldGenerationTask implements GenerationTask {
 
   private int fillGenerateQueue() {
     Set<AreaReference> generate;
-    if (this.references instanceof WorldRegion) {
-      WorldRegion f = (WorldRegion) this.references;
+    if (this.featuresReferences instanceof WorldRegion) {
+      WorldRegion f = (WorldRegion) this.featuresReferences;
       WorldRegion g = new WorldRegion(f.minAreaX - 1, f.maxAreaX + 1, f.minAreaZ - 1, f.maxAreaZ + 1);
       generate = g.getAreaReferences();
     } else {
       generate = new HashSet<AreaReference>();
-      for (AreaReference reference : references.getAreaReferences()) {
+      for (AreaReference reference : featuresReferences.getAreaReferences()) {
         generate.add(reference.copy().offset(0, 1));
         generate.add(reference.copy().offset(0, -1));
         generate.add(reference.copy().offset(1, 0));
@@ -54,6 +60,7 @@ public class WorldGenerationTask implements GenerationTask {
         generate.add(reference.copy().offset(-1, -1));
       }
     }
+    generateReferences.addAll(generate);
 
     if (generate.size() >= 50) {
       //randomize so all threads not waiting for one cave
@@ -71,9 +78,9 @@ public class WorldGenerationTask implements GenerationTask {
     Set<AreaReference> set;
     if (parameter.prioritise != null) {
       set = new TreeSet<AreaReference>(parameter.getComparator());
-      set.addAll(references.getAreaReferences());
+      set.addAll(featuresReferences.getAreaReferences());
     } else {
-      set = references.getAreaReferences();
+      set = featuresReferences.getAreaReferences();
     }
     featuresQueue.addAll(set);
     return set.size();

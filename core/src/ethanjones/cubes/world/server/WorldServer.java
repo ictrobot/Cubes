@@ -11,6 +11,7 @@ import ethanjones.cubes.networking.packets.PacketWorldTime;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.World;
+import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
 import ethanjones.cubes.world.save.Save;
@@ -21,7 +22,12 @@ import ethanjones.cubes.world.thread.WorldRequestParameter;
 import ethanjones.cubes.world.thread.WorldTasks;
 import ethanjones.data.DataGroup;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class WorldServer extends World {
+
+  private static List<LoadedAreaFilter> loadedAreaFilters = new ArrayList<LoadedAreaFilter>();
 
   public WorldServer(Save save) {
     super(save);
@@ -29,6 +35,7 @@ public class WorldServer extends World {
     
     Log.info("Save '" + this.save.name + "'");
     if (!save.readOnly) WorldStorage.openSave(save.name);
+    loadedAreaFilters.add(WorldTasks.getGenerationAreaFilter());
   }
   
   public BlockReference getSpawnPoint() {
@@ -47,6 +54,41 @@ public class WorldServer extends World {
     map.lock.readUnlock();
   
     updateLock.writeUnlock();
+  }
+
+  /**
+   * Only call after saving areas
+   */
+  public void unloadDistantAreas(Iterable<Area> areas) {
+    ArrayList<Area> removed = new ArrayList<Area>();
+    AreaReference areaReference = new AreaReference();
+    for (Area area : areas) {
+      areaReference.setFromArea(area);
+      if (!shouldAreaBeLoaded(areaReference)) removed.add(area);
+    }
+
+    map.lock.writeLock();
+    int i = map.getSize();
+    for (Area area : removed) {
+      area.unload();
+      map.setArea(area.areaX, area.areaZ, null);
+    }
+    map.lock.writeUnlock();
+  }
+
+  public boolean shouldAreaBeLoaded(AreaReference areaReference) {
+    for (LoadedAreaFilter loadedAreaFilter : loadedAreaFilters) {
+      if (loadedAreaFilter.load(areaReference)) return true;
+    }
+    return false;
+  }
+
+  public void addLoadedAreaFilter(LoadedAreaFilter filter) {
+    loadedAreaFilters.add(filter);
+  }
+
+  public boolean removeLoadedAreaFilter(LoadedAreaFilter filter) {
+    return loadedAreaFilters.remove(filter);
   }
 
   @Override
@@ -109,5 +151,16 @@ public class WorldServer extends World {
   public void setTime(int time) {
     super.setTime(time);
     NetworkingManager.sendPacketToAllClients(new PacketWorldTime(this.time));
+  }
+
+  @Override
+  public void save() {
+    if (save == null || save.readOnly) {
+      map.lock.writeLock();
+      unloadDistantAreas(map);
+      map.lock.writeUnlock();
+      return;
+    }
+    super.save();
   }
 }

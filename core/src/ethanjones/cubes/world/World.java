@@ -2,10 +2,11 @@ package ethanjones.cubes.world;
 
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.block.data.BlockData;
+import ethanjones.cubes.core.gwt.FakeAtomic.AtomicBoolean;
+import ethanjones.cubes.core.gwt.UUID;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.util.Lock;
 import ethanjones.cubes.core.util.Lock.HasLock;
-import ethanjones.cubes.core.gwt.UUID;
 import ethanjones.cubes.entity.Entity;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.common.Side;
@@ -27,7 +28,6 @@ import com.badlogic.gdx.utils.Disposable;
 
 import java.util.Iterator;
 import java.util.Map.Entry;
-import ethanjones.cubes.core.gwt.FakeAtomic.AtomicBoolean;
 
 public abstract class World implements Disposable, HasLock {
 
@@ -265,7 +265,7 @@ public abstract class World implements Disposable, HasLock {
   }
 
   public void save() {
-    if (save == null) return;
+    if (save == null || save.readOnly) return;
     updateLock.readLock();
 
     // players

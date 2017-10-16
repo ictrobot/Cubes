@@ -70,7 +70,10 @@ public class WorldRenderer implements Disposable {
 
     AreaReference pos = Pools.obtainAreaReference().setFromPositionVector3(Cubes.getClient().player.position);
     int yPos = CoordinateConverter.area(Cubes.getClient().player.position.y);
-    queue.add(get(areaMap.getArea(pos.areaX, pos.areaZ), pos.areaX, pos.areaZ, yPos));
+
+    AreaNode startingNode = get(areaMap.getArea(pos.areaX, pos.areaZ), pos.areaX, pos.areaZ, yPos);
+    startingNode.firstNode = true; // Fix flashes caused by the starting area just being in frustum as flying up/down (e.g. Y=64.001) and areaInFrustum returning false
+    queue.add(startingNode);
 
     while (!queue.isEmpty()) {
       AreaNode node = queue.pop();
@@ -83,8 +86,7 @@ public class WorldRenderer implements Disposable {
         poolNode.add(node);
         continue;
       }
-      if (!areaInFrustum(areaX, areaZ, ySection, camera.frustum)) continue;
-      if (!inRange(areaX, areaZ, pos.areaX, pos.areaZ, renderDistance)) continue;
+      if (!(areaInFrustum(areaX, areaZ, ySection, camera.frustum) && inRange(areaX, areaZ, pos.areaX, pos.areaZ, renderDistance)) && !startingNode.firstNode) continue;
 
       boolean nullArea = area == null || ySection >= area.height;
       int traverse = 0;
@@ -228,12 +230,14 @@ public class WorldRenderer implements Disposable {
     int areaZ;
     int ySection;
     int hashCode;
+    boolean firstNode;
 
     public void set(Area area, int areaX, int areaZ, int ySection) {
       this.area = area;
       this.areaX = areaX;
       this.areaZ = areaZ;
       this.ySection = ySection;
+      firstNode = false;
 
       int hashCode = 7;
       hashCode = 31 * hashCode + ySection;

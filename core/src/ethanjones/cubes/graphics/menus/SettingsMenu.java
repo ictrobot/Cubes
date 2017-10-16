@@ -123,7 +123,12 @@ public class SettingsMenu extends Menu implements VisualSettingManager {
     back.setBounds(width / 4, 0, width / 2, height / 6);
   }
 
-  public void save() {
+  @Override
+  public void show() {
+    stage.setScrollFocus(scrollPane);
+  }
+
+  public void hide() {
     for (ListObject listObject : listObjects) {
       saveEvent.reset();
       listObject.actor.fire(saveEvent);

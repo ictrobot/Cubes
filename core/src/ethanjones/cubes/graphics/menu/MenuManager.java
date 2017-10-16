@@ -28,7 +28,7 @@ public class MenuManager {
       menus.add(menu);
     } else if (i + 1 < menus.size) {
       for (int j = i + 1; j < menus.size; j++) {
-        menus.get(j).save();
+        menus.get(j).hide();
       }
       menus.removeRange(i + 1, menus.size - 1);
     }

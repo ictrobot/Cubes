@@ -4,6 +4,7 @@ import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.settings.type.*;
+import ethanjones.cubes.graphics.world.WorldShaderProvider;
 import ethanjones.cubes.graphics.world.ao.AmbientOcclusion;
 
 import com.badlogic.gdx.Application;
@@ -25,6 +26,7 @@ public class Settings {
   public static final String GRAPHICS_VSYNC = "graphics.vsync";
   public static final String GRAPHICS_FOG = "graphics.fog";
   public static final String GRAPHICS_AO = "graphics.ambientOcclusion";
+  public static final String GRAPHICS_SIMPLE_SHADER = "graphics.simpleShader";
   public static final String INPUT_MOUSE_SENSITIVITY = "input.mouseSensitivity";
   public static final String INPUT_TOUCHPAD_SIZE = "input.touchpadSize";
   public static final String INPUT_TOUCHPAD_LEFT = "input.touchpadLeft";
@@ -59,6 +61,7 @@ public class Settings {
     });
     addSetting(GRAPHICS_FOG, new BooleanSetting(true));
     addSetting(GRAPHICS_AO, AmbientOcclusion.getSetting());
+    addSetting(GRAPHICS_SIMPLE_SHADER, WorldShaderProvider.getSetting());
 
     addSetting(INPUT_TOUCH, new BooleanSetting(Compatibility.get().guessTouchScreen()));
     addSetting(INPUT_MOUSE_SENSITIVITY, new FloatSetting(0.5f, 0.05f, 1f, FloatSetting.Type.Slider));
@@ -86,7 +89,7 @@ public class Settings {
     SettingGroup keybinds = Keybinds.init();
   
     base.add(USERNAME)
-            .add(GROUP_GRAPHICS, new SettingGroup().add(GRAPHICS_VIEW_DISTANCE).add(GRAPHICS_FOV).add(GRAPHICS_VSYNC).add(GRAPHICS_FOG).add(GRAPHICS_AO))
+            .add(GROUP_GRAPHICS, new SettingGroup().add(GRAPHICS_VIEW_DISTANCE).add(GRAPHICS_FOV).add(GRAPHICS_VSYNC).add(GRAPHICS_FOG).add(GRAPHICS_AO).add(GRAPHICS_SIMPLE_SHADER))
             .add(GROUP_INPUT, new SettingGroup().add(keybindsGroup, keybinds).add(INPUT_TOUCH).add(INPUT_MOUSE_SENSITIVITY).add(INPUT_TOUCHPAD_SIZE).add(INPUT_TOUCHPAD_LEFT))
             .add(GROUP_DEBUG, new SettingGroup().add(DEBUG_FRAMETIME_GRAPH).add(DEBUG_GL_PROFILER));
 

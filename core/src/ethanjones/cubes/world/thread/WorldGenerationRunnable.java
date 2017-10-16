@@ -8,6 +8,7 @@ import java.util.ArrayDeque;
 
 public class WorldGenerationRunnable extends Task {
   public ArrayDeque<WorldGenerationTask> queue = new ArrayDeque<WorldGenerationTask>();
+  public WorldGenerationTask current = null;
 
   public WorldGenerationRunnable() {
     super(2);
@@ -29,6 +30,7 @@ public class WorldGenerationRunnable extends Task {
         continue;
       }
 
+      current = task;
       task.timeStarted.compareAndSet(0, System.currentTimeMillis());
       AreaReference generate = task.generateQueue.poll();
       while (generate != null) {
@@ -38,11 +40,11 @@ public class WorldGenerationRunnable extends Task {
         } else if (status == 2) { // generated
           task.generateCounter.incrementAndGet();
         }
-        
+
         checkTime();
         generate = task.generateQueue.poll();
       }
-  
+
       checkTime();
       AreaReference features = task.featuresQueue.poll();
       while (features != null) {
@@ -50,7 +52,7 @@ public class WorldGenerationRunnable extends Task {
         if (status == 1) { // done features
           task.featureCounter.incrementAndGet();
         }
-  
+
         checkTime();
         features = task.featuresQueue.poll();
       }
@@ -58,6 +60,7 @@ public class WorldGenerationRunnable extends Task {
       if (queue.remove(task) && task.parameter.afterCompletion != null) {
         task.printStatistics();
         task.parameter.afterCompletion.run();
+        current = null;
       }
     }
   }

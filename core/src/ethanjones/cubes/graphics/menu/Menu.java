@@ -57,12 +57,16 @@ public class Menu {
 
   }
 
+  public void show() {
+
+  }
+
   public void render() {
     stage.act();
     stage.draw();
   }
 
-  public void save() {
+  public void hide() {
 
   }
 

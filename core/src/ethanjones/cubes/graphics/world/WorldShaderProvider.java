@@ -1,11 +1,17 @@
 package ethanjones.cubes.graphics.world;
 
+import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.platform.Compatibility;
+import ethanjones.cubes.core.settings.Setting;
 import ethanjones.cubes.core.settings.Settings;
+import ethanjones.cubes.core.settings.type.BooleanSetting;
+import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.graphics.world.ao.AmbientOcclusion;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.client.WorldClient;
 import ethanjones.cubes.world.storage.Area;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Renderable;
@@ -32,6 +38,24 @@ public class WorldShaderProvider implements ShaderProvider {
   private static final int COMBINATIONS = 2 * MAX_FEATURE_FLAG;
   private static final CubesShader[] shaders = new CubesShader[COMBINATIONS];
 
+  public static Setting getSetting() {
+    return new BooleanSetting(false) {
+      @Override
+      public boolean shouldDisplay() {
+        return Compatibility.get().getApplicationType() == Application.ApplicationType.Desktop;
+      }
+
+      @Override
+      public void onChange() {
+        Log.debug("Emptying shader cache");
+        for (int i = 0; i < shaders.length; i++) {
+          if (shaders[i] != null) shaders[i].dispose();
+          shaders[i] = null;
+        }
+      }
+    };
+  }
+
   @Override
   public Shader getShader(Renderable renderable) {
     int shader = 0;
@@ -51,6 +75,15 @@ public class WorldShaderProvider implements ShaderProvider {
         if (fogFlag) f.add(new FogFeature());
         if (aoFlag) f.add(new AmbientOcclusionFeature());
         shaders[shader] = new FeatureShader(renderable, f);
+      }
+
+      ShaderProgram program = shaders[shader].program;
+      if (!program.isCompiled()) {
+        Log.error("Failed to compile shader");
+        Log.error("Shader log: \n" + program.getLog());
+        Log.error("Fragment shader source: \n" + program.getFragmentShaderSource());
+        Log.error("Vertex shader source: \n" + program.getVertexShaderSource());
+        throw new CubesException("Failed to compile shader");
       }
       shaders[shader].init();
     }
@@ -74,11 +107,22 @@ public class WorldShaderProvider implements ShaderProvider {
     private boolean lightoverride = false;
 
     CubesShader(Renderable renderable, String prefix) {
-      super(renderable, getConfig(), prefix);
+      super(renderable, getConfig(), getGlobalPrefix() + prefix);
     }
 
     CubesShader(Renderable renderable) {
       this(renderable, "");
+    }
+
+    private static String getGlobalPrefix() {
+      StringBuilder stringBuilder = new StringBuilder();
+      Application.ApplicationType type = Compatibility.get().getApplicationType();
+      if (type != Application.ApplicationType.Desktop || Settings.getBooleanSettingValue(Settings.GRAPHICS_SIMPLE_SHADER)) {
+        stringBuilder.append("#define simpleOperations\n");
+      } else {
+        stringBuilder.append("#version 130\n");
+      }
+      return stringBuilder.toString();
     }
 
     private static Config getConfig() {

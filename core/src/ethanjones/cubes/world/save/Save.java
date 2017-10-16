@@ -22,18 +22,19 @@ public class Save {
   public final String name;
   public final boolean readOnly;
   private SaveOptions saveOptions;
-  
+
   public Save(String name) {
     this.name = name;
     this.readOnly = WorldStorage.getInterface() == null;
   }
-  
+
   public Save(String name, boolean readOnly) {
     this.name = name;
     this.readOnly = readOnly || WorldStorage.getInterface() == null;
   }
-  
+
   public void writeAreas(AreaMap areas) {
+    if (readOnly) return;
     WorldTasks.save(this, areas);
   }
 

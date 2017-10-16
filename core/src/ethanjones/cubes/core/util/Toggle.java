@@ -2,7 +2,15 @@ package ethanjones.cubes.core.util;
 
 public abstract class Toggle {
 
-  private boolean enabled = false;
+  private boolean enabled;
+
+  public Toggle() {
+    enabled = false;
+  }
+
+  public Toggle(boolean enabled) {
+    this.enabled = enabled;
+  }
 
   public boolean isEnabled() {
     return enabled;

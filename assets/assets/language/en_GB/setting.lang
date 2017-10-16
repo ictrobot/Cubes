@@ -8,6 +8,7 @@ setting.graphics.vsync=VSync
 setting.graphics.fog=Fog
 setting.graphics.scale=GUI Scale
 setting.graphics.ambientOcclusion=Ambient Occlusion
+setting.graphics.simpleShader=Simplified Shader
 
 setting.input=Input
 setting.input.touch=Touch Screen

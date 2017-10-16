@@ -89,7 +89,7 @@ public class PlayerManager {
     
     initialLoadAreas();
   }
-  
+
   private void initialLoadAreas() {
     AreaReference check = new AreaReference();
     synchronized (this) {
@@ -274,7 +274,8 @@ public class PlayerManager {
   public void disconnected() {
     Cubes.getServer().world.save.writePlayer(client.getPlayer());
     Cubes.getServer().world.removeEntity(client.getPlayer().uuid);
-    
+    ((WorldServer) Cubes.getServer().world).removeLoadedAreaFilter(client.getPlayer());
+
     PacketChat packetChat = new PacketChat();
     packetChat.msg = client.getPlayer().username + " disconnected";
     NetworkingManager.sendPacketToAllClients(packetChat);
@@ -284,5 +285,9 @@ public class PlayerManager {
     int areaX = CoordinateConverter.area(position.x);
     int areaZ = CoordinateConverter.area(position.z);
     return areaX >= (playerArea.areaX - loadDistance) && areaX <= (playerArea.areaX + loadDistance) && areaZ >= (playerArea.areaZ - loadDistance) && areaZ <= (playerArea.areaZ + loadDistance);
+  }
+
+  public boolean areaInLoadRange(AreaReference a) {
+    return a.areaX >= (playerArea.areaX - loadDistance) && a.areaX <= (playerArea.areaX + loadDistance) && a.areaZ >= (playerArea.areaZ - loadDistance) && a.areaZ <= (playerArea.areaZ + loadDistance);
   }
 }

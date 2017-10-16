@@ -2,6 +2,7 @@ package ethanjones.cubes.side.server.command;
 
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.world.World;
 
 import java.util.List;
 
@@ -13,8 +14,13 @@ public class SaveCommand {
     save.setCommandListener(new CommandListener() {
       @Override
       public void onCommand(CommandBuilder builder, List<CommandArgument> arguments, CommandSender sender) {
-        sender.print(Localization.get("Saving..."));
-        Cubes.getServer().world.save();
+        World world = Cubes.getServer().world;
+        if (world.save.readOnly) {
+          sender.print(Localization.get("command.save.readOnly"));
+        } else {
+          sender.print(Localization.get( "command.save.starting"));
+          Cubes.getServer().world.save();
+        }
       }
     });
   }

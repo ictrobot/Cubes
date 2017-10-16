@@ -4,8 +4,8 @@ import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.settings.Keybinds;
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.core.util.Toggle;
-import ethanjones.cubes.graphics.Graphics;
 import ethanjones.cubes.graphics.assets.Assets;
+import ethanjones.cubes.graphics.hud.ChatActor;
 import ethanjones.cubes.graphics.hud.FrametimeGraph;
 import ethanjones.cubes.graphics.hud.ImageButtons;
 import ethanjones.cubes.graphics.hud.inv.*;
@@ -19,23 +19,17 @@ import ethanjones.cubes.world.save.Gamemode;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
-
-import java.util.ArrayList;
 
 import static ethanjones.cubes.graphics.Graphics.*;
 import static ethanjones.cubes.graphics.hud.inv.HotbarActor.scroll;
@@ -46,8 +40,7 @@ public class GuiRenderer implements Disposable {
   Stage stage;
 
   TextField chat;
-  Label chatLog;
-  ArrayList<String> chatStrings = new ArrayList<String>();
+  ChatActor chatLog;
 
   Touchpad touchpad;
   ImageButton jumpButton;
@@ -67,7 +60,7 @@ public class GuiRenderer implements Disposable {
     public void doEnable() {
       stage.addActor(chat);
       stage.setKeyboardFocus(chat);
-      stage.addActor(chatLog);
+      chatLog.open.enable();
       hotbar.remove();
     }
 
@@ -75,7 +68,7 @@ public class GuiRenderer implements Disposable {
     public void doDisable() {
       stage.setKeyboardFocus(null);
       stage.getRoot().removeActor(chat);
-      stage.getRoot().removeActor(chatLog);
+      chatLog.open.disable();
       stage.addActor(hotbar);
     }
   };
@@ -112,16 +105,19 @@ public class GuiRenderer implements Disposable {
       @Override
       public void keyTyped(TextField textField, char c) {
         if (c == '\n' || c == '\r') {
-          PacketChat packetChat = new PacketChat();
-          packetChat.msg = chat.getText();
-          NetworkingManager.sendPacketToServer(packetChat);
+          String msg = chat.getText().trim();
+          if (!msg.isEmpty()) {
+            PacketChat packetChat = new PacketChat();
+            packetChat.msg = msg;
+            NetworkingManager.sendPacketToServer(packetChat);
+          }
           chat.setText("");
           chatToggle.disable();
         }
       }
     });
-    chatLog = new Label("", new LabelStyle(Fonts.hud, Color.WHITE));
-    chatLog.setAlignment(Align.bottomLeft, Align.left);
+    chatLog = new ChatActor();
+    stage.addActor(chatLog);
 
     if (Compatibility.get().isTouchScreen()) {
       touchpad = new Touchpad(0, skin);
@@ -202,7 +198,7 @@ public class GuiRenderer implements Disposable {
 
   public void resize() {
     chat.setBounds(0, 0, GUI_WIDTH, chat.getStyle().font.getLineHeight() * 1.5f);
-    chatLog.setBounds(0, chat.getHeight(), GUI_WIDTH, chatLog.getStyle().font.getLineHeight() * 5);
+    chatLog.setBounds(0, chat.getHeight(), GUI_WIDTH, chatLog.getPrefHeight());
 
     if (touchpad != null) {
       float hbSize = 48;
@@ -233,13 +229,8 @@ public class GuiRenderer implements Disposable {
     hotbar.setY(0);
   }
 
-  public void print(String string) {
-    chatStrings.add(0, string);
-    StringBuilder builder = new StringBuilder();
-    for (int i = Math.min(4, chatStrings.size() - 1); i >= 0; i--) {
-      builder.append(chatStrings.get(i)).append("\n");
-    }
-    chatLog.setText(builder.toString());
+  public void newMessage(String string) {
+    if (chatLog != null) chatLog.newMessage(string);
   }
 
   public void toggleInventory() {
