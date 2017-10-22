@@ -11,6 +11,7 @@ import ethanjones.cubes.item.ItemBlock;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class Graphics {
@@ -18,11 +19,17 @@ public class Graphics {
   public static SpriteBatch spriteBatch;
   public static ModelBatch modelBatch;
   public static ScreenViewport screenViewport;
+  public static GLProfiler glProfiler;
 
   public static float GUI_WIDTH = 0f;
   public static float GUI_HEIGHT = 0f;
 
+  private static boolean init = false;
+
   public static void init() {
+    if (init) return;
+    init = true;
+
     spriteBatch = new SpriteBatch();
     modelBatch = new CubesModelBatch();
     screenViewport = new ScreenViewport();
@@ -38,6 +45,8 @@ public class Graphics {
     }
     WorldGraphicsPools.init();
     BlockIcons.renderIcons();
+
+    glProfiler = new GLProfiler(Gdx.graphics);
   }
 
   public static void resize() {
