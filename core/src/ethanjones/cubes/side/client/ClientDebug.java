@@ -13,11 +13,12 @@ import ethanjones.cubes.world.collision.BlockIntersection;
 import ethanjones.cubes.world.storage.Area;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.WindowedMean;
 
 import java.text.DecimalFormat;
+
+import static ethanjones.cubes.graphics.Graphics.glProfiler;
 
 public class ClientDebug {
 
@@ -28,31 +29,27 @@ public class ClientDebug {
   private static int brandingDebugLength = builder.length();
   private static DecimalFormat twoDP = new DecimalFormat("0.00");
   private static DecimalFormat oneDP = new DecimalFormat("0.0");
-  private static boolean glProfiler = false;
+  private static boolean glProfilerEnabled = false;
 
   protected static void setup() {
-    glProfiler = Settings.getBooleanSettingValue(Settings.DEBUG_GL_PROFILER);
-    if (glProfiler) {
-      GLProfiler.enable();
+    glProfilerEnabled = Settings.getBooleanSettingValue(Settings.DEBUG_GL_PROFILER);
+    if (glProfilerEnabled) {
+      glProfiler.enable();
     } else {
-      GLProfiler.disable();
+      glProfiler.disable();
     }
   }
   
   protected static void frameStart() {
     fps.tick();
-    if (glProfiler && Cubes.getClient().renderer.guiRenderer.debugEnabled) {
-      LastFrame.totalCalls = GLProfiler.calls;
-      LastFrame.drawCalls = GLProfiler.drawCalls;
-      LastFrame.textureBindings = GLProfiler.textureBindings;
-      LastFrame.shaderSwitches = GLProfiler.shaderSwitches;
-      LastFrame.vertexCount = GLProfiler.vertexCount.total;
+    if (glProfilerEnabled && Cubes.getClient().renderer.guiRenderer.debugEnabled) {
+      LastFrame.totalCalls = glProfiler.getCalls();
+      LastFrame.drawCalls = glProfiler.getDrawCalls();
+      LastFrame.textureBindings = glProfiler.getTextureBindings();
+      LastFrame.shaderSwitches = glProfiler.getShaderSwitches();
+      LastFrame.vertexCount = glProfiler.getVertexCount().total;
 
-      GLProfiler.calls = 0;
-      GLProfiler.drawCalls = 0;
-      GLProfiler.textureBindings = 0;
-      GLProfiler.shaderSwitches = 0;
-      GLProfiler.vertexCount.reset();
+      glProfiler.reset();
     }
   }
 
@@ -71,7 +68,7 @@ public class ClientDebug {
     if (Settings.getBooleanSettingValue(Settings.GRAPHICS_FOG)) builder.append(" FOG");
     if (AmbientOcclusion.isEnabled()) builder.append(" AO");
     builder.append(lineSeparator);
-    if (glProfiler) {
+    if (glProfilerEnabled) {
       builder.append("TC:").append(LastFrame.totalCalls).append(" DG:").append(LastFrame.drawCalls).append(" TB:").append(LastFrame.textureBindings).append(" SS:").append(LastFrame.shaderSwitches).append(" VC:").append(LastFrame.vertexCount()).append(lineSeparator);
     }
     builder.append("W B:").append(getBlockLight()).append(" S:").append(getSunlight()).append(" T:").append(Cubes.getClient().world.getTime());

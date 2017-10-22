@@ -6,7 +6,6 @@ import ethanjones.cubes.graphics.world.ao.AmbientOcclusion;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.profiling.GLProfiler;
 
 public class Renderer {
 
@@ -34,7 +33,6 @@ public class Renderer {
   }
 
   public void dispose() {
-    GLProfiler.disable();
     worldRenderer.dispose();
     guiRenderer.dispose();
   }

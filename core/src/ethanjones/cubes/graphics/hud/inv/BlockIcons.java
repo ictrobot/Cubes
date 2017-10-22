@@ -41,10 +41,10 @@ public class BlockIcons {
   
   public static void renderIcons() {
     int size = 64;
-    
-    FrameBuffer frameBuffer = new FrameBuffer(Format.RGBA8888, size, size, false);
+
+    FrameBuffer frameBuffer = FrameBuffer.createFrameBuffer(Format.RGBA8888, size, size, false);
     frameBuffer.begin();
-  
+
     PerspectiveCamera camera = new PerspectiveCamera(30f, size, size);
     camera.position.set(2.4f, 2f, 2.4f);
     camera.lookAt(0f, 0f, 0f);

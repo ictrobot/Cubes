@@ -18,6 +18,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -27,13 +28,18 @@ public class Graphics {
 
   public static SpriteBatch spriteBatch = new SpriteBatch(); // needed for splash screen
   public static ScreenViewport screenViewport = new ScreenViewport();
-  
   public static ModelBatch modelBatch;
+  public static GLProfiler glProfiler;
 
   public static float GUI_WIDTH = 0f;
   public static float GUI_HEIGHT = 0f;
 
+  private static boolean init = false;
+
   public static void init() {
+    if (init) return;
+    init = true;
+
     modelBatch = new CubesModelBatch();
 
     for (Block block : IDManager.getBlocks()) {
@@ -47,6 +53,8 @@ public class Graphics {
     }
     WorldGraphicsPools.init();
     BlockIcons.renderIcons();
+
+    glProfiler = new GLProfiler(Gdx.graphics);
   }
 
   public static void resize() {

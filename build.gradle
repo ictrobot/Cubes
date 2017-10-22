@@ -66,7 +66,7 @@ allprojects {
 
     ext {
         appName = 'Cubes'
-        gdxVersion = '1.9.6'
+        gdxVersion = '1.9.7'
         androidBuildToolsVersion = '25.0.3'
         androidSdkVersion = 21
         dataVersion = '2.2'
