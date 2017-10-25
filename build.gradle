@@ -125,7 +125,7 @@ project(":client") {
 
     dependencies {
         compile project(":desktop")
-        compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
 
     }
 }

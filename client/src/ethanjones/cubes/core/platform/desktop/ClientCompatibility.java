@@ -7,8 +7,8 @@ import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.side.common.Side;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -43,23 +43,13 @@ public class ClientCompatibility extends DesktopCompatibility {
 
   @Override
   protected void run(ApplicationListener applicationListener) {
-    LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+    Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 
-    config.addIcon("assets/icon-16x.png", Files.FileType.Internal);
-    config.addIcon("assets/icon-32x.png", Files.FileType.Internal);
-    config.addIcon("assets/icon-64x.png", Files.FileType.Internal);
-    config.addIcon("assets/icon-128x.png", Files.FileType.Internal);
+    config.setWindowIcon(Files.FileType.Internal,"assets/icon-16x.png", "assets/icon-32x.png", "assets/icon-64x.png", "assets/icon-128x.png");
+    config.useVsync(false);
+    config.setWindowedMode(windowWidth, windowHeight);
 
-    config.vSyncEnabled = false;
-    config.foregroundFPS = 0;
-    config.backgroundFPS = 0;
-
-    config.width = windowWidth;
-    config.height = windowHeight;
-
-    config.forceExit = false;
-
-    new LwjglApplication(applicationListener, config);
+    new Lwjgl3Application(applicationListener, config);
   }
 
   @Override
