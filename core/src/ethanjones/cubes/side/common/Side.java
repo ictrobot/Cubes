@@ -19,7 +19,7 @@ public enum Side {
     }
   };
   
-  public static EventBus getEventBus() {
+  public static EventBus getSidedEventBus() {
     return getData().eventBus;
   }
   

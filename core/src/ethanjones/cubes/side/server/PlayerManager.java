@@ -50,7 +50,7 @@ public class PlayerManager {
     renderDistance = packetConnect.renderDistance;
     loadDistance = renderDistance + 1;
     
-    Side.getEventBus().register(this);
+    Side.getSidedEventBus().register(this);
     
     PacketConnected packetConnected = new PacketConnected();
     packetConnected.idManager = IDManager.writeMapping();

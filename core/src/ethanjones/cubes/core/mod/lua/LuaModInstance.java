@@ -34,6 +34,7 @@ public class LuaModInstance extends ModInstance {
 
   private Globals globals;
   protected Multimap<ModState, LuaFunction> luaModEvent;
+  protected ArrayList<LuaEventListener> globalEventListeners;
   protected ArrayList<LuaEventListener> clientEventListeners;
   protected ArrayList<LuaEventListener> serverEventListeners;
 
@@ -45,6 +46,7 @@ public class LuaModInstance extends ModInstance {
 
     this.globals = CubesLua.globals(); // each mod has its own globals
     this.luaModEvent = new Multimap<ModState, LuaFunction>();
+    this.globalEventListeners = new ArrayList<LuaEventListener>();
     this.clientEventListeners = new ArrayList<LuaEventListener>();
     this.serverEventListeners = new ArrayList<LuaEventListener>();
 
@@ -71,14 +73,19 @@ public class LuaModInstance extends ModInstance {
     if (modEvent instanceof PreInitializationEvent) {
       LuaValue chunk = globals.loadfile(initFile);
       chunk.call();
+
+      EventBus bus = EventBus.getGlobalEventBus();
+      for (LuaEventListener lel : globalEventListeners) {
+        bus.register(lel);
+      }
     } else {
       if (modEvent instanceof StartingClientEvent) {
-        EventBus bus = Side.getEventBus();
+        EventBus bus = Side.getSidedEventBus();
         for (LuaEventListener lel : clientEventListeners) {
           bus.register(lel);
         }
       } else if (modEvent instanceof StartingServerEvent) {
-        EventBus bus = Side.getEventBus();
+        EventBus bus = Side.getSidedEventBus();
         for (LuaEventListener lel : serverEventListeners) {
           bus.register(lel);
         }

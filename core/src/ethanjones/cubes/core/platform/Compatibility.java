@@ -48,7 +48,7 @@ public abstract class Compatibility {
   }
 
   public void sideInit(Side side) {
-    if (side != null) Side.getEventBus().register(this);
+    if (side != null) Side.getSidedEventBus().register(this);
   }
 
   public final Launcher getLauncher() {

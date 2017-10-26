@@ -42,11 +42,12 @@ public class LuaMappingMod {
       if (!(mod instanceof LuaModInstance)) return FALSE;
       LuaModInstance m = (LuaModInstance) mod;
 
-      if (side == Side.Client || side == null) {
+      if (side == Side.Client) {
         m.clientEventListeners.add(new LuaEventListener(Side.Client, c, callback));
-      }
-      if (side == Side.Server || side == null) {
+      } else if (side == Side.Server) {
         m.serverEventListeners.add(new LuaEventListener(Side.Server, c, callback));
+      } else {
+        m.globalEventListeners.add(new LuaEventListener(null, c, callback));
       }
       return TRUE;
     }

@@ -62,7 +62,7 @@ public class CubesClient extends Cubes implements ApplicationListener {
     world = new WorldClient();
 
     ModManager.postModEvent(new StartingClientEvent());
-    Side.getEventBus().register(new PlayerCollision());
+    Side.getSidedEventBus().register(new PlayerCollision());
 
     ClientDebug.setup();
     
