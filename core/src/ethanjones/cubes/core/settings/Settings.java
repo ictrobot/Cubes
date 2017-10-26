@@ -1,9 +1,11 @@
 package ethanjones.cubes.core.settings;
 
+import ethanjones.cubes.core.event.settings.AddSettingsEvent;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.settings.type.*;
+import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.graphics.world.WorldShaderProvider;
 import ethanjones.cubes.graphics.world.ao.AmbientOcclusion;
 
@@ -111,6 +113,8 @@ public class Settings {
             .add(GROUP_NETWORKING, new SettingGroup().add(NETWORKING_PORT))
             .add(GROUP_DEBUG, new SettingGroup().add(DEBUG_FRAMETIME_GRAPH).add(DEBUG_GL_PROFILER));
 
+    new AddSettingsEvent().post();
+
     if (!read()) {
       Log.info("Creating new settings file");
       write();
@@ -127,7 +131,8 @@ public class Settings {
 
   public static boolean read() {
     FileHandle fileHandle = Compatibility.get().getBaseFolder().child("settings.json");
-    
+
+    boolean failed = false;
     try {
       Reader reader = fileHandle.reader();
       JsonObject json = Json.parse(reader).asObject();
@@ -135,9 +140,19 @@ public class Settings {
   
       for (Member member : json) {
         Setting setting = settings.get(member.getName());
-        setting.readJson(member.getValue());
+        if (setting == null) {
+          Log.warning("Unknown setting");
+          continue;
+        }
+        try {
+          setting.readJson(member.getValue());
+        } catch (Exception e) {
+          Log.error("Failed to read setting: \"" + member.getName() + "\"", e);
+          failed = true;
+        }
       }
-      
+      if (failed) throw new CubesException("One or more setting failed to read correctly");
+
       return true;
     } catch (Exception e) {
       Log.error("Failed to read settings", e);
