@@ -9,7 +9,6 @@ import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.graphics.world.WorldShaderProvider;
 import ethanjones.cubes.graphics.world.ao.AmbientOcclusion;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.eclipsesource.json.Json;
@@ -28,7 +27,6 @@ public class Settings {
   public static final String UUID = "uuid";
   public static final String GRAPHICS_VIEW_DISTANCE = "graphics.viewDistance";
   public static final String GRAPHICS_FOV = "graphics.fieldOfView";
-  public static final String GRAPHICS_VSYNC = "graphics.vsync";
   public static final String GRAPHICS_FOG = "graphics.fog";
   public static final String GRAPHICS_SCALE = "graphics.scale";
   public static final String GRAPHICS_AO = "graphics.ambientOcclusion";
@@ -53,19 +51,6 @@ public class Settings {
     addSetting(UUID, new PlayerUUIDSetting());
     addSetting(GRAPHICS_VIEW_DISTANCE, new IntegerSetting(2, 2, 16, IntegerSetting.Type.Slider));
     addSetting(GRAPHICS_FOV, new IntegerSetting(70, 10, 120, IntegerSetting.Type.Slider));
-    addSetting(GRAPHICS_VSYNC, new BooleanSetting(false) {
-  
-      @Override
-      public void onChange() {
-        super.onChange();
-        Gdx.graphics.setVSync(get());
-      }
-  
-      @Override
-      public boolean shouldDisplay() {
-        return Compatibility.get().getApplicationType() == Application.ApplicationType.Desktop;
-      }
-    });
     addSetting(GRAPHICS_FOG, new BooleanSetting(true));
     addSetting(GRAPHICS_SCALE, new FloatSetting(1f, 0.5f, 2f, FloatSetting.Type.Slider) {
       {
@@ -108,7 +93,7 @@ public class Settings {
     SettingGroup keybinds = Keybinds.init();
   
     base.add(USERNAME)
-            .add(GROUP_GRAPHICS, new SettingGroup().add(GRAPHICS_VIEW_DISTANCE).add(GRAPHICS_FOV).add(GRAPHICS_VSYNC).add(GRAPHICS_FOG).add(GRAPHICS_SCALE).add(GRAPHICS_AO).add(GRAPHICS_SIMPLE_SHADER))
+            .add(GROUP_GRAPHICS, new SettingGroup().add(GRAPHICS_VIEW_DISTANCE).add(GRAPHICS_FOV).add(GRAPHICS_FOG).add(GRAPHICS_SCALE).add(GRAPHICS_AO).add(GRAPHICS_SIMPLE_SHADER))
             .add(GROUP_INPUT, new SettingGroup().add(keybindsGroup, keybinds).add(INPUT_MOUSE_SENSITIVITY).add(INPUT_TOUCHPAD_SIZE).add(INPUT_TOUCHPAD_LEFT))
             .add(GROUP_NETWORKING, new SettingGroup().add(NETWORKING_PORT))
             .add(GROUP_DEBUG, new SettingGroup().add(DEBUG_FRAMETIME_GRAPH).add(DEBUG_GL_PROFILER));

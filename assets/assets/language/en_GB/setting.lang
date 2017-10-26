@@ -4,11 +4,13 @@ setting.username=Username
 setting.graphics=Graphics
 setting.graphics.viewDistance=Rendering Distance
 setting.graphics.fieldOfView=FOV
-setting.graphics.vsync=VSync
 setting.graphics.fog=Fog
 setting.graphics.scale=GUI Scale
 setting.graphics.ambientOcclusion=Ambient Occlusion
 setting.graphics.simpleShader=Simplified Shader
+
+setting.client.graphics.vsync=VSync
+setting.client.graphics.fullscreen=Fullscreen Mode
 
 setting.input=Input
 setting.input.mouseSensitivity=Input Sensitivity

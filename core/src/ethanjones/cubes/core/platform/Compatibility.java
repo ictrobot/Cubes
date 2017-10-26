@@ -1,5 +1,6 @@
 package ethanjones.cubes.core.platform;
 
+import ethanjones.cubes.core.event.EventBus;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.logging.LogWriter;
 import ethanjones.cubes.core.mod.ModLoader;
@@ -36,7 +37,7 @@ public abstract class Compatibility {
   }
 
   public void preInit() {
-
+    EventBus.getGlobalEventBus().register(this);
   }
 
   public void init() {
