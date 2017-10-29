@@ -86,7 +86,7 @@ public class SettingsMenu extends Menu implements VisualSettingManager {
       Label name = new Label(Settings.getLocalisedSettingGroupName(str), skin);
       name.setAlignment(Align.left, Align.left);
 
-      Actor actor = setting.getActor(this);
+      Actor actor = setting.getActor(str, this);
 
       listObjects.add(new ListObject(name, actor));
     }

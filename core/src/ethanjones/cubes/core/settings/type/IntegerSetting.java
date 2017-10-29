@@ -65,7 +65,7 @@ public class IntegerSetting extends Setting {
   }
 
   @Override
-  public Actor getActor(VisualSettingManager visualSettingManager) {
+  public Actor getActor(String settingName, VisualSettingManager visualSettingManager) {
     switch (type) {
       case TextField:
         return getTextField(visualSettingManager);

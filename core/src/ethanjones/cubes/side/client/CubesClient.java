@@ -53,7 +53,7 @@ public class CubesClient extends Cubes implements ApplicationListener {
 
     world = new WorldClient();
 
-    Side.getEventBus().register(new PlayerCollision());
+    Side.getSidedEventBus().register(new PlayerCollision());
 
     ClientDebug.setup();
 

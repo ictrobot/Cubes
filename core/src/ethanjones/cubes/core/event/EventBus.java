@@ -1,10 +1,11 @@
 package ethanjones.cubes.core.event;
 
+import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.system.CubesException;
+
 import com.badlogic.gdx.utils.reflect.Annotation;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Method;
-import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.core.system.CubesException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,6 +13,12 @@ import java.util.Iterator;
 import java.util.List;
 
 public class EventBus {
+
+  static final EventBus GLOBAL_EVENTBUS = new EventBus();
+
+  public static EventBus getGlobalEventBus() {
+    return GLOBAL_EVENTBUS;
+  }
 
   private HashMap<Class<? extends Event>, List<EventWrapper>> data = new HashMap<Class<? extends Event>, List<EventWrapper>>();
 
@@ -37,7 +44,7 @@ public class EventBus {
     return this;
   }
 
-  public List<EventWrapper> getList(Class eventClass) {
+  List<EventWrapper> getList(Class eventClass) {
     synchronized (this) {
       List<EventWrapper> eventHandlers = data.get(eventClass);
       if (eventHandlers == null) {
@@ -48,7 +55,7 @@ public class EventBus {
     }
   }
 
-  public <E extends Event> E post(E event) {
+  <E extends Event> E post(E event) {
     Class c = event.getClass();
     final List<EventWrapper> posted = new ArrayList<EventWrapper>(); //Prevents being posted multiple times to same EventHandler
     while (c != null && ClassReflection.isAssignableFrom(Event.class, c)) {

@@ -5,6 +5,6 @@ import ethanjones.cubes.core.event.Event;
 public class EntityEvent extends Event {
 
   public EntityEvent(boolean cancelable) {
-    super(cancelable, false);
+    super(cancelable,  true);
   }
 }

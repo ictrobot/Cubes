@@ -25,7 +25,7 @@ public class KeybindSetting extends Setting {
   }
   
   @Override
-  public Actor getActor(VisualSettingManager visualSettingManager) {
+  public Actor getActor(String settingName, VisualSettingManager visualSettingManager) {
     final TextButton button = new TextButton(toString(), visualSettingManager.getSkin()) {
       boolean waiting = false;
       {

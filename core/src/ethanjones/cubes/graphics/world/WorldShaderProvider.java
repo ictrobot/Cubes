@@ -47,6 +47,7 @@ public class WorldShaderProvider implements ShaderProvider {
 
       @Override
       public void onChange() {
+        super.onChange();
         Log.debug("Emptying shader cache");
         for (int i = 0; i < shaders.length; i++) {
           if (shaders[i] != null) shaders[i].dispose();

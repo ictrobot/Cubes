@@ -1,6 +1,7 @@
 package ethanjones.cubes.core.settings.type;
 
 import ethanjones.cubes.core.settings.Setting;
+import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.core.settings.VisualSettingManager;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.graphics.menus.SettingsMenu;
@@ -26,8 +27,13 @@ public class DropDownSetting extends Setting {
   }
 
   @Override
-  public Actor getActor(VisualSettingManager visualSettingManager) {
-    final SelectBox<String> selectBox = new SelectBox<String>(visualSettingManager.getSkin());
+  public Actor getActor(final String settingName, VisualSettingManager visualSettingManager) {
+    final SelectBox<String> selectBox = new SelectBox<String>(visualSettingManager.getSkin()) {
+      @Override
+      protected String toString(String s) {
+        return Settings.getLocalisedSettingName(settingName + "." + s);
+      }
+    };
     selectBox.setItems(options);
     selectBox.setSelected(selected);
     selectBox.addListener(new EventListener() {

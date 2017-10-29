@@ -90,8 +90,8 @@ public abstract class Cubes {
   public void create() {
     Side.setup(side);
     Compatibility.get().sideInit(side);
-    Side.getEventBus().register(this);
-    Side.getEventBus().register(new WorldLightHandler());
+    Side.getSidedEventBus().register(this);
+    Side.getSidedEventBus().register(new WorldLightHandler());
   }
 
   // call as often as possible

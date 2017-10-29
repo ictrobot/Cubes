@@ -15,7 +15,7 @@ public enum Side {
   private static SideData clientData;
   private static SideData serverData;
   
-  public static EventBus getEventBus() {
+  public static EventBus getSidedEventBus() {
     return getData().eventBus;
   }
   

@@ -208,6 +208,7 @@ public final class AmbientOcclusion {
 
       @Override
       public void onChange() {
+        super.onChange();
         if (Pools.poolExists(AreaMesh.class)) {
           Log.debug("Clearing AreaMesh pool on AO setting change");
           WorldGraphicsPools.free();

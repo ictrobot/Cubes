@@ -7,17 +7,18 @@ import ethanjones.cubes.side.common.Side;
 public class Event {
 
   private final boolean cancelable;
-  private final boolean threaded;
+  private final boolean sided;
   private boolean canceled;
 
-  public Event(boolean cancelable, boolean threaded) {
+  public Event(boolean cancelable, boolean sided) {
     this.cancelable = cancelable;
-    this.threaded = threaded;
+    this.sided = sided;
     this.canceled = false;
   }
 
   public Event post() {
-    return Side.getEventBus().post(this);
+    if (sided) return Side.getSidedEventBus().post(this);
+    return EventBus.GLOBAL_EVENTBUS.post(this);
   }
 
   public boolean isCancelable() {
