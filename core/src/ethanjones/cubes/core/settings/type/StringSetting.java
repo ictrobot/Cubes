@@ -28,7 +28,7 @@ public class StringSetting extends Setting {
   }
 
   @Override
-  public Actor getActor(VisualSettingManager visualSettingManager) {
+  public Actor getActor(String settingName, VisualSettingManager visualSettingManager) {
     final TextField textField = new TextField(s, visualSettingManager.getSkin());
     textField.addListener(new EventListener() {
       @Override

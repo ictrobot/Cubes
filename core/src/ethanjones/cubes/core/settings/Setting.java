@@ -7,7 +7,7 @@ import com.eclipsesource.json.JsonValue;
 
 public abstract class Setting {
 
-  public abstract Actor getActor(VisualSettingManager visualSettingManager);
+  public abstract Actor getActor(String settingName, VisualSettingManager visualSettingManager);
 
   public abstract String toString();
   

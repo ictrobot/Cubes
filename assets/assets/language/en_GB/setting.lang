@@ -6,11 +6,20 @@ setting.graphics.viewDistance=Rendering Distance
 setting.graphics.fieldOfView=FOV
 setting.graphics.fog=Fog
 setting.graphics.scale=GUI Scale
-setting.graphics.ambientOcclusion=Ambient Occlusion
 setting.graphics.simpleShader=Simplified Shader
+
+setting.graphics.ambientOcclusion=Ambient Occlusion
+setting.graphics.ambientOcclusion.disabled=Disabled
+setting.graphics.ambientOcclusion.strongest=Strongest
+setting.graphics.ambientOcclusion.strong=Strong
+setting.graphics.ambientOcclusion.normal=Normal
+setting.graphics.ambientOcclusion.weak=Weak
+setting.graphics.ambientOcclusion.weakest=Weakest
 
 setting.client.graphics.vsync=VSync
 setting.client.graphics.fullscreen=Fullscreen Mode
+setting.client.graphics.fullscreen.windowedBorderless=Windowed Borderless
+setting.client.graphics.fullscreen.fullscreen=Fullscreen
 
 setting.input=Input
 setting.input.mouseSensitivity=Input Sensitivity

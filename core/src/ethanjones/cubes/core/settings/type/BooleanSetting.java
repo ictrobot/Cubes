@@ -22,7 +22,7 @@ public class BooleanSetting extends Setting {
   }
 
   @Override
-  public Actor getActor(VisualSettingManager visualSettingManager) {
+  public Actor getActor(String settingName, VisualSettingManager visualSettingManager) {
     final TextButton textButton = new TextButton(b ? "True" : "False", visualSettingManager.getSkin());
     textButton.addListener(new ChangeListener() {
       @Override

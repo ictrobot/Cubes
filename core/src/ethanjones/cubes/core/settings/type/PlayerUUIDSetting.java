@@ -22,7 +22,7 @@ public class PlayerUUIDSetting extends Setting {
   }
 
   @Override
-  public Actor getActor(VisualSettingManager visualSettingManager) {
+  public Actor getActor(String settingName, VisualSettingManager visualSettingManager) {
     return null;
   }
 

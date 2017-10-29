@@ -86,7 +86,7 @@ public class ClientCompatibility extends DesktopCompatibility {
     });
     Settings.getBaseSettingGroup().getChildGroups().get("graphics").add("client.graphics.vsync");
 
-    Settings.addSetting("client.graphics.fullscreen", new DropDownSetting("Windowed Borderless", "Fullscreen") {
+    Settings.addSetting("client.graphics.fullscreen", new DropDownSetting("windowedBorderless", "fullscreen") {
       @Override
       public void onChange() {
         super.onChange();
@@ -129,7 +129,7 @@ public class ClientCompatibility extends DesktopCompatibility {
     if (displayModes.length == 0) return false;
     Arrays.sort(displayModes, displayModeComparator);
 
-    if ("Windowed Borderless".equals(((DropDownSetting) Settings.getSetting("client.graphics.fullscreen")).getSelected())) {
+    if ("windowedBorderless".equals(((DropDownSetting) Settings.getSetting("client.graphics.fullscreen")).getSelected())) {
       Gdx.graphics.setUndecorated(true);
       Gdx.graphics.setResizable(false);
       window.setPosition(monitor.virtualX, monitor.virtualY);
