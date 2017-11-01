@@ -9,6 +9,7 @@ addons:
     packages:
     - lib32stdc++6
     - lib32z1
+    - unzip
 jdk:
 - oraclejdk8
 before_cache:
@@ -23,5 +24,6 @@ before_install:
 - git fetch --unshallow
 - git checkout -qf $TRAVIS_COMMIT
 - echo $TRAVIS_COMMIT
+- android/travis_androidsdk.sh
 install: true
 script: ./gradlew travis
