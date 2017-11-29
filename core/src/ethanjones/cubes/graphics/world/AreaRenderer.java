@@ -81,19 +81,21 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
     int vertexOffset = 0;
     
     Lock.waitToLockAll(false, area, minX, maxX, minZ, maxZ);
-    
-    for (int y = ySection * SIZE_BLOCKS; y < (ySection + 1) * SIZE_BLOCKS; y++) {
-      for (int z = 0; z < SIZE_BLOCKS; z++) {
-        for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
-          int blockInt = area.blocks[i];
-          if ((blockInt & BLOCK_VISIBLE) == BLOCK_VISIBLE) {
-            vertexOffset = render(vertexOffset, blockInt, x, y, z, i, ao, maxX, minX, maxZ, minZ);
+
+    if (!area.isBlank()) {
+      for (int y = ySection * SIZE_BLOCKS; y < (ySection + 1) * SIZE_BLOCKS; y++) {
+        for (int z = 0; z < SIZE_BLOCKS; z++) {
+          for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
+            int blockInt = area.blocks[i];
+            if ((blockInt & BLOCK_VISIBLE) == BLOCK_VISIBLE) {
+              vertexOffset = render(vertexOffset, blockInt, x, y, z, i, ao, maxX, minX, maxZ, minZ);
+            }
           }
         }
       }
-    }
-    if (vertexOffset > 0) {
-      save(vertexOffset);
+      if (vertexOffset > 0) {
+        save(vertexOffset);
+      }
     }
     
     area.lock.readUnlock();

@@ -96,6 +96,8 @@ public class WorldRenderer implements Disposable {
       int traverse = 0;
 
       if (!nullArea && ySection >= 0) {
+        area.lock.writeLock();
+
         int status = area.renderStatus[ySection];
         if (status == AreaRenderStatus.UNKNOWN) status = AreaRenderStatus.update(area, ySection);
         traverse = status == AreaRenderStatus.EMPTY ? 0 : status;
@@ -115,6 +117,8 @@ public class WorldRenderer implements Disposable {
           AreaRenderer.free(area.areaRenderer[ySection]);
           area.areaRenderer[ySection] = null;
         }
+
+        area.lock.writeUnlock();
       }
 
       if (traverse != AreaRenderStatus.COMPLETE) {
@@ -163,7 +167,7 @@ public class WorldRenderer implements Disposable {
     }
     world.entities.lock.readUnlock();
     Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_ENTITY);
-  
+
     renderIfNotNull(SelectedBlock.draw());
     renderIfNotNull(BreakingRenderer.draw());
     renderIfNotNull(AreaBoundaries.drawCurrent(pos.areaX, yPos, pos.areaZ));
