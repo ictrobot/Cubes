@@ -2,10 +2,12 @@ package ethanjones.cubes.core.platform;
 
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.settings.Keybinds;
 import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.graphics.Graphics;
+import ethanjones.cubes.graphics.Screenshot;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menu.MenuManager;
 import ethanjones.cubes.graphics.menus.ClientErrorMenu.UnresponsiveIntegratedServerMenu;
@@ -77,9 +79,9 @@ public class ClientAdapter implements AdapterInterface {
   @Override
   public void resize(int width, int height) {
     try {
-      Graphics.resize();
+      Graphics.resize(width, height);
       if (menu != null) menu.resize(Graphics.GUI_WIDTH, Graphics.GUI_HEIGHT);
-      if (cubesClient != null) cubesClient.resize(width, height);
+      if (cubesClient != null) cubesClient.resize(Graphics.RENDER_WIDTH, Graphics.RENDER_HEIGHT);
     } catch (StopLoopException e) {
       Log.debug(e);
     } catch (Exception e) {
@@ -109,7 +111,7 @@ public class ClientAdapter implements AdapterInterface {
     glClear();
     
     SplashMenu splashMenu = new SplashMenu();
-    Graphics.resize();
+    Graphics.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     splashMenu.resize(Graphics.GUI_WIDTH, Graphics.GUI_HEIGHT);
     splashMenu.render();
     Log.debug("Splash screen rendered");
@@ -132,12 +134,15 @@ public class ClientAdapter implements AdapterInterface {
       if (cubesClient == null && menu == null) { //Nothing to render
         Debug.crash(new CubesException("CubesClient and Menu both null"));
       }
+      boolean takeScreenshot = Keybinds.isJustPressed(Keybinds.KEYBIND_SCREENSHOT);
+      if (takeScreenshot) Screenshot.startScreenshot();
+
       Compatibility.get().update();
       glClear();
       if (cubesClient != null) {
         if (setupClient.getAndSet(false)) {
           cubesClient.create();
-          cubesClient.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+          cubesClient.resize(Graphics.RENDER_WIDTH, Graphics.RENDER_HEIGHT);
         }
         cubesClient.render();
       }
@@ -158,6 +163,8 @@ public class ClientAdapter implements AdapterInterface {
       if (!Branding.IS_DEBUG && cubesClient != null && cubesServer != null && cubesServer.isRunning() && CubesServer.lastUpdateTime() + 2500 < System.currentTimeMillis()) {
         Adapter.gotoMenu(new UnresponsiveIntegratedServerMenu());
       }
+
+      if (takeScreenshot) Screenshot.endScreenshot();
     } catch (StopLoopException e) {
       Log.debug(e);
     } catch (Exception e) {
@@ -172,7 +179,7 @@ public class ClientAdapter implements AdapterInterface {
     } catch (Exception ignored) {
       Gdx.gl20.glClearColor(0, 0, 0, 1f);
     }
-    Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+    Gdx.gl20.glViewport(0, 0, Graphics.RENDER_WIDTH, Graphics.RENDER_HEIGHT);
     Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
   }
 

@@ -2,10 +2,7 @@ package ethanjones.cubes.graphics;
 
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.id.IDManager;
-import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.settings.Settings;
-import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.graphics.hud.inv.BlockIcons;
 import ethanjones.cubes.graphics.world.CubesModelBatch;
 import ethanjones.cubes.graphics.world.WorldGraphicsPools;
@@ -13,16 +10,10 @@ import ethanjones.cubes.item.Item;
 import ethanjones.cubes.item.ItemBlock;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-
-import java.io.IOException;
 
 public class Graphics {
 
@@ -33,6 +24,9 @@ public class Graphics {
 
   public static float GUI_WIDTH = 0f;
   public static float GUI_HEIGHT = 0f;
+
+  public static int RENDER_WIDTH = Gdx.graphics.getWidth();
+  public static int RENDER_HEIGHT = Gdx.graphics.getHeight();
 
   private static boolean init = false;
 
@@ -57,41 +51,22 @@ public class Graphics {
     glProfiler = new GLProfiler(Gdx.graphics);
   }
 
-  public static void resize() {
-    int width = Gdx.graphics.getWidth();
-    int height = Gdx.graphics.getHeight();
+  public static void resize(int width, int height) {
+    RENDER_WIDTH = width;
+    RENDER_HEIGHT = height;
+
     float scaleFactor = scaleFactor();
-    GUI_WIDTH = width / scaleFactor;
-    GUI_HEIGHT = height / scaleFactor;
+    GUI_WIDTH = RENDER_WIDTH / scaleFactor;
+    GUI_HEIGHT = RENDER_HEIGHT / scaleFactor;
 
     screenViewport.setUnitsPerPixel(1 / scaleFactor);
-    screenViewport.update(width, height, true);
-  }
-
-  public static void takeScreenshot() {
-    Pixmap pixmap = ScreenUtils.getFrameBufferPixmap(0, 0, Gdx.graphics.getBackBufferWidth(), Gdx.graphics.getBackBufferHeight());
-    FileHandle dir = Compatibility.get().getBaseFolder().child("screenshots");
-    dir.mkdirs();
-    FileHandle f = dir.child(System.currentTimeMillis() + ".png");
-    try {
-      PixmapIO.PNG writer = new PixmapIO.PNG((int) (pixmap.getWidth() * pixmap.getHeight() * 1.5f));
-      try {
-        writer.setFlipY(true);
-        writer.write(f, pixmap);
-      } finally {
-        writer.dispose();
-      }
-    } catch (IOException ex) {
-      throw new CubesException("Error writing PNG: " + f, ex);
-    } finally {
-      pixmap.dispose();
-    }
-    Log.info("Took screenshot '" + f.file().getAbsolutePath() + "'");
+    screenViewport.update(RENDER_WIDTH, RENDER_HEIGHT, true);
   }
 
   public static float scaleFactor() {
     float f = Gdx.graphics.getPpiX() / 96;
     if (f > 1) f -= (f - 1) * 0.4f;
+    f *= Math.min(RENDER_WIDTH, RENDER_HEIGHT) / Math.min(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     return f * (Settings.isSetup() ? Settings.getFloatSettingValue(Settings.GRAPHICS_SCALE) : 1f);
   }
 }

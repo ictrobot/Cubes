@@ -16,6 +16,15 @@ setting.graphics.ambientOcclusion.normal=Normal
 setting.graphics.ambientOcclusion.weak=Weak
 setting.graphics.ambientOcclusion.weakest=Weakest
 
+setting.graphics.screenshotSize=Screenshot Size
+setting.graphics.screenshotSize.normal=Native
+setting.graphics.screenshotSize.1080p=1080p
+setting.graphics.screenshotSize.1440p=1440p
+setting.graphics.screenshotSize.4k=4K
+setting.graphics.screenshotSize.8k=8K
+setting.graphics.screenshotSize.16k=16K
+setting.graphics.screenshotSize.max=Maximum
+
 setting.client.graphics.vsync=VSync
 setting.client.graphics.fullscreen=Fullscreen Mode
 setting.client.graphics.fullscreen.windowedBorderless=Windowed Borderless

@@ -5,6 +5,7 @@ import ethanjones.cubes.core.performance.PerformanceTags;
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.entity.Entity;
+import ethanjones.cubes.graphics.Graphics;
 import ethanjones.cubes.graphics.world.*;
 import ethanjones.cubes.input.CameraController;
 import ethanjones.cubes.side.common.Cubes;
@@ -38,11 +39,11 @@ public class WorldRenderer implements Disposable {
   private HashSet<AreaNode> checkedNodes = new HashSet<AreaNode>();
 
   public WorldRenderer() {
-    camera = new PerspectiveCamera(Settings.getIntegerSettingValue(Settings.GRAPHICS_FOV), Gdx.graphics.getWidth(), Gdx.graphics.getHeight()) {
+    camera = new PerspectiveCamera(Settings.getIntegerSettingValue(Settings.GRAPHICS_FOV), Graphics.RENDER_WIDTH, Graphics.RENDER_HEIGHT) {
       @Override
       public void update(boolean b) {
-        viewportWidth = Gdx.graphics.getWidth();
-        viewportHeight = Gdx.graphics.getHeight();
+        viewportWidth = Graphics.RENDER_WIDTH;
+        viewportHeight = Graphics.RENDER_HEIGHT;
         super.update(b);
       }
     };

@@ -5,7 +5,6 @@ import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.settings.Keybinds;
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.core.util.Toggle;
-import ethanjones.cubes.graphics.Graphics;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.graphics.hud.ChatActor;
 import ethanjones.cubes.graphics.hud.FrametimeGraph;
@@ -186,6 +185,8 @@ public class GuiRenderer implements Disposable {
     stage.act();
     stage.draw();
 
+
+    spriteBatch.setProjectionMatrix(screenViewport.getCamera().combined);
     spriteBatch.begin();
     float crosshairSize = 10f;
     if (!hideGuiEnabled) {
@@ -263,7 +264,6 @@ public class GuiRenderer implements Disposable {
   private class Input extends InputAdapter {
 
     int hideGUI = Keybinds.getCode(Keybinds.KEYBIND_HIDEGUI);
-    int screenshot = Keybinds.getCode(Keybinds.KEYBIND_SCREENSHOT);
     int debug = Keybinds.getCode(Keybinds.KEYBIND_DEBUG);
     int chat = Keybinds.getCode(Keybinds.KEYBIND_CHAT);
     int blocksMenu = Keybinds.getCode(Keybinds.KEYBIND_INVENTORY);
@@ -271,10 +271,6 @@ public class GuiRenderer implements Disposable {
     private boolean functionKeys(int keycode) {
       if (keycode == hideGUI) {
         hideGuiEnabled = !hideGuiEnabled;
-        return true;
-      }
-      if (keycode == screenshot) {
-        Graphics.takeScreenshot();
         return true;
       }
       if (keycode == debug) {

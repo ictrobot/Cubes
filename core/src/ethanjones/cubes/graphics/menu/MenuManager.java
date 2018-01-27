@@ -68,6 +68,8 @@ public class MenuManager {
         return;
       }
     }
+
+    spriteBatch.setProjectionMatrix(screenViewport.getCamera().combined);
     spriteBatch.begin();
     spriteBatch.setColor(Color.WHITE);
     float width = texture.getRegionWidth();
