@@ -4,7 +4,7 @@ buildscript {
         maven { url 'https://maven.google.com' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:3.0.1'
     }
 }
 plugins {
@@ -67,7 +67,7 @@ allprojects {
     ext {
         appName = 'Cubes'
         gdxVersion = '1.9.7'
-        androidBuildToolsVersion = '25.0.3'
+        androidBuildToolsVersion = '27.0.3'
         androidSdkVersion = 21
         dataVersion = '2.2'
         byteBuddyVersion = '1.6.13'
@@ -147,8 +147,8 @@ project(":android") {
     configurations { natives }
 
     dependencies {
-        compile project(":core")
-        compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
+        implementation project(":core")
+        implementation "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
@@ -156,10 +156,10 @@ project(":android") {
         natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a"
         natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86"
 
-        compile("net.bytebuddy:byte-buddy-android:$byteBuddyVersion") {
+        implementation("net.bytebuddy:byte-buddy-android:$byteBuddyVersion") {
             exclude group:"com.jakewharton.android.repackaged"
         }
-        compile "ethanjones.repackaged.android:dx:7.1.2_r33"
+        implementation "ethanjones.repackaged.android:dx:7.1.2_r33"
     }
 }
 
@@ -191,7 +191,7 @@ task buildAll(dependsOn: ['core:jar', 'core:sourcesJar', 'client:dist', 'client:
 
 }
 
-task travisBuild(dependsOn: ['core:jar', 'client:dist', 'server:dist', 'android:assembleDebug']) {
+task travisBuild(dependsOn: ['core:jar', 'client:dist', 'client:createExe', 'server:dist', 'android:assembleDebug']) {
 
 }
 

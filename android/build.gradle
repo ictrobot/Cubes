@@ -33,6 +33,10 @@ android {
         minSdkVersion 16
         targetSdkVersion androidSdkVersion
     }
+1    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
 }
 
 // called every time gradle gets executed, takes the native dependencies of
