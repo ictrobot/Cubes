@@ -27,4 +27,4 @@ before_install:
 - android/travis_androidsdk.sh
 install: true
 script: ./gradlew travis --max-workers 1
-after_failure: find .
+after_failure: find . -name androidsdk -prune -o -print
