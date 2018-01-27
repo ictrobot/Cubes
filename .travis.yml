@@ -26,4 +26,4 @@ before_install:
 - echo $TRAVIS_COMMIT
 - android/travis_androidsdk.sh
 install: true
-script: ./gradlew travis --max-workers 1 --info
+script: ./gradlew travis --max-workers 1
