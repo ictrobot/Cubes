@@ -77,7 +77,7 @@ publishing {
             groupId 'ethanjones.cubes'
             artifactId 'android'
             version getMavenVersionString()
-            artifact(new File(project.getBuildDir(), '/outputs/apk/android-debug.apk'))
+            artifact(new File(project.getBuildDir(), '/outputs/apk/debug/android-debug.apk'))
         }
     }
     repositories {
