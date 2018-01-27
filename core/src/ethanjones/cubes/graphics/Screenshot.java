@@ -131,7 +131,7 @@ public class Screenshot {
       }
 
       Log.debug("Attempting to take " + setting + " (" + screenshotWidth + "x" + screenshotHeight + ") resolution screenshot");
-      frameBuffer = new FrameBuffer(Pixmap.Format.RGB888, screenshotWidth, screenshotHeight, true);
+      frameBuffer = new FrameBuffer(Pixmap.Format.RGB888, screenshotWidth, screenshotHeight, true, true);
       frameBuffer.begin();
 
       oldWidth = Graphics.RENDER_WIDTH;
