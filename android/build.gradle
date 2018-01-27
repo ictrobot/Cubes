@@ -33,7 +33,7 @@ android {
         minSdkVersion 16
         targetSdkVersion androidSdkVersion
     }
-1    compileOptions {
+    compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
