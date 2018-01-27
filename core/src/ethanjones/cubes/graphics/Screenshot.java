@@ -8,6 +8,7 @@ import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.core.settings.type.DropDownSetting;
 import ethanjones.cubes.core.system.CubesException;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
@@ -50,6 +51,11 @@ public class Screenshot {
 
         int[] resolution = resolutionMap.get(selected);
         if (resolution[0] > maxWidth || resolution[1] > maxHeight) selected = "normal";
+      }
+
+      @Override
+      public boolean shouldDisplay() {
+        return Compatibility.get().getApplicationType() == Application.ApplicationType.Desktop;
       }
     };
   }
