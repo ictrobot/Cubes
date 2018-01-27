@@ -68,7 +68,7 @@ public class ChatActor extends ScrollPane {
 
   public ChatActor() {
     super(null, Menu.skin);
-    setWidget(listActor);
+    setActor(listActor);
     listActor.setGap(4f);
   }
 
