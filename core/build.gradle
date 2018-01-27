@@ -9,18 +9,20 @@ task sourcesJar(type: Jar, dependsOn: classes) {
     archiveName = "core-sources.jar"
 }
 
-task properitesFile() {
-    Properties props = new Properties()
-    File propsFile = new File(project.getBuildDir(), '/jar-extra/core.properties')
-    propsFile.delete();
-    props.setProperty('LIBGDX', gdxVersion.toString())
-    props.setProperty('ANDROID_BUILD_TOOLS', androidBuildToolsVersion.toString())
-    props.setProperty('ANDROID_SDK', androidSdkVersion.toString())
-    props.setProperty('DATA', dataVersion.toString())
-    props.setProperty('VERSION', buildProperties.version.toString())
-    props.setProperty('BUILD', build.toString())
-    props.setProperty('HASH', hash.toString())
-    props.store(propsFile.newWriter(), null)
+task propertiesFile() {
+    doLast {
+        Properties props = new Properties()
+        File propsFile = new File(project.getBuildDir(), '/jar-extra/core.properties')
+        propsFile.delete();
+        props.setProperty('LIBGDX', gdxVersion.toString())
+        props.setProperty('ANDROID_BUILD_TOOLS', androidBuildToolsVersion.toString())
+        props.setProperty('ANDROID_SDK', androidSdkVersion.toString())
+        props.setProperty('DATA', dataVersion.toString())
+        props.setProperty('VERSION', buildProperties.version.toString())
+        props.setProperty('BUILD', build.toString())
+        props.setProperty('HASH', hash.toString())
+        props.store(propsFile.newWriter(), null)
+    }
 }
 
 task copyFilesFromRoot(type: Copy) {
@@ -81,6 +83,6 @@ publishing {
     }
 }
 
-publish.dependsOn(['properitesFile'])
+publish.dependsOn(['propertiesFile'])
 
-jar.dependsOn(['properitesFile', 'copyFilesFromRoot'])
+jar.dependsOn(['propertiesFile', 'copyFilesFromRoot'])
