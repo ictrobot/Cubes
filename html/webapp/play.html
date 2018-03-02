@@ -63,12 +63,15 @@
         event.preventDefault();
     });
 
-    document.querySelector('body').onkeydown = function (e) {
-        if (event.keyCode >= 48 && event.keyCode <= 57) return;
-        if (event.keyCode >= 65 && event.keyCode <= 90) return;
-        if (!e.metaKey && e.keyCode != 122 && e.keyCode != 13) {
-            e.preventDefault();
-        }
+    document.querySelector('body').onkeydown = function(e) {
+        if ((e.keyCode > 47 && e.keyCode < 58)) return; // number keys
+        if (e.keyCode === 32 || e.keyCode === 13) return; // spacebar & return key(s) (if you want to allow carriage returns)
+        if (e.keyCode > 64 && e.keyCode < 91) return; // letter keys
+        if (e.keyCode > 95 && e.keyCode < 112) return; // numpad keys
+        if (e.keyCode > 185 && e.keyCode < 193) return; // ;=,-./` (in order)
+        if (e.keyCode > 218 && e.keyCode < 223) return; // [\]' (in order)
+        if (e.keyCode === 122) return; // F11
+        e.preventDefault();
     };
 
     // pointer lock
