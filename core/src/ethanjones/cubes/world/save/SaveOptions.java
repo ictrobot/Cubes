@@ -3,6 +3,7 @@ package ethanjones.cubes.world.save;
 import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.world.World;
+import ethanjones.cubes.world.generator.RainStatus;
 import ethanjones.data.DataGroup;
 import ethanjones.data.DataParser;
 
@@ -13,7 +14,7 @@ public class SaveOptions implements DataParser {
   public long worldSeed = MathUtils.random.nextLong();
   public String worldSeedString = String.valueOf(worldSeed);
   public int worldTime = World.MAX_TIME / 4;
-  public int worldPlayingTime = 0;
+  public long worldPlayingTime = 0;
   public String worldType = "core:smooth";
   public Gamemode worldGamemode = Gamemode.survival;
   public DataGroup idManager = new DataGroup();
@@ -21,6 +22,9 @@ public class SaveOptions implements DataParser {
   public long lastOpenedTime = 0;
   public int lastVersionMajor, lastVersionMinor, lastVersionPoint, lastVersionBuild;
   public String lastVersionHash;
+
+  public RainStatus worldRainOverride = null;
+  public long worldRainOverrideTime = 0;
 
   @Override
   public DataGroup write() {
@@ -33,6 +37,14 @@ public class SaveOptions implements DataParser {
     dataGroup.put("worldType", worldType);
     dataGroup.put("worldGamemode", worldGamemode.name());
     dataGroup.put("idManager", idManager);
+
+    if (worldRainOverride != null) {
+      DataGroup rain = new DataGroup();
+      rain.put("time", worldRainOverrideTime);
+      rain.put("raining", worldRainOverride.raining);
+      rain.put("rate", worldRainOverride.rainRate);
+      dataGroup.put("worldRainOverride", rain);
+    }
   
     dataGroup.put("lastOpenedTime", System.currentTimeMillis());
   
@@ -52,10 +64,19 @@ public class SaveOptions implements DataParser {
     worldSeed = dataGroup.getLong("worldSeed");
     worldSeedString = dataGroup.getString("worldSeedStr");
     worldTime = dataGroup.getInteger("worldTime");
-    worldPlayingTime = dataGroup.getInteger("worldPlayingTime");
+    worldPlayingTime = dataGroup.getLong("worldPlayingTime");
     worldType = dataGroup.getString("worldType");
     worldGamemode = Gamemode.valueOf(dataGroup.getString("worldGamemode"));
     idManager = dataGroup.getGroup("idManager");
+
+    if (dataGroup.containsKey("worldRainOverride")) {
+      DataGroup rain = dataGroup.getGroup("worldRainOverride");
+      worldRainOverrideTime = rain.getLong("time");
+      worldRainOverride = new RainStatus(rain.getBoolean("raining"), rain.getFloat("rate"));
+    } else {
+      worldRainOverrideTime = 0;
+      worldRainOverride = null;
+    }
   
     lastOpenedTime = dataGroup.getLong("lastOpenedTime");
   
