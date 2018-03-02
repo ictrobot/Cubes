@@ -12,15 +12,15 @@ import com.badlogic.gdx.utils.Pool;
 
 public class AreaMesh implements Pool.Poolable, Disposable {
 
-  public static final int MAX_VERTICES = 65532;
-  public static final int SAFE_VERTICES = MAX_VERTICES - (6 * 4 * CubesVertexAttributes.COMPONENTS_AO);
-  public static final int MAX_INDICES = MAX_VERTICES / 4 * 6;
-  
+  public static final int MAX_INDICES = 32760;
+  public static final int MAX_SIDES = MAX_INDICES / 6;
+  public static final int MAX_VERTICES = MAX_SIDES * 4;
+
   public static short[] indices;
   public static float[] vertices;
 
   static {
-    vertices = new float[MAX_VERTICES];
+    vertices = new float[MAX_VERTICES * CubesVertexAttributes.MAX_COMPONENTS * 2];
     indices = new short[MAX_INDICES];
     short j = 0;
     for (int i = 0; i < indices.length; i += 6, j += 4) {
@@ -36,6 +36,7 @@ public class AreaMesh implements Pool.Poolable, Disposable {
   public Mesh mesh;
   public MeshPart meshPart;
   public int vertexCount;
+  public int maxVertexOffset = 0;
 
   public AreaMesh() {
     this(CubesVertexAttributes.getVertexAttributes());
@@ -48,6 +49,9 @@ public class AreaMesh implements Pool.Poolable, Disposable {
     meshPart.primitiveType = GL20.GL_TRIANGLES;
     meshPart.offset = 0;
     mesh.setIndices(indices);
+
+    int components = CubesVertexAttributes.components(vertexAttributes);
+    maxVertexOffset = MAX_VERTICES * components;
   }
 
   public void saveVertices(int vertexCount) {

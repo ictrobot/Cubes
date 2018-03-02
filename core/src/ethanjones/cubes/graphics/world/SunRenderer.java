@@ -10,71 +10,52 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.math.Vector3;
 
 import static ethanjones.cubes.world.light.BlockLight.FULL_LIGHT;
 
 public class SunRenderer {
-  static short[] indicies;
 
-  static {
-    indicies = new short[6];
+  private static String sunTexturePath = "core:world/sun.png";
+  private static String moonTexturePath = "core:world/moon.png";
+
+  private boolean moon;
+  private Mesh mesh;
+  private float[] vertices;
+  private short[] indices;
+  private Material material;
+  private TextureRegion textureRegion;
+
+  private SunRenderer(boolean moon) {
+    this.moon = moon;
+
+    String texturePath = moon ? moonTexturePath : sunTexturePath;
+    material = Assets.getMaterial(texturePath);
+    textureRegion = Assets.getTextureRegion(texturePath);
+
+    indices = new short[6];
     short j = 0;
-    for (int i = 0; i < indicies.length; i += 6, j += 4) {
-      indicies[i + 0] = (short) (j + 0);
-      indicies[i + 1] = (short) (j + 1);
-      indicies[i + 2] = (short) (j + 2);
-      indicies[i + 3] = (short) (j + 2);
-      indicies[i + 4] = (short) (j + 3);
-      indicies[i + 5] = (short) (j + 0);
+    for (int i = 0; i < indices.length; i += 6, j += 4) {
+      indices[i + 0] = (short) (j + 0);
+      indices[i + 1] = (short) (j + 1);
+      indices[i + 2] = (short) (j + 2);
+      indices[i + 3] = (short) (j + 2);
+      indices[i + 4] = (short) (j + 3);
+      indices[i + 5] = (short) (j + 0);
     }
+    vertices = new float[CubesVertexAttributes.COMPONENTS * 4];
+
+    mesh = new Mesh(false, 4, 6, CubesVertexAttributes.VERTEX_ATTRIBUTES);
+    mesh.setIndices(indices);
+    FaceVertices.createMinY(new Vector3(-0.5f, 0f, -0.5f), textureRegion, null, 0, 0, 0, FULL_LIGHT, vertices, 0);
+    mesh.setVertices(vertices);
   }
 
-  static Mesh mesh;
-  static float[] vertices;
-
-  static TextureRegion textureRegion;
-  static Material sunMaterial;
-  static Material moonMaterial;
-
-  public static void draw(ModelBatch modelBatch) {
-    if (mesh == null) {
-      textureRegion = Assets.getTextureRegion("core:world/sun.png");
-      sunMaterial = Assets.getMaterial("core:world/sun.png");
-      sunMaterial.set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
-
-      moonMaterial = Assets.getMaterial("core:world/moon.png");
-      moonMaterial.set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
-
-      mesh = new Mesh(false, 4, 6, CubesVertexAttributes.VERTEX_ATTRIBUTES);
-      mesh.setIndices(indicies);
-      vertices = new float[CubesVertexAttributes.COMPONENTS * 4];
-      FaceVertices.createMinY(new Vector3(-0.5f, 0f, -0.5f), textureRegion, null, 0, 0, 0, FULL_LIGHT, vertices, 0);
-
-      mesh.setVertices(vertices);
-    }
-    Renderable sun = new Renderable();
-    setWorldTransform(sun, false);
-    sun.meshPart.primitiveType = GL20.GL_TRIANGLES;
-    sun.meshPart.offset = 0;
-    sun.meshPart.size = 6;
-    sun.meshPart.mesh = mesh;
-    sun.material = sunMaterial;
-    sun.userData = new RenderingSettings().setFogEnabled(false);
-    modelBatch.render(sun);
-
-    Renderable moon = new Renderable().set(sun);
-    setWorldTransform(moon, true);
-    moon.material = moonMaterial;
-    modelBatch.render(moon);
-  }
-
-  public static void setWorldTransform(Renderable renderable, boolean isMoon) {
+  private void setWorldTransform(Renderable renderable) {
     Vector3 pos = Cubes.getClient().player.position;
     int r = 512;
     float f = (float) (Cubes.getClient().world.getTime() - (World.MAX_TIME / 4)) / (float) World.MAX_TIME;
-    if (isMoon) f += 0.5f;
+    if (moon) f += 0.5f;
     f %= 1;
 
     float x = (float) (pos.x + (r * Math.cos(f * 2 * Math.PI)));
@@ -84,5 +65,28 @@ public class SunRenderer {
     renderable.worldTransform.setToTranslation(x, y, z);
     renderable.worldTransform.scl(75f);
     renderable.worldTransform.rotate(Vector3.Z, (f - 0.25f % 1) * 360);
+  }
+
+  private void render(ModelBatch modelBatch) {
+    Renderable renderable = new Renderable();
+    setWorldTransform(renderable);
+    renderable.meshPart.primitiveType = GL20.GL_TRIANGLES;
+    renderable.meshPart.offset = 0;
+    renderable.meshPart.size = 6;
+    renderable.meshPart.mesh = mesh;
+    renderable.material = material;
+    renderable.userData = new RenderingSettings().setFogEnabled(false);
+    modelBatch.render(renderable);
+  }
+
+  private static SunRenderer SUN;
+  private static SunRenderer MOON;
+
+  public static void draw(ModelBatch modelBatch) {
+    if (SUN == null) SUN = new SunRenderer(false);
+    SUN.render(modelBatch);
+
+    if (MOON == null) MOON = new SunRenderer(true);
+    MOON.render(modelBatch);
   }
 }

@@ -53,8 +53,8 @@ public class WorldRenderer implements Disposable {
   public void render() {
     WorldGraphicsPools.free();
 
-    AreaRenderer.renderedThisFrame = 0;
-    AreaRenderer.renderedMeshesThisFrame = 0;
+    AreaRenderer.frameStart();
+
     needToRefresh.clear();
     queue.clear();
     checkedNodes.clear();
@@ -86,12 +86,18 @@ public class WorldRenderer implements Disposable {
         poolNode.add(node);
         continue;
       }
-      if (!(areaInFrustum(areaX, areaZ, ySection, camera.frustum) && inRange(areaX, areaZ, pos.areaX, pos.areaZ, renderDistance)) && !startingNode.firstNode) continue;
+
+      if (!node.firstNode) {
+        if (!areaInFrustum(areaX, areaZ, ySection, camera.frustum)) continue;
+        if (!inRange(areaX, areaZ, pos.areaX, pos.areaZ, renderDistance)) continue;
+      }
 
       boolean nullArea = area == null || ySection >= area.height;
       int traverse = 0;
 
       if (!nullArea && ySection >= 0) {
+        area.lock.writeLock();
+
         int status = area.renderStatus[ySection];
         if (status == AreaRenderStatus.UNKNOWN) status = AreaRenderStatus.update(area, ySection);
         traverse = status == AreaRenderStatus.EMPTY ? 0 : status;
@@ -111,6 +117,8 @@ public class WorldRenderer implements Disposable {
           AreaRenderer.free(area.areaRenderer[ySection]);
           area.areaRenderer[ySection] = null;
         }
+
+        area.lock.writeUnlock();
       }
 
       if (traverse != AreaRenderStatus.COMPLETE) {
@@ -144,7 +152,7 @@ public class WorldRenderer implements Disposable {
         modelBatch.render(areaRenderer);
       }
     }
-    
+
     float deltaTime = Gdx.graphics.getDeltaTime();
     world.entities.lock.readLock();
     for (Entity entity : world.entities.values()) {
@@ -152,7 +160,7 @@ public class WorldRenderer implements Disposable {
       if (entity instanceof RenderableProvider) modelBatch.render(((RenderableProvider) entity));
     }
     world.entities.lock.readUnlock();
-  
+
     renderIfNotNull(SelectedBlock.draw());
     renderIfNotNull(BreakingRenderer.draw());
     renderIfNotNull(AreaBoundaries.drawCurrent(pos.areaX, yPos, pos.areaZ));
@@ -192,8 +200,7 @@ public class WorldRenderer implements Disposable {
           return false;
       Area minZ = areaMap.lockedGetArea(area.areaX, area.areaZ - 1);
       if (minZ != null && !minZ.isBlank())
-        if (minZ.renderStatus.length < ySection - 1 || (minZ.renderStatus[ySection] & AreaRenderStatus.COMPLETE_MAX_Z) != AreaRenderStatus.COMPLETE_MAX_Z)
-          return false;
+        return minZ.renderStatus.length >= ySection - 1 && (minZ.renderStatus[ySection] & AreaRenderStatus.COMPLETE_MAX_Z) == AreaRenderStatus.COMPLETE_MAX_Z;
       return true;
     }
     return false;
