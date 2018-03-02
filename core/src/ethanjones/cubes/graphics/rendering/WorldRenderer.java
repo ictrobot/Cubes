@@ -91,7 +91,11 @@ public class WorldRenderer implements Disposable {
         poolNode.add(node);
         continue;
       }
-      if (!(areaInFrustum(areaX, areaZ, ySection, camera.frustum) && inRange(areaX, areaZ, pos.areaX, pos.areaZ, renderDistance)) && !startingNode.firstNode) continue;
+
+      if (!node.firstNode) {
+        if (!areaInFrustum(areaX, areaZ, ySection, camera.frustum)) continue;
+        if (!inRange(areaX, areaZ, pos.areaX, pos.areaZ, renderDistance)) continue;
+      }
 
       boolean nullArea = area == null || ySection >= area.height;
       int traverse = 0;
