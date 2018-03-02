@@ -100,6 +100,7 @@ public class CommandManager {
     SaveCommand.init();
     TeleportCommand.init();
     TimeCommand.init();
+    RainCommand.init();
 
     StopCommand.init();
     ThreadDumpCommand.init();

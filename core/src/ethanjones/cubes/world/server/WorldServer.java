@@ -32,6 +32,9 @@ public class WorldServer extends World {
 
   private static List<LoadedAreaFilter> loadedAreaFilters = new CopyOnWriteArrayList<>();
 
+  private RainStatus rainStatusOverride = null;
+  private long rainStatusOverrideEnd = 0;
+
   public WorldServer(Save save) {
     super(save);
     if (save == null) throw new IllegalArgumentException("Null save on server");
@@ -186,6 +189,25 @@ public class WorldServer extends World {
   }
 
   public RainStatus getRainStatus(float x, float z) {
+    Log.info(String.valueOf(rainStatusOverride));
+    if (rainStatusOverride != null) {
+      if (playingTime > rainStatusOverrideEnd) {
+        rainStatusOverride = null;
+        rainStatusOverrideEnd = 0;
+      } else {
+        return rainStatusOverride;
+      }
+    }
     return terrainGenerator.getRainStatus(x, z, playingTime);
+  }
+
+  public void overrideRainStatus(RainStatus rainStatus, int seconds) {
+    rainStatusOverride = rainStatus;
+    rainStatusOverrideEnd = playingTime + (seconds * (1000 / Cubes.tickMS));
+  }
+
+  public void removeRainStatusOverride() {
+    rainStatusOverride = null;
+    rainStatusOverrideEnd = 0;
   }
 }
