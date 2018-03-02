@@ -43,6 +43,7 @@ public abstract class World implements Disposable, HasLock {
   public final Save save;
   
   protected int time;
+  protected long playingTime;
   protected final AtomicBoolean disposed = new AtomicBoolean(false);
   public final LuaTable lua;
 
@@ -50,6 +51,7 @@ public abstract class World implements Disposable, HasLock {
     this.save = save;
     this.terrainGenerator = save == null ? null : GeneratorManager.getTerrainGenerator(save.getSaveOptions());
     this.time = save == null ? 0 : save.getSaveOptions().worldTime;
+    this.playingTime = save == null ? 0 : save.getSaveOptions().worldPlayingTime;
     map = new AreaMap(this);
     entities = new Entities(this);
     lua = LuaMapping.mapping(new LuaMappingWorld(this));
@@ -159,6 +161,7 @@ public abstract class World implements Disposable, HasLock {
     }
     time++;
     if (time >= MAX_TIME) time = 0;
+    playingTime++;
     entities.lock.writeUnlock();
     updateLock.writeUnlock();
   }

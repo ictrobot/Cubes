@@ -3,6 +3,7 @@ package ethanjones.cubes.world.generator.smooth;
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.world.generator.RainStatus;
 import ethanjones.cubes.world.generator.TerrainGenerator;
 import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.server.WorldServer;
@@ -18,6 +19,7 @@ public class SmoothWorld extends TerrainGenerator {
   private final Feature height;
   private final Feature heightVariation;
   private final Feature trees;
+  private final Feature rain;
   private final CaveManager caves;
 
   public SmoothWorld() {
@@ -31,6 +33,7 @@ public class SmoothWorld extends TerrainGenerator {
     height = new Feature(murmurHash3(this.baseSeed + 1), 4, 1);
     heightVariation = new Feature(murmurHash3(this.baseSeed + 2), 4, 2);
     trees = new Feature(murmurHash3(this.baseSeed + 3), 1, 3);
+    rain = new Feature(murmurHash3(this.baseSeed + 4), 1, 3);
 
     caves = new CaveManager(this);
   }
@@ -100,6 +103,13 @@ public class SmoothWorld extends TerrainGenerator {
         setVisibleNeighbour(area, block, x, y, z, meta);
       }
     }.generateTree(x, y, z, h, area);
+  }
+
+  @Override
+  public RainStatus getRainStatus(float x, float z, float rainTime) {
+    double r = rain.eval(x / 100, z / 100, rainTime / 1000);
+    if (r < 0.6) return RainStatus.NOT_RAINING;
+    return new RainStatus(true, (float) ((r - 0.6d) / 0.4d));
   }
 
   public int getSurfaceHeight(int x, int z) {

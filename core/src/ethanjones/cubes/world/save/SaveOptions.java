@@ -13,6 +13,7 @@ public class SaveOptions implements DataParser {
   public long worldSeed = MathUtils.random.nextLong();
   public String worldSeedString = String.valueOf(worldSeed);
   public int worldTime = World.MAX_TIME / 4;
+  public int worldPlayingTime = 0;
   public String worldType = "core:smooth";
   public Gamemode worldGamemode = Gamemode.survival;
   public DataGroup idManager = new DataGroup();
@@ -28,6 +29,7 @@ public class SaveOptions implements DataParser {
     dataGroup.put("worldSeed", worldSeed);
     dataGroup.put("worldSeedStr", worldSeedString);
     dataGroup.put("worldTime", worldTime);
+    dataGroup.put("worldPlayingTime", worldPlayingTime);
     dataGroup.put("worldType", worldType);
     dataGroup.put("worldGamemode", worldGamemode.name());
     dataGroup.put("idManager", idManager);
@@ -50,6 +52,7 @@ public class SaveOptions implements DataParser {
     worldSeed = dataGroup.getLong("worldSeed");
     worldSeedString = dataGroup.getString("worldSeedStr");
     worldTime = dataGroup.getInteger("worldTime");
+    worldPlayingTime = dataGroup.getInteger("worldPlayingTime");
     worldType = dataGroup.getString("worldType");
     worldGamemode = Gamemode.valueOf(dataGroup.getString("worldGamemode"));
     idManager = dataGroup.getGroup("idManager");

@@ -59,6 +59,10 @@ public class WorldShaderProvider implements ShaderProvider {
 
   @Override
   public Shader getShader(Renderable renderable) {
+    if (renderable.shader != null) {
+      return renderable.shader;
+    }
+
     int shader = 0;
 
     boolean fogFlag = Settings.getBooleanSettingValue(Settings.GRAPHICS_FOG);

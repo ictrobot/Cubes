@@ -6,6 +6,7 @@ import ethanjones.cubes.graphics.world.AreaRenderer;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.World;
+import ethanjones.cubes.world.generator.RainStatus;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
 import ethanjones.cubes.world.storage.Area;
@@ -24,6 +25,7 @@ public class WorldClient extends World {
   private ArrayList<Area> removed = new ArrayList<Area>();
   private AreaReference playerArea = new AreaReference();
   private final int renderDistance = Settings.getIntegerSettingValue(Settings.GRAPHICS_VIEW_DISTANCE); //keep 3 extra
+  public RainStatus rainStatus = RainStatus.NOT_RAINING;
   private int tickCounter = 0;
 
   public WorldClient() {

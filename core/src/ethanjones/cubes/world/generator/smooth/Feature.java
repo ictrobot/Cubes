@@ -18,10 +18,14 @@ public class Feature {
     }
   }
 
-  public double eval(int x, int y) {
+  public double eval(double x, double y) {
+    return eval(x, y, 0);
+  }
+
+  public double eval(double x, double y, double z) {
     double e = 0;
     for (int i = 0; i < octaves; i++) {
-      e += noise.eval(x / d[i], y / d[i], 0) / octaves;
+      e += noise.eval(x / d[i], y / d[i], z / d[i]) / octaves;
     }
     return (e + 1) / 2;
   }

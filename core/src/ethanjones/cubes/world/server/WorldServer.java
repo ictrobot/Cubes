@@ -12,6 +12,7 @@ import ethanjones.cubes.networking.packets.PacketWorldTime;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.World;
+import ethanjones.cubes.world.generator.RainStatus;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
@@ -182,5 +183,9 @@ public class WorldServer extends World {
     save.writeSaveOptions();
 
     updateLock.readUnlock();
+  }
+
+  public RainStatus getRainStatus(float x, float z) {
+    return terrainGenerator.getRainStatus(x, z, playingTime);
   }
 }
