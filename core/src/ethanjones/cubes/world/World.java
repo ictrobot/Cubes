@@ -268,17 +268,6 @@ public abstract class World implements Disposable, HasLock {
   }
 
   public void save() {
-    if (save == null || save.readOnly) return;
-    updateLock.readLock();
 
-    // players
-    save.writePlayers();
-    // areas
-    save.writeAreas(map);
-    // state
-    save.getSaveOptions().worldTime = time;
-    save.writeSaveOptions();
-
-    updateLock.readUnlock();
   }
 }

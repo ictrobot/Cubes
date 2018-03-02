@@ -30,8 +30,8 @@ public class WorldServer extends World {
 
   private static List<LoadedAreaFilter> loadedAreaFilters = new ArrayList<LoadedAreaFilter>();
 
-  private RainStatus rainStatusOverride = null;
-  private long rainStatusOverrideEnd = 0;
+  private RainStatus rainStatusOverride;
+  private long rainStatusOverrideEnd;
 
   public WorldServer(Save save) {
     super(save);
@@ -40,6 +40,9 @@ public class WorldServer extends World {
     Log.info("Save '" + this.save.name + "'");
     if (!save.readOnly) WorldStorage.openSave(save.name);
     loadedAreaFilters.add(WorldTasks.getGenerationAreaFilter());
+
+    this.rainStatusOverride = save.getSaveOptions().worldRainOverride;
+    this.rainStatusOverrideEnd = save.getSaveOptions().worldRainOverrideTime;
   }
   
   public BlockReference getSpawnPoint() {
@@ -165,7 +168,20 @@ public class WorldServer extends World {
       map.lock.writeUnlock();
       return;
     }
-    super.save();
+    updateLock.readLock();
+
+    // players
+    save.writePlayers();
+    // areas
+    save.writeAreas(map);
+    // state
+    save.getSaveOptions().worldTime = time;
+    save.getSaveOptions().worldPlayingTime = playingTime;
+    save.getSaveOptions().worldRainOverride = rainStatusOverride;
+    save.getSaveOptions().worldRainOverrideTime = rainStatusOverrideEnd;
+    save.writeSaveOptions();
+
+    updateLock.readUnlock();
   }
 
   public RainStatus getRainStatus(float x, float z) {
