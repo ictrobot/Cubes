@@ -103,6 +103,5 @@ public class CommandManager {
     RainCommand.init();
 
     StopCommand.init();
-    ThreadDumpCommand.init();
   }
 }
