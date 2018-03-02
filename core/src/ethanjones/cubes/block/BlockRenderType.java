@@ -14,7 +14,7 @@ import static ethanjones.cubes.world.storage.Area.*;
 
 public abstract class BlockRenderType {
   
-  public static final BlockRenderType DEFAULT = new BlockRenderType() {
+  public static final BlockRenderType DEFAULT = new BlockRenderType(6) {
     static final int MIN_AREA = 0;
     static final int MAX_AREA = SIZE_BLOCKS - 1;
     
@@ -79,7 +79,7 @@ public abstract class BlockRenderType {
     }
   };
   
-  public static final BlockRenderType CROSS = new BlockRenderType() {
+  public static final BlockRenderType CROSS = new BlockRenderType(4) {
     @Override
     public int render(float[] vertices, int vertexOffset, Vector3 areaOffset, Block block, int meta, BlockTextureHandler textureHandler, Area area, int x, int y, int z, int i, boolean ao, Area minX, Area maxZ, Area minZ, Area maxX) {
       vertexOffset = CrossFaceVertices.createMinXMaxZ(areaOffset, textureHandler.getSide(null), x, y, z, area.light[i + MIN_Z_OFFSET] & 0xFF, vertices, vertexOffset, ao);
@@ -90,7 +90,7 @@ public abstract class BlockRenderType {
     }
   };
   
-  public static final BlockRenderType CROSS_STRETCHED = new BlockRenderType() {
+  public static final BlockRenderType CROSS_STRETCHED = new BlockRenderType(4) {
     @Override
     public int render(float[] vertices, int vertexOffset, Vector3 areaOffset, Block block, int meta, BlockTextureHandler textureHandler, Area area, int x, int y, int z, int i, boolean ao, Area minX, Area maxZ, Area minZ, Area maxX) {
       vertexOffset = CrossFaceVertices.createMinXMaxZStretched(areaOffset, textureHandler.getSide(null), x, y, z, area.light[i + MIN_Z_OFFSET] & 0xFF, vertices, vertexOffset, ao);
@@ -100,6 +100,14 @@ public abstract class BlockRenderType {
       return vertexOffset;
     }
   };
+
+  public final int maxFaces;
+  public final int maxVertices;
+
+  public BlockRenderType(int maxFaces) {
+    this.maxFaces = maxFaces;
+    this.maxVertices = maxFaces * 4;
+  }
   
   public abstract int render(float[] vertices, int vertexOffset, Vector3 areaOffset, Block block, int meta, BlockTextureHandler textureHandler, Area area, int x, int y, int z, int i, boolean ao, Area minX, Area maxZ, Area minZ, Area maxX);
 }

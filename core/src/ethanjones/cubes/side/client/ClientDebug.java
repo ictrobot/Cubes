@@ -64,10 +64,11 @@ public class ClientDebug {
     builder.append(lineSeparator);
     builder.append("POS X:").append(twoDP.format(p.x)).append("(").append(CoordinateConverter.area(p.x)).append(")").append(" Y:").append(twoDP.format(p.y)).append("(").append(CoordinateConverter.area(p.y)).append(")").append(" Z:").append(twoDP.format(p.z)).append("(").append(CoordinateConverter.area(p.z)).append(")").append(lineSeparator);
     builder.append("DIR X:").append(twoDP.format(Cubes.getClient().player.angle.x)).append(" Y:").append(twoDP.format(Cubes.getClient().player.angle.y)).append(" Z:").append(twoDP.format(Cubes.getClient().player.angle.z)).append(lineSeparator);
-    builder.append("R A:").append(AreaRenderer.renderedThisFrame).append(" M:").append(AreaRenderer.renderedMeshesThisFrame).append(" D:").append(Settings.getIntegerSetting(Settings.GRAPHICS_VIEW_DISTANCE));
+    builder.append("REN A:").append(AreaRenderer.renderedThisFrame).append(" M:").append(AreaRenderer.renderedMeshesThisFrame).append(" D:").append(Settings.getIntegerSetting(Settings.GRAPHICS_VIEW_DISTANCE));
     if (Settings.getBooleanSettingValue(Settings.GRAPHICS_FOG)) builder.append(" FOG");
     if (AmbientOcclusion.isEnabled()) builder.append(" AO");
     builder.append(lineSeparator);
+    //builder.append("REF A:").append(AreaRenderer.refreshedThisFrame).append(" M:").append(AreaRenderer.refreshedMeshesThisFrame).append(lineSeparator);
     if (glProfilerEnabled) {
       builder.append("TC:").append(LastFrame.totalCalls).append(" DG:").append(LastFrame.drawCalls).append(" TB:").append(LastFrame.textureBindings).append(" SS:").append(LastFrame.shaderSwitches).append(" VC:").append(LastFrame.vertexCount()).append(lineSeparator);
     }

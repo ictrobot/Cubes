@@ -57,8 +57,8 @@ public class WorldRenderer implements Disposable {
     WorldGraphicsPools.free();
 
     Performance.start(PerformanceTags.CLIENT_RENDER_WORLD);
-    AreaRenderer.renderedThisFrame = 0;
-    AreaRenderer.renderedMeshesThisFrame = 0;
+    AreaRenderer.frameStart();
+
     needToRefresh.clear();
     queue.clear();
     checkedNodes.clear();

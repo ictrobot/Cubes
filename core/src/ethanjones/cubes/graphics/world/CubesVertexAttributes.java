@@ -29,6 +29,8 @@ public class CubesVertexAttributes {
   public static final int COMPONENTS = 6;
   public static final int COMPONENTS_AO = 8; //3 for position, 2 for texture coordinates, 1 for light, 2 for ao
 
+  public static final int MAX_COMPONENTS = 8;
+
   public static VertexAttributes getVertexAttributes() {
     if (AmbientOcclusion.isEnabled()) return VERTEX_ATTRIBUTES_AO;
     return VERTEX_ATTRIBUTES;

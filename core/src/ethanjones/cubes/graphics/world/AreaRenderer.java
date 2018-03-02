@@ -19,18 +19,21 @@ import com.badlogic.gdx.utils.Pool;
 
 import java.util.ArrayList;
 
-import static ethanjones.cubes.graphics.world.AreaMesh.SAFE_VERTICES;
 import static ethanjones.cubes.world.storage.Area.*;
 
 public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolable {
   
   public static int renderedThisFrame = 0;
   public static int renderedMeshesThisFrame = 0;
-  
+  public static int refreshedThisFrame = 0;
+  public static int refreshedMeshesThisFrame = 0;
+
   public boolean refresh = true;
-  Vector3 offset = new Vector3();
+  private Vector3 offset = new Vector3();
   private Area area;
   private int ySection;
+  private int maxVertexOffset = 0;
+  private int componentSize = 0;
   private ArrayList<AreaMesh> meshs = new ArrayList<AreaMesh>();
   
   public boolean needsRefresh() {
@@ -63,6 +66,7 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
     if (area == null) return false;
 
     boolean ao = AmbientOcclusion.isEnabled();
+    getMeshInfo();
 
     Area maxX = area.neighbour(area.areaX + 1, area.areaZ);
     Area minX = area.neighbour(area.areaX - 1, area.areaZ);
@@ -103,6 +107,10 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
     if (minX != null) minX.lock.readUnlock();
     if (maxZ != null) maxZ.lock.readUnlock();
     if (minZ != null) minZ.lock.readUnlock();
+
+    refreshedThisFrame ++;
+    refreshedMeshesThisFrame += meshs.size();
+
     return true;
   }
   
@@ -110,14 +118,14 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
     Block block = IDManager.toBlock(blockInt & 0xFFFFF);
     if (block != null) {
       int meta = (blockInt >> 20) & 0xFF;
-      BlockRenderType renderType = block.renderType(meta);
       BlockTextureHandler textureHandler = block.getTextureHandler(meta);
-      vertexOffset = renderType.render(AreaMesh.vertices, vertexOffset, offset, block, meta, textureHandler, area, x, y, z, i, ao, minX, maxZ, minZ, maxX);
-      
-      if (vertexOffset >= SAFE_VERTICES) {
+      BlockRenderType renderType = block.renderType(meta);
+      if (vertexOffset + (renderType.maxVertices * componentSize) > maxVertexOffset) {
         save(vertexOffset);
-        return 0;
+        vertexOffset = 0;
       }
+
+      vertexOffset = renderType.render(AreaMesh.vertices, vertexOffset, offset, block, meta, textureHandler, area, x, y, z, i, ao, minX, maxZ, minZ, maxX);
     }
     return vertexOffset;
   }
@@ -159,6 +167,13 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
     this.offset.set(area.minBlockX, 0, area.minBlockZ);
     return this;
   }
+
+  private void getMeshInfo() {
+    AreaMesh areaMesh = Pools.obtain(AreaMesh.class);
+    maxVertexOffset = areaMesh.maxVertexOffset;
+    componentSize = CubesVertexAttributes.components(areaMesh.mesh.getVertexAttributes());
+    Pools.free(areaMesh);
+  }
   
   // always client
   public static void free(AreaRenderer areaRenderer) {
@@ -187,5 +202,12 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
       Pools.free(AreaMesh.class, areaMesh);
     }
     areaMeshs.clear();
+  }
+
+  public static void frameStart() {
+    AreaRenderer.renderedThisFrame = 0;
+    AreaRenderer.renderedMeshesThisFrame = 0;
+    AreaRenderer.refreshedThisFrame = 0;
+    AreaRenderer.refreshedMeshesThisFrame = 0;
   }
 }
