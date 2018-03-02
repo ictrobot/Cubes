@@ -189,7 +189,6 @@ public class WorldServer extends World {
   }
 
   public RainStatus getRainStatus(float x, float z) {
-    Log.info(String.valueOf(rainStatusOverride));
     if (rainStatusOverride != null) {
       if (playingTime > rainStatusOverrideEnd) {
         rainStatusOverride = null;
