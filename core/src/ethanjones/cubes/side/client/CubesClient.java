@@ -9,6 +9,7 @@ import ethanjones.cubes.graphics.hud.inv.InventoryManager;
 import ethanjones.cubes.graphics.menus.PauseMenu;
 import ethanjones.cubes.graphics.menus.WorldLoadingMenu;
 import ethanjones.cubes.graphics.rendering.Renderer;
+import ethanjones.cubes.graphics.world.RainRenderer;
 import ethanjones.cubes.input.InputChain;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.common.Side;
@@ -109,6 +110,7 @@ public class CubesClient extends Cubes implements ApplicationListener {
   protected void tick() {
     super.tick();
     inputChain.tick();
+    RainRenderer.tick();
   }
   
   @Override

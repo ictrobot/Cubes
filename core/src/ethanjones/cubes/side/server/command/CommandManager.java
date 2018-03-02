@@ -2,6 +2,7 @@ package ethanjones.cubes.side.server.command;
 
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.side.server.commands.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -90,6 +91,18 @@ public class CommandManager {
 
   public static void reset() {
     commands.clear();
-    BasicCommands.init();
+    init();
+  }
+
+  protected static void init() {
+    HelpCommand.init();
+
+    SaveCommand.init();
+    TeleportCommand.init();
+    TimeCommand.init();
+    RainCommand.init();
+
+    StopCommand.init();
+    ThreadDumpCommand.init();
   }
 }

@@ -17,6 +17,7 @@ import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.collision.BlockIntersection;
+import ethanjones.cubes.world.generator.RainStatus;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.reference.multi.AreaReferenceSet;
@@ -39,7 +40,8 @@ public class PlayerManager {
   private int renderDistance;
   private int loadDistance;
   public ClickType clickType;
-  
+  private RainStatus lastSentRainStatus = RainStatus.NOT_RAINING;
+
   public PlayerManager(ClientIdentifier clientIdentifier, PacketConnect packetConnect) {
     this.server = Cubes.getServer();
     this.client = clientIdentifier;
@@ -267,6 +269,15 @@ public class PlayerManager {
         NetworkingManager.sendPacketToClient(packet, client);
         
         if (doneFeatures == totalFeatures && doneGenerate == totalGenerate) initialGenerationTask = null;
+      }
+
+      RainStatus rainStatus = ((WorldServer) Cubes.getServer().world).getRainStatus(client.getPlayer().position.x, client.getPlayer().position.z);
+      if (rainStatus.raining != lastSentRainStatus.raining || Math.abs(rainStatus.rainRate - lastSentRainStatus.rainRate) > 0.05) {
+        lastSentRainStatus = rainStatus;
+
+        PacketRainStatus packetRainStatus = new PacketRainStatus();
+        packetRainStatus.rainStatus = rainStatus;
+        NetworkingManager.sendPacketToClient(packetRainStatus, client);
       }
     }
   }

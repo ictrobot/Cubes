@@ -1,6 +1,7 @@
-package ethanjones.cubes.side.server.command;
+package ethanjones.cubes.side.server.commands;
 
 import ethanjones.cubes.core.localization.Localization;
+import ethanjones.cubes.side.server.command.*;
 
 import java.util.List;
 import java.util.Map.Entry;

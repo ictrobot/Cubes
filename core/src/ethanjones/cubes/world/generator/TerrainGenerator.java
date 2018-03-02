@@ -13,6 +13,10 @@ public abstract class TerrainGenerator {
 
   public abstract BlockReference spawnPoint(WorldServer world);
 
+  public RainStatus getRainStatus(float x, float z, float rainTime) {
+    return RainStatus.NOT_RAINING;
+  }
+
   public static void set(Area area, Block block, int x, int y, int z, int meta) {
     int ref = Area.getRef(x, y, z);
 

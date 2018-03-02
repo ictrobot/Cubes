@@ -161,6 +161,8 @@ public class WorldRenderer implements Disposable {
     }
     world.entities.lock.readUnlock();
 
+    RainRenderer.draw(modelBatch);
+
     renderIfNotNull(SelectedBlock.draw());
     renderIfNotNull(BreakingRenderer.draw());
     renderIfNotNull(AreaBoundaries.drawCurrent(pos.areaX, yPos, pos.areaZ));

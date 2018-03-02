@@ -11,6 +11,7 @@ import ethanjones.cubes.networking.packets.PacketWorldTime;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.World;
+import ethanjones.cubes.world.generator.RainStatus;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
@@ -28,6 +29,9 @@ import java.util.List;
 public class WorldServer extends World {
 
   private static List<LoadedAreaFilter> loadedAreaFilters = new ArrayList<LoadedAreaFilter>();
+
+  private RainStatus rainStatusOverride = null;
+  private long rainStatusOverrideEnd = 0;
 
   public WorldServer(Save save) {
     super(save);
@@ -162,5 +166,27 @@ public class WorldServer extends World {
       return;
     }
     super.save();
+  }
+
+  public RainStatus getRainStatus(float x, float z) {
+    if (rainStatusOverride != null) {
+      if (playingTime > rainStatusOverrideEnd) {
+        rainStatusOverride = null;
+        rainStatusOverrideEnd = 0;
+      } else {
+        return rainStatusOverride;
+      }
+    }
+    return terrainGenerator.getRainStatus(x, z, playingTime);
+  }
+
+  public void overrideRainStatus(RainStatus rainStatus, int seconds) {
+    rainStatusOverride = rainStatus;
+    rainStatusOverrideEnd = playingTime + (seconds * (1000 / Cubes.tickMS));
+  }
+
+  public void removeRainStatusOverride() {
+    rainStatusOverride = null;
+    rainStatusOverrideEnd = 0;
   }
 }
