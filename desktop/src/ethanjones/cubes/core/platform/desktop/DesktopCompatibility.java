@@ -20,6 +20,7 @@ public abstract class DesktopCompatibility extends Compatibility {
   static void setup() {
     DesktopSecurityManager.setup();
     DesktopMemoryChecker.setup();
+    DesktopDeadlockDetector.setup();
   }
 
   private final OS os;

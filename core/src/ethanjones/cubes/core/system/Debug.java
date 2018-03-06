@@ -123,7 +123,7 @@ public class Debug {
     }
   }
   
-  private static synchronized void printThreads() {
+  public static synchronized void printThreads() {
     Log.debug("===== THREADS =====");
     for (Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet()) {
       Log.debug(entry.getKey().getName() + " - " + entry.getKey().getId());

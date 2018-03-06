@@ -161,6 +161,8 @@ public class ClientAdapter implements AdapterInterface {
         Gdx.input.setCursorCatched(true);
       }
       if (!Branding.IS_DEBUG && cubesClient != null && cubesServer != null && cubesServer.isRunning() && CubesServer.lastUpdateTime() + 2500 < System.currentTimeMillis()) {
+        Log.error("Server is unresponsive");
+        Debug.printThreads();
         Adapter.gotoMenu(new UnresponsiveIntegratedServerMenu());
       }
 
