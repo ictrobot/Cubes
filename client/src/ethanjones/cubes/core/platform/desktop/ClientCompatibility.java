@@ -71,6 +71,7 @@ public class ClientCompatibility extends DesktopCompatibility {
     config.setWindowIcon(Files.FileType.Internal,"assets/icon-16x.png", "assets/icon-32x.png", "assets/icon-64x.png", "assets/icon-128x.png");
     config.useVsync(false);
     config.setWindowedMode(windowWidth, windowHeight);
+    config.setWindowSizeLimits(768, 432, -1, -1);
 
     new Lwjgl3Application(applicationListener, config);
   }
