@@ -21,22 +21,22 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.IntSet;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 
 import static ethanjones.cubes.graphics.Graphics.modelBatch;
 
 public class WorldRenderer implements Disposable {
 
-  private static ArrayDeque<AreaNode> poolNode = new ArrayDeque<AreaNode>();
+  private static ArrayDeque<AreaNode> poolNode = new ArrayDeque<AreaNode>(256);
 
   public PerspectiveCamera camera;
   private ArrayList<AreaRenderer> needToRefresh = new ArrayList<AreaRenderer>();
   private ArrayDeque<AreaNode> queue = new ArrayDeque<AreaNode>();
-  private HashSet<AreaNode> checkedNodes = new HashSet<AreaNode>();
+  private IntSet checkedNodes = new IntSet(1024);
 
   public WorldRenderer() {
     camera = new PerspectiveCamera(Settings.getIntegerSettingValue(Settings.GRAPHICS_FOV), Graphics.RENDER_WIDTH, Graphics.RENDER_HEIGHT) {
@@ -86,15 +86,11 @@ public class WorldRenderer implements Disposable {
       int ySection = node.ySection;
       int areaX = node.areaX;
       int areaZ = node.areaZ;
+      int packedID = (areaX & 0x3FF) | ((areaZ & 0x3FF) << 10) | ((ySection & 0x3FF) << 20);
 
-      if (!checkedNodes.add(node)) {
+      if (!checkedNodes.add(packedID) || (!node.firstNode && (!areaInFrustum(areaX, areaZ, ySection, camera.frustum) || !inRange(areaX, areaZ, pos.areaX, pos.areaZ, renderDistance)))) {
         poolNode.add(node);
         continue;
-      }
-
-      if (!node.firstNode) {
-        if (!areaInFrustum(areaX, areaZ, ySection, camera.frustum)) continue;
-        if (!inRange(areaX, areaZ, pos.areaX, pos.areaZ, renderDistance)) continue;
       }
 
       boolean nullArea = area == null || ySection >= area.height;
@@ -147,9 +143,9 @@ public class WorldRenderer implements Disposable {
           queue.add(get(area, areaX, areaZ, ySection - 1));
         }
       }
+      poolNode.add(node);
     }
     areaMap.lock.readUnlock();
-    poolNode.addAll(checkedNodes);
     Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_AREAS);
 
     if (needToRefresh.size() > 0) {
