@@ -5,93 +5,60 @@ import ethanjones.cubes.core.util.Lock;
 import ethanjones.cubes.core.util.Lock.HasLock;
 import ethanjones.cubes.world.World;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import com.badlogic.gdx.utils.LongMap;
+
 import java.util.Iterator;
 
 public class AreaMap implements Iterable<Area>, HasLock {
-  
-  public static final int AREA_NODE_SIZE = 9;
-  
-  public final ArrayList<AreaNode> nodes = new ArrayList<AreaNode>();
+
+  private LongMap<Area> map = new LongMap<Area>();
   public final Lock lock = new Lock();
   public final World world;
-  
+
+  // long packed = ((long)x) << 32 | y & 0xFFFFFFFFL;
+  // long x = (int) (packed >> 32);
+  // long y = (int) (packed & 0xFFFFFFFFL);
+
   public AreaMap(World world) {
     this.world = world;
   }
   
-  private AreaNode getAreaNode(int areaX, int areaZ, boolean write) {
-    int minAreaX = ((int) Math.floor(((double) areaX) / AREA_NODE_SIZE)) * AREA_NODE_SIZE;
-    int minAreaZ = ((int) Math.floor(((double) areaZ) / AREA_NODE_SIZE)) * AREA_NODE_SIZE;
-    Iterator<AreaNode> iterator = nodes.iterator();
-    while (iterator.hasNext()) {
-      AreaNode node = iterator.next();
-      if (node.minAreaX == minAreaX && node.minAreaZ == minAreaZ) return node;
-      if (write && node.storedAreas == 0) iterator.remove();
-    }
-    AreaNode newNode = new AreaNode(minAreaX, minAreaZ);
-    nodes.add(newNode);
-    return newNode;
-  }
-  
-  private void removeNode(AreaNode node) {
-    nodes.remove(node);
-  }
-  
   public Area getArea(int areaX, int areaZ) {
     lock.readLock();
-    AreaNode node = getAreaNode(areaX, areaZ, false);
-    int nX = areaX - node.minAreaX;
-    int nZ = areaZ - node.minAreaZ;
-    int n = nX + nZ * AREA_NODE_SIZE;
-    Area area = node.areas[n];
+    long packed = ((long)areaX) << 32 | areaZ & 0xFFFFFFFFL;
+    Area area = map.get(packed, null);
     lock.readUnlock();
     return area;
   }
   
   public Area lockedGetArea(int areaX, int areaZ) {
-    AreaNode node = getAreaNode(areaX, areaZ, false);
-    return node.areas[(areaX - node.minAreaX) + (areaZ - node.minAreaZ) * AREA_NODE_SIZE];
+    long packed = ((long)areaX) << 32 | areaZ & 0xFFFFFFFFL;
+    return map.get(packed, null);
   }
   
-  public Area setArea(int areaX, int areaZ, Area area) {
+  public boolean setArea(int areaX, int areaZ, Area area) {
     lock.writeLock();
-    AreaNode node = getAreaNode(areaX, areaZ, true);
-    int nX = areaX - node.minAreaX;
-    int nZ = areaZ - node.minAreaZ;
-    int n = nX + nZ * AREA_NODE_SIZE;
-    Area old = node.areas[n];
-    if (old == area) {
-      lock.writeUnlock();
-      return old;
+    long packed = ((long)areaX) << 32 | areaZ & 0xFFFFFFFFL;
+    Area old;
+    if (area == null) {
+      old = map.remove(packed);
+    } else {
+      old = map.put(packed, area);
     }
-    node.areas[n] = area;
-    if (old == null && area != null) node.storedAreas++;
-    if (old != null && area == null) node.storedAreas--;
-    if (node.storedAreas == 0) removeNode(node);
     lock.writeUnlock();
+
+    if (old == area) return false;
+
     if (area != null) area.setAreaMap(this);
-    synchronized (this) {
-      this.notifyAll();
-    }
     if (old != null) {
       old.setAreaMap(null);
       old.unload();
     }
-    return old;
-  }
-  
-  public Collection<Area> storeInCollection(Collection<Area> collection) {
-    lock.readLock();
-    for (AreaNode node : nodes) {
-      for (Area area : node.areas) {
-        if (area == null) continue;
-        collection.add(area);
-      }
+
+    synchronized (this) {
+      this.notifyAll();
     }
-    lock.readUnlock();
-    return collection;
+    return true;
   }
   
   @Override
@@ -111,108 +78,49 @@ public class AreaMap implements Iterable<Area>, HasLock {
   }
   
   public int getSize() {
-    int counter = 0;
     lock.readLock();
-    for (AreaNode node : nodes) {
-      counter += node.storedAreas;
-    }
+    int size = map.size;
     lock.readUnlock();
-    return counter;
+    return size;
   }
   
   public void empty() {
-    nodes.clear();
+    map.clear();
   }
   
   @Override
   public Lock getLock() {
     return lock;
   }
-  
-  public class AreaNode {
-    private Area[] areas = new Area[AREA_NODE_SIZE * AREA_NODE_SIZE]; //nX + nZ * AREA_NODE_SIZE
-    private int minAreaX, minAreaZ, maxAreaX, maxAreaZ, storedAreas;
-    private AreaMap areaMap;
-    
-    public AreaNode(int minAreaX, int minAreaZ) {
-      this.minAreaX = minAreaX;
-      this.minAreaZ = minAreaZ;
-      this.maxAreaX = minAreaX + AREA_NODE_SIZE;
-      this.maxAreaZ = minAreaX + AREA_NODE_SIZE;
-      this.storedAreas = 0;
-      this.areaMap = AreaMap.this;
-    }
-  }
-  
-  public class AreaIterator implements Iterator<Area> {
-    private Iterator<AreaNode> areaNodeIterator = ((ArrayList<AreaNode>) nodes.clone()).iterator();
-    private AreaNode current = null;
-    private int currentN = 0;
-  
+
+  private class AreaIterator implements Iterator<Area> {
+    private LongMap.Entries<Area> entries = new LongMap.Entries<Area>(map);
+    private Area current;
+
     @Override
     public boolean hasNext() {
-      int n = currentN + 1;
-      while (true) {
-        if (current == null) {
-          if (areaNodeIterator.hasNext()) {
-            current = areaNodeIterator.next();
-            currentN = -1;
-            n = 0;
-          } else {
-            return false;
-          }
-        } else {
-          for (int i = n; i < (AREA_NODE_SIZE * AREA_NODE_SIZE); i++) {
-            Area area = current.areas[i];
-            if (area != null) return true;
-          }
-          current = null;
-        }
-      }
+      return entries.hasNext;
     }
-  
+
     @Override
     public Area next() {
-      while (true) {
-        if (current == null) {
-          if (areaNodeIterator.hasNext()) {
-            current = areaNodeIterator.next();
-            currentN = -1;
-          } else {
-            return null;
-          }
-        } else {
-          currentN++;
-          for ( ; currentN < (AREA_NODE_SIZE * AREA_NODE_SIZE); currentN++) {
-            Area area = current.areas[currentN];
-            if (area != null) return area;
-          }
-          current = null;
-        }
-      }
+      return current = entries.next().value;
     }
-  
+
     @Override
     public void remove() {
       if (!lock.ownedByCurrentThread()) throw new CubesException("AreaMap should be write locked");
       if (current == null) throw new IllegalStateException();
-      Area old = current.areas[currentN];
-      
-      current.areas[currentN] = null;
-      current.storedAreas--;
-      if (current.storedAreas == 0) {
-        // removeNode(current)
-        current = null;
-        currentN = -1;
-      }
-  
+      entries.remove();
+
       synchronized (this) {
         this.notifyAll();
       }
-      if (old != null) {
-        old.setAreaMap(null);
-        old.unload();
+      if (current != null) {
+        current.setAreaMap(null);
+        current.unload();
       }
+      current = null;
     }
   }
 }

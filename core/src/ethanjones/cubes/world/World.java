@@ -57,12 +57,12 @@ public abstract class World implements Disposable, HasLock {
     lua = LuaMapping.mapping(new LuaMappingWorld(this));
   }
   
-  public Area setArea(Area area) {
+  public boolean setArea(Area area) {
     if (area == null) throw new IllegalArgumentException("Null");
     return setArea(area.areaX, area.areaZ, area);
   }
 
-  public Area setArea(int areaX, int areaZ, Area area) {
+  public boolean setArea(int areaX, int areaZ, Area area) {
     return map.setArea(areaX, areaZ, area);
   }
 
