@@ -78,6 +78,7 @@ public class ClientAdapter implements AdapterInterface {
 
   @Override
   public void resize(int width, int height) {
+    if (width == 0 || height == 0) return;
     try {
       Graphics.resize(width, height);
       if (menu != null) menu.resize(Graphics.GUI_WIDTH, Graphics.GUI_HEIGHT);
