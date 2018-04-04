@@ -175,7 +175,10 @@ public class WorldRenderer implements Disposable {
     renderIfNotNull(BreakingRenderer.draw());
     renderIfNotNull(AreaBoundaries.drawCurrent(pos.areaX, yPos, pos.areaZ));
     SunRenderer.draw(modelBatch);
+
+    Performance.start(PerformanceTags.CLIENT_RENDER_WORLD_FLUSH);
     modelBatch.end();
+    Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_FLUSH);
 
     Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD);
   }

@@ -2,14 +2,10 @@ package ethanjones.cubes.core.performance;
 
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Compatibility;
-import ethanjones.cubes.core.system.Debug;
 
 import com.badlogic.gdx.files.FileHandle;
 
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -30,6 +26,21 @@ public class Performance {
       PerformanceNode last = threadPerformance.active.getLast();
       PerformanceNode n = new PerformanceNode();
       n.tag = tag;
+      n.parent = last;
+      last.children.add(n);
+      threadPerformance.active.add(n);
+      n.start = System.nanoTime() - startTime;
+    }
+  }
+
+  public static void start(String tag, String extra) {
+    if (!enabled.get()) return;
+    ThreadPerformance threadPerformance = threadNode.get();
+    synchronized (threadPerformance) {
+      PerformanceNode last = threadPerformance.active.getLast();
+      PerformanceNode n = new PerformanceNode();
+      n.tag = tag;
+      n.extra = extra;
       n.parent = last;
       last.children.add(n);
       threadPerformance.active.add(n);
@@ -61,7 +72,7 @@ public class Performance {
         ArrayDeque<PerformanceNode> d = new ArrayDeque<PerformanceNode>();
         d.add(node);
         while (d.size() > 0) {
-          PerformanceNode n = d.getFirst();
+          PerformanceNode n = d.removeFirst();
           if (n.end == 0) {
             n.end = System.nanoTime() - startTime;
             threadPerformance.active.remove(n);
@@ -73,9 +84,11 @@ public class Performance {
   }
 
   public static synchronized void startTracking() {
-    startTime = System.nanoTime();
-    enabled.set(true);
-    Log.warning("Started performance tracking");
+    synchronized (nodes) {
+      startTime = System.nanoTime();
+      enabled.set(true);
+      Log.warning("Started performance tracking");
+    }
   }
 
   public static synchronized void stopTracking() {
@@ -100,11 +113,29 @@ public class Performance {
       FileHandle dir = Compatibility.get().getBaseFolder().child("performance");
       Compatibility.get().nomedia(dir);
       dir.mkdirs();
-      try {
-        save(dir.child(System.currentTimeMillis() + ".cbpf").file());
-      } catch (IOException e) {
-        Debug.crash(e);
+      final long time = System.currentTimeMillis();
+      final File saveFile = dir.child(time + ".cbpf").file();
+      final ArrayList<ThreadPerformance> saveNodes;
+      synchronized (nodes) {
+        saveNodes = new ArrayList<ThreadPerformance>(nodes);
+        nodes.clear();
       }
+
+      Thread thread = new Thread("PerformanceWrite" + time) {
+        @Override
+        public void run() {
+          try {
+            save(saveFile, saveNodes);
+            PerformanceAnalysis.run(saveFile);
+            Log.info("Saved performance analysis information '" + saveFile.getAbsolutePath() + ".txt'");
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+        }
+      };
+      thread.setDaemon(false);
+      thread.setPriority(Thread.MIN_PRIORITY);
+      thread.start();
     } else {
       clear();
       startTracking();
@@ -119,12 +150,13 @@ public class Performance {
     }
   }
 
-  public static synchronized void save(File file) throws IOException {
+  public static synchronized void save(File file,  ArrayList<ThreadPerformance> nodes) throws IOException {
     if (!file.exists()) file.createNewFile();
     FileOutputStream fileOutputStream = null;
+    DataOutputStream dataOutputStream = null;
     try {
       fileOutputStream = new FileOutputStream(file);
-      DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
+      dataOutputStream = new DataOutputStream(new BufferedOutputStream(fileOutputStream));
       dataOutputStream.writeByte(0xEE);
       dataOutputStream.writeByte(0xCE);
       synchronized (nodes) {
@@ -135,6 +167,13 @@ public class Performance {
       }
       dataOutputStream.writeByte(0xFF);
     } finally {
+      if (dataOutputStream != null) {
+        try {
+          dataOutputStream.flush();
+        } catch (Exception ignored) {
+
+        }
+      }
       if (fileOutputStream != null) {
         try {
           fileOutputStream.close();
@@ -148,6 +187,7 @@ public class Performance {
 
   private static void write(PerformanceNode node, DataOutputStream dataOutputStream) throws IOException {
     dataOutputStream.writeUTF(node.tag);
+    dataOutputStream.writeUTF(node.extra);
     dataOutputStream.writeLong(node.start);
     dataOutputStream.writeLong(node.end);
     for (PerformanceNode child : node.children) {
@@ -159,6 +199,7 @@ public class Performance {
 
   public static class PerformanceNode {
     String tag;
+    String extra = "";
     long start;
     long end;
     PerformanceNode parent = null;

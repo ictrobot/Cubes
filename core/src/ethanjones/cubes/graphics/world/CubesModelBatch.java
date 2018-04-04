@@ -1,5 +1,7 @@
 package ethanjones.cubes.graphics.world;
 
+import ethanjones.cubes.core.performance.Performance;
+import ethanjones.cubes.core.performance.PerformanceTags;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.Debug;
 
@@ -26,7 +28,9 @@ public class CubesModelBatch extends ModelBatch {
     @Override
     public void sort(final Camera camera, final Array<Renderable> renderables) {
       this.camera = camera;
+      Performance.start(PerformanceTags.CLIENT_RENDER_WORLD_FLUSH_SORT);
       renderables.sort(this);
+      Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_FLUSH_SORT);
     }
 
     @Override

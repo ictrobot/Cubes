@@ -72,11 +72,6 @@ public class DedicatedServer extends CubesServer {
   }
   
   @Override
-  protected void tick() {
-    super.tick();
-  }
-  
-  @Override
   public boolean isDedicated() {
     return true;
   }

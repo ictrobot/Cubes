@@ -8,6 +8,8 @@ import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.mod.ModManager;
 import ethanjones.cubes.core.mod.event.StartingServerEvent;
 import ethanjones.cubes.core.mod.event.StoppingServerEvent;
+import ethanjones.cubes.core.performance.Performance;
+import ethanjones.cubes.core.performance.PerformanceTags;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.timing.TimeHandler;
@@ -90,10 +92,14 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
   
   @Override
   protected void tick() {
+    Performance.start(PerformanceTags.SERVER_TICK);
     super.tick();
+    Performance.start(PerformanceTags.SERVER_PLAYERS_UPDATE);
     for (ClientIdentifier clientIdentifier : getAllClients()) {
       clientIdentifier.getPlayerManager().update();
     }
+    Performance.stop(PerformanceTags.SERVER_PLAYERS_UPDATE);
+    Performance.stop(PerformanceTags.SERVER_TICK);
   }
   
   @Override

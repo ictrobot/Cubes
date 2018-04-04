@@ -127,9 +127,11 @@ public class CubesClient extends Cubes implements ApplicationListener {
   
   @Override
   protected void tick() {
+    Performance.start(PerformanceTags.CLIENT_TICK);
     super.tick();
     inputChain.tick();
     RainRenderer.tick();
+    Performance.stop(PerformanceTags.CLIENT_TICK);
   }
   
   @Override
