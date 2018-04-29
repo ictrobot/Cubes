@@ -20,7 +20,8 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 before_install:
-- 'if [ "$TRAVIS_SECURE_ENV_VARS" = "true" ]; then openssl aes-256-cbc -K $encrypted_149d500ec6e2_key -iv $encrypted_149d500ec6e2_iv -in build.properties.enc -out build.properties -d; fi'- git fetch --unshallow
+- 'if [ "$TRAVIS_SECURE_ENV_VARS" = "true" ]; then openssl aes-256-cbc -K $encrypted_149d500ec6e2_key -iv $encrypted_149d500ec6e2_iv -in build.properties.enc -out build.properties -d; fi'
+- git fetch --unshallow
 - git checkout -qf $TRAVIS_COMMIT
 - echo $TRAVIS_COMMIT
 - android/travis_androidsdk.sh
