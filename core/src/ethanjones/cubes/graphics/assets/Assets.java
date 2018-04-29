@@ -75,15 +75,23 @@ public class Assets {
   }
 
   public static void init() {
-    blockItemSheet = getPackedTextureSheet(AssetType.block, AssetType.item);
-    getPackedTextureSheet(AssetType.hud, AssetType.world);
+    blockItemSheet = getPackedTextureSheet(AssetType.block, AssetType.item, AssetType.world);
+    getPackedTextureSheet(AssetType.hud);
   }
 
-  private static PackedTextureSheet getPackedTextureSheet(AssetType... assetType) {
-    if (Adapter.isDedicatedServer()) return null;
+  private static PackedTextureSheet getPackedTextureSheet(AssetType... assetTypes) {
+    if (Adapter.isDedicatedServer() || assetTypes.length == 0) return null;
+
+    StringBuilder nameBuilder = new StringBuilder("packed");
+    for (AssetType assetType : assetTypes) {
+      nameBuilder.append("_");
+      nameBuilder.append(assetType.name());
+    }
+    String name = nameBuilder.toString();
+
     TexturePacker texturePacker = new TexturePacker(2048, 2048, 1, true);
     for (Map.Entry<String, AssetManager> entry : assetManagers.entrySet()) {
-      for (AssetType type : assetType) {
+      for (AssetType type : assetTypes) {
         ArrayList<Asset> assets = entry.getValue().getAssets(type.name() + "/");
         for (Asset asset : assets) {
           try {
@@ -100,7 +108,7 @@ public class Assets {
 
     Texture texture = new Texture(texturePacker.getPixmap());
     texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-    PackedTextureSheet packedTextureSheet = new PackedTextureSheet(new Material(TextureAttribute.createDiffuse(texture)));
+    PackedTextureSheet packedTextureSheet = new PackedTextureSheet(new Material("mtl" + name, TextureAttribute.createDiffuse(texture)));
     packedTextureSheet.getMaterial().set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
 
     Map<Asset, TexturePacker.PackRectangle> rectangles = texturePacker.getRectangles();
@@ -112,7 +120,7 @@ public class Assets {
       packedTextureSheet.getPackedTextures().put(entry.getKey().toString(), textureRegion);
     }
 
-    for (AssetType type : assetType) {
+    for (AssetType type : assetTypes) {
       type.setPackedTextureSheet(packedTextureSheet);
     }
     return packedTextureSheet;

@@ -121,7 +121,11 @@ public class RainRenderer {
       mesh.setVertices(vertices, 0, vertexCount);
       int v = vertexCount / CubesVertexAttributes.components(mesh.getVertexAttributes());
       meshPart.size = v / 8 * 36;
-      if (vertexCount > 0) meshPart.update();
+
+      // define approximate center and halfExtents to prevent having to recalculate each time
+      meshPart.center.set(Cubes.getClient().renderer.worldRenderer.camera.position);
+      meshPart.halfExtents.set(AREA_WIDTH / 2f, AREA_HEIGHT / 2f, AREA_WIDTH / 2f);
+      meshPart.radius = meshPart.halfExtents.len();
     }
 
     private Renderable renderable() {
