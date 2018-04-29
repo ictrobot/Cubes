@@ -46,7 +46,7 @@ public class Settings {
   public static void init() {
     addSetting(USERNAME, new StringSetting("User"));
     addSetting(UUID, new PlayerUUIDSetting());
-    addSetting(GRAPHICS_VIEW_DISTANCE, new IntegerSetting(2, 2, 16, IntegerSetting.Type.Slider));
+    addSetting(GRAPHICS_VIEW_DISTANCE, new IntegerSetting(3, 2, 16, IntegerSetting.Type.Slider));
     addSetting(GRAPHICS_FOV, new IntegerSetting(70, 10, 120, IntegerSetting.Type.Slider));
     addSetting(GRAPHICS_VSYNC, new BooleanSetting(false) {
   

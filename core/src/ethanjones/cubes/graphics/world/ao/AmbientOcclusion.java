@@ -203,7 +203,7 @@ public final class AmbientOcclusion {
     }
     return new DropDownSetting(strings) {
       {
-        selected = "disabled";
+        selected = "weak";
       }
 
       @Override
