@@ -255,9 +255,10 @@ public class WorldShaderProvider implements ShaderProvider {
 
   protected static class AmbientOcclusionFeature implements Feature {
 
-    private int u_aoTexture;
     private int ao_unit;
+    private int u_aoTexture;
     private int u_aoUVTransform;
+    private int u_aoStrength;
 
     @Override
     public String prefix() {
@@ -268,6 +269,7 @@ public class WorldShaderProvider implements ShaderProvider {
     public void init(ShaderProgram program) {
       u_aoTexture = program.fetchUniformLocation("u_aoTexture", false);
       u_aoUVTransform = program.fetchUniformLocation("u_aoUVTransform", false);
+      u_aoStrength = program.fetchUniformLocation("u_aoStrength", false);
     }
 
     @Override
@@ -276,8 +278,8 @@ public class WorldShaderProvider implements ShaderProvider {
 
       ao_unit = context.textureBinder.bind(textureAttribute.textureDescription);
       program.setUniformi(u_aoTexture, ao_unit);
-
       program.setUniformf(u_aoUVTransform, textureAttribute.offsetU, textureAttribute.offsetV, textureAttribute.scaleU, textureAttribute.scaleV);
+      program.setUniformf(u_aoStrength, AmbientOcclusion.getStrength().strength);
     }
   }
 }

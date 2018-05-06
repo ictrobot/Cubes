@@ -13,6 +13,7 @@ import ethanjones.cubes.graphics.world.WorldGraphicsPools;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.storage.Area;
 
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
@@ -23,21 +24,22 @@ public final class AmbientOcclusion {
   // D-E
   // FGH
 
-  protected static final int A = 1 << 0;
-  protected static final int B = 1 << 1;
-  protected static final int C = 1 << 2;
-  protected static final int D = 1 << 3;
-  protected static final int E = 1 << 4;
-  protected static final int F = 1 << 5;
-  protected static final int G = 1 << 6;
-  protected static final int H = 1 << 7;
+  static final int A = 1;
+  static final int B = 1 << 1;
+  static final int C = 1 << 2;
+  static final int D = 1 << 3;
+  static final int E = 1 << 4;
+  static final int F = 1 << 5;
+  static final int G = 1 << 6;
+  static final int H = 1 << 7;
 
-  protected static final int SQRT_TOTAL = 16;
-  public static final int TOTAL = SQRT_TOTAL * SQRT_TOTAL;
-  protected static final int INDIVIDUAL_SIZE = 64;
-  public static final int TEXTURE_SIZE = SQRT_TOTAL * INDIVIDUAL_SIZE;
+  static final int SQRT_TOTAL = 16;
+  static final int TOTAL = SQRT_TOTAL * SQRT_TOTAL;
+  static final int INDIVIDUAL_SIZE = 256;
+  static final int TEXTURE_SIZE = SQRT_TOTAL * INDIVIDUAL_SIZE;
 
-  private static Strength loadedStrength = null;
+  static final Pixmap.Format FORMAT = Pixmap.Format.RGBA8888;
+
   private static Texture loadedTexture = null;
   private static TextureAttribute loadedTextureAttribute = null;
   private static TextureRegion[] loadedRegions = new TextureRegion[TOTAL];
@@ -130,18 +132,11 @@ public final class AmbientOcclusion {
   public static boolean load() {
     Strength strength = getStrength();
     if (strength == null) return false;
-    if (strength == loadedStrength) return true;
+    if (loadedTexture != null) return true;
 
-    loadedStrength = null;
-    if (loadedTexture != null) {
-      loadedTexture.dispose();
-      loadedTexture = null;
-      loadedTextureAttribute = null;
-    }
-
-    Asset asset = Assets.getAsset("core:ao/" + strength.name() + ".png");
-    if (asset == null) throw new IllegalStateException(strength.name());
-    loadedTexture = new Texture(asset.getFileHandle(), AOTextureGenerator.FORMAT, false);
+    Asset asset = Assets.getAsset("core:ao/ao-texture.png");
+    if (asset == null) throw new IllegalStateException("Failed to load AO Texture");
+    loadedTexture = new Texture(asset.getFileHandle(), FORMAT, false);
     loadedTextureAttribute = TextureAttribute.createDiffuse(loadedTexture);
 
     for (int i = 0; i < TOTAL; i++) {
@@ -149,8 +144,6 @@ public final class AmbientOcclusion {
       int y = (i / SQRT_TOTAL) * INDIVIDUAL_SIZE;
       loadedRegions[i] = new TextureRegion(loadedTexture, x, y, INDIVIDUAL_SIZE, INDIVIDUAL_SIZE);
     }
-
-    loadedStrength = strength;
     return true;
   }
 
@@ -218,12 +211,12 @@ public final class AmbientOcclusion {
     };
   }
 
-  enum Strength {
-    strongest(0.1f),
-    strong(0.2f),
-    normal(0.3f),
-    weak(0.4f),
-    weakest(0.5f);
+  public enum Strength {
+    strongest(1f),
+    strong(0.75f),
+    normal(0.5f),
+    weak(0.25f),
+    weakest(0f);
 
     public final float strength;
 

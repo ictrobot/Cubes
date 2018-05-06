@@ -27,6 +27,7 @@ uniform sampler2D u_diffuseTexture;
 #ifdef feature_ao
 varying MED vec2 v_aoUV;
 uniform sampler2D u_aoTexture;
+uniform float u_aoStrength;
 #endif
 
 varying float v_voxellight;
@@ -52,7 +53,7 @@ void main() {
 
     #ifdef feature_ao
 	vec4 ao = texture2D(u_aoTexture, v_aoUV);
-	diffuse.rgba = diffuse.rgba * ao.rgba;
+	diffuse.rgb = diffuse.rgb * mix(ao.r, ao.g, u_aoStrength);
 	#endif
 
     diffuse.a = diffuse.a * v_opacity;
