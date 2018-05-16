@@ -76,6 +76,7 @@ public class ItemEntityRenderer implements RenderableProvider, Disposable {
       meta = itemEntity.itemStack.meta;
       if (item instanceof ItemBlock && ((ItemBlock) item).block.renderType(meta) == BlockRenderType.DEFAULT) {
         mesh = new Mesh(false, 4 * 6, 6 * 6, CubesVertexAttributes.VERTEX_ATTRIBUTES);
+        renderable.meshPart.size = 6 * 6;
         mesh.setIndices(blockIndices);
         int vertexOffset = 0;
         vertices = new float[CubesVertexAttributes.COMPONENTS * 4 * 6];
@@ -90,6 +91,7 @@ public class ItemEntityRenderer implements RenderableProvider, Disposable {
         mesh.setVertices(vertices);
       } else {
         mesh = new Mesh(false, 4 * 2, 6 * 2, CubesVertexAttributes.VERTEX_ATTRIBUTES);
+        renderable.meshPart.size = 6 * 2;
         mesh.setIndices(itemIndices);
         int vertexOffset = 0;
         vertices = new float[CubesVertexAttributes.COMPONENTS * 4 * 2];
@@ -102,7 +104,6 @@ public class ItemEntityRenderer implements RenderableProvider, Disposable {
       }
       renderable.meshPart.primitiveType = GL20.GL_TRIANGLES;
       renderable.meshPart.offset = 0;
-      renderable.meshPart.size = item instanceof ItemBlock ? 6 * 6 : 6 * 2;
       renderable.meshPart.mesh = mesh;
       renderable.material = Assets.blockItemSheet.getMaterial();
       renderable.name = "Item Entity - " + item.id;
