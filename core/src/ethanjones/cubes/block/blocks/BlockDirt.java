@@ -35,10 +35,10 @@ public class BlockDirt extends Block {
   private boolean checkForGrass(World world, Area area, int x, int y, int z) {
     if (x < 0 || x >= Area.SIZE_BLOCKS || z < 0 || z >= Area.SIZE_BLOCKS) {
       Area a = area.neighbourBlockCoordinates(x + area.minBlockX, z + area.minBlockZ);
-      if (a != null && Lock.tryToLock(true, a)) {
+      if (a != null && Lock.tryToLock(false, a)) {
         int bX = (x + area.minBlockX) - a.minBlockX;
         int bZ = (z + area.minBlockZ) - a.minBlockZ;
-        return a.lock.writeUnlock(a.getBlock(bX, y, bZ) == Blocks.grass);
+        return a.lock.readUnlock(a.getBlock(bX, y, bZ) == Blocks.grass);
       }
       return false;
     } else {
