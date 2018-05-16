@@ -1,5 +1,7 @@
-package ethanjones.cubes.block;
+package ethanjones.cubes.block.blocks;
 
+import ethanjones.cubes.block.Block;
+import ethanjones.cubes.block.BlockRenderType;
 import ethanjones.cubes.core.util.ThreadRandom;
 import ethanjones.cubes.item.ItemTool.ToolType;
 import ethanjones.cubes.world.World;

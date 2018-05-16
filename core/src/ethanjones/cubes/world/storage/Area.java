@@ -157,6 +157,15 @@ public class Area implements Lock.HasLock {
     return r;
   }
 
+  public int getMaxLight(int x, int y, int z) {
+    lock.readLock();
+    if (unreadyReadLock(y)) return 15;
+    int sunlight = (light[getRef(x, y, z)] >> 4) & 0xF;
+    int blocklight = (light[getRef(x, y, z)]) & 0xF;
+    lock.readUnlock();
+    return sunlight > blocklight ? sunlight : blocklight;
+  }
+
   // Set the bits XXXX0000
   public void setSunlight(int x, int y, int z, int l) {
     lock.writeLock();

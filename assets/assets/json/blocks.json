@@ -16,14 +16,6 @@
     }
   },
   {
-    "id": "core:dirt",
-    "mining": {
-      "speed": 0.5,
-      "tool": "shovel",
-      "other": true
-    }
-  },
-  {
     "id": "core:log",
     "meta": 3,
     "displayMeta": [

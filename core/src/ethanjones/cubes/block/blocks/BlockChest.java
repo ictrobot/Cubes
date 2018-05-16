@@ -1,5 +1,6 @@
-package ethanjones.cubes.block;
+package ethanjones.cubes.block.blocks;
 
+import ethanjones.cubes.block.Block;
 import ethanjones.cubes.block.data.BlockData;
 import ethanjones.cubes.block.data.BlockDataChest;
 import ethanjones.cubes.core.util.BlockFace;
