@@ -25,6 +25,7 @@ import ethanjones.cubes.world.save.Save;
 import ethanjones.cubes.world.server.WorldServer;
 
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.WindowedMean;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -34,6 +35,7 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
   private static final int SAVE_TIME = 60000;
   private static final AtomicLong lastUpdateTime = new AtomicLong();
   private final Save save;
+  public final WindowedMean meanUpdateMS = new WindowedMean(50);
 
   public CubesServer(Save save) {
     super(Side.Server);
@@ -85,7 +87,12 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
         behindTicks--;
       }
       update();
+
+      long tickStartNS = System.nanoTime();
       tick();
+      long tickEndNS = System.nanoTime();
+      meanUpdateMS.addValue((float) (tickEndNS - tickStartNS) / 1000000f);
+
       nextTickTime += tickMS;
     }
   }

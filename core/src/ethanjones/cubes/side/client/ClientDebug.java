@@ -23,7 +23,7 @@ import static ethanjones.cubes.graphics.Graphics.glProfiler;
 public class ClientDebug {
 
   private static final String lineSeparator = System.getProperty("line.separator");
-  static WindowedMean ms = new WindowedMean(50);
+  private static WindowedMean frameMS = new WindowedMean(50);
   private static PerSecond fps = new PerSecond(10);
   private static StringBuilder builder = new StringBuilder(250).append(Branding.DEBUG).append(lineSeparator);
   private static int brandingDebugLength = builder.length();
@@ -55,12 +55,12 @@ public class ClientDebug {
 
   public static String getDebugString() {
     Vector3 p = Cubes.getClient().player.position;
-    ms.addValue(Gdx.graphics.getRawDeltaTime() * 1000f);
+    frameMS.addValue(Gdx.graphics.getRawDeltaTime() * 1000f);
 
     builder.setLength(brandingDebugLength);
-    builder.append("FPS:").append(Gdx.graphics.getFramesPerSecond()).append(" MS:").append(twoDP.format(ms.getMean())).append(" MEM:").append(Compatibility.get().getFreeMemory()).append("MB").append(lineSeparator);
+    builder.append("FPS:").append(Gdx.graphics.getFramesPerSecond()).append(" MS:").append(twoDP.format(frameMS.getMean())).append(" MEM:").append(Compatibility.get().getFreeMemory()).append("MB").append(lineSeparator);
     builder.append("TPS C:").append(Cubes.getClient().ticksPerSecond.last()).append(" A:").append(oneDP.format(Cubes.getClient().ticksPerSecond.average()));
-    if (Cubes.getServer() != null) builder.append(" S:").append(Cubes.getServer().ticksPerSecond.last()).append(" A:").append(oneDP.format(Cubes.getServer().ticksPerSecond.average()));
+    if (Cubes.getServer() != null) builder.append(" S:").append(Cubes.getServer().ticksPerSecond.last()).append(" A:").append(oneDP.format(Cubes.getServer().ticksPerSecond.average())).append(" MS:").append(twoDP.format(Cubes.getServer().meanUpdateMS.getMean()));
     builder.append(lineSeparator);
     builder.append("POS X:").append(twoDP.format(p.x)).append("(").append(CoordinateConverter.area(p.x)).append(")").append(" Y:").append(twoDP.format(p.y)).append("(").append(CoordinateConverter.area(p.y)).append(")").append(" Z:").append(twoDP.format(p.z)).append("(").append(CoordinateConverter.area(p.z)).append(")").append(lineSeparator);
     builder.append("DIR X:").append(twoDP.format(Cubes.getClient().player.angle.x)).append(" Y:").append(twoDP.format(Cubes.getClient().player.angle.y)).append(" Z:").append(twoDP.format(Cubes.getClient().player.angle.z)).append(lineSeparator);
