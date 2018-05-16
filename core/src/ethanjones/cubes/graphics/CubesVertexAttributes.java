@@ -1,4 +1,4 @@
-package ethanjones.cubes.graphics.world;
+package ethanjones.cubes.graphics;
 
 import ethanjones.cubes.graphics.world.ao.AmbientOcclusion;
 

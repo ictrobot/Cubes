@@ -1,13 +1,10 @@
 package ethanjones.cubes.graphics.entity;
 
 import ethanjones.cubes.entity.living.player.Player;
+import ethanjones.cubes.graphics.CubesRenderable;
+import ethanjones.cubes.graphics.CubesVertexAttributes;
 import ethanjones.cubes.graphics.assets.Assets;
-import ethanjones.cubes.graphics.world.CubesVertexAttributes;
-import ethanjones.cubes.graphics.world.FaceVertices;
-import ethanjones.cubes.graphics.world.RenderingSettings;
-import ethanjones.cubes.side.common.Cubes;
-import ethanjones.cubes.world.CoordinateConverter;
-import ethanjones.cubes.world.light.LightNode;
+import ethanjones.cubes.graphics.world.block.FaceVertices;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
@@ -20,6 +17,7 @@ import com.badlogic.gdx.utils.Pool;
 import static ethanjones.cubes.world.light.BlockLight.FULL_LIGHT;
 
 public class PlayerRenderer {
+
   static short[] blockIndices;
 
   static {
@@ -37,6 +35,7 @@ public class PlayerRenderer {
 
   static Mesh mesh;
   static float[] vertices;
+  private static CubesRenderable renderable = new CubesRenderable();
 
   public static void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool, Player player) {
     if (mesh == null) {
@@ -54,21 +53,19 @@ public class PlayerRenderer {
       vertexOffset = FaceVertices.createMinY(offset, regionPlayer, null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
       vertexOffset = FaceVertices.createMinZ(offset, regionPlayer, null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
       mesh.setVertices(vertices);
+
+      renderable.meshPart.offset = 0;
+      renderable.meshPart.size = 6 * 6;
+      renderable.meshPart.mesh = mesh;
+      renderable.material = Assets.getMaterial("core:world/player.png");
+      renderable.meshPart.primitiveType = GL20.GL_TRIANGLES;
+      renderable.name = "Player";
     }
-    Renderable renderable = new Renderable();
+    renderable.worldTransform.idt();
     renderable.worldTransform.translate(player.position.x, player.position.y, player.position.z);
     renderable.worldTransform.scl(0.5f);
     renderable.worldTransform.rotate(Vector3.Y, (System.currentTimeMillis() % 3600) / 10);
-    renderable.meshPart.primitiveType = GL20.GL_TRIANGLES;
-    renderable.meshPart.offset = 0;
-    renderable.meshPart.size = 6 * 6;
-    renderable.meshPart.mesh = mesh;
-    renderable.material = Assets.getMaterial("core:world/player.png");
-
-    LightNode lightNode = new LightNode(CoordinateConverter.block(player.position.x), CoordinateConverter.block(player.position.y), CoordinateConverter.block(player.position.z), 0);
-    lightNode.l = Cubes.getClient().world.getLightRaw(lightNode.x, lightNode.y, lightNode.z);
-  
-    renderable.userData = new RenderingSettings().setLightOverride(player.position);
+    renderable.setLightOverride(player.position);
     renderables.add(renderable);
   }
 }

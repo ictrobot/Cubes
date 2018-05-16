@@ -1,6 +1,8 @@
 package ethanjones.cubes.graphics.world;
 
 import ethanjones.cubes.core.system.Pools;
+import ethanjones.cubes.graphics.world.area.AreaMesh;
+import ethanjones.cubes.graphics.world.area.AreaRenderer;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;

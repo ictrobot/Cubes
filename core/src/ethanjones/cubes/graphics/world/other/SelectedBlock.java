@@ -1,6 +1,8 @@
-package ethanjones.cubes.graphics.world;
+package ethanjones.cubes.graphics.world.other;
 
+import ethanjones.cubes.graphics.CubesVertexAttributes;
 import ethanjones.cubes.graphics.assets.Assets;
+import ethanjones.cubes.graphics.world.block.FaceVertices;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.collision.BlockIntersection;
 import ethanjones.cubes.world.reference.BlockReference;
@@ -16,6 +18,7 @@ import com.badlogic.gdx.math.Vector3;
 import static ethanjones.cubes.world.light.BlockLight.FULL_LIGHT;
 
 public class SelectedBlock {
+
   static short[] blockIndices;
 
   static {

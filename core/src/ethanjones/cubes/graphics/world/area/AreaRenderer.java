@@ -1,11 +1,14 @@
-package ethanjones.cubes.graphics.world;
+package ethanjones.cubes.graphics.world.area;
 
 import ethanjones.cubes.block.Block;
-import ethanjones.cubes.block.BlockRenderType;
 import ethanjones.cubes.core.id.IDManager;
 import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.core.util.Lock;
+import ethanjones.cubes.graphics.CubesVertexAttributes;
+import ethanjones.cubes.graphics.world.WorldGraphicsPools;
 import ethanjones.cubes.graphics.world.ao.AmbientOcclusion;
+import ethanjones.cubes.graphics.world.block.BlockRenderType;
+import ethanjones.cubes.graphics.world.block.BlockTextureHandler;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.storage.Area;
@@ -22,7 +25,7 @@ import java.util.ArrayList;
 import static ethanjones.cubes.world.storage.Area.*;
 
 public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolable {
-  
+
   public static int renderedThisFrame = 0;
   public static int renderedMeshesThisFrame = 0;
   public static int refreshedThisFrame = 0;
@@ -35,11 +38,11 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
   private int maxVertexOffset = 0;
   private int componentSize = 0;
   private ArrayList<AreaMesh> meshs = new ArrayList<AreaMesh>();
-  
+
   public boolean needsRefresh() {
     return refresh;
   }
-  
+
   public boolean update() {
     if (refresh) {
       if ((System.nanoTime() - Cubes.getClient().frameStart) < 3000000 && calculateVertices()) {
@@ -51,17 +54,17 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
     }
     return true; // true indicates this area can be rendered
   }
-  
+
   @Override
   public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
     if (area == null || !update() || meshs.size() == 0) return;
     renderedThisFrame++;
     for (AreaMesh mesh : meshs) {
       renderedMeshesThisFrame++;
-      renderables.add(mesh.renderable(pool));
+      renderables.add(mesh.renderable);
     }
   }
-  
+
   public boolean calculateVertices() {
     if (area == null) return false;
 
@@ -73,17 +76,17 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
     Area maxZ = area.neighbour(area.areaX, area.areaZ + 1);
     Area minZ = area.neighbour(area.areaX, area.areaZ - 1);
     if (maxX == null || minX == null || maxZ == null || minZ == null) return false;
-    
+
     free(meshs);
-    
+
     if (maxX.isBlank()) maxX = null;
     if (minX.isBlank()) minX = null;
     if (maxZ.isBlank()) maxZ = null;
     if (minZ.isBlank()) minZ = null;
-    
+
     int i = ySection * SIZE_BLOCKS_CUBED;
     int vertexOffset = 0;
-    
+
     Lock.waitToLockAll(false, area, minX, maxX, minZ, maxZ);
 
     if (!area.isBlank()) {
@@ -101,19 +104,19 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
         save(vertexOffset);
       }
     }
-    
+
     area.lock.readUnlock();
     if (maxX != null) maxX.lock.readUnlock();
     if (minX != null) minX.lock.readUnlock();
     if (maxZ != null) maxZ.lock.readUnlock();
     if (minZ != null) minZ.lock.readUnlock();
 
-    refreshedThisFrame ++;
+    refreshedThisFrame++;
     refreshedMeshesThisFrame += meshs.size();
 
     return true;
   }
-  
+
   private int render(int vertexOffset, int blockInt, int x, int y, int z, int i, boolean ao, Area maxX, Area minX, Area maxZ, Area minZ) {
     Block block = IDManager.toBlock(blockInt & 0xFFFFF);
     if (block != null) {
@@ -129,28 +132,29 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
     }
     return vertexOffset;
   }
-  
+
   private void save(int vertexCount) {
     AreaMesh areaMesh = Pools.obtain(AreaMesh.class);
     areaMesh.saveVertices(vertexCount);
+    areaMesh.renderable.name = "AreaMesh " + area.areaX + "," + area.areaZ;
     meshs.add(areaMesh);
   }
-  
+
   public Vector3 getOffset() {
     if (area == null) return Vector3.Zero;
     return offset;
   }
-  
+
   public int getYSection() {
     if (area == null) return 0;
     return ySection;
   }
-  
+
   @Override
   public void dispose() {
     free(meshs);
   }
-  
+
   @Override
   public void reset() {
     if (area != null && area.areaRenderer != null) area.areaRenderer[ySection] = null;
@@ -158,7 +162,7 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
     area = null;
     refresh = true;
   }
-  
+
   public AreaRenderer set(Area area, int ySection) {
     this.area = area;
     this.ySection = ySection;
@@ -174,12 +178,12 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
     componentSize = CubesVertexAttributes.components(areaMesh.mesh.getVertexAttributes());
     Pools.free(areaMesh);
   }
-  
+
   // always client
   public static void free(AreaRenderer areaRenderer) {
     if (areaRenderer != null) Pools.free(AreaRenderer.class, areaRenderer);
   }
-  
+
   // checks if client thread
   public static void free(AreaRenderer[] areaRenderer) {
     if (areaRenderer == null) return;
@@ -194,7 +198,7 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
       areaRenderer[i] = null;
     }
   }
-  
+
   public static void free(ArrayList<AreaMesh> areaMeshs) {
     if (areaMeshs == null) return;
     for (AreaMesh areaMesh : areaMeshs) {

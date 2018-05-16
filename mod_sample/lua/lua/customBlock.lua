@@ -5,7 +5,7 @@ function block:getLightLevel(this, meta, super)
 end
 
 function block:renderType(this, meta)
-    local renderType = import('ethanjones.cubes.block.BlockRenderType')
+    local renderType = import('ethanjones.cubes.graphics.world.block.BlockRenderType')
     return renderType.CROSS
 end
 

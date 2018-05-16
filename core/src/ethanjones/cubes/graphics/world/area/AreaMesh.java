@@ -1,11 +1,12 @@
-package ethanjones.cubes.graphics.world;
+package ethanjones.cubes.graphics.world.area;
 
+import ethanjones.cubes.graphics.CubesRenderable;
+import ethanjones.cubes.graphics.CubesVertexAttributes;
 import ethanjones.cubes.graphics.assets.Assets;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
@@ -33,6 +34,7 @@ public class AreaMesh implements Pool.Poolable, Disposable {
     }
   }
 
+  public final CubesRenderable renderable = new CubesRenderable();
   public Mesh mesh;
   public MeshPart meshPart;
   public int vertexCount;
@@ -52,6 +54,9 @@ public class AreaMesh implements Pool.Poolable, Disposable {
 
     int components = CubesVertexAttributes.components(vertexAttributes);
     maxVertexOffset = MAX_VERTICES * components;
+
+    renderable.material = Assets.blockItemSheet.getMaterial();
+    renderable.name = "AreaMesh";
   }
 
   public void saveVertices(int vertexCount) {
@@ -59,23 +64,20 @@ public class AreaMesh implements Pool.Poolable, Disposable {
     int v = vertexCount / CubesVertexAttributes.components(mesh.getVertexAttributes());
     meshPart.size = v / 4 * 6;
     this.vertexCount = vertexCount;
-    if (vertexCount > 0) meshPart.update();
-  }
-
-  public Renderable renderable(Pool<Renderable> pool) {
-    Renderable renderable = pool.obtain();
-    renderable.material = Assets.blockItemSheet.getMaterial();
-    renderable.meshPart.set(meshPart);
-    return renderable;
+    if (vertexCount > 0) {
+      meshPart.update();
+      renderable.meshPart.set(meshPart);
+    }
   }
 
   @Override
   public void reset() {
-
+    renderable.name = "AreaMesh";
   }
 
   @Override
   public void dispose() {
     mesh.dispose();
+    renderable.name = "Disposed AreaMesh";
   }
 }

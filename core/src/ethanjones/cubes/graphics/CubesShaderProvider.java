@@ -1,4 +1,4 @@
-package ethanjones.cubes.graphics.world;
+package ethanjones.cubes.graphics;
 
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Compatibility;
@@ -26,7 +26,7 @@ import com.badlogic.gdx.math.MathUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WorldShaderProvider implements ShaderProvider {
+public class CubesShaderProvider implements ShaderProvider {
 
   private static final String DEFAULT_VERTEX_SHADER = Gdx.files.internal("shaders/world.vertex.glsl").readString();
   private static final String DEFAULT_FRAGMENT_SHADER = Gdx.files.internal("shaders/world.fragment.glsl").readString();
@@ -66,7 +66,7 @@ public class WorldShaderProvider implements ShaderProvider {
     int shader = 0;
 
     boolean fogFlag = Settings.getBooleanSettingValue(Settings.GRAPHICS_FOG);
-    if (renderable.userData instanceof RenderingSettings) fogFlag &= ((RenderingSettings) renderable.userData).fogEnabled;
+    if (renderable instanceof CubesRenderable) fogFlag &= ((CubesRenderable) renderable).fogEnabled;
     if (fogFlag) shader |= FEATURE_FOG;
 
     boolean aoFlag = renderable.meshPart.mesh.getVertexAttributes() == CubesVertexAttributes.VERTEX_ATTRIBUTES_AO;
@@ -145,14 +145,22 @@ public class WorldShaderProvider implements ShaderProvider {
 
     @Override
     public void render(Renderable renderable) {
-      if (renderable.userData instanceof RenderingSettings && ((RenderingSettings) renderable.userData).lightOverride != -1) {
-        program.setUniformf(u_lightoverride, ((RenderingSettings) renderable.userData).lightOverride);
+      if (renderable instanceof CubesRenderable && ((CubesRenderable) renderable).lightOverride != -1) {
+        program.setUniformf(u_lightoverride, ((CubesRenderable) renderable).lightOverride);
         lightoverride = true;
       } else if (lightoverride) {
         program.setUniformf(u_lightoverride, -1f);
         lightoverride = false;
       }
-      super.render(renderable);
+      try {
+        super.render(renderable);
+      } catch (Exception e) {
+        if (renderable instanceof CubesRenderable && ((CubesRenderable) renderable).name != null && !((CubesRenderable) renderable).name.isEmpty()) {
+          throw new CubesException("Error during rendering '" + ((CubesRenderable) renderable).name + "' renderable", e);
+        } else {
+          throw new CubesException("Error during rendering renderable", e);
+        }
+      }
     }
 
     @Override

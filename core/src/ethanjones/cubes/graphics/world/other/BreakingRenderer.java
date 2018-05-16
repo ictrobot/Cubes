@@ -1,8 +1,10 @@
-package ethanjones.cubes.graphics.world;
+package ethanjones.cubes.graphics.world.other;
 
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.entity.living.player.Player;
+import ethanjones.cubes.graphics.CubesVertexAttributes;
 import ethanjones.cubes.graphics.assets.Assets;
+import ethanjones.cubes.graphics.world.block.FaceVertices;
 import ethanjones.cubes.item.ItemTool;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.reference.BlockReference;

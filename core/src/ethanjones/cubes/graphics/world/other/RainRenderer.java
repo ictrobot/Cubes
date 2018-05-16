@@ -1,5 +1,6 @@
-package ethanjones.cubes.graphics.world;
+package ethanjones.cubes.graphics.world.other;
 
+import ethanjones.cubes.graphics.CubesVertexAttributes;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.World;
@@ -184,8 +185,8 @@ public class RainRenderer {
     if (rainStatus.raining) {
       float newVolume = VOLUME - (
           max(min(oldBB.max.x, newBB.max.x) - max(oldBB.min.x, newBB.min.x), 0) *
-          max(min(oldBB.max.y, newBB.max.y) - max(oldBB.min.y, newBB.min.y), 0) *
-          max(min(oldBB.max.z, newBB.max.z) - max(oldBB.min.z, newBB.min.z), 0));
+              max(min(oldBB.max.y, newBB.max.y) - max(oldBB.min.y, newBB.min.y), 0) *
+              max(min(oldBB.max.z, newBB.max.z) - max(oldBB.min.z, newBB.min.z), 0));
 
       int newDrops = (int) (newVolume * dropsPerVolume / 2f);
       Vector3 checkPos = new Vector3();

@@ -1,4 +1,4 @@
-package ethanjones.cubes.graphics.world;
+package ethanjones.cubes.graphics.world.area;
 
 import ethanjones.cubes.world.storage.Area;
 

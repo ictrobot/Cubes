@@ -13,7 +13,7 @@ import ethanjones.cubes.graphics.hud.inv.InventoryManager;
 import ethanjones.cubes.graphics.menus.PauseMenu;
 import ethanjones.cubes.graphics.menus.WorldLoadingMenu;
 import ethanjones.cubes.graphics.rendering.Renderer;
-import ethanjones.cubes.graphics.world.RainRenderer;
+import ethanjones.cubes.graphics.world.other.RainRenderer;
 import ethanjones.cubes.input.InputChain;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.side.common.Cubes;
@@ -29,6 +29,7 @@ import com.badlogic.gdx.Input;
 import java.util.UUID;
 
 public class CubesClient extends Cubes implements ApplicationListener {
+
   public static UUID uuid;
 
   public Player player;
@@ -66,9 +67,9 @@ public class CubesClient extends Cubes implements ApplicationListener {
     Side.getSidedEventBus().register(new PlayerCollision());
 
     ClientDebug.setup();
-    
+
     nextTickTime = System.currentTimeMillis() + tickMS;
-    
+
     state.setup();
   }
 
@@ -92,10 +93,10 @@ public class CubesClient extends Cubes implements ApplicationListener {
     Performance.start(PerformanceTags.CLIENT_FRAME);
 
     ClientDebug.frameStart();
-    
+
     long diff = nextTickTime - System.currentTimeMillis();
     if (diff < -16) {
-      int change = 1 + (int) (-(diff + 16)  / tickMS);
+      int change = 1 + (int) (-(diff + 16) / tickMS);
       behindTicks += change;
       nextTickTime += change * tickMS;
       diff = nextTickTime - System.currentTimeMillis();
@@ -112,19 +113,19 @@ public class CubesClient extends Cubes implements ApplicationListener {
       behindTicks = 0;
       nextTickTime += behindTicks * tickMS;
     }
-    
+
     this.update();
     inputChain.beforeRender();
     renderer.render();
     inputChain.afterRender();
     Performance.stop(PerformanceTags.CLIENT_FRAME);
   }
-  
+
   @Override
   protected void update() {
     super.update();
   }
-  
+
   @Override
   protected void tick() {
     Performance.start(PerformanceTags.CLIENT_TICK);
@@ -133,7 +134,7 @@ public class CubesClient extends Cubes implements ApplicationListener {
     RainRenderer.tick();
     Performance.stop(PerformanceTags.CLIENT_TICK);
   }
-  
+
   @Override
   public void stop() {
     if (state.hasStopped() || !state.isSetup()) return;

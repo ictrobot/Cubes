@@ -8,8 +8,8 @@ import ethanjones.cubes.core.settings.type.DropDownSetting;
 import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.graphics.assets.Asset;
 import ethanjones.cubes.graphics.assets.Assets;
-import ethanjones.cubes.graphics.world.AreaMesh;
 import ethanjones.cubes.graphics.world.WorldGraphicsPools;
+import ethanjones.cubes.graphics.world.area.AreaMesh;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.storage.Area;
 

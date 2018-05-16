@@ -6,8 +6,8 @@ import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.settings.type.*;
 import ethanjones.cubes.core.system.CubesException;
+import ethanjones.cubes.graphics.CubesShaderProvider;
 import ethanjones.cubes.graphics.Screenshot;
-import ethanjones.cubes.graphics.world.WorldShaderProvider;
 import ethanjones.cubes.graphics.world.ao.AmbientOcclusion;
 
 import com.badlogic.gdx.Gdx;
@@ -66,7 +66,7 @@ public class Settings {
       }
     });
     addSetting(GRAPHICS_AO, AmbientOcclusion.getSetting());
-    addSetting(GRAPHICS_SIMPLE_SHADER, WorldShaderProvider.getSetting());
+    addSetting(GRAPHICS_SIMPLE_SHADER, CubesShaderProvider.getSetting());
     addSetting(GRAPHICS_SCREENSHOT_SIZE, Screenshot.screenshotResolutionSetting());
 
     addSetting(INPUT_MOUSE_SENSITIVITY, new FloatSetting(0.5f, 0.05f, 1f, FloatSetting.Type.Slider));
@@ -94,12 +94,12 @@ public class Settings {
 
     String keybindsGroup = Keybinds.KEYBIND_GROUP;
     SettingGroup keybinds = Keybinds.init();
-  
+
     base.add(USERNAME)
-            .add(GROUP_GRAPHICS, new SettingGroup().add(GRAPHICS_VIEW_DISTANCE).add(GRAPHICS_FOV).add(GRAPHICS_FOG).add(GRAPHICS_SCALE).add(GRAPHICS_AO).add(GRAPHICS_SIMPLE_SHADER).add(GRAPHICS_SCREENSHOT_SIZE))
-            .add(GROUP_INPUT, new SettingGroup().add(keybindsGroup, keybinds).add(INPUT_MOUSE_SENSITIVITY).add(INPUT_TOUCHPAD_SIZE).add(INPUT_TOUCHPAD_LEFT))
-            .add(GROUP_NETWORKING, new SettingGroup().add(NETWORKING_PORT))
-            .add(GROUP_DEBUG, new SettingGroup().add(DEBUG_FRAMETIME_GRAPH).add(DEBUG_GL_PROFILER));
+        .add(GROUP_GRAPHICS, new SettingGroup().add(GRAPHICS_VIEW_DISTANCE).add(GRAPHICS_FOV).add(GRAPHICS_FOG).add(GRAPHICS_SCALE).add(GRAPHICS_AO).add(GRAPHICS_SIMPLE_SHADER).add(GRAPHICS_SCREENSHOT_SIZE))
+        .add(GROUP_INPUT, new SettingGroup().add(keybindsGroup, keybinds).add(INPUT_MOUSE_SENSITIVITY).add(INPUT_TOUCHPAD_SIZE).add(INPUT_TOUCHPAD_LEFT))
+        .add(GROUP_NETWORKING, new SettingGroup().add(NETWORKING_PORT))
+        .add(GROUP_DEBUG, new SettingGroup().add(DEBUG_FRAMETIME_GRAPH).add(DEBUG_GL_PROFILER));
 
     new AddSettingsEvent().post();
 
@@ -125,7 +125,7 @@ public class Settings {
       Reader reader = fileHandle.reader();
       JsonObject json = Json.parse(reader).asObject();
       reader.close();
-  
+
       for (Member member : json) {
         Setting setting = settings.get(member.getName());
         if (setting == null) {

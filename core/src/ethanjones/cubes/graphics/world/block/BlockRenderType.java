@@ -1,23 +1,22 @@
-package ethanjones.cubes.block;
+package ethanjones.cubes.graphics.world.block;
 
+import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.util.BlockFace;
-import ethanjones.cubes.graphics.world.BlockTextureHandler;
-import ethanjones.cubes.graphics.world.CrossFaceVertices;
 import ethanjones.cubes.graphics.world.ao.AmbientOcclusion;
 import ethanjones.cubes.world.storage.Area;
 
 import com.badlogic.gdx.math.Vector3;
 
-import static ethanjones.cubes.graphics.world.FaceVertices.*;
+import static ethanjones.cubes.graphics.world.block.FaceVertices.*;
 import static ethanjones.cubes.world.light.SunLight.MAX_SUNLIGHT;
 import static ethanjones.cubes.world.storage.Area.*;
 
 public abstract class BlockRenderType {
-  
+
   public static final BlockRenderType DEFAULT = new BlockRenderType(6) {
     static final int MIN_AREA = 0;
     static final int MAX_AREA = SIZE_BLOCKS - 1;
-    
+
     @Override
     public int render(float[] vertices, int vertexOffset, Vector3 areaOffset, Block block, int meta, BlockTextureHandler textureHandler, Area area, int x, int y, int z, int i, boolean ao, Area minX, Area maxZ, Area minZ, Area maxX) {
       if (x < SIZE_BLOCKS - 1) {
@@ -29,7 +28,7 @@ public abstract class BlockRenderType {
       } else if (block.renderFace(BlockFace.posX, maxX.blocks[getRef(MIN_AREA, y, z)])) {
         vertexOffset = createMaxX(areaOffset, textureHandler.getSide(BlockFace.posX), AmbientOcclusion.posX(area, x, y, z, ao), x, y, z, maxX.light[getRef(MIN_AREA, y, z)] & 0xFF, vertices, vertexOffset);
       }
-      
+
       if (x > 0) {
         if (block.renderFace(BlockFace.negX, area.blocks[i + MIN_X_OFFSET])) {
           vertexOffset = createMinX(areaOffset, textureHandler.getSide(BlockFace.negX), AmbientOcclusion.negX(area, x, y, z, ao), x, y, z, area.light[i + MIN_X_OFFSET] & 0xFF, vertices, vertexOffset);
@@ -39,7 +38,7 @@ public abstract class BlockRenderType {
       } else if (block.renderFace(BlockFace.negX, minX.blocks[getRef(MAX_AREA, y, z)])) {
         vertexOffset = createMinX(areaOffset, textureHandler.getSide(BlockFace.negX), AmbientOcclusion.negX(area, x, y, z, ao), x, y, z, minX.light[getRef(MAX_AREA, y, z)] & 0xFF, vertices, vertexOffset);
       }
-      
+
       if (y < area.maxY) {
         if (block.renderFace(BlockFace.posY, area.blocks[i + MAX_Y_OFFSET])) {
           vertexOffset = createMaxY(areaOffset, textureHandler.getSide(BlockFace.posY), AmbientOcclusion.posY(area, x, y, z, ao), x, y, z, area.light[i + MAX_Y_OFFSET] & 0xFF, vertices, vertexOffset);
@@ -47,7 +46,7 @@ public abstract class BlockRenderType {
       } else {
         vertexOffset = createMaxY(areaOffset, textureHandler.getSide(BlockFace.posY), AmbientOcclusion.posY(area, x, y, z, ao), x, y, z, MAX_SUNLIGHT, vertices, vertexOffset); //FIXME fix the light at the top and bottom of an area
       }
-      
+
       if (y > 0) {
         if (block.renderFace(BlockFace.negY, area.blocks[i + MIN_Y_OFFSET])) {
           vertexOffset = createMinY(areaOffset, textureHandler.getSide(BlockFace.negY), AmbientOcclusion.negY(area, x, y, z, ao), x, y, z, area.light[i + MIN_Y_OFFSET] & 0xFF, vertices, vertexOffset);
@@ -55,7 +54,7 @@ public abstract class BlockRenderType {
       } else {
         vertexOffset = createMinY(areaOffset, textureHandler.getSide(BlockFace.negY), AmbientOcclusion.negY(area, x, y, z, ao), x, y, z, 0, vertices, vertexOffset); //FIXME fix the light at the top and bottom of an area
       }
-      
+
       if (z < SIZE_BLOCKS - 1) {
         if (block.renderFace(BlockFace.posZ, area.blocks[i + MAX_Z_OFFSET])) {
           vertexOffset = createMaxZ(areaOffset, textureHandler.getSide(BlockFace.posZ), AmbientOcclusion.posZ(area, x, y, z, ao), x, y, z, area.light[i + MAX_Z_OFFSET] & 0xFF, vertices, vertexOffset);
@@ -65,7 +64,7 @@ public abstract class BlockRenderType {
       } else if (block.renderFace(BlockFace.posZ, maxZ.blocks[getRef(x, y, MIN_AREA)])) {
         vertexOffset = createMaxZ(areaOffset, textureHandler.getSide(BlockFace.posZ), AmbientOcclusion.posZ(area, x, y, z, ao), x, y, z, maxZ.light[getRef(x, y, MIN_AREA)] & 0xFF, vertices, vertexOffset);
       }
-      
+
       if (z > 0) {
         if (block.renderFace(BlockFace.negZ, area.blocks[i + MIN_Z_OFFSET])) {
           vertexOffset = createMinZ(areaOffset, textureHandler.getSide(BlockFace.negZ), AmbientOcclusion.negZ(area, x, y, z, ao), x, y, z, area.light[i + MIN_Z_OFFSET] & 0xFF, vertices, vertexOffset);
@@ -78,7 +77,7 @@ public abstract class BlockRenderType {
       return vertexOffset;
     }
   };
-  
+
   public static final BlockRenderType CROSS = new BlockRenderType(4) {
     @Override
     public int render(float[] vertices, int vertexOffset, Vector3 areaOffset, Block block, int meta, BlockTextureHandler textureHandler, Area area, int x, int y, int z, int i, boolean ao, Area minX, Area maxZ, Area minZ, Area maxX) {
@@ -89,7 +88,7 @@ public abstract class BlockRenderType {
       return vertexOffset;
     }
   };
-  
+
   public static final BlockRenderType CROSS_STRETCHED = new BlockRenderType(4) {
     @Override
     public int render(float[] vertices, int vertexOffset, Vector3 areaOffset, Block block, int meta, BlockTextureHandler textureHandler, Area area, int x, int y, int z, int i, boolean ao, Area minX, Area maxZ, Area minZ, Area maxX) {
@@ -108,6 +107,6 @@ public abstract class BlockRenderType {
     this.maxFaces = maxFaces;
     this.maxVertices = maxFaces * 4;
   }
-  
+
   public abstract int render(float[] vertices, int vertexOffset, Vector3 areaOffset, Block block, int meta, BlockTextureHandler textureHandler, Area area, int x, int y, int z, int i, boolean ao, Area minX, Area maxZ, Area minZ, Area maxX);
 }

@@ -1,13 +1,16 @@
 package ethanjones.cubes.graphics.hud.inv;
 
 import ethanjones.cubes.block.Block;
-import ethanjones.cubes.block.BlockRenderType;
 import ethanjones.cubes.core.id.IDManager;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.util.BlockFace;
+import ethanjones.cubes.graphics.CubesVertexAttributes;
 import ethanjones.cubes.graphics.Graphics;
 import ethanjones.cubes.graphics.assets.Assets;
-import ethanjones.cubes.graphics.world.*;
+import ethanjones.cubes.graphics.world.area.AreaMesh;
+import ethanjones.cubes.graphics.world.block.BlockRenderType;
+import ethanjones.cubes.graphics.world.block.BlockTextureHandler;
+import ethanjones.cubes.graphics.world.block.FaceVertices;
 import ethanjones.cubes.world.light.BlockLight;
 
 import com.badlogic.gdx.Gdx;
@@ -16,13 +19,9 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import java.util.ArrayList;
@@ -31,14 +30,15 @@ import java.util.List;
 import java.util.Map.Entry;
 
 public class BlockIcons {
+
   private static final boolean DEBUG_OUTPUT = false;
-  
+
   private static HashMap<BlockID, TextureRegion> textureRegions = new HashMap<BlockID, TextureRegion>();
-  
+
   public static TextureRegion getIcon(String id, int meta) {
     return textureRegions.get(new BlockID(id, meta));
   }
-  
+
   public static void renderIcons() {
     int size = 64;
 
@@ -49,10 +49,10 @@ public class BlockIcons {
     camera.position.set(2.4f, 2f, 2.4f);
     camera.lookAt(0f, 0f, 0f);
     camera.near = 0.1f;
-    camera.up.set(0,-1,0);
+    camera.up.set(0, -1, 0);
     camera.update(true);
-    
-  
+
+
     final AreaMesh mesh = new AreaMesh(CubesVertexAttributes.VERTEX_ATTRIBUTES);
     List<Block> blocks = IDManager.getBlocks();
 
@@ -63,15 +63,15 @@ public class BlockIcons {
         blockids.add(new BlockID(block.id, meta));
       }
     }
-    
+
     int numberBlock = (int) Math.ceil(Math.sqrt(blockids.size()));
     Pixmap pixmap = new Pixmap(size * numberBlock, size * numberBlock, Format.RGBA8888);
     int number = 0;
     HashMap<BlockID, Location> map = new HashMap<BlockID, Location>();
-  
-    final RenderingSettings renderingSettings = new RenderingSettings();
-    renderingSettings.setLightOverride(BlockLight.FULL_LIGHT);
-    renderingSettings.setFogEnabled(false);
+
+    mesh.renderable.setLightOverride(BlockLight.FULL_LIGHT);
+    mesh.renderable.setFogEnabled(false);
+    mesh.renderable.name = "AreaMesh BlockIcons";
 
     for (BlockID blockID : blockids) {
       Block block = IDManager.toBlock(blockID.id);
@@ -83,14 +83,7 @@ public class BlockIcons {
       mesh.saveVertices(vertexOffset);
 
       Graphics.modelBatch.begin(camera);
-      Graphics.modelBatch.render(new RenderableProvider() {
-        @Override
-        public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
-          Renderable renderable = mesh.renderable(pool);
-          renderable.userData = renderingSettings;
-          renderables.add(renderable);
-        }
-      });
+      Graphics.modelBatch.render(mesh.renderable);
       Graphics.modelBatch.end();
       Pixmap bufferPixmap = ScreenUtils.getFrameBufferPixmap(0, 0, size, size);
 
@@ -124,20 +117,21 @@ public class BlockIcons {
         Log.error("Failed to write debug blockicons image", e);
       }
     }
-  
+
     Texture texture = new Texture(pixmap, true);
     texture.setFilter(TextureFilter.MipMapLinearLinear, TextureFilter.Linear);
-  
+
     for (Entry<BlockID, Location> entry : map.entrySet()) {
       Location l = entry.getValue();
       textureRegions.put(entry.getKey(), new TextureRegion(texture, l.x, l.y, size, size));
     }
-    
+
     frameBuffer.end();
     frameBuffer.dispose();
   }
-  
+
   public static class BlockID {
+
     final String id;
     final int meta;
 
@@ -150,14 +144,15 @@ public class BlockIcons {
     public int hashCode() {
       return (31 * id.hashCode()) + meta;
     }
-  
+
     @Override
     public boolean equals(Object obj) {
       return obj instanceof BlockID && id.equals(((BlockID) obj).id) && meta == ((BlockID) obj).meta;
     }
   }
-  
+
   private static class Location {
+
     final int x;
     final int y;
 

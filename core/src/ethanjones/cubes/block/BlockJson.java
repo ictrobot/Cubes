@@ -4,7 +4,7 @@ import ethanjones.cubes.core.id.IDManager;
 import ethanjones.cubes.core.json.JsonException;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.util.BlockFace;
-import ethanjones.cubes.graphics.world.BlockTextureHandler;
+import ethanjones.cubes.graphics.world.block.BlockTextureHandler;
 import ethanjones.cubes.item.Item;
 import ethanjones.cubes.item.ItemJson;
 import ethanjones.cubes.item.ItemStack;
@@ -139,6 +139,7 @@ public class BlockJson {
   }
 
   private static class JBlock extends Block {
+
     protected Integer[] lightLevel;
     protected Boolean[] transparent;
     protected String[][] textures;
@@ -239,6 +240,7 @@ public class BlockJson {
   }
 
   public interface MetaElementParser<E> {
+
     E parse(JsonValue prop);
   }
 
@@ -308,6 +310,7 @@ public class BlockJson {
   };
 
   private static class ItemStackPlaceholder {
+
     final String id;
     final int count;
     final int meta;

@@ -1,13 +1,13 @@
 package ethanjones.cubes.graphics.entity;
 
-import ethanjones.cubes.block.BlockRenderType;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.entity.ItemEntity;
+import ethanjones.cubes.graphics.CubesRenderable;
+import ethanjones.cubes.graphics.CubesVertexAttributes;
 import ethanjones.cubes.graphics.assets.Assets;
-import ethanjones.cubes.graphics.world.BlockTextureHandler;
-import ethanjones.cubes.graphics.world.CubesVertexAttributes;
-import ethanjones.cubes.graphics.world.FaceVertices;
-import ethanjones.cubes.graphics.world.RenderingSettings;
+import ethanjones.cubes.graphics.world.block.BlockRenderType;
+import ethanjones.cubes.graphics.world.block.BlockTextureHandler;
+import ethanjones.cubes.graphics.world.block.FaceVertices;
 import ethanjones.cubes.item.Item;
 import ethanjones.cubes.item.ItemBlock;
 
@@ -24,6 +24,7 @@ import com.badlogic.gdx.utils.Pool;
 import static ethanjones.cubes.world.light.BlockLight.FULL_LIGHT;
 
 public class ItemEntityRenderer implements RenderableProvider, Disposable {
+
   static short[] blockIndices;
   static short[] itemIndices;
 
@@ -52,6 +53,7 @@ public class ItemEntityRenderer implements RenderableProvider, Disposable {
   }
 
   private final ItemEntity itemEntity;
+  private final CubesRenderable renderable = new CubesRenderable();
   private Mesh mesh;
   private float[] vertices;
   private Item item;
@@ -98,18 +100,20 @@ public class ItemEntityRenderer implements RenderableProvider, Disposable {
         vertexOffset = FaceVertices.createMaxZ(new Vector3(-0.5f, 0f, -1f), flip, null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
         mesh.setVertices(vertices);
       }
+      renderable.meshPart.primitiveType = GL20.GL_TRIANGLES;
+      renderable.meshPart.offset = 0;
+      renderable.meshPart.size = item instanceof ItemBlock ? 6 * 6 : 6 * 2;
+      renderable.meshPart.mesh = mesh;
+      renderable.material = Assets.blockItemSheet.getMaterial();
+      renderable.name = "Item Entity - " + item.id;
     }
-    Renderable renderable = new Renderable();
+
+    renderable.worldTransform.idt();
     renderable.worldTransform.translate(itemEntity.position.x, itemEntity.position.y + yOffset() + (randomOffset / 20f), itemEntity.position.z);
     renderable.worldTransform.scl(0.3f);
     renderable.worldTransform.rotate(Vector3.Y, (360 * randomOffset) + Math.abs(itemEntity.age % 360));
-    renderable.meshPart.primitiveType = GL20.GL_TRIANGLES;
-    renderable.meshPart.offset = 0;
-    renderable.meshPart.size = item instanceof ItemBlock ? 6 * 6 : 6 * 2;
-    renderable.meshPart.mesh = mesh;
-    renderable.material = Assets.blockItemSheet.getMaterial();
-    
-    renderable.userData = new RenderingSettings().setLightOverride(itemEntity.position);
+    renderable.setLightOverride(itemEntity.position);
+
     renderables.add(renderable);
   }
 

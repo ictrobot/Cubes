@@ -1,5 +1,6 @@
-package ethanjones.cubes.graphics.world;
+package ethanjones.cubes.graphics;
 
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.performance.Performance;
 import ethanjones.cubes.core.performance.PerformanceTags;
 import ethanjones.cubes.core.system.CubesException;
@@ -58,27 +59,38 @@ public class CubesModelBatch extends ModelBatch {
   protected static class CubesRenderablePool extends RenderablePool {
 
     @Override
+    protected Renderable newObject() {
+      return new CubesRenderable();
+    }
+
+    @Override
     public Renderable obtain() {
       Renderable renderable = super.obtain();
-      // super.obtain resets the following
-      //renderable.environment = null;
-      //renderable.material = null;
-      //renderable.meshPart.set("", null, 0, 0, 0);
-      //renderable.shader = null;
+      if (!(renderable instanceof CubesRenderable)) throw new IllegalStateException();
+      return ((CubesRenderable) renderable).reset();
+    }
 
-      // renderable.userData = null;
-      // built in as of libgdx 1.9.6
-      // https://github.com/libgdx/libgdx/pull/4550
+    @Override
+    protected void reset(Renderable object) {
+      if (!(object instanceof CubesRenderable)) {
+        Log.error("Resetting non-Cubes renderable! Flushing pool");
+        flush();
+      }
+    }
 
-      // custom
-      renderable.worldTransform.idt();
+    @Override
+    public void free(Renderable object) {
+      throw new UnsupportedOperationException();
+    }
 
-      return renderable;
+    @Override
+    public void freeAll(Array<Renderable> objects) {
+      throw new UnsupportedOperationException();
     }
   }
 
   public CubesModelBatch() {
-    super(new WorldShaderProvider(), new CubesRenderableSorter());
+    super(new CubesShaderProvider(), new CubesRenderableSorter());
 
     try {
       Field field = ModelBatch.class.getDeclaredField("renderablesPool");

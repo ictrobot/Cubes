@@ -10,8 +10,8 @@ import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.Executor;
 import ethanjones.cubes.core.util.Lock;
 import ethanjones.cubes.core.util.ThreadRandom;
-import ethanjones.cubes.graphics.world.AreaRenderStatus;
-import ethanjones.cubes.graphics.world.AreaRenderer;
+import ethanjones.cubes.graphics.world.area.AreaRenderStatus;
+import ethanjones.cubes.graphics.world.area.AreaRenderer;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.common.Side;
@@ -81,7 +81,7 @@ public class Area implements Lock.HasLock {
   public int[] renderStatus = new int[0];
 
   private volatile boolean unloaded;
-  
+
   private volatile Area[] neighboursClient = new Area[9];
   private volatile Area[] neighboursServer = new Area[9];
   private AreaMap areaMapClient;
@@ -231,7 +231,7 @@ public class Area implements Lock.HasLock {
   public void unload() {
     if (shared && Side.isClient()) return;
     lock.writeLock();
-  
+
     if (!unloaded) removeArrays();
 
     lock.writeUnlock();
@@ -255,7 +255,7 @@ public class Area implements Lock.HasLock {
     Arrays.fill(heightmap, 0);
     Arrays.fill(neighboursClient, null);
     Arrays.fill(neighboursServer, null);
-    
+
     unloaded = true;
     lock.writeUnlock();
   }
@@ -327,7 +327,7 @@ public class Area implements Lock.HasLock {
 
   public void setBlock(Block block, int x, int y, int z, int meta) {
     if (y < 0) return;
-  
+
     int n = block == null ? 0 : block.intID;
     n += (meta & 0xFF) << 20;
 
@@ -406,11 +406,11 @@ public class Area implements Lock.HasLock {
 
     lock.writeUnlock();
   }
-  
+
   public Area neighbourBlockCoordinates(int blockX, int blockZ) {
     return neighbour(CoordinateConverter.area(blockX), CoordinateConverter.area(blockZ));
   }
-  
+
   public Area neighbour(final int areaX, final int areaZ) {
     if (areaX == this.areaX && areaZ == this.areaZ) return this;
     Side side = Side.getSide();
@@ -437,20 +437,20 @@ public class Area implements Lock.HasLock {
     }
     return null;
   }
-  
+
   public AreaMap areaMap() {
     Side side = Side.getSide();
     if (side == Side.Client) return areaMapClient;
     else if (side == Side.Server) return areaMapServer;
     return null;
   }
-  
+
   protected void setAreaMap(AreaMap areaMap) {
     Side side = Side.getSide();
     if (side == Side.Client) areaMapClient = areaMap;
     else if (side == Side.Server) areaMapServer = areaMap;
   }
-  
+
   public void tick() {
     if (Side.isServer()) {
       AreaMap areaMap = areaMap();
@@ -750,34 +750,34 @@ public class Area implements Lock.HasLock {
       lock.writeUnlock();
       return;
     }
-  
+
     int oldMaxY = maxY;
     int[] oldBlocks = blocks;
     byte[] oldLight = light;
     AreaRenderer[] oldAreaRenderer = areaRenderer;
-    
+
     int newHeight = (int) Math.ceil((h + 1) / (float) SIZE_BLOCKS); //Round up to multiple of SIZE_BLOCKS
-    
+
     int[] newBlocks = new int[SIZE_BLOCKS_CUBED * newHeight];
     System.arraycopy(oldBlocks, 0, newBlocks, 0, oldBlocks.length);
-    
+
     byte[] newLight = new byte[SIZE_BLOCKS_CUBED * newHeight];
     System.arraycopy(oldLight, 0, newLight, 0, oldLight.length);
     if (featuresGenerated()) Arrays.fill(newLight, oldLight.length, newLight.length, (byte) SunLight.MAX_SUNLIGHT);
-    
-    
+
+
     if (Side.isClient() || shared) {
       this.areaRenderer = new AreaRenderer[newHeight];
       if (renderStatus.length < newHeight) renderStatus = AreaRenderStatus.create(newHeight);
     } else {
       this.areaRenderer = null;
     }
-    
+
     this.blocks = newBlocks;
     this.light = newLight;
     this.height = newHeight;
     this.maxY = (newHeight * SIZE_BLOCKS) - 1;
-    
+
     int i = oldMaxY * SIZE_BLOCKS_SQUARED;
     for (int z = 0; z < SIZE_BLOCKS; z++) { //update previous top
       for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
@@ -786,7 +786,7 @@ public class Area implements Lock.HasLock {
     }
 
     lock.writeUnlock();
-  
+
     AreaRenderer.free(oldAreaRenderer);
   }
 
@@ -866,11 +866,11 @@ public class Area implements Lock.HasLock {
   public int hashCode() {
     return hashCode;
   }
-  
+
   public void writeNetworking(DataOutputStream dataOutputStream) throws IOException {
     write(dataOutputStream, false, true, false, null);
   }
-  
+
   public void writeSave(DataOutputStream dataOutputStream, DataGroup[] entities) throws IOException {
     write(dataOutputStream, false, false, true, entities); //TODO resize when writing
   }
@@ -922,11 +922,11 @@ public class Area implements Lock.HasLock {
     for (int i = 0; i < (SIZE_BLOCKS_CUBED * usedHeight); i++) {
       dataOutputStream.writeByte(light[i]);
     }
-    
+
     if (writeEntities && entities != null) {
       dataOutputStream.writeShort(entities.length);
       dataOutputStream.writeShort(blockDataList.size());
-  
+
       for (DataGroup entity : entities) {
         Data.output(entity, dataOutputStream);
       }
@@ -934,7 +934,7 @@ public class Area implements Lock.HasLock {
       dataOutputStream.writeShort(0);
       dataOutputStream.writeShort(blockDataList.size());
     }
-    
+
     for (BlockData blockData : blockDataList) {
       dataOutputStream.writeInt(getRef(blockData.getX(), blockData.getY(), blockData.getZ()));
       Data.output(blockData.write(), dataOutputStream);
@@ -1003,7 +1003,7 @@ public class Area implements Lock.HasLock {
       Side.getCubes().world.addEntityFromSave(dataGroup);
     }
     saveEntities = entitiesSize;
-    
+
     blockDataList.clear();
     blockDataList.ensureCapacity(dataSize);
     for (int i = 0; i < dataSize; i++) {
@@ -1018,7 +1018,7 @@ public class Area implements Lock.HasLock {
       data.read(dataGroup);
       blockDataList.add(data);
     }
-    
+
     if (invalidBlocks) {
       Log.warning("Invalid blocks in " + toString());
       updateAll();
@@ -1064,12 +1064,12 @@ public class Area implements Lock.HasLock {
   public Lock getLock() {
     return lock;
   }
-  
+
   @Override
   public String toString() {
     return areaX + "," + areaZ;
   }
-  
+
   /**
    * Crucial to call this so changes are written to disk.
    * Area should be write locked

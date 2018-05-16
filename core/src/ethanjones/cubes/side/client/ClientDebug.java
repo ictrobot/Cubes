@@ -5,8 +5,8 @@ import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.core.util.PerSecond;
 import ethanjones.cubes.entity.living.player.Player;
-import ethanjones.cubes.graphics.world.AreaRenderer;
 import ethanjones.cubes.graphics.world.ao.AmbientOcclusion;
+import ethanjones.cubes.graphics.world.area.AreaRenderer;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.collision.BlockIntersection;
@@ -39,7 +39,7 @@ public class ClientDebug {
       glProfiler.disable();
     }
   }
-  
+
   protected static void frameStart() {
     fps.tick();
     if (glProfilerEnabled && Cubes.getClient().renderer.guiRenderer.debugEnabled) {
@@ -107,6 +107,7 @@ public class ClientDebug {
   }
 
   private static class LastFrame {
+
     private static final DecimalFormat vertexFormat = new DecimalFormat("0.##E0");
 
     static int totalCalls;

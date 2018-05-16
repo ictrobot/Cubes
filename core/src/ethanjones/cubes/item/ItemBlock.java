@@ -1,11 +1,11 @@
 package ethanjones.cubes.item;
 
 import ethanjones.cubes.block.Block;
-import ethanjones.cubes.block.BlockRenderType;
 import ethanjones.cubes.core.event.entity.living.player.PlayerPlaceBlockEvent;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.graphics.hud.inv.BlockIcons;
+import ethanjones.cubes.graphics.world.block.BlockRenderType;
 import ethanjones.cubes.input.ClickType;
 import ethanjones.cubes.item.inv.InventoryHelper;
 import ethanjones.cubes.side.common.Cubes;
@@ -16,6 +16,7 @@ import ethanjones.cubes.world.reference.BlockReference;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class ItemBlock extends Item {
+
   public final Block block;
 
   public ItemBlock(Block block) {
@@ -24,9 +25,9 @@ public class ItemBlock extends Item {
   }
 
   public void loadGraphics() {
-    
+
   }
-  
+
   @Override
   public TextureRegion getTextureRegion(int meta) {
     if (block.renderType(meta) == BlockRenderType.DEFAULT) {
@@ -35,7 +36,7 @@ public class ItemBlock extends Item {
     }
     return block.getTextureHandler(meta).getSide(BlockFace.posX);
   }
-  
+
   @Override
   public String getName(int meta) {
     return block.getName(meta);
