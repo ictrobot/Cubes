@@ -5,7 +5,8 @@
       "speed": 1000000,
       "tool": "none",
       "other": false
-    }
+    },
+    "displayMeta": []
   },
   {
     "id": "core:stone",
