@@ -78,7 +78,7 @@ public class ClientCompatibility extends DesktopCompatibility {
 
   @EventHandler
   public void addSettings(AddSettingsEvent e) {
-    Settings.addSetting("client.graphics.vsync", new BooleanSetting(false) {
+    Settings.addSetting("client.graphics.vsync", new BooleanSetting(true) {
       @Override
       public void onChange() {
         super.onChange();
