@@ -39,7 +39,7 @@ public class CubesModelBatch extends ModelBatch {
       if (o1.material == o2.material) {
         // when materials are the same, use this quicker path
         translation1.set(o1.meshPart.center).mul(o1.worldTransform);
-        translation2.set(o1.meshPart.center).mul(o2.worldTransform);
+        translation2.set(o2.meshPart.center).mul(o2.worldTransform);
         final float dst = (int) (1000f * camera.position.dst2(translation1)) - (int) (1000f * camera.position.dst2(translation2));
         return dst < 0 ? 1 : (dst > 0 ? -1 : 0);
       }
@@ -49,7 +49,7 @@ public class CubesModelBatch extends ModelBatch {
       if (b1 != b2) return b1 ? 1 : -1;
 
       translation1.set(o1.meshPart.center).mul(o1.worldTransform);
-      translation2.set(o1.meshPart.center).mul(o2.worldTransform);
+      translation2.set(o2.meshPart.center).mul(o2.worldTransform);
       final float dst = (int) (1000f * camera.position.dst2(translation1)) - (int) (1000f * camera.position.dst2(translation2));
       final int result = dst < 0 ? -1 : (dst > 0 ? 1 : 0);
       return b1 ? -result : result;
