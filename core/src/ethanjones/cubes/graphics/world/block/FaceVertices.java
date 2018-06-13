@@ -1,4 +1,4 @@
-package ethanjones.cubes.graphics.world;
+package ethanjones.cubes.graphics.world.block;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;

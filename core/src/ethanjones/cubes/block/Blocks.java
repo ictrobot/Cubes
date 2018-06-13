@@ -1,5 +1,6 @@
 package ethanjones.cubes.block;
 
+import ethanjones.cubes.block.blocks.*;
 import ethanjones.cubes.core.id.IDManager;
 
 public class Blocks {
@@ -16,6 +17,8 @@ public class Blocks {
   public static Block sapling;
 
   public static void init() {
+    dirt = new BlockDirt();
+    IDManager.register(dirt);
     grass = new BlockGrass();
     IDManager.register(grass);
     leaves = new BlockLeaves();
@@ -31,7 +34,6 @@ public class Blocks {
   public static void getInstances() {
     bedrock = IDManager.toBlock("core:bedrock");
     stone = IDManager.toBlock("core:stone");
-    dirt = IDManager.toBlock("core:dirt");
     log = IDManager.toBlock("core:log");
     glow = IDManager.toBlock("core:glow");
   }

@@ -9,7 +9,7 @@ import ethanjones.cubes.graphics.hud.inv.InventoryManager;
 import ethanjones.cubes.graphics.menus.PauseMenu;
 import ethanjones.cubes.graphics.menus.WorldLoadingMenu;
 import ethanjones.cubes.graphics.rendering.Renderer;
-import ethanjones.cubes.graphics.world.RainRenderer;
+import ethanjones.cubes.graphics.world.other.RainRenderer;
 import ethanjones.cubes.input.InputChain;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.common.Side;
@@ -22,6 +22,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 
 public class CubesClient extends Cubes implements ApplicationListener {
+
   public static UUID uuid;
 
   public Player player;
@@ -59,7 +60,7 @@ public class CubesClient extends Cubes implements ApplicationListener {
     ClientDebug.setup();
 
     nextTickTime = System.currentTimeMillis() + tickMS;
-    
+
     state.setup();
   }
 
@@ -74,10 +75,10 @@ public class CubesClient extends Cubes implements ApplicationListener {
     if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) escape();
 
     ClientDebug.frameStart();
-    
+
     long diff = nextTickTime - System.currentTimeMillis();
     if (diff < -16) {
-      int change = 1 + (int) (-(diff + 16)  / tickMS);
+      int change = 1 + (int) (-(diff + 16) / tickMS);
       behindTicks += change;
       nextTickTime += change * tickMS;
       diff = nextTickTime - System.currentTimeMillis();
@@ -94,25 +95,25 @@ public class CubesClient extends Cubes implements ApplicationListener {
       behindTicks = 0;
       nextTickTime += behindTicks * tickMS;
     }
-    
+
     this.update();
     inputChain.beforeRender();
     renderer.render();
     inputChain.afterRender();
   }
-  
+
   @Override
   protected void update() {
     super.update();
   }
-  
+
   @Override
   protected void tick() {
     super.tick();
     inputChain.tick();
     RainRenderer.tick();
   }
-  
+
   @Override
   public void stop() {
     if (state.hasStopped() || !state.isSetup()) return;

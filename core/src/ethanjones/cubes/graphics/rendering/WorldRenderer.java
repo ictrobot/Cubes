@@ -3,7 +3,15 @@ package ethanjones.cubes.graphics.rendering;
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.core.system.Pools;
 import ethanjones.cubes.entity.Entity;
-import ethanjones.cubes.graphics.world.*;
+import ethanjones.cubes.graphics.Graphics;
+import ethanjones.cubes.graphics.world.WorldGraphicsPools;
+import ethanjones.cubes.graphics.world.area.AreaBoundaries;
+import ethanjones.cubes.graphics.world.area.AreaRenderStatus;
+import ethanjones.cubes.graphics.world.area.AreaRenderer;
+import ethanjones.cubes.graphics.world.other.BreakingRenderer;
+import ethanjones.cubes.graphics.world.other.RainRenderer;
+import ethanjones.cubes.graphics.world.other.SelectedBlock;
+import ethanjones.cubes.graphics.world.other.SunRenderer;
 import ethanjones.cubes.input.CameraController;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.CoordinateConverter;
@@ -17,14 +25,18 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import com.badlogic.gdx.math.Frustum;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.IntSet;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 
 import static ethanjones.cubes.graphics.Graphics.modelBatch;
+import static ethanjones.cubes.world.storage.Area.HALF_SIZE_BLOCKS;
+import static ethanjones.cubes.world.storage.Area.SIZE_BLOCKS;
 
 public class WorldRenderer implements Disposable {
 
@@ -49,7 +61,7 @@ public class WorldRenderer implements Disposable {
 
     Cubes.getClient().inputChain.cameraController = new CameraController(camera);
   }
-  
+
   public void render() {
     WorldGraphicsPools.free();
 
@@ -58,7 +70,7 @@ public class WorldRenderer implements Disposable {
     needToRefresh.clear();
     queue.clear();
     checkedNodes.clear();
-    
+
     modelBatch.begin(camera);
 
     int renderDistance = Settings.getIntegerSettingValue(Settings.GRAPHICS_VIEW_DISTANCE);
@@ -165,7 +177,7 @@ public class WorldRenderer implements Disposable {
     SunRenderer.draw(modelBatch);
     modelBatch.end();
   }
-  
+
   private void renderIfNotNull(Renderable r) {
     if (r != null) modelBatch.render(r);
   }
@@ -230,6 +242,7 @@ public class WorldRenderer implements Disposable {
   }
 
   private static class AreaNode {
+
     Area area;
     int areaX;
     int areaZ;
@@ -262,6 +275,24 @@ public class WorldRenderer implements Disposable {
     @Override
     public int hashCode() {
       return hashCode;
+    }
+  }
+
+  protected static class AreaRendererSorter implements Comparator<AreaRenderer> {
+
+    public Vector3 base = Cubes.getClient().player.position;
+
+    @Override
+    public int compare(AreaRenderer o1, AreaRenderer o2) {
+      Vector3 v1 = o1.getOffset();
+      Vector3 v2 = o2.getOffset();
+
+      float d1 = base.dst2(v1.x + HALF_SIZE_BLOCKS, (o1.getYSection() * SIZE_BLOCKS) + HALF_SIZE_BLOCKS, v1.z + HALF_SIZE_BLOCKS);
+      float d2 = base.dst2(v2.x + HALF_SIZE_BLOCKS, (o2.getYSection() * SIZE_BLOCKS) + HALF_SIZE_BLOCKS, v2.z + HALF_SIZE_BLOCKS);
+
+      final float dst = d1 - d2;
+      final int result = dst < 0 ? -1 : (dst > 0 ? 1 : 0);
+      return result;
     }
   }
 }

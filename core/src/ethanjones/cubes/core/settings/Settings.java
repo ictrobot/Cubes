@@ -6,7 +6,7 @@ import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.settings.type.*;
 import ethanjones.cubes.core.system.CubesException;
-import ethanjones.cubes.graphics.world.WorldShaderProvider;
+import ethanjones.cubes.graphics.CubesShaderProvider;
 import ethanjones.cubes.graphics.world.ao.AmbientOcclusion;
 
 import com.badlogic.gdx.Application;
@@ -49,13 +49,13 @@ public class Settings {
     addSetting(GRAPHICS_VIEW_DISTANCE, new IntegerSetting(3, 2, 16, IntegerSetting.Type.Slider));
     addSetting(GRAPHICS_FOV, new IntegerSetting(70, 10, 120, IntegerSetting.Type.Slider));
     addSetting(GRAPHICS_VSYNC, new BooleanSetting(false) {
-  
+
       @Override
       public void onChange() {
         super.onChange();
         Gdx.graphics.setVSync(get());
       }
-  
+
       @Override
       public boolean shouldDisplay() {
         return Compatibility.get().getApplicationType() == Application.ApplicationType.Desktop;
@@ -63,7 +63,7 @@ public class Settings {
     });
     addSetting(GRAPHICS_FOG, new BooleanSetting(true));
     addSetting(GRAPHICS_AO, AmbientOcclusion.getSetting());
-    addSetting(GRAPHICS_SIMPLE_SHADER, WorldShaderProvider.getSetting());
+    addSetting(GRAPHICS_SIMPLE_SHADER, CubesShaderProvider.getSetting());
 
     addSetting(INPUT_TOUCH, new BooleanSetting(Compatibility.get().guessTouchScreen()));
     addSetting(INPUT_MOUSE_SENSITIVITY, new FloatSetting(0.5f, 0.05f, 1f, FloatSetting.Type.Slider));
@@ -89,7 +89,7 @@ public class Settings {
 
     String keybindsGroup = Keybinds.KEYBIND_GROUP;
     SettingGroup keybinds = Keybinds.init();
-  
+
     base.add(USERNAME)
             .add(GROUP_GRAPHICS, new SettingGroup().add(GRAPHICS_VIEW_DISTANCE).add(GRAPHICS_FOV).add(GRAPHICS_VSYNC).add(GRAPHICS_FOG).add(GRAPHICS_AO).add(GRAPHICS_SIMPLE_SHADER))
             .add(GROUP_INPUT, new SettingGroup().add(keybindsGroup, keybinds).add(INPUT_TOUCH).add(INPUT_MOUSE_SENSITIVITY).add(INPUT_TOUCHPAD_SIZE).add(INPUT_TOUCHPAD_LEFT))

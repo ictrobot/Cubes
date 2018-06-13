@@ -1,8 +1,11 @@
-package ethanjones.cubes.graphics.world;
+package ethanjones.cubes.graphics.world.other;
 
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.entity.living.player.Player;
+import ethanjones.cubes.graphics.CubesRenderable;
+import ethanjones.cubes.graphics.CubesVertexAttributes;
 import ethanjones.cubes.graphics.assets.Assets;
+import ethanjones.cubes.graphics.world.block.FaceVertices;
 import ethanjones.cubes.item.ItemTool;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.reference.BlockReference;
@@ -21,6 +24,7 @@ import static ethanjones.cubes.world.light.BlockLight.FULL_LIGHT;
 
 public class BreakingRenderer {
 
+  static final CubesRenderable renderable = new CubesRenderable();
   static Mesh mesh;
   static Material material;
   static int num;
@@ -60,6 +64,12 @@ public class BreakingRenderer {
       vertexOffset = FaceVertices.createMinZ(Vector3.Zero, textureRegion, null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
     }
     mesh.setVertices(vertices);
+
+    renderable.meshPart.primitiveType = GL20.GL_TRIANGLES;
+    renderable.meshPart.size = 6 * 6;
+    renderable.meshPart.mesh = mesh;
+    renderable.material = material;
+    renderable.name = "BreakingRenderer";
   }
 
   public static Renderable draw() {
@@ -73,14 +83,11 @@ public class BreakingRenderer {
     int n = (int) Math.floor(percent * num);
 
     float f = 1f / 128f;
-    Renderable renderable = new Renderable();
+    renderable.meshPart.offset = n * (6 * 6);
+    renderable.worldTransform.idt();
     renderable.worldTransform.translate(position.blockX - f, position.blockY - f, position.blockZ - f);
     renderable.worldTransform.scl(1f + f + f);
-    renderable.meshPart.primitiveType = GL20.GL_TRIANGLES;
-    renderable.meshPart.offset = n * (6 * 6);
-    renderable.meshPart.size = 6 * 6;
-    renderable.meshPart.mesh = mesh;
-    renderable.material = material;
+
     return renderable;
   }
 }

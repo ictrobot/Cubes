@@ -3,7 +3,7 @@ package ethanjones.cubes.world.client;
 import ethanjones.cubes.core.gwt.UUID;
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.entity.Entity;
-import ethanjones.cubes.graphics.world.AreaRenderer;
+import ethanjones.cubes.graphics.world.area.AreaRenderer;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.World;
@@ -60,7 +60,7 @@ public class WorldClient extends World {
       removed.clear();
     }
     tickCounter += 1;
-    
+
     entities.lock.writeLock();
     Iterator<Entry<UUID, Entity>> entityIterator = entities.entrySet().iterator();
     while (entityIterator.hasNext()) {

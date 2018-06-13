@@ -1,5 +1,6 @@
-package ethanjones.cubes.block;
+package ethanjones.cubes.block.blocks;
 
+import ethanjones.cubes.block.Block;
 import ethanjones.cubes.block.data.BlockData;
 import ethanjones.cubes.block.data.BlockDataChest;
 import ethanjones.cubes.core.util.BlockFace;
@@ -8,7 +9,7 @@ import ethanjones.cubes.graphics.hud.inv.DoubleInventory;
 import ethanjones.cubes.graphics.hud.inv.InventoryActor;
 import ethanjones.cubes.graphics.hud.inv.InventoryManager;
 import ethanjones.cubes.graphics.hud.inv.InventoryWindow;
-import ethanjones.cubes.graphics.world.BlockTextureHandler;
+import ethanjones.cubes.graphics.world.block.BlockTextureHandler;
 import ethanjones.cubes.input.ClickType;
 import ethanjones.cubes.item.ItemTool.ToolType;
 import ethanjones.cubes.side.common.Cubes;

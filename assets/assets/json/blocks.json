@@ -5,7 +5,8 @@
       "speed": 1000000,
       "tool": "none",
       "other": false
-    }
+    },
+    "displayMeta": []
   },
   {
     "id": "core:stone",
@@ -13,14 +14,6 @@
       "speed": 1.5,
       "tool": "pickaxe",
       "other": false
-    }
-  },
-  {
-    "id": "core:dirt",
-    "mining": {
-      "speed": 0.5,
-      "tool": "shovel",
-      "other": true
     }
   },
   {

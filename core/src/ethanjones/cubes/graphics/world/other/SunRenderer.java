@@ -1,6 +1,9 @@
-package ethanjones.cubes.graphics.world;
+package ethanjones.cubes.graphics.world.other;
 
+import ethanjones.cubes.graphics.CubesRenderable;
+import ethanjones.cubes.graphics.CubesVertexAttributes;
 import ethanjones.cubes.graphics.assets.Assets;
+import ethanjones.cubes.graphics.world.block.FaceVertices;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.World;
 
@@ -9,7 +12,6 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.math.Vector3;
 
 import static ethanjones.cubes.world.light.BlockLight.FULL_LIGHT;
@@ -25,6 +27,7 @@ public class SunRenderer {
   private short[] indices;
   private Material material;
   private TextureRegion textureRegion;
+  private CubesRenderable renderable;
 
   private SunRenderer(boolean moon) {
     this.moon = moon;
@@ -49,9 +52,17 @@ public class SunRenderer {
     mesh.setIndices(indices);
     FaceVertices.createMinY(new Vector3(-0.5f, 0f, -0.5f), textureRegion, null, 0, 0, 0, FULL_LIGHT, vertices, 0);
     mesh.setVertices(vertices);
+
+    renderable = new CubesRenderable();
+    renderable.meshPart.primitiveType = GL20.GL_TRIANGLES;
+    renderable.meshPart.offset = 0;
+    renderable.meshPart.size = 6;
+    renderable.meshPart.mesh = mesh;
+    renderable.material = material;
+    renderable.setFogEnabled(false);
   }
 
-  private void setWorldTransform(Renderable renderable) {
+  private void setWorldTransform() {
     Vector3 pos = Cubes.getClient().player.position;
     int r = 512;
     float f = (float) (Cubes.getClient().world.getTime() - (World.MAX_TIME / 4)) / (float) World.MAX_TIME;
@@ -68,14 +79,7 @@ public class SunRenderer {
   }
 
   private void render(ModelBatch modelBatch) {
-    Renderable renderable = new Renderable();
-    setWorldTransform(renderable);
-    renderable.meshPart.primitiveType = GL20.GL_TRIANGLES;
-    renderable.meshPart.offset = 0;
-    renderable.meshPart.size = 6;
-    renderable.meshPart.mesh = mesh;
-    renderable.material = material;
-    renderable.userData = new RenderingSettings().setFogEnabled(false);
+    setWorldTransform();
     modelBatch.render(renderable);
   }
 

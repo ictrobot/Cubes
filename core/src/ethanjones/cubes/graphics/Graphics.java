@@ -3,7 +3,6 @@ package ethanjones.cubes.graphics;
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.id.IDManager;
 import ethanjones.cubes.graphics.hud.inv.BlockIcons;
-import ethanjones.cubes.graphics.world.CubesModelBatch;
 import ethanjones.cubes.graphics.world.WorldGraphicsPools;
 import ethanjones.cubes.item.Item;
 import ethanjones.cubes.item.ItemBlock;

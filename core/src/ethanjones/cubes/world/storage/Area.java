@@ -10,8 +10,8 @@ import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.util.Lock;
 import ethanjones.cubes.core.util.ThreadRandom;
-import ethanjones.cubes.graphics.world.AreaRenderStatus;
-import ethanjones.cubes.graphics.world.AreaRenderer;
+import ethanjones.cubes.graphics.world.area.AreaRenderStatus;
+import ethanjones.cubes.graphics.world.area.AreaRenderer;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.common.Side;
@@ -82,7 +82,7 @@ public class Area implements Lock.HasLock {
   public int[] renderStatus = new int[0];
 
   private volatile boolean unloaded;
-  
+
   private volatile Area[] neighboursClient = new Area[9];
   private volatile Area[] neighboursServer = new Area[9];
   private AreaMap areaMapClient;
@@ -158,6 +158,15 @@ public class Area implements Lock.HasLock {
     return r;
   }
 
+  public int getMaxLight(int x, int y, int z) {
+    lock.readLock();
+    if (unreadyReadLock(y)) return 15;
+    int sunlight = (light[getRef(x, y, z)] >> 4) & 0xF;
+    int blocklight = (light[getRef(x, y, z)]) & 0xF;
+    lock.readUnlock();
+    return sunlight > blocklight ? sunlight : blocklight;
+  }
+
   // Set the bits XXXX0000
   public void setSunlight(int x, int y, int z, int l) {
     lock.writeLock();
@@ -224,7 +233,7 @@ public class Area implements Lock.HasLock {
     if (shared && Side.isClient()) return;
     lock.writeLock();
     WorldStorage.storeChangedBlocks(areaX, areaZ, changedBlockList);
-  
+
     if (!unloaded) removeArrays();
 
     lock.writeUnlock();
@@ -356,7 +365,7 @@ public class Area implements Lock.HasLock {
       doUpdatesOtherAreas(x, y, z, ref);
     new BlockChangedEvent(new BlockReference().setFromBlockCoordinates(x + minBlockX, y, z + minBlockZ), old, (b >> 20) & 0xFF, block, meta, this).post();
   }
-  
+
   private void addChangedBlock(int ref, int blockAndMeta) {
     for (ChangedBlock changedBlock : changedBlockList) {
       if (changedBlock.ref == ref) {
@@ -366,24 +375,24 @@ public class Area implements Lock.HasLock {
     }
     changedBlockList.add(new ChangedBlock(areaX, areaZ, ref, blockAndMeta));
   }
-  
+
   public void setBlock(int ref, int blockAndMeta) {
     blockAndMeta &= 0xFFFFFFF;
     int x = getX(ref), y = getY(ref), z = getZ(ref), meta = (blockAndMeta >> 20) & 0xFF;
     if (y < 0) return;
-    
+
     Block block = IDManager.toBlock(blockAndMeta & 0xFFFFF);
     if (block == null) blockAndMeta = 0;
-    
+
     lock.writeLock();
     if (isUnloaded() && lock.writeUnlock(true)) return;
     setupArrays(y); // actually call store changed blocks
-    
+
     int b = blocks[ref];
     blocks[ref] = blockAndMeta;
-    
+
     Block old = IDManager.toBlock(b & 0xFFFFF);
-    
+
     if (old != null && old.blockData() && old != block) {
       removeBlockData(x, y, z);
     }
@@ -391,16 +400,16 @@ public class Area implements Lock.HasLock {
       addBlockData(block, x, y, z, meta);
     }
     if ((b & 0xFFFFFFF) != blockAndMeta) addChangedBlock(ref, blockAndMeta);
-    
+
     doUpdatesThisArea(x, y, z, ref);
-    
+
     int hmRef = x + z * SIZE_BLOCKS;
     if (y > heightmap[hmRef] && block != null) heightmap[hmRef] = y;
     if (y == heightmap[hmRef] && block == null) calculateHeight(x, z);
-    
+
     modify();
     lock.writeUnlock();
-    
+
     //Must be after lock released to prevent dead locks
     if (TransparencyManager.isTransparent(b) != TransparencyManager.isTransparent(blockAndMeta))
       doUpdatesOtherAreas(x, y, z, ref);
@@ -782,42 +791,44 @@ public class Area implements Lock.HasLock {
     lock.writeUnlock();
   }
 
-  private void expand(int height) {
+  private void expand(int h) {
     lock.writeLock();
 
     if (unloaded) {
       lock.writeUnlock();
       throw new CubesException("Area has been unloaded");
     }
-    if (isBlank() || height <= maxY || height > MAX_Y) {
+    if (isBlank() || h <= maxY || h > MAX_Y) {
       lock.writeUnlock();
       return;
     }
 
-    height = (int) Math.ceil((height + 1) / (float) SIZE_BLOCKS); //Round up to multiple of SIZE_BLOCKS
-    this.height = height;
     int oldMaxY = maxY;
-
     int[] oldBlocks = blocks;
-    blocks = new int[SIZE_BLOCKS_CUBED * height];
-    System.arraycopy(oldBlocks, 0, blocks, 0, oldBlocks.length);
-
     byte[] oldLight = light;
-    light = new byte[SIZE_BLOCKS_CUBED * height];
-    System.arraycopy(oldLight, 0, light, 0, oldLight.length);
-    if (featuresGenerated()) Arrays.fill(light, oldLight.length, light.length, (byte) SunLight.MAX_SUNLIGHT);
+    AreaRenderer[] oldAreaRenderer = areaRenderer;
 
-    AreaRenderer.free(areaRenderer);
+    int newHeight = (int) Math.ceil((h + 1) / (float) SIZE_BLOCKS); //Round up to multiple of SIZE_BLOCKS
+
+    int[] newBlocks = new int[SIZE_BLOCKS_CUBED * newHeight];
+    System.arraycopy(oldBlocks, 0, newBlocks, 0, oldBlocks.length);
+
+    byte[] newLight = new byte[SIZE_BLOCKS_CUBED * newHeight];
+    System.arraycopy(oldLight, 0, newLight, 0, oldLight.length);
+    if (featuresGenerated()) Arrays.fill(newLight, oldLight.length, newLight.length, (byte) SunLight.MAX_SUNLIGHT);
+
     if (Side.isClient() || shared) {
-      areaRenderer = new AreaRenderer[height];
-      if (renderStatus.length < height) {
-        renderStatus = AreaRenderStatus.create(height);
-      }
+      this.areaRenderer = new AreaRenderer[newHeight];
+      if (renderStatus.length < newHeight) renderStatus = AreaRenderStatus.create(newHeight);
     } else {
-      areaRenderer = null;
+      this.areaRenderer = null;
     }
 
-    maxY = (height * SIZE_BLOCKS) - 1;
+    this.blocks = newBlocks;
+    this.light = newLight;
+    this.height = newHeight;
+    this.maxY = (newHeight * SIZE_BLOCKS) - 1;
+
     int i = oldMaxY * SIZE_BLOCKS_SQUARED;
     for (int z = 0; z < SIZE_BLOCKS; z++) { //update previous top
       for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
@@ -826,6 +837,8 @@ public class Area implements Lock.HasLock {
     }
 
     lock.writeUnlock();
+
+    AreaRenderer.free(oldAreaRenderer);
   }
 
   public boolean featuresGenerated() {
