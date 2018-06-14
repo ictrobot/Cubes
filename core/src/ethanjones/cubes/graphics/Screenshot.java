@@ -7,6 +7,7 @@ import ethanjones.cubes.core.settings.Setting;
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.core.settings.type.DropDownSetting;
 import ethanjones.cubes.core.system.CubesException;
+import ethanjones.cubes.core.system.Executor;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
@@ -74,24 +75,31 @@ public class Screenshot {
     if (method != null) method.frameEnd();
   }
 
-  private static void writeScreenshot(Pixmap pixmap) {
+  private static void writeScreenshot(final Pixmap pixmap) {
     FileHandle dir = Compatibility.get().getBaseFolder().child("screenshots");
     dir.mkdirs();
-    FileHandle f = dir.child(System.currentTimeMillis() + ".png");
-    try {
-      PixmapIO.PNG writer = new PixmapIO.PNG((int) (pixmap.getWidth() * pixmap.getHeight() * 1.5f));
-      try {
-        writer.setFlipY(true);
-        writer.write(f, pixmap);
-      } finally {
-        writer.dispose();
+    final FileHandle f = dir.child(System.currentTimeMillis() + ".png");
+    Log.info("Writing screenshot '" + f.file().getAbsolutePath() + "'");
+    Executor.executeNotSided(new Runnable() {
+      @Override
+      public void run() {
+        long start = System.currentTimeMillis();
+        try {
+          PixmapIO.PNG writer = new PixmapIO.PNG((int) (pixmap.getWidth() * pixmap.getHeight() * 1.5f));
+          try {
+            writer.setFlipY(true);
+            writer.write(f, pixmap);
+          } finally {
+            writer.dispose();
+          }
+        } catch (IOException ex) {
+          throw new CubesException("Error writing PNG: " + f, ex);
+        } finally {
+          pixmap.dispose();
+        }
+        Log.debug("Finished writing screenshot '" + f.file().getAbsolutePath() + "' (took " + (System.currentTimeMillis() - start) + "ms)");
       }
-    } catch (IOException ex) {
-      throw new CubesException("Error writing PNG: " + f, ex);
-    } finally {
-      pixmap.dispose();
-    }
-    Log.info("Took screenshot '" + f.file().getAbsolutePath() + "'");
+    });
   }
 
   private interface ScreenshotMethod {
