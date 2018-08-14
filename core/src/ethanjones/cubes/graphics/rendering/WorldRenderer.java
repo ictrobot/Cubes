@@ -162,10 +162,14 @@ public class WorldRenderer implements Disposable {
     if (needToRefresh.size() > 0) {
       Performance.start(PerformanceTags.CLIENT_RENDER_WORLD_UPDATES);
       Collections.sort(needToRefresh, new AreaRendererSorter());
+      int refreshed = 0;
       for (AreaRenderer areaRenderer : needToRefresh) {
         Performance.start(PerformanceTags.CLIENT_RENDER_WORLD_UPDATE);
         modelBatch.render(areaRenderer);
         Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_UPDATE);
+
+        if (!areaRenderer.needsRefresh()) refreshed++;
+        if (refreshed >= 1 && (System.nanoTime() - Cubes.getClient().frameStart) > 3000000) break;
       }
       Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_UPDATES);
     }
