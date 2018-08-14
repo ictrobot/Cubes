@@ -11,6 +11,7 @@ import ethanjones.cubes.world.storage.Area;
 import ethanjones.data.DataGroup;
 import ethanjones.data.DataParser;
 
+import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 
@@ -120,5 +121,9 @@ public class Entity implements DataParser, Disposable {
   @Override
   public String toString() {
     return id + " " + uuid.toString();
+  }
+
+  public boolean inFrustum(Frustum frustum) {
+    return frustum.sphereInFrustum(position, 2f);
   }
 }

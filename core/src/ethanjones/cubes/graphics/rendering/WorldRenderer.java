@@ -179,7 +179,7 @@ public class WorldRenderer implements Disposable {
     world.entities.lock.readLock();
     for (Entity entity : world.entities.values()) {
       entity.updatePosition(deltaTime);
-      if (entity instanceof RenderableProvider) modelBatch.render(((RenderableProvider) entity));
+      if (entity instanceof RenderableProvider && entity.inFrustum(camera.frustum)) modelBatch.render(((RenderableProvider) entity));
     }
     world.entities.lock.readUnlock();
     Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_ENTITY);
