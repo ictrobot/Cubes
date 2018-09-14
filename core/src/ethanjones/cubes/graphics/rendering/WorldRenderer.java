@@ -159,20 +159,26 @@ public class WorldRenderer implements Disposable {
     areaMap.lock.readUnlock();
     Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_AREAS);
 
+    int refreshed = 0;
     if (needToRefresh.size() > 0) {
       Performance.start(PerformanceTags.CLIENT_RENDER_WORLD_UPDATES);
       Collections.sort(needToRefresh, new AreaRendererSorter());
-      int refreshed = 0;
+      boolean doUpdates = true;
       for (AreaRenderer areaRenderer : needToRefresh) {
-        Performance.start(PerformanceTags.CLIENT_RENDER_WORLD_UPDATE);
-        modelBatch.render(areaRenderer);
-        Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_UPDATE);
+        if (doUpdates) {
+          Performance.start(PerformanceTags.CLIENT_RENDER_WORLD_UPDATE);
+          if (areaRenderer.update()) {
+            refreshed++;
+          }
+          Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_UPDATE);
 
-        if (!areaRenderer.needsRefresh()) refreshed++;
-        if (refreshed >= 1 && (System.nanoTime() - Cubes.getClient().frameStart) > 3000000) break;
+          if (refreshed > 0 && (System.nanoTime() - Cubes.getClient().frameStart) > 3000000) doUpdates = false;
+        }
+        modelBatch.render(areaRenderer);
       }
       Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_UPDATES);
     }
+    AreaRenderer.refreshQueueLength = needToRefresh.size() - refreshed;
 
     Performance.start(PerformanceTags.CLIENT_RENDER_WORLD_ENTITY);
     float deltaTime = Gdx.graphics.getDeltaTime();
