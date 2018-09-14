@@ -63,6 +63,16 @@ public abstract class Compatibility {
   public FileHandle getBaseFolder() {
     return Gdx.files.absolute(System.getProperty("user.dir"));
   }
+
+  public void makeBaseFolder() {
+    FileHandle baseFolder = getBaseFolder();
+    baseFolder.mkdirs();
+    if (!baseFolder.isDirectory()) {
+      FileHandle parent = baseFolder.parent();
+      if (!parent.isDirectory()) Log.error("Parent directory '" + parent.path() + "' doesn't exist!");
+      throw new CubesException("Failed to make Cubes folder! '" + baseFolder.path() + "'");
+    }
+  }
   
   public void nomedia(FileHandle folder) {
   

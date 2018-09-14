@@ -58,7 +58,8 @@ public class AndroidCompatibility extends Compatibility {
 
   @Override
   public FileHandle getBaseFolder() {
-    return Gdx.files.external(Branding.NAME);
+    // Use local to avoid having to request WRITE_EXTERNAL_STORAGE permission
+    return Gdx.files.local(Branding.NAME);
   }
 
   @Override

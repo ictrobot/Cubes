@@ -4,7 +4,7 @@ buildscript {
         maven { url 'https://maven.google.com' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.android.tools.build:gradle:3.2.0-rc03'
     }
 }
 plugins {
@@ -67,8 +67,8 @@ allprojects {
     ext {
         appName = 'Cubes'
         gdxVersion = '1.9.8'
-        androidBuildToolsVersion = '27.0.3'
-        androidSdkVersion = 21
+        androidBuildToolsVersion = '28.0.2'
+        androidSdkVersion = 28
         dataVersion = '2.2'
         byteBuddyVersion = '1.6.13'
         buildProperties = getRootProject().buildProperties
@@ -80,6 +80,7 @@ allprojects {
     repositories {
         mavenLocal()
         jcenter()
+        google()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
         maven { url "http://ethanjones.me/maven/snapshots/" }
