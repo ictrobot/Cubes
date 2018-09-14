@@ -14,7 +14,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
 @Direction(PacketDirection.TO_SERVER)
-@Priority(PacketPriority.HIGH)
+@Priority(PacketPriority.CONNECTION_INITIALIZATION)
 public class PacketPingConfirm extends Packet {
   public long serverTime = 0;
   public long serverReceiveTime = System.nanoTime();

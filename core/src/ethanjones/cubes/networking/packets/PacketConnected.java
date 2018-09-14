@@ -1,6 +1,7 @@
 package ethanjones.cubes.networking.packets;
 
 import ethanjones.cubes.core.id.IDManager;
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packet.DataPacket;
@@ -8,6 +9,7 @@ import ethanjones.cubes.networking.packet.PacketDirection;
 import ethanjones.cubes.networking.packet.PacketDirection.Direction;
 import ethanjones.cubes.networking.packet.PacketPriority;
 import ethanjones.cubes.networking.packet.PacketPriority.Priority;
+import ethanjones.cubes.networking.socket.SocketMonitor;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.save.Gamemode;
 import ethanjones.data.DataGroup;
@@ -15,7 +17,7 @@ import ethanjones.data.DataGroup;
 import java.util.UUID;
 
 @Direction(PacketDirection.TO_CLIENT)
-@Priority(PacketPriority.HIGH)
+@Priority(PacketPriority.CONNECTION_INITIALIZATION)
 public class PacketConnected extends DataPacket {
 
   public DataGroup idManager;
@@ -26,6 +28,7 @@ public class PacketConnected extends DataPacket {
   @Override
   public void handlePacket() {
     if (!NetworkingManager.isSingleplayer()) {
+      Log.debug("Received ID Mapping from Server");
       IDManager.resetMapping();
       IDManager.readMapping(idManager);
     }
@@ -34,6 +37,11 @@ public class PacketConnected extends DataPacket {
     player.addToWorld();
     Cubes.getClient().world.setTime(worldTime);
     Cubes.getClient().gamemode = gamemode;
+
+    NetworkingManager.sendPacketToServer(new PacketConnectedReply());
+
+    SocketMonitor socketMonitor = getSocketMonitor();
+    if (socketMonitor != null) socketMonitor.getSocketOutput().setConnectionInitialized();
   }
 
   @Override

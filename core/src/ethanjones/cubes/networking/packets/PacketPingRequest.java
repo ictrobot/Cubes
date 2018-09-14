@@ -10,7 +10,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
 @Direction(PacketDirection.TO_SERVER)
-@Priority(PacketPriority.HIGH)
+@Priority(PacketPriority.CONNECTION_INITIALIZATION)
 public class PacketPingRequest extends Packet {
   public long clientTime = System.nanoTime();
   

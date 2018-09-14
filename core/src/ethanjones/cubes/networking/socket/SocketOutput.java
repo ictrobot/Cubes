@@ -2,7 +2,9 @@ package ethanjones.cubes.networking.socket;
 
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.networking.packet.Packet;
+import ethanjones.cubes.networking.packet.PacketPriority;
 import ethanjones.cubes.networking.packet.PacketQueue;
+import ethanjones.cubes.networking.packet.PriorityPacketQueue;
 import ethanjones.cubes.networking.stream.DirectByteArrayOutputStream;
 import ethanjones.cubes.networking.stream.NoCloseDataOutputStream;
 import ethanjones.cubes.side.common.Side;
@@ -10,6 +12,7 @@ import ethanjones.cubes.side.common.Side;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.zip.Deflater;
 
 import static ethanjones.cubes.networking.Networking.NETWORKING_DEBUG;
@@ -19,6 +22,7 @@ public class SocketOutput extends SocketIO {
   public static final int COMPRESSION_LEVEL = Deflater.DEFAULT_COMPRESSION;
   public static final boolean COMPRESSION_NOWRAP = false;
 
+  private final PacketQueue packetQueue;
   private final OutputStream socketOutputStream;
   private final DataOutputStream dataOutputStream;
 
@@ -29,8 +33,11 @@ public class SocketOutput extends SocketIO {
 
   private final byte[] deflateBuffer = new byte[16384];
 
+  private final AtomicBoolean connectionInitialized = new AtomicBoolean(false);
+
   public SocketOutput(SocketMonitor socketMonitor) {
     super(socketMonitor);
+    this.packetQueue = new PriorityPacketQueue();
     this.socketOutputStream = socketMonitor.getSocket().getOutputStream();
     this.dataOutputStream = new NoCloseDataOutputStream(socketOutputStream);
 
@@ -41,12 +48,32 @@ public class SocketOutput extends SocketIO {
   }
 
   @Override
+  public PacketQueue getPacketQueue() {
+    return packetQueue;
+  }
+
+  @Override
   public void run() {
     Side.setSide(socketMonitor.getSide());
     while (socketMonitor.running.get()) {
       try {
         Packet packet = packetQueue.waitAndGet();
         if (packet == null) continue;
+
+        if (!connectionInitialized.get()) {
+          // connection not yet initialized
+          if (PacketPriority.get(packet.getClass()) != PacketPriority.CONNECTION_INITIALIZATION) {
+            // if not connection initialization packet,  add back to queue and sleep
+            packetQueue.add(packet);
+
+            try {
+              Thread.sleep(25);
+            } catch (Exception e) {
+
+            }
+            continue;
+          }
+        }
 
         Class<? extends Packet> packetClass = packet.getClass();
         boolean compress = packet.shouldCompress();
@@ -111,7 +138,11 @@ public class SocketOutput extends SocketIO {
     getThread().interrupt();
   }
 
-  public PacketQueue getPacketQueue() {
-    return packetQueue;
+  public void setConnectionInitialized() {
+    Log.debug("Finished Initializing Connection to " + socketMonitor.remoteAddress);
+
+    if (!connectionInitialized.compareAndSet(false,true)) {
+      throw new IllegalStateException("Connection is already initialized!");
+    }
   }
 }

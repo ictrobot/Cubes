@@ -2,6 +2,7 @@ package ethanjones.cubes.networking.socket;
 
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.networking.packet.Packet;
+import ethanjones.cubes.networking.packet.PacketQueue;
 import ethanjones.cubes.networking.stream.PairedStreams;
 import ethanjones.cubes.side.common.Side;
 
@@ -17,6 +18,7 @@ public class SocketInput extends SocketIO {
   private final InputStream socketInputStream;
   private final DataInputStream dataInputStream;
 
+  private final PacketQueue packetQueue;
   private final Inflater inflater;
   private final PairedStreams pairedStreams;
   private final byte[] compressedBuffer = new byte[16384];
@@ -24,6 +26,7 @@ public class SocketInput extends SocketIO {
 
   public SocketInput(SocketMonitor socketMonitor) {
     super(socketMonitor);
+    this.packetQueue = new PacketQueue();
     this.socketInputStream = socketMonitor.getSocket().getInputStream();
     this.dataInputStream = new DataInputStream(socketInputStream) {
       @Override
@@ -34,6 +37,11 @@ public class SocketInput extends SocketIO {
 
     this.inflater = new Inflater(SocketOutput.COMPRESSION_NOWRAP);
     this.pairedStreams = new PairedStreams();
+  }
+
+  @Override
+  public PacketQueue getPacketQueue() {
+    return packetQueue;
   }
 
   @Override

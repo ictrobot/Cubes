@@ -15,7 +15,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
 @Direction(PacketDirection.TO_CLIENT)
-@Priority(PacketPriority.HIGH)
+@Priority(PacketPriority.CONNECTION_INITIALIZATION)
 public class PacketPingReply extends Packet {
   public long clientTime = 0;
   public long clientReceiveTime = System.nanoTime();

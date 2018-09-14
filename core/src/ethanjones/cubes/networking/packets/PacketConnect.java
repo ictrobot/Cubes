@@ -14,7 +14,7 @@ import ethanjones.data.DataGroup;
 import java.util.UUID;
 
 @Direction(PacketDirection.TO_SERVER)
-@Priority(PacketPriority.HIGH)
+@Priority(PacketPriority.CONNECTION_INITIALIZATION)
 public class PacketConnect extends DataPacket {
 
   public UUID uuid = CubesClient.uuid;
