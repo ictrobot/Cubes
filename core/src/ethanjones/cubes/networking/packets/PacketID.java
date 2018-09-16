@@ -8,6 +8,7 @@ import ethanjones.cubes.networking.packet.PacketPriority.Priority;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 
 @Direction(PacketDirection.OMNIDIRECTIONAL)
 @Priority(PacketPriority.CONNECTION_INITIALIZATION)
@@ -17,13 +18,13 @@ public class PacketID extends Packet {
   public int id;
 
   @Override
-  public void write(DataOutputStream dataOutputStream) throws Exception {
+  public void write(DataOutputStream dataOutputStream) throws IOException {
     dataOutputStream.writeUTF(c);
     dataOutputStream.writeInt(id);
   }
 
   @Override
-  public void read(DataInputStream dataInputStream) throws Exception {
+  public void read(DataInputStream dataInputStream) throws IOException {
     c = dataInputStream.readUTF();
     id = dataInputStream.readInt();
     getSocketMonitor().getPacketIDDatabase().process(this);

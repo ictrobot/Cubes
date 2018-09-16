@@ -10,6 +10,7 @@ import ethanjones.cubes.world.storage.Area;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 
 @Direction(PacketDirection.TO_CLIENT)
 @Priority(PacketPriority.HIGH)
@@ -19,14 +20,14 @@ public class PacketAreaUpdateRender extends Packet {
   public int ySection;
 
   @Override
-  public void write(DataOutputStream dataOutputStream) throws Exception {
+  public void write(DataOutputStream dataOutputStream) throws IOException {
     dataOutputStream.writeInt(areaX);
     dataOutputStream.writeInt(areaZ);
     dataOutputStream.writeInt(ySection);
   }
 
   @Override
-  public void read(DataInputStream dataInputStream) throws Exception {
+  public void read(DataInputStream dataInputStream) throws IOException {
     areaX = dataInputStream.readInt();
     areaZ = dataInputStream.readInt();
     ySection = dataInputStream.readInt();

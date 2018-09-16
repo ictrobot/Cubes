@@ -11,6 +11,7 @@ import ethanjones.cubes.world.storage.Area;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 
 @Direction(PacketDirection.TO_CLIENT)
 @Priority(PacketPriority.LOW)
@@ -20,12 +21,12 @@ public class PacketArea extends Packet {
   public PlayerManager playerManager;
 
   @Override
-  public void write(DataOutputStream dataOutputStream) throws Exception {
+  public void write(DataOutputStream dataOutputStream) throws IOException {
     area.writeNetworking(dataOutputStream);
   }
 
   @Override
-  public void read(DataInputStream dataInputStream) throws Exception {
+  public void read(DataInputStream dataInputStream) throws IOException {
     area = Area.readArea(dataInputStream);
   }
 

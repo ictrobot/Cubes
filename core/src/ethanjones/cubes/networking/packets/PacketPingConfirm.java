@@ -12,6 +12,7 @@ import ethanjones.cubes.side.server.PlayerManager;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 
 @Direction(PacketDirection.TO_SERVER)
 @Priority(PacketPriority.CONNECTION_INITIALIZATION)
@@ -20,12 +21,12 @@ public class PacketPingConfirm extends Packet {
   public long serverReceiveTime = System.nanoTime();
   
   @Override
-  public void write(DataOutputStream dataOutputStream) throws Exception {
+  public void write(DataOutputStream dataOutputStream) throws IOException {
     dataOutputStream.writeLong(serverTime);
   }
   
   @Override
-  public void read(DataInputStream dataInputStream) throws Exception {
+  public void read(DataInputStream dataInputStream) throws IOException {
     serverTime = dataInputStream.readLong();
   }
   

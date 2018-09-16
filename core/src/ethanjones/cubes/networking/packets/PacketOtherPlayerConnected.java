@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector3;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.UUID;
 
 @Direction(PacketDirection.TO_CLIENT)
@@ -21,7 +22,7 @@ public class PacketOtherPlayerConnected extends Packet {
   public Vector3 position;
 
   @Override
-  public void write(DataOutputStream dataOutputStream) throws Exception {
+  public void write(DataOutputStream dataOutputStream) throws IOException {
     dataOutputStream.writeUTF(username);
     dataOutputStream.writeLong(uuid.getMostSignificantBits());
     dataOutputStream.writeLong(uuid.getLeastSignificantBits());
@@ -30,7 +31,7 @@ public class PacketOtherPlayerConnected extends Packet {
   }
 
   @Override
-  public void read(DataInputStream dataInputStream) throws Exception {
+  public void read(DataInputStream dataInputStream) throws IOException {
     username = dataInputStream.readUTF();
     uuid = new UUID(dataInputStream.readLong(), dataInputStream.readLong());
     angle = VectorUtil.stream(dataInputStream);

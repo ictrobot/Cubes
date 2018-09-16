@@ -8,6 +8,7 @@ import ethanjones.cubes.side.common.Cubes;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 
 @Direction(PacketDirection.TO_CLIENT)
 public class PacketBlockChanged extends Packet {
@@ -19,7 +20,7 @@ public class PacketBlockChanged extends Packet {
   public int meta;
 
   @Override
-  public void write(DataOutputStream dataOutputStream) throws Exception {
+  public void write(DataOutputStream dataOutputStream) throws IOException {
     dataOutputStream.writeInt(x);
     dataOutputStream.writeInt(y);
     dataOutputStream.writeInt(z);
@@ -28,7 +29,7 @@ public class PacketBlockChanged extends Packet {
   }
 
   @Override
-  public void read(DataInputStream dataInputStream) throws Exception {
+  public void read(DataInputStream dataInputStream) throws IOException {
     x = dataInputStream.readInt();
     y = dataInputStream.readInt();
     z = dataInputStream.readInt();

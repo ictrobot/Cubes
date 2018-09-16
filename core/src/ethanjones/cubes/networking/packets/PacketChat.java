@@ -13,6 +13,7 @@ import ethanjones.cubes.side.server.command.CommandManager;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 
 @Direction(PacketDirection.OMNIDIRECTIONAL)
 public class PacketChat extends Packet {
@@ -20,12 +21,12 @@ public class PacketChat extends Packet {
   public String msg;
 
   @Override
-  public void write(DataOutputStream dataOutputStream) throws Exception {
+  public void write(DataOutputStream dataOutputStream) throws IOException {
     dataOutputStream.writeUTF(msg);
   }
 
   @Override
-  public void read(DataInputStream dataInputStream) throws Exception {
+  public void read(DataInputStream dataInputStream) throws IOException {
     msg = dataInputStream.readUTF();
   }
 

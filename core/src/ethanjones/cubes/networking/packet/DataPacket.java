@@ -6,16 +6,17 @@ import ethanjones.data.DataParser;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 
 public abstract class DataPacket extends Packet implements DataParser {
 
   @Override
-  public void write(DataOutputStream dataOutputStream) throws Exception {
+  public void write(DataOutputStream dataOutputStream) throws IOException {
     Data.output(write(), dataOutputStream);
   }
 
   @Override
-  public void read(DataInputStream dataInputStream) throws Exception {
+  public void read(DataInputStream dataInputStream) throws IOException {
     read((DataGroup) Data.input(dataInputStream));
   }
 

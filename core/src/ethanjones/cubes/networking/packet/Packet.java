@@ -4,14 +4,15 @@ import ethanjones.cubes.networking.socket.SocketMonitor;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 
 public abstract class Packet {
 
   private SocketMonitor socketMonitor;
 
-  public abstract void write(DataOutputStream dataOutputStream) throws Exception;
+  public abstract void write(DataOutputStream dataOutputStream) throws IOException;
 
-  public abstract void read(DataInputStream dataInputStream) throws Exception;
+  public abstract void read(DataInputStream dataInputStream) throws IOException;
 
   public abstract void handlePacket();
 

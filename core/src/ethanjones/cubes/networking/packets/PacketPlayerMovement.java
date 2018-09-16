@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Vector3;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 
 @Direction(PacketDirection.OMNIDIRECTIONAL)
 @Priority(PacketPriority.HIGH)
@@ -32,13 +33,13 @@ public class PacketPlayerMovement extends Packet {
   public Vector3 position;
 
   @Override
-  public void write(DataOutputStream dataOutputStream) throws Exception {
+  public void write(DataOutputStream dataOutputStream) throws IOException {
     VectorUtil.stream(angle, dataOutputStream);
     VectorUtil.stream(position, dataOutputStream);
   }
 
   @Override
-  public void read(DataInputStream dataInputStream) throws Exception {
+  public void read(DataInputStream dataInputStream) throws IOException {
     angle = VectorUtil.stream(dataInputStream);
     position = VectorUtil.stream(dataInputStream);
   }
