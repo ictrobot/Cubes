@@ -7,6 +7,7 @@ import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.settings.type.*;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.graphics.CubesShaderProvider;
+import ethanjones.cubes.graphics.Graphics;
 import ethanjones.cubes.graphics.Screenshot;
 import ethanjones.cubes.graphics.world.ao.AmbientOcclusion;
 
@@ -54,9 +55,14 @@ public class Settings {
     addSetting(GRAPHICS_VIEW_DISTANCE, new IntegerSetting(5, 2, 16, IntegerSetting.Type.Slider));
     addSetting(GRAPHICS_FOV, new IntegerSetting(70, 10, 120, IntegerSetting.Type.Slider));
     addSetting(GRAPHICS_FOG, new BooleanSetting(true));
-    addSetting(GRAPHICS_SCALE, new FloatSetting(1f, 0.5f, 2f, FloatSetting.Type.Slider) {
+    addSetting(GRAPHICS_SCALE, new FloatSetting(1f, -2f, 2f, FloatSetting.Type.Slider) {
       {
-        this.sliderSteps = 0.125f;
+        if (!isSetup()) {
+          this.rangeStart = -(Graphics.scaleFactor() - 0.25f);
+        } else {
+          Log.warning("GRAPHICS_SCALE setting initialized after settings setup");
+        }
+        this.sliderSteps = 0.25f;
       }
 
       @Override

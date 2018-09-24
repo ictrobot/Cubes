@@ -2,6 +2,7 @@ package ethanjones.cubes.graphics;
 
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.id.IDManager;
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.graphics.hud.inv.BlockIcons;
 import ethanjones.cubes.graphics.world.WorldGraphicsPools;
@@ -28,6 +29,7 @@ public class Graphics {
   public static int RENDER_HEIGHT = Gdx.graphics.getHeight();
 
   private static boolean init = false;
+  private static float oldScaleFactor = 1f;
 
   public static void init() {
     if (init) return;
@@ -60,12 +62,25 @@ public class Graphics {
 
     screenViewport.setUnitsPerPixel(1 / scaleFactor);
     screenViewport.update(RENDER_WIDTH, RENDER_HEIGHT, true);
+
+    if (scaleFactor != oldScaleFactor) {
+      Log.debug("Scale factor changing to " + scaleFactor);
+      oldScaleFactor = scaleFactor;
+    }
   }
 
   public static float scaleFactor() {
     float f = Gdx.graphics.getPpiX() / 96;
     if (f > 1) f -= (f - 1) * 0.4f;
+
+    // add settings value
+    if (Settings.isSetup()) f += Settings.getFloatSettingValue(Settings.GRAPHICS_SCALE);
+
+    // adjust for high resolution screen shots
     f *= Math.min(RENDER_WIDTH, RENDER_HEIGHT) / Math.min(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-    return f * (Settings.isSetup() ? Settings.getFloatSettingValue(Settings.GRAPHICS_SCALE) : 1f);
+
+    // round to nearest 0.25f
+    if (f < 0.25f) f = 0.25f;
+    return ((float) Math.round(f * 4f)) / 4f;
   }
 }

@@ -150,8 +150,6 @@ public class Screenshot {
 
       oldWidth = Graphics.RENDER_WIDTH;
       oldHeight = Graphics.RENDER_HEIGHT;
-      Graphics.RENDER_WIDTH = screenshotWidth;
-      Graphics.RENDER_HEIGHT = screenshotHeight;
       Adapter.getInterface().resize(screenshotWidth, screenshotHeight);
     }
 
@@ -162,8 +160,6 @@ public class Screenshot {
       Pixmap pixmap = ScreenUtils.getFrameBufferPixmap(0, 0, screenshotWidth, screenshotHeight);
       frameBuffer.end();
 
-      Graphics.RENDER_WIDTH = oldWidth;
-      Graphics.RENDER_HEIGHT = oldHeight;
       Adapter.getInterface().resize(oldWidth, oldHeight);
 
       writeScreenshot(pixmap);
