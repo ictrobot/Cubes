@@ -38,6 +38,11 @@ public class LogMenu extends Menu {
     
     refresh();
   }
+
+  @Override
+  public void show() {
+    stage.setScrollFocus(scrollPane);
+  }
   
   public void refresh() {
     FileHandle fileHandle = Gdx.files.absolute(FileLogWriter.file.getAbsolutePath());
