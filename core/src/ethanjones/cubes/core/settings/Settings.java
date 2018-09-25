@@ -3,6 +3,7 @@ package ethanjones.cubes.core.settings;
 import ethanjones.cubes.core.event.settings.AddSettingsEvent;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.settings.type.*;
 import ethanjones.cubes.core.system.CubesException;
@@ -58,7 +59,7 @@ public class Settings {
     addSetting(GRAPHICS_SCALE, new FloatSetting(1f, -2f, 2f, FloatSetting.Type.Slider) {
       {
         if (!isSetup()) {
-          this.rangeStart = -(Graphics.scaleFactor() - 0.25f);
+          if (!Adapter.isDedicatedServer()) this.rangeStart = -(Graphics.scaleFactor() - 0.25f);
         } else {
           Log.warning("GRAPHICS_SCALE setting initialized after settings setup");
         }
