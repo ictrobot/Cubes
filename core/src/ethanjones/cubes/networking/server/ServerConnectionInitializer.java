@@ -36,12 +36,10 @@ public class ServerConnectionInitializer {
     public Object call() throws Exception {
       try {
         initialConnect(javaSocket, gdxSocket);
-      } catch (Exception e) {
-        if (e instanceof SocketTimeoutException) {
-          throw new IOException("Client did not respond in time", e);
-        } else {
-          throw e;
-        }
+      } catch (SocketTimeoutException e) {
+        Log.debug(new IOException("Client did not respond in time", e));
+      } catch (IOException e) {
+        Log.debug(e);
       }
       return null;
     }
