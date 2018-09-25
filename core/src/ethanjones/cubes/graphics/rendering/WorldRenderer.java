@@ -10,6 +10,7 @@ import ethanjones.cubes.graphics.world.WorldGraphicsPools;
 import ethanjones.cubes.graphics.world.area.AreaBoundaries;
 import ethanjones.cubes.graphics.world.area.AreaRenderStatus;
 import ethanjones.cubes.graphics.world.area.AreaRenderer;
+import ethanjones.cubes.graphics.world.area.DebugLineRenderer;
 import ethanjones.cubes.graphics.world.other.BreakingRenderer;
 import ethanjones.cubes.graphics.world.other.RainRenderer;
 import ethanjones.cubes.graphics.world.other.SelectedBlock;
@@ -200,6 +201,8 @@ public class WorldRenderer implements Disposable {
     Performance.start(PerformanceTags.CLIENT_RENDER_WORLD_FLUSH);
     modelBatch.end();
     Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_FLUSH);
+
+    DebugLineRenderer.render();
 
     Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD);
   }
