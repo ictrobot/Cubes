@@ -49,7 +49,7 @@ public class MenuManager {
       while (texture == null && blocks.size() > 0) {
         int index = MathUtils.random(0, blocks.size() - 1);
         Block block = blocks.get(index);
-        if (block.canBeTransparent() || !block.id.equals("core:planks")) {
+        if (block.canBeTransparent()) {
           blocks.remove(index);
           continue;
         }
