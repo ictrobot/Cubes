@@ -7,6 +7,8 @@ import ethanjones.cubes.side.server.command.CommandManager;
 import ethanjones.cubes.side.server.command.CommandPermission;
 import ethanjones.cubes.side.server.command.CommandSender;
 
+import com.badlogic.gdx.math.Vector3;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -60,6 +62,11 @@ public class ConsoleCommandSender implements CommandSender {
   @Override
   public CommandPermission getPermissionLevel() {
     return CommandPermission.All;
+  }
+
+  @Override
+  public Vector3 getLocation() throws UnsupportedOperationException {
+    throw new UnsupportedOperationException();
   }
 
   protected void update() {

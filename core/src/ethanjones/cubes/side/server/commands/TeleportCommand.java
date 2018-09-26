@@ -13,7 +13,7 @@ public class TeleportCommand {
 
   public static void init() {
     CommandBuilder tp = new CommandBuilder("tp").register();
-    tp.add(CommandValue.coordinate).add(CommandValue.coordinate).add(CommandValue.coordinate).setCommandListener(new CommandListener() {
+    tp.add(CommandValue.coordinateX).add(CommandValue.coordinateY).add(CommandValue.coordinateZ).setCommandListener(new CommandListener() {
       @Override
       public void onCommand(CommandBuilder builder, List<CommandArgument> arguments, CommandSender sender) {
         if (sender instanceof Player) {

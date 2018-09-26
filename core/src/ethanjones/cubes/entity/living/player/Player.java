@@ -87,6 +87,11 @@ public class Player extends LivingEntity implements CommandSender, RenderablePro
     return CommandPermission.Extended;
   }
 
+  @Override
+  public Vector3 getLocation() throws UnsupportedOperationException {
+    return position;
+  }
+
   public void addToWorld() {
     World world = Side.getCubes().world;
     world.entities.lock.writeLock();
