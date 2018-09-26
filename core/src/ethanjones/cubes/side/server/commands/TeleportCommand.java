@@ -21,6 +21,7 @@ public class TeleportCommand {
           float y = (Float) arguments.get(2).get();
           float z = (Float) arguments.get(3).get();
           ((Player) sender).clientIdentifier.getPlayerManager().setPosition(new Vector3(x, y, z), null, false);
+          sender.print(Localization.get("command.teleport.coordinate", x, y, z));
         } else {
           sender.print(Localization.get("command.common.onlyPlayer"));
         }
@@ -30,8 +31,9 @@ public class TeleportCommand {
       @Override
       public void onCommand(CommandBuilder builder, List<CommandArgument> arguments, CommandSender sender) {
         if (sender instanceof Player) {
-          Player tp = ((ClientIdentifier) arguments.get(1).get()).getPlayer();
-          ((Player) sender).clientIdentifier.getPlayerManager().setPosition(tp.position, tp.angle, false);
+          Player p = ((ClientIdentifier) arguments.get(1).get()).getPlayer();
+          ((Player) sender).clientIdentifier.getPlayerManager().setPosition(p.position, p.angle, false);
+          sender.print(Localization.get("command.teleport.player", p.username));
         } else {
           sender.print(Localization.get("command.common.onlyPlayer"));
         }

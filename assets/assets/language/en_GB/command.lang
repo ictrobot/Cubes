@@ -25,3 +25,10 @@ command.stop.message=Stopping...
 
 command.save.readOnly=Save is read only!
 command.save.starting=Saving...
+
+command.rain.disable=Disabled rain globally for %s seconds
+command.rain.enable=Enabled rain globally
+command.rain.override=Set rain override to %1$.3f for %2$s seconds
+
+command.teleport.coordinate=Teleported to %1$.2f, %2$.2f, %3$.2f
+command.teleport.player=Teleported to %s
