@@ -300,6 +300,7 @@ public class CrossFaceVertices {
     vertices[vertexOffset++] = offset.z + z + min;
     vertices[vertexOffset++] = region.getU2();
     vertices[vertexOffset++] = region.getV();
+    vertices[vertexOffset++] = light;
     if (ao) {
       vertices[vertexOffset++] = 0;
       vertices[vertexOffset++] = 0;

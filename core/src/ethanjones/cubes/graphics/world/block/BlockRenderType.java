@@ -81,10 +81,10 @@ public abstract class BlockRenderType {
   public static final BlockRenderType CROSS = new BlockRenderType(4) {
     @Override
     public int render(float[] vertices, int vertexOffset, Vector3 areaOffset, Block block, int meta, BlockTextureHandler textureHandler, Area area, int x, int y, int z, int i, boolean ao, Area minX, Area maxZ, Area minZ, Area maxX) {
-      vertexOffset = CrossFaceVertices.createMinXMaxZ(areaOffset, textureHandler.getSide(null), x, y, z, area.light[i + MIN_Z_OFFSET] & 0xFF, vertices, vertexOffset, ao);
-      vertexOffset = CrossFaceVertices.createMaxZMinX(areaOffset, textureHandler.getSide(null), x, y, z, area.light[i + MIN_Z_OFFSET] & 0xFF, vertices, vertexOffset, ao);
-      vertexOffset = CrossFaceVertices.createMaxXMinZ(areaOffset, textureHandler.getSide(null), x, y, z, area.light[i + MIN_Z_OFFSET] & 0xFF, vertices, vertexOffset, ao);
-      vertexOffset = CrossFaceVertices.createMinZMaxX(areaOffset, textureHandler.getSide(null), x, y, z, area.light[i + MIN_Z_OFFSET] & 0xFF, vertices, vertexOffset, ao);
+      vertexOffset = CrossFaceVertices.createMinXMaxZ(areaOffset, textureHandler.getSide(null), x, y, z, area.light[i] & 0xFF, vertices, vertexOffset, ao);
+      vertexOffset = CrossFaceVertices.createMaxZMinX(areaOffset, textureHandler.getSide(null), x, y, z, area.light[i] & 0xFF, vertices, vertexOffset, ao);
+      vertexOffset = CrossFaceVertices.createMaxXMinZ(areaOffset, textureHandler.getSide(null), x, y, z, area.light[i] & 0xFF, vertices, vertexOffset, ao);
+      vertexOffset = CrossFaceVertices.createMinZMaxX(areaOffset, textureHandler.getSide(null), x, y, z, area.light[i] & 0xFF, vertices, vertexOffset, ao);
       return vertexOffset;
     }
   };
@@ -92,10 +92,10 @@ public abstract class BlockRenderType {
   public static final BlockRenderType CROSS_STRETCHED = new BlockRenderType(4) {
     @Override
     public int render(float[] vertices, int vertexOffset, Vector3 areaOffset, Block block, int meta, BlockTextureHandler textureHandler, Area area, int x, int y, int z, int i, boolean ao, Area minX, Area maxZ, Area minZ, Area maxX) {
-      vertexOffset = CrossFaceVertices.createMinXMaxZStretched(areaOffset, textureHandler.getSide(null), x, y, z, area.light[i + MIN_Z_OFFSET] & 0xFF, vertices, vertexOffset, ao);
-      vertexOffset = CrossFaceVertices.createMaxZMinXStretched(areaOffset, textureHandler.getSide(null), x, y, z, area.light[i + MIN_Z_OFFSET] & 0xFF, vertices, vertexOffset, ao);
-      vertexOffset = CrossFaceVertices.createMaxXMinZStretched(areaOffset, textureHandler.getSide(null), x, y, z, area.light[i + MIN_Z_OFFSET] & 0xFF, vertices, vertexOffset, ao);
-      vertexOffset = CrossFaceVertices.createMinZMaxXStretched(areaOffset, textureHandler.getSide(null), x, y, z, area.light[i + MIN_Z_OFFSET] & 0xFF, vertices, vertexOffset, ao);
+      vertexOffset = CrossFaceVertices.createMinXMaxZStretched(areaOffset, textureHandler.getSide(null), x, y, z, area.light[i] & 0xFF, vertices, vertexOffset, ao);
+      vertexOffset = CrossFaceVertices.createMaxZMinXStretched(areaOffset, textureHandler.getSide(null), x, y, z, area.light[i] & 0xFF, vertices, vertexOffset, ao);
+      vertexOffset = CrossFaceVertices.createMaxXMinZStretched(areaOffset, textureHandler.getSide(null), x, y, z, area.light[i] & 0xFF, vertices, vertexOffset, ao);
+      vertexOffset = CrossFaceVertices.createMinZMaxXStretched(areaOffset, textureHandler.getSide(null), x, y, z, area.light[i] & 0xFF, vertices, vertexOffset, ao);
       return vertexOffset;
     }
   };
