@@ -37,8 +37,8 @@ public class CameraController extends InputAdapter {
   private Vector3 prevDirection = new Vector3();
   
   private final Camera camera;
-  public boolean jumping = false;
-  public boolean flying = false;
+  private boolean jumping = false;
+  private boolean flying = false;
   private long lastJumpDown = 0;
   private boolean wasJumpDown = false;
 
@@ -119,7 +119,7 @@ public class CameraController extends InputAdapter {
   private void update(float forward, float backward, float left, float right, boolean jump, boolean descend) {
     float deltaTime = Gdx.graphics.getRawDeltaTime();
     if (deltaTime == 0f) return;
-    float speed = flying ? flySpeed : walkSpeed;
+    float speed = flying() ? flySpeed : walkSpeed;
     tmpMovement.setZero();
     if (forward > 0) {
       tmp.set(camera.direction.x, 0, camera.direction.z).nor().nor().scl(deltaTime * speed * forward);
@@ -138,9 +138,9 @@ public class CameraController extends InputAdapter {
       tmpMovement.add(tmp);
     }
     tryMove();
-    boolean onBlock = WorldGravity.onBlock(Cubes.getClient().world, Cubes.getClient().player.position, Player.PLAYER_HEIGHT, Player.PLAYER_RADIUS);
+    boolean onBlock = (!Cubes.getClient().player.noClip()) && WorldGravity.onBlock(Cubes.getClient().world, Cubes.getClient().player.position, Player.PLAYER_HEIGHT, Player.PLAYER_RADIUS);
 
-    if (flying) {
+    if (flying()) {
       if (jump) {
         tmpMovement.set(0, flySpeed * deltaTime, 0);
         tryMove();
@@ -197,6 +197,10 @@ public class CameraController extends InputAdapter {
       prevPosition.set(player.position);
       prevDirection.set(player.angle);
     }
+  }
+
+  public boolean flying() {
+    return flying || Cubes.getClient().player.noClip();
   }
 }
 

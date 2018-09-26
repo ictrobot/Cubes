@@ -32,3 +32,7 @@ command.rain.override=Set rain override to %1$.3f for %2$s seconds
 
 command.teleport.coordinate=Teleported to %1$.2f, %2$.2f, %3$.2f
 command.teleport.player=Teleported to %s
+
+command.noclip.enable=Enabled Noclip
+command.noclip.disable=Disabled Noclip
+command.noclip.tpSpawn=Teleported to Spawn as you were inside a block

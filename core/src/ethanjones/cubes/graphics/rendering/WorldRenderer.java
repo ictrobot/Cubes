@@ -92,6 +92,8 @@ public class WorldRenderer implements Disposable {
     startingNode.firstNode = true; // Fix flashes caused by the starting area just being in frustum as flying up/down (e.g. Y=64.001) and areaInFrustum returning false
     queue.add(startingNode);
 
+    boolean noClip = Cubes.getClient().player.noClip();
+
     while (!queue.isEmpty()) {
       AreaNode node = queue.pop();
       Area area = node.area;
@@ -113,7 +115,7 @@ public class WorldRenderer implements Disposable {
 
         int status = area.renderStatus[ySection];
         if (status == AreaRenderStatus.UNKNOWN) status = AreaRenderStatus.update(area, ySection);
-        traverse = status == AreaRenderStatus.EMPTY ? 0 : status;
+        traverse = (noClip || status == AreaRenderStatus.EMPTY) ? 0 : status;
         boolean render = status != AreaRenderStatus.EMPTY && !complete(area, ySection, areaMap, status);
 
         if (render) {

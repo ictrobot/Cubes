@@ -101,6 +101,7 @@ public class CommandManager {
     TeleportCommand.init();
     TimeCommand.init();
     RainCommand.init();
+    NoClipCommand.init();
 
     StopCommand.init();
     ThreadDumpCommand.init();

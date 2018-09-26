@@ -17,6 +17,8 @@ public class PlayerCollision {
   public void preventNoclip(PlayerMovementEvent event) {
     Player player = event.getPlayer();
     Vector3 pos = event.newPosition;
+    if (player.noClip()) return;
+
     if (world.getArea(CoordinateConverter.area(pos.x), CoordinateConverter.area(pos.z)) != null && !event.isCanceled()) {
       int blockX = CoordinateConverter.block(pos.x);
       int blockZ = CoordinateConverter.block(pos.z);
