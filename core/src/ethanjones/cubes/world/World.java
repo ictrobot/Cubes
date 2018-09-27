@@ -66,6 +66,11 @@ public abstract class World implements Disposable, HasLock {
     return map.setArea(areaX, areaZ, area);
   }
 
+  public int heightmap(int x, int z) {
+    Area area = getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
+    return area == null ? 0 : area.heightmap(x - area.minBlockX, z - area.minBlockZ);
+  }
+
   public Block getBlock(int x, int y, int z) {
     Area area = getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
     return area == null ? null : area.getBlock(x - area.minBlockX, y, z - area.minBlockZ);
