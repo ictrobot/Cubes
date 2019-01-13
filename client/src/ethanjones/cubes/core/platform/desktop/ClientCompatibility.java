@@ -204,6 +204,7 @@ public class ClientCompatibility extends DesktopCompatibility {
   @Override
   public boolean handleCrash(Throwable throwable) {
     if (Branding.IS_DEBUG) return false; // don't open if in debug
+    System.out.println("Trying to open crash dialog!");
     return ClientCrashHandler.handle(Debug.getLogString(FileLogWriter.file.getAbsolutePath()));
   }
 

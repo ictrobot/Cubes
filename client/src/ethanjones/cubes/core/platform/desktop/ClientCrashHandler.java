@@ -38,8 +38,10 @@ public class ClientCrashHandler {
       });
   
       f.setVisible(true);
+      System.out.println("Opened crash dialog");
       return false;
     } catch (Exception e) {
+      System.out.println("Failed to open crash dialog");
       e.printStackTrace();
       return true;
     }
