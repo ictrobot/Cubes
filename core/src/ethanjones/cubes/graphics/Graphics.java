@@ -1,6 +1,7 @@
 package ethanjones.cubes.graphics;
 
 import ethanjones.cubes.block.Block;
+import ethanjones.cubes.core.event.Event;
 import ethanjones.cubes.core.id.IDManager;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.settings.Settings;
@@ -65,6 +66,10 @@ public class Graphics {
 
     if (scaleFactor != oldScaleFactor) {
       Log.debug("Scale factor changing to " + scaleFactor);
+
+      boolean temporary = Math.min(RENDER_WIDTH, RENDER_HEIGHT) != Math.min(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+      new ScaleFactorChangedEvent(scaleFactor, oldScaleFactor, temporary).post();
+
       oldScaleFactor = scaleFactor;
     }
   }
@@ -82,5 +87,20 @@ public class Graphics {
     // round to nearest 0.25f
     if (f < 0.25f) f = 0.25f;
     return ((float) Math.round(f * 4f)) / 4f;
+  }
+
+  public static class ScaleFactorChangedEvent extends Event {
+
+    public final float newScaleFactor;
+    public final float oldScaleFactor;
+    public final boolean temporary;
+
+    public ScaleFactorChangedEvent(float newScaleFactor, float oldScaleFactor, boolean temporary) {
+      super(false, false);
+      this.newScaleFactor = newScaleFactor;
+      this.oldScaleFactor = oldScaleFactor;
+      this.temporary = temporary;
+    }
+
   }
 }

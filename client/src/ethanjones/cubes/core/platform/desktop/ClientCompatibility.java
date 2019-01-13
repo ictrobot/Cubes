@@ -24,28 +24,16 @@ import java.util.Comparator;
 
 public class ClientCompatibility extends DesktopCompatibility {
 
-  private final static Comparator<Graphics.DisplayMode> displayModeComparator = new Comparator<Graphics.DisplayMode>() {
-    @Override
-    public int compare(Graphics.DisplayMode o1, Graphics.DisplayMode o2) {
-      int i1 = o1.width * o1.height;
-      int i2 = o2.width * o2.height;
-      if (i1 < i2) return 1;
-      if (i1 > i2) return -1;
+  private static int DEFAULT_WINDOW_WIDTH = 960; // qHD
+  private static int DEFAULT_WINDOW_HEIGHT = 540;
+  private static int MINIMUM_WINDOW_WIDTH = 768;
+  private static int MINIMUM_WINDOW_HEIGHT = 432;
 
-      if (o1.refreshRate < o2.refreshRate) return 1;
-      if (o1.refreshRate > o2.refreshRate) return -1;
-
-      if (o1.bitsPerPixel < o2.bitsPerPixel) return 1;
-      if (o1.bitsPerPixel > o2.bitsPerPixel) return -1;
-
-      return 0;
-    }
-  };
-
+  // store window state before full screen
   private int windowX = 0;
   private int windowY = 0;
-  private int windowWidth = 960; // qHD
-  private int windowHeight = 540;
+  private int windowWidth = DEFAULT_WINDOW_WIDTH;
+  private int windowHeight = DEFAULT_WINDOW_HEIGHT;
   private long fullscreenMS = 0;
 
   private Toggle fullscreen = new Toggle() {
@@ -57,6 +45,7 @@ public class ClientCompatibility extends DesktopCompatibility {
     @Override
     protected void doDisable() {
       if (!windowedMode()) throw new CubesException("Failed to enter windowed mode");
+      resizeWindowFromScaleFactor(ethanjones.cubes.graphics.Graphics.scaleFactor());
     }
   };
 
@@ -74,6 +63,55 @@ public class ClientCompatibility extends DesktopCompatibility {
     config.setWindowSizeLimits(768, 432, -1, -1);
 
     new Lwjgl3Application(applicationListener, config);
+  }
+
+  @Override
+  public void init() {
+    super.init();
+    resizeWindowFromScaleFactor(ethanjones.cubes.graphics.Graphics.scaleFactor());
+  }
+
+  @EventHandler
+  public void scaleFactorResizeWindow(ethanjones.cubes.graphics.Graphics.ScaleFactorChangedEvent event) {
+    if (!event.temporary) resizeWindowFromScaleFactor(event.newScaleFactor);
+  }
+
+  private void resizeWindowFromScaleFactor(float newScaleFactor) {
+    final float scaleFactor = Math.max(newScaleFactor, 1f);
+
+    final Graphics.Monitor monitor = Gdx.graphics.getMonitor();
+    final Graphics.DisplayMode mode = getBestDisplayMode(monitor);
+    if (mode == null || fullscreen.isEnabled()) return;
+
+    // Client may not be setup yet, delaying to end of the frame ensures it is
+    Gdx.app.postRunnable(new Runnable() {
+      @Override
+      public void run() {
+        int wantedMinWidth = (int) Math.min(MINIMUM_WINDOW_WIDTH * scaleFactor, mode.width * 0.8f);
+        int wantedMinHeight = (int) Math.min(MINIMUM_WINDOW_HEIGHT * scaleFactor, mode.height * 0.8f);
+        int resizeWidth = (int) (DEFAULT_WINDOW_WIDTH * scaleFactor);
+        int resizeHeight = (int) (DEFAULT_WINDOW_HEIGHT * scaleFactor);
+
+        Lwjgl3Window window = ((Lwjgl3Graphics) Gdx.graphics).getWindow();
+
+        if (resizeWidth > 0.8 * mode.width || resizeHeight > 0.8 * mode.height) {
+          // if window would almost fill screen, maximize
+          window.maximizeWindow();
+        } else if (resizeWidth > Gdx.graphics.getWidth() && resizeHeight > Gdx.graphics.getHeight()) {
+
+          // if window is centered, recenter for new size
+          if (window.getPositionX() - monitor.virtualX + (Gdx.graphics.getWidth() / 2) == mode.width / 2 &&
+              window.getPositionY() - monitor.virtualY + (Gdx.graphics.getHeight() / 2) == mode.height / 2) {
+            window.setPosition(monitor.virtualX + mode.width / 2 - resizeWidth / 2, monitor.virtualY + mode.height / 2 - resizeHeight / 2);
+          }
+
+          // first set minimum size to desired size to force expansion, then reset to desired minimum size
+          window.setSizeLimits(resizeWidth, resizeHeight, -1, -1);
+        }
+
+        window.setSizeLimits(wantedMinWidth, wantedMinHeight, -1, -1);
+      }
+    });
   }
 
   @EventHandler
@@ -117,6 +155,30 @@ public class ClientCompatibility extends DesktopCompatibility {
     return Gdx.graphics.setWindowedMode(windowWidth, windowHeight);
   }
 
+  private Graphics.DisplayMode getBestDisplayMode(Graphics.Monitor monitor) {
+    Graphics.DisplayMode[] displayModes = Gdx.graphics.getDisplayModes(monitor);
+    if (displayModes.length == 0) return null;
+    // best first
+    Arrays.sort(displayModes, new Comparator<Graphics.DisplayMode>() {
+      @Override
+      public int compare(Graphics.DisplayMode o1, Graphics.DisplayMode o2) {
+        int i1 = o1.width * o1.height;
+        int i2 = o2.width * o2.height;
+        if (i1 < i2) return 1;
+        if (i1 > i2) return -1;
+
+        if (o1.refreshRate < o2.refreshRate) return 1;
+        if (o1.refreshRate > o2.refreshRate) return -1;
+
+        if (o1.bitsPerPixel < o2.bitsPerPixel) return 1;
+        if (o1.bitsPerPixel > o2.bitsPerPixel) return -1;
+
+        return 0;
+      }
+    });
+    return displayModes[0];
+  }
+
   private boolean fullscreenMode() {
     Lwjgl3Window window = ((Lwjgl3Graphics) Gdx.graphics).getWindow();
 
@@ -126,17 +188,16 @@ public class ClientCompatibility extends DesktopCompatibility {
     windowY = window.getPositionY();
 
     Graphics.Monitor monitor = Gdx.graphics.getMonitor();
-    Graphics.DisplayMode[] displayModes = Gdx.graphics.getDisplayModes(monitor);
-    if (displayModes.length == 0) return false;
-    Arrays.sort(displayModes, displayModeComparator);
+    Graphics.DisplayMode mode = getBestDisplayMode(monitor);
+    if (mode == null) return false;
 
     if ("windowedBorderless".equals(((DropDownSetting) Settings.getSetting("client.graphics.fullscreen")).getSelected())) {
       Gdx.graphics.setUndecorated(true);
       Gdx.graphics.setResizable(false);
       window.setPosition(monitor.virtualX, monitor.virtualY);
-      return Gdx.graphics.setWindowedMode(displayModes[0].width, displayModes[0].height);
+      return Gdx.graphics.setWindowedMode(mode.width, mode.height);
     } else {
-      return Gdx.graphics.setFullscreenMode(displayModes[0]);
+      return Gdx.graphics.setFullscreenMode(mode);
     }
   }
   
