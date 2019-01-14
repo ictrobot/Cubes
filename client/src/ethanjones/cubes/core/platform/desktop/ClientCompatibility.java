@@ -18,6 +18,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
+import com.badlogic.gdx.math.MathUtils;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -97,13 +98,17 @@ public class ClientCompatibility extends DesktopCompatibility {
         if (resizeWidth > 0.8 * mode.width || resizeHeight > 0.8 * mode.height) {
           // if window would almost fill screen, maximize
           window.maximizeWindow();
-        } else if (resizeWidth > Gdx.graphics.getWidth() && resizeHeight > Gdx.graphics.getHeight()) {
-
-          // if window is centered, recenter for new size
-          if (window.getPositionX() - monitor.virtualX + (Gdx.graphics.getWidth() / 2) == mode.width / 2 &&
-              window.getPositionY() - monitor.virtualY + (Gdx.graphics.getHeight() / 2) == mode.height / 2) {
-            window.setPosition(monitor.virtualX + mode.width / 2 - resizeWidth / 2, monitor.virtualY + mode.height / 2 - resizeHeight / 2);
-          }
+        } else if (resizeWidth >= Gdx.graphics.getWidth() && resizeHeight >= Gdx.graphics.getHeight()) {
+          // maintain center of window if possible without going off edge of screen
+          int posX = MathUtils.clamp(
+              window.getPositionX() - ((resizeWidth - Gdx.graphics.getWidth()) / 2),
+              monitor.virtualX + 32,
+              monitor.virtualX + mode.width - resizeWidth - 32);
+          int posY = MathUtils.clamp(
+              window.getPositionY() - ((resizeHeight - Gdx.graphics.getHeight()) / 2),
+              monitor.virtualY + 32,
+              monitor.virtualY + mode.height - resizeHeight - 32);
+          window.setPosition(posX, posY);
 
           // first set minimum size to desired size to force expansion, then reset to desired minimum size
           window.setSizeLimits(resizeWidth, resizeHeight, -1, -1);
