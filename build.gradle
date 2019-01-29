@@ -83,8 +83,8 @@ allprojects {
         google()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
-        maven { url "http://ethanjones.me/maven/snapshots/" }
-        maven { url "http://ethanjones.me/maven/releases/" }
+        maven { url "https://ethanjones.me/maven/snapshots/" }
+        maven { url "https://ethanjones.me/maven/releases/" }
     }
 
     sonarqube {
@@ -99,6 +99,8 @@ allprojects {
 project(":core") {
     apply plugin: "java"
     apply plugin: "maven-publish"
+    
+    sourceCompatibility = 1.7
 
     dependencies {
         compile 'com.eclipsesource.minimal-json:minimal-json:0.9.4'
@@ -113,6 +115,8 @@ project(":core") {
 project(":desktop") {
     apply plugin: "java"
 
+    sourceCompatibility = 1.8
+
     dependencies {
         compile project(":core")
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
@@ -123,6 +127,8 @@ project(":desktop") {
 project(":client") {
     apply plugin: "java"
     apply plugin: "maven-publish"
+    
+    sourceCompatibility = 1.8
 
     dependencies {
         compile project(":desktop")
@@ -134,6 +140,8 @@ project(":client") {
 project(":server") {
     apply plugin: "java"
     apply plugin: "maven-publish"
+
+    sourceCompatibility = 1.8
 
     dependencies {
         compile project(":desktop")
@@ -169,7 +177,6 @@ subprojects {
     if (project.plugins.hasPlugin('org.gradle.java')) {
         apply plugin: "idea"
 
-        sourceCompatibility = 1.7
         [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
         sourceSets.main.java.srcDirs = ["src/"]
 
