@@ -103,8 +103,7 @@ public class WorldRenderer implements Disposable {
       int areaX = node.areaX;
       int areaZ = node.areaZ;
       int packedID = (areaX & 0x3FF) | ((areaZ & 0x3FF) << 10) | ((ySection & 0x3FF) << 20);
-
-      int areaDistance = Math.max(Math.abs(areaX - pos.areaZ), Math.abs(areaZ - pos.areaZ));
+      int areaDistance = Math.max(Math.abs(areaX - pos.areaX), Math.abs(areaZ - pos.areaZ));
 
       if (!checkedNodes.add(packedID) || (!node.firstNode && (!areaInFrustum(areaX, areaZ, ySection, camera.frustum) || areaDistance > renderDistance))) {
         poolNode.add(node);
@@ -251,10 +250,6 @@ public class WorldRenderer implements Disposable {
       return true;
     }
     return false;
-  }
-
-  private static boolean inRange(int areaX, int areaZ, int posAreaX, int posAreaZ, int renderDistance) {
-    return Math.abs(areaX - posAreaX) <= renderDistance && Math.abs(areaZ - posAreaZ) <= renderDistance;
   }
 
   private static boolean further(int posAreaX, int posAreaZ, int oldAreaX, int oldAreaZ, int newAreaX, int newAreaZ) {
