@@ -21,7 +21,6 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
 import com.badlogic.gdx.math.MathUtils;
 
 import java.util.Arrays;
-import java.util.Comparator;
 
 public class ClientCompatibility extends DesktopCompatibility {
 
@@ -58,7 +57,7 @@ public class ClientCompatibility extends DesktopCompatibility {
   protected void run(ApplicationListener applicationListener) {
     Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 
-    config.setWindowIcon(Files.FileType.Internal,"assets/icon-16x.png", "assets/icon-32x.png", "assets/icon-64x.png", "assets/icon-128x.png");
+    config.setWindowIcon(Files.FileType.Internal, "assets/icon-16x.png", "assets/icon-32x.png", "assets/icon-64x.png", "assets/icon-128x.png");
     config.useVsync(false);
     config.setWindowedMode(windowWidth, windowHeight);
     config.setWindowSizeLimits(768, 432, -1, -1);
@@ -70,6 +69,8 @@ public class ClientCompatibility extends DesktopCompatibility {
   public void init() {
     super.init();
     resizeWindowFromScaleFactor(ethanjones.cubes.graphics.Graphics.scaleFactor());
+
+    Gdx.app.postRunnable(ClientMouseDeltaFixer::setup);
   }
 
   @EventHandler
@@ -85,37 +86,34 @@ public class ClientCompatibility extends DesktopCompatibility {
     if (mode == null || fullscreen.isEnabled()) return;
 
     // Client may not be setup yet, delaying to end of the frame ensures it is
-    Gdx.app.postRunnable(new Runnable() {
-      @Override
-      public void run() {
-        int wantedMinWidth = (int) Math.min(MINIMUM_WINDOW_WIDTH * scaleFactor, mode.width * 0.8f);
-        int wantedMinHeight = (int) Math.min(MINIMUM_WINDOW_HEIGHT * scaleFactor, mode.height * 0.8f);
-        int resizeWidth = (int) (DEFAULT_WINDOW_WIDTH * scaleFactor);
-        int resizeHeight = (int) (DEFAULT_WINDOW_HEIGHT * scaleFactor);
+    Gdx.app.postRunnable(() -> {
+      int wantedMinWidth = (int) Math.min(MINIMUM_WINDOW_WIDTH * scaleFactor, mode.width * 0.8f);
+      int wantedMinHeight = (int) Math.min(MINIMUM_WINDOW_HEIGHT * scaleFactor, mode.height * 0.8f);
+      int resizeWidth = (int) (DEFAULT_WINDOW_WIDTH * scaleFactor);
+      int resizeHeight = (int) (DEFAULT_WINDOW_HEIGHT * scaleFactor);
 
-        Lwjgl3Window window = ((Lwjgl3Graphics) Gdx.graphics).getWindow();
+      Lwjgl3Window window = ((Lwjgl3Graphics) Gdx.graphics).getWindow();
 
-        if (resizeWidth > 0.8 * mode.width || resizeHeight > 0.8 * mode.height) {
-          // if window would almost fill screen, maximize
-          window.maximizeWindow();
-        } else if (resizeWidth >= Gdx.graphics.getWidth() && resizeHeight >= Gdx.graphics.getHeight()) {
-          // maintain center of window if possible without going off edge of screen
-          int posX = MathUtils.clamp(
-              window.getPositionX() - ((resizeWidth - Gdx.graphics.getWidth()) / 2),
-              monitor.virtualX + 32,
-              monitor.virtualX + mode.width - resizeWidth - 32);
-          int posY = MathUtils.clamp(
-              window.getPositionY() - ((resizeHeight - Gdx.graphics.getHeight()) / 2),
-              monitor.virtualY + 32,
-              monitor.virtualY + mode.height - resizeHeight - 32);
-          window.setPosition(posX, posY);
+      if (resizeWidth > 0.8 * mode.width || resizeHeight > 0.8 * mode.height) {
+        // if window would almost fill screen, maximize
+        window.maximizeWindow();
+      } else if (resizeWidth >= Gdx.graphics.getWidth() && resizeHeight >= Gdx.graphics.getHeight()) {
+        // maintain center of window if possible without going off edge of screen
+        int posX = MathUtils.clamp(
+            window.getPositionX() - ((resizeWidth - Gdx.graphics.getWidth()) / 2),
+            monitor.virtualX + 32,
+            monitor.virtualX + mode.width - resizeWidth - 32);
+        int posY = MathUtils.clamp(
+            window.getPositionY() - ((resizeHeight - Gdx.graphics.getHeight()) / 2),
+            monitor.virtualY + 32,
+            monitor.virtualY + mode.height - resizeHeight - 32);
+        window.setPosition(posX, posY);
 
-          // first set minimum size to desired size to force expansion, then reset to desired minimum size
-          window.setSizeLimits(resizeWidth, resizeHeight, -1, -1);
-        }
-
-        window.setSizeLimits(wantedMinWidth, wantedMinHeight, -1, -1);
+        // first set minimum size to desired size to force expansion, then reset to desired minimum size
+        window.setSizeLimits(resizeWidth, resizeHeight, -1, -1);
       }
+
+      window.setSizeLimits(wantedMinWidth, wantedMinHeight, -1, -1);
     });
   }
 
@@ -164,22 +162,19 @@ public class ClientCompatibility extends DesktopCompatibility {
     Graphics.DisplayMode[] displayModes = Gdx.graphics.getDisplayModes(monitor);
     if (displayModes.length == 0) return null;
     // best first
-    Arrays.sort(displayModes, new Comparator<Graphics.DisplayMode>() {
-      @Override
-      public int compare(Graphics.DisplayMode o1, Graphics.DisplayMode o2) {
-        int i1 = o1.width * o1.height;
-        int i2 = o2.width * o2.height;
-        if (i1 < i2) return 1;
-        if (i1 > i2) return -1;
+    Arrays.sort(displayModes, (o1, o2) -> {
+      int i1 = o1.width * o1.height;
+      int i2 = o2.width * o2.height;
+      if (i1 < i2) return 1;
+      if (i1 > i2) return -1;
 
-        if (o1.refreshRate < o2.refreshRate) return 1;
-        if (o1.refreshRate > o2.refreshRate) return -1;
+      if (o1.refreshRate < o2.refreshRate) return 1;
+      if (o1.refreshRate > o2.refreshRate) return -1;
 
-        if (o1.bitsPerPixel < o2.bitsPerPixel) return 1;
-        if (o1.bitsPerPixel > o2.bitsPerPixel) return -1;
+      if (o1.bitsPerPixel < o2.bitsPerPixel) return 1;
+      if (o1.bitsPerPixel > o2.bitsPerPixel) return -1;
 
-        return 0;
-      }
+      return 0;
     });
     return displayModes[0];
   }
@@ -205,7 +200,7 @@ public class ClientCompatibility extends DesktopCompatibility {
       return Gdx.graphics.setFullscreenMode(mode);
     }
   }
-  
+
   @Override
   public boolean handleCrash(Throwable throwable) {
     if (Branding.IS_DEBUG) return false; // don't open if in debug
