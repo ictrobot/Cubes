@@ -6,6 +6,7 @@ import ethanjones.cubes.core.mod.ModLoader;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.settings.Settings;
+import ethanjones.cubes.core.settings.type.IntegerSetting;
 import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menu.MenuManager;
@@ -53,7 +54,9 @@ public class AndroidCompatibility extends Compatibility {
   @Override
   public void postInit() {
     super.postInit();
-    Settings.getIntegerSetting(Settings.GRAPHICS_VIEW_DISTANCE).rangeEnd = 4;
+    IntegerSetting viewDistance = Settings.getIntegerSetting(Settings.GRAPHICS_VIEW_DISTANCE);
+    viewDistance.rangeEnd = 6;
+    viewDistance.clamp();
   }
 
   @Override

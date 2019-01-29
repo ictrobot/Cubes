@@ -60,7 +60,12 @@ public class IntegerSetting extends Setting {
 
   public void set(int i) {
     this.i = i;
+    clamp();
     onChange();
+  }
+
+  public void clamp() {
+    if (hasRange) i = MathUtils.clamp(i, rangeStart, rangeEnd);
   }
 
   @Override
@@ -139,7 +144,7 @@ public class IntegerSetting extends Setting {
   @Override
   public void readJson(JsonValue json) {
     this.i = json.asInt();
-    if (hasRange) MathUtils.clamp(i, rangeStart, rangeEnd);
+    clamp();
     onChange();
   }
   

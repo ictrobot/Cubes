@@ -49,6 +49,7 @@ public class WorldRenderer implements Disposable {
   private ArrayList<AreaRenderer> needToRefresh = new ArrayList<AreaRenderer>();
   private ArrayDeque<AreaNode> queue = new ArrayDeque<AreaNode>();
   private IntSet checkedNodes = new IntSet(1024);
+  private int effectiveViewDistance = 0;
 
   public WorldRenderer() {
     camera = new PerspectiveCamera(Settings.getIntegerSettingValue(Settings.GRAPHICS_FOV), Graphics.RENDER_WIDTH, Graphics.RENDER_HEIGHT) {
@@ -60,7 +61,7 @@ public class WorldRenderer implements Disposable {
       }
     };
     camera.near = 0.1f;
-    camera.far = 768f;
+    camera.far = Settings.getIntegerSettingValue(Settings.GRAPHICS_VIEW_DISTANCE) * SIZE_BLOCKS * 1.25f;
 
     Cubes.getClient().inputChain.cameraController = new CameraController(camera);
   }
@@ -74,6 +75,7 @@ public class WorldRenderer implements Disposable {
     needToRefresh.clear();
     queue.clear();
     checkedNodes.clear();
+    effectiveViewDistance = 0;
 
     modelBatch.begin(camera);
 
@@ -102,7 +104,9 @@ public class WorldRenderer implements Disposable {
       int areaZ = node.areaZ;
       int packedID = (areaX & 0x3FF) | ((areaZ & 0x3FF) << 10) | ((ySection & 0x3FF) << 20);
 
-      if (!checkedNodes.add(packedID) || (!node.firstNode && (!areaInFrustum(areaX, areaZ, ySection, camera.frustum) || !inRange(areaX, areaZ, pos.areaX, pos.areaZ, renderDistance)))) {
+      int areaDistance = Math.max(Math.abs(areaX - pos.areaZ), Math.abs(areaZ - pos.areaZ));
+
+      if (!checkedNodes.add(packedID) || (!node.firstNode && (!areaInFrustum(areaX, areaZ, ySection, camera.frustum) || areaDistance > renderDistance))) {
         poolNode.add(node);
         continue;
       }
@@ -127,6 +131,7 @@ public class WorldRenderer implements Disposable {
           } else {
             modelBatch.render(areaRenderer);
             renderIfNotNull(AreaBoundaries.drawArea(areaX, ySection, areaZ));
+            if (areaDistance > effectiveViewDistance) effectiveViewDistance = areaDistance;
           }
         } else if (area.areaRenderer[ySection] != null) {
           AreaRenderer.free(area.areaRenderer[ySection]);
@@ -326,5 +331,9 @@ public class WorldRenderer implements Disposable {
       final int result = dst < 0 ? -1 : (dst > 0 ? 1 : 0);
       return result;
     }
+  }
+
+  public int getEffectiveViewDistance() {
+    return effectiveViewDistance;
   }
 }

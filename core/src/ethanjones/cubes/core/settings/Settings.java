@@ -12,6 +12,7 @@ import ethanjones.cubes.graphics.Graphics;
 import ethanjones.cubes.graphics.Screenshot;
 import ethanjones.cubes.graphics.world.ao.AmbientOcclusion;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.eclipsesource.json.Json;
@@ -41,6 +42,7 @@ public class Settings {
   public static final String NETWORKING_PORT = "networking.port";
   public static final String DEBUG_FRAMETIME_GRAPH = "debug.frametimeGraph";
   public static final String DEBUG_GL_PROFILER = "debug.glProfiler";
+  public static final String DEBUG_UNLIMITED_VIEW_DISTANCE = "debug.unlimitedViewDistance";
 
   public static final String GROUP_GRAPHICS = "graphics";
   public static final String GROUP_INPUT = "input";
@@ -53,7 +55,7 @@ public class Settings {
   public static void init() {
     addSetting(USERNAME, new StringSetting("User"));
     addSetting(UUID, new PlayerUUIDSetting());
-    addSetting(GRAPHICS_VIEW_DISTANCE, new IntegerSetting(5, 2, 16, IntegerSetting.Type.Slider));
+    addSetting(GRAPHICS_VIEW_DISTANCE, new IntegerSetting(5, 2, 256, IntegerSetting.Type.Slider));
     addSetting(GRAPHICS_FOV, new IntegerSetting(70, 10, 120, IntegerSetting.Type.Slider));
     addSetting(GRAPHICS_FOG, new BooleanSetting(true));
     addSetting(GRAPHICS_SCALE, new FloatSetting(1f, -2f, 2f, FloatSetting.Type.Slider) {
@@ -98,6 +100,19 @@ public class Settings {
 
     addSetting(DEBUG_FRAMETIME_GRAPH, new BooleanSetting(false));
     addSetting(DEBUG_GL_PROFILER, new BooleanSetting(false));
+    addSetting(DEBUG_UNLIMITED_VIEW_DISTANCE, new BooleanSetting(false) {
+      @Override
+      public void onChange() {
+        IntegerSetting viewDistance = Settings.getIntegerSetting(Settings.GRAPHICS_VIEW_DISTANCE);
+        viewDistance.rangeEnd = get() ? 256 : 16;
+        viewDistance.clamp();
+      }
+
+      @Override
+      public boolean shouldDisplay() {
+        return Compatibility.get().getApplicationType() == Application.ApplicationType.Desktop;
+      }
+    });
 
     String keybindsGroup = Keybinds.KEYBIND_GROUP;
     SettingGroup keybinds = Keybinds.init();
@@ -106,7 +121,7 @@ public class Settings {
         .add(GROUP_GRAPHICS, new SettingGroup().add(GRAPHICS_VIEW_DISTANCE).add(GRAPHICS_FOV).add(GRAPHICS_FOG).add(GRAPHICS_SCALE).add(GRAPHICS_AO).add(GRAPHICS_SIMPLE_SHADER).add(GRAPHICS_SCREENSHOT_SIZE))
         .add(GROUP_INPUT, new SettingGroup().add(keybindsGroup, keybinds).add(INPUT_MOUSE_SENSITIVITY).add(INPUT_TOUCHPAD_SIZE).add(INPUT_TOUCHPAD_LEFT))
         .add(GROUP_NETWORKING, new SettingGroup().add(NETWORKING_PORT))
-        .add(GROUP_DEBUG, new SettingGroup().add(DEBUG_FRAMETIME_GRAPH).add(DEBUG_GL_PROFILER));
+        .add(GROUP_DEBUG, new SettingGroup().add(DEBUG_FRAMETIME_GRAPH).add(DEBUG_GL_PROFILER).add(DEBUG_UNLIMITED_VIEW_DISTANCE));
 
     new AddSettingsEvent().post();
 
