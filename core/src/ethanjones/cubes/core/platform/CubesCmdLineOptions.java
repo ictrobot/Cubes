@@ -49,12 +49,20 @@ public class CubesCmdLineOptions {
   }
 
   public static class ClientCmdLineOptions extends CubesCmdLineOptions {
+    public boolean loadTemporaryWorld;
 
     @Override
     protected CmdLineParser build() {
       CmdLineParser clp = super.build();
       clp.setHelpStartText("Cubes\n");
+      clp.addBooleanOption("loadTemporaryWorld", "Causes Cubes to generate a new temporary single player world immediately instead of loading to main menu");
       return clp;
+    }
+
+    @Override
+    protected void parse(CmdLineParser cmdLineParser) {
+      Boolean b = cmdLineParser.getOptionValue("loadTemporaryWorld", false);
+      loadTemporaryWorld = b != null ? b : false;
     }
   }
 

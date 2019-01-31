@@ -12,6 +12,7 @@ import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menu.MenuManager;
 import ethanjones.cubes.graphics.menus.ClientErrorMenu.UnresponsiveIntegratedServerMenu;
 import ethanjones.cubes.graphics.menus.MainMenu;
+import ethanjones.cubes.graphics.menus.SingleplayerLoadingMenu;
 import ethanjones.cubes.graphics.menus.SplashMenu;
 import ethanjones.cubes.input.InputChain;
 import ethanjones.cubes.side.client.CubesClient;
@@ -19,7 +20,9 @@ import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.side.server.CubesServer;
 import ethanjones.cubes.side.server.integrated.IntegratedServer;
+import ethanjones.cubes.world.client.ClientSaveManager;
 import ethanjones.cubes.world.client.WorldClient;
+import ethanjones.cubes.world.save.Gamemode;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -122,8 +125,13 @@ public class ClientAdapter implements AdapterInterface {
 
   private boolean initCubes() {
     Cubes.init();
-    setMenu(new MainMenu());
-    Log.info(Localization.get("client.client_loaded"));
+    if (options.loadTemporaryWorld) {
+      Log.info(Localization.get("client.load_temporary_world"));
+      Adapter.setMenu(new SingleplayerLoadingMenu(ClientSaveManager.createTemporarySave("core:smooth", Gamemode.creative, "")));
+    } else {
+      setMenu(new MainMenu());
+      Log.info(Localization.get("client.client_loaded"));
+    }
     return true;
   }
   
