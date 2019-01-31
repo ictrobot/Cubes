@@ -29,11 +29,16 @@ import ethanjones.cubes.world.light.WorldLightHandler;
 
 import com.badlogic.gdx.Gdx;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 public abstract class Cubes {
 
   public static final int tickMS = 25;
   private static boolean preInit, init;
   private static AdapterInterface adapterInterface;
+
+  private static ConcurrentLinkedQueue<Runnable> updateRunnables = new ConcurrentLinkedQueue<>();
+  private static ConcurrentLinkedQueue<Runnable> tickRunnables = new ConcurrentLinkedQueue<>();
 
   public static void preInit(AdapterInterface adapterInterface) {
     if (preInit) return;
@@ -117,12 +122,22 @@ public abstract class Cubes {
 
   // call as often as possible
   protected void update() {
+    Runnable runnable;
+    while ((runnable = updateRunnables.poll()) != null) {
+      runnable.run();
+    }
+
     NetworkingManager.getNetworking(side).processPackets();
     Side.getTiming().update();
   }
   
   // call once every tickMS
   protected void tick() {
+    Runnable runnable;
+    while ((runnable = tickRunnables.poll()) != null) {
+      runnable.run();
+    }
+
     ticksPerSecond.tick();
     world.tick();
     NetworkingManager.getNetworking(side).update();
@@ -181,5 +196,15 @@ public abstract class Cubes {
 
   public boolean isRunning() {
     return state.isRunning();
+  }
+
+  /** Allows injecting into the main thread. The runnable will be run ASAP at the start of the next update */
+  public void queueForNextUpdate(Runnable runnable) {
+    updateRunnables.add(runnable);
+  }
+
+  /** Allows injecting into the main thread. The runnable will be run at the start of the next tick */
+  public void queueForNextTick(Runnable runnable) {
+    tickRunnables.add(runnable);
   }
 }
