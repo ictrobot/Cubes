@@ -173,7 +173,7 @@ public class WorldServer extends World {
         return;
       }
     }
-    try (Locked<WorldLockable> locked = acquireReadLock()) {
+    try (Locked<WorldLockable> locked = LockManager.lockMany(true, this, map, entities)) {
       // players
       save.writePlayers();
       // areas

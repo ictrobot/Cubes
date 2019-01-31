@@ -25,12 +25,12 @@ public class SocketMonitor implements Disposable {
     this.networking = networking;
     this.side = side;
     this.remoteAddress = socket.getRemoteAddress();
+    this.packetIDDatabase = new PacketIDDatabase();
     running = new AtomicBoolean(true);
     socketInput = new SocketInput(this);
     socketOutput = new SocketOutput(this);
     socketInput.start("Socket Input: " + remoteAddress);
     socketOutput.start("Socket Output: " + remoteAddress);
-    this.packetIDDatabase = new PacketIDDatabase();
   }
 
   @Override
