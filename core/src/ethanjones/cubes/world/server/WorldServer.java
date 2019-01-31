@@ -66,7 +66,7 @@ public class WorldServer extends World {
     super.tick();
 
     Performance.start(PerformanceTags.SERVER_WORLD_AREA_TICK);
-    try (Locked<WorldLockable> locked = LockManager.lockMany(false, this, map, entities)) {
+    try (Locked<WorldLockable> locked = LockManager.lockMany(true, this, map, entities)) {
       for (Area area : map) {
         area.tick();
       }
