@@ -3,6 +3,7 @@ package ethanjones.cubes.entity.living.player;
 import ethanjones.cubes.core.event.entity.living.player.PlayerMovementEvent;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.settings.Settings;
+import ethanjones.cubes.core.util.locks.Locked;
 import ethanjones.cubes.entity.living.LivingEntity;
 import ethanjones.cubes.graphics.entity.PlayerRenderer;
 import ethanjones.cubes.item.ItemTool;
@@ -21,6 +22,7 @@ import ethanjones.cubes.world.gravity.WorldGravity;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.server.LoadedAreaFilter;
 import ethanjones.cubes.world.server.WorldServer;
+import ethanjones.cubes.world.thread.WorldLockable;
 import ethanjones.data.DataGroup;
 
 import com.badlogic.gdx.graphics.Camera;
@@ -98,10 +100,10 @@ public class Player extends LivingEntity implements CommandSender, RenderablePro
 
   public void addToWorld() {
     World world = Side.getCubes().world;
-    world.entities.lock.writeLock();
-    world.entities.put(uuid, this);
-    if (world instanceof WorldServer) ((WorldServer) world).addLoadedAreaFilter(this);
-    world.entities.lock.writeUnlock();
+    try (Locked<WorldLockable> locked = world.entities.acquireWriteLock()) {
+      world.entities.map.put(uuid, this);
+      if (world instanceof WorldServer) ((WorldServer) world).addLoadedAreaFilter(this);
+    }
   }
 
   @Override

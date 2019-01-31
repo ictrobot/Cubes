@@ -26,8 +26,7 @@ public class WorldLightHandler {
 
     Performance.start(PerformanceTags.LIGHT_UPDATE);
     Area area = event.getArea();
-    LightWorldSection lws = new LightWorldSection(area);
-    try {
+    try (LightWorldSection lws = new LightWorldSection(area)) {
       // Block light
       BlockLight.removeLight(blockReference.blockX, blockReference.blockY, blockReference.blockZ, area, lws);
       if (newBlock != null && newBlock.getLightLevel(newMeta) > 0) {
@@ -43,7 +42,6 @@ public class WorldLightHandler {
     } catch (AreaNotLoadedException e) {
       Log.error("Failed to update light", e);
     }
-    lws.unlock();
     Performance.stop(PerformanceTags.LIGHT_UPDATE);
   }
 }

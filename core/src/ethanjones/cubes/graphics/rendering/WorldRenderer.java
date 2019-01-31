@@ -4,6 +4,8 @@ import ethanjones.cubes.core.performance.Performance;
 import ethanjones.cubes.core.performance.PerformanceTags;
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.core.system.Pools;
+import ethanjones.cubes.core.util.locks.LockManager;
+import ethanjones.cubes.core.util.locks.Locked;
 import ethanjones.cubes.entity.Entity;
 import ethanjones.cubes.graphics.Graphics;
 import ethanjones.cubes.graphics.world.WorldGraphicsPools;
@@ -22,6 +24,7 @@ import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.storage.Area;
 import ethanjones.cubes.world.storage.AreaMap;
+import ethanjones.cubes.world.thread.WorldLockable;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -85,85 +88,83 @@ public class WorldRenderer implements Disposable {
     Performance.start(PerformanceTags.CLIENT_RENDER_WORLD_AREAS);
     World world = Cubes.getClient().world;
     AreaMap areaMap = world.map;
-    areaMap.lock.readLock();
 
     AreaReference pos = Pools.obtainAreaReference().setFromPositionVector3(Cubes.getClient().player.position);
     int yPos = CoordinateConverter.area(Cubes.getClient().player.position.y);
 
-    AreaNode startingNode = get(areaMap.getArea(pos.areaX, pos.areaZ), pos.areaX, pos.areaZ, yPos);
-    startingNode.firstNode = true; // Fix flashes caused by the starting area just being in frustum as flying up/down (e.g. Y=64.001) and areaInFrustum returning false
-    queue.add(startingNode);
+    try (Locked areaMapLock = areaMap.acquireReadLock()) {
+      AreaNode startingNode = get(areaMap.getArea(pos.areaX, pos.areaZ), pos.areaX, pos.areaZ, yPos);
+      startingNode.firstNode = true; // Fix flashes caused by the starting area just being in frustum as flying up/down (e.g. Y=64.001) and areaInFrustum returning false
+      queue.add(startingNode);
 
-    boolean noClip = Cubes.getClient().player.noClip();
+      boolean noClip = Cubes.getClient().player.noClip();
 
-    while (!queue.isEmpty()) {
-      AreaNode node = queue.pop();
-      Area area = node.area;
-      int ySection = node.ySection;
-      int areaX = node.areaX;
-      int areaZ = node.areaZ;
-      int packedID = (areaX & 0x3FF) | ((areaZ & 0x3FF) << 10) | ((ySection & 0x3FF) << 20);
-      int areaDistance = Math.max(Math.abs(areaX - pos.areaX), Math.abs(areaZ - pos.areaZ));
+      while (!queue.isEmpty()) {
+        AreaNode node = queue.pop();
+        Area area = node.area;
+        int ySection = node.ySection;
+        int areaX = node.areaX;
+        int areaZ = node.areaZ;
+        int packedID = (areaX & 0x3FF) | ((areaZ & 0x3FF) << 10) | ((ySection & 0x3FF) << 20);
+        int areaDistance = Math.max(Math.abs(areaX - pos.areaX), Math.abs(areaZ - pos.areaZ));
 
-      if (!checkedNodes.add(packedID) || (!node.firstNode && (!areaInFrustum(areaX, areaZ, ySection, camera.frustum) || areaDistance > renderDistance))) {
-        poolNode.add(node);
-        continue;
-      }
+        if (!checkedNodes.add(packedID) || (!node.firstNode && (!areaInFrustum(areaX, areaZ, ySection, camera.frustum) || areaDistance > renderDistance))) {
+          poolNode.add(node);
+          continue;
+        }
 
-      boolean nullArea = area == null || ySection >= area.height;
-      int traverse = 0;
+        boolean nullArea = area == null || ySection >= area.height;
+        int traverse = 0;
 
-      if (!nullArea && ySection >= 0) {
-        area.lock.writeLock();
+        if (!nullArea && ySection >= 0) {
+          try (Locked<Area> lock = area.acquireWriteLock()) {
+            int status = area.renderStatus[ySection];
+            if (status == AreaRenderStatus.UNKNOWN) status = AreaRenderStatus.update(area, ySection);
+            traverse = (noClip || status == AreaRenderStatus.EMPTY) ? 0 : status;
+            boolean render = status != AreaRenderStatus.EMPTY && !complete(area, ySection, areaMap, status);
 
-        int status = area.renderStatus[ySection];
-        if (status == AreaRenderStatus.UNKNOWN) status = AreaRenderStatus.update(area, ySection);
-        traverse = (noClip || status == AreaRenderStatus.EMPTY) ? 0 : status;
-        boolean render = status != AreaRenderStatus.EMPTY && !complete(area, ySection, areaMap, status);
+            if (render) {
+              if (area.areaRenderer[ySection] == null) Pools.obtain(AreaRenderer.class).set(area, ySection);
 
-        if (render) {
-          if (area.areaRenderer[ySection] == null) Pools.obtain(AreaRenderer.class).set(area, ySection);
-
-          AreaRenderer areaRenderer = area.areaRenderer[ySection];
-          if (areaRenderer.needsRefresh()) {
-            needToRefresh.add(areaRenderer);
-          } else {
-            modelBatch.render(areaRenderer);
-            renderIfNotNull(AreaBoundaries.drawArea(areaX, ySection, areaZ));
-            if (areaDistance > effectiveViewDistance) effectiveViewDistance = areaDistance;
+              AreaRenderer areaRenderer = area.areaRenderer[ySection];
+              if (areaRenderer.needsRefresh()) {
+                needToRefresh.add(areaRenderer);
+              } else {
+                modelBatch.render(areaRenderer);
+                renderIfNotNull(AreaBoundaries.drawArea(areaX, ySection, areaZ));
+                if (areaDistance > effectiveViewDistance) effectiveViewDistance = areaDistance;
+              }
+            } else if (area.areaRenderer[ySection] != null) {
+              AreaRenderer.free(area.areaRenderer[ySection]);
+              area.areaRenderer[ySection] = null;
+            }
           }
-        } else if (area.areaRenderer[ySection] != null) {
-          AreaRenderer.free(area.areaRenderer[ySection]);
-          area.areaRenderer[ySection] = null;
         }
 
-        area.lock.writeUnlock();
+        if (traverse != AreaRenderStatus.COMPLETE) {
+          Area a;
+          if ((traverse & AreaRenderStatus.COMPLETE_MAX_X) == 0 && further(pos.areaX, pos.areaZ, areaX, areaZ, areaX + 1, areaZ)) {
+            if ((a = areaMap.lockedGetArea(areaX + 1, areaZ)) != null) queue.add(get(a, areaX + 1, areaZ, ySection));
+          }
+          if ((traverse & AreaRenderStatus.COMPLETE_MIN_X) == 0 && further(pos.areaX, pos.areaZ, areaX, areaZ, areaX - 1, areaZ)) {
+            if ((a = areaMap.lockedGetArea(areaX - 1, areaZ)) != null) queue.add(get(a, areaX - 1, areaZ, ySection));
+          }
+          if ((traverse & AreaRenderStatus.COMPLETE_MAX_Z) == 0 && further(pos.areaX, pos.areaZ, areaX, areaZ, areaX, areaZ + 1)) {
+            if ((a = areaMap.lockedGetArea(areaX, areaZ + 1)) != null) queue.add(get(a, areaX, areaZ + 1, ySection));
+          }
+          if ((traverse & AreaRenderStatus.COMPLETE_MIN_Z) == 0 && further(pos.areaX, pos.areaZ, areaX, areaZ, areaX, areaZ - 1)) {
+            if ((a = areaMap.lockedGetArea(areaX, areaZ - 1)) != null) queue.add(get(a, areaX, areaZ - 1, ySection));
+          }
+          if ((traverse & AreaRenderStatus.COMPLETE_MAX_Y) == 0 && !nullArea && ySection >= yPos) {
+            queue.add(get(area, areaX, areaZ, ySection + 1));
+          }
+          if ((traverse & AreaRenderStatus.COMPLETE_MIN_Y) == 0 && ySection > 0 && ySection <= yPos) {
+            queue.add(get(area, areaX, areaZ, ySection - 1));
+          }
+        }
+        poolNode.add(node);
       }
-
-      if (traverse != AreaRenderStatus.COMPLETE) {
-        Area a;
-        if ((traverse & AreaRenderStatus.COMPLETE_MAX_X) == 0 && further(pos.areaX, pos.areaZ, areaX, areaZ, areaX + 1, areaZ)) {
-          if ((a = areaMap.lockedGetArea(areaX + 1, areaZ)) != null) queue.add(get(a, areaX + 1, areaZ, ySection));
-        }
-        if ((traverse & AreaRenderStatus.COMPLETE_MIN_X) == 0 && further(pos.areaX, pos.areaZ, areaX, areaZ, areaX - 1, areaZ)) {
-          if ((a = areaMap.lockedGetArea(areaX - 1, areaZ)) != null) queue.add(get(a, areaX - 1, areaZ, ySection));
-        }
-        if ((traverse & AreaRenderStatus.COMPLETE_MAX_Z) == 0 && further(pos.areaX, pos.areaZ, areaX, areaZ, areaX, areaZ + 1)) {
-          if ((a = areaMap.lockedGetArea(areaX, areaZ + 1)) != null) queue.add(get(a, areaX, areaZ + 1, ySection));
-        }
-        if ((traverse & AreaRenderStatus.COMPLETE_MIN_Z) == 0 && further(pos.areaX, pos.areaZ, areaX, areaZ, areaX, areaZ - 1)) {
-          if ((a = areaMap.lockedGetArea(areaX, areaZ - 1)) != null) queue.add(get(a, areaX, areaZ - 1, ySection));
-        }
-        if ((traverse & AreaRenderStatus.COMPLETE_MAX_Y) == 0 && !nullArea && ySection >= yPos) {
-          queue.add(get(area, areaX, areaZ, ySection + 1));
-        }
-        if ((traverse & AreaRenderStatus.COMPLETE_MIN_Y) == 0 && ySection > 0 && ySection <= yPos) {
-          queue.add(get(area, areaX, areaZ, ySection - 1));
-        }
-      }
-      poolNode.add(node);
     }
-    areaMap.lock.readUnlock();
     Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_AREAS);
 
     int refreshed = 0;
@@ -189,12 +190,12 @@ public class WorldRenderer implements Disposable {
 
     Performance.start(PerformanceTags.CLIENT_RENDER_WORLD_ENTITY);
     float deltaTime = Gdx.graphics.getDeltaTime();
-    world.entities.lock.readLock();
-    for (Entity entity : world.entities.values()) {
-      entity.updatePosition(deltaTime);
-      if (entity instanceof RenderableProvider && entity.inFrustum(camera.frustum)) modelBatch.render(((RenderableProvider) entity));
+    try (Locked<WorldLockable> entitiesLock = LockManager.lockMany(true, world, world.map, world.entities)) {
+      for (Entity entity : world.entities.map.values()) {
+        entity.updatePosition(deltaTime);
+        if (entity instanceof RenderableProvider && entity.inFrustum(camera.frustum)) modelBatch.render(((RenderableProvider) entity));
+      }
     }
-    world.entities.lock.readUnlock();
     Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_ENTITY);
 
     RainRenderer.draw(modelBatch);

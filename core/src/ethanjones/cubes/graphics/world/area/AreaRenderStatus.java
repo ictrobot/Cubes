@@ -17,9 +17,9 @@ public class AreaRenderStatus {
   public static int COMPLETE_MIN_Z = 32;
   public static int COMPLETE = 63;
 
+  // must be write locked
   public static int update(Area area, int ySection) {
     if (area.renderStatus[ySection] != UNKNOWN) return area.renderStatus[ySection];
-    area.lock.writeLock();
     int h = ySection * SIZE_BLOCKS;
     int m = SIZE_BLOCKS - 1;
 
@@ -60,7 +60,6 @@ public class AreaRenderStatus {
     }
 
     area.renderStatus[ySection] = status;
-    area.lock.writeUnlock();
     return status;
   }
 

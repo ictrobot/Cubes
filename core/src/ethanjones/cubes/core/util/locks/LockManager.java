@@ -55,9 +55,15 @@ public final class LockManager<T extends Lockable<T>> {
 
   /** Values must be in lock order */
   public static <T extends Lockable<T>> Locked<T> lockMany(boolean write, T... values) {
-    Locked<T> locked = values[0].acquireLock(write);
-    for (int i = 1; i < values.length; i++) {
-      locked.extendLock(values[i]);
+    Locked<T> locked = null;
+    for (T value : values) {
+      if (value != null) {
+        if (locked != null) {
+          locked.extendLock(value);
+        } else {
+          locked = value.acquireLock(write);
+        }
+      }
     }
     return locked;
   }

@@ -5,8 +5,8 @@ import ethanjones.cubes.block.data.BlockData;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.lua.LuaMapping;
 import ethanjones.cubes.core.lua.LuaMappingWorld;
-import ethanjones.cubes.core.util.Lock;
-import ethanjones.cubes.core.util.Lock.HasLock;
+import ethanjones.cubes.core.util.locks.LockManager;
+import ethanjones.cubes.core.util.locks.Locked;
 import ethanjones.cubes.entity.Entity;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.common.Side;
@@ -20,6 +20,7 @@ import ethanjones.cubes.world.storage.Area;
 import ethanjones.cubes.world.storage.AreaMap;
 import ethanjones.cubes.world.storage.Entities;
 import ethanjones.cubes.world.thread.GenerationTask;
+import ethanjones.cubes.world.thread.WorldLockable;
 import ethanjones.cubes.world.thread.WorldRequestParameter;
 import ethanjones.cubes.world.thread.WorldTasks;
 import ethanjones.data.DataGroup;
@@ -32,23 +33,26 @@ import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public abstract class World implements Disposable, HasLock {
+public abstract class World extends WorldLockable implements Disposable {
 
   public static final int MAX_TIME = (1000 / Cubes.tickMS) * 60 * 10;
 
-  public final Lock updateLock = new Lock();
   public final AreaMap map;
   public final Entities entities;
   public final TerrainGenerator terrainGenerator;
   public final Save save;
-  
+  public final Side side;
+
   protected int time;
   protected long playingTime;
   protected final AtomicBoolean disposed = new AtomicBoolean(false);
   public final LuaTable lua;
 
-  public World(Save save) {
+  public World(Save save, Side side) {
+    super(Type.WORLD, side);
+
     this.save = save;
+    this.side = side;
     this.terrainGenerator = save == null ? null : GeneratorManager.getTerrainGenerator(save.getSaveOptions());
     this.time = save == null ? 0 : save.getSaveOptions().worldTime;
     this.playingTime = save == null ? 0 : save.getSaveOptions().worldPlayingTime;
@@ -152,49 +156,46 @@ public abstract class World implements Disposable, HasLock {
   }
 
   public void tick() {
-    updateLock.writeLock();
-    entities.lock.writeLock();
-    Iterator<Entry<UUID, Entity>> iterator = entities.entrySet().iterator();
-    while (iterator.hasNext()) {
-      Entry<UUID, Entity> entry = iterator.next();
-      if (entry.getValue().update()) {
-        entry.getValue().dispose();
-        UUID uuid = entry.getKey();
-        iterator.remove();
-        removeEntity(uuid);
+    try (Locked<WorldLockable> locked = LockManager.lockMany(true, this, map, entities)) {
+      Iterator<Entry<UUID, Entity>> iterator = entities.map.entrySet().iterator();
+      while (iterator.hasNext()) {
+        Entry<UUID, Entity> entry = iterator.next();
+        if (entry.getValue().update()) {
+          entry.getValue().dispose();
+          UUID uuid = entry.getKey();
+          iterator.remove();
+          removeEntity(uuid);
+        }
       }
+      time++;
+      if (time >= MAX_TIME) time = 0;
+      playingTime++;
     }
-    time++;
-    if (time >= MAX_TIME) time = 0;
-    playingTime++;
-    entities.lock.writeUnlock();
-    updateLock.writeUnlock();
   }
 
   public float getWorldSunlight() {
-    updateLock.readLock();
-    int t = time < MAX_TIME / 2 ? time : MAX_TIME - time;
-    float f = ((float) t) / (((float) MAX_TIME) / 2f);
-    updateLock.readUnlock();
-    return f;
+    try (Locked<WorldLockable> locked = acquireReadLock()) {
+      int t = time < MAX_TIME / 2 ? time : MAX_TIME - time;
+      return ((float) t) / (((float) MAX_TIME) / 2f);
+    }
   }
   
   public boolean isDay() {
-    updateLock.readLock();
-    int time = this.time;
-    updateLock.readUnlock();
-    return time >= MAX_TIME / 4 && time < MAX_TIME * 3 / 4;
+    try (Locked<WorldLockable> locked = acquireReadLock()) {
+      return time >= MAX_TIME / 4 && time < MAX_TIME * 3 / 4;
+    }
   }
 
   public void setTime(int time) {
-    updateLock.writeLock();
-    this.time = time % MAX_TIME;
-    updateLock.writeUnlock();
+    try (Locked<WorldLockable> locked = acquireWriteLock()) {
+      this.time = time % MAX_TIME;
+    }
   }
   
   public int getTime() {
-    updateLock.readLock();
-    return updateLock.readUnlock(time);
+    try (Locked<WorldLockable> locked = acquireReadLock()) {
+      return time;
+    }
   }
 
   public TerrainGenerator getTerrainGenerator() {
@@ -202,31 +203,22 @@ public abstract class World implements Disposable, HasLock {
   }
   
   @Override
-  public Lock getLock() {
-    return updateLock;
-  }
-  
-  @Override
   public void dispose() {
     if (!disposed.compareAndSet(false, true)) return;
     
     WorldTasks.waitSaveFinish();
-    Lock.lockAll(true, this, map, entities);
-    
-    if (Side.isServer()|| !Area.isShared()) {
-      for (Area area : map) {
-        area.unload();
+    try (Locked<WorldLockable> locked = LockManager.lockMany(true, this, map, entities)) {
+      if (Side.isServer() || !Area.isShared()) {
+        for (Area area : map) {
+          area.unload();
+        }
       }
+      map.empty();
+      for (Entity entity : entities.map.values()) {
+        entity.dispose();
+      }
+      entities.map.clear();
     }
-    map.empty();
-    for (Entity entity : entities.values()) {
-      entity.dispose();
-    }
-    entities.clear();
-    
-    map.lock.writeUnlock();
-    entities.lock.writeUnlock();
-    updateLock.writeUnlock();
   }
   
   public boolean isDisposed() {
@@ -234,34 +226,35 @@ public abstract class World implements Disposable, HasLock {
   }
 
   public Entity getEntity(UUID uuid) {
-    entities.lock.readLock();
-    return entities.lock.readUnlock(entities.get(uuid));
+    try (Locked<WorldLockable> locked = entities.acquireReadLock()) {
+      return entities.map.get(uuid);
+    }
   }
 
   public void addEntity(Entity entity) {
-    entities.lock.writeLock();
-    entities.put(entity.uuid, entity);
-    entities.lock.writeUnlock();
+    try (Locked<WorldLockable> locked = entities.acquireWriteLock()) {
+      entities.map.put(entity.uuid, entity);
+    }
   }
 
   public void removeEntity(UUID uuid) {
-    entities.lock.writeLock();
-    Entity remove = entities.remove(uuid);
-    if (remove != null) remove.dispose();
-    entities.lock.writeUnlock();
+    try (Locked<WorldLockable> locked = entities.acquireWriteLock()) {
+      Entity remove = entities.map.remove(uuid);
+      if (remove != null) remove.dispose();
+    }
   }
 
   public void updateEntity(DataGroup data) {
-    entities.lock.writeLock();
-    UUID uuid = (UUID) data.get("uuid");
-    Entity entity = entities.get(uuid);
-    if (entity != null) {
-      entity.read(data);
-    } else {
-      Log.warning("No entity with uuid " + uuid.toString());
-      addEntity(Entity.readType(data));
+    try (Locked<WorldLockable> locked = entities.acquireWriteLock()) {
+      UUID uuid = (UUID) data.get("uuid");
+      Entity entity = entities.map.get(uuid);
+      if (entity != null) {
+        entity.read(data);
+      } else {
+        Log.warning("No entity with uuid " + uuid.toString());
+        addEntity(Entity.readType(data));
+      }
     }
-    entities.lock.writeUnlock();
   }
 
   public void syncEntity(UUID uuid) {
@@ -269,12 +262,12 @@ public abstract class World implements Disposable, HasLock {
   }
   
   public void addEntityFromSave(DataGroup dataGroup) {
-    entities.lock.writeLock();
-    Entity entity = Entity.readType(dataGroup);
-    if (entity != null && !entities.containsKey(entity.uuid)) {
-      addEntity(entity);
+    try (Locked<WorldLockable> locked = entities.acquireWriteLock()) {
+      Entity entity = Entity.readType(dataGroup);
+      if (entity != null && !entities.map.containsKey(entity.uuid)) {
+        addEntity(entity);
+      }
     }
-    entities.lock.writeUnlock();
   }
 
   public void save() {

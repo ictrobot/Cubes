@@ -1,5 +1,6 @@
 package ethanjones.cubes.world.thread;
 
+import ethanjones.cubes.core.util.locks.Locked;
 import ethanjones.cubes.world.save.Save;
 import ethanjones.cubes.world.storage.Area;
 import ethanjones.cubes.world.storage.AreaMap;
@@ -32,12 +33,12 @@ public class WorldSaveTask {
   
   public WorldSaveTask(Save save, AreaMap areas) {
     this.save = save;
-    areas.lock.readLock();
-    for (Area area : areas) {
-      this.saveQueue.add(area);
-      this.saveAreas.add(area);
+    try (Locked<WorldLockable> locked = areas.acquireReadLock()) {
+      for (Area area : areas) {
+        this.saveQueue.add(area);
+        this.saveAreas.add(area);
+      }
     }
-    areas.lock.readUnlock();
     this.length = saveQueue.size();
   }
 }

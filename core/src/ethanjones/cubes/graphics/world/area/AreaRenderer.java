@@ -3,13 +3,13 @@ package ethanjones.cubes.graphics.world.area;
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.id.IDManager;
 import ethanjones.cubes.core.system.Pools;
-import ethanjones.cubes.core.util.Lock;
+import ethanjones.cubes.core.util.locks.LockManager;
+import ethanjones.cubes.core.util.locks.Locked;
 import ethanjones.cubes.graphics.CubesVertexAttributes;
 import ethanjones.cubes.graphics.world.WorldGraphicsPools;
 import ethanjones.cubes.graphics.world.ao.AmbientOcclusion;
 import ethanjones.cubes.graphics.world.block.BlockRenderType;
 import ethanjones.cubes.graphics.world.block.BlockTextureHandler;
-import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.storage.Area;
 
@@ -84,29 +84,23 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
     int i = ySection * SIZE_BLOCKS_CUBED;
     int vertexOffset = 0;
 
-    Lock.waitToLockAll(false, area, minX, maxX, minZ, maxZ);
-
-    if (!area.isBlank()) {
-      for (int y = ySection * SIZE_BLOCKS; y < (ySection + 1) * SIZE_BLOCKS; y++) {
-        for (int z = 0; z < SIZE_BLOCKS; z++) {
-          for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
-            int blockInt = area.blocks[i];
-            if ((blockInt & BLOCK_VISIBLE) == BLOCK_VISIBLE) {
-              vertexOffset = render(vertexOffset, blockInt, x, y, z, i, ao, maxX, minX, maxZ, minZ);
+    try (Locked<Area> locked = LockManager.lockMany(false, minX, minZ, area, maxZ, maxX)) {
+      if (!area.isBlank()) {
+        for (int y = ySection * SIZE_BLOCKS; y < (ySection + 1) * SIZE_BLOCKS; y++) {
+          for (int z = 0; z < SIZE_BLOCKS; z++) {
+            for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
+              int blockInt = area.blocks[i];
+              if ((blockInt & BLOCK_VISIBLE) == BLOCK_VISIBLE) {
+                vertexOffset = render(vertexOffset, blockInt, x, y, z, i, ao, maxX, minX, maxZ, minZ);
+              }
             }
           }
         }
-      }
-      if (vertexOffset > 0) {
-        save(vertexOffset);
+        if (vertexOffset > 0) {
+          save(vertexOffset);
+        }
       }
     }
-
-    area.lock.readUnlock();
-    if (maxX != null) maxX.lock.readUnlock();
-    if (minX != null) minX.lock.readUnlock();
-    if (maxZ != null) maxZ.lock.readUnlock();
-    if (minZ != null) minZ.lock.readUnlock();
 
     refreshedThisFrame++;
     refreshedMeshesThisFrame += meshs.size();
