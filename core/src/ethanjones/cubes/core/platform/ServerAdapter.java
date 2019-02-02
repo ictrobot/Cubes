@@ -81,17 +81,17 @@ public class ServerAdapter implements AdapterInterface {
 
   @Override
   public void setClient(CubesClient cubesClient) throws UnsupportedOperationException {
-    //throw new UnsupportedOperationException("Cannot set client");
+    throw new UnsupportedOperationException("Cannot set client");
   }
 
   @Override
   public void setServer(CubesServer cubesServer) throws UnsupportedOperationException {
-    //throw new UnsupportedOperationException("Cannot set server");
+    throw new UnsupportedOperationException("Cannot set server");
   }
 
   @Override
   public void setMenu(Menu menu) throws UnsupportedOperationException {
-    //throw new UnsupportedOperationException("Cannot set menu");
+    throw new UnsupportedOperationException("Cannot set menu");
   }
 
   @Override

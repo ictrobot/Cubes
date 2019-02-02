@@ -102,7 +102,7 @@ public class ClientAdapter implements AdapterInterface {
         Log.debug("Server set");
         this.cubesServer.start();
       } else {
-        Log.warning("Server can only be set to an IntegratedServer");
+        throw new CubesException("Server can only be set to an IntegratedServer");
       }
     } else {
       this.cubesServer = null;

@@ -1,5 +1,6 @@
 package ethanjones.cubes.core.platform;
 
+import ethanjones.cubes.core.event.core.InstanceChangedEvent;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.core.system.Executor;
@@ -21,10 +22,12 @@ public class Adapter {
 
   public static void setClient(CubesClient cubesClient) throws UnsupportedOperationException {
     adapter.setClient(cubesClient);
+    new InstanceChangedEvent.ClientChangedEvent().post();
   }
 
   public static void setServer(CubesServer cubesServer) throws UnsupportedOperationException {
     adapter.setServer(cubesServer);
+    new InstanceChangedEvent.ServerChangedEvent().post();
   }
 
   public static Menu getMenu() {
@@ -33,6 +36,7 @@ public class Adapter {
 
   public static void setMenu(Menu menu) throws UnsupportedOperationException {
     adapter.setMenu(menu);
+    new InstanceChangedEvent.MenuChangedEvent().post();
   }
 
   public static void dispose() {

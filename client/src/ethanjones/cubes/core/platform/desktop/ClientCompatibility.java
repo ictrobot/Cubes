@@ -1,6 +1,7 @@
 package ethanjones.cubes.core.platform.desktop;
 
 import ethanjones.cubes.core.event.EventHandler;
+import ethanjones.cubes.core.event.core.InstanceChangedEvent;
 import ethanjones.cubes.core.event.settings.AddSettingsEvent;
 import ethanjones.cubes.core.logging.loggers.FileLogWriter;
 import ethanjones.cubes.core.settings.Keybinds;
@@ -11,6 +12,7 @@ import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.core.util.Toggle;
+import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.common.Side;
 
 import com.badlogic.gdx.*;
@@ -36,6 +38,8 @@ public class ClientCompatibility extends DesktopCompatibility {
   private int windowHeight = DEFAULT_WINDOW_HEIGHT;
   private long fullscreenMS = 0;
 
+  private boolean vsync = true;
+
   private Toggle fullscreen = new Toggle() {
     @Override
     protected void doEnable() {
@@ -58,7 +62,7 @@ public class ClientCompatibility extends DesktopCompatibility {
     Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 
     config.setWindowIcon(Files.FileType.Internal, "assets/icon-16x.png", "assets/icon-32x.png", "assets/icon-64x.png", "assets/icon-128x.png");
-    config.useVsync(false);
+    config.useVsync(true);
     config.setWindowedMode(windowWidth, windowHeight);
     config.setWindowSizeLimits(768, 432, -1, -1);
 
@@ -123,7 +127,8 @@ public class ClientCompatibility extends DesktopCompatibility {
       @Override
       public void onChange() {
         super.onChange();
-        Gdx.graphics.setVSync(get());
+        vsync = get();
+        instanceChanged(null);
       }
     });
     Settings.getBaseSettingGroup().getChildGroups().get("graphics").add("client.graphics.vsync");
@@ -139,6 +144,18 @@ public class ClientCompatibility extends DesktopCompatibility {
       }
     });
     Settings.getBaseSettingGroup().getChildGroups().get("graphics").add("client.graphics.fullscreen");
+  }
+
+  @EventHandler
+  public void instanceChanged(InstanceChangedEvent e) {
+    Gdx.app.postRunnable(() -> {
+      if (Cubes.getClient() == null && Cubes.getServer() == null) {
+        // in menus, always use vsync
+        Gdx.graphics.setVSync(true);
+      } else {
+        Gdx.graphics.setVSync(vsync);
+      }
+    });
   }
 
   @Override
