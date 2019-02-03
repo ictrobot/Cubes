@@ -1,7 +1,5 @@
 package ethanjones.cubes.core.platform.desktop;
 
-import ethanjones.cubes.core.system.Branding;
-
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -10,8 +8,6 @@ import java.awt.event.WindowEvent;
 
 public class ClientCrashHandler {
   
-  private static final String HEADER = "==================================================\nCUBES CRASH [" + Branding.VERSION_FULL + "]\n==================================================\n\n";
-  
   public static boolean handle(String msg) {
     try {
       final Frame f = new Frame("Cubes Crash");
@@ -19,7 +15,7 @@ public class ClientCrashHandler {
       f.setLayout(null);
       final TextArea textArea = new TextArea();
       textArea.setBounds(10, 40, f.getWidth() - 20, f.getHeight() - 50);
-      textArea.setText(HEADER + msg);
+      textArea.setText(msg);
       textArea.setEditable(false);
       f.add(textArea);
   

@@ -33,6 +33,10 @@ public class Debug {
   }
 
   private static final AtomicInteger crashed = new AtomicInteger(0);
+  private static final String CRASH_WINDOW_HEADER =
+      "==================================================\nCUBES CRASH [" + Branding.VERSION_FULL + "]\n" +
+      (Branding.VERSION_HASH.isEmpty() ? "" : "Build Hash: " + Branding.VERSION_HASH + "\n") +
+      "Report issues at: https://github.com/ictrobot/Cubes\n==================================================\n\n";
 
   public static void printProperties() {
     if (Branding.VERSION_HASH != null && !Branding.VERSION_HASH.isEmpty()) {
@@ -166,7 +170,7 @@ public class Debug {
   Called after a crash to display log to user
    */
   public static String getLogString(String file) {
-    StringBuilder output = new StringBuilder();
+    StringBuilder output = new StringBuilder(CRASH_WINDOW_HEADER);
     FileInputStream stream = null;
     InputStreamReader reader = null;
     try {
