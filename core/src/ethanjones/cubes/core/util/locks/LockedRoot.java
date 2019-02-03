@@ -1,29 +1,43 @@
 package ethanjones.cubes.core.util.locks;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Normal Locked instance
  */
-public final class LockedRoot<T extends Lockable<T>> implements Locked<T> {
-  public final boolean write;
+final class LockedRoot<T extends Lockable<T>> implements Locked<T> {
   private final LockManager<T> manager;
-  final LinkedList<T> locks;
-  int state = 0; // 0 locked, -1 dead, -2 never alive
+  final LockedSub<T> subLock;
+  final List<T> locks;
+  boolean write;
+  boolean alive;
 
-  LockedRoot(T initialLock, boolean write, LockManager<T> manager) {
-    this.write = write;
+  LockedRoot(LockManager<T> manager) {
     this.manager = manager;
+    this.subLock = new LockedSub<>(this);
+    this.locks = new ArrayList<>();
+  }
 
-    this.locks = new LinkedList<>();
-    this.locks.add(initialLock);
+  void reset() {
+    if (!alive) throw new LockException("Lock already dead");
+    this.write = false;
+    this.alive = false;
+    this.locks.clear();
+  }
+
+  void setup(T t, boolean write) {
+    if (alive) throw new LockException("Lock must be unlocked first");
+    this.write = write;
+    this.alive = true;
+    this.locks.add(t);
   }
 
   @Override
   public void extendLock(T t) {
-    if (state != 0) throw new LockException("Tried to extend dead " + t.getClass().getSimpleName() + " lock");
+    if (!alive) throw new LockException("Tried to extend dead " + t.getClass().getSimpleName() + " lock");
 
-    int c = locks.getLast().compareTo(t);
+    int c = locks.get(locks.size() - 1).compareTo(t);
     if (c == 0) return;
     if (c > 0) throw new LockException("Tried to extend " + t.getClass().getSimpleName() + " lock in wrong direction!");
 

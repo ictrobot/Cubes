@@ -5,7 +5,7 @@ package ethanjones.cubes.core.util.locks;
  * This allows methods that lock to call methods that lock (provided the 2nd method wants to lock something
  * already locked by the 1st)
  */
-public final class LockedSub<T extends Lockable<T>> implements Locked<T> {
+final class LockedSub<T extends Lockable<T>> implements Locked<T> {
   private final Locked<T> parent;
 
   LockedSub(Locked<T> parent) {

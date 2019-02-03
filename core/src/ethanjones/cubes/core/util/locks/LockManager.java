@@ -6,51 +6,52 @@ package ethanjones.cubes.core.util.locks;
  */
 public final class LockManager<T extends Lockable<T>> {
 
-  private final ThreadLocal<Locked<T>> threadData = new ThreadLocal<>();
+  private final ThreadLocal<LockedRoot<T>> threadRootLocks = new ThreadLocal<LockedRoot<T>>() {
+    @Override
+    protected LockedRoot<T> initialValue() {
+      return new LockedRoot<>(LockManager.this);
+    }
+  };
 
   /** Used by Lockable to acquire a Locked instance */
   Locked<T> lock(T t, boolean write) {
-    Locked<T> locked = threadData.get();
-    if (locked != null) {
+    LockedRoot<T> locked = threadRootLocks.get();
+    if (locked.alive) {
       // sub locking: grant fake locks
       if (locked.containsLock(t)) {
         if (write && !locked.isWriteLock()) throw new LockException("Tried to write lock instance of " + t.getClass().getSimpleName() + " which is part of parent read lock");
-        return new LockedSub<>(locked);
+        return locked.subLock;
       }
       throw new LockException("Tried to lock instance of " + t.getClass().getSimpleName() + " when there is another lock that doesn't contain it");
+    } else {
+      locked.setup(t, write);
+      (write ? t.lock.writeLock() : t.lock.readLock()).lock();
+      return locked;
     }
-
-    locked = new LockedRoot<>(t, write, this);
-    (write ? t.lock.writeLock() : t.lock.readLock()).lock();
-    threadData.set(locked);
-    return locked;
   }
 
   Locked<T> tryLock(T t, boolean write) {
-    if (threadData.get() != null) return null;
+    LockedRoot<T> locked = threadRootLocks.get();
+    if (locked.alive) return null;
 
-    LockedRoot<T> locked = new LockedRoot<>(t, write, this);
-    boolean b = (write ? t.lock.writeLock() : t.lock.readLock()).tryLock();
-    if (b) {
-      threadData.set(locked);
+    boolean lockSucceeded = (write ? t.lock.writeLock() : t.lock.readLock()).tryLock();
+    if (lockSucceeded) {
+      locked.setup(t, write);
       return locked;
     } else {
-      locked.state = -2;
       return null;
     }
   }
 
   /** Used by LockedRoot to release a lock */
   void unlock(LockedRoot<T> locked) {
-    if (locked.state < 0) throw new LockException("Tried to unlock dead lock");
-    locked.state = -1;
-
-    if (threadData.get() != locked) throw new LockException("Lock does not match!");
+    if (!locked.alive) throw new LockException("Tried to unlock dead lock");
+    if (threadRootLocks.get() != locked) throw new LockException("Lock does not match!");
 
     for (T t : locked.locks) {
       (locked.write ? t.lock.writeLock() : t.lock.readLock()).unlock();
     }
-    threadData.set(null);
+    locked.reset();
   }
 
   /** Values must be in lock order */
