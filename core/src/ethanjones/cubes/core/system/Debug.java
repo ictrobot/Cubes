@@ -45,6 +45,9 @@ public class Debug {
     if (Branding.BUILD_DATE != null) {
       Log.debug("Build Date:         " + Branding.DISPLAY_DATE_FORMAT.format(Branding.BUILD_DATE));
     }
+    if (Branding.LAUNCHER != null && !Branding.LAUNCHER.isEmpty()) {
+      Log.debug("Launched By:        " + Branding.LAUNCHER);
+    }
     Log.debug("Java Home:          " + System.getProperty("java.home"));
     Log.debug("Java Vendor:        " + System.getProperty("java.vendor"));
     Log.debug("Java Vendor URL:    " + System.getProperty("java.vendor.url"));

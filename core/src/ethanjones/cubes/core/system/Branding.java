@@ -36,6 +36,8 @@ public class Branding {
   public final static DateFormat DISPLAY_DATE_FORMAT;
   public final static Date BUILD_DATE;
 
+  public final static String LAUNCHER;
+
   static {
     try {
       NAME = "Cubes";
@@ -116,6 +118,8 @@ public class Branding {
       }
 
       DEBUG = NAME + " " + VERSION + " for " + PLATFORM;
+
+      LAUNCHER = System.getProperty("ethanjones.cubes.launcher", "");
     } catch (Exception e) {
       e.printStackTrace();
       throw new CubesException(e);
