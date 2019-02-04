@@ -62,6 +62,8 @@ launch4j {
     version = project.ext.buildProperties.version
     textVersion = project.ext.buildProperties.version
 
+    jvmOptions  = ["-Dethanjones.cubes.launcher=\"Client exe\""]
+
     icon = project.getRootDir().absolutePath + "/assets/assets/icon.ico"
     copyConfigurable = project.tasks.distWin.outputs.files
     jar = new File(project.buildDir, "/libs/client-win.jar")
