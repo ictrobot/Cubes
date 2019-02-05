@@ -52,7 +52,10 @@ public class WorldRenderer implements Disposable {
   private ArrayList<AreaRenderer> needToRefresh = new ArrayList<AreaRenderer>();
   private ArrayDeque<AreaNode> queue = new ArrayDeque<AreaNode>();
   private IntSet checkedNodes = new IntSet(1024);
+
   private int effectiveViewDistance = 0;
+  private int totalEntities = 0;
+  private int entitiesDrawn = 0;
 
   public WorldRenderer() {
     camera = new PerspectiveCamera(Settings.getIntegerSettingValue(Settings.GRAPHICS_FOV), Graphics.RENDER_WIDTH, Graphics.RENDER_HEIGHT) {
@@ -191,10 +194,16 @@ public class WorldRenderer implements Disposable {
     Performance.start(PerformanceTags.CLIENT_RENDER_WORLD_ENTITY);
     float deltaTime = Gdx.graphics.getDeltaTime();
     try (Locked<WorldLockable> entitiesLock = LockManager.lockMany(true, world, world.map, world.entities)) {
+      totalEntities = world.entities.map.size();
+      int entityCount = 0;
       for (Entity entity : world.entities.map.values()) {
         entity.updatePosition(deltaTime);
-        if (entity instanceof RenderableProvider && entity.inFrustum(camera.frustum)) modelBatch.render(((RenderableProvider) entity));
+        if (entity instanceof RenderableProvider && entity.inFrustum(camera.frustum)) {
+          modelBatch.render(((RenderableProvider) entity));
+          entityCount++;
+        }
       }
+      entitiesDrawn = entityCount;
     }
     Performance.stop(PerformanceTags.CLIENT_RENDER_WORLD_ENTITY);
 
@@ -331,5 +340,13 @@ public class WorldRenderer implements Disposable {
 
   public int getEffectiveViewDistance() {
     return effectiveViewDistance;
+  }
+
+  public int getEntitiesDrawn() {
+    return entitiesDrawn;
+  }
+
+  public int getTotalEntities() {
+    return totalEntities;
   }
 }
