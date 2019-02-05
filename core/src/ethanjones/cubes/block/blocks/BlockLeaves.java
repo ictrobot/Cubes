@@ -2,46 +2,44 @@ package ethanjones.cubes.block.blocks;
 
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.block.Blocks;
+import ethanjones.cubes.core.util.IntQueue;
 import ethanjones.cubes.core.util.ThreadRandom;
 import ethanjones.cubes.item.ItemStack;
 import ethanjones.cubes.item.ItemTool.ToolType;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.World;
-import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.storage.Area;
 
-import java.util.ArrayDeque;
-import java.util.HashSet;
+import java.util.Arrays;
 
 public class BlockLeaves extends Block {
-  
+
+  private static final boolean[] randomTickChecked = new boolean[9 * 9 * 9];
+  private static final IntQueue randomTickTodo = new IntQueue(9 * 9 * 9);
+
   public BlockLeaves() {
     super("core:leaves");
     miningTime = 0.25f;
     miningTool = ToolType.none;
     miningOther = true;
   }
-  
+
   @Override
   public boolean alwaysTransparent() {
     return true;
   }
-  
+
   @Override
   public int randomTick(World world, Area area, final int blockX, final int blockY, final int blockZ, int meta) {
     if (meta == 1) {
-      HashSet<BlockReference> checked = new HashSet<BlockReference>();
-      ArrayDeque<BlockReference> todo = new ArrayDeque<BlockReference>();
-      BlockReference start = new BlockReference().setFromBlockCoordinates(blockX, blockY, blockZ);
-      todo.add(start.copy().offset(-1, 0, 0));
-      todo.add(start.copy().offset(1, 0, 0));
-      todo.add(start.copy().offset(0, -1, 0));
-      todo.add(start.copy().offset(0, 1, 0));
-      todo.add(start.copy().offset(0, 0, -1));
-      todo.add(start.copy().offset(0, 0, 1));
-      while (!todo.isEmpty()) {
-        BlockReference poll = todo.poll();
-        int x = poll.blockX, y = poll.blockY, z = poll.blockZ;
+      Arrays.fill(randomTickChecked, false);
+      randomTickTodo.clear();
+
+      add(0, 0, 0);
+      while (!randomTickTodo.isEmpty()) {
+        int poll = randomTickTodo.poll();
+        int cx = (poll / 9 / 9) - 4, cy = ((poll / 9) % 9) - 4, cz = (poll % 9) - 4;
+        int x = cx + blockX, y = cy + blockY, z = cz + blockZ;
         Area a = area;
         if (x < 0 || x >= Area.SIZE_BLOCKS || z < 0 || z >= Area.SIZE_BLOCKS) {
           a = area.neighbourBlockCoordinates(x + area.minBlockX, z + area.minBlockZ);
@@ -52,12 +50,12 @@ public class BlockLeaves extends Block {
         if (y < 0 || y > a.maxY) continue;
         Block b = a.getBlock(x, y, z);
         if (b == Blocks.leaves) {
-          add(checked, todo, start, poll, -1, 0, 0);
-          add(checked, todo, start, poll, 1, 0, 0);
-          add(checked, todo, start, poll, 0, -1, 0);
-          add(checked, todo, start, poll, 0, 1, 0);
-          add(checked, todo, start, poll, 0, 0, -1);
-          add(checked, todo, start, poll, 0, 0, 1);
+          add(cx + -1, cy, cz);
+          add(cx + 1, cy, cz);
+          add(cx, cy + -1, cz);
+          add(cx, cy + 1, cz);
+          add(cx, cy, cz + -1);
+          add(cx, cy, cz + 1);
         } else if (b == Blocks.log) {
           return meta;
         }
@@ -67,16 +65,20 @@ public class BlockLeaves extends Block {
     }
     return meta;
   }
-  
-  private void add(HashSet<BlockReference> checked, ArrayDeque<BlockReference> todo, BlockReference start, BlockReference b, int x, int y, int z) {
-    b = b.copy().offset(x, y, z);
-    int dX = start.blockX - b.blockX;
-    int dY = start.blockY - b.blockY;
-    int dZ = start.blockZ - b.blockZ;
-    int distance2 = dX * dX + dY * dY + dZ * dZ;
-    if (distance2 <= 16 && checked.add(b)) todo.add(b);
+
+  private int getPos(int x, int y, int z) {
+    return ((x + 4) * 9 * 9) + ((y + 4) * 9) + (z + 4);
   }
-  
+
+  private void add(int cx, int cy, int cz) {
+    if (cx < -4 || cx > 4 || cy < -4 || cy > 4 || cz < -4 || cz > 4) return;
+    int pos = getPos(cx, cy, cz);
+    if (!randomTickChecked[pos]) {
+      randomTickChecked[pos] = true;
+      randomTickTodo.enqueue(pos);
+    }
+  }
+
   @Override
   public ItemStack[] drops(World world, int x, int y, int z, int meta) {
     boolean sapling = ThreadRandom.get().nextInt(24) == 0;
