@@ -29,6 +29,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -439,23 +440,24 @@ public class Area extends Lockable<Area> {
     else if (side == Side.Server) areaMapServer = areaMap;
   }
 
+  // must be locked
   public void tick() {
     if (Side.isServer()) {
       AreaMap areaMap = areaMap();
       if (!featuresGenerated() || areaMap == null) return;
       ThreadRandom random = ThreadRandom.get();
-      try (Locked<Area> locked = lockAllNeighbours(true, false)) {
-        int updates = NUM_RANDOM_UPDATES * height;
-        for (int i = 0; i < updates; i++) {
-          int randomX = random.nextInt(SIZE_BLOCKS);
-          int randomZ = random.nextInt(SIZE_BLOCKS);
-          int randomY = random.nextInt(maxY + 1);
-          randomTick(randomX, randomY, randomZ, areaMap);
-        }
-        for (BlockData blockData : blockDataList) {
-          blockData.update();
-        }
+      //try (Locked<Area> locked = lockAllNeighbours(true, false)) {
+      int updates = NUM_RANDOM_UPDATES * height;
+      for (int i = 0; i < updates; i++) {
+        int randomX = random.nextInt(SIZE_BLOCKS);
+        int randomZ = random.nextInt(SIZE_BLOCKS);
+        int randomY = random.nextInt(maxY + 1);
+        randomTick(randomX, randomY, randomZ, areaMap);
       }
+      for (BlockData blockData : blockDataList) {
+        blockData.update();
+      }
+      //}
     }
   }
 
@@ -1060,4 +1062,13 @@ public class Area extends Lockable<Area> {
 
     return LockManager.lockMany(write, Side.isClient() ? neighboursClient : neighboursServer);
   }
+
+  public static final Comparator<Area> LOCK_ITERATION_ORDER = new Comparator<Area>() {
+    @Override
+    public int compare(Area o1, Area o2) {
+      int c = Integer.compare(o1.areaZ, o2.areaZ);
+      if (c != 0) return c;
+      return Integer.compare(o1.areaX, o2.areaX);
+    }
+  };
 }

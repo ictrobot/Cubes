@@ -1,7 +1,6 @@
 package ethanjones.cubes.core.util.locks;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Normal Locked instance
@@ -9,7 +8,7 @@ import java.util.List;
 final class LockedRoot<T extends Lockable<T>> implements Locked<T> {
   private final LockManager<T> manager;
   final LockedSub<T> subLock;
-  final List<T> locks;
+  final ArrayList<T> locks;
   boolean write;
   boolean alive;
 

@@ -1,5 +1,6 @@
 package ethanjones.cubes.world.server;
 
+import ethanjones.cubes.core.util.locks.RollingAreaLocked;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.performance.Performance;
 import ethanjones.cubes.core.performance.PerformanceTags;
@@ -67,8 +68,10 @@ public class WorldServer extends World {
 
     Performance.start(PerformanceTags.SERVER_WORLD_AREA_TICK);
     try (Locked<WorldLockable> locked = LockManager.lockMany(true, this, map, entities)) {
-      for (Area area : map) {
-        area.tick();
+      try (RollingAreaLocked areas = new RollingAreaLocked(map.iterator())) {
+        for (Area area : areas) {
+          area.tick();
+        }
       }
     }
     Performance.stop(PerformanceTags.SERVER_WORLD_AREA_TICK);

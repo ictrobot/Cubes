@@ -7,11 +7,13 @@ import ethanjones.cubes.world.thread.WorldLockable;
 
 import com.badlogic.gdx.utils.LongMap;
 
-import java.util.Iterator;
+import java.util.*;
 
 public class AreaMap extends WorldLockable implements Iterable<Area> {
 
-  private LongMap<Area> map = new LongMap<Area>();
+  private final LongMap<Area> map = new LongMap<>(1024);
+  private final ArrayList<Area> sorted = new ArrayList<>();
+  private volatile boolean modifiedSinceSort = false;
   public final World world;
 
   // long packed = ((long)x) << 32 | y & 0xFFFFFFFFL;
@@ -25,25 +27,38 @@ public class AreaMap extends WorldLockable implements Iterable<Area> {
   
   public Area getArea(int areaX, int areaZ) {
     try (Locked<WorldLockable> locked = acquireReadLock()) {
-      long packed = ((long)areaX) << 32 | areaZ & 0xFFFFFFFFL;
-      return map.get(packed, null);
+      long packed = ((long)areaZ) << 32 | areaX & 0xFFFFFFFFL;
+      return map.get(packed);
     }
   }
   
   public Area lockedGetArea(int areaX, int areaZ) {
-    long packed = ((long)areaX) << 32 | areaZ & 0xFFFFFFFFL;
-    return map.get(packed, null);
+    long packed = ((long)areaZ) << 32 | areaX & 0xFFFFFFFFL;
+    return map.get(packed);
   }
   
   public boolean setArea(int areaX, int areaZ, Area area) {
     Area old;
 
     try (Locked<WorldLockable> locked = acquireWriteLock()) {
-      long packed = ((long) areaX) << 32 | areaZ & 0xFFFFFFFFL;
+      long packed = ((long) areaZ) << 32 | areaX & 0xFFFFFFFFL;
       if (area == null) {
         old = map.remove(packed);
+        if (old != null) {
+          sorted.remove(old);
+          modifiedSinceSort = true;
+        }
       } else {
         old = map.put(packed, area);
+        if (old != area) {
+          if (old != null) {
+            int idx = sorted.indexOf(old);
+            sorted.set(idx, area);
+          } else {
+            sorted.add(area);
+            modifiedSinceSort = true;
+          }
+        }
       }
     }
 
@@ -63,7 +78,11 @@ public class AreaMap extends WorldLockable implements Iterable<Area> {
   
   @Override
   public AreaIterator iterator() {
-    if (!isReadLocked() && !lockOwnedByCurrentThread()) throw new CubesException("AreaMap should be read locked (write for remove)");
+    if (!lockOwnedByCurrentThread()) throw new CubesException("AreaMap must be write locked to iterate");
+    if (modifiedSinceSort) {
+      Collections.sort(sorted, Area.LOCK_ITERATION_ORDER);
+      modifiedSinceSort = false;
+    }
     return new AreaIterator();
   }
   
@@ -88,24 +107,27 @@ public class AreaMap extends WorldLockable implements Iterable<Area> {
   }
 
   private class AreaIterator implements Iterator<Area> {
-    private LongMap.Entries<Area> entries = new LongMap.Entries<Area>(map);
-    private Area current;
+    private Iterator<Area> iterator = sorted.iterator();
+    private Area current = null;
 
     @Override
     public boolean hasNext() {
-      return entries.hasNext;
+      return iterator.hasNext();
     }
 
     @Override
     public Area next() {
-      return current = entries.next().value;
+      return current = iterator.next();
     }
 
     @Override
     public void remove() {
       if (!lockOwnedByCurrentThread()) throw new CubesException("AreaMap should be write locked");
+
       if (current == null) throw new IllegalStateException();
-      entries.remove();
+      long packed = ((long) current.areaZ) << 32 | current.areaX & 0xFFFFFFFFL;
+      iterator.remove();
+      map.remove(packed);
 
       synchronized (this) {
         this.notifyAll();
