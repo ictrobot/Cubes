@@ -112,10 +112,8 @@ public class Block {
     return false; // true if in any state the block has blockdata
   }
 
-  // coordinates inside area, return new meta
-  public int randomTick(World world, Area area, int x, int y, int z, int meta) {
-    return meta;
-  }
+  // coordinates inside area
+  public void randomTick(World world, Area area, int x, int y, int z, int meta) { }
 
   public void dropItems(World world, int x, int y, int z, int meta) {
     if (Side.isClient()) return;

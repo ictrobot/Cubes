@@ -463,12 +463,9 @@ public class Area extends Lockable<Area> {
 
   private void randomTick(int x, int y, int z, AreaMap areaMap) {
     int b = blocks[getRef(x, y, z)];
-    int blockID = b & 0xFFFFF;
-    int blockMeta = (b >> 20) & 0xFF;
-    Block block = IDManager.toBlock(blockID);
+    Block block = IDManager.toBlock(b & 0xFFFFF);
     if (block == null) return;
-    int newMeta = block.randomTick(areaMap.world, this, x, y, z, blockMeta);
-    if (newMeta != blockMeta) setBlock(block, x, y, z, newMeta);
+    block.randomTick(areaMap.world, this, x, y, z, (b >> 20) & 0xFF);
   }
 
   public void doUpdatesThisArea(int x, int y, int z, int ref) {

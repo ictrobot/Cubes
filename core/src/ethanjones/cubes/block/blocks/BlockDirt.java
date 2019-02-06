@@ -17,18 +17,16 @@ public class BlockDirt extends Block {
   }
 
   @Override
-  public int randomTick(World world, Area area, int x, int y, int z, int meta) {
+  public void randomTick(World world, Area area, int x, int y, int z, int meta) {
     if (area.getLight(x, y+1, z) > BlockGrass.MIN_LIGHT || (area.getSunlight(x, y+1, z) > BlockGrass.MIN_LIGHT && world.isDay())) {
       for (int i = y - 1; i <= y + 1; i++) {
         if (checkForGrass(world, area, x + 1, i, z + 1) || checkForGrass(world, area, x + 1, i, z) ||  checkForGrass(world, area, x + 1, i, z - 1) ||
             checkForGrass(world, area, x, i, z + 1) || checkForGrass(world, area, x, i, z - 1) ||
             checkForGrass(world, area, x - 1, i, z + 1) || checkForGrass(world, area, x - 1, i, z) || checkForGrass(world, area, x - 1, i, z - 1)) {
           area.setBlock(Blocks.grass, x, y, z, 0);
-          return 0;
         }
       }
     }
-    return meta;
   }
 
   private boolean checkForGrass(World world, Area area, int x, int y, int z) {

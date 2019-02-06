@@ -30,7 +30,7 @@ public class BlockLeaves extends Block {
   }
 
   @Override
-  public int randomTick(World world, Area area, final int blockX, final int blockY, final int blockZ, int meta) {
+  public void randomTick(World world, Area area, final int blockX, final int blockY, final int blockZ, int meta) {
     if (meta == 1) {
       Arrays.fill(randomTickChecked, false);
       randomTickTodo.clear();
@@ -43,7 +43,7 @@ public class BlockLeaves extends Block {
         Area a = area;
         if (x < 0 || x >= Area.SIZE_BLOCKS || z < 0 || z >= Area.SIZE_BLOCKS) {
           a = area.neighbourBlockCoordinates(x + area.minBlockX, z + area.minBlockZ);
-          if (a == null) return meta; //otherwise leaves may decay if area containing log is not loaded
+          if (a == null) return; //otherwise leaves may decay if area containing log is not loaded
           x = x + area.minBlockX - a.minBlockX;
           z = z + area.minBlockZ - a.minBlockZ;
         }
@@ -57,13 +57,12 @@ public class BlockLeaves extends Block {
           add(cx, cy, cz + -1);
           add(cx, cy, cz + 1);
         } else if (b == Blocks.log) {
-          return meta;
+          return;
         }
       }
       area.setBlock(null, blockX, blockY, blockZ, 0);
       dropItems(Cubes.getServer().world, blockX + area.minBlockX, blockY, blockZ + area.minBlockZ, meta);
     }
-    return meta;
   }
 
   private int getPos(int x, int y, int z) {
