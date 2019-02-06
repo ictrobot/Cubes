@@ -67,7 +67,7 @@ public class WorldRenderer implements Disposable {
       }
     };
     camera.near = 0.1f;
-    camera.far = Settings.getIntegerSettingValue(Settings.GRAPHICS_VIEW_DISTANCE) * SIZE_BLOCKS * 1.25f;
+    camera.far = Math.max( 300f, Settings.getIntegerSettingValue(Settings.GRAPHICS_VIEW_DISTANCE) * SIZE_BLOCKS * 1.25f);
 
     Cubes.getClient().inputChain.cameraController = new CameraController(camera);
   }

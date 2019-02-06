@@ -1,11 +1,13 @@
 package ethanjones.cubes.graphics.world.other;
 
+import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.graphics.CubesRenderable;
 import ethanjones.cubes.graphics.CubesVertexAttributes;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.graphics.world.block.FaceVertices;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.World;
+import ethanjones.cubes.world.storage.Area;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
@@ -64,17 +66,22 @@ public class SunRenderer {
 
   private void setWorldTransform() {
     Vector3 pos = Cubes.getClient().player.position;
-    int r = 512;
+
+    int renderDistance = Settings.getIntegerSettingValue(Settings.GRAPHICS_VIEW_DISTANCE);
+    float radius = Math.max(256, renderDistance * Area.SIZE_BLOCKS * 1.1f);
+    float scale = radius / 512f * 75f;
+
     float f = (float) (Cubes.getClient().world.getTime() - (World.MAX_TIME / 4)) / (float) World.MAX_TIME;
     if (moon) f += 0.5f;
     f %= 1;
 
-    float x = (float) (pos.x + (r * Math.cos(f * 2 * Math.PI)));
-    float y = (float) (pos.y + (r * Math.sin(f * 2 * Math.PI)));
+    float x = (float) (pos.x + (radius * Math.cos(f * 2 * Math.PI)));
+    float y = (float) (pos.y + (radius * Math.sin(f * 2 * Math.PI)));
     float z = pos.z;
 
-    renderable.worldTransform.setToTranslation(x, y, z);
-    renderable.worldTransform.scl(75f);
+    renderable.worldTransform.idt();
+    renderable.worldTransform.translate(x, y, z);
+    renderable.worldTransform.scl(scale);
     renderable.worldTransform.rotate(Vector3.Z, (f - 0.25f % 1) * 360);
   }
 
