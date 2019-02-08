@@ -73,7 +73,11 @@ public class ItemBlock extends Item {
       if (blockReference.equals(new BlockReference().setFromVector3(player.position.cpy().sub(0, player.height, 0))))
         return false;
 
-      PlayerPlaceBlockEvent event = new PlayerPlaceBlockEvent(player, block, itemStack.meta, blockIntersection, blockReference);
+
+      Integer meta = block.place(Cubes.getServer().world, blockReference.blockX, blockReference.blockY, blockReference.blockZ, itemStack.meta, player, blockIntersection);
+      if (meta == null) return false;
+
+      PlayerPlaceBlockEvent event = new PlayerPlaceBlockEvent(player, block, meta, blockIntersection, blockReference);
       if (event.post().isCanceled()) return false;
 
       Cubes.getServer().world.setBlock(block, blockReference.blockX, blockReference.blockY, blockReference.blockZ, event.getMeta());

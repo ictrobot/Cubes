@@ -14,6 +14,7 @@ import ethanjones.cubes.item.ItemStack;
 import ethanjones.cubes.item.ItemTool;
 import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.World;
+import ethanjones.cubes.world.collision.BlockIntersection;
 import ethanjones.cubes.world.storage.Area;
 import ethanjones.data.DataGroup;
 
@@ -124,6 +125,10 @@ public class Block {
       itemEntity.position.set(x + 0.5f, y, z + 0.5f);
       world.addEntity(itemEntity);
     }
+  }
+
+  public Integer place(World world, int x, int y, int z, int meta, Player player, BlockIntersection intersection) {
+    return meta;
   }
 
   public ItemStack[] drops(World world, int x, int y, int z, int meta) {

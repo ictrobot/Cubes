@@ -80,16 +80,25 @@ public class BlockLeaves extends Block {
 
   @Override
   public ItemStack[] drops(World world, int x, int y, int z, int meta) {
-    boolean sapling = ThreadRandom.get().nextInt(24) == 0;
-    boolean leaves = ThreadRandom.get().nextInt(6) == 0;
-    if (sapling && leaves) {
-      return new ItemStack[]{new ItemStack(Blocks.sapling.getItemBlock()), new ItemStack(Blocks.leaves.getItemBlock())};
-    } else if (sapling) {
-      return new ItemStack[]{new ItemStack(Blocks.sapling.getItemBlock())};
-    } else if (leaves) {
-      return new ItemStack[]{new ItemStack(Blocks.leaves.getItemBlock())};
+    ThreadRandom random = ThreadRandom.get();
+    if (meta == 1) {
+      if (random.nextInt(4) == 0) {
+        return new ItemStack[]{new ItemStack(Blocks.leaves.getItemBlock())};
+      } else {
+        return new ItemStack[0];
+      }
     } else {
-      return new ItemStack[0];
+      boolean sapling = random.nextInt(16) == 0;
+      boolean leaves = random.nextInt(8) == 0;
+      if (sapling && leaves) {
+        return new ItemStack[]{new ItemStack(Blocks.sapling.getItemBlock()), new ItemStack(Blocks.leaves.getItemBlock())};
+      } else if (sapling) {
+        return new ItemStack[]{new ItemStack(Blocks.sapling.getItemBlock())};
+      } else if (leaves) {
+        return new ItemStack[]{new ItemStack(Blocks.leaves.getItemBlock())};
+      } else {
+        return new ItemStack[0];
+      }
     }
   }
 }
