@@ -144,11 +144,11 @@ public class CameraController extends InputAdapter {
       if (jump) {
         tmpMovement.set(0, flySpeed * deltaTime, 0);
         tryMove();
+      } else if (onBlock) {
+        flying = false;
       } else if (descend) {
         tmpMovement.set(0, -flySpeed * deltaTime, 0);
         tryMove();
-      } else if (onBlock) {
-        flying = false;
       }
     } else if (jumping) {
       if (!jump) {
