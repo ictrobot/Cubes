@@ -237,25 +237,26 @@ public class WorldRenderer implements Disposable {
 
   public boolean complete(Area area, int ySection, AreaMap areaMap, int status) {
     if (status == AreaRenderStatus.COMPLETE) {
-      if (ySection > 0 && (area.renderStatus[ySection - 1] & AreaRenderStatus.COMPLETE_MAX_Y) != AreaRenderStatus.COMPLETE_MAX_Y)
+      int[] r = area.renderStatus;
+      if (ySection > 0 && (r[ySection - 1] & AreaRenderStatus.COMPLETE_MAX_Y) != AreaRenderStatus.COMPLETE_MAX_Y)
         return false;
-      if (ySection < area.renderStatus.length - 1 && (area.renderStatus[ySection + 1] & AreaRenderStatus.COMPLETE_MIN_Y) != AreaRenderStatus.COMPLETE_MIN_Y)
+      if (ySection < r.length + 1 && (r[ySection + 1] & AreaRenderStatus.COMPLETE_MIN_Y) != AreaRenderStatus.COMPLETE_MIN_Y)
         return false;
       Area maxX = areaMap.lockedGetArea(area.areaX + 1, area.areaZ);
       if (maxX != null && !maxX.isBlank())
-        if (maxX.renderStatus.length < ySection - 1 || (maxX.renderStatus[ySection] & AreaRenderStatus.COMPLETE_MIN_X) != AreaRenderStatus.COMPLETE_MIN_X)
+        if ((r = maxX.renderStatus).length < ySection + 1 || (r[ySection] & AreaRenderStatus.COMPLETE_MIN_X) != AreaRenderStatus.COMPLETE_MIN_X)
           return false;
       Area minX = areaMap.lockedGetArea(area.areaX - 1, area.areaZ);
       if (minX != null && !minX.isBlank())
-        if (minX.renderStatus.length < ySection - 1 || (minX.renderStatus[ySection] & AreaRenderStatus.COMPLETE_MAX_X) != AreaRenderStatus.COMPLETE_MAX_X)
+        if ((r = minX.renderStatus).length < ySection + 1 || (r[ySection] & AreaRenderStatus.COMPLETE_MAX_X) != AreaRenderStatus.COMPLETE_MAX_X)
           return false;
       Area maxZ = areaMap.lockedGetArea(area.areaX, area.areaZ + 1);
       if (maxZ != null && !maxZ.isBlank())
-        if (maxZ.renderStatus.length < ySection - 1 || (maxZ.renderStatus[ySection] & AreaRenderStatus.COMPLETE_MIN_Z) != AreaRenderStatus.COMPLETE_MIN_Z)
+        if ((r = maxZ.renderStatus).length < ySection + 1 || (r[ySection] & AreaRenderStatus.COMPLETE_MIN_Z) != AreaRenderStatus.COMPLETE_MIN_Z)
           return false;
       Area minZ = areaMap.lockedGetArea(area.areaX, area.areaZ - 1);
       if (minZ != null && !minZ.isBlank())
-        if (minZ.renderStatus.length < ySection - 1 || (minZ.renderStatus[ySection] & AreaRenderStatus.COMPLETE_MAX_Z) != AreaRenderStatus.COMPLETE_MAX_Z)
+        if ((r = minZ.renderStatus).length < ySection + 1 || (r[ySection] & AreaRenderStatus.COMPLETE_MAX_Z) != AreaRenderStatus.COMPLETE_MAX_Z)
           return false;
       return true;
     }
