@@ -18,6 +18,7 @@ import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.core.system.Executor;
 import ethanjones.cubes.core.util.PerSecond;
+import ethanjones.cubes.core.util.RunnableQueue;
 import ethanjones.cubes.entity.EntityManager;
 import ethanjones.cubes.graphics.Graphics;
 import ethanjones.cubes.graphics.assets.Assets;
@@ -29,16 +30,11 @@ import ethanjones.cubes.world.light.WorldLightHandler;
 
 import com.badlogic.gdx.Gdx;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
-
 public abstract class Cubes {
 
   public static final int tickMS = 25;
   private static boolean preInit, init;
   private static AdapterInterface adapterInterface;
-
-  private static ConcurrentLinkedQueue<Runnable> updateRunnables = new ConcurrentLinkedQueue<>();
-  private static ConcurrentLinkedQueue<Runnable> tickRunnables = new ConcurrentLinkedQueue<>();
 
   public static void preInit(AdapterInterface adapterInterface) {
     if (preInit) return;
@@ -108,6 +104,9 @@ public abstract class Cubes {
   protected State state = new State();
   public final PerSecond ticksPerSecond = new PerSecond(10);
 
+  private RunnableQueue updateRunnables = new RunnableQueue();
+  private RunnableQueue tickRunnables = new RunnableQueue();
+
   public Cubes(Side side) {
     this.side = side;
   }
@@ -122,10 +121,7 @@ public abstract class Cubes {
 
   // call as often as possible
   protected void update() {
-    Runnable runnable;
-    while ((runnable = updateRunnables.poll()) != null) {
-      runnable.run();
-    }
+    updateRunnables.runAll();
 
     NetworkingManager.getNetworking(side).processPackets();
     Side.getTiming().update();
@@ -133,10 +129,7 @@ public abstract class Cubes {
   
   // call once every tickMS
   protected void tick() {
-    Runnable runnable;
-    while ((runnable = tickRunnables.poll()) != null) {
-      runnable.run();
-    }
+    tickRunnables.runAll();
 
     ticksPerSecond.tick();
     world.tick();
