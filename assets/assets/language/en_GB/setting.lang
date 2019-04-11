@@ -5,7 +5,7 @@ setting.graphics=Graphics
 setting.graphics.viewDistance=Rendering Distance
 setting.graphics.fieldOfView=FOV
 setting.graphics.fog=Fog
-setting.graphics.scale=GUI Scale
+setting.graphics.scaleOffset=GUI Scale
 setting.graphics.simpleShader=Simplified Shader
 
 setting.graphics.ambientOcclusion=Ambient Occlusion

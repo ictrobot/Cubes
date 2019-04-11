@@ -32,7 +32,7 @@ public class Settings {
   public static final String GRAPHICS_VIEW_DISTANCE = "graphics.viewDistance";
   public static final String GRAPHICS_FOV = "graphics.fieldOfView";
   public static final String GRAPHICS_FOG = "graphics.fog";
-  public static final String GRAPHICS_SCALE = "graphics.scale";
+  public static final String GRAPHICS_SCALE = "graphics.scaleOffset";
   public static final String GRAPHICS_AO = "graphics.ambientOcclusion";
   public static final String GRAPHICS_SIMPLE_SHADER = "graphics.simpleShader";
   public static final String GRAPHICS_SCREENSHOT_SIZE = "graphics.screenshotSize";
@@ -58,7 +58,7 @@ public class Settings {
     addSetting(GRAPHICS_VIEW_DISTANCE, new IntegerSetting(5, 2, 256, IntegerSetting.Type.Slider));
     addSetting(GRAPHICS_FOV, new IntegerSetting(70, 10, 120, IntegerSetting.Type.Slider));
     addSetting(GRAPHICS_FOG, new BooleanSetting(true));
-    addSetting(GRAPHICS_SCALE, new FloatSetting(1f, -2f, 2f, FloatSetting.Type.Slider) {
+    addSetting(GRAPHICS_SCALE, new FloatSetting(0f, -2f, 2f, FloatSetting.Type.Slider) {
       {
         if (!isSetup()) {
           if (!Adapter.isDedicatedServer()) this.rangeStart = -(Graphics.scaleFactor() - 0.25f);
