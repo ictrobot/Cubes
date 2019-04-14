@@ -3,6 +3,7 @@ package ethanjones.cubes.core.platform.desktop;
 import ethanjones.cubes.core.event.EventHandler;
 import ethanjones.cubes.core.event.core.InstanceChangedEvent;
 import ethanjones.cubes.core.event.settings.AddSettingsEvent;
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.logging.loggers.FileLogWriter;
 import ethanjones.cubes.core.settings.Keybinds;
 import ethanjones.cubes.core.settings.Settings;
@@ -21,6 +22,7 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
 import com.badlogic.gdx.math.MathUtils;
+import org.lwjgl.opengl.GL11;
 
 import java.util.Arrays;
 
@@ -75,6 +77,12 @@ public class ClientCompatibility extends DesktopCompatibility {
     resizeWindowFromScaleFactor(ethanjones.cubes.graphics.Graphics.scaleFactor());
 
     Gdx.app.postRunnable(ClientMouseDeltaFixer::setup);
+  }
+
+  @Override
+  public void logEnvironment() {
+    Log.debug("OpenGL Renderer:    " + GL11.glGetString(GL11.GL_VENDOR) + ", " + GL11.glGetString(GL11.GL_RENDERER) + ", " + GL11.glGetString(GL11.GL_VERSION));
+    super.logEnvironment();
   }
 
   @EventHandler
