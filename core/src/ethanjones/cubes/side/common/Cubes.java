@@ -47,7 +47,7 @@ public abstract class Cubes {
     JsonLoader.loadCore();
     Blocks.init();
     JsonLoader.firstStage();
-    
+
     Compatibility.get().preInit();
 
     JsonLoader.secondStage();

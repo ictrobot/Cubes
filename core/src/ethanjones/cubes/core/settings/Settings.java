@@ -3,13 +3,14 @@ package ethanjones.cubes.core.settings;
 import ethanjones.cubes.core.event.settings.AddSettingsEvent;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.settings.type.*;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.graphics.CubesShaderProvider;
+import ethanjones.cubes.graphics.Graphics;
 import ethanjones.cubes.graphics.world.ao.AmbientOcclusion;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.eclipsesource.json.Json;
@@ -25,7 +26,7 @@ public class Settings {
   public static final String UUID = "uuid";
   public static final String GRAPHICS_VIEW_DISTANCE = "graphics.viewDistance";
   public static final String GRAPHICS_FOV = "graphics.fieldOfView";
-  public static final String GRAPHICS_VSYNC = "graphics.vsync";
+  public static final String GRAPHICS_SCALE = "graphics.scale";
   public static final String GRAPHICS_FOG = "graphics.fog";
   public static final String GRAPHICS_AO = "graphics.ambientOcclusion";
   public static final String GRAPHICS_SIMPLE_SHADER = "graphics.simpleShader";
@@ -48,17 +49,20 @@ public class Settings {
     addSetting(UUID, new PlayerUUIDSetting());
     addSetting(GRAPHICS_VIEW_DISTANCE, new IntegerSetting(3, 2, 16, IntegerSetting.Type.Slider));
     addSetting(GRAPHICS_FOV, new IntegerSetting(70, 10, 120, IntegerSetting.Type.Slider));
-    addSetting(GRAPHICS_VSYNC, new BooleanSetting(false) {
+    addSetting(GRAPHICS_SCALE, new FloatSetting(1f, -2f, 2f, FloatSetting.Type.Slider) {
+      {
+        if (!isSetup()) {
+          if (!Adapter.isDedicatedServer()) this.rangeStart = -(Graphics.scaleFactor() - 0.25f);
+        } else {
+          Log.warning("GRAPHICS_SCALE setting initialized after settings setup");
+        }
+        this.sliderSteps = 0.25f;
+      }
 
       @Override
       public void onChange() {
         super.onChange();
-        Gdx.graphics.setVSync(get());
-      }
-
-      @Override
-      public boolean shouldDisplay() {
-        return Compatibility.get().getApplicationType() == Application.ApplicationType.Desktop;
+        Gdx.app.getApplicationListener().resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
       }
     });
     addSetting(GRAPHICS_FOG, new BooleanSetting(true));
@@ -91,7 +95,7 @@ public class Settings {
     SettingGroup keybinds = Keybinds.init();
 
     base.add(USERNAME)
-            .add(GROUP_GRAPHICS, new SettingGroup().add(GRAPHICS_VIEW_DISTANCE).add(GRAPHICS_FOV).add(GRAPHICS_VSYNC).add(GRAPHICS_FOG).add(GRAPHICS_AO).add(GRAPHICS_SIMPLE_SHADER))
+            .add(GROUP_GRAPHICS, new SettingGroup().add(GRAPHICS_VIEW_DISTANCE).add(GRAPHICS_FOV).add(GRAPHICS_SCALE).add(GRAPHICS_FOG).add(GRAPHICS_AO).add(GRAPHICS_SIMPLE_SHADER))
             .add(GROUP_INPUT, new SettingGroup().add(keybindsGroup, keybinds).add(INPUT_TOUCH).add(INPUT_MOUSE_SENSITIVITY).add(INPUT_TOUCHPAD_SIZE).add(INPUT_TOUCHPAD_LEFT))
             .add(GROUP_DEBUG, new SettingGroup().add(DEBUG_FRAMETIME_GRAPH).add(DEBUG_GL_PROFILER));
 
@@ -101,6 +105,10 @@ public class Settings {
       Log.info("Creating new settings file");
       write();
     }
+  }
+
+  public static boolean isSetup() {
+    return base.getChildGroups().size() > 0 || base.getChildren().size() > 0;
   }
 
   public static void addSetting(String notLocalised, Setting setting) {

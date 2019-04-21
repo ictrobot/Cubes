@@ -50,7 +50,7 @@ public class CommandManager {
               success = check(sender, builder, arg, c, i + 1, str);
             }
           } else {
-            Object o = builder.getCommandValue().getArgument(a);
+            Object o = builder.getCommandValue().getArgument(a, sender);
             CommandArgument commandArgument = new CommandArgument(o, builder.getCommandValue());
             ArrayList<CommandArgument> c = new ArrayList<CommandArgument>();
             c.addAll(arguments);
@@ -101,6 +101,7 @@ public class CommandManager {
     TeleportCommand.init();
     TimeCommand.init();
     RainCommand.init();
+    NoClipCommand.init();
 
     StopCommand.init();
   }

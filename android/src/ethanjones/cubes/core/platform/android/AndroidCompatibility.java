@@ -132,14 +132,14 @@ public class AndroidCompatibility extends Compatibility {
   public void _exit(int status) {
     System.exit(status);
   }
-  
+
   private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yy HH:mm:ss");
-  
+
   @Override
   public String timestamp() {
     return dateFormat.format(new Date());
   }
-  
+
   @Override
   public String line_separator() {
     return System.getProperty("line.separator");

@@ -18,9 +18,11 @@ public class DesktopController extends InputAdapter {
   
   @Override
   public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-    current = ClickType.type(button);
-    NetworkingManager.sendPacketToServer(new PacketClick(current));
-    handleClick(current);
+    if (!Cubes.getClient().player.isNoClipInBlock()) {
+      current = ClickType.type(button);
+      NetworkingManager.sendPacketToServer(new PacketClick(current));
+      handleClick(current);
+    }
     return true;
   }
   

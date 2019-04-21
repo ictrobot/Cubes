@@ -13,7 +13,7 @@ import ethanjones.cubes.side.common.Cubes;
 import ethanjones.data.DataGroup;
 
 @Direction(PacketDirection.TO_SERVER)
-@Priority(PacketPriority.HIGH)
+@Priority(PacketPriority.CONNECTION_INITIALIZATION)
 public class PacketConnect extends DataPacket {
 
   public UUID uuid = CubesClient.uuid;

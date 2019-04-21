@@ -40,7 +40,7 @@ public class SelectedBlock {
   static Material material;
 
   public static Renderable draw() {
-    if (Cubes.getClient().renderer.guiRenderer.hideGuiEnabled) return null;
+    if (Cubes.getClient().renderer.guiRenderer.hideGuiEnabled || Cubes.getClient().player.isNoClipInBlock()) return null;
     BlockIntersection blockIntersection = BlockIntersection.getBlockIntersection(Cubes.getClient().player.position, Cubes.getClient().player.angle, Cubes.getClient().world);
     if (blockIntersection == null || blockIntersection.getBlockReference() == null) return null;
     BlockReference position = blockIntersection.getBlockReference();

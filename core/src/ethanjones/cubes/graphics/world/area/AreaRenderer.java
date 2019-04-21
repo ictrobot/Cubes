@@ -29,6 +29,7 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
   public static int renderedMeshesThisFrame = 0;
   public static int refreshedThisFrame = 0;
   public static int refreshedMeshesThisFrame = 0;
+  public static int refreshQueueLength = 0;
 
   public boolean refresh = true;
   private Vector3 offset = new Vector3();
@@ -43,20 +44,16 @@ public class AreaRenderer implements RenderableProvider, Disposable, Pool.Poolab
   }
 
   public boolean update() {
-    if (refresh) {
-      if ((System.currentTimeMillis() - Cubes.getClient().frameStart) < 3 && calculateVertices()) {
-        refresh = false;
-        return true;
-      } else {
-        return meshs.size() > 0; //still render old meshs
-      }
+    if (refresh && calculateVertices()) {
+      refresh = false;
+      return true;
     }
-    return true; // true indicates this area can be rendered
+    return false;
   }
 
   @Override
   public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
-    if (area == null || !update() || meshs.size() == 0) return;
+    if (area == null || meshs.size() == 0) return;
     renderedThisFrame++;
     for (AreaMesh mesh : meshs) {
       renderedMeshesThisFrame++;

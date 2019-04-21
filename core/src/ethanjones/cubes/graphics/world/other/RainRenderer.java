@@ -194,7 +194,10 @@ public class RainRenderer {
       while (newDrops > 0) {
         checkPos.set(newBB.min).add(rand.nextFloat() * nBBDim.x, rand.nextFloat() * nBBDim.y, rand.nextFloat() * nBBDim.z);
         if (oldBB.contains(checkPos)) continue;
-        particles.add(new Particle(checkPos.cpy()));
+
+        if (checkPos.y > world.heightmap(block(checkPos.x), block(checkPos.z))) {
+          particles.add(new Particle(checkPos.cpy()));
+        }
         newDrops--;
       }
 
@@ -202,7 +205,7 @@ public class RainRenderer {
         float offsetX = (rand.nextFloat() * AREA_WIDTH * 2) - AREA_WIDTH;
         float offsetZ = (rand.nextFloat() * AREA_WIDTH * 2) - AREA_WIDTH;
         Vector3 position = new Vector3(posPrevious.x + offsetX, posPrevious.y + AREA_HEIGHT, posPrevious.z + offsetZ);
-        if (world.getBlock(block(position.x), block(position.y), block(position.z)) == null) {
+        if (world.getBlock(block(position.x), block(position.y), block(position.z)) == null && position.y > world.heightmap(block(position.x), block(position.z))) {
           particles.add(new Particle(position));
         }
       }

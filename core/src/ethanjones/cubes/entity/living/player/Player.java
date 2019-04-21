@@ -2,12 +2,14 @@ package ethanjones.cubes.entity.living.player;
 
 import ethanjones.cubes.core.event.entity.living.player.PlayerMovementEvent;
 import ethanjones.cubes.core.gwt.UUID;
+import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.entity.living.LivingEntity;
 import ethanjones.cubes.graphics.entity.PlayerRenderer;
 import ethanjones.cubes.item.ItemTool;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketChat;
+import ethanjones.cubes.networking.packets.PacketPlayerNoClip;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.common.Cubes;
@@ -40,6 +42,8 @@ public class Player extends LivingEntity implements CommandSender, RenderablePro
   private final PlayerInventory inventory;
   private Vector3 previousPosition = new Vector3();
   private ItemTool.MiningTarget currentlyMining;
+
+  private boolean noClip = false;
 
   public Player(String username, UUID uuid) {
     super("core:player", 20);
@@ -86,6 +90,11 @@ public class Player extends LivingEntity implements CommandSender, RenderablePro
     return CommandPermission.Extended;
   }
 
+  @Override
+  public Vector3 getLocation() throws UnsupportedOperationException {
+    return position;
+  }
+
   public void addToWorld() {
     World world = Side.getCubes().world;
     world.entities.lock.writeLock();
@@ -96,32 +105,34 @@ public class Player extends LivingEntity implements CommandSender, RenderablePro
 
   @Override
   public void updatePosition(float time) {
-    if (Side.isClient() && !Cubes.getClient().inputChain.cameraController.flying) {
-      if (!inLoadedArea()) return;
-      Side side = Side.getSide();
-      World world = Side.getCubes().world;
-      tmpVector.set(position);
+    if (!noClip) {
+      if (Side.isClient() && !Cubes.getClient().inputChain.cameraController.flying()) {
+        if (!inLoadedArea()) return;
+        Side side = Side.getSide();
+        World world = Side.getCubes().world;
+        tmpVector.set(position);
 
-      if (!motion.isZero() || !WorldGravity.onBlock(world, tmpVector, height, PLAYER_RADIUS)) {
-        tmpVector.add(motion.x * time, motion.y * time, motion.z * time);
-        motion.y -= GRAVITY * time;
+        if (!motion.isZero() || !WorldGravity.onBlock(world, tmpVector, height, PLAYER_RADIUS)) {
+          tmpVector.add(motion.x * time, motion.y * time, motion.z * time);
+          motion.y -= GRAVITY * time;
 
-        if (WorldGravity.onBlock(world, tmpVector, height, PLAYER_RADIUS) && motion.y < 0) {
-          tmpVector.y = WorldGravity.getBlockY(tmpVector, height) + 1 + height;
-          motion.y = 0f;
-        }
+          if (WorldGravity.onBlock(world, tmpVector, height, PLAYER_RADIUS) && motion.y < 0) {
+            tmpVector.y = WorldGravity.getBlockY(tmpVector, height) + 1 + height;
+            motion.y = 0f;
+          }
 
-        if (!new PlayerMovementEvent(this, tmpVector).post().isCanceled()) {
-          position.set(tmpVector);
-          if (side == Side.Server) world.syncEntity(uuid);
+          if (!new PlayerMovementEvent(this, tmpVector).post().isCanceled()) {
+            position.set(tmpVector);
+            if (side == Side.Server) world.syncEntity(uuid);
+          }
         }
       }
-    }
-    World world = Side.getCubes().world;
-    if (world.getArea(CoordinateConverter.area(position.x), CoordinateConverter.area(position.z)) != null) {
-      if (world.getBlock(CoordinateConverter.block(position.x), CoordinateConverter.block(position.y - height), CoordinateConverter.block(position.z)) != null) {
-        position.set(previousPosition);
-        world.syncEntity(uuid);
+      World world = Side.getCubes().world;
+      if (world.getArea(CoordinateConverter.area(position.x), CoordinateConverter.area(position.z)) != null) {
+        if (world.getBlock(CoordinateConverter.block(position.x), CoordinateConverter.block(position.y - height), CoordinateConverter.block(position.z)) != null) {
+          position.set(previousPosition);
+          world.syncEntity(uuid);
+        }
       }
     }
     previousPosition.set(position);
@@ -129,7 +140,7 @@ public class Player extends LivingEntity implements CommandSender, RenderablePro
 
   @Override
   public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
-    if (Side.isServer()|| this == Cubes.getClient().player) return;
+    if (Side.isServer() || this == Cubes.getClient().player) return;
     PlayerRenderer.getRenderables(renderables, pool, this);
   }
 
@@ -146,6 +157,7 @@ public class Player extends LivingEntity implements CommandSender, RenderablePro
     DataGroup dataGroup = super.write();
     dataGroup.put("username", username);
     dataGroup.put("inventory", inventory.write());
+    dataGroup.put("noClip", noClip);
     return dataGroup;
   }
 
@@ -156,10 +168,36 @@ public class Player extends LivingEntity implements CommandSender, RenderablePro
       throw new IllegalStateException("Player uuid does not match");
     }
     inventory.read(dataGroup.getGroup("inventory"));
+    noClip = dataGroup.getBoolean("noClip");
   }
 
   @Override
   public boolean load(AreaReference a) {
     return clientIdentifier.getPlayerManager().areaInLoadRange(a);
+  }
+
+  public boolean noClip() {
+    return noClip;
+  }
+
+  public boolean isNoClipInBlock() {
+    if (!noClip) return false;
+    World world = Side.getCubes().world;
+    return world.getBlock(CoordinateConverter.block(position.x), CoordinateConverter.block(position.y), CoordinateConverter.block(position.z)) != null ||
+        world.getBlock(CoordinateConverter.block(position.x), CoordinateConverter.block(position.y - 1), CoordinateConverter.block(position.z)) != null;
+  }
+
+  public void setNoClip(boolean enabled) {
+    if (Side.isServer()) {
+      if (isNoClipInBlock()) {
+        print(Localization.get("command.noclip.tpSpawn"));
+        clientIdentifier.getPlayerManager().teleportToSpawn();
+      }
+
+      PacketPlayerNoClip p = new PacketPlayerNoClip();
+      p.enabled = enabled;
+      NetworkingManager.sendPacketToClient(p, clientIdentifier);
+    }
+    this.noClip = enabled;
   }
 }

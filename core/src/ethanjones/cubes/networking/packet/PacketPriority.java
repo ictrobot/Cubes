@@ -6,6 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 public enum PacketPriority {
+  // when the socket is first connected only CONNECTION_INITIALIZATION packets will be sent until the connection is marked as initialized
+  CONNECTION_INITIALIZATION,
+
   HIGH, MEDIUM, LOW;
 
   public static PacketPriority get(Class<? extends Packet> packet) {

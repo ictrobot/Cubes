@@ -140,6 +140,16 @@ public class Area implements Lock.HasLock {
     return lock.readUnlock(b);
   }
 
+
+  public int heightmap(int x, int z) {
+    lock.readLock();
+
+    if (!isReady()) return lock.readUnlock(0);
+    int h = heightmap[getHeightMapRef(x, z)];
+
+    return lock.readUnlock(h);
+  }
+
   // Get the bits XXXX0000
   public int getSunlight(int x, int y, int z) {
     lock.readLock();

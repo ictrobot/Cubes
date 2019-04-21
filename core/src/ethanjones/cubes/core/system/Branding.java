@@ -20,8 +20,11 @@ public class Branding {
   public final static String VERSION_MAJOR_MINOR_POINT;
   public final static String VERSION;
 
+  public final static boolean IS_RELEASE;
   public final static boolean IS_DEBUG;
   public final static String DEBUG;
+
+  public final static String BUILD_DATE_STRING;
 
   static {
     try {
@@ -36,6 +39,8 @@ public class Branding {
         if (buildProperties.get("build") != null) {
           properties.put("build", buildProperties.get("build"));
           properties.put("hash", buildProperties.get("hash"));
+          properties.put("isRelease", buildProperties.get("isRelease"));
+          properties.put("buildDate", buildProperties.get("buildDate"));
         }
       }
 
@@ -44,17 +49,21 @@ public class Branding {
       VERSION_POINT = Integer.parseInt(properties.get("point"));
       VERSION_BUILD = properties.get("build") != null ? Integer.parseInt(properties.get("build")) : -1;
       VERSION_HASH = properties.get("hash") != null ? properties.get("hash") : "";
+      IS_RELEASE = properties.get("isRelease") != null ? Boolean.valueOf(properties.get("isRelease")) : false;
 
       if (VERSION_BUILD == -1) {
         VERSION_FULL = VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_POINT;
         VERSION_MAJOR_MINOR_POINT = VERSION_FULL;
         VERSION = "Development [" + VERSION_FULL + "]";
+        BUILD_DATE_STRING = null;
         IS_DEBUG = true;
       } else {
         VERSION_FULL = VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_POINT + "." + VERSION_BUILD;
         VERSION_MAJOR_MINOR_POINT = VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_POINT;
         VERSION = VERSION_FULL;
         IS_DEBUG = false;
+
+        BUILD_DATE_STRING = properties.get("buildDate");
       }
 
       DEBUG = NAME + " " + VERSION + " for " + PLATFORM;
@@ -63,7 +72,7 @@ public class Branding {
       throw new CubesException(e);
     }
   }
-  
+
   private static HashMap<String, String> map(FileHandle fileHandle) {
     String file = fileHandle.readString();
     String[] split = file.split("\n");

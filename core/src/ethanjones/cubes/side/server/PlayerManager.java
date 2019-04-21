@@ -122,7 +122,7 @@ public class PlayerManager {
     }
   }
   
-  private void teleportToSpawn() {
+  public void teleportToSpawn() {
     BlockReference spawn = ((WorldServer) server.world).getSpawnPoint();
     if (spawn.blockY < 0)
       throw new IllegalStateException("The spawn point y coordinate must be greater than 0. " + spawn.blockY + " < 0");

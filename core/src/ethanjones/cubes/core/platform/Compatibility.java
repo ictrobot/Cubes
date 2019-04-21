@@ -66,11 +66,11 @@ public abstract class Compatibility {
   public void logEnvironment() {
 
   }
-  
+
   public boolean isTouchScreen() {
     return Settings.getBooleanSettingValue(Settings.INPUT_TOUCH);
   }
-  
+
   public boolean guessTouchScreen() {
     return false;
   }
@@ -118,32 +118,32 @@ public abstract class Compatibility {
   }
   
   public abstract void _exit(int status);
-  
+
   public abstract String timestamp();
-  
+
   public abstract String line_separator();
-  
+
   public void setCursorCatched(boolean b) {
     Gdx.input.setCursorCatched(b);
   }
-  
+
   public int getDeltaX(int pointer) {
     return Gdx.input.getDeltaX(pointer);
   }
-  
+
   public int getDeltaY(int pointer) {
     return Gdx.input.getDeltaY(pointer);
   }
-  
+
   public void openURL(String url) {
-  
+
   }
-  
+
   public WorldStorageInterface getWorldStorageInterface() {
     return null;
   }
-  
+
   public void logCrash(Throwable throwable) {
-  
+
   }
 }

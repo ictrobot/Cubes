@@ -18,7 +18,7 @@ public class TouchController extends InputAdapter {
   private boolean mine = false;
   
   public boolean touchDown (int screenX, int screenY, int pointer, int button) {
-    if (!down) {
+    if (!Cubes.getClient().player.isNoClipInBlock() && !down) {
       this.pointer = pointer;
       this.timestamp = System.currentTimeMillis();
       down = true;

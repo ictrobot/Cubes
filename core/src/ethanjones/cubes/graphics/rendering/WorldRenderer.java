@@ -8,6 +8,7 @@ import ethanjones.cubes.graphics.world.WorldGraphicsPools;
 import ethanjones.cubes.graphics.world.area.AreaBoundaries;
 import ethanjones.cubes.graphics.world.area.AreaRenderStatus;
 import ethanjones.cubes.graphics.world.area.AreaRenderer;
+import ethanjones.cubes.graphics.world.area.DebugLineRenderer;
 import ethanjones.cubes.graphics.world.other.BreakingRenderer;
 import ethanjones.cubes.graphics.world.other.RainRenderer;
 import ethanjones.cubes.graphics.world.other.SelectedBlock;
@@ -87,6 +88,8 @@ public class WorldRenderer implements Disposable {
     startingNode.firstNode = true; // Fix flashes caused by the starting area just being in frustum as flying up/down (e.g. Y=64.001) and areaInFrustum returning false
     queue.add(startingNode);
 
+    boolean noClip = Cubes.getClient().player.noClip();
+
     while (!queue.isEmpty()) {
       AreaNode node = queue.pop();
       Area area = node.area;
@@ -108,7 +111,7 @@ public class WorldRenderer implements Disposable {
 
         int status = area.renderStatus[ySection];
         if (status == AreaRenderStatus.UNKNOWN) status = AreaRenderStatus.update(area, ySection);
-        traverse = status == AreaRenderStatus.EMPTY ? 0 : status;
+        traverse = (noClip || status == AreaRenderStatus.EMPTY) ? 0 : status;
         boolean render = status != AreaRenderStatus.EMPTY && !complete(area, ySection, areaMap, status);
 
         if (render) {
@@ -154,18 +157,28 @@ public class WorldRenderer implements Disposable {
     }
     areaMap.lock.readUnlock();
 
+    int refreshed = 0;
     if (needToRefresh.size() > 0) {
       Collections.sort(needToRefresh, new AreaRendererSorter());
+      boolean doUpdates = true;
       for (AreaRenderer areaRenderer : needToRefresh) {
+        if (doUpdates) {
+          if (areaRenderer.update()) {
+            refreshed++;
+          }
+
+          if (refreshed > 0 && (System.currentTimeMillis() - Cubes.getClient().frameStart) > 3) doUpdates = false;
+        }
         modelBatch.render(areaRenderer);
       }
     }
+    AreaRenderer.refreshQueueLength = needToRefresh.size() - refreshed;
 
     float deltaTime = Gdx.graphics.getDeltaTime();
     world.entities.lock.readLock();
     for (Entity entity : world.entities.values()) {
       entity.updatePosition(deltaTime);
-      if (entity instanceof RenderableProvider) modelBatch.render(((RenderableProvider) entity));
+      if (entity instanceof RenderableProvider && entity.inFrustum(camera.frustum)) modelBatch.render(((RenderableProvider) entity));
     }
     world.entities.lock.readUnlock();
 
@@ -176,6 +189,8 @@ public class WorldRenderer implements Disposable {
     renderIfNotNull(AreaBoundaries.drawCurrent(pos.areaX, yPos, pos.areaZ));
     SunRenderer.draw(modelBatch);
     modelBatch.end();
+
+    DebugLineRenderer.render();
   }
 
   private void renderIfNotNull(Renderable r) {

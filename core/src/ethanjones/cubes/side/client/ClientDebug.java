@@ -78,7 +78,7 @@ public class ClientDebug {
     builder.append(Task.debugString()).append(lineSeparator);
     builder.append("POS X:").append(twoDP(p.x)).append("(").append(CoordinateConverter.area(p.x)).append(")").append(" Y:").append(twoDP(p.y)).append("(").append(CoordinateConverter.area(p.y)).append(")").append(" Z:").append(twoDP(p.z)).append("(").append(CoordinateConverter.area(p.z)).append(")").append(lineSeparator);
     builder.append("DIR X:").append(twoDP(Cubes.getClient().player.angle.x)).append(" Y:").append(twoDP(Cubes.getClient().player.angle.y)).append(" Z:").append(twoDP(Cubes.getClient().player.angle.z)).append(lineSeparator);
-    builder.append("REN A:").append(AreaRenderer.renderedThisFrame).append(" M:").append(AreaRenderer.renderedMeshesThisFrame);
+    builder.append("REN A:").append(AreaRenderer.renderedThisFrame).append(" Q:").append(AreaRenderer.refreshQueueLength).append(" M:").append(AreaRenderer.renderedMeshesThisFrame).append(" D:").append(Settings.getIntegerSetting(Settings.GRAPHICS_VIEW_DISTANCE));
     if (Settings.getBooleanSettingValue(Settings.GRAPHICS_FOG)) builder.append(" FOG");
     if (AmbientOcclusion.isEnabled()) builder.append(" AO");
     builder.append(lineSeparator);

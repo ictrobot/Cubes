@@ -40,6 +40,7 @@ public class PlayerRenderer {
   public static void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool, Player player) {
     if (mesh == null) {
       TextureRegion regionPlayer = Assets.getTextureRegion("core:world/player.png");
+      TextureRegion regionFacing = Assets.getTextureRegion("core:world/player_facing.png");
 
       mesh = new Mesh(false, 4 * 6, 6 * 6, CubesVertexAttributes.VERTEX_ATTRIBUTES);
       mesh.setIndices(blockIndices);
@@ -48,7 +49,7 @@ public class PlayerRenderer {
       Vector3 offset = new Vector3(-0.5f, -0.5f, -0.5f);
       vertexOffset = FaceVertices.createMaxX(offset, regionPlayer, null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
       vertexOffset = FaceVertices.createMaxY(offset, regionPlayer, null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
-      vertexOffset = FaceVertices.createMaxZ(offset, regionPlayer, null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
+      vertexOffset = FaceVertices.createMaxZ(offset, regionFacing, null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
       vertexOffset = FaceVertices.createMinX(offset, regionPlayer, null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
       vertexOffset = FaceVertices.createMinY(offset, regionPlayer, null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
       vertexOffset = FaceVertices.createMinZ(offset, regionPlayer, null, 0, 0, 0, FULL_LIGHT, vertices, vertexOffset);
@@ -62,9 +63,14 @@ public class PlayerRenderer {
       renderable.name = "Player";
     }
     renderable.worldTransform.idt();
-    renderable.worldTransform.translate(player.position.x, player.position.y, player.position.z);
-    renderable.worldTransform.scl(0.5f);
-    renderable.worldTransform.rotate(Vector3.Y, (System.currentTimeMillis() % 3600) / 10);
+
+    renderable.worldTransform.scl(0.75f);
+    renderable.worldTransform.rotate(Vector3.Y, (float) Math.toDegrees(Math.atan2(player.angle.x, player.angle.z)));
+    renderable.worldTransform.rotate(Vector3.X,  (float) -Math.toDegrees(Math.atan(player.angle.y)));
+
+    //DebugLineRenderer.addLine(player.position, new Vector3(player.angle).scl(2).add(player.position), Color.BLUE);
+
+    renderable.worldTransform.setTranslation(player.position);
     renderable.setLightOverride(player.position);
     renderables.add(renderable);
   }

@@ -27,7 +27,10 @@ public class Debug {
 
   public static void printProperties() {
     if (Branding.VERSION_HASH != null && !Branding.VERSION_HASH.isEmpty()) {
-      Log.debug("Hash:               " + Branding.VERSION_HASH);
+      Log.debug("Build Hash:         " + Branding.VERSION_HASH);
+    }
+    if (Branding.BUILD_DATE_STRING != null) {
+      Log.debug("Build Date:         " + Branding.BUILD_DATE_STRING);
     }
     Log.debug("libGDX version:     " + com.badlogic.gdx.Version.VERSION);
   }
