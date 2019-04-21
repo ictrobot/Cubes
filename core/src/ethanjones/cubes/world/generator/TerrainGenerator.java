@@ -1,6 +1,7 @@
 package ethanjones.cubes.world.generator;
 
 import ethanjones.cubes.block.Block;
+import ethanjones.cubes.core.util.locks.Locked;
 import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.server.WorldServer;
 import ethanjones.cubes.world.storage.Area;
@@ -20,10 +21,10 @@ public abstract class TerrainGenerator {
   public static void set(Area area, Block block, int x, int y, int z, int meta) {
     int ref = Area.getRef(x, y, z);
 
-    area.lock.writeLock();
-    area.setupArrays(y);
-    area.blocks[ref] = (block == null ? 0 : block.intID + ((meta & 0xFF) << 20));
-    area.lock.writeUnlock();
+    try (Locked<Area> locked = area.acquireWriteLock()) {
+      area.setupArrays(y);
+      area.blocks[ref] = (block == null ? 0 : block.intID + ((meta & 0xFF) << 20));
+    }
   }
   
   public static void setNeighbour(Area area, Block block, int x, int y, int z, int meta) {
@@ -34,10 +35,10 @@ public abstract class TerrainGenerator {
   public static void setVisible(Area area, Block block, int x, int y, int z, int meta) {
     int ref = Area.getRef(x, y, z);
 
-    area.lock.writeLock();
-    area.setupArrays(y);
-    area.blocks[ref] = (block == null ? 0 : (block.intID + ((meta & 0xFF) << 20)) | Area.BLOCK_VISIBLE);
-    area.lock.writeUnlock();
+    try (Locked<Area> locked = area.acquireWriteLock()) {
+      area.setupArrays(y);
+      area.blocks[ref] = (block == null ? 0 : (block.intID + ((meta & 0xFF) << 20)) | Area.BLOCK_VISIBLE);
+    }
   }
 
   public static void setVisibleNeighbour(Area area, Block block, int x, int y, int z, int meta) {

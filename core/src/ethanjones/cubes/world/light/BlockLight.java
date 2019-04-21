@@ -68,9 +68,7 @@ public class BlockLight {
   }
 
   private static void tryPropagateAdd(ArrayDeque<LightNode> lightQueue, LightWorldSection w, int x, int y, int z, int l) {
-    int dX = CoordinateConverter.area(x) - w.initialAreaX;
-    int dZ = CoordinateConverter.area(z) - w.initialAreaZ;
-    Area a = w.areas[dX + 1][dZ + 1];
+    Area a = w.getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
     int ref = getRef(x - a.minBlockX, y, z - a.minBlockZ);
     if (!a.isReady() || y > a.maxY || !TransparencyManager.isTransparent(a.blocks[ref])) return;
     if ((a.light[ref] & 0xF) + 2 <= l) {
@@ -116,9 +114,7 @@ public class BlockLight {
   }
 
   private static void tryPropagateRemove(ArrayDeque<LightNode> removeQueue, ArrayDeque<LightNode> addQueue, LightWorldSection w, int x, int y, int z, int l) {
-    int dX = CoordinateConverter.area(x) - w.initialAreaX;
-    int dZ = CoordinateConverter.area(z) - w.initialAreaZ;
-    Area a = w.areas[dX + 1][dZ + 1];
+    Area a = w.getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
     int ref = getRef(x - a.minBlockX, y, z - a.minBlockZ);
     if (!a.isReady() || y > a.maxY || !TransparencyManager.isTransparent(a.blocks[ref])) return;
     int p = a.light[ref] & 0xF;

@@ -6,6 +6,7 @@ import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.core.util.PerSecond;
 import ethanjones.cubes.entity.living.player.Player;
+import ethanjones.cubes.graphics.rendering.WorldRenderer;
 import ethanjones.cubes.graphics.world.ao.AmbientOcclusion;
 import ethanjones.cubes.graphics.world.area.AreaRenderer;
 import ethanjones.cubes.side.common.Cubes;
@@ -68,6 +69,7 @@ public class ClientDebug {
 
   public static String getDebugString() {
     Vector3 p = Cubes.getClient().player.position;
+    WorldRenderer worldRenderer = Cubes.getClient().renderer.worldRenderer;
     ms.addValue(Gdx.graphics.getRawDeltaTime() * 1000f);
 
     builder.setLength(brandingDebugLength);
@@ -78,7 +80,9 @@ public class ClientDebug {
     builder.append(Task.debugString()).append(lineSeparator);
     builder.append("POS X:").append(twoDP(p.x)).append("(").append(CoordinateConverter.area(p.x)).append(")").append(" Y:").append(twoDP(p.y)).append("(").append(CoordinateConverter.area(p.y)).append(")").append(" Z:").append(twoDP(p.z)).append("(").append(CoordinateConverter.area(p.z)).append(")").append(lineSeparator);
     builder.append("DIR X:").append(twoDP(Cubes.getClient().player.angle.x)).append(" Y:").append(twoDP(Cubes.getClient().player.angle.y)).append(" Z:").append(twoDP(Cubes.getClient().player.angle.z)).append(lineSeparator);
-    builder.append("REN A:").append(AreaRenderer.renderedThisFrame).append(" Q:").append(AreaRenderer.refreshQueueLength).append(" M:").append(AreaRenderer.renderedMeshesThisFrame).append(" D:").append(Settings.getIntegerSetting(Settings.GRAPHICS_VIEW_DISTANCE));
+    builder.append("REN A:").append(AreaRenderer.renderedThisFrame).append(" Q:").append(AreaRenderer.refreshQueueLength).append(" M:").append(AreaRenderer.renderedMeshesThisFrame).append(" E:").append(worldRenderer.getEntitiesDrawn()).append("/").append(worldRenderer.getTotalEntities()).append(lineSeparator);
+
+    builder.append("GFX D:").append(Settings.getIntegerSetting(Settings.GRAPHICS_VIEW_DISTANCE).get());
     if (Settings.getBooleanSettingValue(Settings.GRAPHICS_FOG)) builder.append(" FOG");
     if (AmbientOcclusion.isEnabled()) builder.append(" AO");
     builder.append(lineSeparator);

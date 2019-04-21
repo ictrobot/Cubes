@@ -4,6 +4,7 @@ import ethanjones.cubes.block.Block;
 import ethanjones.cubes.block.data.BlockData;
 import ethanjones.cubes.block.data.BlockDataChest;
 import ethanjones.cubes.core.util.BlockFace;
+import ethanjones.cubes.core.util.VectorUtil;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.graphics.hud.inv.DoubleInventory;
 import ethanjones.cubes.graphics.hud.inv.InventoryActor;
@@ -11,11 +12,16 @@ import ethanjones.cubes.graphics.hud.inv.InventoryManager;
 import ethanjones.cubes.graphics.hud.inv.InventoryWindow;
 import ethanjones.cubes.graphics.world.block.BlockTextureHandler;
 import ethanjones.cubes.input.ClickType;
+import ethanjones.cubes.item.ItemStack;
 import ethanjones.cubes.item.ItemTool.ToolType;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.common.Side;
+import ethanjones.cubes.world.World;
+import ethanjones.cubes.world.collision.BlockIntersection;
 import ethanjones.cubes.world.storage.Area;
 import ethanjones.data.DataGroup;
+
+import com.badlogic.gdx.math.Vector3;
 
 public class BlockChest extends Block {
 
@@ -61,5 +67,26 @@ public class BlockChest extends Block {
       InventoryManager.showInventory(new InventoryWindow(new DoubleInventory(inventoryActor, playerInv)));
     }
     return true;
+  }
+
+  @Override
+  public Integer place(World world, int x, int y, int z, int meta, Player player, BlockIntersection intersection) {
+    Vector3 pos = player.position.cpy();
+    pos.sub(x, y, z);
+    pos.nor();
+    BlockFace blockFace = VectorUtil.directionXZ(pos);
+    if (blockFace == BlockFace.negX) {
+      return 1;
+    } else if (blockFace == BlockFace.posZ) {
+      return 2;
+    } else if (blockFace == BlockFace.negZ) {
+      return 3;
+    }
+    return 0;
+  }
+
+  @Override
+  public ItemStack[] drops(World world, int x, int y, int z, int meta) {
+    return super.drops(world, x, y, z, 0);
   }
 }

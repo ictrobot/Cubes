@@ -22,13 +22,17 @@ public class PlayerCollision {
     if (world.getArea(CoordinateConverter.area(pos.x), CoordinateConverter.area(pos.z)) != null && !event.isCanceled()) {
       int blockX = CoordinateConverter.block(pos.x);
       int blockZ = CoordinateConverter.block(pos.z);
-      int minBlockY = CoordinateConverter.block(pos.y - player.height);
+      int minBlockY = CoordinateConverter.block(pos.y - player.height + 0.1f);
       int maxBlockY = CoordinateConverter.block(pos.y + 0.2f);
       for (int y = minBlockY; y <= maxBlockY; y++) {
         if (world.getBlock(blockX, y, blockZ) != null) {
           event.setCanceled(true);
           return;
         }
+      }
+
+      if (world.getBlock(blockX, CoordinateConverter.block(pos.y - player.height), blockZ) != null) {
+        pos.y = (float) (Math.ceil(pos.y - player.height) + player.height);
       }
 
       limit(pos, +r, 0, player.height);

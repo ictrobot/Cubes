@@ -3,6 +3,7 @@ package ethanjones.cubes.world.generator.smooth;
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.util.locks.Locked;
 import ethanjones.cubes.world.generator.RainStatus;
 import ethanjones.cubes.world.generator.TerrainGenerator;
 import ethanjones.cubes.world.reference.BlockReference;
@@ -40,15 +41,13 @@ public class SmoothWorld extends TerrainGenerator {
 
   @Override
   public void generate(Area area) {
-    area.lock.writeLock();
-
     for (int x = 0; x < Area.SIZE_BLOCKS; x++) {
       for (int z = 0; z < Area.SIZE_BLOCKS; z++) {
         int g = getSurfaceHeight(x + area.minBlockX, z + area.minBlockZ);
         int d = getDirtHeight(x + area.minBlockX, z + area.minBlockZ);
 
         if ((x == 0 && z == 0) || g > area.maxY) area.setupArrays(g);
-  
+
         area.blocks[Area.getRef(x, 0, z)] = Blocks.bedrock.intID;
         for (int y = 1; y < g; y++) {
           if (y < (g - d))
@@ -60,7 +59,6 @@ public class SmoothWorld extends TerrainGenerator {
       }
     }
     caves.apply(area);
-    area.lock.writeUnlock();
   }
 
   @Override

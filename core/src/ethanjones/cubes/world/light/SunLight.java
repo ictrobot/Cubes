@@ -9,32 +9,28 @@ import java.util.ArrayDeque;
 import static ethanjones.cubes.world.storage.Area.*;
 
 public class SunLight {
-//  public static ReentrantLock initalSunlight = new ReentrantLock(); singelthreaded
   public static final int MAX_SUNLIGHT = 0xF0;
 
   public static void initialSunlight(Area area) {
-//    initalSunlight.lock(); // used to prevent all the World Generation threads grabbing different areas and deadlocking
-    LightWorldSection worldSection = new LightWorldSection(area);
-//    initalSunlight.unlock();
+    try (LightWorldSection worldSection = new LightWorldSection(area)) {
+      ArrayDeque<LightNode> lightQueue = new ArrayDeque<>();
+      int max = 15;
+      for (int x = 0; x < SIZE_BLOCKS; x++) {
+        for (int z = 0; z < SIZE_BLOCKS; z++) {
+          int hmRef = getHeightMapRef(x, z);
+          int h = area.heightmap[hmRef] + 1;
 
-    ArrayDeque<LightNode> lightQueue = new ArrayDeque<LightNode>();
-    int max = 15;
-    for (int x = 0; x < SIZE_BLOCKS; x++) {
-      for (int z = 0; z < SIZE_BLOCKS; z++) {
-        int hmRef = getHeightMapRef(x, z);
-        int h = area.heightmap[hmRef] + 1;
+          int ref = getRef(x, h, z);
+          for (int y = 0; y <= (area.maxY - h); y++) {
+            int r = ref + (y * MAX_Y_OFFSET);
+            area.light[r] = (byte) ((area.light[r] & 0xF) | (max << 4));
+          }
 
-        int ref = getRef(x, h, z);
-        for (int y = 0; y <= (area.maxY - h); y++) {
-          int r = ref + (y * MAX_Y_OFFSET);
-          area.light[r] = (byte) ((area.light[r] & 0xF) | (max << 4));
+          lightQueue.add(new LightNode(x + area.minBlockX, h, z + area.minBlockZ, max));
         }
-
-        lightQueue.add(new LightNode(x + area.minBlockX, h, z + area.minBlockZ, max));
       }
+      propagateAdd(lightQueue, worldSection);
     }
-    propagateAdd(lightQueue, worldSection);
-    worldSection.unlock();
   }
 
   public static void addSunlight(int x, int y, int z, Area area, LightWorldSection w) {
@@ -80,9 +76,7 @@ public class SunLight {
 
   // ln has already been subtracted by one
   private static void tryPropagateAdd(ArrayDeque<LightNode> lightQueue, LightWorldSection w, int x, int y, int z, int ln) {
-    int dX = CoordinateConverter.area(x) - w.initialAreaX;
-    int dZ = CoordinateConverter.area(z) - w.initialAreaZ;
-    Area a = w.areas[dX + 1][dZ + 1];
+    Area a = w.getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
     int ref = getRef(x - a.minBlockX, y, z - a.minBlockZ);
     if (!a.isReady() || y > a.maxY || !TransparencyManager.isTransparent(a.blocks[ref])) return;
     int i = ((a.light[ref] >> 4) & 0xF);
@@ -130,9 +124,7 @@ public class SunLight {
   }
 
   private static void tryPropagateRemove(ArrayDeque<LightNode> removeQueue, ArrayDeque<LightNode> addQueue, LightWorldSection w, int x, int y, int z, int l) {
-    int dX = CoordinateConverter.area(x) - w.initialAreaX;
-    int dZ = CoordinateConverter.area(z) - w.initialAreaZ;
-    Area a = w.areas[dX + 1][dZ + 1];
+    Area a = w.getArea(CoordinateConverter.area(x), CoordinateConverter.area(z));
     int ref = getRef(x - a.minBlockX, y, z - a.minBlockZ);
     if (!a.isReady() || y > a.maxY || !TransparencyManager.isTransparent(a.blocks[ref])) return;
     int p = ((a.light[ref] >> 4) & 0xF);

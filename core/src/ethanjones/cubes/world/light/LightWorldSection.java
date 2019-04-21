@@ -2,21 +2,23 @@ package ethanjones.cubes.world.light;
 
 import ethanjones.cubes.core.id.IDManager;
 import ethanjones.cubes.core.id.TransparencyManager;
-import ethanjones.cubes.core.util.Lock;
+import ethanjones.cubes.core.util.locks.LockManager;
+import ethanjones.cubes.core.util.locks.Locked;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.storage.Area;
 import ethanjones.cubes.world.thread.AreaNotLoadedException;
 
-class LightWorldSection {
+class LightWorldSection implements AutoCloseable {
   public final int initialAreaX;
   public final int initialAreaZ;
   public final int initialMinBlockX;
   public final int initialMinBlockZ;
   public final int initialMaxBlockX;
   public final int initialMaxBlockZ;
-  public final Area[][] areas = new Area[3][3];
+  public final Area[] areas = new Area[9];
   public final Area initial;
-  
+  private Locked<Area> lock;
+
   public LightWorldSection(Area initial) {
     initialAreaX = initial.areaX;
     initialAreaZ = initial.areaZ;
@@ -26,29 +28,27 @@ class LightWorldSection {
     initialMaxBlockZ = initial.minBlockZ + Area.SIZE_BLOCKS;
     this.initial = initial;
     
-    areas[0][0] = initial.neighbour(initialAreaX - 1, initialAreaZ - 1);
-    areas[0][1] = initial.neighbour(initialAreaX - 1, initialAreaZ);
-    areas[0][2] = initial.neighbour(initialAreaX - 1, initialAreaZ + 1);
-    areas[1][0] = initial.neighbour(initialAreaX, initialAreaZ - 1);
-    areas[1][1] = initial;
-    areas[1][2] = initial.neighbour(initialAreaX, initialAreaZ + 1);
-    areas[2][0] = initial.neighbour(initialAreaX + 1, initialAreaZ - 1);
-    areas[2][1] = initial.neighbour(initialAreaX + 1, initialAreaZ);
-    areas[2][2] = initial.neighbour(initialAreaX + 1, initialAreaZ + 1);
+    areas[0] = initial.neighbour(initialAreaX - 1, initialAreaZ - 1);
+    areas[1] = initial.neighbour(initialAreaX - 1, initialAreaZ);
+    areas[2] = initial.neighbour(initialAreaX - 1, initialAreaZ + 1);
+    areas[3] = initial.neighbour(initialAreaX, initialAreaZ - 1);
+    areas[4] = initial;
+    areas[5] = initial.neighbour(initialAreaX, initialAreaZ + 1);
+    areas[6] = initial.neighbour(initialAreaX + 1, initialAreaZ - 1);
+    areas[7] = initial.neighbour(initialAreaX + 1, initialAreaZ);
+    areas[8] = initial.neighbour(initialAreaX + 1, initialAreaZ + 1);
     
-    for (Area[] areaArr : areas) {
-      for (Area area : areaArr) {
-        if (area == null) throw new AreaNotLoadedException();
-      }
+    for (Area area : areas) {
+      if (area == null) throw new AreaNotLoadedException();
     }
-    
-    Lock.waitToLockAll(true, areas[0][0], areas[0][1], areas[0][2], areas[1][0], areas[1][1], areas[1][2], areas[2][0], areas[2][1], areas[2][2]);
+
+    lock = LockManager.lockMany(true, areas);
   }
   
   public Area getArea(int areaX, int areaZ) {
-    int dX = areaX - initialAreaX;
-    int dZ = areaZ - initialAreaZ;
-    return areas[dX + 1][dZ + 1];
+    int dX = areaX - initialAreaX + 1;
+    int dZ = areaZ - initialAreaZ + 1;
+    return areas[dX * 3 + dZ];
   }
 
   protected boolean transparent(int x, int y, int z) {
@@ -84,11 +84,8 @@ class LightWorldSection {
     return getArea(CoordinateConverter.area(x), CoordinateConverter.area(z)).maxY;
   }
 
-  protected void unlock() {
-    for (Area[] areaArr : areas) {
-      for (Area area : areaArr) {
-        area.lock.writeUnlock();
-      }
-    }
+  @Override
+  public void close() {
+    lock.close();
   }
 }

@@ -2,6 +2,8 @@ package ethanjones.cubes.world.server;
 
 import ethanjones.cubes.core.gwt.UUID;
 import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.util.locks.LockManager;
+import ethanjones.cubes.core.util.locks.Locked;
 import ethanjones.cubes.entity.Entity;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketEntityAdd;
@@ -10,6 +12,7 @@ import ethanjones.cubes.networking.packets.PacketEntityUpdate;
 import ethanjones.cubes.networking.packets.PacketWorldTime;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.generator.RainStatus;
 import ethanjones.cubes.world.reference.AreaReference;
@@ -19,6 +22,7 @@ import ethanjones.cubes.world.save.Save;
 import ethanjones.cubes.world.storage.Area;
 import ethanjones.cubes.world.storage.WorldStorage;
 import ethanjones.cubes.world.thread.GenerationTask;
+import ethanjones.cubes.world.thread.WorldLockable;
 import ethanjones.cubes.world.thread.WorldRequestParameter;
 import ethanjones.cubes.world.thread.WorldTasks;
 import ethanjones.data.DataGroup;
@@ -34,7 +38,7 @@ public class WorldServer extends World {
   private long rainStatusOverrideEnd;
 
   public WorldServer(Save save) {
-    super(save);
+    super(save, Side.Server);
     if (save == null) throw new IllegalArgumentException("Null save on server");
     
     Log.info("Save '" + this.save.name + "'");
@@ -51,16 +55,13 @@ public class WorldServer extends World {
 
   @Override
   public void tick() {
-    updateLock.writeLock();
     super.tick();
 
-    map.lock.readLock();
-    for (Area area : map) {
-      area.tick();
+    try (Locked<WorldLockable> locked = LockManager.lockMany(true, this, map, entities)) {
+      for (Area area : map) {
+        area.tick();
+      }
     }
-    map.lock.readUnlock();
-  
-    updateLock.writeUnlock();
   }
 
   /**
@@ -74,13 +75,12 @@ public class WorldServer extends World {
       if (!shouldAreaBeLoaded(areaReference)) removed.add(area);
     }
 
-    map.lock.writeLock();
-    int i = map.getSize();
-    for (Area area : removed) {
-      area.unload();
-      map.setArea(area.areaX, area.areaZ, null);
+    try (Locked<WorldLockable> locked = map.acquireWriteLock()) {
+      for (Area area : removed) {
+        area.unload();
+        map.setArea(area.areaX, area.areaZ, null);
+      }
     }
-    map.lock.writeUnlock();
   }
 
   public boolean shouldAreaBeLoaded(AreaReference areaReference) {
@@ -110,35 +110,29 @@ public class WorldServer extends World {
 
   @Override
   public void addEntity(Entity entity) {
-    entities.lock.writeLock();
     super.addEntity(entity);
 
     PacketEntityAdd packet = new PacketEntityAdd();
     packet.entity = entity;
     NetworkingManager.sendPacketToAllClients(packet);
-    entities.lock.writeUnlock();
   }
 
   @Override
   public void removeEntity(UUID uuid) {
-    entities.lock.writeLock();
     super.removeEntity(uuid);
 
     PacketEntityRemove packet = new PacketEntityRemove();
     packet.uuid = uuid;
     NetworkingManager.sendPacketToAllClients(packet);
-    entities.lock.writeUnlock();
   }
 
   @Override
   public void updateEntity(DataGroup data) {
-    entities.lock.writeLock();
     super.updateEntity(data);
 
     PacketEntityUpdate packet = new PacketEntityUpdate();
     packet.data = data;
     NetworkingManager.sendPacketToAllClients(packet);
-    entities.lock.writeUnlock();
   }
 
   @Override
@@ -163,25 +157,23 @@ public class WorldServer extends World {
   @Override
   public void save() {
     if (save == null || save.readOnly) {
-      map.lock.writeLock();
-      unloadDistantAreas(map);
-      map.lock.writeUnlock();
-      return;
+      try (Locked<WorldLockable> locked = map.acquireWriteLock()) {
+        unloadDistantAreas(map);
+        return;
+      }
     }
-    updateLock.readLock();
-
-    // players
-    save.writePlayers();
-    // areas
-    save.writeAreas(map);
-    // state
-    save.getSaveOptions().worldTime = time;
-    save.getSaveOptions().worldPlayingTime = playingTime;
-    save.getSaveOptions().worldRainOverride = rainStatusOverride;
-    save.getSaveOptions().worldRainOverrideTime = rainStatusOverrideEnd;
-    save.writeSaveOptions();
-
-    updateLock.readUnlock();
+    try (Locked<WorldLockable> locked = LockManager.lockMany(true, this, map, entities)) {
+      // players
+      save.writePlayers();
+      // areas
+      save.writeAreas(map);
+      // state
+      save.getSaveOptions().worldTime = time;
+      save.getSaveOptions().worldPlayingTime = playingTime;
+      save.getSaveOptions().worldRainOverride = rainStatusOverride;
+      save.getSaveOptions().worldRainOverrideTime = rainStatusOverrideEnd;
+      save.writeSaveOptions();
+    }
   }
 
   public RainStatus getRainStatus(float x, float z) {

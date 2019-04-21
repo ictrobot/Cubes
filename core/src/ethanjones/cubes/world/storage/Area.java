@@ -8,8 +8,10 @@ import ethanjones.cubes.core.id.IDManager;
 import ethanjones.cubes.core.id.TransparencyManager;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.CubesException;
-import ethanjones.cubes.core.util.Lock;
 import ethanjones.cubes.core.util.ThreadRandom;
+import ethanjones.cubes.core.util.locks.LockManager;
+import ethanjones.cubes.core.util.locks.Lockable;
+import ethanjones.cubes.core.util.locks.Locked;
 import ethanjones.cubes.graphics.world.area.AreaRenderStatus;
 import ethanjones.cubes.graphics.world.area.AreaRenderer;
 import ethanjones.cubes.networking.NetworkingManager;
@@ -19,6 +21,7 @@ import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.light.SunLight;
 import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.storage.WorldStorageInterface.ChangedBlock;
+import ethanjones.cubes.world.thread.WorldLockable;
 import ethanjones.data.Data;
 import ethanjones.data.DataGroup;
 
@@ -29,7 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
-public class Area implements Lock.HasLock {
+public class Area extends Lockable<Area> {
 
   public static final int BLOCK_VISIBLE = 1 << 28;
 
@@ -50,7 +53,8 @@ public class Area implements Lock.HasLock {
   public static final int MAX_Z_OFFSET = SIZE_BLOCKS;
   public static final int MIN_Z_OFFSET = -MAX_Z_OFFSET;
 
-  public final Lock lock = new Lock();
+  private static final LockManager<Area> LOCK_MANAGER = new LockManager<>();
+
   public final AtomicReference<Object> features;
 
   public final int areaX;
@@ -85,11 +89,13 @@ public class Area implements Lock.HasLock {
 
   private volatile Area[] neighboursClient = new Area[9];
   private volatile Area[] neighboursServer = new Area[9];
-  private AreaMap areaMapClient;
-  private AreaMap areaMapServer;
+  private volatile AreaMap areaMapClient;
+  private volatile AreaMap areaMapServer;
   public final boolean shared;
 
   public Area(int areaX, int areaZ) {
+    super(LOCK_MANAGER);
+
     this.areaX = areaX;
     this.areaZ = areaZ;
     minBlockX = areaX * SIZE_BLOCKS;
@@ -104,118 +110,109 @@ public class Area implements Lock.HasLock {
     maxY = 0;
     height = 0;
     unloaded = false;
-    features = new AtomicReference<Object>();
+    features = new AtomicReference<>();
 
     this.shared = isShared();
   }
 
   public Area(Area toCopy) {
     this(toCopy.areaX, toCopy.areaZ);
-    toCopy.lock.readLock();
-    if (toCopy.isReady()) {
-      this.setupArrays(toCopy.maxY);
-      System.arraycopy(toCopy.blocks, 0, this.blocks, 0, this.blocks.length);
-      System.arraycopy(toCopy.light, 0, this.light, 0, this.light.length);
-      System.arraycopy(toCopy.heightmap, 0, this.heightmap, 0, this.heightmap.length);
-      if (toCopy.features.get() != null) this.features.set(Boolean.TRUE);
+
+    try (Locked<Area> l = toCopy.acquireReadLock()) {
+      if (toCopy.isReady()) {
+        this.setupArrays(toCopy.maxY);
+        System.arraycopy(toCopy.blocks, 0, this.blocks, 0, this.blocks.length);
+        System.arraycopy(toCopy.light, 0, this.light, 0, this.light.length);
+        System.arraycopy(toCopy.heightmap, 0, this.heightmap, 0, this.heightmap.length);
+        if (toCopy.features.get() != null) this.features.set(Boolean.TRUE);
+      }
     }
-    toCopy.lock.readUnlock();
   }
 
   public Block getBlock(int x, int y, int z) {
-    lock.readLock();
-
-    if (unreadyReadLock(y)) return null;
-    int b = blocks[getRef(x, y, z)] & 0xFFFFF;
-
-    return lock.readUnlock(IDManager.toBlock(b));
+    try (Locked<Area> l = acquireReadLock()) {
+      if (unready(y)) return null;
+      int b = blocks[getRef(x, y, z)] & 0xFFFFF;
+      return IDManager.toBlock(b);
+    }
   }
 
   public int getMeta(int x, int y, int z) {
-    lock.readLock();
-
-    if (unreadyReadLock(y)) return 0;
-    int b = (blocks[getRef(x, y, z)] >> 20) & 0xFF;
-
-    return lock.readUnlock(b);
+    try (Locked<Area> l = acquireReadLock()) {
+      if (unready(y)) return 0;
+      return (blocks[getRef(x, y, z)] >> 20) & 0xFF;
+    }
   }
 
 
   public int heightmap(int x, int z) {
-    lock.readLock();
-
-    if (!isReady()) return lock.readUnlock(0);
-    int h = heightmap[getHeightMapRef(x, z)];
-
-    return lock.readUnlock(h);
+    try (Locked<Area> l = acquireReadLock()) {
+      if (!isReady()) return 0;
+      return heightmap[getHeightMapRef(x, z)];
+    }
   }
 
   // Get the bits XXXX0000
   public int getSunlight(int x, int y, int z) {
-    lock.readLock();
-    if (unreadyReadLock(y)) return 15;
-    int r = (light[getRef(x, y, z)] >> 4) & 0xF;
-    lock.readUnlock();
-    return r;
+    try (Locked<Area> l = acquireReadLock()) {
+      if (unready(y)) return 15;
+      return (light[getRef(x, y, z)] >> 4) & 0xF;
+    }
   }
 
   // Get the bits 0000XXXX
   public int getLight(int x, int y, int z) {
-    lock.readLock();
-    if (unreadyReadLock(y)) return 0;
-    int r = (light[getRef(x, y, z)]) & 0xF;
-    lock.readUnlock();
-    return r;
+    try (Locked<Area> l = acquireReadLock()) {
+      if (unready(y)) return 0;
+      return (light[getRef(x, y, z)]) & 0xF;
+    }
   }
 
   public int getMaxLight(int x, int y, int z) {
-    lock.readLock();
-    if (unreadyReadLock(y)) return 15;
-    int sunlight = (light[getRef(x, y, z)] >> 4) & 0xF;
-    int blocklight = (light[getRef(x, y, z)]) & 0xF;
-    lock.readUnlock();
-    return sunlight > blocklight ? sunlight : blocklight;
+    try (Locked<Area> l = acquireReadLock()) {
+      if (unready(y)) return 15;
+      int sunlight = (light[getRef(x, y, z)] >> 4) & 0xF;
+      int blocklight = (light[getRef(x, y, z)]) & 0xF;
+      return sunlight > blocklight ? sunlight : blocklight;
+    }
   }
 
   // Set the bits XXXX0000
   public void setSunlight(int x, int y, int z, int l) {
-    lock.writeLock();
-    if (unreadyWriteLock(y)) return;
-    int ref = getRef(x, y, z);
-    light[ref] = (byte) ((light[ref] & 0xF) | (l << 4));
-    modify();
-    lock.writeUnlock();
-    updateRender(y / SIZE_BLOCKS);
+    try (Locked<Area> locked = acquireWriteLock()) {
+      if (unready(y)) return;
+      int ref = getRef(x, y, z);
+      light[ref] = (byte) ((light[ref] & 0xF) | (l << 4));
+      modify();
+      updateRender(y / SIZE_BLOCKS);
+    }
   }
 
   // Set the bits 0000XXXX
   public void setLight(int x, int y, int z, int l) {
-    lock.writeLock();
-    if (unreadyWriteLock(y)) return;
-    int ref = getRef(x, y, z);
-    light[ref] = (byte) ((light[ref] & 0xF0) | l);
-    modify();
-    lock.writeUnlock();
-    updateRender(y / SIZE_BLOCKS);
+    try (Locked<Area> locked = acquireWriteLock()) {
+      if (unready(y)) return;
+      int ref = getRef(x, y, z);
+      light[ref] = (byte) ((light[ref] & 0xF0) | l);
+      modify();
+      updateRender(y / SIZE_BLOCKS);
+    }
   }
 
   public int getLightRaw(int x, int y, int z) {
-    lock.readLock();
-    if (y > maxY) return SunLight.MAX_SUNLIGHT;
-    if (unreadyWriteLock(y)) return 0;
-    int r = light[getRef(x, y, z)] & 0xFF; // byte is signed (-128 to 127) so & 0xFF to convert to 0-255
-    lock.readUnlock();
-    return r;
+    try (Locked<Area> locked = acquireReadLock()) {
+      if (y > maxY) return SunLight.MAX_SUNLIGHT;
+      if (unready(y)) return 0;
+      return light[getRef(x, y, z)] & 0xFF; // byte is signed (-128 to 127) so & 0xFF to convert to 0-255
+    }
   }
 
   public boolean isBlank() {
-    lock.readLock();
-    return lock.readUnlock(blocks == null);
+    return blocks == null;
   }
 
   public boolean isUnloaded() {
-    lock.readLock();
-    return lock.readUnlock(unloaded);
+    return unloaded;
   }
 
   // must be locked
@@ -223,53 +220,37 @@ public class Area implements Lock.HasLock {
     return !unloaded && blocks != null;
   }
 
-  public boolean unreadyWriteLock() {
-    return isReady() ? false : lock.writeUnlock(true);
-  }
-
-  public boolean unreadyReadLock() {
-    return isReady() ? false : lock.readUnlock(true);
-  }
-
-  public boolean unreadyWriteLock(int y) {
-    return isReady() && y >= 0 && y <= maxY ? false : lock.writeUnlock(true);
-  }
-
-  public boolean unreadyReadLock(int y) {
-    return isReady() && y >= 0 && y <= maxY ? false : lock.readUnlock(true);
+  private boolean unready(int y) {
+    return !isReady() || y < 0 || y > maxY;
   }
 
   public void unload() {
     if (shared && Side.isClient()) return;
-    lock.writeLock();
-    WorldStorage.storeChangedBlocks(areaX, areaZ, changedBlockList);
-
-    if (!unloaded) removeArrays();
-
-    lock.writeUnlock();
+    try (Locked<Area> locked = acquireWriteLock()) {
+      WorldStorage.storeChangedBlocks(areaX, areaZ, changedBlockList);
+      if (!unloaded) removeArrays();
+    }
   }
 
   private void removeArrays() {
-    lock.writeLock();
+    try (Locked<Area> locked = acquireWriteLock()) {
+      if (unloaded) {
+        throw new CubesException("Area has been unloaded");
+      }
+      blocks = null;
+      light = null;
+      blockDataList.clear();
+      AreaRenderer.free(areaRenderer);
+      areaRenderer = null;
+      if (renderStatus.length > 0) renderStatus = new int[0];
+      maxY = 0;
+      height = 0;
+      Arrays.fill(heightmap, 0);
+      Arrays.fill(neighboursClient, null);
+      Arrays.fill(neighboursServer, null);
 
-    if (unloaded) {
-      lock.writeUnlock();
-      throw new CubesException("Area has been unloaded");
+      unloaded = true;
     }
-    blocks = null;
-    light = null;
-    blockDataList.clear();
-    AreaRenderer.free(areaRenderer);
-    areaRenderer = null;
-    if (renderStatus.length > 0) renderStatus = new int[0];
-    maxY = 0;
-    height = 0;
-    Arrays.fill(heightmap, 0);
-    Arrays.fill(neighboursClient, null);
-    Arrays.fill(neighboursServer, null);
-    
-    unloaded = true;
-    lock.writeUnlock();
   }
 
   //Should already be write locked
@@ -339,36 +320,38 @@ public class Area implements Lock.HasLock {
 
   public void setBlock(Block block, int x, int y, int z, int meta) {
     if (y < 0) return;
-  
+
     int n = block == null ? 0 : block.intID;
     n += (meta & 0xFF) << 20;
 
-    lock.writeLock();
-    if (isUnloaded() && lock.writeUnlock(true)) return;
-    setupArrays(y);
+    int b, ref = getRef(x, y, z);
+    Block old;
 
-    int ref = getRef(x, y, z);
-    int b = blocks[ref];
-    blocks[ref] = n;
+    try (Locked<Area> locked = acquireWriteLock()) {
+      if (isUnloaded()) return;
+      setupArrays(y);
 
-    Block old = IDManager.toBlock(b & 0xFFFFF);
+      b = blocks[ref];
+      blocks[ref] = n;
 
-    if (old != null && old.blockData() && old != block) {
-      removeBlockData(x, y, z);
+      old = IDManager.toBlock(b & 0xFFFFF);
+
+      if (old != null && old.blockData() && old != block) {
+        removeBlockData(x, y, z);
+      }
+      if (block != null && block.blockData()) {
+        addBlockData(block, x, y, z, meta);
+      }
+      if ((b & 0xFFFFFFF) != n) addChangedBlock(ref, n);
+
+      doUpdatesThisArea(x, y, z, ref);
+
+      int hmRef = x + z * SIZE_BLOCKS;
+      if (y > heightmap[hmRef] && block != null) heightmap[hmRef] = y;
+      if (y == heightmap[hmRef] && block == null) calculateHeight(x, z);
+
+      modify();
     }
-    if (block != null && block.blockData()) {
-      addBlockData(block, x, y, z, meta);
-    }
-    if ((b & 0xFFFFFFF) != n) addChangedBlock(ref, n);
-
-    doUpdatesThisArea(x, y, z, ref);
-
-    int hmRef = x + z * SIZE_BLOCKS;
-    if (y > heightmap[hmRef] && block != null) heightmap[hmRef] = y;
-    if (y == heightmap[hmRef] && block == null) calculateHeight(x, z);
-
-    modify();
-    lock.writeUnlock();
 
     //Must be after lock released to prevent dead locks
     if (TransparencyManager.isTransparent(b) != TransparencyManager.isTransparent(n))
@@ -394,31 +377,34 @@ public class Area implements Lock.HasLock {
     Block block = IDManager.toBlock(blockAndMeta & 0xFFFFF);
     if (block == null) blockAndMeta = 0;
 
-    lock.writeLock();
-    if (isUnloaded() && lock.writeUnlock(true)) return;
-    setupArrays(y); // actually call store changed blocks
+    int b;
+    Block old;
 
-    int b = blocks[ref];
-    blocks[ref] = blockAndMeta;
+    try (Locked<Area> locked = acquireWriteLock()) {
+      if (isUnloaded()) return;
+      setupArrays(y);
 
-    Block old = IDManager.toBlock(b & 0xFFFFF);
+      b = blocks[ref];
+      blocks[ref] = blockAndMeta;
 
-    if (old != null && old.blockData() && old != block) {
-      removeBlockData(x, y, z);
+      old = IDManager.toBlock(b & 0xFFFFF);
+
+      if (old != null && old.blockData() && old != block) {
+        removeBlockData(x, y, z);
+      }
+      if (block != null && block.blockData()) {
+        addBlockData(block, x, y, z, meta);
+      }
+      if ((b & 0xFFFFFFF) != blockAndMeta) addChangedBlock(ref, blockAndMeta);
+
+      doUpdatesThisArea(x, y, z, ref);
+
+      int hmRef = x + z * SIZE_BLOCKS;
+      if (y > heightmap[hmRef] && block != null) heightmap[hmRef] = y;
+      if (y == heightmap[hmRef] && block == null) calculateHeight(x, z);
+
+      modify();
     }
-    if (block != null && block.blockData()) {
-      addBlockData(block, x, y, z, meta);
-    }
-    if ((b & 0xFFFFFFF) != blockAndMeta) addChangedBlock(ref, blockAndMeta);
-
-    doUpdatesThisArea(x, y, z, ref);
-
-    int hmRef = x + z * SIZE_BLOCKS;
-    if (y > heightmap[hmRef] && block != null) heightmap[hmRef] = y;
-    if (y == heightmap[hmRef] && block == null) calculateHeight(x, z);
-
-    modify();
-    lock.writeUnlock();
 
     //Must be after lock released to prevent dead locks
     if (TransparencyManager.isTransparent(b) != TransparencyManager.isTransparent(blockAndMeta))
@@ -427,33 +413,29 @@ public class Area implements Lock.HasLock {
   }
 
   public BlockData removeBlockData(int x, int y, int z) {
-    lock.writeLock();
-
-    Iterator<BlockData> iterator = blockDataList.iterator();
-    while (iterator.hasNext()) {
-      BlockData blockData = iterator.next();
-      if (blockData.getX() == x && blockData.getY() == y && blockData.getZ() == z) {
-        iterator.remove();
-        return lock.writeUnlock(blockData);
+    try (Locked<Area> locked = acquireWriteLock()) {
+      Iterator<BlockData> iterator = blockDataList.iterator();
+      while (iterator.hasNext()) {
+        BlockData blockData = iterator.next();
+        if (blockData.getX() == x && blockData.getY() == y && blockData.getZ() == z) {
+          iterator.remove();
+          return blockData;
+        }
       }
+      return null;
     }
-
-    lock.writeUnlock();
-    return null;
   }
 
 
   public BlockData getBlockData(int x, int y, int z) {
-    lock.writeLock();
-
-    for (BlockData blockData : blockDataList) {
-      if (blockData.getX() == x && blockData.getY() == y && blockData.getZ() == z) {
-        return lock.writeUnlock(blockData);
+    try (Locked<Area> locked = acquireWriteLock()) {
+      for (BlockData blockData : blockDataList) {
+        if (blockData.getX() == x && blockData.getY() == y && blockData.getZ() == z) {
+          return blockData;
+        }
       }
+      return null;
     }
-
-    lock.writeUnlock();
-    return null;
   }
 
   public BlockData addBlockData(Block block, int x, int y, int z, int meta) {
@@ -463,36 +445,34 @@ public class Area implements Lock.HasLock {
   }
 
   public void addBlockData(BlockData blockData) {
-    lock.writeLock();
-
-    blockDataList.add(blockData);
-
-    lock.writeUnlock();
+    try (Locked<Area> locked = acquireWriteLock()) {
+      blockDataList.add(blockData);
+    }
   }
-  
+
   public Area neighbourBlockCoordinates(int blockX, int blockZ) {
     return neighbour(CoordinateConverter.area(blockX), CoordinateConverter.area(blockZ));
   }
-  
+
   public Area neighbour(final int areaX, final int areaZ) {
     if (areaX == this.areaX && areaZ == this.areaZ) return this;
     Side side = Side.getSide();
+    int dX = areaX - this.areaX;
+    int dZ = areaZ - this.areaZ;
+    int n = 3 * (dX + 1) + (dZ + 1);
+
     if (side == Side.Client) {
       if (areaMapClient == null) return null;
-      int aX = areaX - this.areaX;
-      int aZ = areaZ - this.areaZ;
-      if (aX < -1 || aX > 1 || aZ < -1 || aZ > 1) return areaMapClient.getArea(areaX, areaZ);
-      int n = (aX + 1) + ((aZ + 1) * 3);
+      if (dX < -1 || dX > 1 || dZ < -1 || dZ > 1) return areaMapClient.getArea(areaX, areaZ);
+
       Area a = neighboursClient[n];
       if (a != null && a.areaMapClient == areaMapClient) return a;
       neighboursClient[n] = a = areaMapClient.getArea(areaX, areaZ);
       if (a != null && a.areaMapClient == areaMapClient) return a;
     } else if (side == Side.Server) {
       if (areaMapServer == null) return null;
-      int aX = areaX - this.areaX;
-      int aZ = areaZ - this.areaZ;
-      if (aX < -1 || aX > 1 || aZ < -1 || aZ > 1) return areaMapServer.getArea(areaX, areaZ);
-      int n = (aX + 1) + ((aZ + 1) * 3);
+      if (dX < -1 || dX > 1 || dZ < -1 || dZ > 1) return areaMapServer.getArea(areaX, areaZ);
+
       Area a = neighboursServer[n];
       if (a != null && a.areaMapServer == areaMapServer) return a;
       neighboursServer[n] = a = areaMapServer.getArea(areaX, areaZ);
@@ -500,48 +480,45 @@ public class Area implements Lock.HasLock {
     }
     return null;
   }
-  
+
   public AreaMap areaMap() {
     Side side = Side.getSide();
     if (side == Side.Client) return areaMapClient;
     else if (side == Side.Server) return areaMapServer;
     return null;
   }
-  
+
   protected void setAreaMap(AreaMap areaMap) {
     Side side = Side.getSide();
     if (side == Side.Client) areaMapClient = areaMap;
     else if (side == Side.Server) areaMapServer = areaMap;
   }
-  
+
   public void tick() {
     if (Side.isServer()) {
       AreaMap areaMap = areaMap();
       if (!featuresGenerated() || areaMap == null) return;
       ThreadRandom random = ThreadRandom.get();
-      lock.writeLock();
-      int updates = NUM_RANDOM_UPDATES * height;
-      for (int i = 0; i < updates; i++) {
-        int randomX = random.nextInt(SIZE_BLOCKS);
-        int randomZ = random.nextInt(SIZE_BLOCKS);
-        int randomY = random.nextInt(maxY + 1);
-        randomTick(randomX, randomY, randomZ, areaMap);
+      try (Locked<Area> locked = lockAllNeighbours(true, false)) {
+        int updates = NUM_RANDOM_UPDATES * height;
+        for (int i = 0; i < updates; i++) {
+          int randomX = random.nextInt(SIZE_BLOCKS);
+          int randomZ = random.nextInt(SIZE_BLOCKS);
+          int randomY = random.nextInt(maxY + 1);
+          randomTick(randomX, randomY, randomZ, areaMap);
+        }
+        for (BlockData blockData : blockDataList) {
+          blockData.update();
+        }
       }
-      for (BlockData blockData : blockDataList) {
-        blockData.update();
-      }
-      lock.writeUnlock();
     }
   }
 
   private void randomTick(int x, int y, int z, AreaMap areaMap) {
     int b = blocks[getRef(x, y, z)];
-    int blockID = b & 0xFFFFF;
-    int blockMeta = (b >> 20) & 0xFF;
-    Block block = IDManager.toBlock(blockID);
+    Block block = IDManager.toBlock(b & 0xFFFFF);
     if (block == null) return;
-    int newMeta = block.randomTick(areaMap.world, this, x, y, z, blockMeta);
-    if (newMeta != blockMeta) setBlock(block, x, y, z, newMeta);
+    block.randomTick(areaMap.world, this, x, y, z, (b >> 20) & 0xFF);
   }
 
   public void doUpdatesThisArea(int x, int y, int z, int ref) {
@@ -564,57 +541,56 @@ public class Area implements Lock.HasLock {
     AreaMap areaMap = areaMap();
     if (areaMap != null && (x == 0 || x == SIZE_BLOCKS - 1 || z == 0 || z == SIZE_BLOCKS - 1)) {
       Area area;
-      areaMap.lock.readLock();
-      if (x == 0) {
-        area = neighbour(areaX - 1, areaZ);
-        if (area != null) {
-          Lock.waitToLock(true, area);
-          if (area.isReady()) area.update(SIZE_BLOCKS - 1, y, z, getRef(SIZE_BLOCKS - 1, y, z));
-          if (updateRender) area.updateRender(section);
-          area.lock.writeUnlock();
+
+      try (Locked<WorldLockable> areaMapLock = areaMap.acquireReadLock()) {
+        if (x == 0) {
+          area = neighbour(areaX - 1, areaZ);
+          if (area != null) {
+            try (Locked<Area> locked = area.acquireWriteLock()) {
+              if (area.isReady()) area.update(SIZE_BLOCKS - 1, y, z, getRef(SIZE_BLOCKS - 1, y, z));
+              if (updateRender) area.updateRender(section);
+            }
+          }
+        } else if (x == SIZE_BLOCKS - 1) {
+          area = neighbour(areaX + 1, areaZ);
+          if (area != null) {
+            try (Locked<Area> locked = area.acquireWriteLock()) {
+              if (area.isReady()) area.update(0, y, z, getRef(0, y, z));
+              if (updateRender) area.updateRender(section);
+            }
+          }
         }
-      } else if (x == SIZE_BLOCKS - 1) {
-        area = neighbour(areaX + 1, areaZ);
-        if (area != null) {
-          Lock.waitToLock(true, area);
-          if (area.isReady()) area.update(0, y, z, getRef(0, y, z));
-          if (updateRender) area.updateRender(section);
-          area.lock.writeUnlock();
+        if (z == 0) {
+          area = neighbour(areaX, areaZ - 1);
+          if (area != null) {
+            try (Locked<Area> locked = area.acquireWriteLock()) {
+              if (area.isReady()) area.update(x, y, SIZE_BLOCKS - 1, getRef(x, y, SIZE_BLOCKS - 1));
+              if (updateRender) area.updateRender(section);
+            }
+          }
+        } else if (z == SIZE_BLOCKS - 1) {
+          area = neighbour(areaX, areaZ + 1);
+          if (area != null) {
+            try (Locked<Area> locked = area.acquireWriteLock()) {
+              if (area.isReady()) area.update(x, y, 0, getRef(x, y, 0));
+              if (updateRender) area.updateRender(section);
+            }
+          }
         }
       }
-      if (z == 0) {
-        area = neighbour(areaX, areaZ - 1);
-        if (area != null) {
-          Lock.waitToLock(true, area);
-          if (area.isReady()) area.update(x, y, SIZE_BLOCKS - 1, getRef(x, y, SIZE_BLOCKS - 1));
-          if (updateRender) area.updateRender(section);
-          area.lock.writeUnlock();
-        }
-      } else if (z == SIZE_BLOCKS - 1) {
-        area = neighbour(areaX, areaZ + 1);
-        if (area != null) {
-          Lock.waitToLock(true, area);
-          if (area.isReady()) area.update(x, y, 0, getRef(x, y, 0));
-          if (updateRender) area.updateRender(section);
-          area.lock.writeUnlock();
-        }
-      }
-      areaMap.lock.readUnlock();
     }
   }
 
   private void updateSurrounding(int x, int y, int z, int ref) {
-    lock.writeLock();
-
-    update(x, y, z, ref);
-    if (x < SIZE_BLOCKS - 1) update(x + 1, y, z, ref + MAX_X_OFFSET);
-    if (x > 0) update(x - 1, y, z, ref + MIN_X_OFFSET);
-    if (y < maxY) update(x, y + 1, z, ref + MAX_Y_OFFSET);
-    if (y > 0) update(x, y - 1, z, ref + MIN_Y_OFFSET);
-    if (z < SIZE_BLOCKS - 1) update(x, y, z + 1, ref + MAX_Z_OFFSET);
-    if (z > 0) update(x, y, z - 1, ref + MIN_Z_OFFSET);
-
-    lock.writeUnlock();
+    try (Locked<Area> locked = acquireWriteLock()) {
+      update(x, y, z, ref);
+      if (x < SIZE_BLOCKS - 1) update(x + 1, y, z, ref + MAX_X_OFFSET);
+      if (x > 0) update(x - 1, y, z, ref + MIN_X_OFFSET);
+      if (y < maxY) update(x, y + 1, z, ref + MAX_Y_OFFSET);
+      if (y > 0) update(x, y - 1, z, ref + MIN_Y_OFFSET);
+      if (z < SIZE_BLOCKS - 1) update(x, y, z + 1, ref + MAX_Z_OFFSET);
+      if (z > 0) update(x, y, z - 1, ref + MIN_Z_OFFSET);
+    }
   }
 
   public void updateRender(int section) {
@@ -625,230 +601,219 @@ public class Area implements Lock.HasLock {
   }
 
   public void updateAll() {
-    lock.writeLock();
-    if (unreadyWriteLock()) return;
-
-    if (!isBlank()) {
-      int i = 0;
-      for (int y = 0; y < maxY; y++) {
-        for (int z = 0; z < SIZE_BLOCKS; z++) {
-          for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
-            update(x, y, z, i);
+    try (Locked<Area> locked = acquireWriteLock()) {
+      if (!isBlank()) {
+        int i = 0;
+        for (int y = 0; y < maxY; y++) {
+          for (int z = 0; z < SIZE_BLOCKS; z++) {
+            for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
+              update(x, y, z, i);
+            }
           }
         }
       }
     }
-
-    lock.writeUnlock();
   }
 
   // initial update and build of heightmap
   public void initialUpdate() {
-    lock.writeLock();
-    if (unreadyWriteLock()) return;
+    try (Locked<Area> locked = acquireWriteLock()) {
+      if (!isReady()) return;
 
-    // neg x side
-    for (int z = 0; z < SIZE_BLOCKS; z++) {
-      int height = -1;
-      for (int y = 0; y <= maxY; y++) {
-        int ref = (z * SIZE_BLOCKS) + (y * SIZE_BLOCKS_SQUARED);
-        if (TransparencyManager.isTransparent(blocks[ref])) {
-          if (blocks[ref + MAX_X_OFFSET] != 0) blocks[ref + MAX_X_OFFSET] |= BLOCK_VISIBLE;
-        } else {
-          blocks[ref] |= BLOCK_VISIBLE;
-          height = y;
-        }
-      }
-      heightmap[z * SIZE_BLOCKS] = height;
-    }
-    // pos x side
-    for (int z = 0; z < SIZE_BLOCKS; z++) {
-      int height = -1;
-      for (int y = 0; y <= maxY; y++) {
-        int ref = (SIZE_BLOCKS - 1) + (z * SIZE_BLOCKS) + (y * SIZE_BLOCKS_SQUARED);
-        if (TransparencyManager.isTransparent(blocks[ref])) {
-          if (blocks[ref + MIN_X_OFFSET] != 0) blocks[ref + MIN_X_OFFSET] |= BLOCK_VISIBLE;
-        } else {
-          blocks[ref] |= BLOCK_VISIBLE;
-          height = y;
-        }
-      }
-      heightmap[(SIZE_BLOCKS - 1) + (z * SIZE_BLOCKS)] = height;
-    }
-    // neg z side
-    for (int x = 1; x < SIZE_BLOCKS - 1; x++) { //don't include x = 0 or x = SIZE_BLOCKS - 1
-      int height = -1;
-      for (int y = 0; y <= maxY; y++) {
-        int ref = x + (y * SIZE_BLOCKS_SQUARED);
-        if (TransparencyManager.isTransparent(blocks[ref])) {
-          if (blocks[ref + MAX_Z_OFFSET] != 0) blocks[ref + MAX_Z_OFFSET] |= BLOCK_VISIBLE;
-        } else {
-          blocks[ref] |= BLOCK_VISIBLE;
-          height = y;
-        }
-      }
-      heightmap[x] = height;
-    }
-    // pos z side
-    for (int x = 1; x < SIZE_BLOCKS - 1; x++) {
-      int height = -1;
-      for (int y = 0; y <= maxY; y++) {
-        int ref = x + (SIZE_BLOCKS_SQUARED - SIZE_BLOCKS) + (y * SIZE_BLOCKS_SQUARED);
-        if (TransparencyManager.isTransparent(blocks[ref])) {
-          if (blocks[ref + MIN_Z_OFFSET] != 0) blocks[ref + MIN_Z_OFFSET] |= BLOCK_VISIBLE;
-        } else {
-          blocks[ref] |= BLOCK_VISIBLE;
-          height = y;
-        }
-      }
-      heightmap[x + (SIZE_BLOCKS_SQUARED - SIZE_BLOCKS)] = height;
-    }
-    // inner
-    for (int x = 1; x < SIZE_BLOCKS - 1; x++) {
-      for (int z = 1; z < SIZE_BLOCKS - 1; z++) {
+      // neg x side
+      for (int z = 0; z < SIZE_BLOCKS; z++) {
         int height = -1;
         for (int y = 0; y <= maxY; y++) {
-          int ref = x + z * SIZE_BLOCKS + y * SIZE_BLOCKS_SQUARED;
+          int ref = (z * SIZE_BLOCKS) + (y * SIZE_BLOCKS_SQUARED);
           if (TransparencyManager.isTransparent(blocks[ref])) {
             if (blocks[ref + MAX_X_OFFSET] != 0) blocks[ref + MAX_X_OFFSET] |= BLOCK_VISIBLE;
-            if (blocks[ref + MIN_X_OFFSET] != 0) blocks[ref + MIN_X_OFFSET] |= BLOCK_VISIBLE;
-            if (blocks[ref + MAX_Z_OFFSET] != 0) blocks[ref + MAX_Z_OFFSET] |= BLOCK_VISIBLE;
-            if (blocks[ref + MIN_Z_OFFSET] != 0) blocks[ref + MIN_Z_OFFSET] |= BLOCK_VISIBLE;
-            if (y < maxY && blocks[ref + MAX_Y_OFFSET] != 0) blocks[ref + MAX_Y_OFFSET] |= BLOCK_VISIBLE;
-            if (y > 0 && blocks[ref + MIN_Y_OFFSET] != 0) blocks[ref + MIN_Y_OFFSET] |= BLOCK_VISIBLE;
           } else {
+            blocks[ref] |= BLOCK_VISIBLE;
             height = y;
           }
         }
-        heightmap[x + z * SIZE_BLOCKS] = height;
+        heightmap[z * SIZE_BLOCKS] = height;
       }
-    }
-    // top and bottom
-    for (int x = 0; x < SIZE_BLOCKS; x++) {
+      // pos x side
       for (int z = 0; z < SIZE_BLOCKS; z++) {
-        int i = getRef(x, 0, z);
-        if (blocks[i] != 0) blocks[i] |= BLOCK_VISIBLE;
-        i = getRef(x, maxY, z);
-        if (blocks[i] != 0) blocks[i] |= BLOCK_VISIBLE;
+        int height = -1;
+        for (int y = 0; y <= maxY; y++) {
+          int ref = (SIZE_BLOCKS - 1) + (z * SIZE_BLOCKS) + (y * SIZE_BLOCKS_SQUARED);
+          if (TransparencyManager.isTransparent(blocks[ref])) {
+            if (blocks[ref + MIN_X_OFFSET] != 0) blocks[ref + MIN_X_OFFSET] |= BLOCK_VISIBLE;
+          } else {
+            blocks[ref] |= BLOCK_VISIBLE;
+            height = y;
+          }
+        }
+        heightmap[(SIZE_BLOCKS - 1) + (z * SIZE_BLOCKS)] = height;
       }
-    }
+      // neg z side
+      for (int x = 1; x < SIZE_BLOCKS - 1; x++) { //don't include x = 0 or x = SIZE_BLOCKS - 1
+        int height = -1;
+        for (int y = 0; y <= maxY; y++) {
+          int ref = x + (y * SIZE_BLOCKS_SQUARED);
+          if (TransparencyManager.isTransparent(blocks[ref])) {
+            if (blocks[ref + MAX_Z_OFFSET] != 0) blocks[ref + MAX_Z_OFFSET] |= BLOCK_VISIBLE;
+          } else {
+            blocks[ref] |= BLOCK_VISIBLE;
+            height = y;
+          }
+        }
+        heightmap[x] = height;
+      }
+      // pos z side
+      for (int x = 1; x < SIZE_BLOCKS - 1; x++) {
+        int height = -1;
+        for (int y = 0; y <= maxY; y++) {
+          int ref = x + (SIZE_BLOCKS_SQUARED - SIZE_BLOCKS) + (y * SIZE_BLOCKS_SQUARED);
+          if (TransparencyManager.isTransparent(blocks[ref])) {
+            if (blocks[ref + MIN_Z_OFFSET] != 0) blocks[ref + MIN_Z_OFFSET] |= BLOCK_VISIBLE;
+          } else {
+            blocks[ref] |= BLOCK_VISIBLE;
+            height = y;
+          }
+        }
+        heightmap[x + (SIZE_BLOCKS_SQUARED - SIZE_BLOCKS)] = height;
+      }
+      // inner
+      for (int x = 1; x < SIZE_BLOCKS - 1; x++) {
+        for (int z = 1; z < SIZE_BLOCKS - 1; z++) {
+          int height = -1;
+          for (int y = 0; y <= maxY; y++) {
+            int ref = x + z * SIZE_BLOCKS + y * SIZE_BLOCKS_SQUARED;
+            if (TransparencyManager.isTransparent(blocks[ref])) {
+              if (blocks[ref + MAX_X_OFFSET] != 0) blocks[ref + MAX_X_OFFSET] |= BLOCK_VISIBLE;
+              if (blocks[ref + MIN_X_OFFSET] != 0) blocks[ref + MIN_X_OFFSET] |= BLOCK_VISIBLE;
+              if (blocks[ref + MAX_Z_OFFSET] != 0) blocks[ref + MAX_Z_OFFSET] |= BLOCK_VISIBLE;
+              if (blocks[ref + MIN_Z_OFFSET] != 0) blocks[ref + MIN_Z_OFFSET] |= BLOCK_VISIBLE;
+              if (y < maxY && blocks[ref + MAX_Y_OFFSET] != 0) blocks[ref + MAX_Y_OFFSET] |= BLOCK_VISIBLE;
+              if (y > 0 && blocks[ref + MIN_Y_OFFSET] != 0) blocks[ref + MIN_Y_OFFSET] |= BLOCK_VISIBLE;
+            } else {
+              height = y;
+            }
+          }
+          heightmap[x + z * SIZE_BLOCKS] = height;
+        }
+      }
+      // top and bottom
+      for (int x = 0; x < SIZE_BLOCKS; x++) {
+        for (int z = 0; z < SIZE_BLOCKS; z++) {
+          int i = getRef(x, 0, z);
+          if (blocks[i] != 0) blocks[i] |= BLOCK_VISIBLE;
+          i = getRef(x, maxY, z);
+          if (blocks[i] != 0) blocks[i] |= BLOCK_VISIBLE;
+        }
+      }
 
-    modify();
-    lock.writeUnlock();
+      modify();
+    }
   }
 
   public void setupArrays(int y) {
-    lock.writeLock();
-
-    if (unloaded) {
-      lock.writeUnlock();
-      throw new CubesException("Area has been unloaded");
-    }
-    if (isBlank()) {
-      height = (int) Math.ceil((y + 1) / (float) SIZE_BLOCKS);
-      blocks = new int[SIZE_BLOCKS_CUBED * height];
-      light = new byte[SIZE_BLOCKS_CUBED * height];
-      AreaRenderer.free(areaRenderer);
-      if (Side.isClient() || isShared()) {
-        areaRenderer = new AreaRenderer[height];
-        renderStatus = AreaRenderStatus.create(height);
+    try (Locked<Area> locked = acquireWriteLock()) {
+      if (unloaded) {
+        throw new CubesException("Area has been unloaded");
       }
-      maxY = (height * SIZE_BLOCKS) - 1;
-    } else if (y > maxY) {
-      expand(y);
-    }
+      if (isBlank()) {
+        int h = (int) Math.ceil((y + 1) / (float) SIZE_BLOCKS);
+        blocks = new int[SIZE_BLOCKS_CUBED * h];
+        light = new byte[SIZE_BLOCKS_CUBED * h];
+        AreaRenderer.free(areaRenderer);
+        if (Side.isClient() || isShared()) {
+          areaRenderer = new AreaRenderer[h];
+          renderStatus = AreaRenderStatus.create(h);
+        }
+        height = h;
+        maxY = (h * SIZE_BLOCKS) - 1;
+      } else if (y > maxY) {
+        expand(y);
+      }
 
-    lock.writeUnlock();
+      neighboursClient[4] = this;
+      neighboursServer[4] = this;
+    }
   }
 
   public void rebuildHeightmap() {
-    lock.writeLock();
-    if (unreadyWriteLock()) return;
+    try (Locked<Area> locked = acquireWriteLock()) {
+      if (!isReady()) return;
 
-    for (int x = 0; x < SIZE_BLOCKS; x++) {
-      forLoop:
-      for (int z = 0; z < SIZE_BLOCKS; z++) {
-        int column = x + z * SIZE_BLOCKS;
-        int y = maxY;
-        while (y >= 0) {
-          if (blocks[column + y * SIZE_BLOCKS_SQUARED] != 0) {
-            heightmap[column] = y;
-            continue forLoop;
+      for (int x = 0; x < SIZE_BLOCKS; x++) {
+        zLoop:
+        for (int z = 0; z < SIZE_BLOCKS; z++) {
+          int column = x + z * SIZE_BLOCKS;
+          int y = maxY;
+          while (y >= 0) {
+            if (blocks[column + y * SIZE_BLOCKS_SQUARED] != 0) {
+              heightmap[column] = y;
+              continue zLoop;
+            }
+            y--;
           }
-          y--;
+          heightmap[column] = -1;
         }
-        heightmap[column] = -1;
       }
     }
-    lock.writeUnlock();
   }
 
   public void calculateHeight(int x, int z) {
-    lock.writeLock();
-    if (unreadyWriteLock()) return;
-
-    int column = x + z * SIZE_BLOCKS;
-    int y = maxY;
-    while (y >= 0) {
-      if (blocks[column + y * SIZE_BLOCKS_SQUARED] != 0) {
-        heightmap[column] = y;
-        lock.writeUnlock();
-        return;
+    try (Locked<Area> locked = acquireWriteLock()) {
+      int column = x + z * SIZE_BLOCKS;
+      int y = maxY;
+      while (y >= 0) {
+        if (blocks[column + y * SIZE_BLOCKS_SQUARED] != 0) {
+          heightmap[column] = y;
+          return;
+        }
+        y--;
       }
-      y--;
+      heightmap[column] = -1;
     }
-    heightmap[column] = -1;
-    lock.writeUnlock();
   }
 
   private void expand(int h) {
-    lock.writeLock();
+    try (Locked<Area> locked = acquireWriteLock()) {
 
-    if (unloaded) {
-      lock.writeUnlock();
-      throw new CubesException("Area has been unloaded");
-    }
-    if (isBlank() || h <= maxY || h > MAX_Y) {
-      lock.writeUnlock();
-      return;
-    }
+      if (unloaded) throw new CubesException("Area has been unloaded");
+      if (isBlank() || h <= maxY || h > MAX_Y) return;
 
-    int oldMaxY = maxY;
-    int[] oldBlocks = blocks;
-    byte[] oldLight = light;
-    AreaRenderer[] oldAreaRenderer = areaRenderer;
+      int oldMaxY = maxY;
+      int[] oldBlocks = blocks;
+      byte[] oldLight = light;
+      AreaRenderer[] oldAreaRenderer = areaRenderer;
 
-    int newHeight = (int) Math.ceil((h + 1) / (float) SIZE_BLOCKS); //Round up to multiple of SIZE_BLOCKS
+      int newHeight = (int) Math.ceil((h + 1) / (float) SIZE_BLOCKS); //Round up to multiple of SIZE_BLOCKS
 
-    int[] newBlocks = new int[SIZE_BLOCKS_CUBED * newHeight];
-    System.arraycopy(oldBlocks, 0, newBlocks, 0, oldBlocks.length);
+      int[] newBlocks = new int[SIZE_BLOCKS_CUBED * newHeight];
+      System.arraycopy(oldBlocks, 0, newBlocks, 0, oldBlocks.length);
 
-    byte[] newLight = new byte[SIZE_BLOCKS_CUBED * newHeight];
-    System.arraycopy(oldLight, 0, newLight, 0, oldLight.length);
-    if (featuresGenerated()) Arrays.fill(newLight, oldLight.length, newLight.length, (byte) SunLight.MAX_SUNLIGHT);
+      byte[] newLight = new byte[SIZE_BLOCKS_CUBED * newHeight];
+      System.arraycopy(oldLight, 0, newLight, 0, oldLight.length);
+      if (featuresGenerated()) Arrays.fill(newLight, oldLight.length, newLight.length, (byte) SunLight.MAX_SUNLIGHT);
 
-    if (Side.isClient() || shared) {
-      this.areaRenderer = new AreaRenderer[newHeight];
-      if (renderStatus.length < newHeight) renderStatus = AreaRenderStatus.create(newHeight);
-    } else {
-      this.areaRenderer = null;
-    }
 
-    this.blocks = newBlocks;
-    this.light = newLight;
-    this.height = newHeight;
-    this.maxY = (newHeight * SIZE_BLOCKS) - 1;
-
-    int i = oldMaxY * SIZE_BLOCKS_SQUARED;
-    for (int z = 0; z < SIZE_BLOCKS; z++) { //update previous top
-      for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
-        updateSurrounding(x, oldMaxY, z, i);
+      if (Side.isClient() || shared) {
+        this.areaRenderer = new AreaRenderer[newHeight];
+        if (renderStatus.length < newHeight) renderStatus = AreaRenderStatus.create(newHeight);
+      } else {
+        this.areaRenderer = null;
       }
+
+      this.blocks = newBlocks;
+      this.light = newLight;
+      this.height = newHeight;
+      this.maxY = (newHeight * SIZE_BLOCKS) - 1;
+
+      int i = oldMaxY * SIZE_BLOCKS_SQUARED;
+      for (int z = 0; z < SIZE_BLOCKS; z++) { //update previous top
+        for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
+          updateSurrounding(x, oldMaxY, z, i);
+        }
+      }
+
+      AreaRenderer.free(oldAreaRenderer);
     }
-
-    lock.writeUnlock();
-
-    AreaRenderer.free(oldAreaRenderer);
   }
 
   public boolean featuresGenerated() {
@@ -856,53 +821,41 @@ public class Area implements Lock.HasLock {
   }
 
   public void shrink() {
-    lock.writeLock();
+    try (Locked<Area> locked = acquireWriteLock()) {
+      if (unloaded) throw new CubesException("Area has been unloaded");
+      if (isBlank()) return;
 
-    if (unloaded) {
-      lock.writeUnlock();
-      throw new CubesException("Area has been unloaded");
-    }
-    if (isBlank()) {
-      lock.writeUnlock();
-      return;
-    }
+      int usedHeight = usedHeight();
+      if (usedHeight == height) return;
+      if (usedHeight == 0) {
+        removeArrays();
+        return;
+      }
 
-    int usedHeight = usedHeight();
-    if (usedHeight == height) {
-      lock.writeUnlock();
-      return;
-    }
-    if (usedHeight == 0) {
-      removeArrays();
-      lock.writeUnlock();
-      return;
-    }
+      int[] oldBlocks = blocks;
+      blocks = new int[SIZE_BLOCKS_CUBED * usedHeight];
+      System.arraycopy(oldBlocks, 0, blocks, 0, blocks.length);
 
-    int[] oldBlocks = blocks;
-    blocks = new int[SIZE_BLOCKS_CUBED * usedHeight];
-    System.arraycopy(oldBlocks, 0, blocks, 0, blocks.length);
+      byte[] oldLight = light;
+      light = new byte[SIZE_BLOCKS_CUBED * usedHeight];
+      System.arraycopy(oldLight, 0, light, 0, light.length);
 
-    byte[] oldLight = light;
-    light = new byte[SIZE_BLOCKS_CUBED * usedHeight];
-    System.arraycopy(oldLight, 0, light, 0, light.length);
+      AreaRenderer.free(areaRenderer);
+      if (Side.isClient() || isShared()) {
+        areaRenderer = new AreaRenderer[usedHeight];
+        renderStatus = AreaRenderStatus.create(usedHeight);
+      } else {
+        areaRenderer = null;
+      }
 
-    AreaRenderer.free(areaRenderer);
-    if (Side.isClient() || isShared()) {
-      areaRenderer = new AreaRenderer[usedHeight];
-      renderStatus = AreaRenderStatus.create(usedHeight);
-    } else {
-      areaRenderer = null;
-    }
-
-    maxY = (usedHeight * SIZE_BLOCKS) - 1;
-    int i = maxY * SIZE_BLOCKS_SQUARED;
-    for (int z = 0; z < SIZE_BLOCKS; z++) {
-      for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
-        updateSurrounding(x, maxY, z, i); //update new top
+      maxY = (usedHeight * SIZE_BLOCKS) - 1;
+      int i = maxY * SIZE_BLOCKS_SQUARED;
+      for (int z = 0; z < SIZE_BLOCKS; z++) {
+        for (int x = 0; x < SIZE_BLOCKS; x++, i++) {
+          updateSurrounding(x, maxY, z, i); //update new top
+        }
       }
     }
-
-    lock.writeUnlock();
   }
 
   //Should be read or write locked
@@ -927,81 +880,79 @@ public class Area implements Lock.HasLock {
   public int hashCode() {
     return hashCode;
   }
-  
+
   public void writeNetworking(DataOutputStream dataOutputStream) throws IOException {
     write(dataOutputStream, false, true, false, null);
   }
-  
+
   public void writeSave(DataOutputStream dataOutputStream, DataGroup[] entities) throws IOException {
     write(dataOutputStream, false, false, true, entities); //TODO resize when writing
   }
 
   private void write(DataOutputStream dataOutputStream, boolean resize, boolean writeCoordinates, boolean writeEntities, DataGroup[] entities) throws IOException {
-    lock.readLock();
-    if (writeCoordinates) {
-      dataOutputStream.writeInt(areaX);
-      dataOutputStream.writeInt(areaZ);
-    }
-    if (isBlank()) {
-      dataOutputStream.writeInt(0);
-      lock.readUnlock();
-      return;
-    }
+    try (Locked<Area> locked = acquireReadLock()) {
+      if (writeCoordinates) {
+        dataOutputStream.writeInt(areaX);
+        dataOutputStream.writeInt(areaZ);
+      }
+      if (isBlank()) {
+        dataOutputStream.writeInt(0);
+        return;
+      }
 
-    int usedHeight = resize ? usedHeight() : height;
-    dataOutputStream.writeInt(featuresGenerated() ? usedHeight : -usedHeight);
+      int usedHeight = resize ? usedHeight() : height;
+      dataOutputStream.writeInt(featuresGenerated() ? usedHeight : -usedHeight);
 
-    for (int i = 0; i < SIZE_BLOCKS_SQUARED; i++) {
-      dataOutputStream.writeInt(heightmap[i]);
-    }
+      for (int i = 0; i < SIZE_BLOCKS_SQUARED; i++) {
+        dataOutputStream.writeInt(heightmap[i]);
+      }
 
-    int currentBlock = -1, num = 0;
-    for (int i = 0; i < (SIZE_BLOCKS_CUBED * usedHeight); i++) {
-      int block = blocks[i]; // always positive
-      if (block == currentBlock) {
-        num++;
-      } else {
-        if (currentBlock != -1) {
-          if (num == 1) {
-            dataOutputStream.writeInt(currentBlock);
-          } else {
-            dataOutputStream.writeInt(-num);
-            dataOutputStream.writeInt(currentBlock);
+      int currentBlock = -1, num = 0;
+      for (int i = 0; i < (SIZE_BLOCKS_CUBED * usedHeight); i++) {
+        int block = blocks[i]; // always positive
+        if (block == currentBlock) {
+          num++;
+        } else {
+          if (currentBlock != -1) {
+            if (num == 1) {
+              dataOutputStream.writeInt(currentBlock);
+            } else {
+              dataOutputStream.writeInt(-num);
+              dataOutputStream.writeInt(currentBlock);
+            }
           }
+          currentBlock = block;
+          num = 1;
         }
-        currentBlock = block;
-        num = 1;
+      }
+      if (num == 1) {
+        dataOutputStream.writeInt(currentBlock);
+      } else {
+        dataOutputStream.writeInt(-num);
+        dataOutputStream.writeInt(currentBlock);
+      }
+
+      for (int i = 0; i < (SIZE_BLOCKS_CUBED * usedHeight); i++) {
+        dataOutputStream.writeByte(light[i]);
+      }
+
+      if (writeEntities && entities != null) {
+        dataOutputStream.writeShort(entities.length);
+        dataOutputStream.writeShort(blockDataList.size());
+
+        for (DataGroup entity : entities) {
+          Data.output(entity, dataOutputStream);
+        }
+      } else {
+        dataOutputStream.writeShort(0);
+        dataOutputStream.writeShort(blockDataList.size());
+      }
+
+      for (BlockData blockData : blockDataList) {
+        dataOutputStream.writeInt(getRef(blockData.getX(), blockData.getY(), blockData.getZ()));
+        Data.output(blockData.write(), dataOutputStream);
       }
     }
-    if (num == 1) {
-      dataOutputStream.writeInt(currentBlock);
-    } else {
-      dataOutputStream.writeInt(-num);
-      dataOutputStream.writeInt(currentBlock);
-    }
-
-    for (int i = 0; i < (SIZE_BLOCKS_CUBED * usedHeight); i++) {
-      dataOutputStream.writeByte(light[i]);
-    }
-    
-    if (writeEntities && entities != null) {
-      dataOutputStream.writeShort(entities.length);
-      dataOutputStream.writeShort(blockDataList.size());
-  
-      for (DataGroup entity : entities) {
-        Data.output(entity, dataOutputStream);
-      }
-    } else {
-      dataOutputStream.writeShort(0);
-      dataOutputStream.writeShort(blockDataList.size());
-    }
-    
-    for (BlockData blockData : blockDataList) {
-      dataOutputStream.writeInt(getRef(blockData.getX(), blockData.getY(), blockData.getZ()));
-      Data.output(blockData.write(), dataOutputStream);
-    }
-
-    lock.readUnlock();
   }
 
   public void read(DataInputStream dataInputStream) throws IOException {
@@ -1052,7 +1003,7 @@ public class Area implements Lock.HasLock {
       Side.getCubes().world.addEntityFromSave(dataGroup);
     }
     saveEntities = entitiesSize;
-    
+
     blockDataList.clear();
     blockDataList.ensureCapacity(dataSize);
     for (int i = 0; i < dataSize; i++) {
@@ -1067,7 +1018,7 @@ public class Area implements Lock.HasLock {
       data.read(dataGroup);
       blockDataList.add(data);
     }
-    
+
     if (invalidBlocks) {
       Log.warning("Invalid blocks in " + toString());
       updateAll();
@@ -1110,15 +1061,10 @@ public class Area implements Lock.HasLock {
   }
 
   @Override
-  public Lock getLock() {
-    return lock;
-  }
-  
-  @Override
   public String toString() {
     return areaX + "," + areaZ;
   }
-  
+
   /**
    * Crucial to call this so changes are written to disk.
    * Area should be write locked
@@ -1132,8 +1078,27 @@ public class Area implements Lock.HasLock {
   }
 
   public void saveModCount() {
-    lock.writeLock();
-    saveModCount = modCount;
-    lock.writeUnlock();
+    try (Locked<Area> locked = acquireWriteLock()) {
+      saveModCount = modCount;
+    }
+  }
+
+  @Override
+  public int compareTo(Area o) {
+    int c = Integer.compare(areaX, o.areaX);
+    if (c != 0) return c;
+    return Integer.compare(areaZ, o.areaZ);
+  }
+
+  private static final int[][] NEIGHBOUR_OFFSETS = new int[][] {{-1, -1}, {-1, 0}, {-1,1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
+
+  public Locked<Area> lockAllNeighbours(boolean write, boolean requireAll) {
+    boolean all = true;
+    for (int[] offset : NEIGHBOUR_OFFSETS) {
+      all &= neighbour(areaX + offset[0], areaZ + offset[1]) != null;
+    }
+    if (!all && requireAll) throw new CubesException("Not all neighbours are loaded");
+
+    return LockManager.lockMany(write, Side.isClient() ? neighboursClient : neighboursServer);
   }
 }

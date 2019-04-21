@@ -35,12 +35,9 @@ public class BlockGrass extends Block {
   }
 
   @Override
-  public int randomTick(World world, Area area, int x, int y, int z, int meta) {
-    if (y >= area.maxY) return meta;
-    if (area.getMaxLight(x, y + 1, z) < MIN_LIGHT) {
+  public void randomTick(World world, Area area, int x, int y, int z, int meta) {
+    if (y < area.maxY && area.getMaxLight(x, y + 1, z) < MIN_LIGHT) {
       area.setBlock(Blocks.dirt, x, y, z, 0);
-      return 0;
     }
-    return meta;
   }
 }

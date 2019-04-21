@@ -5,6 +5,8 @@ import ethanjones.cubes.core.event.entity.living.player.PlayerMovementEvent;
 import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
 import ethanjones.cubes.core.event.world.generation.AreaLoadedEvent;
 import ethanjones.cubes.core.id.IDManager;
+import ethanjones.cubes.core.system.CubesException;
+import ethanjones.cubes.core.util.locks.Locked;
 import ethanjones.cubes.entity.Entity;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.input.ClickType;
@@ -16,6 +18,7 @@ import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.CoordinateConverter;
+import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.collision.BlockIntersection;
 import ethanjones.cubes.world.generator.RainStatus;
 import ethanjones.cubes.world.reference.AreaReference;
@@ -25,6 +28,7 @@ import ethanjones.cubes.world.reference.multi.WorldRegion;
 import ethanjones.cubes.world.server.WorldServer;
 import ethanjones.cubes.world.storage.Area;
 import ethanjones.cubes.world.thread.GenerationTask;
+import ethanjones.cubes.world.thread.WorldLockable;
 import ethanjones.cubes.world.thread.WorldRequestParameter;
 
 import com.badlogic.gdx.math.Vector3;
@@ -111,12 +115,15 @@ public class PlayerManager {
         }
       });
       initialGenerationTask = server.world.requestRegion(new WorldRegion(playerArea, loadDistance), parameter);
-      
-      for (Entity entity : Cubes.getServer().world.entities.values()) {
-        if (positionInLoadRange(entity.position) && !(entity instanceof Player)) {
-          PacketEntityAdd packet = new PacketEntityAdd();
-          packet.entity = entity;
-          NetworkingManager.sendPacketToClient(packet, client);
+
+      World world = Cubes.getServer().world;
+      try (Locked<WorldLockable> locked = world.entities.acquireReadLock()) {
+        for (Entity entity : world.entities.map.values()) {
+          if (positionInLoadRange(entity.position) && !(entity instanceof Player)) {
+            PacketEntityAdd packet = new PacketEntityAdd();
+            packet.entity = entity;
+            NetworkingManager.sendPacketToClient(packet, client);
+          }
         }
       }
     }
@@ -168,12 +175,15 @@ public class PlayerManager {
         }
         
         server.world.requestRegion(difference, null);
-        
-        for (Entity entity : Cubes.getServer().world.entities.values()) {
-          if (!(entity instanceof Player) && newRegion.contains(entity.position) && !oldRegion.contains(entity.position)) {
-            PacketEntityAdd packet = new PacketEntityAdd();
-            packet.entity = entity;
-            NetworkingManager.sendPacketToClient(packet, client);
+
+        World world = Cubes.getServer().world;
+        try (Locked<WorldLockable> locked = world.entities.acquireReadLock()) {
+          for (Entity entity : world.entities.map.values()) {
+            if (!(entity instanceof Player) && newRegion.contains(entity.position) && !oldRegion.contains(entity.position)) {
+              PacketEntityAdd packet = new PacketEntityAdd();
+              packet.entity = entity;
+              NetworkingManager.sendPacketToClient(packet, client);
+            }
           }
         }
         

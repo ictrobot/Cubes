@@ -2,7 +2,6 @@ package ethanjones.cubes.side.server;
 
 import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.core.event.EventHandler;
-import ethanjones.cubes.core.event.entity.living.player.PlayerBreakBlockEvent;
 import ethanjones.cubes.core.event.entity.living.player.PlayerPlaceBlockEvent;
 import ethanjones.cubes.core.gwt.FakeAtomic.AtomicLong;
 import ethanjones.cubes.core.gwt.Task;
@@ -10,8 +9,6 @@ import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.timing.TimeHandler;
-import ethanjones.cubes.core.util.BlockFace;
-import ethanjones.cubes.core.util.VectorUtil;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.networking.socket.SocketMonitor;
 import ethanjones.cubes.side.common.Cubes;
@@ -22,7 +19,6 @@ import ethanjones.cubes.world.server.WorldServer;
 import ethanjones.cubes.world.storage.WorldStorage;
 import ethanjones.cubes.world.storage.WorldStorage.ChangedBlockBatch;
 
-import com.badlogic.gdx.math.Vector3;
 
 import java.util.ArrayDeque;
 import java.util.List;
@@ -125,27 +121,7 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
           event.setMeta(2);
           break;
       }
-    } else if (event.getBlock() == Blocks.chest) {
-      Vector3 pos = event.getPlayer().position.cpy();
-      pos.sub(event.getBlockReference().asVector3());
-      pos.nor();
-      BlockFace blockFace = VectorUtil.directionXZ(pos);
-      if (blockFace == null || blockFace == BlockFace.posX) {
-        event.setMeta(0);
-      } else if (blockFace == BlockFace.negX) {
-        event.setMeta(1);
-      } else if (blockFace == BlockFace.posZ) {
-        event.setMeta(2);
-      } else if (blockFace == BlockFace.negZ) {
-        event.setMeta(3);
-      }
     }
-  }
-
-  @EventHandler
-  public void breakMeta(PlayerBreakBlockEvent event) {
-    if (!(event.getBlock() == Blocks.log || event.getBlock() == Blocks.chest)) return;
-    event.setMeta(0);
   }
 
   public abstract boolean isDedicated();
@@ -163,7 +139,7 @@ public abstract class CubesServer extends Cubes implements TimeHandler {
   public static long lastUpdateTime() {
     return lastUpdateTime.get();
   }
-  
+
   public void addChangedBlocksBatch(ChangedBlockBatch changedBlockBatch) {
     changedBlocksBatches.add(changedBlockBatch);
   }
