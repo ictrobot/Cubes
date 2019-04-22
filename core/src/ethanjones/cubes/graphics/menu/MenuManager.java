@@ -41,6 +41,10 @@ public class MenuManager {
     return menus.get(index - 1);
   }
 
+  public static boolean removePrevious(Menu menu) {
+    return menus.removeValue(menu, true);
+  }
+
   public static void renderBackground() {
     if (disableBackground) return;
     if (texture == null) {

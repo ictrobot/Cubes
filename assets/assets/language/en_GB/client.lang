@@ -1,1 +1,3 @@
 client.client_loaded=Client loaded
+client.gwtMessage=Disclaimer:\n\nCubes Minimized has many limitations including\n being single threaded which limits performance\n\nFor the full experience, try downloading Cubes
+client.gwtOK=OK

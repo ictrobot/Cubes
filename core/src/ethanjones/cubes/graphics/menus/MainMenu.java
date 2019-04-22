@@ -56,9 +56,9 @@ public class MainMenu extends Menu {
       @Override
       public void changed(ChangeEvent event, Actor actor) {
         if (WorldStorage.getInterface() != null) {
-          Adapter.setMenu(new SingleplayerSavesMenu());
+          Adapter.setMenu(DisclaimerMenu.getDisclaimer(new SingleplayerSavesMenu()));
         } else {
-          Adapter.setMenu(new SingleplayerMenu());
+          Adapter.setMenu(DisclaimerMenu.getDisclaimer(new SingleplayerMenu()));
         }
       }
     });
