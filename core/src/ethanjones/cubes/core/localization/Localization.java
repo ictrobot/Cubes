@@ -60,7 +60,7 @@ public class Localization {
       int index = line.indexOf("=");
       if (index == -1) continue;
       String str = line.substring(0, index).toLowerCase();
-      String localization = line.substring(index + 1);
+      String localization = line.substring(index + 1).replace("\\n", "\n");
       language.add(str, localization);
     }
     scanner.close();
