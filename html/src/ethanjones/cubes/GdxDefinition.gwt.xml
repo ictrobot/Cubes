@@ -8,4 +8,7 @@
 	<entry-point class='ethanjones.cubes.core.platform.html.HtmlLauncher' />
 	<set-configuration-property name='xsiframe.failIfScriptTag' value='FALSE'/>
 	<set-configuration-property name="gdx.assetpath" value="../assets" />
+
+	<set-property name="compiler.useSourceMaps" value="true" />
+	<set-configuration-property name="includeSourceMapUrl" value="source/__HASH___sourceMap__FRAGMENT__.json"/>
 </module>

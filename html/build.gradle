@@ -15,6 +15,7 @@ gwt {
         strict = true
         disableCastChecking = true
         setOptimize(0)
+        saveSource = true
     }
 }
 
@@ -47,8 +48,14 @@ task dist(dependsOn: [clean, compileGwt]) {
             from "war"
             into "build/dist"
         }
+        copy {
+            from "build/gwt/extra/html/src"
+            from "build/gwt/extra/html/symbolMaps"
+            into "build/dist/source"
+        }
 
         delete "build/dist/index.html"
+        delete "build/dist/WEB-INF"
         file("build/dist/play.html").renameTo(file("build/dist/index.html"))
         delete "build/dist/html/logo.png"
         copy {
