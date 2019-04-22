@@ -1,12 +1,11 @@
 package ethanjones.cubes.core.settings.type;
 
-import ethanjones.cubes.core.gwt.UUID;
-import ethanjones.cubes.core.settings.Setting;
-import ethanjones.cubes.core.settings.VisualSettingManager;
-
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonValue;
+import ethanjones.cubes.core.gwt.UUID;
+import ethanjones.cubes.core.settings.Setting;
+import ethanjones.cubes.core.settings.VisualSettingManager;
 
 import static ethanjones.cubes.side.client.CubesClient.uuid;
 

@@ -1,5 +1,6 @@
 package ethanjones.cubes.block.blocks;
 
+import com.badlogic.gdx.math.Vector3;
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.block.data.BlockData;
 import ethanjones.cubes.block.data.BlockDataChest;
@@ -20,8 +21,6 @@ import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.collision.BlockIntersection;
 import ethanjones.cubes.world.storage.Area;
 import ethanjones.data.DataGroup;
-
-import com.badlogic.gdx.math.Vector3;
 
 public class BlockChest extends Block {
 

@@ -1,5 +1,6 @@
 package ethanjones.cubes.core.platform;
 
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.graphics.menu.Menu;
@@ -9,8 +10,6 @@ import ethanjones.cubes.input.InputChain;
 import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.side.server.CubesServer;
-
-import com.badlogic.gdx.utils.reflect.ClassReflection;
 
 public class Adapter {
 

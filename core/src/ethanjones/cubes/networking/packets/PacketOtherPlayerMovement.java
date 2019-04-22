@@ -1,7 +1,8 @@
 package ethanjones.cubes.networking.packets;
 
-import ethanjones.cubes.core.logging.Log;
+import com.badlogic.gdx.math.Vector3;
 import ethanjones.cubes.core.gwt.UUID;
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.util.VectorUtil;
 import ethanjones.cubes.entity.Entity;
 import ethanjones.cubes.entity.living.player.Player;
@@ -9,8 +10,6 @@ import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.networking.packet.PacketDirection;
 import ethanjones.cubes.networking.packet.PacketDirection.Direction;
 import ethanjones.cubes.side.common.Cubes;
-
-import com.badlogic.gdx.math.Vector3;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

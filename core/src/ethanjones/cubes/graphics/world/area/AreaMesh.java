@@ -1,15 +1,14 @@
 package ethanjones.cubes.graphics.world.area;
 
-import ethanjones.cubes.graphics.CubesRenderable;
-import ethanjones.cubes.graphics.CubesVertexAttributes;
-import ethanjones.cubes.graphics.assets.Assets;
-
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
+import ethanjones.cubes.graphics.CubesRenderable;
+import ethanjones.cubes.graphics.CubesVertexAttributes;
+import ethanjones.cubes.graphics.assets.Assets;
 
 public class AreaMesh implements Pool.Poolable, Disposable {
 

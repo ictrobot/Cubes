@@ -1,13 +1,12 @@
 package ethanjones.cubes.graphics.hud.inv;
 
-import ethanjones.cubes.graphics.menu.Fonts;
-import ethanjones.cubes.item.inv.Inventory;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import ethanjones.cubes.graphics.menu.Fonts;
+import ethanjones.cubes.item.inv.Inventory;
 
 public class ScrollInventoryActor extends Table {
 

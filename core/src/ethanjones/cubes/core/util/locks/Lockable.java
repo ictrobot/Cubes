@@ -1,7 +1,5 @@
 package ethanjones.cubes.core.util.locks;
 
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 // Usage:
 //
 // class Test extends Lockable<Test> {

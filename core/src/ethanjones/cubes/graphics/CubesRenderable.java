@@ -1,10 +1,9 @@
 package ethanjones.cubes.graphics;
 
-import ethanjones.cubes.side.common.Cubes;
-import ethanjones.cubes.world.CoordinateConverter;
-
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.math.Vector3;
+import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.world.CoordinateConverter;
 
 public class CubesRenderable extends Renderable {
 

@@ -1,11 +1,10 @@
 package ethanjones.cubes.core.gwt;
 
+import com.badlogic.gdx.math.WindowedMean;
+import com.badlogic.gdx.utils.SnapshotArray;
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.side.client.ClientDebug;
 import ethanjones.cubes.side.common.Side;
-
-import com.badlogic.gdx.math.WindowedMean;
-import com.badlogic.gdx.utils.SnapshotArray;
 
 public class Task {
   private static SnapshotArray<Task> tasks = new SnapshotArray<Task>();

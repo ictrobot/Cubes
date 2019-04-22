@@ -1,5 +1,6 @@
 package ethanjones.cubes.item;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.event.entity.living.player.PlayerPlaceBlockEvent;
 import ethanjones.cubes.core.util.BlockFace;
@@ -12,8 +13,6 @@ import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.collision.BlockIntersection;
 import ethanjones.cubes.world.reference.BlockReference;
-
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class ItemBlock extends Item {
 

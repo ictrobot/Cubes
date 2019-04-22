@@ -1,5 +1,6 @@
 package ethanjones.cubes.side.common;
 
+import com.badlogic.gdx.Gdx;
 import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.core.id.IDManager;
 import ethanjones.cubes.core.json.JsonLoader;
@@ -21,8 +22,6 @@ import ethanjones.cubes.side.client.CubesClient;
 import ethanjones.cubes.side.server.CubesServer;
 import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.light.WorldLightHandler;
-
-import com.badlogic.gdx.Gdx;
 
 import java.util.ArrayDeque;
 

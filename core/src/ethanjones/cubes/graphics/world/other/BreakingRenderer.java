@@ -1,15 +1,5 @@
 package ethanjones.cubes.graphics.world.other;
 
-import ethanjones.cubes.core.system.CubesException;
-import ethanjones.cubes.entity.living.player.Player;
-import ethanjones.cubes.graphics.CubesRenderable;
-import ethanjones.cubes.graphics.CubesVertexAttributes;
-import ethanjones.cubes.graphics.assets.Assets;
-import ethanjones.cubes.graphics.world.block.FaceVertices;
-import ethanjones.cubes.item.ItemTool;
-import ethanjones.cubes.side.common.Cubes;
-import ethanjones.cubes.world.reference.BlockReference;
-
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
@@ -19,6 +9,15 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.math.Vector3;
+import ethanjones.cubes.core.system.CubesException;
+import ethanjones.cubes.entity.living.player.Player;
+import ethanjones.cubes.graphics.CubesRenderable;
+import ethanjones.cubes.graphics.CubesVertexAttributes;
+import ethanjones.cubes.graphics.assets.Assets;
+import ethanjones.cubes.graphics.world.block.FaceVertices;
+import ethanjones.cubes.item.ItemTool;
+import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.world.reference.BlockReference;
 
 import static ethanjones.cubes.world.light.BlockLight.FULL_LIGHT;
 

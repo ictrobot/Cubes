@@ -1,7 +1,5 @@
 package ethanjones.cubes.graphics.menu;
 
-import ethanjones.cubes.graphics.assets.Assets;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -13,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.SelectBox.SelectBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad.TouchpadStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import ethanjones.cubes.graphics.assets.Assets;
 
 import static ethanjones.cubes.graphics.Graphics.screenViewport;
 import static ethanjones.cubes.graphics.Graphics.spriteBatch;

@@ -1,12 +1,11 @@
 package ethanjones.cubes.input;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
 import ethanjones.cubes.item.ItemTool;
 import ethanjones.cubes.networking.NetworkingManager;
 import ethanjones.cubes.networking.packets.PacketClick;
 import ethanjones.cubes.side.common.Cubes;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputAdapter;
 
 public class TouchController extends InputAdapter {
   

@@ -1,11 +1,10 @@
 package ethanjones.cubes.core.system;
 
+import com.badlogic.gdx.utils.Pool;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.AreaReferencePool;
 import ethanjones.cubes.world.reference.BlockReference;
 import ethanjones.cubes.world.reference.BlockReferencePool;
-
-import com.badlogic.gdx.utils.Pool;
 
 import java.util.HashMap;
 

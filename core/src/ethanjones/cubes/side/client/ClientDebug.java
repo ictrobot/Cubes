@@ -1,5 +1,8 @@
 package ethanjones.cubes.side.client;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.WindowedMean;
 import ethanjones.cubes.core.gwt.Task;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.settings.Settings;
@@ -13,10 +16,6 @@ import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.collision.BlockIntersection;
 import ethanjones.cubes.world.storage.Area;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.WindowedMean;
 
 import static ethanjones.cubes.graphics.Graphics.glProfiler;
 

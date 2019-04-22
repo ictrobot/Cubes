@@ -1,9 +1,8 @@
 package ethanjones.cubes.world.reference;
 
-import ethanjones.cubes.world.CoordinateConverter;
-
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Pool;
+import ethanjones.cubes.world.CoordinateConverter;
 
 public class BlockReference implements Pool.Poolable {
 

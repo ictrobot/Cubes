@@ -1,16 +1,15 @@
 package ethanjones.cubes.world.client;
 
-import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.world.save.Gamemode;
-import ethanjones.cubes.world.save.Save;
-import ethanjones.cubes.world.save.SaveOptions;
-import ethanjones.cubes.world.storage.WorldStorage;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.math.MathUtils;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonArray;
+import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.world.save.Gamemode;
+import ethanjones.cubes.world.save.Save;
+import ethanjones.cubes.world.save.SaveOptions;
+import ethanjones.cubes.world.storage.WorldStorage;
 
 public class ClientSaveManager {
   

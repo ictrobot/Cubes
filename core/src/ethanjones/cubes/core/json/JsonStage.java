@@ -1,10 +1,9 @@
 package ethanjones.cubes.core.json;
 
+import com.eclipsesource.json.JsonValue;
 import ethanjones.cubes.block.BlockJson;
 import ethanjones.cubes.item.ItemJson;
 import ethanjones.cubes.item.crafting.RecipeJson;
-
-import com.eclipsesource.json.JsonValue;
 
 public enum JsonStage {
   BLOCK {

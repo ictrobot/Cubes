@@ -1,11 +1,10 @@
 package ethanjones.cubes.item;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import ethanjones.cubes.core.id.IDManager;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.data.DataGroup;
 import ethanjones.data.DataParser;
-
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class ItemStack implements DataParser {
   public Item item;

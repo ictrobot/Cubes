@@ -1,11 +1,10 @@
 package ethanjones.cubes.core.settings;
 
-import ethanjones.cubes.core.platform.Compatibility;
-import ethanjones.cubes.core.settings.type.KeybindSetting;
-
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import ethanjones.cubes.core.platform.Compatibility;
+import ethanjones.cubes.core.settings.type.KeybindSetting;
 
 public class Keybinds {
   

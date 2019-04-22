@@ -1,10 +1,9 @@
 package ethanjones.cubes.core.settings;
 
-import ethanjones.cubes.core.localization.Localization;
-
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import ethanjones.cubes.core.localization.Localization;
 
 import java.util.ArrayList;
 import java.util.HashMap;

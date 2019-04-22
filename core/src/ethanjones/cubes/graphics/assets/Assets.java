@@ -1,10 +1,5 @@
 package ethanjones.cubes.graphics.assets;
 
-import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.core.platform.Adapter;
-import ethanjones.cubes.core.platform.Compatibility;
-import ethanjones.cubes.core.system.CubesException;
-
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -12,6 +7,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.platform.Adapter;
+import ethanjones.cubes.core.platform.Compatibility;
+import ethanjones.cubes.core.system.CubesException;
 
 import java.util.ArrayList;
 import java.util.HashMap;

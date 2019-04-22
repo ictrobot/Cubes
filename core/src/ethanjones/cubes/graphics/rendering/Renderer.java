@@ -1,9 +1,8 @@
 package ethanjones.cubes.graphics.rendering;
 
-import ethanjones.cubes.graphics.world.ao.AmbientOcclusion;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import ethanjones.cubes.graphics.world.ao.AmbientOcclusion;
 
 public class Renderer {
 

@@ -1,9 +1,8 @@
 package ethanjones.cubes.world.gravity;
 
+import com.badlogic.gdx.math.Vector3;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.World;
-
-import com.badlogic.gdx.math.Vector3;
 
 public class WorldGravity {
 

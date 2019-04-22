@@ -1,11 +1,10 @@
 package ethanjones.cubes.core.event;
 
-import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.core.system.CubesException;
-
 import com.badlogic.gdx.utils.reflect.Annotation;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Method;
+import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.system.CubesException;
 
 import java.util.ArrayList;
 import java.util.HashMap;

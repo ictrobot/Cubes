@@ -1,10 +1,9 @@
 package ethanjones.cubes.world.reference;
 
-import ethanjones.cubes.world.CoordinateConverter;
-import ethanjones.cubes.world.storage.Area;
-
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Pool;
+import ethanjones.cubes.world.CoordinateConverter;
+import ethanjones.cubes.world.storage.Area;
 
 public class AreaReference implements Pool.Poolable, Cloneable {
 

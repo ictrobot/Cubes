@@ -1,5 +1,9 @@
 package ethanjones.cubes.block;
 
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonObject.Member;
+import com.eclipsesource.json.JsonValue;
 import ethanjones.cubes.core.id.IDManager;
 import ethanjones.cubes.core.json.JsonException;
 import ethanjones.cubes.core.system.CubesException;
@@ -10,11 +14,6 @@ import ethanjones.cubes.item.ItemJson;
 import ethanjones.cubes.item.ItemStack;
 import ethanjones.cubes.item.ItemTool;
 import ethanjones.cubes.world.World;
-
-import com.eclipsesource.json.JsonArray;
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonObject.Member;
-import com.eclipsesource.json.JsonValue;
 
 import java.util.Arrays;
 

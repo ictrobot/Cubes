@@ -1,17 +1,5 @@
 package ethanjones.cubes.graphics.hud.inv;
 
-import ethanjones.cubes.block.Block;
-import ethanjones.cubes.core.id.IDManager;
-import ethanjones.cubes.core.util.BlockFace;
-import ethanjones.cubes.graphics.CubesVertexAttributes;
-import ethanjones.cubes.graphics.Graphics;
-import ethanjones.cubes.graphics.assets.Assets;
-import ethanjones.cubes.graphics.world.area.AreaMesh;
-import ethanjones.cubes.graphics.world.block.BlockRenderType;
-import ethanjones.cubes.graphics.world.block.BlockTextureHandler;
-import ethanjones.cubes.graphics.world.block.FaceVertices;
-import ethanjones.cubes.world.light.BlockLight;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -20,14 +8,19 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.ScreenUtils;
+import ethanjones.cubes.block.Block;
+import ethanjones.cubes.core.id.IDManager;
+import ethanjones.cubes.core.util.BlockFace;
+import ethanjones.cubes.graphics.CubesVertexAttributes;
+import ethanjones.cubes.graphics.Graphics;
+import ethanjones.cubes.graphics.world.area.AreaMesh;
+import ethanjones.cubes.graphics.world.block.BlockRenderType;
+import ethanjones.cubes.graphics.world.block.BlockTextureHandler;
+import ethanjones.cubes.graphics.world.block.FaceVertices;
+import ethanjones.cubes.world.light.BlockLight;
 
 import java.util.ArrayList;
 import java.util.HashMap;

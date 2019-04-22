@@ -1,15 +1,14 @@
 package ethanjones.cubes.core.json;
 
+import com.badlogic.gdx.files.FileHandle;
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonValue;
 import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.util.Multimap;
 import ethanjones.cubes.graphics.assets.Asset;
 import ethanjones.cubes.graphics.assets.AssetManager;
 import ethanjones.cubes.graphics.assets.Assets;
-
-import com.badlogic.gdx.files.FileHandle;
-import com.eclipsesource.json.Json;
-import com.eclipsesource.json.JsonValue;
 import ethanjones.cubes.item.Items;
 
 import java.io.IOException;

@@ -1,5 +1,6 @@
 package ethanjones.cubes.networking.packets;
 
+import com.badlogic.gdx.math.Vector3;
 import ethanjones.cubes.core.util.VectorUtil;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.networking.packet.Packet;
@@ -9,8 +10,6 @@ import ethanjones.cubes.networking.packet.PacketPriority;
 import ethanjones.cubes.networking.packet.PacketPriority.Priority;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.common.Side;
-
-import com.badlogic.gdx.math.Vector3;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

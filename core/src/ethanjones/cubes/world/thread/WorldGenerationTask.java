@@ -1,5 +1,6 @@
 package ethanjones.cubes.world.thread;
 
+import com.badlogic.gdx.math.MathUtils;
 import ethanjones.cubes.core.gwt.FakeAtomic.AtomicInteger;
 import ethanjones.cubes.core.gwt.FakeAtomic.AtomicLong;
 import ethanjones.cubes.core.logging.Log;
@@ -8,8 +9,6 @@ import ethanjones.cubes.world.reference.multi.AreaReferenceSet;
 import ethanjones.cubes.world.reference.multi.MultiAreaReference;
 import ethanjones.cubes.world.reference.multi.WorldRegion;
 import ethanjones.cubes.world.server.WorldServer;
-
-import com.badlogic.gdx.math.MathUtils;
 
 import java.util.*;
 

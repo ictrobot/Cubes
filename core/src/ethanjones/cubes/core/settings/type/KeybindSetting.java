@@ -1,10 +1,5 @@
 package ethanjones.cubes.core.settings.type;
 
-import ethanjones.cubes.core.localization.Localization;
-import ethanjones.cubes.core.platform.Compatibility;
-import ethanjones.cubes.core.settings.Setting;
-import ethanjones.cubes.core.settings.VisualSettingManager;
-
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
@@ -15,6 +10,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonValue;
+import ethanjones.cubes.core.localization.Localization;
+import ethanjones.cubes.core.platform.Compatibility;
+import ethanjones.cubes.core.settings.Setting;
+import ethanjones.cubes.core.settings.VisualSettingManager;
 
 public class KeybindSetting extends Setting {
   

@@ -1,5 +1,9 @@
 package ethanjones.cubes.graphics.world.ao;
 
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import ethanjones.cubes.core.id.TransparencyManager;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.settings.Setting;
@@ -12,11 +16,6 @@ import ethanjones.cubes.graphics.world.WorldGraphicsPools;
 import ethanjones.cubes.graphics.world.area.AreaMesh;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.storage.Area;
-
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 
 public final class AmbientOcclusion {
 

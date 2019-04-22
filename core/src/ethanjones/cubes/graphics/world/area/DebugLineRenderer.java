@@ -1,13 +1,12 @@
 package ethanjones.cubes.graphics.world.area;
 
-import ethanjones.cubes.side.common.Cubes;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
 import com.badlogic.gdx.math.Vector3;
+import ethanjones.cubes.side.common.Cubes;
 
 import java.util.ArrayList;
 

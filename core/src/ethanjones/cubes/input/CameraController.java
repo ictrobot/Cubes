@@ -1,5 +1,11 @@
 package ethanjones.cubes.input;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import ethanjones.cubes.core.event.entity.living.player.PlayerMovementEvent;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.core.settings.Keybinds;
@@ -11,13 +17,6 @@ import ethanjones.cubes.networking.packets.PacketThrowItem;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.gravity.WorldGravity;
 import ethanjones.cubes.world.save.Gamemode;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 
 public class CameraController extends InputAdapter {
 

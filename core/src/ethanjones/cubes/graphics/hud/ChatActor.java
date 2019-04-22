@@ -1,13 +1,12 @@
 package ethanjones.cubes.graphics.hud;
 
-import ethanjones.cubes.core.util.Toggle;
-import ethanjones.cubes.graphics.menu.Fonts;
-import ethanjones.cubes.graphics.menu.Menu;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import ethanjones.cubes.core.util.Toggle;
+import ethanjones.cubes.graphics.menu.Fonts;
+import ethanjones.cubes.graphics.menu.Menu;
 
 import java.util.ArrayDeque;
 

@@ -1,5 +1,14 @@
 package ethanjones.cubes.graphics.entity;
 
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g3d.Renderable;
+import com.badlogic.gdx.graphics.g3d.RenderableProvider;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.Pool;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.entity.ItemEntity;
 import ethanjones.cubes.graphics.CubesRenderable;
@@ -10,16 +19,6 @@ import ethanjones.cubes.graphics.world.block.BlockTextureHandler;
 import ethanjones.cubes.graphics.world.block.FaceVertices;
 import ethanjones.cubes.item.Item;
 import ethanjones.cubes.item.ItemBlock;
-
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.RenderableProvider;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.Pool;
 
 import static ethanjones.cubes.world.light.BlockLight.FULL_LIGHT;
 

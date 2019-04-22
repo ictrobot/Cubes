@@ -1,12 +1,5 @@
 package ethanjones.cubes.graphics.world.other;
 
-import ethanjones.cubes.graphics.CubesVertexAttributes;
-import ethanjones.cubes.graphics.assets.Assets;
-import ethanjones.cubes.side.common.Cubes;
-import ethanjones.cubes.world.World;
-import ethanjones.cubes.world.client.WorldClient;
-import ethanjones.cubes.world.generator.RainStatus;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
@@ -22,6 +15,12 @@ import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import ethanjones.cubes.graphics.CubesVertexAttributes;
+import ethanjones.cubes.graphics.assets.Assets;
+import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.world.World;
+import ethanjones.cubes.world.client.WorldClient;
+import ethanjones.cubes.world.generator.RainStatus;
 
 import java.util.Iterator;
 import java.util.LinkedList;

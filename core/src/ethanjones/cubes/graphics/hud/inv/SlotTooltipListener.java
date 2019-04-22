@@ -1,9 +1,5 @@
 package ethanjones.cubes.graphics.hud.inv;
 
-import ethanjones.cubes.graphics.assets.Assets;
-import ethanjones.cubes.graphics.menu.Fonts;
-import ethanjones.cubes.item.ItemStack;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.math.Vector2;
@@ -14,6 +10,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import ethanjones.cubes.graphics.assets.Assets;
+import ethanjones.cubes.graphics.menu.Fonts;
+import ethanjones.cubes.item.ItemStack;
 
 public class SlotTooltipListener extends InputListener {
 

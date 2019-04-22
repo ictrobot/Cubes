@@ -1,5 +1,11 @@
 package ethanjones.cubes.graphics.world.area;
 
+import com.badlogic.gdx.graphics.g3d.Renderable;
+import com.badlogic.gdx.graphics.g3d.RenderableProvider;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.Pool;
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.id.IDManager;
 import ethanjones.cubes.core.system.Pools;
@@ -10,13 +16,6 @@ import ethanjones.cubes.graphics.world.ao.AmbientOcclusion;
 import ethanjones.cubes.graphics.world.block.BlockRenderType;
 import ethanjones.cubes.graphics.world.block.BlockTextureHandler;
 import ethanjones.cubes.world.storage.Area;
-
-import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.RenderableProvider;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.Pool;
 
 import java.util.ArrayList;
 

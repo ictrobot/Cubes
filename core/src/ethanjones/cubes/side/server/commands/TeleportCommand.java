@@ -1,11 +1,10 @@
 package ethanjones.cubes.side.server.commands;
 
+import com.badlogic.gdx.math.Vector3;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.side.server.command.*;
-
-import com.badlogic.gdx.math.Vector3;
 
 import java.util.List;
 

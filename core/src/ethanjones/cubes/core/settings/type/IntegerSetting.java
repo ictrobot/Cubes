@@ -1,12 +1,5 @@
 package ethanjones.cubes.core.settings.type;
 
-import ethanjones.cubes.core.settings.Setting;
-import ethanjones.cubes.core.settings.VisualSettingManager;
-import ethanjones.cubes.core.system.CubesException;
-import ethanjones.cubes.graphics.menu.Fonts;
-import ethanjones.cubes.graphics.menus.SettingsMenu;
-import ethanjones.cubes.side.client.ClientDebug;
-
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -18,6 +11,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.Align;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonValue;
+import ethanjones.cubes.core.settings.Setting;
+import ethanjones.cubes.core.settings.VisualSettingManager;
+import ethanjones.cubes.core.system.CubesException;
+import ethanjones.cubes.graphics.menu.Fonts;
+import ethanjones.cubes.graphics.menus.SettingsMenu;
+import ethanjones.cubes.side.client.ClientDebug;
 
 public class IntegerSetting extends Setting {
 

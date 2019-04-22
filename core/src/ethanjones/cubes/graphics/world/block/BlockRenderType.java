@@ -1,11 +1,10 @@
 package ethanjones.cubes.graphics.world.block;
 
+import com.badlogic.gdx.math.Vector3;
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.graphics.world.ao.AmbientOcclusion;
 import ethanjones.cubes.world.storage.Area;
-
-import com.badlogic.gdx.math.Vector3;
 
 import static ethanjones.cubes.graphics.world.block.FaceVertices.*;
 import static ethanjones.cubes.world.light.SunLight.MAX_SUNLIGHT;

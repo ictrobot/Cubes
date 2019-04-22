@@ -1,17 +1,16 @@
 package ethanjones.cubes.graphics.world.area;
 
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.Renderable;
 import ethanjones.cubes.core.settings.Keybinds;
 import ethanjones.cubes.graphics.CubesRenderable;
 import ethanjones.cubes.graphics.CubesVertexAttributes;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.world.light.BlockLight;
 import ethanjones.cubes.world.storage.Area;
-
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.Renderable;
 
 public class AreaBoundaries {
 

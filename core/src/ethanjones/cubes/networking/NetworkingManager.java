@@ -1,13 +1,12 @@
 package ethanjones.cubes.networking;
 
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.networking.packet.Packet;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.networking.singleplayer.SingleplayerNetworking;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.common.Side;
-
-import com.badlogic.gdx.utils.reflect.ClassReflection;
 
 public class NetworkingManager {
 

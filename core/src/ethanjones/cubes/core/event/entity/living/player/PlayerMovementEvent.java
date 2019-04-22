@@ -1,8 +1,7 @@
 package ethanjones.cubes.core.event.entity.living.player;
 
-import ethanjones.cubes.entity.living.player.Player;
-
 import com.badlogic.gdx.math.Vector3;
+import ethanjones.cubes.entity.living.player.Player;
 
 public class PlayerMovementEvent extends PlayerEvent {
 

@@ -1,11 +1,10 @@
 package ethanjones.cubes.graphics.menus;
 
+import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.side.common.Cubes;
-
-import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class WorldLoadingMenu extends InfoMenu {
 

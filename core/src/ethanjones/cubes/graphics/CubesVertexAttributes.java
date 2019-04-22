@@ -1,10 +1,9 @@
 package ethanjones.cubes.graphics;
 
-import ethanjones.cubes.graphics.world.ao.AmbientOcclusion;
-
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import ethanjones.cubes.graphics.world.ao.AmbientOcclusion;
 
 public class CubesVertexAttributes {
 

@@ -1,12 +1,5 @@
 package ethanjones.cubes.graphics.world.other;
 
-import ethanjones.cubes.graphics.CubesVertexAttributes;
-import ethanjones.cubes.graphics.assets.Assets;
-import ethanjones.cubes.graphics.world.block.FaceVertices;
-import ethanjones.cubes.side.common.Cubes;
-import ethanjones.cubes.world.collision.BlockIntersection;
-import ethanjones.cubes.world.reference.BlockReference;
-
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -14,6 +7,12 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.math.Vector3;
+import ethanjones.cubes.graphics.CubesVertexAttributes;
+import ethanjones.cubes.graphics.assets.Assets;
+import ethanjones.cubes.graphics.world.block.FaceVertices;
+import ethanjones.cubes.side.common.Cubes;
+import ethanjones.cubes.world.collision.BlockIntersection;
+import ethanjones.cubes.world.reference.BlockReference;
 
 import static ethanjones.cubes.world.light.BlockLight.FULL_LIGHT;
 

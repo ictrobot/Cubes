@@ -1,5 +1,7 @@
 package ethanjones.cubes.input;
 
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.graphics.Camera;
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.item.ItemStack;
@@ -9,9 +11,6 @@ import ethanjones.cubes.networking.packets.PacketClick;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.collision.BlockIntersection;
 import ethanjones.cubes.world.reference.BlockReference;
-
-import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.graphics.Camera;
 
 public class DesktopController extends InputAdapter {
   private ClickType current = ClickType.none;

@@ -1,12 +1,11 @@
 package ethanjones.cubes.graphics.menu;
 
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.graphics.assets.Assets;
-
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 public class Fonts {
 

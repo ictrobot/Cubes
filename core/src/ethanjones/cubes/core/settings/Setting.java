@@ -1,9 +1,8 @@
 package ethanjones.cubes.core.settings;
 
-import ethanjones.cubes.core.event.settings.SettingChangedEvent;
-
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.eclipsesource.json.JsonValue;
+import ethanjones.cubes.core.event.settings.SettingChangedEvent;
 
 public abstract class Setting {
 

@@ -1,10 +1,9 @@
 package ethanjones.cubes.graphics.world.block;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.graphics.assets.Assets;
-
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.util.Arrays;
 

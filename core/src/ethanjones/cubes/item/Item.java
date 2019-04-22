@@ -1,11 +1,10 @@
 package ethanjones.cubes.item;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.input.ClickType;
-
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Item {
 

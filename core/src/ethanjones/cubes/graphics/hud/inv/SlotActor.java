@@ -1,10 +1,5 @@
 package ethanjones.cubes.graphics.hud.inv;
 
-import ethanjones.cubes.graphics.assets.Assets;
-import ethanjones.cubes.graphics.menu.Fonts;
-import ethanjones.cubes.item.ItemStack;
-import ethanjones.cubes.item.inv.Inventory;
-
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -15,6 +10,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Scaling;
+import ethanjones.cubes.graphics.assets.Assets;
+import ethanjones.cubes.graphics.menu.Fonts;
+import ethanjones.cubes.item.ItemStack;
+import ethanjones.cubes.item.inv.Inventory;
 
 public class SlotActor extends Button {
   public static final TextureRegion blank = Assets.getTextureRegion("core:hud/inv/Slot.png");

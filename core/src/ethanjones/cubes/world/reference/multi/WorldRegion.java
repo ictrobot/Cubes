@@ -1,9 +1,8 @@
 package ethanjones.cubes.world.reference.multi;
 
+import com.badlogic.gdx.math.Vector3;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.reference.AreaReference;
-
-import com.badlogic.gdx.math.Vector3;
 
 import java.util.HashSet;
 import java.util.Set;

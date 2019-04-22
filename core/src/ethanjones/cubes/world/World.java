@@ -1,5 +1,6 @@
 package ethanjones.cubes.world;
 
+import com.badlogic.gdx.utils.Disposable;
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.block.data.BlockData;
 import ethanjones.cubes.core.gwt.FakeAtomic.AtomicBoolean;
@@ -24,8 +25,6 @@ import ethanjones.cubes.world.thread.WorldLockable;
 import ethanjones.cubes.world.thread.WorldRequestParameter;
 import ethanjones.cubes.world.thread.WorldTasks;
 import ethanjones.data.DataGroup;
-
-import com.badlogic.gdx.utils.Disposable;
 
 import java.util.Iterator;
 import java.util.Map.Entry;

@@ -3,7 +3,6 @@ package ethanjones.cubes.world.generator.smooth;
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.core.logging.Log;
-import ethanjones.cubes.core.util.locks.Locked;
 import ethanjones.cubes.world.generator.RainStatus;
 import ethanjones.cubes.world.generator.TerrainGenerator;
 import ethanjones.cubes.world.reference.BlockReference;

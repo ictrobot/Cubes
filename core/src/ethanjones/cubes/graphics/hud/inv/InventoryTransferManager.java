@@ -1,12 +1,5 @@
 package ethanjones.cubes.graphics.hud.inv;
 
-import ethanjones.cubes.core.platform.Compatibility;
-import ethanjones.cubes.graphics.assets.Assets;
-import ethanjones.cubes.item.ItemStack;
-import ethanjones.cubes.item.inv.Inventory;
-import ethanjones.cubes.item.inv.InventoryHelper;
-import ethanjones.cubes.side.common.Cubes;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -14,6 +7,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable;
+import ethanjones.cubes.core.platform.Compatibility;
+import ethanjones.cubes.graphics.assets.Assets;
+import ethanjones.cubes.item.ItemStack;
+import ethanjones.cubes.item.inv.Inventory;
+import ethanjones.cubes.item.inv.InventoryHelper;
+import ethanjones.cubes.side.common.Cubes;
 
 import static ethanjones.cubes.graphics.hud.inv.InventoryManager.GROUP_INVENTORY;
 

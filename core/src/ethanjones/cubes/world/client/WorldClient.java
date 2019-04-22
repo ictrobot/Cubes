@@ -1,5 +1,6 @@
 package ethanjones.cubes.world.client;
 
+import com.badlogic.gdx.graphics.Color;
 import ethanjones.cubes.core.gwt.UUID;
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.core.util.locks.LockManager;
@@ -17,8 +18,6 @@ import ethanjones.cubes.world.storage.Area;
 import ethanjones.cubes.world.thread.GenerationTask;
 import ethanjones.cubes.world.thread.WorldLockable;
 import ethanjones.cubes.world.thread.WorldRequestParameter;
-
-import com.badlogic.gdx.graphics.Color;
 
 import java.util.ArrayList;
 import java.util.Iterator;

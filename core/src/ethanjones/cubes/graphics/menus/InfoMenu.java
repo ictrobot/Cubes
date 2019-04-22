@@ -1,15 +1,14 @@
 package ethanjones.cubes.graphics.menus;
 
-import ethanjones.cubes.graphics.menu.Fonts;
-import ethanjones.cubes.graphics.menu.Menu;
-import ethanjones.cubes.graphics.menu.MenuTools;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
+import ethanjones.cubes.graphics.menu.Fonts;
+import ethanjones.cubes.graphics.menu.Menu;
+import ethanjones.cubes.graphics.menu.MenuTools;
 
 public class InfoMenu extends Menu {
 

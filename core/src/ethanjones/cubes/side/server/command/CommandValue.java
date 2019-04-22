@@ -1,10 +1,9 @@
 package ethanjones.cubes.side.server.command;
 
+import com.badlogic.gdx.math.Vector3;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.networking.server.ClientIdentifier;
 import ethanjones.cubes.side.common.Cubes;
-
-import com.badlogic.gdx.math.Vector3;
 
 public abstract class CommandValue<T> {
 

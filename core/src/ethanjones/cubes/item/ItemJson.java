@@ -1,12 +1,11 @@
 package ethanjones.cubes.item;
 
-import ethanjones.cubes.core.id.IDManager;
-import ethanjones.cubes.core.json.JsonException;
-import ethanjones.cubes.graphics.assets.Assets;
-
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+import ethanjones.cubes.core.id.IDManager;
+import ethanjones.cubes.core.json.JsonException;
+import ethanjones.cubes.graphics.assets.Assets;
 
 public class ItemJson {
 

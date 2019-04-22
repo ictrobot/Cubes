@@ -1,12 +1,11 @@
 package ethanjones.cubes.side.server.commands;
 
+import com.badlogic.gdx.math.MathUtils;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.server.command.*;
 import ethanjones.cubes.world.generator.RainStatus;
 import ethanjones.cubes.world.server.WorldServer;
-
-import com.badlogic.gdx.math.MathUtils;
 
 import java.util.List;
 

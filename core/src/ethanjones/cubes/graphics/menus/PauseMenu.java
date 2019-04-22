@@ -1,16 +1,15 @@
 package ethanjones.cubes.graphics.menus;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.core.platform.StopLoopException;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.graphics.menu.MenuTools;
-
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 public class PauseMenu extends Menu {
   TextButton resume;

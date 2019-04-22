@@ -1,13 +1,12 @@
 package ethanjones.cubes.world.collision;
 
+import com.badlogic.gdx.math.Vector3;
 import ethanjones.cubes.core.event.EventHandler;
 import ethanjones.cubes.core.event.entity.living.player.PlayerMovementEvent;
 import ethanjones.cubes.entity.living.player.Player;
 import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.cubes.world.World;
-
-import com.badlogic.gdx.math.Vector3;
 
 public class PlayerCollision {
   private World world = Side.getCubes().world;

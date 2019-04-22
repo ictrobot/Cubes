@@ -1,5 +1,6 @@
 package ethanjones.cubes.world.save;
 
+import com.badlogic.gdx.math.MathUtils;
 import ethanjones.cubes.core.system.Branding;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.networking.socket.SocketMonitor;
@@ -8,8 +9,6 @@ import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.generator.RainStatus;
 import ethanjones.data.DataGroup;
 import ethanjones.data.DataParser;
-
-import com.badlogic.gdx.math.MathUtils;
 
 public class SaveOptions implements DataParser {
 

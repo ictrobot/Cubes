@@ -1,17 +1,16 @@
 package ethanjones.cubes.core.settings.type;
 
-import ethanjones.cubes.core.settings.Setting;
-import ethanjones.cubes.core.settings.VisualSettingManager;
-import ethanjones.cubes.core.settings.type.IntegerSetting.SliderWithValue;
-import ethanjones.cubes.core.system.CubesException;
-import ethanjones.cubes.graphics.menus.SettingsMenu;
-
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonValue;
+import ethanjones.cubes.core.settings.Setting;
+import ethanjones.cubes.core.settings.VisualSettingManager;
+import ethanjones.cubes.core.settings.type.IntegerSetting.SliderWithValue;
+import ethanjones.cubes.core.system.CubesException;
+import ethanjones.cubes.graphics.menus.SettingsMenu;
 
 public class FloatSetting extends Setting {
 

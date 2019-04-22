@@ -1,15 +1,14 @@
 package ethanjones.cubes.core.settings.type;
 
-import ethanjones.cubes.core.settings.Setting;
-import ethanjones.cubes.core.settings.VisualSettingManager;
-import ethanjones.cubes.graphics.menus.SettingsMenu;
-
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.eclipsesource.json.Json;
 import com.eclipsesource.json.JsonValue;
+import ethanjones.cubes.core.settings.Setting;
+import ethanjones.cubes.core.settings.VisualSettingManager;
+import ethanjones.cubes.graphics.menus.SettingsMenu;
 
 public class StringSetting extends Setting {
 

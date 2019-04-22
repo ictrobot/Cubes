@@ -1,5 +1,11 @@
 package ethanjones.cubes.entity.living.player;
 
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.g3d.Renderable;
+import com.badlogic.gdx.graphics.g3d.RenderableProvider;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool;
 import ethanjones.cubes.core.event.entity.living.player.PlayerMovementEvent;
 import ethanjones.cubes.core.gwt.UUID;
 import ethanjones.cubes.core.localization.Localization;
@@ -25,13 +31,6 @@ import ethanjones.cubes.world.server.LoadedAreaFilter;
 import ethanjones.cubes.world.server.WorldServer;
 import ethanjones.cubes.world.thread.WorldLockable;
 import ethanjones.data.DataGroup;
-
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.RenderableProvider;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Pool;
 
 public class Player extends LivingEntity implements CommandSender, RenderableProvider, LoadedAreaFilter {
 

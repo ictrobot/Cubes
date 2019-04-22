@@ -1,5 +1,13 @@
 package ethanjones.cubes.graphics.menus;
 
+import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Scaling;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Adapter;
@@ -9,15 +17,6 @@ import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.graphics.menu.Fonts;
 import ethanjones.cubes.graphics.menu.Menu;
 import ethanjones.cubes.world.storage.WorldStorage;
-
-import com.badlogic.gdx.Application.ApplicationType;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Scaling;
 
 import static ethanjones.cubes.graphics.Graphics.GUI_HEIGHT;
 import static ethanjones.cubes.graphics.Graphics.GUI_WIDTH;

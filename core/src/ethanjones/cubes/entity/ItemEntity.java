@@ -1,5 +1,10 @@
 package ethanjones.cubes.entity;
 
+import com.badlogic.gdx.graphics.g3d.Renderable;
+import com.badlogic.gdx.graphics.g3d.RenderableProvider;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool;
 import ethanjones.cubes.block.Blocks;
 import ethanjones.cubes.core.util.VectorUtil;
 import ethanjones.cubes.graphics.entity.ItemEntityRenderer;
@@ -10,12 +15,6 @@ import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.CoordinateConverter;
 import ethanjones.data.DataGroup;
-
-import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.RenderableProvider;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Pool;
 
 public class ItemEntity extends Entity implements RenderableProvider {
 

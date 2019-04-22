@@ -1,15 +1,14 @@
 package ethanjones.cubes.graphics.hud.inv;
 
-import ethanjones.cubes.entity.living.player.PlayerInventory;
-import ethanjones.cubes.graphics.assets.Assets;
-import ethanjones.cubes.side.common.Cubes;
-
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable;
+import ethanjones.cubes.entity.living.player.PlayerInventory;
+import ethanjones.cubes.graphics.assets.Assets;
+import ethanjones.cubes.side.common.Cubes;
 
 public class HotbarActor extends Image {
   public static final TextureRegion hotbar = Assets.getTextureRegion("core:hud/HotbarSlot.png");

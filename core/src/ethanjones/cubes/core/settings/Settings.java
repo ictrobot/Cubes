@@ -1,5 +1,10 @@
 package ethanjones.cubes.core.settings;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonObject.Member;
 import ethanjones.cubes.core.event.settings.AddSettingsEvent;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.logging.Log;
@@ -10,12 +15,6 @@ import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.graphics.CubesShaderProvider;
 import ethanjones.cubes.graphics.Graphics;
 import ethanjones.cubes.graphics.world.ao.AmbientOcclusion;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
-import com.eclipsesource.json.Json;
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonObject.Member;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

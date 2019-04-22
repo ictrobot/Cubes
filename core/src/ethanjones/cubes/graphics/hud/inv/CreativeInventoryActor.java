@@ -1,9 +1,8 @@
 package ethanjones.cubes.graphics.hud.inv;
 
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import ethanjones.cubes.item.inv.CreativeInventory;
 import ethanjones.cubes.side.common.Cubes;
-
-import com.badlogic.gdx.scenes.scene2d.Stage;
 
 public class CreativeInventoryActor extends ScrollInventoryActor {
 

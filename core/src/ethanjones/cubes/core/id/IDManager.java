@@ -1,6 +1,7 @@
 package ethanjones.cubes.core.id;
 
 import ethanjones.cubes.block.Block;
+import ethanjones.cubes.core.gwt.FakeAtomic.AtomicBoolean;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.Debug;
@@ -10,7 +11,6 @@ import ethanjones.data.DataGroup;
 
 import java.util.*;
 import java.util.Map.Entry;
-import ethanjones.cubes.core.gwt.FakeAtomic.AtomicBoolean;
 
 public class IDManager {
 

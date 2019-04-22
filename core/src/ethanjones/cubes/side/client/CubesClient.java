@@ -1,5 +1,8 @@
 package ethanjones.cubes.side.client;
 
+import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import ethanjones.cubes.core.gwt.UUID;
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.platform.Adapter;
@@ -16,10 +19,6 @@ import ethanjones.cubes.side.common.Side;
 import ethanjones.cubes.world.client.WorldClient;
 import ethanjones.cubes.world.collision.PlayerCollision;
 import ethanjones.cubes.world.save.Gamemode;
-
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 
 public class CubesClient extends Cubes implements ApplicationListener {
 

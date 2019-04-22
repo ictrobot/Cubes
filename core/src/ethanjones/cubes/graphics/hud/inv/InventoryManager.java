@@ -1,9 +1,8 @@
 package ethanjones.cubes.graphics.hud.inv;
 
+import com.badlogic.gdx.scenes.scene2d.*;
 import ethanjones.cubes.core.platform.Compatibility;
 import ethanjones.cubes.graphics.menu.MenuTools;
-
-import com.badlogic.gdx.scenes.scene2d.*;
 
 public class InventoryManager {
 

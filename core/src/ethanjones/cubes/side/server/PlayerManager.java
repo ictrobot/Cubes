@@ -1,11 +1,11 @@
 package ethanjones.cubes.side.server;
 
+import com.badlogic.gdx.math.Vector3;
 import ethanjones.cubes.core.event.EventHandler;
 import ethanjones.cubes.core.event.entity.living.player.PlayerMovementEvent;
 import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
 import ethanjones.cubes.core.event.world.generation.AreaLoadedEvent;
 import ethanjones.cubes.core.id.IDManager;
-import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.util.locks.Locked;
 import ethanjones.cubes.entity.Entity;
 import ethanjones.cubes.entity.living.player.Player;
@@ -30,8 +30,6 @@ import ethanjones.cubes.world.storage.Area;
 import ethanjones.cubes.world.thread.GenerationTask;
 import ethanjones.cubes.world.thread.WorldLockable;
 import ethanjones.cubes.world.thread.WorldRequestParameter;
-
-import com.badlogic.gdx.math.Vector3;
 
 public class PlayerManager {
   

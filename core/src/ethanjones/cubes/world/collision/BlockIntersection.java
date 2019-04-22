@@ -1,11 +1,10 @@
 package ethanjones.cubes.world.collision;
 
+import com.badlogic.gdx.math.Vector3;
 import ethanjones.cubes.block.Block;
 import ethanjones.cubes.core.util.BlockFace;
 import ethanjones.cubes.world.World;
 import ethanjones.cubes.world.reference.BlockReference;
-
-import com.badlogic.gdx.math.Vector3;
 
 public class BlockIntersection {
 

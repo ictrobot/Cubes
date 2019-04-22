@@ -1,14 +1,13 @@
 package ethanjones.cubes.graphics.menu;
 
-import ethanjones.cubes.block.Block;
-import ethanjones.cubes.core.id.IDManager;
-import ethanjones.cubes.core.util.BlockFace;
-import ethanjones.cubes.graphics.world.block.BlockTextureHandler;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
+import ethanjones.cubes.block.Block;
+import ethanjones.cubes.core.id.IDManager;
+import ethanjones.cubes.core.util.BlockFace;
+import ethanjones.cubes.graphics.world.block.BlockTextureHandler;
 
 import java.util.ArrayList;
 import java.util.List;

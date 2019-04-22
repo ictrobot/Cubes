@@ -1,5 +1,11 @@
 package ethanjones.cubes.graphics.menus;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import ethanjones.cubes.core.localization.Localization;
 import ethanjones.cubes.core.platform.Adapter;
 import ethanjones.cubes.graphics.menu.Menu;
@@ -7,13 +13,6 @@ import ethanjones.cubes.graphics.menu.MenuTools;
 import ethanjones.cubes.world.client.ClientSaveManager;
 import ethanjones.cubes.world.generator.GeneratorManager;
 import ethanjones.cubes.world.save.Gamemode;
-
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 public class SingleplayerSaveCreateMenu extends Menu {
   

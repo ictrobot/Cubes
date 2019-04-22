@@ -1,5 +1,9 @@
 package ethanjones.cubes.entity;
 
+import com.badlogic.gdx.math.Frustum;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 import ethanjones.cubes.core.gwt.UUID;
 import ethanjones.cubes.core.system.Debug;
 import ethanjones.cubes.core.util.VectorUtil;
@@ -11,11 +15,6 @@ import ethanjones.cubes.world.gravity.WorldGravity;
 import ethanjones.cubes.world.storage.Area;
 import ethanjones.data.DataGroup;
 import ethanjones.data.DataParser;
-
-import com.badlogic.gdx.math.Frustum;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
 
 public class Entity implements DataParser, Disposable {
 

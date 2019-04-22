@@ -1,9 +1,8 @@
 package ethanjones.cubes.graphics.hud;
 
-import ethanjones.cubes.graphics.assets.Assets;
-
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import ethanjones.cubes.graphics.assets.Assets;
 
 public class ImageButtons {
   

@@ -1,15 +1,14 @@
 package ethanjones.cubes.graphics.hud.inv;
 
-import ethanjones.cubes.graphics.menu.Fonts;
-import ethanjones.cubes.item.inv.CraftingInventory;
-import ethanjones.cubes.item.inv.InventoryHelper;
-import ethanjones.cubes.side.common.Cubes;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import ethanjones.cubes.graphics.menu.Fonts;
+import ethanjones.cubes.item.inv.CraftingInventory;
+import ethanjones.cubes.item.inv.InventoryHelper;
+import ethanjones.cubes.side.common.Cubes;
 
 public class CraftingInventoryActor extends Table {
 

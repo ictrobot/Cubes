@@ -1,5 +1,6 @@
 package ethanjones.cubes.networking.singleplayer;
 
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 import ethanjones.cubes.core.gwt.FakeAtomic.AtomicBoolean;
 import ethanjones.cubes.core.gwt.Task;
 import ethanjones.cubes.core.logging.Log;
@@ -9,8 +10,6 @@ import ethanjones.cubes.networking.packet.PacketQueue;
 import ethanjones.cubes.networking.packet.PriorityPacketQueue;
 import ethanjones.cubes.networking.stream.PairedStreams;
 import ethanjones.cubes.side.common.Side;
-
-import com.badlogic.gdx.utils.reflect.ClassReflection;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
