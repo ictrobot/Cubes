@@ -14,7 +14,7 @@ gwt {
     compiler {
         strict = true
         disableCastChecking = true
-        setOptimize(1)
+        setOptimize(2)
         saveSource = true
     }
 }
