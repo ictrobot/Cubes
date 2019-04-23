@@ -53,6 +53,10 @@ task dist(dependsOn: [clean, compileGwt]) {
             from "build/gwt/extra/html/symbolMaps"
             into "build/dist/source"
         }
+        copy {
+            from "../LICENSE"
+            into "build/dist/"
+        }
 
         delete "build/dist/index.html"
         delete "build/dist/WEB-INF"
