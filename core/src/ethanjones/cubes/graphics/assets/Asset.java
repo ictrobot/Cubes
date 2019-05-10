@@ -67,6 +67,10 @@ public class Asset {
     return fileHandle;
   }
 
+  public String readString() {
+    return fileHandle.readString();
+  }
+
   public String toString() {
     return assetManager.getName() + ":" + path;
   }

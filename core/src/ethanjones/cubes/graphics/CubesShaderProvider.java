@@ -6,13 +6,13 @@ import ethanjones.cubes.core.settings.Setting;
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.core.settings.type.BooleanSetting;
 import ethanjones.cubes.core.system.CubesException;
+import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.graphics.world.ao.AmbientOcclusion;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.client.WorldClient;
 import ethanjones.cubes.world.storage.Area;
 
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
@@ -28,8 +28,8 @@ import java.util.List;
 
 public class CubesShaderProvider implements ShaderProvider {
 
-  private static final String DEFAULT_VERTEX_SHADER = Gdx.files.internal("shaders/world.vertex.glsl").readString();
-  private static final String DEFAULT_FRAGMENT_SHADER = Gdx.files.internal("shaders/world.fragment.glsl").readString();
+  private static final String DEFAULT_VERTEX_SHADER = Assets.getAsset("core:shaders/world.vertex.glsl").readString();
+  private static final String DEFAULT_FRAGMENT_SHADER = Assets.getAsset("core:shaders/world.fragment.glsl").readString();
 
   private static final int FEATURE_FOG = 1 << 0;
   private static final int FEATURE_AO = 1 << 1;

@@ -45,8 +45,8 @@ public class RainRenderer {
 
   private static class RainShader extends DefaultShader {
 
-    private static final String VERTEX_SHADER = Gdx.files.internal("shaders/rain.vertex.glsl").readString();
-    private static final String FRAGMENT_SHADER = Gdx.files.internal("shaders/rain.fragment.glsl").readString();
+    private static final String VERTEX_SHADER = Assets.getAsset("core:shaders/rain.vertex.glsl").readString();
+    private static final String FRAGMENT_SHADER = Assets.getAsset("core:shaders/rain.fragment.glsl").readString();
 
     public RainShader(Renderable renderable) {
       super(renderable, new Config(VERTEX_SHADER, FRAGMENT_SHADER));
