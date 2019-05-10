@@ -43,6 +43,7 @@ public class PacketChat extends Packet {
         NetworkingManager.sendPacketToAllClients(packetChat);
       }
     } else {
+      Log.info("[" + Localization.get("client.chat") + "] " + msg);
       Cubes.getClient().renderer.guiRenderer.newMessage(msg);
     }
   }
