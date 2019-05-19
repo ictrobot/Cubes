@@ -137,8 +137,8 @@ public class Screenshot {
       if ("max".equals(setting)) {
         IntBuffer intBuffer = BufferUtils.newIntBuffer(2);
         Gdx.gl20.glGetIntegerv(GL20.GL_MAX_VIEWPORT_DIMS, intBuffer);
-        screenshotWidth = intBuffer.get(0);
-        screenshotHeight = intBuffer.get(1);
+        screenshotWidth = Math.min(intBuffer.get(0), 16384);
+        screenshotHeight = Math.min(intBuffer.get(1), 16384);
       } else {
         screenshotWidth = Screenshot.resolutionMap.get(setting)[0];
         screenshotHeight = Screenshot.resolutionMap.get(setting)[1];
