@@ -74,7 +74,7 @@ allprojects {
         buildProperties = getRootProject().buildProperties
         build = getRootProject().build
         localProperties = getRootProject().localProperties
-        isRelease = false
+        isRelease = true
     }
 
     repositories {
