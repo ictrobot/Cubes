@@ -1,10 +1,12 @@
 ### 0.0.6
--  Add Ambient Occlusion
--  New chat messages now appear for 10 seconds before disappearing and you can scroll back in the chat log.
--  High resolution screenshots
--  Improved Multiplayer
--  Improve Commands, use @ symbol to represent current position
--  Add Noclip mode
+- Add Ambient Occlusion
+- New chat messages now appear for 10 seconds before disappearing and you can scroll back in the chat log.
+- High resolution screenshots
+- Improved Multiplayer
+- Improve Commands, use @ symbol to represent current position
+- Add Noclip mode
+- New Lock system
+- Setting to unlock max view distance 
 
 ### 0.0.5
 - Fog to hide terrain loading
