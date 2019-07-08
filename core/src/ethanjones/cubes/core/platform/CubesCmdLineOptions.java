@@ -61,6 +61,7 @@ public class CubesCmdLineOptions {
 
     @Override
     protected void parse(CmdLineParser cmdLineParser) {
+      super.parse(cmdLineParser);
       Boolean b = cmdLineParser.getOptionValue("loadTemporaryWorld", false);
       loadTemporaryWorld = b != null ? b : false;
     }
