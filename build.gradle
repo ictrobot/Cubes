@@ -7,9 +7,6 @@ buildscript {
         classpath 'com.android.tools.build:gradle:3.2.0-rc03'
     }
 }
-plugins {
-    id "org.sonarqube" version "2.6.1"
-}
 
 // Read build properties
 ext {
@@ -45,8 +42,6 @@ ext {
     if (localProperties.MAVEN_REPO_PATH == null) localProperties.MAVEN_REPO_PATH = getRootProject().getProjectDir().absolutePath + "/repo/"
     if (localProperties.MAVEN_REPO_USERNAME == null) localProperties.MAVEN_REPO_USERNAME = ""
     if (localProperties.MAVEN_REPO_PASSWORD == null) localProperties.MAVEN_REPO_PASSWORD = ""
-    if (localProperties.SONAR_HOST_URL == null) localProperties.SONAR_HOST_URL = "https://sonarqube.com"
-    if (localProperties.SONAR_LOGIN == null) localProperties.SONAR_LOGIN = "abcdef0123456789"
 }
 
 // Write build file
@@ -85,13 +80,6 @@ allprojects {
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
         maven { url "https://ethanjones.me/maven/snapshots/" }
         maven { url "https://ethanjones.me/maven/releases/" }
-    }
-
-    sonarqube {
-        properties {
-            property "sonar.host.url", localProperties.SONAR_HOST_URL
-            property "sonar.login", localProperties.SONAR_LOGIN
-        }
     }
 }
 
@@ -203,7 +191,7 @@ task travisBuild(dependsOn: ['core:jar', 'client:dist', 'client:createExe', 'ser
 
 }
 
-task travisPublish(dependsOn: ['core:publish', 'client:publish', 'server:publish', 'android:publish', 'sonarqube']) {
+task travisPublish(dependsOn: ['core:publish', 'client:publish', 'server:publish', 'android:publish']) {
 
 }
 
