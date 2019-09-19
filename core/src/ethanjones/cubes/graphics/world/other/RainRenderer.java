@@ -1,5 +1,6 @@
 package ethanjones.cubes.graphics.world.other;
 
+import ethanjones.cubes.graphics.CubesRenderable;
 import ethanjones.cubes.graphics.CubesVertexAttributes;
 import ethanjones.cubes.graphics.assets.Assets;
 import ethanjones.cubes.side.common.Cubes;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.Renderable;
+import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
@@ -22,6 +24,8 @@ import com.badlogic.gdx.math.Frustum;
 import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -63,7 +67,7 @@ public class RainRenderer {
     }
   }
 
-  private static class RainMesh {
+  private static class RainMesh implements RenderableProvider {
 
     private static final VertexAttributes VERTEX_ATTRIBUTES = new VertexAttributes(new VertexAttribute(VertexAttributes.Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE));
     private static final int MAX_INDICES = 32760;
@@ -129,8 +133,10 @@ public class RainRenderer {
       meshPart.radius = meshPart.halfExtents.len();
     }
 
-    private Renderable renderable() {
-      Renderable renderable = new Renderable(); // FIXME use pool
+    @Override
+    public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
+      Renderable renderable = pool.obtain();
+      ((CubesRenderable) renderable).name = "RainMesh";
       renderable.material = Assets.blockItemSheet.getMaterial(); // not actually used
       renderable.meshPart.set(meshPart);
       if (SHADER == null) {
@@ -138,7 +144,7 @@ public class RainRenderer {
         SHADER.init();
       }
       renderable.shader = SHADER;
-      return renderable;
+      renderables.add(renderable);
     }
   }
 
@@ -262,7 +268,7 @@ public class RainRenderer {
     }
     if (vertexOffset > 0) {
       rainMesh.saveVertices(vertexOffset);
-      modelBatch.render(rainMesh.renderable());
+      modelBatch.render(rainMesh);
     }
   }
 
