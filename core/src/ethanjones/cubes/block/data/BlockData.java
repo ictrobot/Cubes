@@ -34,7 +34,7 @@ public abstract class BlockData implements DataParser {
   }
 
   public void sync() {
-    if (Area.isShared()) return;
+    if (area.shared) return;
     PacketBlockData packet = new PacketBlockData();
     packet.areaX = area.areaX;
     packet.areaZ = area.areaZ;

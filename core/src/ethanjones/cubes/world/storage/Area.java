@@ -6,6 +6,7 @@ import ethanjones.cubes.core.event.world.block.BlockChangedEvent;
 import ethanjones.cubes.core.id.IDManager;
 import ethanjones.cubes.core.id.TransparencyManager;
 import ethanjones.cubes.core.logging.Log;
+import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.core.system.CubesException;
 import ethanjones.cubes.core.system.Executor;
 import ethanjones.cubes.core.util.ThreadRandom;
@@ -118,7 +119,7 @@ public class Area extends Lockable<Area> {
   public Area(Area toCopy) {
     this(toCopy.areaX, toCopy.areaZ);
 
-    try (Locked<Area> l = toCopy.acquireReadLock()) {
+    try (Locked<Area> l = LockManager.lockMany(true, this, toCopy)) {
       if (toCopy.isReady()) {
         this.setupArrays(toCopy.maxY);
         System.arraycopy(toCopy.blocks, 0, this.blocks, 0, this.blocks.length);
@@ -667,7 +668,7 @@ public class Area extends Lockable<Area> {
         blocks = new int[SIZE_BLOCKS_CUBED * h];
         light = new byte[SIZE_BLOCKS_CUBED * h];
         AreaRenderer.free(areaRenderer);
-        if (Side.isClient() || isShared()) {
+        if (Side.isClient() || shared) {
           areaRenderer = new AreaRenderer[h];
           renderStatus = AreaRenderStatus.create(h);
         }
@@ -788,7 +789,7 @@ public class Area extends Lockable<Area> {
       System.arraycopy(oldLight, 0, light, 0, light.length);
 
       AreaRenderer.free(areaRenderer);
-      if (Side.isClient() || isShared()) {
+      if (Side.isClient() || shared) {
         areaRenderer = new AreaRenderer[usedHeight];
         renderStatus = AreaRenderStatus.create(usedHeight);
       } else {
@@ -1015,7 +1016,7 @@ public class Area extends Lockable<Area> {
   }
 
   public static boolean isShared() {
-    return NetworkingManager.isSingleplayer();
+    return NetworkingManager.isSingleplayer() && Settings.getBooleanSettingValue(Settings.DEBUG_AREA_SHARING);
   }
 
   @Override

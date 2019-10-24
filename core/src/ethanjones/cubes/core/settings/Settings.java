@@ -43,6 +43,7 @@ public class Settings {
   public static final String DEBUG_FRAMETIME_GRAPH = "debug.frametimeGraph";
   public static final String DEBUG_GL_PROFILER = "debug.glProfiler";
   public static final String DEBUG_UNLIMITED_VIEW_DISTANCE = "debug.unlimitedViewDistance";
+  public static final String DEBUG_AREA_SHARING = "debug.areaSharing";
 
   public static final String GROUP_GRAPHICS = "graphics";
   public static final String GROUP_INPUT = "input";
@@ -113,6 +114,7 @@ public class Settings {
         return Compatibility.get().getApplicationType() == Application.ApplicationType.Desktop;
       }
     });
+    addSetting(DEBUG_AREA_SHARING, new BooleanSetting(true));
 
     String keybindsGroup = Keybinds.KEYBIND_GROUP;
     SettingGroup keybinds = Keybinds.init();
@@ -121,7 +123,7 @@ public class Settings {
         .add(GROUP_GRAPHICS, new SettingGroup().add(GRAPHICS_VIEW_DISTANCE).add(GRAPHICS_FOV).add(GRAPHICS_FOG).add(GRAPHICS_SCALE).add(GRAPHICS_AO).add(GRAPHICS_SIMPLE_SHADER).add(GRAPHICS_SCREENSHOT_SIZE))
         .add(GROUP_INPUT, new SettingGroup().add(keybindsGroup, keybinds).add(INPUT_MOUSE_SENSITIVITY).add(INPUT_TOUCHPAD_SIZE).add(INPUT_TOUCHPAD_LEFT))
         .add(GROUP_NETWORKING, new SettingGroup().add(NETWORKING_PORT))
-        .add(GROUP_DEBUG, new SettingGroup().add(DEBUG_FRAMETIME_GRAPH).add(DEBUG_GL_PROFILER).add(DEBUG_UNLIMITED_VIEW_DISTANCE));
+        .add(GROUP_DEBUG, new SettingGroup().add(DEBUG_FRAMETIME_GRAPH).add(DEBUG_GL_PROFILER).add(DEBUG_UNLIMITED_VIEW_DISTANCE).add(DEBUG_AREA_SHARING));
 
     new AddSettingsEvent().post();
 

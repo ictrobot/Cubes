@@ -1,5 +1,6 @@
 package ethanjones.cubes.world.client;
 
+import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.settings.Settings;
 import ethanjones.cubes.core.util.locks.LockManager;
 import ethanjones.cubes.core.util.locks.Locked;
@@ -34,6 +35,7 @@ public class WorldClient extends World {
 
   public WorldClient() {
     super(null, Side.Client);
+    Log.debug("Area Sharing: " + Area.isShared());
   }
 
   @Override

@@ -58,3 +58,4 @@ setting.debug=Debug
 setting.debug.frametimeGraph=Frametime Graph
 setting.debug.glProfiler=GL Profiler
 setting.debug.unlimitedViewDistance=Unlimited View Distance
+setting.debug.areaSharing=Share Areas (Singleplayer)
