@@ -1,6 +1,5 @@
 package ethanjones.cubes.world.generator.smooth;
 
-import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.side.common.Cubes;
 import ethanjones.cubes.world.reference.AreaReference;
 import ethanjones.cubes.world.reference.BlockReference;
@@ -52,7 +51,7 @@ public class CaveGenerator {
 
   public Cave generate() {
     int spawnDist = (int) distanceFromSpawn(caveStartX, caveStartZ);
-    Log.debug("Generating new cave at " + caveStartX + "," + caveStartZ + " (" + spawnDist + " blocks from spawn)");
+    //Log.debug("Generating new cave at " + caveStartX + "," + caveStartZ + " (" + spawnDist + " blocks from spawn)");
     generateNodes();
     calculateBlocks();
 
