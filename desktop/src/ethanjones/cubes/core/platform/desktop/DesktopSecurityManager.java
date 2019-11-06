@@ -6,9 +6,9 @@ import ethanjones.cubes.side.common.Cubes;
 
 import java.security.Permission;
 
-public class DesktopSecurityManager extends SecurityManager {
+public final class DesktopSecurityManager extends SecurityManager {
 
-  protected static void setup() {
+  static void setup() {
     try {
       System.setSecurityManager(new DesktopSecurityManager());
     } catch (SecurityException e) {
@@ -25,9 +25,8 @@ public class DesktopSecurityManager extends SecurityManager {
   public synchronized void checkPermission(Permission perm) {
     if (perm.getName().startsWith("exitVM.")) {
       if (!Cubes.cubesSetup()) return;
-      if (getClassContext().length < 5) throw new SecurityException();
-      String c = getClassContext()[4].getName();
-      if (c.startsWith("com.badlogic.gdx.backends.lwjgl.Lwjgl") || c.equals("ethanjones.cubes.side.common.Cubes") || c.equals("ethanjones.cubes.core.system.Debug") || c.equals("ethanjones.cubes.core.platform.Adapter")) {
+      String c = caller();
+      if (c.equals("ethanjones.cubes.side.common.Cubes") || c.equals("ethanjones.cubes.core.system.Debug") || c.equals("ethanjones.cubes.core.platform.Adapter")) {
         Log.debug("Allowing class \"" + c + "\" to exit");
         stackTrace(LogLevel.debug);
       } else {
@@ -36,15 +35,11 @@ public class DesktopSecurityManager extends SecurityManager {
         throw new SecurityException("Cannot exit");
       }
     } else if ("setSecurityManager".equals(perm.getName())) {
-      if (getClassContext().length < 4) throw new SecurityException();
-      String c = getClassContext()[3].getName();
-      Log.error("Class \"" + c + "\" tried to set the security manager");
+      Log.error("Class \"" + caller() + "\" tried to set the security manager");
       stackTrace(LogLevel.error);
       throw new SecurityException("Cannot replace the security manager");
     } else if ("createSecurityManager".equals(perm.getName())) {
-      if (getClassContext().length < 3) throw new SecurityException();
-      String c = getClassContext()[2].getName();
-      Log.error("Class \"" + c + "\" tried to create a security manager");
+      Log.error("Class \"" + caller() + "\" tried to create a security manager");
       stackTrace(LogLevel.error);
       throw new SecurityException("Cannot create a security manager");
     }
@@ -57,5 +52,24 @@ public class DesktopSecurityManager extends SecurityManager {
       StackTraceElement stackTraceElement = stackTrace[i];
       Log.log(logLevel, "  " + stackTraceElement.toString());
     }
+  }
+
+  private String caller() {
+    Class[] classContext = getClassContext();
+    Class caller = classContext[callerIndex(classContext)];
+    return caller.getName();
+  }
+
+  private static int callerIndex(Class[] ctx) {
+    boolean seenOwnClass = false;
+    for (int i = 0; i < ctx.length; i++) {
+      if (ctx[i] == DesktopSecurityManager.class) {
+        seenOwnClass = true;
+      } else if (seenOwnClass && !ctx[i].getName().startsWith("java.") && !ctx[i].getName().startsWith("com.badlogic.")) {
+        return i;
+      }
+    }
+    stackTrace(LogLevel.error);
+    throw new SecurityException("Can't locate caller");
   }
 }
