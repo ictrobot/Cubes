@@ -13,8 +13,8 @@ public class DesktopModLoader implements ModLoader {
 
   public static class ExternalJarLoader extends URLClassLoader {
 
-    public ExternalJarLoader(FileHandle fileHandle) throws IOException {
-      super(new URL[]{fileHandle.file().toURI().toURL()});
+    public ExternalJarLoader(FileHandle fileHandle, ClassLoader classLoader) throws IOException {
+      super(new URL[]{fileHandle.file().toURI().toURL()}, classLoader);
     }
 
   }
@@ -27,7 +27,7 @@ public class DesktopModLoader implements ModLoader {
   @Override
   public Class<?> loadClass(FileHandle classFile, String className, ModType modType) throws Exception {
     if (modType == ModType.jar) {
-      return new ExternalJarLoader(classFile).loadClass(className);
+      return new ExternalJarLoader(classFile, getClass().getClassLoader()).loadClass(className);
     } else {
       throw new IllegalStateException(String.valueOf(modType));
     }
