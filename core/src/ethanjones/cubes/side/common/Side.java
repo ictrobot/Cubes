@@ -95,7 +95,7 @@ public enum Side {
         break;
     }
   
-    data.eventBus = new EventBus();
+    data.eventBus = new EventBus(side);
     data.timing = new Timing();
   }
   

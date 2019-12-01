@@ -7,13 +7,16 @@ import ethanjones.cubes.side.common.Side;
 public class Event {
 
   private final boolean cancelable;
-  private final boolean sided;
   private boolean canceled;
+
+  private final boolean sided;
+  private Side side;
 
   public Event(boolean cancelable, boolean sided) {
     this.cancelable = cancelable;
-    this.sided = sided;
     this.canceled = false;
+    this.sided = sided;
+    this.side = null;
   }
 
   public Event post() {
@@ -36,4 +39,11 @@ public class Event {
     this.canceled = canceled;
   }
 
+  public Side getSide() {
+    return side;
+  }
+
+  void setSide(Side side) {
+    this.side = side;
+  }
 }

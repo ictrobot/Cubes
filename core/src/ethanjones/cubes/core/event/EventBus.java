@@ -2,6 +2,7 @@ package ethanjones.cubes.core.event;
 
 import ethanjones.cubes.core.logging.Log;
 import ethanjones.cubes.core.system.CubesException;
+import ethanjones.cubes.side.common.Side;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -11,13 +12,18 @@ import java.util.List;
 
 public class EventBus {
 
-  static final EventBus GLOBAL_EVENTBUS = new EventBus();
+  static final EventBus GLOBAL_EVENTBUS = new EventBus(null);
 
   public static EventBus getGlobalEventBus() {
     return GLOBAL_EVENTBUS;
   }
 
   private HashMap<Class<? extends Event>, List<EventWrapper>> data = new HashMap<Class<? extends Event>, List<EventWrapper>>();
+  private final Side side;
+
+  public EventBus(Side side) {
+    this.side = side;
+  }
 
   public EventBus register(Object instance) {
     try {
@@ -54,6 +60,7 @@ public class EventBus {
   }
 
   <E extends Event> E post(E event) {
+    event.setSide(side);
     Class<?> c = event.getClass();
     final List<EventWrapper> posted = new ArrayList<EventWrapper>(); //Prevents being posted multiple times to same EventHandler
     while (c != null && Event.class.isAssignableFrom(c)) {
@@ -75,4 +82,7 @@ public class EventBus {
     return event;
   }
 
+  public Side getSide() {
+    return side;
+  }
 }
