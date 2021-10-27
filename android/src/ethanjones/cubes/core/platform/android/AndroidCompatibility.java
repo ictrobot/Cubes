@@ -52,14 +52,6 @@ public class AndroidCompatibility extends Compatibility {
   }
 
   @Override
-  public void postInit() {
-    super.postInit();
-    IntegerSetting viewDistance = Settings.getIntegerSetting(Settings.GRAPHICS_VIEW_DISTANCE);
-    viewDistance.rangeEnd = 6;
-    viewDistance.clamp();
-  }
-
-  @Override
   public FileHandle getBaseFolder() {
     // Use local to avoid having to request WRITE_EXTERNAL_STORAGE permission
     return Gdx.files.local(Branding.NAME);

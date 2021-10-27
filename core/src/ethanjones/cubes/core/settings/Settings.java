@@ -105,13 +105,12 @@ public class Settings {
       @Override
       public void onChange() {
         IntegerSetting viewDistance = Settings.getIntegerSetting(Settings.GRAPHICS_VIEW_DISTANCE);
-        viewDistance.rangeEnd = get() ? 256 : 16;
+        if (Compatibility.get().getApplicationType() == Application.ApplicationType.Desktop) {
+          viewDistance.rangeEnd = get() ? 256 : 16;
+        } else {
+          viewDistance.rangeEnd = get() ? 64 : 8;
+        }
         viewDistance.clamp();
-      }
-
-      @Override
-      public boolean shouldDisplay() {
-        return Compatibility.get().getApplicationType() == Application.ApplicationType.Desktop;
       }
     });
     addSetting(DEBUG_AREA_SHARING, new BooleanSetting(true));
