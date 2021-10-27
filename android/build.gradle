@@ -113,6 +113,10 @@ publishing {
     repositories {
         maven {
             url getMavenRepo()
+            credentials {
+                username localProperties.MAVEN_REPO_USERNAME
+                password localProperties.MAVEN_REPO_PASSWORD
+            }
         }
     }
 }

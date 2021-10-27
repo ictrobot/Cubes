@@ -41,7 +41,7 @@ ext {
         ANDROID_KEYSTORE_PASSWORD: "password",
         ANDROID_KEYSTORE_KEY_ALIAS: "android",
         ANDROID_KEYSTORE_KEY_PASSWORD: "password",
-        MAVEN_REPO_PATH: getRootProject().getProjectDir().absolutePath + "/repo/",
+        MAVEN_REPO_PATH: "https://ethanjones.me/maven/",
         MAVEN_REPO_USERNAME: "",
         MAVEN_REPO_PASSWORD: ""
     ]
@@ -54,6 +54,8 @@ ext {
             localProperties.setProperty(key, defaultValue)
         }
     }
+
+    println "REPO:    " + localProperties.MAVEN_REPO_PATH
 }
 
 // Write build file
