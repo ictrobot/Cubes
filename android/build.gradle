@@ -69,9 +69,12 @@ task copyAndroidNatives {
     }
 }
 
-tasks.whenTaskAdded { packageTask ->
-    if (packageTask.name.contains("package")) {
-        packageTask.dependsOn 'copyAndroidNatives'
+tasks.whenTaskAdded { t ->
+    if (t.name.contains("package")) {
+        t.dependsOn 'copyAndroidNatives'
+    } else if (t.name.contains("publish")) {
+        t.dependsOn(['assembleDebug'])
+        t.mustRunAfter(['assembleDebug'])
     }
 }
 
@@ -110,13 +113,6 @@ publishing {
     repositories {
         maven {
             url getMavenRepo()
-            credentials {
-                username localProperties.MAVEN_REPO_USERNAME
-                password localProperties.MAVEN_REPO_PASSWORD
-            }
         }
     }
 }
-
-publish.dependsOn(['assembleDebug'])
-publish.mustRunAfter(['assembleDebug'])
