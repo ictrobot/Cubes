@@ -35,13 +35,25 @@ ext {
             localProperties.load(reader)
         }
     }
-    if (localProperties.ANDROID_KEYSTORE_FILE == null) localProperties.ANDROID_KEYSTORE_FILE = "keystore"
-    if (localProperties.ANDROID_KEYSTORE_PASSWORD == null) localProperties.ANDROID_KEYSTORE_PASSWORD = "password"
-    if (localProperties.ANDROID_KEYSTORE_KEY_ALIAS == null) localProperties.ANDROID_KEYSTORE_KEY_ALIAS = "android"
-    if (localProperties.ANDROID_KEYSTORE_KEY_PASSWORD == null) localProperties.ANDROID_KEYSTORE_KEY_PASSWORD = "password"
-    if (localProperties.MAVEN_REPO_PATH == null) localProperties.MAVEN_REPO_PATH = getRootProject().getProjectDir().absolutePath + "/repo/"
-    if (localProperties.MAVEN_REPO_USERNAME == null) localProperties.MAVEN_REPO_USERNAME = ""
-    if (localProperties.MAVEN_REPO_PASSWORD == null) localProperties.MAVEN_REPO_PASSWORD = ""
+
+    def defaultProperties = [
+        ANDROID_KEYSTORE_FILE: "keystore",
+        ANDROID_KEYSTORE_PASSWORD: "password",
+        ANDROID_KEYSTORE_KEY_ALIAS: "android",
+        ANDROID_KEYSTORE_KEY_PASSWORD: "password",
+        MAVEN_REPO_PATH: getRootProject().getProjectDir().absolutePath + "/repo/",
+        MAVEN_REPO_USERNAME: "",
+        MAVEN_REPO_PASSWORD: ""
+    ]
+
+    defaultProperties.each {key, defaultValue ->
+        def env = System.getenv(key)
+        if (env) {
+            localProperties.setProperty(key, env)
+        } else if (!localProperties.getProperty(key)) {
+            localProperties.setProperty(key, defaultValue)
+        }
+    }
 }
 
 // Write build file
@@ -193,20 +205,12 @@ task buildAll(dependsOn: ['core:jar', 'core:sourcesJar', 'client:dist', 'client:
 
 }
 
-task travisBuild(dependsOn: ['core:jar', 'client:dist', 'client:createExe', 'server:dist', 'android:assembleDebug']) {
+task ci(dependsOn: ['core:jar', 'client:dist', 'client:createExe', 'server:dist', 'android:assembleDebug']) {
 
 }
 
-task travisPublish(dependsOn: ['core:publish', 'client:publish', 'server:publish', 'android:publish']) {
+task ciPublish(dependsOn: ['core:publish', 'client:publish', 'server:publish', 'android:publish']) {
 
-}
-
-task travis(description: "Task executed on Travis CI", group: "Alias") {
-    if ("true".equals(System.getenv('TRAVIS_SECURE_ENV_VARS')) && "false".equals(System.getenv('TRAVIS_PULL_REQUEST'))) {
-        dependsOn travisPublish
-    } else {
-        dependsOn travisBuild
-    }
 }
 
 // Deletes intellij & eclipse project files
